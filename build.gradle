@@ -1,0 +1,67 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath(
+                "org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE",
+        )
+    }
+}
+
+
+def baseName = 'QTTD';
+def version = '0.1.0';
+group = 'no.nsd'
+description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
+
+jar {
+    baseName = baseName;
+    version = version;
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-release" }
+}
+
+dependencies {
+    compile(
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.hateoas:spring-hateoas",
+            "org.springframework.boot:spring-boot-starter-security",
+            "org.springframework.security.oauth:spring-security-oauth2:2.0.0.RC2",
+            "org.jadira.usertype:usertype.extended:3.2.0.GA",
+            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0",
+
+            "org.hibernate:hibernate-validator",
+
+            "com.mangofactory:swagger-springmvc:0.9.0",
+            "org.ajar:swagger-spring-mvc-ui:0.2",
+    )
+
+    testCompile(
+            "junit:junit",
+            "org.springframework.boot:spring-boot-starter-test",
+            "org.springframework.security:spring-security-test:4.0.0.M1",
+            "com.jayway.jsonpath:json-path"
+    )
+}
+
+//This exclude the test suite, which we use for IDE test support.
+test {
+    exclude 'QTTDTestSuite.class'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2.1'
+}

@@ -1,0 +1,12 @@
+## IntelliJ
+*.iml
+.idea/
+*.ipr
+*.iws
+
+## Plugin-specific files:
+.gradle
+gradle
+
+## IntelliJ
+out/
