@@ -16,6 +16,13 @@ buildscript {
     }
 }
 
+idea {
+    project {
+        jdkName = '1.8'
+        languageLevel = '1.8'
+        vcs = 'Git'
+    }
+}
 
 def baseName = 'QTTD';
 def version = '0.1.0';
@@ -43,6 +50,7 @@ dependencies {
             "org.jadira.usertype:usertype.extended:3.2.0.GA",
             "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0",
 
+            "com.h2database:h2:1.4.181",
             "org.hibernate:hibernate-validator",
 
             "com.mangofactory:swagger-springmvc:0.9.0",

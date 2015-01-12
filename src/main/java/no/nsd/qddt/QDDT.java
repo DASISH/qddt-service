@@ -10,15 +10,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 @SpringBootApplication
-public class QTTD extends SpringBootServletInitializer {
+public class QDDT extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        ApplicationContext ctx = SpringApplication.run(QTTD.class);
+        ApplicationContext ctx = SpringApplication.run(QDDT.class);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder applicationBuilder) {
-        return applicationBuilder.sources(QTTD.class);
+        return applicationBuilder.sources(QDDT.class);
 
     }
 
