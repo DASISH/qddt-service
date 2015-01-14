@@ -55,6 +55,8 @@ dependencies {
 
             "com.mangofactory:swagger-springmvc:0.9.0",
             "org.ajar:swagger-spring-mvc-ui:0.2",
+
+            "net.logstash.logback:logstash-logback-encoder:3.5"
     )
 
     testCompile(
