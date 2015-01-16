@@ -32,7 +32,7 @@ public class Comment extends AbstractEntity {
     @JoinColumn(name = "user_id")
     private User createdBy;
 
-    @Column(name = "created")
+    @Column(name = "created")//date
     private boolean created;
 
     public Comment() {
@@ -52,6 +52,14 @@ public class Comment extends AbstractEntity {
 
     public void setChildren(Set<Comment> children) {
         this.children = children;
+    }
+
+    /**
+     * Add a new comment to the set.
+     * @param comment to be added to parent.
+     */
+    public void addComment(Comment comment) {
+        this.children.add(comment);
     }
 
     public Survey getSurvey() {
