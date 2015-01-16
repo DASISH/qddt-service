@@ -19,10 +19,10 @@ public class Comment extends AbstractEntity {
     private Comment parent;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-    private Set<Comment> childen = new HashSet<>();
+    private Set<Comment> children = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "survey_id", insertable = false, updatable = false, unique = true)
+    @JoinColumn(name = "survey_id")
     private Survey survey;
 
     @Column(name = "comment")
@@ -46,12 +46,12 @@ public class Comment extends AbstractEntity {
         this.parent = parent;
     }
 
-    public Set<Comment> getChilden() {
-        return childen;
+    public Set<Comment> getChildren() {
+        return children;
     }
 
-    public void setChilden(Set<Comment> childen) {
-        this.childen = childen;
+    public void setChildren(Set<Comment> children) {
+        this.children = children;
     }
 
     public Survey getSurvey() {
@@ -95,7 +95,7 @@ public class Comment extends AbstractEntity {
         Comment comment1 = (Comment) o;
 
         if (created != comment1.created) return false;
-        if (childen != null ? !childen.equals(comment1.childen) : comment1.childen != null) return false;
+        if (children != null ? !children.equals(comment1.children) : comment1.children != null) return false;
         if (comment != null ? !comment.equals(comment1.comment) : comment1.comment != null) return false;
         if (createdBy != null ? !createdBy.equals(comment1.createdBy) : comment1.createdBy != null) return false;
         if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
@@ -107,7 +107,7 @@ public class Comment extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = parent != null ? parent.hashCode() : 0;
-        result = 31 * result + (childen != null ? childen.hashCode() : 0);
+        result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + (survey != null ? survey.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
@@ -120,7 +120,6 @@ public class Comment extends AbstractEntity {
         return "Comment{" +
                 "parent=" + parent +
                 ", survey=" + survey +
-                ", comment='" + comment + '\'' +
                 ", createdBy=" + createdBy +
                 ", created=" + created +
                 '}';
