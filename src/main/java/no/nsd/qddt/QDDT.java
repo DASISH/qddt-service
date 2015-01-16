@@ -13,6 +13,9 @@ import org.springframework.data.envers.repository.support.EnversRevisionReposito
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+/**
+ * @author Dag Østgulen Heradstveit
+ */
 @EnableJpaRepositories(repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @SpringBootApplication
 public class QDDT extends SpringBootServletInitializer {

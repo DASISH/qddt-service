@@ -2,6 +2,8 @@ package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.security.Authority;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.hibernate.envers.RevisionEntity;
 
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import java.util.Set;
 /**
  * @author Dag Østgulen Heradstveit
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "user")
 public class User extends AbstractEntity {
@@ -31,6 +34,12 @@ public class User extends AbstractEntity {
             joinColumns=@JoinColumn(name="user_id"),
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
+
+    @OneToMany(mappedBy="createBy", cascade = CascadeType.ALL)
+    private Set<Survey> surveys = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
 
     public User() {
     }
@@ -71,6 +80,22 @@ public class User extends AbstractEntity {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public Set<Survey> getSurveys() {
+        return surveys;
+    }
+
+    public void setSurveys(Set<Survey> surveys) {
+        this.surveys = surveys;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

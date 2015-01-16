@@ -1,12 +1,18 @@
 package no.nsd.qddt.domain.security;
 
 import no.nsd.qddt.domain.User;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Dag Østgulen Heradstveit
+ */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "authority")
 public class Authority {

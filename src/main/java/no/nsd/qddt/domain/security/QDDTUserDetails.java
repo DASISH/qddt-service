@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Dag Østgulen Heradstveit
+ */
 public class QDDTUserDetails implements UserDetails {
     private static final long serialVersionUID = -2985656388091941799L;
 
