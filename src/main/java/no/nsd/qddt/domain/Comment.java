@@ -32,7 +32,7 @@ public class Comment extends AbstractEntity {
     @JoinColumn(name = "user_id")
     private User createdBy;
 
-    @Column(name = "created")
+    @Column(name = "created")//date
     private boolean created;
 
     public Comment() {

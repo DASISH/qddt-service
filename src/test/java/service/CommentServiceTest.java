@@ -46,6 +46,8 @@ public class CommentServiceTest {
         comment.addComment(commentChildTwo);
         comment.addComment(commentChildThree);
 
+        Comment c = commentService.save(comment);
+
         assertThat(commentService.save(comment).getChildren().size(), is(3));
     }
 

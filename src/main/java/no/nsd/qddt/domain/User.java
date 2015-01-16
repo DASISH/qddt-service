@@ -35,8 +35,11 @@ public class User extends AbstractEntity {
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy="createBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Survey> surveys = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<Study> studies = new HashSet<>();
 
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
@@ -88,6 +91,14 @@ public class User extends AbstractEntity {
 
     public void setSurveys(Set<Survey> surveys) {
         this.surveys = surveys;
+    }
+
+    public Set<Study> getStudies() {
+        return studies;
+    }
+
+    public void setStudies(Set<Study> studies) {
+        this.studies = studies;
     }
 
     public Set<Comment> getComments() {
