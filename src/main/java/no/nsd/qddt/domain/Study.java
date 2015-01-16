@@ -5,5 +5,4 @@ package no.nsd.qddt.domain;
  */
 public class Study {
 
-
 }

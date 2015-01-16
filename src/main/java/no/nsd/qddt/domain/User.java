@@ -2,19 +2,18 @@ package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.security.Authority;
+import org.hibernate.envers.RevisionEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Dag Østgulen Heradstveit
+ */
 @Entity
 @Table(name = "user")
-public class User {
-
-    @Id
-    @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class User extends AbstractEntity {
 
     @Column(name = "username")
     private String username;
@@ -40,14 +39,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.username = username;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -90,7 +81,7 @@ public class User {
         User user = (User) o;
 
         return !(email != null ? !email.equals(user.email) : user.email != null) &&
-                !(id != null ? !id.equals(user.id) : user.id != null) &&
+                !(this.getId() != null ? !this.getId().equals(user.getId()) : user.getId() != null) &&
                 !(password != null ? !password.equals(user.password) : user.password != null) &&
                 !(username != null ? !username.equals(user.username) : user.username != null);
 
@@ -98,7 +89,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = this.getId() != null ? this.getId().hashCode() : 0;
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
@@ -108,7 +99,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + this.getId() +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +

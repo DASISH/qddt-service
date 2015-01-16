@@ -50,6 +50,7 @@ dependencies {
             "org.jadira.usertype:usertype.extended:3.2.0.GA",
             "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0",
 
+            "org.springframework.data:spring-data-envers:0.2.0.RELEASE",
             "com.h2database:h2:1.4.181",
             "org.hibernate:hibernate-validator",
 

@@ -22,6 +22,41 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebMvcSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // Disabled CSRF for now.
+        // INFO: http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        http
+                .csrf().disable();
+
+        http.authorizeRequests()
+                .antMatchers("/**").hasAnyRole("USER", "ADMIN");
+    }
+
+    /**
+     * This bean sets up the servlet for the H2 database web console.
+     * @return a servlet registration of the console.
+     */
+    @Bean
+    public ServletRegistrationBean h2servletRegistration() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
+        registration.addUrlMappings("/console/*");
+        return registration;
+    }
+
+    /**
+     * Create exceptions for the security filter.
+     * @param web
+     * @throws Exception
+     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                        //Open up the swagger json stuff.
+                .antMatchers("/console/*");
+    }
+
     /**
      * Default {@link org.springframework.security.crypto.password.PasswordEncoder} using the newer and
      * generally better BCrypt password algorithm.

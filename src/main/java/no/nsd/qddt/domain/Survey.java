@@ -1,19 +1,18 @@
 package no.nsd.qddt.domain;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
+@Audited
 @Entity
 @Table(name = "Survey")
-public class Survey {
-
-    @Id
-    @Column(name = "SurveyId")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long surveyId;
+public class Survey extends AbstractEntity{
 
     @Column(name = "SurveyName")
     private String surveyName;
@@ -27,17 +26,7 @@ public class Survey {
     @Column(name = "CommentId")
     private Long commentId;
 
-    private Version version;
-
     public Survey() {
-    }
-
-    public Long getSurveyId() {
-        return surveyId;
-    }
-
-    public void setSurveyId(Long surveyId) {
-        this.surveyId = surveyId;
     }
 
     public String getSurveyName() {
@@ -82,7 +71,7 @@ public class Survey {
         if (commentId != null ? !commentId.equals(survey.commentId) : survey.commentId != null) return false;
         if (createBy != null ? !createBy.equals(survey.createBy) : survey.createBy != null) return false;
         if (created != null ? !created.equals(survey.created) : survey.created != null) return false;
-        if (surveyId != null ? !surveyId.equals(survey.surveyId) : survey.surveyId != null) return false;
+        if (this.getId() != null ? !this.getId().equals(survey.getId()) : survey.getId()!= null) return false;
         if (surveyName != null ? !surveyName.equals(survey.surveyName) : survey.surveyName != null) return false;
 
         return true;
@@ -90,7 +79,7 @@ public class Survey {
 
     @Override
     public int hashCode() {
-        int result = surveyId != null ? surveyId.hashCode() : 0;
+        int result = this.getId() != null ? this.getId().hashCode() : 0;
         result = 31 * result + (surveyName != null ? surveyName.hashCode() : 0);
         result = 31 * result + (created != null ? created.hashCode() : 0);
         result = 31 * result + (createBy != null ? createBy.hashCode() : 0);
@@ -101,7 +90,7 @@ public class Survey {
     @Override
     public String toString() {
         return "Survey{" +
-                "surveyId=" + surveyId +
+                "id=" + this.getId() +
                 ", surveyName='" + surveyName + '\'' +
                 ", created=" + created +
                 ", createBy='" + createBy + '\'' +
