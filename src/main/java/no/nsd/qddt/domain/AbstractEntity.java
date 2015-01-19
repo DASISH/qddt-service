@@ -28,6 +28,18 @@ abstract class AbstractEntity {
     @Column(name = "created")
     private LocalDateTime created;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User createdBy;
+
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "change_id")
+    private ChangeReason changeReason;
+
+    private String changeComment;
+
     public Long getId() {
         return id;
     }
@@ -42,6 +54,38 @@ abstract class AbstractEntity {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ChangeReason getChangeReason() {
+        return changeReason;
+    }
+
+    public void setChangeReason(ChangeReason changeReason) {
+        this.changeReason = changeReason;
+    }
+
+    public String getChangeComment() {
+        return changeComment;
+    }
+
+    public void setChangeComment(String changeComment) {
+        this.changeComment = changeComment;
     }
 
     @Override
