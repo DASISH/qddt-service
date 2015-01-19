@@ -19,20 +19,10 @@ import java.time.LocalDateTime;
 @Table(name = "study")
 public class Study extends AbstractEntity {
 
-    @Column(name = "name")
-    private String name;
 
     @ManyToOne
     @JoinColumn(name="survey_id")
     public Survey survey;
-
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User createdBy;
-
-    private String changeReason;
-
-    private String changeComment;
 
     public Survey getSurvey() {
         return survey;
@@ -42,37 +32,6 @@ public class Study extends AbstractEntity {
         this.survey = survey;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getChangeReason() {
-        return changeReason;
-    }
-
-    public void setChangeReason(String changeReason) {
-        this.changeReason = changeReason;
-    }
-
-    public String getChangeComment() {
-        return changeComment;
-    }
-
-    public void setChangeComment(String changeComment) {
-        this.changeComment = changeComment;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -81,13 +40,6 @@ public class Study extends AbstractEntity {
         if (!super.equals(o)) return false;
 
         Study study = (Study) o;
-
-        if (changeComment != null ? !changeComment.equals(study.changeComment) : study.changeComment != null)
-            return false;
-        if (changeReason != null ? !changeReason.equals(study.changeReason) : study.changeReason != null) return false;
-        if (this.getCreated()!= null ? !this.getCreated().equals(study.getCreated()) : study.getCreated() != null) return false;
-        if (createdBy != null ? !createdBy.equals(study.createdBy) : study.createdBy != null) return false;
-        if (name != null ? !name.equals(study.name) : study.name != null) return false;
         if (survey != null ? !survey.equals(study.survey) : study.survey != null) return false;
 
         return true;
@@ -95,23 +47,21 @@ public class Study extends AbstractEntity {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (survey != null ? survey.hashCode() : 0);
-        result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
-        result = 31 * result + (changeReason != null ? changeReason.hashCode() : 0);
-        result = 31 * result + (changeComment != null ? changeComment.hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 *  (survey != null ? survey.hashCode() : 0);
+        //result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Study{" +
-                "name='" + name + '\'' +
-                ", created=" + this.getCreated() +
-                ", createdBy=" + createdBy +
-                ", changeReason='" + changeReason + '\'' +
-                ", changeComment='" + changeComment + '\'' +
+                "name='" + this.getName() + '\'' +
+                ", created=" + this.getCreated() + '\'' +
+                ", createdBy=" + this.getCreatedBy() + '\'' +
+                ", changeReason='" + this.getChangeReason() + '\'' +
+                ", changeComment='" + this.getChangeComment() + '\'' +
+                super.toString() +
                 '}';
     }
 }

@@ -28,9 +28,7 @@ public class Comment extends AbstractEntity {
     @Column(name = "comment")
     public String comment;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User createdBy;
+
 
     public Comment() {
     }
@@ -75,14 +73,6 @@ public class Comment extends AbstractEntity {
         this.comment = comment;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -93,7 +83,6 @@ public class Comment extends AbstractEntity {
 
         if (children != null ? !children.equals(comment1.children) : comment1.children != null) return false;
         if (comment != null ? !comment.equals(comment1.comment) : comment1.comment != null) return false;
-        if (createdBy != null ? !createdBy.equals(comment1.createdBy) : comment1.createdBy != null) return false;
         if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
         if (survey != null ? !survey.equals(comment1.survey) : comment1.survey != null) return false;
         if (this.getCreated() != null ? !this.getCreated().equals(comment1.getCreated()) : comment1.getCreated() != null) return false;
@@ -108,7 +97,6 @@ public class Comment extends AbstractEntity {
         result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + (survey != null ? survey.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
         return result;
     }
 
@@ -117,7 +105,6 @@ public class Comment extends AbstractEntity {
         return "Comment{" +
                 "parent=" + parent +
                 ", survey=" + survey +
-                ", createdBy=" + createdBy +
                 ", created=" + this.getCreated() +
                 '}';
     }

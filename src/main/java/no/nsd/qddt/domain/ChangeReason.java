@@ -49,15 +49,17 @@ public class ChangeReason extends AbstractEntity{
 
     @Override
     public int hashCode() {
-        int result = label != null ? label.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "ChangeReason{" +
-                "label='" + label + "' : '" + description + '\'' +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append("ChangeReason{" + "label='" + label + "' : '" + description + '\'' +'}');
+        return sb.toString();
     }
 }

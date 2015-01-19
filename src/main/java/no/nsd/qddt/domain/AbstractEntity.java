@@ -99,4 +99,25 @@ abstract class AbstractEntity {
         AbstractEntity that = (AbstractEntity) obj;
         return ObjectUtils.nullSafeEquals(this.id, that.id);
     }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (changeReason != null ? changeReason.hashCode() : 0);
+        result = 31 * result + (changeComment != null ? changeComment.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return  "  id=" + id +
+                ", name='" + name + '\'' +
+                ", created=" + created +
+                ", createdBy=" + createdBy +
+                ", changeReason=" + changeReason +
+                ", changeComment='" + changeComment + '\'' ;
+    }
 }
