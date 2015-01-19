@@ -1,15 +1,23 @@
 package no.nsd.qddt.domain;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
+@Audited
 @Entity
 @Table(name = "Module")
 public class Module extends AbstractEntity{
 
+    @ManyToOne
+    @JoinColumn(name="study_id")
     private Study study;
 
     public Study getStudy() {

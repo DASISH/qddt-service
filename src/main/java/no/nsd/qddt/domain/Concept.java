@@ -8,6 +8,7 @@ import java.util.Set;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 @Audited
 @Entity
@@ -24,7 +25,7 @@ public class Concept extends AbstractEntity{
     @Column(name = "concept_description")
     private String conceptDescription;
 
-    @OneToMany(mappedBy="concept", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="comment", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
 

@@ -3,7 +3,6 @@ package no.nsd.qddt.domain;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,10 +17,6 @@ public class Survey extends AbstractEntity{
 
     @Column(name = "survey_name")
     private String surveyName;
-
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User createdBy;
 
     @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
@@ -40,15 +35,6 @@ public class Survey extends AbstractEntity{
         this.surveyName = surveyName;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,7 +45,7 @@ public class Survey extends AbstractEntity{
 
         if (comments != null ? !comments.equals(survey.comments) : survey.comments != null) return false;
         if (this.getCreated() != null ? !this.getCreated().equals(survey.getCreated()) : survey.getCreated() != null) return false;
-        if (createdBy != null ? !createdBy.equals(survey.createdBy) : survey.createdBy != null) return false;
+        if (this.getCreatedBy() != null ? !this.getCreatedBy().equals(survey.getCreatedBy()) : survey.getCreatedBy() != null) return false;
         if (studies != null ? !studies.equals(survey.studies) : survey.studies != null) return false;
         if (surveyName != null ? !surveyName.equals(survey.surveyName) : survey.surveyName != null) return false;
 
@@ -70,7 +56,7 @@ public class Survey extends AbstractEntity{
     public int hashCode() {
         int result = surveyName != null ? surveyName.hashCode() : 0;
         result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (this.getCreatedBy() != null ? this.getCreatedBy().hashCode() : 0);
         result = 31 * result + (studies != null ? studies.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
@@ -81,7 +67,7 @@ public class Survey extends AbstractEntity{
         return "Survey{" +
                 "surveyName='" + surveyName + '\'' +
                 ", created=" + this.getCreated() +
-                ", createdBy=" + createdBy +
+                ", createdBy=" + this.getCreatedBy() +
                 '}';
     }
 }

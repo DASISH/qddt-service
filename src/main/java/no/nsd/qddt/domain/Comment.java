@@ -28,8 +28,6 @@ public class Comment extends AbstractEntity {
     @Column(name = "comment")
     public String comment;
 
-
-
     public Comment() {
     }
 

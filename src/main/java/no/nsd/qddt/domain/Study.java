@@ -1,14 +1,10 @@
 package no.nsd.qddt.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Stig Norland
@@ -19,10 +15,12 @@ import java.time.LocalDateTime;
 @Table(name = "study")
 public class Study extends AbstractEntity {
 
-
     @ManyToOne
     @JoinColumn(name="survey_id")
     public Survey survey;
+
+    @OneToMany(mappedBy="study", cascade = CascadeType.ALL)
+    public Set<Module> modules = new HashSet<>();
 
     public Survey getSurvey() {
         return survey;
@@ -31,7 +29,6 @@ public class Study extends AbstractEntity {
     public void setSurvey(Survey survey) {
         this.survey = survey;
     }
-
 
     @Override
     public boolean equals(Object o) {

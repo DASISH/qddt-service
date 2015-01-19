@@ -1,12 +1,16 @@
 package no.nsd.qddt.domain;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
+@Audited
 @Entity
 @Table(name = "ChangeReason")
 public class ChangeReason extends AbstractEntity{
