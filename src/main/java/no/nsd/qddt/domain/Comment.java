@@ -28,6 +28,10 @@ public class Comment extends AbstractEntity {
     @Column(name = "comment")
     public String comment;
 
+    @ManyToOne
+    @JoinColumn(name="concept_id")
+    private Concept concept;
+
     public Comment() {
     }
 
@@ -69,6 +73,14 @@ public class Comment extends AbstractEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Concept getConcept() {
+        return concept;
+    }
+
+    public void setConcept(Concept concept) {
+        this.concept = concept;
     }
 
     @Override

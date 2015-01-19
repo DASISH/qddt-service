@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 abstract class AbstractEntity {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

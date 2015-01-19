@@ -25,7 +25,7 @@ public class Concept extends AbstractEntity{
     @Column(name = "concept_description")
     private String conceptDescription;
 
-    @OneToMany(mappedBy="comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="concept", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
 

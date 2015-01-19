@@ -19,8 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Dag Østgulen Heradstveit
  */
 @Transactional
-@IntegrationTest("server.port:0")
-@WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class CommentServiceTest {
