@@ -32,9 +32,6 @@ public class Comment extends AbstractEntity {
     @JoinColumn(name = "user_id")
     private User createdBy;
 
-    @Column(name = "created")//date
-    private boolean created;
-
     public Comment() {
     }
 
@@ -86,14 +83,6 @@ public class Comment extends AbstractEntity {
         this.createdBy = createdBy;
     }
 
-    public boolean isCreated() {
-        return created;
-    }
-
-    public void setCreated(boolean created) {
-        this.created = created;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,12 +91,12 @@ public class Comment extends AbstractEntity {
 
         Comment comment1 = (Comment) o;
 
-        if (created != comment1.created) return false;
         if (children != null ? !children.equals(comment1.children) : comment1.children != null) return false;
         if (comment != null ? !comment.equals(comment1.comment) : comment1.comment != null) return false;
         if (createdBy != null ? !createdBy.equals(comment1.createdBy) : comment1.createdBy != null) return false;
         if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
         if (survey != null ? !survey.equals(comment1.survey) : comment1.survey != null) return false;
+        if (this.getCreated() != null ? !this.getCreated().equals(comment1.getCreated()) : comment1.getCreated() != null) return false;
 
         return true;
     }
@@ -115,11 +104,11 @@ public class Comment extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = parent != null ? parent.hashCode() : 0;
+        result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
         result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + (survey != null ? survey.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
-        result = 31 * result + (created ? 1 : 0);
         return result;
     }
 
@@ -129,7 +118,7 @@ public class Comment extends AbstractEntity {
                 "parent=" + parent +
                 ", survey=" + survey +
                 ", createdBy=" + createdBy +
-                ", created=" + created +
+                ", created=" + this.getCreated() +
                 '}';
     }
 }

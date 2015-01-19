@@ -19,9 +19,6 @@ public class Survey extends AbstractEntity{
     @Column(name = "survey_name")
     private String surveyName;
 
-    @Column(name = "created")
-    private LocalDateTime created;
-
     @ManyToOne
     @JoinColumn(name="user_id")
     private User createdBy;
@@ -43,14 +40,6 @@ public class Survey extends AbstractEntity{
         this.surveyName = surveyName;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
     public User getCreatedBy() {
         return createdBy;
     }
@@ -69,7 +58,7 @@ public class Survey extends AbstractEntity{
         Survey survey = (Survey) o;
 
         if (comments != null ? !comments.equals(survey.comments) : survey.comments != null) return false;
-        if (created != null ? !created.equals(survey.created) : survey.created != null) return false;
+        if (this.getCreated() != null ? !this.getCreated().equals(survey.getCreated()) : survey.getCreated() != null) return false;
         if (createdBy != null ? !createdBy.equals(survey.createdBy) : survey.createdBy != null) return false;
         if (studies != null ? !studies.equals(survey.studies) : survey.studies != null) return false;
         if (surveyName != null ? !surveyName.equals(survey.surveyName) : survey.surveyName != null) return false;
@@ -80,7 +69,7 @@ public class Survey extends AbstractEntity{
     @Override
     public int hashCode() {
         int result = surveyName != null ? surveyName.hashCode() : 0;
-        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
         result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
         result = 31 * result + (studies != null ? studies.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
@@ -91,7 +80,7 @@ public class Survey extends AbstractEntity{
     public String toString() {
         return "Survey{" +
                 "surveyName='" + surveyName + '\'' +
-                ", created=" + created +
+                ", created=" + this.getCreated() +
                 ", createdBy=" + createdBy +
                 '}';
     }

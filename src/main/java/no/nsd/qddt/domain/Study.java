@@ -26,12 +26,6 @@ public class Study extends AbstractEntity {
     @JoinColumn(name="survey_id")
     public Survey survey;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    @Column(name = "created")
-    private LocalDateTime created;
-
     @ManyToOne
     @JoinColumn(name="user_id")
     private User createdBy;
@@ -54,14 +48,6 @@ public class Study extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
     }
 
     public User getCreatedBy() {
@@ -99,7 +85,7 @@ public class Study extends AbstractEntity {
         if (changeComment != null ? !changeComment.equals(study.changeComment) : study.changeComment != null)
             return false;
         if (changeReason != null ? !changeReason.equals(study.changeReason) : study.changeReason != null) return false;
-        if (created != null ? !created.equals(study.created) : study.created != null) return false;
+        if (this.getCreated()!= null ? !this.getCreated().equals(study.getCreated()) : study.getCreated() != null) return false;
         if (createdBy != null ? !createdBy.equals(study.createdBy) : study.createdBy != null) return false;
         if (name != null ? !name.equals(study.name) : study.name != null) return false;
         if (survey != null ? !survey.equals(study.survey) : study.survey != null) return false;
@@ -111,7 +97,7 @@ public class Study extends AbstractEntity {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (survey != null ? survey.hashCode() : 0);
-        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
         result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
         result = 31 * result + (changeReason != null ? changeReason.hashCode() : 0);
         result = 31 * result + (changeComment != null ? changeComment.hashCode() : 0);
@@ -122,7 +108,7 @@ public class Study extends AbstractEntity {
     public String toString() {
         return "Study{" +
                 "name='" + name + '\'' +
-                ", created=" + created +
+                ", created=" + this.getCreated() +
                 ", createdBy=" + createdBy +
                 ", changeReason='" + changeReason + '\'' +
                 ", changeComment='" + changeComment + '\'' +
