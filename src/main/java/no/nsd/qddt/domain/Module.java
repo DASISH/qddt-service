@@ -49,12 +49,10 @@ public class Module extends AbstractEntity{
     }
 
     @Override
-    public String  toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString());
-        sb.append( "Module{" +
+    public String toString() {
+        return "Module{" +
                 "study=" + study +
-                '}');
-        return sb.toString();
+                super.toString() +
+                '}';
     }
 }
