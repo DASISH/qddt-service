@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.respons;
+package no.nsd.qddt.domain.response;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -6,6 +6,16 @@ import java.util.Set;
 
 /**
  * @author Stig Norland
+ *
+ * CategoryScheme : Categories provide enumerated representations for
+ *      concepts andare used by questions, code lists, and variables
+ *
+ * CodeListScheme : Code lists link a specific value with a category and
+ *      are used by questions and variables
+ *
+ * ManagedRepresentationScheme : Reusable representations of numeric,
+ *      textual datetime, scale or missing values types.
+ *
  */
 @Entity
 @Table(name = "Code")

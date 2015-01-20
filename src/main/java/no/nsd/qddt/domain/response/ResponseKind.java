@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.respons;
+package no.nsd.qddt.domain.response;
 
 import javax.persistence.*;
 import java.util.HashSet;
