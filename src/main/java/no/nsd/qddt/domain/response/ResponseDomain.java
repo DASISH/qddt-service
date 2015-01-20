@@ -1,6 +1,5 @@
-package no.nsd.qddt.domain.respons;
+package no.nsd.qddt.domain.response;
 
-import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -10,24 +9,33 @@ import java.util.Set;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
-@Audited
+//@Audited
 @Entity
-@Table(name = "ResponsDomain")
-public class ResponseDomain extends AbstractEntity {
+@Table(name = "responseDomain")
+public class ResponseDomain {
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "respons_kind_id")
     private ResponseKind responseKind;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain",
+            cascade = CascadeType.ALL)
+    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    @OneToMany(mappedBy="Code", cascade = CascadeType.ALL)
-    private Set<Code> code = new HashSet<>();
+    public Long getId() {
+        return id;
+    }
 
-/*    @ManyToMany(mappedBy="categoryCode", cascade = CascadeType.ALL)
-    private Set<CategoryCode> categoryCode = new HashSet<>();
-*/
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public ResponseKind getResponseKind() {
         return responseKind;
@@ -37,12 +45,12 @@ public class ResponseDomain extends AbstractEntity {
         this.responseKind = responseKind;
     }
 
-    public Set<Code> getCode() {
-        return code;
+    public Set<ResponseDomainCode> getResponseDomainCodes() {
+        return responseDomainCodes;
     }
 
-    public void setCode(Set<Code> code) {
-        this.code = code;
+    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
+        this.responseDomainCodes = responseDomainCodes;
     }
 
     @Override
@@ -53,7 +61,6 @@ public class ResponseDomain extends AbstractEntity {
 
         ResponseDomain that = (ResponseDomain) o;
 
-        if (code != null ? !code.equals(that.code) : that.code != null) return false;
         if (responseKind != null ? !responseKind.equals(that.responseKind) : that.responseKind != null) return false;
 
         return true;
@@ -63,7 +70,6 @@ public class ResponseDomain extends AbstractEntity {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
     }
 
@@ -71,7 +77,6 @@ public class ResponseDomain extends AbstractEntity {
     public String toString() {
         return "ResponsDomain{" +
                 "responsKind=" + responseKind +
-                ", code=" + code +
                 '}';
     }
 }

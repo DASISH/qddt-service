@@ -14,12 +14,11 @@ import java.time.LocalDateTime;
 /**
  * @author Dag Østgulen Heradstveit
  */
-@Audited
 @MappedSuperclass
 public abstract class AbstractEntity {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -27,14 +26,14 @@ public abstract class AbstractEntity {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     // tester default verdier for ms sql
-    @Column(name = "created", nullable = false, columnDefinition = "DateTime default GetTime()")
+    @Column(name = "created")
     private LocalDateTime created;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User createdBy;
 
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name")
     private String name;
 
     @ManyToOne

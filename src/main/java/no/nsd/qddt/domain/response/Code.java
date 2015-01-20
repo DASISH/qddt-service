@@ -1,4 +1,7 @@
-package no.nsd.qddt.domain.respons;
+package no.nsd.qddt.domain.response;
+
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -6,9 +9,11 @@ import java.util.Set;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
+//@Audited
 @Entity
-@Table(name = "Code")
+@Table(name = "code")
 public class Code {
 
     @Id
@@ -20,9 +25,9 @@ public class Code {
 
     private  String code;
 
-
-    private Set<ResponseDomain> response = new HashSet<>();
-
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code",
+            cascade = CascadeType.ALL)
+    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -48,6 +53,13 @@ public class Code {
         this.code = code;
     }
 
+    public Set<ResponseDomainCode> getResponseDomainCodes() {
+        return responseDomainCodes;
+    }
+
+    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
+        this.responseDomainCodes = responseDomainCodes;
+    }
 
     @Override
     public boolean equals(Object o) {
