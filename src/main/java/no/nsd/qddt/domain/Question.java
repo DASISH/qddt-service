@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain;
 
 import org.hibernate.envers.Audited;
-import scala.util.parsing.combinator.testing.Str;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
