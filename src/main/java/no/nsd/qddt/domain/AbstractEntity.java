@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  */
 @Audited
 @MappedSuperclass
-abstract class AbstractEntity {
+public abstract class AbstractEntity {
 
     @Id
     @Column(name = "id")
