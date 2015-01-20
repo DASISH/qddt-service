@@ -9,11 +9,12 @@ import java.util.Set;
 
 
 /**
- * @author Stig Norland
  *
  * CodeList A special form of maintainable that allows a single codelist to be maintained outside of a CodeListScheme.
  *
+ * @author Stig Norland
  */
+
 @Audited
 @Entity
 @Table(name = "ResponsDomain")

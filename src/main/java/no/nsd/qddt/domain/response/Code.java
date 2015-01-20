@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Stig Norland
  *
  * CategoryScheme : Categories provide enumerated representations for
  *      concepts andare used by questions, code lists, and variables
@@ -16,7 +15,9 @@ import java.util.Set;
  * ManagedRepresentationScheme : Reusable representations of numeric,
  *      textual datetime, scale or missing values types.
  *
+ * @author Stig Norland
  */
+
 @Entity
 @Table(name = "Code")
 public class Code {

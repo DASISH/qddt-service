@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 /**
  * @author Dag Østgulen Heradstveit
  */
+
 @Audited
 @MappedSuperclass
 public abstract class AbstractEntity {

@@ -7,6 +7,7 @@ import java.util.Set;
 /**
  * @author Stig Norland
  */
+
 @Entity
 @Table(name = "ResponseKind")
 public class ResponseKind {
