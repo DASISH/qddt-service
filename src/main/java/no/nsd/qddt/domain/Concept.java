@@ -9,6 +9,8 @@ import java.util.Set;
 /**
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
+ *
+ * ConceptScheme: Concepts express ideas associated with objects and means of representing the concept
  */
 @Audited
 @Entity

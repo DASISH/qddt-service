@@ -10,6 +10,16 @@ import java.util.Set;
 /**
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
+ *
+ * CategoryScheme : Categories provide enumerated representations for
+ *      concepts andare used by questions, code lists, and variables
+ *
+ * CodeListScheme : Code lists link a specific value with a category and
+ *      are used by questions and variables
+ *
+ * ManagedRepresentationScheme : Reusable representations of numeric,
+ *      textual datetime, scale or missing values types.
+ *
  */
 //@Audited
 @Entity

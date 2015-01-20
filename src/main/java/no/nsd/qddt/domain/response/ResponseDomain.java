@@ -10,6 +10,9 @@ import java.util.Set;
 /**
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
+ *
+ * CodeList A special form of maintainable that allows a single codelist to be maintained outside of a CodeListScheme.
+ *
  */
 //@Audited
 @Entity
