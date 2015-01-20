@@ -1,17 +1,15 @@
 package no.nsd.qddt.domain.respons;
 
-import org.hibernate.envers.Audited;
-
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Stig Norland
  */
-@Audited
 @Entity
-@Table(name = "ResponsKind ")
-public class ResponsKind  {
-
+@Table(name = "ResponseKind")
+public class ResponseKind {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,6 +18,8 @@ public class ResponsKind  {
     private String code;
 
     private String name;
+
+    private Set<ResponseDomain> response = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -45,12 +45,20 @@ public class ResponsKind  {
         this.name = name;
     }
 
+    public Set<ResponseDomain> getResponse() {
+        return response;
+    }
+
+    public void setResponse(Set<ResponseDomain> response) {
+        this.response = response;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ResponsKind that = (ResponsKind) o;
+        ResponseKind that = (ResponseKind) o;
 
         if (code != null ? !code.equals(that.code) : that.code != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;

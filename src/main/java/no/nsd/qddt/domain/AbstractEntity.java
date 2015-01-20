@@ -19,20 +19,22 @@ import java.time.LocalDateTime;
 public abstract class AbstractEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    @Column(name = "created")
+    // tester default verdier for ms sql
+    @Column(name = "created", nullable = false, columnDefinition = "DateTime default GetTime()")
     private LocalDateTime created;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User createdBy;
 
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @ManyToOne

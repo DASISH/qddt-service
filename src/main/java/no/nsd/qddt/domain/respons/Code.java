@@ -1,15 +1,28 @@
 package no.nsd.qddt.domain.respons;
 
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Stig Norland
  */
+@Entity
+@Table(name = "Code")
 public class Code {
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String category;
 
     private  String code;
+
+
+    private Set<ResponseDomain> response = new HashSet<>();
+
 
     public Long getId() {
         return id;
