@@ -27,7 +27,7 @@ public abstract class AbstractEntity {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     // tester default verdier for ms sql
-    @Column(name = "created", nullable = false, columnDefinition = "DateTime default GetTime()")
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
     @ManyToOne
