@@ -6,6 +6,7 @@ import java.util.Set;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 
 @Entity
@@ -16,10 +17,14 @@ public class ResponseKind {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "code")
     private String code;
 
+    @Column(name = "name")
     private String name;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseKind",
+            cascade = CascadeType.ALL)
     private Set<ResponseDomain> response = new HashSet<>();
 
     public Long getId() {
