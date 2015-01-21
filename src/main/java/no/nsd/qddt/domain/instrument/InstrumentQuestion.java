@@ -28,11 +28,11 @@ public class InstrumentQuestion {
     private Long id;
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "instrument_id")
     private Instrument instrument;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
 
