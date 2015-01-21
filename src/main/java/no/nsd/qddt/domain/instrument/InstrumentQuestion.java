@@ -36,10 +36,6 @@ public class InstrumentQuestion {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @Column(name = "created")
-    private Instrument instrument;
-
-
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
