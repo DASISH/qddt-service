@@ -3,11 +3,12 @@ package no.nsd.qddt.domain.response;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
-//@Audited
+@Audited
 @Entity
 @Table(name = "responseDomain_code")
 @AssociationOverrides(value = {
@@ -16,7 +17,7 @@ import javax.persistence.*;
         @AssociationOverride(name = "pk.code",
                 joinColumns = @JoinColumn(name = "code_id"))
 })
-public class ResponseDomainCode {
+public class ResponseDomainCode implements Serializable {
 
     @EmbeddedId
     private ResponseDomainCodeId pk = new ResponseDomainCodeId();
@@ -40,25 +41,24 @@ public class ResponseDomainCode {
         this.rank = rank;
     }
 
+    @Transient
     public ResponseDomain getResponseDomain() {
         return getPk().getResponseDomain();
     }
 
-    @Transient
     public void setResponseDomain(ResponseDomain responseDomain) {
         this.getPk().setResponseDomain(responseDomain);
     }
 
+    @Transient
     public Code getCode() {
         return getPk().getCode();
     }
 
-    @Transient
     public void setCode(Code code) {
         this.getPk().setCode(code);
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -75,5 +75,4 @@ public class ResponseDomainCode {
     public int hashCode() {
         return (getPk() != null ? getPk().hashCode() : 0);
     }
-
 }

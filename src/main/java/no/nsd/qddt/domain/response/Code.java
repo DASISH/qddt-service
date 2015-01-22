@@ -1,9 +1,11 @@
 package no.nsd.qddt.domain.response;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,13 +23,13 @@ import java.util.Set;
  *      textual datetime, scale or missing values types.
  *
  */
-//@Audited
+@Audited
 @Entity
 @Table(name = "code")
-public class Code {
+public class Code implements Serializable {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "code_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -35,8 +37,8 @@ public class Code {
 
     private  String code;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code",
-            cascade = CascadeType.ALL)
+    @NotAudited
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     public Long getId() {

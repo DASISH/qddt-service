@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.response;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,13 +16,13 @@ import java.util.Set;
  * CodeList A special form of maintainable that allows a single codelist to be maintained outside of a CodeListScheme.
  *
  */
-//@Audited
+@Audited
 @Entity
 @Table(name = "responseDomain")
-public class ResponseDomain {
+public class ResponseDomain implements Serializable {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "responseDomain_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -28,8 +30,8 @@ public class ResponseDomain {
     @JoinColumn(name = "respons_kind_id")
     private ResponseKind responseKind;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain",
-            cascade = CascadeType.ALL)
+    @NotAudited
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     public Long getId() {

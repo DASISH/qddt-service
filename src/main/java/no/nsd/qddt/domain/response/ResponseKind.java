@@ -1,5 +1,8 @@
 package no.nsd.qddt.domain.response;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,6 +11,7 @@ import java.util.Set;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "ResponseKind")
 public class ResponseKind {
@@ -22,8 +26,7 @@ public class ResponseKind {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseKind",
-            cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseKind", cascade = CascadeType.ALL)
     private Set<ResponseDomain> response = new HashSet<>();
 
     public Long getId() {

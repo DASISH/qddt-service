@@ -7,8 +7,8 @@ import javax.persistence.Table;
  * @author Stig Norland
  */
 
-@Entity
-@Table(name = "instrument_question")
+//@Entity
+//@Table(name = "instrument_question")
 public class InstrumentQuestion {
 
     //TODO implement

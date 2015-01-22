@@ -10,10 +10,10 @@ import javax.persistence.Table;
  * @author Stig Norland
  */
 
-@Audited
-@Entity
-@Table(name = "instrument")
-public class Instrument extends AbstractEntity{
+//@Audited
+//@Entity
+//@Table(name = "instrument")
+public class Instrument {
 
     //TODO implement
 
