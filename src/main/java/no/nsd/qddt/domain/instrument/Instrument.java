@@ -13,10 +13,10 @@ import javax.persistence.Table;
  * @author Stig Norland
  */
 
-@Audited
-@Entity
-@Table(name = "instrument")
-public class Instrument extends AbstractEntity{
+//@Audited
+//@Entity
+//@Table(name = "instrument")
+public class Instrument {
 
     @ManyToOne
     @JoinColumn(name="sturvey_id")

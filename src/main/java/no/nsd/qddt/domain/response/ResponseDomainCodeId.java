@@ -19,11 +19,6 @@ public class ResponseDomainCodeId implements Serializable {
     public ResponseDomainCodeId() {
     }
 
-    public ResponseDomainCodeId(ResponseDomain responseDomain, Code code) {
-        this.responseDomain = responseDomain;
-        this.code = code;
-    }
-
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }
@@ -59,5 +54,13 @@ public class ResponseDomainCodeId implements Serializable {
         int result = responseDomain != null ? responseDomain.hashCode() : 0;
         result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseDomainCodeId{" +
+                "responseDomain=" + responseDomain +
+                ", code=" + code +
+                '}';
     }
 }

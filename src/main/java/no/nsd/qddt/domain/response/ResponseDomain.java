@@ -2,8 +2,10 @@ package no.nsd.qddt.domain.response;
 
 import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,13 +17,13 @@ import java.util.Set;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-//@Audited
+@Audited
 @Entity
 @Table(name = "responseDomain")
-public class ResponseDomain {
+public class ResponseDomain implements Serializable {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "responseDomain_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -29,8 +31,8 @@ public class ResponseDomain {
     @JoinColumn(name = "respons_kind_id")
     private ResponseKind responseKind;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain",
-            cascade = CascadeType.ALL)
+    @NotAudited
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     public Long getId() {

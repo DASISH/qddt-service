@@ -16,7 +16,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-
+@Audited
 @MappedSuperclass
 public abstract class AbstractEntity {
 

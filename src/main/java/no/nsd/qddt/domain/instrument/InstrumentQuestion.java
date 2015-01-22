@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 /**
  * @author Stig Norland
  */
-
 @Audited
 @Entity
 @Table(name = "instrument_question")
