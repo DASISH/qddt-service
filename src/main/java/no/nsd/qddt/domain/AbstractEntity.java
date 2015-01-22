@@ -10,9 +10,11 @@ import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 
 @MappedSuperclass
@@ -23,6 +25,11 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "guid")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //ID part of the URN
+    private UUID guid;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
@@ -31,6 +38,7 @@ public abstract class AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    // Owner/Agency part of the URN
     private User createdBy;
 
     @Column(name = "name")
@@ -49,6 +57,11 @@ public abstract class AbstractEntity {
     public void setId(Long id) {
         this.id = id;
     }
+
+
+    public UUID getGuid() { return guid;}
+
+    public void setGuid(UUID guid) {this.guid = guid;}
 
     public LocalDateTime getCreated() {
         return created;
@@ -105,6 +118,7 @@ public abstract class AbstractEntity {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (guid != null ? guid.hashCode() : 0);
         result = 31 * result + (created != null ? created.hashCode() : 0);
         result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
@@ -115,11 +129,12 @@ public abstract class AbstractEntity {
 
     @Override
     public String toString() {
-        return  "  id=" + id +
-                ", name='" + name + '\'' +
+        return  " ,id=" + id +
+                ", guid=" + guid +
                 ", created=" + created +
                 ", createdBy=" + createdBy +
+                ", name='" + name + '\'' +
                 ", changeReason=" + changeReason +
-                ", changeComment='" + changeComment + '\'' ;
+                ", changeComment='" + changeComment + '\'';
     }
 }
