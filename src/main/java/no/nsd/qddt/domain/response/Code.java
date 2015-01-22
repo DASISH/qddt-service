@@ -3,13 +3,11 @@ package no.nsd.qddt.domain.response;
 import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  *
@@ -39,13 +37,13 @@ public class Code extends AbstractEntity implements Serializable {
 
     private String category;
 
-    private  String code;
+
+    @Column(name = "code_value")
+    private  String codeValue;
 
     @NotAudited
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
-
-    private Set<ResponseDomain> response = new HashSet<>();
 
 
     public String getCategory() {
@@ -56,12 +54,12 @@ public class Code extends AbstractEntity implements Serializable {
         this.category = category;
     }
 
-    public String getCode() {
-        return code;
+    public String getCodeValue() {
+        return codeValue;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCodeValue(String codeValue) {
+        this.codeValue = codeValue;
     }
 
     public Set<ResponseDomainCode> getResponseDomainCodes() {
@@ -80,7 +78,7 @@ public class Code extends AbstractEntity implements Serializable {
         Code code1 = (Code) o;
 
         if (category != null ? !category.equals(code1.category) : code1.category != null) return false;
-        if (code != null ? !code.equals(code1.code) : code1.code != null) return false;
+        if (codeValue != null ? !codeValue.equals(code1.codeValue) : code1.codeValue != null) return false;
 
         return true;
     }
@@ -89,7 +87,7 @@ public class Code extends AbstractEntity implements Serializable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (category != null ? category.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
+        result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
         return result;
     }
 
@@ -97,7 +95,7 @@ public class Code extends AbstractEntity implements Serializable {
     public String toString() {
         return "Code{" +
                 " category='" + category + '\'' +
-                ", code='" + code + '\'' +
+                ", codeValue='" + codeValue + '\'' +
                 super.toString() +
                 '}';
     }
