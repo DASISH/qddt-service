@@ -1,9 +1,12 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.domain.instrument.InstrumentQuestion;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -17,10 +20,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "question")
 public class Question extends AbstractEntity {
-    //TODO implement
 
-    private Long parentId;
+    @ManyToOne
+    @JoinColumn(name="parent_id")
+    private Question parent;
 
+    /// Only used for question with a parent
     private int rank;
 
     private String rankRationale;
@@ -37,14 +42,25 @@ public class Question extends AbstractEntity {
     /// Instruction on how to ask question.
     private String instruction;
 
+    @OneToMany(mappedBy = "question")
+    private Set<InstrumentQuestion> instrumentQuestionSet  = new HashSet<>();
 
-    public Long getParentId() {
-        return parentId;
+    public Set<InstrumentQuestion> getInstrumentQuestionSet() {
+        return instrumentQuestionSet;
     }
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
+    public void setInstrumentQuestionSet(Set<InstrumentQuestion> instrumentQuestionSet) {
+        this.instrumentQuestionSet = instrumentQuestionSet;
     }
+
+    public Question getParent() {
+        return parent;
+    }
+
+    public void setParent(Question parent) {
+        this.parent = parent;
+    }
+
 
     public int getRank() {
         return rank;
@@ -105,9 +121,11 @@ public class Question extends AbstractEntity {
         if (rank != question.rank) return false;
         if (instruction != null ? !instruction.equals(question.instruction) : question.instruction != null)
             return false;
+        if (instrumentQuestionSet != null ? !instrumentQuestionSet.equals(question.instrumentQuestionSet) : question.instrumentQuestionSet != null)
+            return false;
         if (intent != null ? !intent.equals(question.intent) : question.intent != null) return false;
         if (label != null ? !label.equals(question.label) : question.label != null) return false;
-        if (parentId != null ? !parentId.equals(question.parentId) : question.parentId != null) return false;
+        if (parent != null ? !parent.equals(question.parent) : question.parent != null) return false;
         if (rankRationale != null ? !rankRationale.equals(question.rankRationale) : question.rankRationale != null)
             return false;
         if (text != null ? !text.equals(question.text) : question.text != null) return false;
@@ -118,27 +136,28 @@ public class Question extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + rank;
         result = 31 * result + (rankRationale != null ? rankRationale.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (instruction != null ? instruction.hashCode() : 0);
+        result = 31 * result + (instrumentQuestionSet != null ? instrumentQuestionSet.hashCode() : 0);
         return result;
     }
-
 
     @Override
     public String toString() {
         return "Question{" +
-                "parentId=" + parentId +
+                "parent=" + parent +
                 ", rank=" + rank +
                 ", rankRationale='" + rankRationale + '\'' +
                 ", intent='" + intent + '\'' +
                 ", text='" + text + '\'' +
                 ", label='" + label + '\'' +
                 ", instruction='" + instruction + '\'' +
+                ", instrumentQuestionSet=" + instrumentQuestionSet +
                 '}';
     }
 }

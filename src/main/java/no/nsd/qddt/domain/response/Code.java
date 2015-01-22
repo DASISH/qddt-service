@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.response;
 
+import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -20,18 +22,20 @@ import java.util.Set;
  * ManagedRepresentationScheme : Reusable representations of numeric,
  *      textual datetime, scale or missing values types.
  *
+ * CodeType (aka Code) A structure that links a unique value of a code to a
+ * specified category and provides information as to the location of the code
+ * within a hierarchy, whether it is discrete, represents a total for the CodeList contents,
+ * and if its sub-elements represent a comprehensive coverage of the code.
+ * The Code is identifiable, but the value within the code must also be unique within the CodeList.
+ *
+ *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
 @Audited
 @Entity
 @Table(name = "code")
-public class Code implements Serializable {
-
-    @Id
-    @Column(name = "code_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Code extends AbstractEntity implements Serializable {
 
     private String category;
 
@@ -41,13 +45,8 @@ public class Code implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
+    private Set<ResponseDomain> response = new HashSet<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCategory() {
         return category;
@@ -63,6 +62,14 @@ public class Code implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Set<ResponseDomainCode> getResponseDomainCodes() {
+        return responseDomainCodes;
+    }
+
+    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
+        this.responseDomainCodes = responseDomainCodes;
     }
 
     @Override
@@ -81,7 +88,7 @@ public class Code implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = super.hashCode();
         result = 31 * result + (category != null ? category.hashCode() : 0);
         result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
@@ -90,9 +97,9 @@ public class Code implements Serializable {
     @Override
     public String toString() {
         return "Code{" +
-                "id=" + id +
-                ", category='" + category + '\'' +
+                " category='" + category + '\'' +
                 ", code='" + code + '\'' +
+                super.toString() +
                 '}';
     }
 }

@@ -83,6 +83,7 @@ public class ResponseDomain implements Serializable {
     public String toString() {
         return "ResponsDomain{" +
                 "responsKind=" + responseKind +
+                super.toString() +
                 '}';
     }
 }
