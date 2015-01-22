@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.response;
 
+import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -10,11 +11,11 @@ import java.util.Set;
 
 
 /**
- * @author Stig Norland
- * @author Dag Østgulen Heradstveit
  *
  * CodeList A special form of maintainable that allows a single codelist to be maintained outside of a CodeListScheme.
  *
+ * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Audited
 @Entity

@@ -13,6 +13,7 @@ import java.util.Set;
 /**
  * @author Dag Østgulen Heradstveit
  */
+
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "user")

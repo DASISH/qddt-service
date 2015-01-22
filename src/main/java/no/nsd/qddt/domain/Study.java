@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Stig Norland
- * @author Dag Østgulen Heradstveit
  *
  * A publication structure for a specific study. Structures identification information, full
  * bibliographic and discovery information, administrative information, all of the reusable
@@ -16,7 +14,10 @@ import java.util.Set;
  * different points in the lifecycle of the study (DataCollection, LogicalProduct,
  * PhysicalDataProduct, PhysicalInstance, Archive, and DDIProfile).
  *
+ * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
+
 @Audited
 @Entity
 @Table(name = "study")

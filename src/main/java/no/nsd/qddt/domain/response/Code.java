@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Stig Norland
- * @author Dag Østgulen Heradstveit
  *
  * CategoryScheme : Categories provide enumerated representations for
  *      concepts andare used by questions, code lists, and variables
@@ -22,6 +20,8 @@ import java.util.Set;
  * ManagedRepresentationScheme : Reusable representations of numeric,
  *      textual datetime, scale or missing values types.
  *
+ * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 @Audited
 @Entity
@@ -40,6 +40,9 @@ public class Code implements Serializable {
     @NotAudited
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+
+    private Set<ResponseDomain> response = new HashSet<>();
+
 
     public Long getId() {
         return id;

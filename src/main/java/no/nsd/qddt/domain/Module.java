@@ -11,6 +11,7 @@ import javax.persistence.Table;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
+
 @Audited
 @Entity
 @Table(name = "Module")

@@ -13,6 +13,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
+
 @Entity
 @Table(name = "Attachment")
 public class Attachment  {

@@ -9,6 +9,7 @@ import java.util.Set;
 /**
  * @author Dag Østgulen Heradstveit
  */
+
 @Audited
 @Entity
 @Table(name = "comment")

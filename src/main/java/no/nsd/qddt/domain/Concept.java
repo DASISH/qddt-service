@@ -7,11 +7,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Stig Norland
- * @author Dag Østgulen Heradstveit
  *
  * ConceptScheme: Concepts express ideas associated with objects and means of representing the concept
+ *
+ * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
+
 @Audited
 @Entity
 @Table(name = "Concept")

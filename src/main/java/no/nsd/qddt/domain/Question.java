@@ -6,11 +6,13 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * @author Stig Norland
  *
  * QuestionScheme : Contains Question Items, Question Grids, and Question Blocks used by Control Constructs in
  *      creating questionnaires.
+ *
+ * @author Stig Norland
  */
+
 @Audited
 @Entity
 @Table(name = "question")

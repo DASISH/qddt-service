@@ -10,6 +10,7 @@ import java.util.Set;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
+
 @Audited
 @Entity
 @Table(name = "survey")
