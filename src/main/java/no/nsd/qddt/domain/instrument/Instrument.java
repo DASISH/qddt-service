@@ -4,23 +4,26 @@ import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.Survey;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 
-//@Audited
-//@Entity
-//@Table(name = "instrument")
-public class Instrument {
+@Audited
+@Entity
+@Table(name = "instrument")
+public class Instrument extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name="sturvey_id")
     private Survey survey;
+
+    @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
+    private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
     public Survey getSurvey() {
         return survey;
@@ -28,6 +31,14 @@ public class Instrument {
 
     public void setSurvey(Survey survey) {
         this.survey = survey;
+    }
+
+    public Set<InstrumentQuestion> getInstrumentQuestions() {
+        return instrumentQuestions;
+    }
+
+    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
+        this.instrumentQuestions = instrumentQuestions;
     }
 
     @Override

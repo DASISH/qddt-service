@@ -41,9 +41,6 @@ public class Code implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    private Set<ResponseDomain> response = new HashSet<>();
-
-
     public Long getId() {
         return id;
     }
@@ -66,14 +63,6 @@ public class Code implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Set<ResponseDomainCode> getResponseDomainCodes() {
-        return responseDomainCodes;
-    }
-
-    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
-        this.responseDomainCodes = responseDomainCodes;
     }
 
     @Override
