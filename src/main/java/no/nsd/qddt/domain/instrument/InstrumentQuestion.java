@@ -26,7 +26,6 @@ public class InstrumentQuestion {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     @ManyToOne
     @JoinColumn(name = "instrument_id")
     private Instrument instrument;
@@ -34,7 +33,6 @@ public class InstrumentQuestion {
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
-
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

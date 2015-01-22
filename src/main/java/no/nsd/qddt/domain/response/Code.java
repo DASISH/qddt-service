@@ -65,6 +65,14 @@ public class Code implements Serializable {
         this.code = code;
     }
 
+    public Set<ResponseDomainCode> getResponseDomainCodes() {
+        return responseDomainCodes;
+    }
+
+    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
+        this.responseDomainCodes = responseDomainCodes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
