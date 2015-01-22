@@ -81,7 +81,6 @@ public class Code extends AbstractEntity implements Serializable {
 
         if (category != null ? !category.equals(code1.category) : code1.category != null) return false;
         if (code != null ? !code.equals(code1.code) : code1.code != null) return false;
-        if (id != null ? !id.equals(code1.id) : code1.id != null) return false;
 
         return true;
     }
