@@ -75,4 +75,12 @@ public class ResponseDomainCode implements Serializable {
     public int hashCode() {
         return (getPk() != null ? getPk().hashCode() : 0);
     }
+
+    @Override
+    public String toString() {
+        return "ResponseDomainCode{" +
+                "pk=" + pk +
+                ", rank='" + rank + '\'' +
+                '}';
+    }
 }
