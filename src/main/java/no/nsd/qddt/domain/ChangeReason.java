@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  *
- * valid values: CREATED, NEW_REVISION, TYPO, NEW_COPY_OF, IN_DEVELOPMENT
+ * valid Names (values): CREATED, NEW_REVISION, TYPO, NEW_COPY_OF, IN_DEVELOPMENT
  *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit

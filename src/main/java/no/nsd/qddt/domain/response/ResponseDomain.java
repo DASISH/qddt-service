@@ -20,12 +20,8 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "responseDomain")
-public class ResponseDomain implements Serializable {
+public class ResponseDomain extends AbstractEntity implements Serializable {
 
-    @Id
-    @Column(name = "responseDomain_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "respons_kind_id")
@@ -34,14 +30,6 @@ public class ResponseDomain implements Serializable {
     @NotAudited
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public ResponseKind getResponseKind() {
         return responseKind;
@@ -83,6 +71,7 @@ public class ResponseDomain implements Serializable {
     public String toString() {
         return "ResponsDomain{" +
                 "responsKind=" + responseKind +
+                super.toString() +
                 '}';
     }
 }

@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.response;
 
+import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,34 +20,31 @@ import java.util.Set;
  * ManagedRepresentationScheme : Reusable representations of numeric,
  *      textual datetime, scale or missing values types.
  *
+ * CodeType (aka Code) A structure that links a unique value of a code to a
+ * specified category and provides information as to the location of the code
+ * within a hierarchy, whether it is discrete, represents a total for the CodeList contents,
+ * and if its sub-elements represent a comprehensive coverage of the code.
+ * The Code is identifiable, but the value within the code must also be unique within the CodeList.
+ *
+ *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
 @Audited
 @Entity
 @Table(name = "code")
-public class Code implements Serializable {
-
-    @Id
-    @Column(name = "code_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Code extends AbstractEntity implements Serializable {
 
     private String category;
 
-    private  String code;
+
+    @Column(name = "code_value")
+    private  String codeValue;
 
     @NotAudited
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCategory() {
         return category;
@@ -57,12 +54,12 @@ public class Code implements Serializable {
         this.category = category;
     }
 
-    public String getCode() {
-        return code;
+    public String getCodeValue() {
+        return codeValue;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCodeValue(String codeValue) {
+        this.codeValue = codeValue;
     }
 
     public Set<ResponseDomainCode> getResponseDomainCodes() {
@@ -81,26 +78,25 @@ public class Code implements Serializable {
         Code code1 = (Code) o;
 
         if (category != null ? !category.equals(code1.category) : code1.category != null) return false;
-        if (code != null ? !code.equals(code1.code) : code1.code != null) return false;
-        if (id != null ? !id.equals(code1.id) : code1.id != null) return false;
+        if (codeValue != null ? !codeValue.equals(code1.codeValue) : code1.codeValue != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = super.hashCode();
         result = 31 * result + (category != null ? category.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
+        result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Code{" +
-                "id=" + id +
-                ", category='" + category + '\'' +
-                ", code='" + code + '\'' +
+                " category='" + category + '\'' +
+                ", codeValue='" + codeValue + '\'' +
+                super.toString() +
                 '}';
     }
 }
