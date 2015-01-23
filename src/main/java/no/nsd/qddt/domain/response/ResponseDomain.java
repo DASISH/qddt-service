@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.response;
 
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.Agentcy;
+import no.nsd.qddt.domain.Agency;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -25,7 +25,7 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "agentcy_id")
-    private Agentcy agentcy;
+    private Agency agency;
 
     @ManyToOne
     @JoinColumn(name = "response_kind_id")
@@ -35,9 +35,9 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    public Agentcy getAgentcy() {return agentcy;}
+    public Agency getAgency() {return agency;}
 
-    public void setAgentcy(Agentcy agentcy) {this.agentcy = agentcy;}
+    public void setAgency(Agency agency) {this.agency = agency;}
 
     public ResponseKind getResponseKind() {
         return responseKind;
@@ -63,7 +63,7 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
 
         ResponseDomain that = (ResponseDomain) o;
 
-        if (agentcy != null ? !agentcy.equals(that.agentcy) : that.agentcy != null) return false;
+        if (agency != null ? !agency.equals(that.agency) : that.agency != null) return false;
         if (responseDomainCodes != null ? !responseDomainCodes.equals(that.responseDomainCodes) : that.responseDomainCodes != null)
             return false;
         if (responseKind != null ? !responseKind.equals(that.responseKind) : that.responseKind != null) return false;
@@ -74,7 +74,7 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (agentcy != null ? agentcy.hashCode() : 0);
+        result = 31 * result + (agency != null ? agency.hashCode() : 0);
         result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
         result = 31 * result + (responseDomainCodes != null ? responseDomainCodes.hashCode() : 0);
         return result;
@@ -83,7 +83,7 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
     @Override
     public String toString() {
         return "ResponseDomain{" +
-                "agentcy=" + agentcy +
+                "agentcy=" + agency +
                 ", responseKind=" + responseKind +
                 ", responseDomainCodes=" + responseDomainCodes +
                 super.toString() +

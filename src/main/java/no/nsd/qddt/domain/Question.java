@@ -50,7 +50,7 @@ public class Question extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "agentcy_id")
-    private Agentcy agentcy;
+    private Agency agency;
 
 
     @OneToMany(mappedBy = "question")
@@ -124,9 +124,9 @@ public class Question extends AbstractEntity {
         this.instruction = instruction;
     }
 
-    public Agentcy getAgentcy() {return agentcy;}
+    public Agency getAgency() {return agency;}
 
-    public void setAgentcy(Agentcy agentcy) {this.agentcy = agentcy;}
+    public void setAgency(Agency agency) {this.agency = agency;}
 
     @Override
     public boolean equals(Object o) {
@@ -137,7 +137,7 @@ public class Question extends AbstractEntity {
         Question question = (Question) o;
 
         if (rank != question.rank) return false;
-        if (agentcy != null ? !agentcy.equals(question.agentcy) : question.agentcy != null) return false;
+        if (agency != null ? !agency.equals(question.agency) : question.agency != null) return false;
         if (children != null ? !children.equals(question.children) : question.children != null) return false;
         if (instruction != null ? !instruction.equals(question.instruction) : question.instruction != null)
             return false;
@@ -167,7 +167,7 @@ public class Question extends AbstractEntity {
         result = 31 * result + (questionText != null ? questionText.hashCode() : 0);
         result = 31 * result + (instructionLabel != null ? instructionLabel.hashCode() : 0);
         result = 31 * result + (instruction != null ? instruction.hashCode() : 0);
-        result = 31 * result + (agentcy != null ? agentcy.hashCode() : 0);
+        result = 31 * result + (agency != null ? agency.hashCode() : 0);
         result = 31 * result + (instrumentQuestionSet != null ? instrumentQuestionSet.hashCode() : 0);
         return result;
     }
@@ -183,7 +183,7 @@ public class Question extends AbstractEntity {
                 ", questionText='" + questionText + '\'' +
                 ", instructionLabel='" + instructionLabel + '\'' +
                 ", instruction='" + instruction + '\'' +
-                ", agentcy=" + agentcy +
+                ", agentcy=" + agency +
                 ", instrumentQuestionSet=" + instrumentQuestionSet +
                 super.toString() +
                 '}';

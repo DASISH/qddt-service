@@ -27,15 +27,15 @@ public class Survey extends AbstractEntity{
 
     @ManyToOne
     @JoinColumn(name = "agentcy_id")
-    private Agentcy agentcy;
+    private Agency agency;
 
 
     public Survey() {
     }
 
-    public Agentcy getAgentcy() {return agentcy;}
+    public Agency getAgency() {return agency;}
 
-    public void setAgentcy(Agentcy agentcy) {this.agentcy = agentcy;}
+    public void setAgency(Agency agency) {this.agency = agency;}
 
     public String getSurveyName() {
         return surveyName;
