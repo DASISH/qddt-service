@@ -9,7 +9,9 @@ import org.springframework.data.repository.history.RevisionRepository;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface ResponseDomainCodeRepository  extends RevisionRepository<ResponseDomainCode, ResponseDomainCodeId, Integer>, JpaRepository<ResponseDomainCode, ResponseDomainCodeId> {
+public interface ResponseDomainCodeRepository  extends
+        RevisionRepository<ResponseDomainCode, ResponseDomainCodeId, Integer>,
+        JpaRepository<ResponseDomainCode, ResponseDomainCodeId> {
 
     /**
      * Find a {@link no.nsd.qddt.domain.response.ResponseDomainCode} by using its

@@ -76,7 +76,6 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
         int result = super.hashCode();
         result = 31 * result + (agency != null ? agency.hashCode() : 0);
         result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
-        result = 31 * result + (responseDomainCodes != null ? responseDomainCodes.hashCode() : 0);
         return result;
     }
 
@@ -85,7 +84,6 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
         return "ResponseDomain{" +
                 "agentcy=" + agency +
                 ", responseKind=" + responseKind +
-                ", responseDomainCodes=" + responseDomainCodes +
                 super.toString() +
                 '}';
     }

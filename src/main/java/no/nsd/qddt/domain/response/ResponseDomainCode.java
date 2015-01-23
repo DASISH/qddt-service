@@ -25,8 +25,6 @@ public class ResponseDomainCode implements Serializable {
     @Column(name = "rank")
     private String rank;
 
-
-
     public ResponseDomainCodeId getPk() {
         return pk;
     }

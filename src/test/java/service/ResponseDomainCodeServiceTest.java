@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.response.ResponseDomainCodeId;
 import no.nsd.qddt.service.CodeService;
 import no.nsd.qddt.service.ResponseDomainCodeService;
 import no.nsd.qddt.service.ResponseDomainService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -36,61 +36,36 @@ public class ResponseDomainCodeServiceTest {
     @Autowired
     private CodeService codeService;
 
-    @Test
-    public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
-        Code code = new Code();
+    private Code code;
+
+    private ResponseDomain responseDomain;
+
+    @Before
+    public void setUp() {
+        code = new Code();
         code.setCategory("Test class code");
         code.setCodeValue("500");
         code = codeService.save(code);
 
-        ResponseDomain responseDomain = new ResponseDomain();
+        responseDomain = new ResponseDomain();
         responseDomain.setName("This is a response domain");
         responseDomain = responseDomainService.save(responseDomain);
+    }
 
+    @Test
+    public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
         ResponseDomainCode responseDomainCode = new ResponseDomainCode();
         responseDomainCode.setRank("FIRST");
         responseDomainCode.setCode(code);
         responseDomainCode.setResponseDomain(responseDomain);
         responseDomainCodeService.save(responseDomainCode);
 
-        // Get the data from the database without
+        // Fetch a fresh entity
         ResponseDomainCode rdc = responseDomainCodeService.findByPk(new ResponseDomainCodeId(responseDomain, code));
-        assertThat(rdc, not(null));
 
+        // Check for everything that should be in the OM.
+        assertNotNull(rdc.getResponseDomain());
+        assertNotNull(rdc.getCode());
+        assertNotNull(rdc.getPk());
     }
-
-    @Test
-    public void getResponseDomainCodeFromPkTest() throws Exception {
-
-    }
-
-    @Test
-    public void updateRefrenceTest() throws Exception {
-        ResponseDomainCode rdc = responseDomainCodeService.findAll().get(0);
-
-        rdc.setRank("Second rank");
-        rdc = responseDomainCodeService.save(rdc);
-        rdc.setRank("Third rank");
-        rdc = responseDomainCodeService.save(rdc);
-        rdc.setRank("Fourth rank");
-        rdc = responseDomainCodeService.save(rdc);
-
-        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeService.findLastChange(rdc.getPk());
-
-        System.out.println(revision);
-    }
-
-    @Test
-    public void findAllResponseDomainCodeRevisionsFromResponseDomainTest() throws Exception {
-//        List<ResponseDomain> responseDomain = responseDomainService.findAll();
-
-        ResponseDomainCode rdc = responseDomainCodeService.findAll().get(0);
-
-//        ResponseDomainCode rdc2 = responseDomainCodeService.findL(rdc.getPk());
-
-//        System.out.println(rdc2);
-
-    }
-
-
 }

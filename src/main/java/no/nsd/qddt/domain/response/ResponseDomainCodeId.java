@@ -10,10 +10,10 @@ import java.io.Serializable;
 @Embeddable
 public class ResponseDomainCodeId implements Serializable {
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private ResponseDomain responseDomain;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Code code;
 
     public ResponseDomainCodeId() {
