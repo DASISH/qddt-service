@@ -6,12 +6,13 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  *
  * QuestionScheme : Contains Question Items, Question Grids, and Question Blocks used by Control Constructs in
  *      creating questionnaires.
+ *
+ * Question can have
  *
  * @author Stig Norland
  */
@@ -25,22 +26,32 @@ public class Question extends AbstractEntity {
     @JoinColumn(name="parent_id")
     private Question parent;
 
-    /// Only used for question with a parent
+    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    private Set<Question> children = new HashSet<>();
+
+    /// Only used for questionText with a parent
     private int rank;
 
     private String rankRationale;
 
-    /// QuestionIntent: what the question is supposed to gather information about.
-    private String intent;
+    /// QuestionIntent: what the questionText is supposed to gather information about.
+    private String questionIntent;
 
-    /// QuestionText: the actual question to ask.
-    private String text;
+    /// QuestionText: the actual questionText to ask.
+    @Column(name = "question_text", length = 1500)
+    private String questionText;
 
     /// InstructionLabel: header for instruction
-    private String label;
+    private String instructionLabel;
 
-    /// Instruction on how to ask question.
+    /// Instruction on how to ask questionText.
+    @Column(name = "instruction", length = 2000)
     private String instruction;
+
+    @ManyToOne
+    @JoinColumn(name = "agentcy_id")
+    private Agentcy agentcy;
+
 
     @OneToMany(mappedBy = "question")
     private Set<InstrumentQuestion> instrumentQuestionSet  = new HashSet<>();
@@ -61,6 +72,9 @@ public class Question extends AbstractEntity {
         this.parent = parent;
     }
 
+    public Set<Question> getChildren() {return children;}
+
+    public void setChildren(Set<Question> children) {this.children = children;}
 
     public int getRank() {
         return rank;
@@ -78,28 +92,28 @@ public class Question extends AbstractEntity {
         this.rankRationale = rankRationale;
     }
 
-    public String getIntent() {
-        return intent;
+    public String getQuestionIntent() {
+        return questionIntent;
     }
 
-    public void setIntent(String intent) {
-        this.intent = intent;
+    public void setQuestionIntent(String questionIntent) {
+        this.questionIntent = questionIntent;
     }
 
-    public String getText() {
-        return text;
+    public String getQuestionText() {
+        return questionText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setQuestionText(String text) {
+        this.questionText = text;
     }
 
-    public String getLabel() {
-        return label;
+    public String getInstructionLabel() {
+        return instructionLabel;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setInstructionLabel(String instructionLabel) {
+        this.instructionLabel = instructionLabel;
     }
 
     public String getInstruction() {
@@ -110,6 +124,10 @@ public class Question extends AbstractEntity {
         this.instruction = instruction;
     }
 
+    public Agentcy getAgentcy() {return agentcy;}
+
+    public void setAgentcy(Agentcy agentcy) {this.agentcy = agentcy;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,16 +137,21 @@ public class Question extends AbstractEntity {
         Question question = (Question) o;
 
         if (rank != question.rank) return false;
+        if (agentcy != null ? !agentcy.equals(question.agentcy) : question.agentcy != null) return false;
+        if (children != null ? !children.equals(question.children) : question.children != null) return false;
         if (instruction != null ? !instruction.equals(question.instruction) : question.instruction != null)
+            return false;
+        if (instructionLabel != null ? !instructionLabel.equals(question.instructionLabel) : question.instructionLabel != null)
             return false;
         if (instrumentQuestionSet != null ? !instrumentQuestionSet.equals(question.instrumentQuestionSet) : question.instrumentQuestionSet != null)
             return false;
-        if (intent != null ? !intent.equals(question.intent) : question.intent != null) return false;
-        if (label != null ? !label.equals(question.label) : question.label != null) return false;
         if (parent != null ? !parent.equals(question.parent) : question.parent != null) return false;
+        if (questionIntent != null ? !questionIntent.equals(question.questionIntent) : question.questionIntent != null)
+            return false;
+        if (questionText != null ? !questionText.equals(question.questionText) : question.questionText != null)
+            return false;
         if (rankRationale != null ? !rankRationale.equals(question.rankRationale) : question.rankRationale != null)
             return false;
-        if (text != null ? !text.equals(question.text) : question.text != null) return false;
 
         return true;
     }
@@ -137,12 +160,14 @@ public class Question extends AbstractEntity {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + rank;
         result = 31 * result + (rankRationale != null ? rankRationale.hashCode() : 0);
-        result = 31 * result + (intent != null ? intent.hashCode() : 0);
-        result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (questionIntent != null ? questionIntent.hashCode() : 0);
+        result = 31 * result + (questionText != null ? questionText.hashCode() : 0);
+        result = 31 * result + (instructionLabel != null ? instructionLabel.hashCode() : 0);
         result = 31 * result + (instruction != null ? instruction.hashCode() : 0);
+        result = 31 * result + (agentcy != null ? agentcy.hashCode() : 0);
         result = 31 * result + (instrumentQuestionSet != null ? instrumentQuestionSet.hashCode() : 0);
         return result;
     }
@@ -151,13 +176,16 @@ public class Question extends AbstractEntity {
     public String toString() {
         return "Question{" +
                 "parent=" + parent +
+                ", children=" + children +
                 ", rank=" + rank +
                 ", rankRationale='" + rankRationale + '\'' +
-                ", intent='" + intent + '\'' +
-                ", text='" + text + '\'' +
-                ", label='" + label + '\'' +
+                ", questionIntent='" + questionIntent + '\'' +
+                ", questionText='" + questionText + '\'' +
+                ", instructionLabel='" + instructionLabel + '\'' +
                 ", instruction='" + instruction + '\'' +
+                ", agentcy=" + agentcy +
                 ", instrumentQuestionSet=" + instrumentQuestionSet +
+                super.toString() +
                 '}';
     }
 }

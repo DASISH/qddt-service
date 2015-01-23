@@ -25,8 +25,8 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //ID part of the URN
-    @Column(name = "guid")
+    //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
+    @Column(name = "guid", columnDefinition = "BINARY(16)")
     private UUID guid = UUID.randomUUID();
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)

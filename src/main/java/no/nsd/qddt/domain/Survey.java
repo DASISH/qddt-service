@@ -25,8 +25,17 @@ public class Survey extends AbstractEntity{
     @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "agentcy_id")
+    private Agentcy agentcy;
+
+
     public Survey() {
     }
+
+    public Agentcy getAgentcy() {return agentcy;}
+
+    public void setAgentcy(Agentcy agentcy) {this.agentcy = agentcy;}
 
     public String getSurveyName() {
         return surveyName;
