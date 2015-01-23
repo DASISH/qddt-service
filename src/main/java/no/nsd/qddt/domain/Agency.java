@@ -3,13 +3,14 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.response.ResponseDomain;
 import org.hibernate.envers.Audited;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import javax.persistence.CascadeType;
 import java.util.HashSet;
 import java.util.Set;
+
 
 /**
  * The agency expressed as filed with the DDI Agency ID Registry with optional additional sub-agency extensions.
@@ -20,6 +21,7 @@ import java.util.Set;
  *
  * @author Stig Norland
  */
+
 @Audited
 @Entity
 @Table(name = "agency")
@@ -34,29 +36,17 @@ public class Agency extends AbstractEntity {
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
-    public Set<Survey> getSurveys() {
-        return surveys;
-    }
+    public Set<Survey> getSurveys() {return surveys;}
 
-    public void setSurveys(Set<Survey> surveys) {
-        this.surveys = surveys;
-    }
+    public void setSurveys(Set<Survey> surveys) {this.surveys = surveys;}
 
-    public Set<ResponseDomain> getResponses() {
-        return responses;
-    }
+    public Set<ResponseDomain> getResponses() {return responses;    }
 
-    public void setResponses(Set<ResponseDomain> responses) {
-        this.responses = responses;
-    }
+    public void setResponses(Set<ResponseDomain> responses) {this.responses = responses;    }
 
-    public Set<Question> getQuestions() {
-        return questions;
-    }
+    public Set<Question> getQuestions() {return questions;    }
 
-    public void setQuestions(Set<Question> questions) {
-        this.questions = questions;
-    }
+    public void setQuestions(Set<Question> questions) {this.questions = questions;    }
 
     @Override
     public boolean equals(Object o) {

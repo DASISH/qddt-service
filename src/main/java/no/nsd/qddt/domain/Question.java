@@ -74,6 +74,14 @@ public class Question extends AbstractEntity {
 
     public Set<Question> getChildren() {return children;}
 
+    /**
+     * Add a new comment to the set.
+     * @param question to be added to parent.
+     */
+    public void addChild(Question question) {
+        this.children.add(question);
+    }
+
     public void setChildren(Set<Question> children) {this.children = children;}
 
     public int getRank() {
