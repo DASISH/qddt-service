@@ -16,7 +16,8 @@ import org.springframework.data.history.Revision;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -53,7 +54,8 @@ public class ResponseDomainCodeServiceTest {
         responseDomainCodeService.save(responseDomainCode);
 
         // Get the data from the database without
-        responseDomainCode = responseDomainCodeService.findByPk(new ResponseDomainCodeId(responseDomain, code));
+        ResponseDomainCode rdc = responseDomainCodeService.findByPk(new ResponseDomainCodeId(responseDomain, code));
+        assertThat(rdc, not(null));
 
     }
 

@@ -29,7 +29,6 @@ public class Survey extends AbstractEntity{
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
-
     public Survey() {
     }
 

@@ -2,9 +2,12 @@ package no.nsd.qddt.domain;
 
 
 import no.nsd.qddt.domain.response.ResponseDomain;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +20,10 @@ import java.util.Set;
  *
  * @author Stig Norland
  */
-public class Agency extends AbstractEntity{
+@Audited
+@Entity
+@Table(name = "agency")
+public class Agency extends AbstractEntity {
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Survey> surveys = new HashSet<>();
