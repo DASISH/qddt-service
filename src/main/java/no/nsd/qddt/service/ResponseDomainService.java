@@ -15,6 +15,8 @@ public interface ResponseDomainService {
 
     public List<ResponseDomain> findAll();
 
+    ResponseDomain save(ResponseDomain responseDomain);
+
     public Revision<Integer, ResponseDomain> findLastChange(Long id);
 
     public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(ResponseDomain responseDomain, int min, int max);

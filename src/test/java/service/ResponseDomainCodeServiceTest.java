@@ -1,9 +1,11 @@
 package service;
 
 import no.nsd.qddt.QDDT;
+import no.nsd.qddt.domain.response.Code;
 import no.nsd.qddt.domain.response.ResponseDomain;
 import no.nsd.qddt.domain.response.ResponseDomainCode;
 import no.nsd.qddt.domain.response.ResponseDomainCodeId;
+import no.nsd.qddt.service.CodeService;
 import no.nsd.qddt.service.ResponseDomainCodeService;
 import no.nsd.qddt.service.ResponseDomainService;
 import org.junit.Test;
@@ -30,14 +32,34 @@ public class ResponseDomainCodeServiceTest {
     @Autowired
     private ResponseDomainService responseDomainService;
 
-    @Test
-    public void test() throws Exception {
-        List<ResponseDomainCode> rdc = responseDomainCodeService.findAll();
+    @Autowired
+    private CodeService codeService;
 
-        rdc.forEach((r) -> {
-            System.out.println("CODE: " + r.getPk().getCode());
-            System.out.println("RESPONSE: " + r.getPk().getResponseDomain());
-        });
+    @Test
+    public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
+        Code code = new Code();
+        code.setCategory("Test class code");
+        code.setCodeValue("500");
+        code = codeService.save(code);
+
+        ResponseDomain responseDomain = new ResponseDomain();
+        responseDomain.setName("This is a response domain");
+        responseDomain = responseDomainService.save(responseDomain);
+
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setRank("FIRST");
+        responseDomainCode.setCode(code);
+        responseDomainCode.setResponseDomain(responseDomain);
+        responseDomainCodeService.save(responseDomainCode);
+
+        // Get the data from the database without
+        responseDomainCode = responseDomainCodeService.findByPk(new ResponseDomainCodeId(responseDomain, code));
+
+    }
+
+    @Test
+    public void getResponseDomainCodeFromPkTest() throws Exception {
+
     }
 
     @Test

@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-public interface CommentRepository  extends RevisionRepository<Comment, Long, Integer>, JpaRepository<Comment, Long> {
+public interface CommentRepository extends RevisionRepository<Comment, Long, Integer>, JpaRepository<Comment, Long> {
 }
