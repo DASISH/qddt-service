@@ -24,7 +24,7 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "respons_kind_id")
+    @JoinColumn(name = "response_kind_id")
     private ResponseKind responseKind;
 
     @NotAudited

@@ -25,10 +25,9 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "guid")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     //ID part of the URN
-    private UUID guid;
+    @Column(name = "guid")
+    private UUID guid = UUID.randomUUID();
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -57,7 +56,6 @@ public abstract class AbstractEntity {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public UUID getGuid() { return guid;}
 

@@ -35,8 +35,8 @@ import java.util.Set;
 @Table(name = "code")
 public class Code extends AbstractEntity implements Serializable {
 
+    @Column(name = "category")
     private String category;
-
 
     @Column(name = "code_value")
     private  String codeValue;

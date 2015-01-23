@@ -19,7 +19,7 @@ import java.util.Set;
 public class Instrument extends AbstractEntity {
 
     @ManyToOne
-    @JoinColumn(name="sturvey_id")
+    @JoinColumn(name="survey_id")
     private Survey survey;
 
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
