@@ -21,6 +21,6 @@ public interface ResponseDomainCodeService {
 
     public ResponseDomainCode save(ResponseDomainCode responseDomainCode);
 
-    public ResponseDomain findByPk(ResponseDomainCodeId responseDomainCodeId);
+    public ResponseDomainCode findByPk(ResponseDomainCodeId responseDomainCodeId);
 
 }

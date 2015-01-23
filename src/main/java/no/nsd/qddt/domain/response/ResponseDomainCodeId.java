@@ -19,6 +19,11 @@ public class ResponseDomainCodeId implements Serializable {
     public ResponseDomainCodeId() {
     }
 
+    public ResponseDomainCodeId(ResponseDomain responseDomain, Code code) {
+        this.responseDomain = responseDomain;
+        this.code = code;
+    }
+
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }

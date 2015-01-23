@@ -46,8 +46,8 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
     }
 
     @Override
-    public ResponseDomain findByPk(ResponseDomainCodeId responseDomainCodeId) {
-        return null;
+    public ResponseDomainCode findByPk(ResponseDomainCodeId responseDomainCodeId) {
+        return responseDomainCodeRepository.findByPk(responseDomainCodeId);
     }
 
 }

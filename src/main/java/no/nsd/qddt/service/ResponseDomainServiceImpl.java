@@ -34,6 +34,11 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
+    public ResponseDomain save(ResponseDomain responseDomain) {
+        return responseDomainRepository.save(responseDomain);
+    }
+
+    @Override
     public Revision<Integer, ResponseDomain> findLastChange(Long id) {
         return responseDomainRepository.findLastChangeRevision(id);
     }
