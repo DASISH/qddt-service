@@ -49,7 +49,7 @@ public class Question extends AbstractEntity {
     private String instruction;
 
     @ManyToOne
-    @JoinColumn(name = "agentcy_id")
+    @JoinColumn(name = "agency_id")
     private Agency agency;
 
 

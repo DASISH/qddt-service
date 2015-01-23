@@ -24,7 +24,7 @@ import java.util.Set;
 public class ResponseDomain extends AbstractEntity implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "agentcy_id")
+    @JoinColumn(name = "agency_id")
     private Agency agency;
 
     @ManyToOne

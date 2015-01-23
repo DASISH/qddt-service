@@ -26,7 +26,7 @@ public class Survey extends AbstractEntity{
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "agentcy_id")
+    @JoinColumn(name = "agency_id")
     private Agency agency;
 
 
