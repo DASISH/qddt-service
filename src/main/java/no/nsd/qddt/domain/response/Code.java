@@ -49,18 +49,6 @@ public class Code extends AbstractEntity implements Serializable {
 
     public Code(){}
 
-    /**
-     * @param category Variable name
-     * @param codeValue Variable value
-     * @param user last owner (when saved current user will be new owner)
-     * @param tags You can add any hashtags you want to associate this code with anything you like, separated with  space or comma
-     */
-    public Code( String category, String codeValue, User user, String tags ) {
-        super(user,"CREATED", tags);
-        setCategory(category);
-        setCodeValue(codeValue);
-    }
-
     public String getCategory() {
         return category;
     }

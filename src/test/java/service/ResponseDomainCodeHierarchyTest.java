@@ -47,9 +47,9 @@ public class ResponseDomainCodeHierarchyTest {
         User user = userService.findByEmail("admin@example.org");
 
 
-        codeService.save(new Code( "KVINNE","0",user,"#KJØNN"));
-        codeService.save(new Code("MANN", "1", user,"#KJØNN"));
-        codeService.save(new Code("TVEKJØNNET","2",user,"#KJØNN"));
+//        codeService.save(new Code( "KVINNE","0",user,"#KJØNN"));
+//        codeService.save(new Code("MANN", "1", user,"#KJØNN"));
+//        codeService.save(new Code("TVEKJØNNET","2",user,"#KJØNN"));
 
 
         responseDomain = new ResponseDomain();
