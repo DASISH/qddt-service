@@ -95,13 +95,5 @@ public class ResponseDomainCode implements Serializable {
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "ResponseDomainCode{" +
-                "id=" + id +
-                ", rank='" + rank + '\'' +
-                ", responseDomain=" + responseDomain +
-                ", code=" + code +
-                '}';
-    }
+
 }
