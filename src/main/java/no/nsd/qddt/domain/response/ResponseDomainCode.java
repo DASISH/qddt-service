@@ -19,7 +19,7 @@ public class ResponseDomainCode implements Serializable {
     private Long id;
 
     @Column(name = "rank")
-    private String rank;
+    private int rank;
 
     @ManyToOne
     @JoinColumn(name = "responsedomain_id")
@@ -32,7 +32,7 @@ public class ResponseDomainCode implements Serializable {
     public ResponseDomainCode() {
     }
 
-    public ResponseDomainCode(String rank, ResponseDomain responseDomain, Code code) {
+    public ResponseDomainCode(int rank, ResponseDomain responseDomain, Code code) {
         this.rank = rank;
         this.responseDomain = responseDomain;
         this.code = code;
@@ -46,11 +46,11 @@ public class ResponseDomainCode implements Serializable {
         this.id = id;
     }
 
-    public String getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(String rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 
@@ -77,9 +77,9 @@ public class ResponseDomainCode implements Serializable {
 
         ResponseDomainCode that = (ResponseDomainCode) o;
 
+        if (rank != that.rank) return false;
         if (code != null ? !code.equals(that.code) : that.code != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (rank != null ? !rank.equals(that.rank) : that.rank != null) return false;
         if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
             return false;
 
@@ -89,11 +89,9 @@ public class ResponseDomainCode implements Serializable {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (rank != null ? rank.hashCode() : 0);
+        result = 31 * result + rank;
         result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
         result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
     }
-
-
 }

@@ -13,14 +13,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class ResponseDomainCodeServiceTest {
@@ -50,17 +48,16 @@ public class ResponseDomainCodeServiceTest {
         responseDomain = responseDomainService.save(responseDomain);
 
         responseDomainCode = new ResponseDomainCode();
-        responseDomainCode.setRank("FIRST");
+        responseDomainCode.setRank(1);
         responseDomainCode.setCode(code);
         responseDomainCode.setResponseDomain(responseDomain);
         responseDomainCodeService.save(responseDomainCode);
-
     }
 
     @Test
     public void findByResponseDomain() throws Exception {
         ResponseDomainCode rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId());
         assertEquals("Expected objects to be equal().", responseDomainCode, rdc);
-        assertEquals("Excepted rank to be FIRST", responseDomainCode.getRank(), "FIRST");
+        assertEquals("Excepted rank to be 1", responseDomainCode.getRank(), 1);
     }
 }

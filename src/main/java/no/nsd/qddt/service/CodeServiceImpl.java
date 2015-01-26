@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public Code save(Code code) {
+        code.setCreated(LocalDateTime.now());
         return codeRepository.save(code);
     }
 

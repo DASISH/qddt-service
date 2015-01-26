@@ -9,6 +9,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional(readOnly = false)
     public Survey save(Survey survey) {
+        survey.setCreated(LocalDateTime.now());
         return surveyRepository.save(survey);
     }
 

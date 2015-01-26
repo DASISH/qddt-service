@@ -40,7 +40,6 @@ public class ResponseDomainCodeServiceAuditTest {
     private ResponseDomain responseDomain;
     private Code code;
 
-
     @Before
     @Transactional
     public void setUp() {
@@ -53,13 +52,13 @@ public class ResponseDomainCodeServiceAuditTest {
         responseDomain.setName("This is a response domain");
         responseDomain = responseDomainService.save(responseDomain);
 
-        responseDomainCode = responseDomainCodeService.save(new ResponseDomainCode("1", responseDomain, code));
+        responseDomainCode = responseDomainCodeService.save(new ResponseDomainCode(1, responseDomain, code));
 
-        responseDomainCode.setRank("2");
+        responseDomainCode.setRank(2);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
-        responseDomainCode.setRank("3");
+        responseDomainCode.setRank(3);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
-        responseDomainCode.setRank("4");
+        responseDomainCode.setRank(4);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
     }
 
@@ -78,6 +77,6 @@ public class ResponseDomainCodeServiceAuditTest {
         System.out.println(revision.getRevisionNumber());
 
         assertThat(revision.getEntity(), is(responseDomainCode));
-        assertThat(revision.getEntity().getRank(), is("4"));
+        assertThat(revision.getEntity().getRank(), is(4));
     }
 }

@@ -9,7 +9,7 @@ public interface QuestionService {
 
     public Question findById(Long id);
 
-    public Question save(Question comment);
+    public Question save(Question question);
 
-    public void delete(Question comment);
+    public void delete(Question question);
 }
