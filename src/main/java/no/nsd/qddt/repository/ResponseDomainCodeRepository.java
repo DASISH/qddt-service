@@ -5,12 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Repository
 public interface ResponseDomainCodeRepository extends RevisionRepository<ResponseDomainCode, Long, Integer>, JpaRepository<ResponseDomainCode, Long> {
 
-    public ResponseDomainCode findByResponseDomainId(Long responseDomainId);
+    public List<ResponseDomainCode> findByResponseDomainIdOrderByRankAsc(Long responseDomainId);
 
+    public List<ResponseDomainCode> findByCodeIdOrderByResponseDomainIdAsc(Long codeId);
 }
