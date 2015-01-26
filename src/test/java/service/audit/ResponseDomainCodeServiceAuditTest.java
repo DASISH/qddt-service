@@ -21,6 +21,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 /**
+ * Test is provided to make sure that we still get the relevant
+ * data after moving from @EmbeddedId and @Embeddable composite
+ * keys to surrogate keys to provide Envers support.
+ *
  * @author Dag Østgulen Heradstveit
  */
 @RunWith(SpringJUnit4ClassRunner.class)

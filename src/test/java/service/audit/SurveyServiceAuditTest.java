@@ -15,6 +15,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+/**
+ * This test serves as an example that Hibernat Envers is actually
+ * working and that Spring Data Envers is picking up on it.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class SurveyServiceAuditTest {
