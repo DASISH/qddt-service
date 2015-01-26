@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.response;
 
-import no.nsd.qddt.domain.Agency;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
