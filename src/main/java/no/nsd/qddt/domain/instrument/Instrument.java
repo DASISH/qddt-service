@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.domain.User;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -24,6 +25,9 @@ public class Instrument extends AbstractEntity {
 
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
+
+    public Instrument() {
+    }
 
     public Survey getSurvey() {
         return survey;
@@ -65,6 +69,7 @@ public class Instrument extends AbstractEntity {
     public String toString() {
         return "Instrument{" +
                 "survey=" + survey +
+                super.toString() +
                 '}';
     }
 }

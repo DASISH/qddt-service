@@ -52,16 +52,19 @@ public class Question extends AbstractEntity {
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
+    public Question() {
 
-    @OneToMany(mappedBy = "question")
-    private Set<InstrumentQuestion> instrumentQuestionSet  = new HashSet<>();
-
-    public Set<InstrumentQuestion> getInstrumentQuestionSet() {
-        return instrumentQuestionSet;
     }
 
-    public void setInstrumentQuestionSet(Set<InstrumentQuestion> instrumentQuestionSet) {
-        this.instrumentQuestionSet = instrumentQuestionSet;
+    @OneToMany(mappedBy = "question")
+    private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
+
+    public Set<InstrumentQuestion> getInstrumentQuestions() {
+        return instrumentQuestions;
+    }
+
+    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
+        this.instrumentQuestions = instrumentQuestions;
     }
 
     public Question getParent() {
@@ -151,7 +154,7 @@ public class Question extends AbstractEntity {
             return false;
         if (instructionLabel != null ? !instructionLabel.equals(question.instructionLabel) : question.instructionLabel != null)
             return false;
-        if (instrumentQuestionSet != null ? !instrumentQuestionSet.equals(question.instrumentQuestionSet) : question.instrumentQuestionSet != null)
+        if (instrumentQuestions != null ? !instrumentQuestions.equals(question.instrumentQuestions) : question.instrumentQuestions != null)
             return false;
         if (parent != null ? !parent.equals(question.parent) : question.parent != null) return false;
         if (questionIntent != null ? !questionIntent.equals(question.questionIntent) : question.questionIntent != null)
@@ -176,24 +179,19 @@ public class Question extends AbstractEntity {
         result = 31 * result + (instructionLabel != null ? instructionLabel.hashCode() : 0);
         result = 31 * result + (instruction != null ? instruction.hashCode() : 0);
         result = 31 * result + (agency != null ? agency.hashCode() : 0);
-        result = 31 * result + (instrumentQuestionSet != null ? instrumentQuestionSet.hashCode() : 0);
+        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "parent=" + parent +
-                ", children=" + children +
-                ", rank=" + rank +
+                "rank=" + rank +
                 ", rankRationale='" + rankRationale + '\'' +
                 ", questionIntent='" + questionIntent + '\'' +
                 ", questionText='" + questionText + '\'' +
                 ", instructionLabel='" + instructionLabel + '\'' +
                 ", instruction='" + instruction + '\'' +
-                ", agency=" + agency +
-                ", instrumentQuestionSet=" + instrumentQuestionSet +
-                super.toString() +
                 '}';
     }
 }
