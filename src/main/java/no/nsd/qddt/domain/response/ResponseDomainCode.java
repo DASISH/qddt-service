@@ -23,7 +23,7 @@ public class ResponseDomainCode implements Serializable {
     private ResponseDomainCodeId pk = new ResponseDomainCodeId();
 
     @Column(name = "rank")
-    private String rank;
+    private int rank;
 
     public ResponseDomainCodeId getPk() {
         return pk;
@@ -33,11 +33,11 @@ public class ResponseDomainCode implements Serializable {
         this.pk = pk;
     }
 
-    public String getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(String rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

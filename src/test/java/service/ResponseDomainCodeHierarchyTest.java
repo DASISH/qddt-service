@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.response.ResponseDomainCodeId;
 import no.nsd.qddt.service.CodeService;
 import no.nsd.qddt.service.ResponseDomainCodeService;
 import no.nsd.qddt.service.ResponseDomainService;
+import no.nsd.qddt.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Stig Norland
  */
-@Transactional
+//@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class ResponseDomainCodeHierarchyTest {
@@ -38,16 +39,20 @@ public class ResponseDomainCodeHierarchyTest {
     @Autowired
     private CodeService codeService;
 
+    @Autowired
+    private UserService userService;
+
     private ResponseDomain responseDomain;
 
     @Before
     public void setUp() {
 
-        User user = new User("test@nsd.uib.no","password","Test User");
+        User user = userService.findByEmail("admin@example.org");
 
-        codeService.save(new Code("KVINNE","0",user));
-        codeService.save(new Code("MANN", "1", user));
-        codeService.save(new Code("TVEKJØNNET","2",user));
+
+        codeService.save(new Code( "KVINNE","0",user,"#KJØNN"));
+        codeService.save(new Code("MANN", "1", user,"#KJØNN"));
+        codeService.save(new Code("TVEKJØNNET","2",user,"#KJØNN"));
 
 
         responseDomain = new ResponseDomain();
@@ -60,6 +65,7 @@ public class ResponseDomainCodeHierarchyTest {
 
         Code lastCode = null;
         int i=0;
+        assertNotNull(codeService.findAll());
         for(Code code: codeService.findAll())
         {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();

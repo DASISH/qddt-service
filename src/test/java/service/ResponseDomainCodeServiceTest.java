@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Dag Østgulen Heradstveit
  */
-@Transactional
+//@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class ResponseDomainCodeServiceTest {
@@ -54,7 +54,7 @@ public class ResponseDomainCodeServiceTest {
     @Test
     public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
         ResponseDomainCode responseDomainCode = new ResponseDomainCode();
-        responseDomainCode.setRank("FIRST");
+        responseDomainCode.setRank(1);
         responseDomainCode.setCode(code);
         responseDomainCode.setResponseDomain(responseDomain);
         responseDomainCodeService.save(responseDomainCode);

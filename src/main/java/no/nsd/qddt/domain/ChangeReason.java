@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 @Table(name = "ChangeReason")
 public class ChangeReason {
 
+    public enum ChangeKind {CREATED, NEW_REVISION, TYPO, NEW_COPY_OF, IN_DEVELOPMENT}
+
     @Id
     @Column(name = "id", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)

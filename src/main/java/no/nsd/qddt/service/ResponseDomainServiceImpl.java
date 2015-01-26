@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public ResponseDomain save(ResponseDomain responseDomain) {
+        responseDomain.setCreated(LocalDateTime.now());
         return responseDomainRepository.save(responseDomain);
     }
 

@@ -191,7 +191,7 @@ public class Question extends AbstractEntity {
                 ", questionText='" + questionText + '\'' +
                 ", instructionLabel='" + instructionLabel + '\'' +
                 ", instruction='" + instruction + '\'' +
-                ", agentcy=" + agency +
+                ", agency=" + agency +
                 ", instrumentQuestionSet=" + instrumentQuestionSet +
                 super.toString() +
                 '}';

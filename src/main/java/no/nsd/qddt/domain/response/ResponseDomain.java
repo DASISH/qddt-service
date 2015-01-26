@@ -82,7 +82,7 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
     @Override
     public String toString() {
         return "ResponseDomain{" +
-                "agentcy=" + agency +
+                "agency=" + agency +
                 ", responseKind=" + responseKind +
                 super.toString() +
                 '}';

@@ -5,6 +5,8 @@ import no.nsd.qddt.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Dag Østgulen Heradstveit
  */
@@ -25,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment save(Comment comment) {
+        comment.setCreated(LocalDateTime.now());
         return commentRepository.save(comment);
     }
 

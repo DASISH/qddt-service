@@ -43,9 +43,40 @@ public abstract class AbstractEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "change_id")
-    private ChangeReason changeReason;
+
+    protected AbstractEntity(){}
+
+    /**
+     *
+     * @param user    Last owner (when saved current user will be new owner)
+     * @param changeComment Why this change?
+     * @param name    Usually this will hold the entity's name.
+     */
+    protected AbstractEntity(User user,String changeComment, String name){
+        this(user, LocalDateTime.now(), ChangeReason.ChangeKind.CREATED, changeComment, name);
+    }
+
+    /**
+     *
+     * @param user    Last owner (when saved current user will be new owner)
+     * @param created datetime of creation.
+     * @param kind    Kind of change this is.
+     * @param changeComment Why this change?
+     * @param name    Usually this will hold the entity's name.
+     */
+    protected  AbstractEntity(User user,LocalDateTime created, ChangeReason.ChangeKind kind, String changeComment, String name) {
+        setCreatedBy(user);
+        setCreated(created);
+        setChangeReason(kind);
+        setChangeComment(changeComment);
+        setName(name);
+    }
+
+
+
+//    @ManyToOne
+//    @JoinColumn(name = "change_id")
+    private ChangeReason.ChangeKind changeReason;
 
     private String changeComment;
 
@@ -85,11 +116,11 @@ public abstract class AbstractEntity {
         this.name = name;
     }
 
-    public ChangeReason getChangeReason() {
+    public ChangeReason.ChangeKind getChangeReason() {
         return changeReason;
     }
 
-    public void setChangeReason(ChangeReason changeReason) {
+    public void setChangeReason(ChangeReason.ChangeKind changeReason) {
         this.changeReason = changeReason;
     }
 

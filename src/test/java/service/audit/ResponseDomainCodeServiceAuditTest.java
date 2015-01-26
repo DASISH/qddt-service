@@ -30,11 +30,11 @@ public class ResponseDomainCodeServiceAuditTest {
     public void getAllRevisions() throws Exception {
         ResponseDomainCode rdc = responseDomainCodeService.findAll().get(0);
 
-        rdc.setRank("Second rank");
+        rdc.setRank(2);
         rdc = responseDomainCodeService.save(rdc);
-        rdc.setRank("Third rank");
+        rdc.setRank(3);
         rdc = responseDomainCodeService.save(rdc);
-        rdc.setRank("Fourth rank");
+        rdc.setRank(4);
         rdc = responseDomainCodeService.save(rdc);
 
 
@@ -44,11 +44,11 @@ public class ResponseDomainCodeServiceAuditTest {
     public void updateRefrenceTest() throws Exception {
         ResponseDomainCode rdc = responseDomainCodeService.findAll().get(0);
 
-        rdc.setRank("Second rank");
+        rdc.setRank(2);
         rdc = responseDomainCodeService.save(rdc);
-        rdc.setRank("Third rank");
+        rdc.setRank(3);
         rdc = responseDomainCodeService.save(rdc);
-        rdc.setRank("Fourth rank");
+        rdc.setRank(4);
         rdc = responseDomainCodeService.save(rdc);
 
 
@@ -57,6 +57,6 @@ public class ResponseDomainCodeServiceAuditTest {
         System.out.println(revision.getEntity());
 
         assertThat(revision.getEntity(), not(null));
-        assertThat(revision.getEntity().getRank(), is("Fourth rank"));
+        assertThat(revision.getEntity().getRank(), is(4));
     }
 }

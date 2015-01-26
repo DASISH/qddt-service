@@ -1,11 +1,14 @@
 package no.nsd.qddt.domain.response;
 
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.ChangeReason;
+import no.nsd.qddt.domain.User;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +47,21 @@ public class Code extends AbstractEntity implements Serializable {
     @NotAudited
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+
+    public Code(){}
+
+    /**
+     *
+     * @param category Variable name
+     * @param codeValue Variable value
+     * @param user last owner (when saved current user will be new owner)
+     * @param tags You can add any hashtags you want to associate this code with anything you like, separated with  space or comma
+     */
+    public Code( String category, String codeValue, User user, String tags ) {
+        super(user,"CREATED", tags);
+        setCategory(category);
+        setCodeValue(codeValue);
+    }
 
 
     public String getCategory() {
