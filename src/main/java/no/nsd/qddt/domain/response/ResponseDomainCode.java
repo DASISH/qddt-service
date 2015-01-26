@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.response;
 
+import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -11,26 +12,39 @@ import java.io.Serializable;
 @Audited
 @Entity
 @Table(name = "responseDomain_code")
-@AssociationOverrides(value = {
-        @AssociationOverride(name = "pk.responseDomain",
-                joinColumns = @JoinColumn(name = "responseDomain_id")),
-        @AssociationOverride(name = "pk.code",
-                joinColumns = @JoinColumn(name = "code_id"))
-})
-public class ResponseDomainCode implements Serializable {
+public class ResponseDomainCode extends AbstractEntity implements Serializable {
 
-    @EmbeddedId
-    private ResponseDomainCodeId pk = new ResponseDomainCodeId();
+    @Column(name = "code_id")
+    private Long codeId;
+
+    @Column(name = "responsedomain_id")
+    private Long responseCodeId;
 
     @Column(name = "rank")
     private String rank;
 
-    public ResponseDomainCodeId getPk() {
-        return pk;
+    public ResponseDomainCode() {
     }
 
-    public void setPk(ResponseDomainCodeId pk) {
-        this.pk = pk;
+    public ResponseDomainCode(Long responseCodeId, String rank) {
+        this.responseCodeId = responseCodeId;
+        this.rank = rank;
+    }
+
+    public Long getCodeId() {
+        return codeId;
+    }
+
+    public void setCodeId(Long codeId) {
+        this.codeId = codeId;
+    }
+
+    public Long getResponseCodeId() {
+        return responseCodeId;
+    }
+
+    public void setResponseCodeId(Long responseCodeId) {
+        this.responseCodeId = responseCodeId;
     }
 
     public String getRank() {
@@ -41,31 +55,17 @@ public class ResponseDomainCode implements Serializable {
         this.rank = rank;
     }
 
-    @Transient
-    public ResponseDomain getResponseDomain() {
-        return getPk().getResponseDomain();
-    }
-
-    public void setResponseDomain(ResponseDomain responseDomain) {
-        this.getPk().setResponseDomain(responseDomain);
-    }
-
-    @Transient
-    public Code getCode() {
-        return getPk().getCode();
-    }
-
-    public void setCode(Code code) {
-        this.getPk().setCode(code);
-    }
-
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         ResponseDomainCode that = (ResponseDomainCode) o;
 
-        if(getPk() != null ? !getPk().equals(that.getPk()): that.getPk() != null)
+        if (codeId != null ? !codeId.equals(that.codeId) : that.codeId != null) return false;
+        if (rank != null ? !rank.equals(that.rank) : that.rank != null) return false;
+        if (responseCodeId != null ? !responseCodeId.equals(that.responseCodeId) : that.responseCodeId != null)
             return false;
 
         return true;
@@ -73,13 +73,18 @@ public class ResponseDomainCode implements Serializable {
 
     @Override
     public int hashCode() {
-        return (getPk() != null ? getPk().hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 * result + (codeId != null ? codeId.hashCode() : 0);
+        result = 31 * result + (responseCodeId != null ? responseCodeId.hashCode() : 0);
+        result = 31 * result + (rank != null ? rank.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "ResponseDomainCode{" +
-                "pk=" + pk +
+                "codeId=" + codeId +
+                ", responseCodeId=" + responseCodeId +
                 ", rank='" + rank + '\'' +
                 '}';
     }
