@@ -1,21 +1,23 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Comment;
 import no.nsd.qddt.domain.Question;
+import no.nsd.qddt.repository.CommentRepository;
 import no.nsd.qddt.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("questionService")
-public class QuestionServiceImpl implements QuestionService{
+public class QuestionServiceImpl implements QuestionService {
 
     private QuestionRepository questionRepository;
 
@@ -25,25 +27,22 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Question findById(Long id) {
         return questionRepository.findOne(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Question> findAll() {
-        return questionRepository.findAll();
+        return null;
     }
 
     @Override
-    @Transactional(readOnly = false)
     public Question save(Question question) {
+        question.setCreated(LocalDateTime.now());
         return questionRepository.save(question);
     }
 
     @Override
-    @Transactional(readOnly = false)
     public void delete(Question question) {
         questionRepository.delete(question);
     }
