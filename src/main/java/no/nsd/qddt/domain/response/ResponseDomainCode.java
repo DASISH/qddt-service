@@ -94,4 +94,14 @@ public class ResponseDomainCode implements Serializable {
         result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseDomainCode{" +
+                "id=" + id +
+                ", rank=" + rank +
+                ", responseDomain= {" + responseDomain.getName() + " - " + responseDomain.getId() + "} "+
+                ", code={" + code.getName() + " - " + code.getId() + "} "+
+                '}';
+    }
 }

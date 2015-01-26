@@ -18,8 +18,8 @@ import java.util.UUID;
 @Table(name = "Attachment")
 public class Attachment  {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID guid;
+    @Column(name = "guid", columnDefinition = "BINARY(16)")
+    private UUID guid = UUID.randomUUID();
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

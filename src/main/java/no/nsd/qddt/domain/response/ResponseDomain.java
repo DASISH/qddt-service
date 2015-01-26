@@ -82,6 +82,7 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
         return "ResponseDomain{" +
                 "agency=" + agency +
                 ", responseKind=" + responseKind +
+                super.toString() +
                 '}';
     }
 }
