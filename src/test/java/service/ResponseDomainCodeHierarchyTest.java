@@ -9,6 +9,7 @@ import no.nsd.qddt.service.CodeService;
 import no.nsd.qddt.service.ResponseDomainCodeService;
 import no.nsd.qddt.service.ResponseDomainService;
 import no.nsd.qddt.service.UserService;
+import no.nsd.qddt.utils.builders.CodeBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +45,10 @@ public class ResponseDomainCodeHierarchyTest {
     public void setUp() {
 
 
-        code = codeService.save(new Code("Opel","0","#BILER"));
-        codeService.save(new Code("KVINNE","0","#KJØNN"));
-        codeService.save(new Code("MANN", "1", "#KJØNN"));
-        codeService.save(new Code("TVEKJØNNET","2","#KJØNN"));
+        code = codeService.save(new CodeBuilder().setCategory("Opel").setValue("0").setTag("#BILER").createCode());
+        codeService.save(new CodeBuilder().setCategory("KVINNE").setValue("0").setTag("#KJØNN").createCode());
+        codeService.save(new CodeBuilder().setCategory("MANN").setValue("1").setTag("#KJØNN").createCode());
+        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setValue("2").setTag("#KJØNN").createCode());
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("response domain Kjønn");
