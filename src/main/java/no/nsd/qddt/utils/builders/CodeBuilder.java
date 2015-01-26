@@ -32,7 +32,7 @@ public class CodeBuilder {
         code.setCategory(this.category);
         code.setCodeValue(this.value);
 
-        return ;
+        return code;
     }
 
 }
