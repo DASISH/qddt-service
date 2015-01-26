@@ -50,8 +50,17 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDomainCode findByResponseDomainId(Long responseDomainId) {
-        return responseDomainCodeRepository.findByResponseDomainId(responseDomainId);
+    public List<ResponseDomainCode> findByResponseDomainId(Long responseDomainId) {
+        return responseDomainCodeRepository.findByResponseDomainIdOrderByRankAsc(responseDomainId);
 
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseDomainCode> findByCodeId(Long codeId) {
+        return responseDomainCodeRepository.findByCodeIdOrderByResponseDomainIdAsc(codeId);
+
+    }
+
+
 }

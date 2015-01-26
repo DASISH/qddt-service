@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.history.Revision;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -12,6 +13,8 @@ import java.util.List;
 public interface CodeService {
 
     Code findById(Long id);
+
+    List<Code> findByHashTag(String tag);
 
     List<Code> findAll();
 

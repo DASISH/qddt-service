@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -29,6 +30,12 @@ public class CodeServiceImpl implements CodeService {
     @Transactional(readOnly = true)
     public Code findById(Long id) {
         return codeRepository.findOne(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Code> findByHashTag(String tag) {
+        return codeRepository.findByNameIgnoreCaseContains(tag);
     }
 
     @Override
