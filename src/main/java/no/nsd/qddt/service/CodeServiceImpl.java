@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -27,6 +28,11 @@ public class CodeServiceImpl implements CodeService {
     @Override
     public Code findById(Long id) {
         return codeRepository.findOne(id);
+    }
+
+    @Override
+    public List<Code> findByHashTag(String tag) {
+        return codeRepository.findByNameIgnoreCaseContains(tag);
     }
 
     @Override
