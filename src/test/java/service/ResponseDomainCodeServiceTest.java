@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -56,8 +58,8 @@ public class ResponseDomainCodeServiceTest {
 
     @Test
     public void findByResponseDomain() throws Exception {
-        ResponseDomainCode rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId());
-        assertEquals("Expected objects to be equal().", responseDomainCode, rdc);
+        Optional<ResponseDomainCode> rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).stream().findFirst();
+        assertEquals("Expected objects to be equal().", responseDomainCode.hashCode(), rdc.hashCode());
         assertEquals("Excepted rank to be 1", responseDomainCode.getRank(), 1);
     }
 }

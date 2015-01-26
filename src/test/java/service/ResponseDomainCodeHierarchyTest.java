@@ -36,44 +36,47 @@ public class ResponseDomainCodeHierarchyTest {
     @Autowired
     private CodeService codeService;
 
-    @Autowired
-    private UserService userService;
-
     private ResponseDomain responseDomain;
+
+    private  Code code;
 
     @Before
     public void setUp() {
 
-        User user = userService.findByEmail("admin@example.org");
 
-
-//        codeService.save(new Code( "KVINNE","0",user,"#KJØNN"));
-//        codeService.save(new Code("MANN", "1", user,"#KJØNN"));
-//        codeService.save(new Code("TVEKJØNNET","2",user,"#KJØNN"));
-
+        code = codeService.save(new Code("Opel","0","#BILER"));
+        codeService.save(new Code("KVINNE","0","#KJØNN"));
+        codeService.save(new Code("MANN", "1", "#KJØNN"));
+        codeService.save(new Code("TVEKJØNNET","2","#KJØNN"));
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("response domain Kjønn");
         responseDomain = responseDomainService.save(responseDomain);
+
     }
 
     @Test
     public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
 
-        Code lastCode = null;
+        codeService.findByHashTag("jØnn").forEach(System.out::println);
         int i=0;
-        assertNotNull(codeService.findAll());
-        for(Code code: codeService.findAll())
+        for(Code code: codeService.findByHashTag("#KjøNN"))
         {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
             responseDomainCode.setRank(i++);
             responseDomainCode.setCode(code);
             responseDomainCode.setResponseDomain(responseDomain);
             responseDomainCodeService.save(responseDomainCode);
-            lastCode = code;
         }
 
-//        assertNotNull(lastCode);
+        assertEquals(responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).size(),3);
+        responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
+        System.out.println("----");
+
+        assertEquals(responseDomainCodeService.findByCodeId(code.getId()).size(),0);
+        responseDomainCodeService.findByCodeId(code.getId()).forEach(System.out::println);
+
+
 //        // Fetch a fresh entity
 //        ResponseDomainCode rdc = responseDomainCodeService.findByPk(new ResponseDomainCodeId(responseDomain, lastCode));
 //
