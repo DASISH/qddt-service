@@ -3,6 +3,9 @@ package no.nsd.qddt.service;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.repository.InstrumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,5 +40,17 @@ public class InstrumentServiceImpl implements InstrumentService {
     @Transactional(readOnly = false)
     public Instrument save(Instrument instrument) {
         return instrumentRepository.save(instrument);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Instrument> findLastChange(Long id) {
+        return instrumentRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Revision<Integer, Instrument>> findAllRevisionsPageable(Instrument instrument, int min, int max) {
+        return instrumentRepository.findRevisions(instrument.getId(), new PageRequest(0, 10));
     }
 }
