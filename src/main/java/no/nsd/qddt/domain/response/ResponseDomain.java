@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.response;
 
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.Agency;
+import no.nsd.qddt.domain.Survey;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -31,6 +32,9 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
     @JoinColumn(name = "response_kind_id")
     private ResponseKind responseKind;
 
+    @OneToMany(mappedBy="responseDomain", cascade = CascadeType.ALL)
+    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+
     public Agency getAgency() {return agency;}
 
     public void setAgency(Agency agency) {this.agency = agency;}
@@ -41,6 +45,14 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
 
     public void setResponseKind(ResponseKind responseKind) {
         this.responseKind = responseKind;
+    }
+
+    public Set<ResponseDomainCode> getResponseDomainCodes() {
+        return responseDomainCodes;
+    }
+
+    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
+        this.responseDomainCodes = responseDomainCodes;
     }
 
     @Override

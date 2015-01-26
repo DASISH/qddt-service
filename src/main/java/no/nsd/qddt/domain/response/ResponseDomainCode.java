@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.response;
 
+import no.nsd.qddt.domain.Agency;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -18,22 +19,24 @@ public class ResponseDomainCode implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "code_id")
-    private Long codeId;
-
-    @Column(name = "responsedomain_id")
-    private Long responseDomainId;
-
     @Column(name = "rank")
     private String rank;
+
+    @ManyToOne
+    @JoinColumn(name = "responsedomain_id")
+    private ResponseDomain responseDomain;
+
+    @ManyToOne
+    @JoinColumn(name = "code_id")
+    private Code code;
 
     public ResponseDomainCode() {
     }
 
-    public ResponseDomainCode(Long codeId, Long responseDomainId, String rank) {
-        this.codeId = codeId;
-        this.responseDomainId = responseDomainId;
+    public ResponseDomainCode(String rank, ResponseDomain responseDomain, Code code) {
         this.rank = rank;
+        this.responseDomain = responseDomain;
+        this.code = code;
     }
 
     public Long getId() {
@@ -44,28 +47,28 @@ public class ResponseDomainCode implements Serializable {
         this.id = id;
     }
 
-    public Long getCodeId() {
-        return codeId;
-    }
-
-    public void setCodeId(Long codeId) {
-        this.codeId = codeId;
-    }
-
-    public Long getResponseDomainId() {
-        return responseDomainId;
-    }
-
-    public void setResponseDomainId(Long responseDomainId) {
-        this.responseDomainId = responseDomainId;
-    }
-
     public String getRank() {
         return rank;
     }
 
     public void setRank(String rank) {
         this.rank = rank;
+    }
+
+    public ResponseDomain getResponseDomain() {
+        return responseDomain;
+    }
+
+    public void setResponseDomain(ResponseDomain responseDomain) {
+        this.responseDomain = responseDomain;
+    }
+
+    public Code getCode() {
+        return code;
+    }
+
+    public void setCode(Code code) {
+        this.code = code;
     }
 
     @Override
@@ -75,10 +78,10 @@ public class ResponseDomainCode implements Serializable {
 
         ResponseDomainCode that = (ResponseDomainCode) o;
 
-        if (codeId != null ? !codeId.equals(that.codeId) : that.codeId != null) return false;
+        if (code != null ? !code.equals(that.code) : that.code != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (rank != null ? !rank.equals(that.rank) : that.rank != null) return false;
-        if (responseDomainId != null ? !responseDomainId.equals(that.responseDomainId) : that.responseDomainId != null)
+        if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
             return false;
 
         return true;
@@ -87,9 +90,9 @@ public class ResponseDomainCode implements Serializable {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (codeId != null ? codeId.hashCode() : 0);
-        result = 31 * result + (responseDomainId != null ? responseDomainId.hashCode() : 0);
         result = 31 * result + (rank != null ? rank.hashCode() : 0);
+        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
+        result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
     }
 
@@ -97,9 +100,9 @@ public class ResponseDomainCode implements Serializable {
     public String toString() {
         return "ResponseDomainCode{" +
                 "id=" + id +
-                ", codeId=" + codeId +
-                ", responseDomainId=" + responseDomainId +
                 ", rank='" + rank + '\'' +
+                ", responseDomain=" + responseDomain +
+                ", code=" + code +
                 '}';
     }
 }

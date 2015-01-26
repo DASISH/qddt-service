@@ -18,7 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -54,7 +53,7 @@ public class ResponseDomainCodeServiceAuditTest {
         responseDomain.setName("This is a response domain");
         responseDomain = responseDomainService.save(responseDomain);
 
-        responseDomainCode = responseDomainCodeService.save(new ResponseDomainCode(responseDomain.getId(), code.getId(), "1"));
+        responseDomainCode = responseDomainCodeService.save(new ResponseDomainCode("1", responseDomain, code));
 
         responseDomainCode.setRank("2");
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);

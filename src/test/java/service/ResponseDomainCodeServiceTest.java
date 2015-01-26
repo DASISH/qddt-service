@@ -15,7 +15,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -34,13 +34,13 @@ public class ResponseDomainCodeServiceTest {
     @Autowired
     private CodeService codeService;
 
-    private Code code;
-
     private ResponseDomain responseDomain;
+
+    private ResponseDomainCode responseDomainCode;
 
     @Before
     public void setUp() {
-        code = new Code();
+        Code code = new Code();
         code.setCategory("Test class code");
         code.setCodeValue("500");
         code = codeService.save(code);
@@ -48,24 +48,19 @@ public class ResponseDomainCodeServiceTest {
         responseDomain = new ResponseDomain();
         responseDomain.setName("This is a response domain");
         responseDomain = responseDomainService.save(responseDomain);
+
+        responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setRank("FIRST");
+        responseDomainCode.setCode(code);
+        responseDomainCode.setResponseDomain(responseDomain);
+        responseDomainCodeService.save(responseDomainCode);
+
     }
 
     @Test
-    public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
-        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
-        responseDomainCode.setRank("FIRST");
-        responseDomainCode.setCodeId(code.getId());
-        responseDomainCode.setResponseDomainId(responseDomain.getId());
-        responseDomainCodeService.save(responseDomainCode);
-
-        // Fetch a fresh entity
+    public void findByResponseDomain() throws Exception {
         ResponseDomainCode rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId());
-
-        // Check for everything that should be in the OM.
-        assertNotNull(rdc.getResponseDomainId());
-        assertNotNull(rdc.getCodeId());
-        assertNotNull(rdc.getRank());
-
-        System.out.println(rdc);
+        assertEquals("Expected objects to be equal().", responseDomainCode, rdc);
+        assertEquals("Excepted rank to be FIRST", responseDomainCode.getRank(), "FIRST");
     }
 }
