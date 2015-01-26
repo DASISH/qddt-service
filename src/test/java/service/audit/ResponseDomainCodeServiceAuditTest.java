@@ -17,8 +17,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test is provided to make sure that we still get the relevant
@@ -41,18 +40,16 @@ public class ResponseDomainCodeServiceAuditTest {
     private CodeService codeService;
 
     private ResponseDomainCode responseDomainCode;
-    private ResponseDomain responseDomain;
-    private Code code;
 
     @Before
     @Transactional
     public void setUp() {
-        code = new Code();
+        Code code = new Code();
         code.setCategory("Test class code");
         code.setCodeValue("500");
         code = codeService.save(code);
 
-        responseDomain = new ResponseDomain();
+        ResponseDomain responseDomain = new ResponseDomain();
         responseDomain.setName("This is a response domain");
         responseDomain = responseDomainService.save(responseDomain);
 
@@ -71,7 +68,8 @@ public class ResponseDomainCodeServiceAuditTest {
         Page<Revision<Integer, ResponseDomainCode>> revisions =
                 responseDomainCodeService.findAllRevisionsPageable(responseDomainCode, 0, 10);
 
-        assertThat(revisions.getNumberOfElements(), is(4));
+        assertEquals("Excepted four revisions.",
+                revisions.getNumberOfElements(), 4);
     }
 
     @Test
@@ -80,7 +78,8 @@ public class ResponseDomainCodeServiceAuditTest {
 
         System.out.println(revision.getRevisionNumber());
 
-        assertThat(revision.getEntity(), is(responseDomainCode));
-        assertThat(revision.getEntity().getRank(), is(4));
+        assertEquals("Excepted initial ResponseDomain Object.",
+                revision.getEntity(), responseDomainCode);
+        assertEquals("Expected rank to be 4.", revision.getEntity().getRank(), 4);
     }
 }
