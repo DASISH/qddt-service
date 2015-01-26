@@ -11,7 +11,7 @@ import java.util.Set;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
-@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+@Audited//(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "ResponseKind")
 public class ResponseKind {

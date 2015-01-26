@@ -4,7 +4,6 @@ import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.response.Code;
 import no.nsd.qddt.domain.response.ResponseDomain;
 import no.nsd.qddt.domain.response.ResponseDomainCode;
-import no.nsd.qddt.domain.response.ResponseDomainCodeId;
 import no.nsd.qddt.service.CodeService;
 import no.nsd.qddt.service.ResponseDomainCodeService;
 import no.nsd.qddt.service.ResponseDomainService;
@@ -55,16 +54,18 @@ public class ResponseDomainCodeServiceTest {
     public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
         ResponseDomainCode responseDomainCode = new ResponseDomainCode();
         responseDomainCode.setRank("FIRST");
-        responseDomainCode.setCode(code);
-        responseDomainCode.setResponseDomain(responseDomain);
+        responseDomainCode.setCodeId(code.getId());
+        responseDomainCode.setResponseDomainId(responseDomain.getId());
         responseDomainCodeService.save(responseDomainCode);
 
         // Fetch a fresh entity
-        ResponseDomainCode rdc = responseDomainCodeService.findByPk(new ResponseDomainCodeId(responseDomain, code));
+        ResponseDomainCode rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId());
 
         // Check for everything that should be in the OM.
-        assertNotNull(rdc.getResponseDomain());
-        assertNotNull(rdc.getCode());
-        assertNotNull(rdc.getPk());
+        assertNotNull(rdc.getResponseDomainId());
+        assertNotNull(rdc.getCodeId());
+        assertNotNull(rdc.getRank());
+
+        System.out.println(rdc);
     }
 }

@@ -1,21 +1,20 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.response.ResponseDomain;
 import no.nsd.qddt.domain.response.ResponseDomainCode;
-import no.nsd.qddt.domain.response.ResponseDomainCodeId;
 import no.nsd.qddt.repository.ResponseDomainCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
-@Service("ResponseDomainService")
+@Service("responseDomainCodeService")
 public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
 
     private ResponseDomainCodeRepository responseDomainCodeRepository;
@@ -26,28 +25,33 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResponseDomainCode> findAll() {
         return responseDomainCodeRepository.findAll();
     }
 
     @Override
-    public Revision<Integer, ResponseDomainCode> findLastChange(ResponseDomainCodeId responseDomainCodeId) {
-        return responseDomainCodeRepository.findLastChangeRevision(responseDomainCodeId);
+    @Transactional(readOnly = true)
+    public Revision<Integer, ResponseDomainCode> findLastChange(Long id) {
+        return responseDomainCodeRepository.findLastChangeRevision(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(ResponseDomainCode responseDomainCode, int min, int max) {
-        return responseDomainCodeRepository.findRevisions(responseDomainCode.getPk(), new PageRequest(min, max));
+        return responseDomainCodeRepository.findRevisions(responseDomainCode.getId(), new PageRequest(min, max));
     }
 
     @Override
+    @Transactional(readOnly = false)
     public ResponseDomainCode save(ResponseDomainCode responseDomainCode) {
         return responseDomainCodeRepository.save(responseDomainCode);
     }
 
     @Override
-    public ResponseDomainCode findByPk(ResponseDomainCodeId responseDomainCodeId) {
-        return responseDomainCodeRepository.findByPk(responseDomainCodeId);
-    }
+    @Transactional(readOnly = true)
+    public ResponseDomainCode findByResponseDomainId(Long responseDomainId) {
+        return responseDomainCodeRepository.findByResponseDomainId(responseDomainId);
 
+    }
 }

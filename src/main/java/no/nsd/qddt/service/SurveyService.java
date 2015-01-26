@@ -6,16 +6,19 @@ import org.springframework.data.history.Revision;
 
 import java.util.List;
 
+/**
+ * @author Dag Østgulen Heradstveit
+ */
 public interface SurveyService {
 
-    Survey findOne(Long id);
+    public Survey findOne(Long id);
 
-    List<Survey> findAll();
+    public List<Survey> findAll();
 
-    Survey save(Survey survey);
+    public Survey save(Survey survey);
 
-    Revision<Integer, Survey> findLastChange(Long id);
+    public Revision<Integer, Survey> findLastChange(Long id);
 
-    Page<Revision<Integer, Survey>> findAllRevisionsPageable(Survey survey, int min, int max);
+    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Survey survey, int min, int max);
 
 }

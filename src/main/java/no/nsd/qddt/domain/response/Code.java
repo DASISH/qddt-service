@@ -41,11 +41,6 @@ public class Code extends AbstractEntity implements Serializable {
     @Column(name = "code_value")
     private  String codeValue;
 
-    @NotAudited
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.code", cascade = CascadeType.ALL)
-    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
-
-
     public String getCategory() {
         return category;
     }
@@ -60,14 +55,6 @@ public class Code extends AbstractEntity implements Serializable {
 
     public void setCodeValue(String codeValue) {
         this.codeValue = codeValue;
-    }
-
-    public Set<ResponseDomainCode> getResponseDomainCodes() {
-        return responseDomainCodes;
-    }
-
-    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
-        this.responseDomainCodes = responseDomainCodes;
     }
 
     @Override

@@ -31,10 +31,6 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
     @JoinColumn(name = "response_kind_id")
     private ResponseKind responseKind;
 
-    @NotAudited
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.responseDomain", cascade = CascadeType.ALL)
-    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
-
     public Agency getAgency() {return agency;}
 
     public void setAgency(Agency agency) {this.agency = agency;}
@@ -47,14 +43,6 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
         this.responseKind = responseKind;
     }
 
-    public Set<ResponseDomainCode> getResponseDomainCodes() {
-        return responseDomainCodes;
-    }
-
-    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
-        this.responseDomainCodes = responseDomainCodes;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,8 +52,6 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
         ResponseDomain that = (ResponseDomain) o;
 
         if (agency != null ? !agency.equals(that.agency) : that.agency != null) return false;
-        if (responseDomainCodes != null ? !responseDomainCodes.equals(that.responseDomainCodes) : that.responseDomainCodes != null)
-            return false;
         if (responseKind != null ? !responseKind.equals(that.responseKind) : that.responseKind != null) return false;
 
         return true;
@@ -82,9 +68,8 @@ public class ResponseDomain extends AbstractEntity implements Serializable {
     @Override
     public String toString() {
         return "ResponseDomain{" +
-                "agentcy=" + agency +
+                "agency=" + agency +
                 ", responseKind=" + responseKind +
-                super.toString() +
                 '}';
     }
 }
