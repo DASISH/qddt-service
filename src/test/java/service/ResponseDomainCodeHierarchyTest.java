@@ -1,14 +1,12 @@
 package service;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.User;
 import no.nsd.qddt.domain.response.Code;
 import no.nsd.qddt.domain.response.ResponseDomain;
 import no.nsd.qddt.domain.response.ResponseDomainCode;
 import no.nsd.qddt.service.CodeService;
 import no.nsd.qddt.service.ResponseDomainCodeService;
 import no.nsd.qddt.service.ResponseDomainService;
-import no.nsd.qddt.service.UserService;
 import no.nsd.qddt.utils.builders.CodeBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +16,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Stig Norland
@@ -39,7 +36,7 @@ public class ResponseDomainCodeHierarchyTest {
 
     private ResponseDomain responseDomain;
 
-    private  Code code;
+    private Code code;
 
     @Before
     public void setUp() {
@@ -60,9 +57,8 @@ public class ResponseDomainCodeHierarchyTest {
     public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
 
         codeService.findByHashTag("jØnn").forEach(System.out::println);
-        int i=0;
-        for(Code code: codeService.findByHashTag("#KjøNN"))
-        {
+        int i = 0;
+        for (Code code : codeService.findByHashTag("#KjøNN")) {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
             responseDomainCode.setRank(i++);
             responseDomainCode.setCode(code);
@@ -74,19 +70,8 @@ public class ResponseDomainCodeHierarchyTest {
         responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
 
         // responseDomainCode doesn't have this code attached
-        assertEquals(responseDomainCodeService.findByCodeId(code.getId()).size(),0);
+        assertEquals(responseDomainCodeService.findByCodeId(code.getId()).size(), 0);
         responseDomainCodeService.findByCodeId(code.getId()).forEach(System.out::println);
 
-        codeService.findAllHashTags().forEach(System.out::println);
-
-
-//        // Fetch a fresh entity
-//        ResponseDomainCode rdc = responseDomainCodeService.findByPk(new ResponseDomainCodeId(responseDomain, lastCode));
-//
-//        // Check for everything that should be in the OM.
-//        assertNotNull(rdc.getResponseDomain());
-//        assertNotNull(rdc.getCode());
-//        assertNotNull(rdc.getPk());
-//        assertEquals(rdc.getRank(), 2);
     }
 }

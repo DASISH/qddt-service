@@ -2,6 +2,7 @@ package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.response.Code;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 
 import java.util.List;
@@ -22,8 +23,7 @@ public interface CodeService {
 
     public Revision<Integer, Code> findLastChange(Long id);
 
-    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Code study, int min, int max);
+    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Code study,Pageable pageable);
 
-    public List<String> findAllHashTags();
 
 }

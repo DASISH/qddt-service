@@ -5,8 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 /**
  * @author Stig Norland
  */
 @Repository
-public interface AttachmentRepository extends RevisionRepository<Attachment, Long, Integer>, JpaRepository<Attachment, Long> {}
+public interface AttachmentRepository extends RevisionRepository<Attachment, UUID, Integer>, JpaRepository<Attachment, UUID> {
+}

@@ -5,6 +5,7 @@ import no.nsd.qddt.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Page<Comment> findThreadByIdPageable(Long id, Pageable pageable) {
+        return commentRepository.findCommentByParentIdSortByRankAscPageable(id,pageable);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void delete(Comment comment) {
         commentRepository.delete(comment);
@@ -49,9 +55,4 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findLastChangeRevision(id);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Comment>> findAllRevisionsPageable(Comment comment, int page, int size) {
-        return commentRepository.findRevisions(comment.getId(), new PageRequest(page, size));
-    }
 }

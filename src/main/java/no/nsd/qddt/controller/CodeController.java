@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.Module;
-import no.nsd.qddt.service.ModuleService;
+import no.nsd.qddt.domain.response.Code;
+import no.nsd.qddt.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,36 +10,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
-
 /**
  * @author Stig Norland
  */
 @RestController
-@RequestMapping("/module")
-public class ModuleController {
+@RequestMapping("/code")
+public class CodeController {
 
-    private ModuleService moduleService;
+    private CodeService codeService;
 
     @Autowired
-    public ModuleController(ModuleService moduleService) {
-        this.moduleService = moduleService;
+    public CodeController(CodeService codeService){
+        this.codeService = codeService;
     }
 
-
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<Module> getAll() {
-        return moduleService.findAll();
+    public List<Code> getAll() {
+        return codeService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Module getOne(@PathVariable("id") Long id) {
-        return moduleService.findById(id);
-    }
+    public Code getOne(@PathVariable("id") Long id) {return codeService.findById(id);}
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Module create(Module module) {
-        return moduleService.save(module);
-    }
+    public Code create(Code agency) {return codeService.save(agency);}
 
 }
