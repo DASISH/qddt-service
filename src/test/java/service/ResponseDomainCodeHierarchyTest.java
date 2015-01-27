@@ -70,12 +70,14 @@ public class ResponseDomainCodeHierarchyTest {
             responseDomainCodeService.save(responseDomainCode);
         }
 
-        assertEquals(responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).size(),3);
+        assertEquals(responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).size(), 3);
         responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
-        System.out.println("----");
 
+        // responseDomainCode doesn't have this code attached
         assertEquals(responseDomainCodeService.findByCodeId(code.getId()).size(),0);
         responseDomainCodeService.findByCodeId(code.getId()).forEach(System.out::println);
+
+        codeService.findAllHashTags().forEach(System.out::println);
 
 
 //        // Fetch a fresh entity

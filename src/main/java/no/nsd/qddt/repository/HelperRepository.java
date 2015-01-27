@@ -1,8 +1,6 @@
 package no.nsd.qddt.repository;
 
 import no.nsd.qddt.domain.response.Code;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.history.RevisionRepository;
@@ -10,14 +8,14 @@ import org.springframework.data.repository.history.RevisionRepository;
 import java.util.List;
 
 /**
- * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-public interface CodeRepository   extends RevisionRepository<Code, Long, Integer>, JpaRepository<Code, Long> {
 
-    List<Code> findByNameIgnoreCaseContains(String tags);
+public interface  HelperRepository  extends RevisionRepository<String, Long, Integer>, JpaRepository<String, Long> {
+
 
     @Query("select distinct name from Code")
     List<String> findDistinctByName();
 
 }
+

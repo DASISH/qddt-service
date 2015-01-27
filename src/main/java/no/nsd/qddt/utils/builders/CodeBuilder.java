@@ -31,7 +31,6 @@ public class CodeBuilder {
         code.setName(this.tag);
         code.setCategory(this.category);
         code.setCodeValue(this.value);
-
         return code;
     }
 

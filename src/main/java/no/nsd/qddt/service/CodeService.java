@@ -23,4 +23,7 @@ public interface CodeService {
     public Revision<Integer, Code> findLastChange(Long id);
 
     public Page<Revision<Integer, Code>> findAllRevisionsPageable(Code study, int min, int max);
+
+    public List<String> findAllHashTags();
+
 }

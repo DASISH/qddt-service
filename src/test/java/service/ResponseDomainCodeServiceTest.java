@@ -58,8 +58,8 @@ public class ResponseDomainCodeServiceTest {
 
     @Test
     public void findByResponseDomain() throws Exception {
-        Optional<ResponseDomainCode> rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).stream().findFirst();
-        assertEquals("Expected objects to be equal().", responseDomainCode.hashCode(), rdc.hashCode());
+        ResponseDomainCode rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).get(0);
+        assertEquals("Expected objects to be equal().", responseDomainCode, rdc);
         assertEquals("Excepted rank to be 1", responseDomainCode.getRank(), 1);
     }
 }
