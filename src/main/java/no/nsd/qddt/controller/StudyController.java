@@ -30,4 +30,9 @@ public class StudyController {
     public Study getOne(@PathVariable("id") Long id) {
         return studyService.findOne(id);
     }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public Study create(Study study) {
+        return studyService.save(study);
+    }
 }
