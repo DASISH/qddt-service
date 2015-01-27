@@ -80,17 +80,6 @@ public class SurveyControllerTest {
                 .andExpect(status().isOk());
     }
 
-//{
-//    "id" : 4,
-//    "guid" : null,
-//    "created" : null,
-//    "createdBy" : null,
-//    "name" : "1321313213213",
-//    "changeReason" : null,
-//    "changeComment" : "123213",
-//    "survey" : null,
-//    "modules" : [ ]
-//}
     @Test
     public void findOneTest() throws Exception {
         Survey survey = surveyService.findById(1L);
@@ -101,7 +90,14 @@ public class SurveyControllerTest {
                 .content(rest.json(survey)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.id", is(survey.getId().intValue())))
+//                .andExpect(jsonPath("$.guid", is("null")))
+//                .andExpect(jsonPath("$.created", is("null")))
+//                .andExpect(jsonPath("$.createdBy", is("null")))
+//                .andExpect(jsonPath("$.name", is("null")))
+//                .andExpect(jsonPath("$.changeReason", is("null")))
+//                .andExpect(jsonPath("$.changeComment", is("null")))
                 .andExpect(jsonPath("$.surveyName", is(survey.getSurveyName())))
+//                .andExpect(jsonPath("$.agency", is("null")))
                 .andExpect(status().isOk());
     }
 }
