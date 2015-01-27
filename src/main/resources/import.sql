@@ -13,6 +13,13 @@ INSERT INTO user_authority (user_id, authority_id) VALUES(1, 2);
 // Set up user authorities
 INSERT INTO user_authority (user_id, authority_id) VALUES(2, 2);
 
+// POPULATE SURVEY DUMMY DATA
+INSERT INTO SURVEY(survey_name) VALUES('A SURVEY');
+INSERT INTO SURVEY(survey_name) VALUES('MORE SURVEY');
+INSERT INTO SURVEY(survey_name) VALUES('SUCH SURVEY');
+INSERT INTO SURVEY(survey_name) VALUES('MUCH WOW SURVEY');
+INSERT INTO SURVEY(survey_name) VALUES('DOGE SURVEY');
+
 // POPULATE THE RESPONSE PACKAGE WITH DATA.
 INSERT INTO CODE(category, code_value) VALUES('Dummy Category Alpha', 1);
 INSERT INTO CODE(category, code_value) VALUES('Dummy Category Beta', 2);

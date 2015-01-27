@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface SurveyService {
 
-    public Survey findOne(Long id);
+    public Survey findById(Long id);
 
     public List<Survey> findAll();
 
