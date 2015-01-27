@@ -1,8 +1,6 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Comment;
 import no.nsd.qddt.domain.Question;
-import no.nsd.qddt.repository.CommentRepository;
 import no.nsd.qddt.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
