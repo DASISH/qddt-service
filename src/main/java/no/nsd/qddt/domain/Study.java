@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Table(name = "study")
 public class Study extends AbstractEntity {
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="survey_id")
     public Survey survey;
@@ -53,8 +55,7 @@ public class Study extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 *  (survey != null ? survey.hashCode() : 0);
-        //result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
+        result = 31 * result + (survey != null ? survey.hashCode() : 0);
         return result;
     }
 

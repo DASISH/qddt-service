@@ -12,14 +12,13 @@ import java.util.List;
  */
 public interface SurveyService {
 
-    public Survey findById(Long id);
+    Survey findById(Long id);
 
-    public List<Survey> findAll();
+    List<Survey> findAll();
 
-    public Survey save(Survey survey);
+    Survey save(Survey survey);
 
-    public Revision<Integer, Survey> findLastChange(Long id);
+    Revision<Integer, Survey> findLastChange(Long id);
 
-    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Long id,Pageable pageable);
-
+    Page<Revision<Integer,Survey>> findAllRevisionsPageable(Long id, Pageable pageable);
 }

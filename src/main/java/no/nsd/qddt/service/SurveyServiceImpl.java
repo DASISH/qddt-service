@@ -56,7 +56,7 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Long id,Pageable pageable) {
+    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Long id, Pageable pageable) {
         return surveyRepository.findRevisions(id, pageable);
     }
 }

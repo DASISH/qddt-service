@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -44,7 +45,7 @@ public class SurveyServiceAuditTest {
 
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, Survey>> revisions = surveyService.findAllRevisionsPageable(
-                survey, 0, 10);
+                survey.getId(), new PageRequest(0, 10));
         assertThat(revisions.getNumberOfElements(), is(3));
 
         // Find all revisions

@@ -20,5 +20,5 @@ public interface StudyService {
 
    public Revision<Integer, Study> findLastChange(Long id);
 
-   public Page<Revision<Integer, Study>> findAllRevisionsPageable(Long id,Pageable pageable);
+   public Page<Revision<Integer, Study>> findAllRevisionsPageable(Long id, Pageable pageable);
 }

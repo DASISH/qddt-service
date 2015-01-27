@@ -71,7 +71,6 @@ public class Survey extends AbstractEntity{
         if (comments != null ? !comments.equals(survey.comments) : survey.comments != null) return false;
         if (this.getCreated() != null ? !this.getCreated().equals(survey.getCreated()) : survey.getCreated() != null) return false;
         if (this.getCreatedBy() != null ? !this.getCreatedBy().equals(survey.getCreatedBy()) : survey.getCreatedBy() != null) return false;
-        if (studies != null ? !studies.equals(survey.studies) : survey.studies != null) return false;
         if (surveyName != null ? !surveyName.equals(survey.surveyName) : survey.surveyName != null) return false;
 
         return true;
@@ -82,7 +81,6 @@ public class Survey extends AbstractEntity{
         int result = surveyName != null ? surveyName.hashCode() : 0;
         result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
         result = 31 * result + (this.getCreatedBy() != null ? this.getCreatedBy().hashCode() : 0);
-        result = 31 * result + (studies != null ? studies.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
