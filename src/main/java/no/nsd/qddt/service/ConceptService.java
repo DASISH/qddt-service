@@ -8,6 +8,7 @@ import org.springframework.data.history.Revision;
 /**
  * @author Stig Norland
  */
+
 public interface ConceptService {
 
     public Concept findById(Long id);
