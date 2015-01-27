@@ -30,6 +30,11 @@ public class ModuleController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Module getOne(@PathVariable("id") Long id) {
-        return moduleService.findOne(id);
+        return moduleService.findById(id);
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public Module create(Module module) {
+        return moduleService.save(module);
     }
 }
