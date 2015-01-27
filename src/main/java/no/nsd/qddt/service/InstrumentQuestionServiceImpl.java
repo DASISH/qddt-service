@@ -64,7 +64,7 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, InstrumentQuestion>> findAllRevisionsPageable(InstrumentQuestion instrumentQuestion, int min, int max) {
-        return instrumentQuestionRepository.findRevisions(instrumentQuestion.getId(), new PageRequest(0, 10));
+    public Page<Revision<Integer, InstrumentQuestion>> findAllRevisionsPageable(InstrumentQuestion instrumentQuestion, int page, int size) {
+        return instrumentQuestionRepository.findRevisions(instrumentQuestion.getId(), new PageRequest(page, size));
     }
 }

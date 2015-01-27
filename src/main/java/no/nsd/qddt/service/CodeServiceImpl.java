@@ -59,7 +59,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Code code, int min, int max) {
-        return codeRepository.findRevisions(code.getId(), new PageRequest(min, max));
+    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Code code, int page, int size) {
+        return codeRepository.findRevisions(code.getId(), new PageRequest(page, size));
     }
 }

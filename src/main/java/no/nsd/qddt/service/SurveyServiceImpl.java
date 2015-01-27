@@ -52,7 +52,7 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Survey survey, int min, int max) {
-        return surveyRepository.findRevisions(survey.getId(), new PageRequest(min, max));
+    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Survey survey,int page, int size) {
+        return surveyRepository.findRevisions(survey.getId(), new PageRequest(page, size));
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,7 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Question>> findAllRevisionsPageable(Question question, int min, int max) {
-        return questionRepository.findRevisions(question.getId(), new PageRequest(0, 10));
+    public Page<Revision<Integer, Question>> findAllRevisionsPageable(Question question, int page, int size) {
+        return questionRepository.findRevisions(question.getId(), new PageRequest(page, size));
     }
 }

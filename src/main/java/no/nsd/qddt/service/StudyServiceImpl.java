@@ -52,7 +52,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Study>> findAllRevisionsPageable(Study study, int min, int max) {
-        return studyRepository.findRevisions(study.getId(), new PageRequest(min, max));
+    public Page<Revision<Integer, Study>> findAllRevisionsPageable(Study study, int page, int size) {
+        return studyRepository.findRevisions(study.getId(), new PageRequest(page, size));
     }
 }

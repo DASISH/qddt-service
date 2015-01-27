@@ -46,7 +46,7 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
-    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(ResponseDomain responseDomain, int min, int max) {
-        return responseDomainRepository.findRevisions(responseDomain.getId(), new PageRequest(min, max));
+    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(ResponseDomain responseDomain, int page, int size) {
+        return responseDomainRepository.findRevisions(responseDomain.getId(), new PageRequest(page, size));
     }
 }

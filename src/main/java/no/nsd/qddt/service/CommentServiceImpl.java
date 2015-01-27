@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Comment>> findAllRevisionsPageable(Comment comment, int min, int max) {
-        return commentRepository.findRevisions(comment.getId(), new PageRequest(0, 10));
+    public Page<Revision<Integer, Comment>> findAllRevisionsPageable(Comment comment, int page, int size) {
+        return commentRepository.findRevisions(comment.getId(), new PageRequest(page, size));
     }
 }

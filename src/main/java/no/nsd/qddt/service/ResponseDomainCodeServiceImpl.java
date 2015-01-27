@@ -38,8 +38,8 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(ResponseDomainCode responseDomainCode, int min, int max) {
-        return responseDomainCodeRepository.findRevisions(responseDomainCode.getId(), new PageRequest(min, max));
+    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(ResponseDomainCode responseDomainCode, int page, int size) {
+        return responseDomainCodeRepository.findRevisions(responseDomainCode.getId(), new PageRequest(page, size));
     }
 
     @Override
