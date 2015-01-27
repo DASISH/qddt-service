@@ -1,6 +1,7 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.exception.SurveyNotFoundException;
 import no.nsd.qddt.repository.SurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,8 +28,10 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Survey findOne(Long id) {
-        return surveyRepository.findOne(id);
+    public Survey findById(Long id) {
+        return surveyRepository.findById(id).orElseThrow(
+                () -> new SurveyNotFoundException(String.valueOf(id))
+        );
     }
 
     @Override

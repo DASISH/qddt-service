@@ -31,7 +31,7 @@ public class QDDT extends SpringBootServletInitializer {
     }
 
     @Bean
-    public MappingJackson2HttpMessageConverter messageConverter() {
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter messageConverter =
                 new MappingJackson2HttpMessageConverter();
 

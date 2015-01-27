@@ -31,9 +31,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // INFO: http://en.wikipedia.org/wiki/Cross-site_request_forgery
         http
                 .csrf().disable();
-
-        http.authorizeRequests()
-                .antMatchers("/**").hasAnyRole("USER", "ADMIN");
+//
+//        http.authorizeRequests()
+//                .antMatchers("/**").hasAnyRole("USER", "ADMIN");
     }
 
     /**
