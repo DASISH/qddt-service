@@ -6,6 +6,7 @@ import no.nsd.qddt.repository.SurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Survey survey,int page, int size) {
-        return surveyRepository.findRevisions(survey.getId(), new PageRequest(page, size));
+    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Long id, Pageable pageable) {
+        return surveyRepository.findRevisions(id, pageable);
     }
 }

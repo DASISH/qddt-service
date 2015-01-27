@@ -2,7 +2,6 @@ package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.response.Code;
 import no.nsd.qddt.repository.CodeRepository;
-import no.nsd.qddt.repository.HelperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -23,7 +19,6 @@ import java.util.stream.Collectors;
 public class CodeServiceImpl implements CodeService {
 
     private CodeRepository codeRepository;
-    private HelperRepository helperRepository;
 
     @Autowired
     public CodeServiceImpl(CodeRepository codeRepository) {
@@ -45,8 +40,7 @@ public class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = true)
     public List<String> findAllHashTags() {
-        return  helperRepository.findDistinctByName();
-//        return codeRepository.findDistinctByName();
+        return codeRepository.findDistinctByName();
 //                .stream()
 //                .map(tags -> tags.split(", #"))
 //                .flatMap(Arrays::stream)

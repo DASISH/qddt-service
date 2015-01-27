@@ -5,6 +5,7 @@ import no.nsd.qddt.repository.StudyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Study>> findAllRevisionsPageable(Study study, int page, int size) {
-        return studyRepository.findRevisions(study.getId(), new PageRequest(page, size));
+    public Page<Revision<Integer, Study>> findAllRevisionsPageable(Long id, Pageable pageable) {
+        return studyRepository.findRevisions(id, pageable);
     }
 }
