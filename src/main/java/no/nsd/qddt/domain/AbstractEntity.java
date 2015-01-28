@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @author Stig Norland
  */
 @MappedSuperclass
-public class AbstractEntity {
+public abstract class AbstractEntity {
 
     @Id
     @Column(name = "id")
