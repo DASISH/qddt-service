@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.domain.User;
 import no.nsd.qddt.service.StudyService;
 import no.nsd.qddt.service.SurveyService;
+import no.nsd.qddt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -56,10 +57,13 @@ public class QDDT extends SpringBootServletInitializer {
     @Autowired
     private SurveyService surveyService;
 
+    @Autowired
+    private UserService userService;
+
     @PostConstruct
     public void init() {
         SampleApplicationData sampleApplicationData =
-                new SampleApplicationData(studyService, surveyService);
+                new SampleApplicationData(studyService, surveyService, userService);
     }
 
 
