@@ -1,14 +1,11 @@
 package no.nsd.qddt.domain.response;
 
-import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.ChangeReason;
-import no.nsd.qddt.domain.User;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Agency;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,7 +33,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "code")
-public class Code extends AbstractEntity implements Serializable {
+public class Code extends AbstractEntityAudit implements Serializable {
 
     @Column(name = "category")
     private String category;
@@ -48,6 +45,15 @@ public class Code extends AbstractEntity implements Serializable {
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     public Code(){}
+
+    @Override
+    /**
+     * May cause sideffects if there are users from different agencies on the same module
+     * i.e. Agency will change to whomever last saved object.
+     */
+    public Agency getAgency() {
+        return getCreatedBy().getAgency();
+    }
 
     public String getCategory() {
         return category;

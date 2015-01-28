@@ -1,10 +1,8 @@
 package no.nsd.qddt.domain.response;
 
-import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Agency;
-import no.nsd.qddt.domain.Survey;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,7 +20,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "responseDomain")
-public class ResponseDomain extends AbstractEntity implements Serializable {
+public class ResponseDomain extends AbstractEntityAudit implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "agency_id")

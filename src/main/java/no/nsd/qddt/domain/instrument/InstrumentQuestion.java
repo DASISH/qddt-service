@@ -1,7 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.ChangeReason;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Agency;
 import no.nsd.qddt.domain.Question;
 import org.hibernate.envers.Audited;
 
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @Audited
 @Entity
 @Table(name = "instrument_question")
-public class InstrumentQuestion extends AbstractEntity implements Serializable {
+public class InstrumentQuestion extends AbstractEntityAudit implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "instrument_id")
@@ -26,6 +27,12 @@ public class InstrumentQuestion extends AbstractEntity implements Serializable {
     private Question question;
 
     public InstrumentQuestion() {
+    }
+
+    @JsonIgnore
+    @Override
+    public Agency getAgency() {
+        return null;
     }
 
     public Instrument getInstrument() {

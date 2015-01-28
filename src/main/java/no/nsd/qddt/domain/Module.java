@@ -2,10 +2,8 @@ package no.nsd.qddt.domain;
 
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author Stig Norland
@@ -15,7 +13,17 @@ import javax.persistence.Table;
 @Audited
 @Entity
 @Table(name = "Module")
-public class Module extends AbstractEntity{
+public class Module extends AbstractEntityAudit {
+
+    @OneToMany
+    @JoinColumn(name="author_id")
+    private List<User> authors;
+
+    private String authorsAffiliation;
+
+    private String  moduleAbstract;
+
+    private Agency agency;
 
     @ManyToOne
     @JoinColumn(name="study_id")
@@ -27,6 +35,39 @@ public class Module extends AbstractEntity{
 
     public void setStudy(Study study) {
         this.study = study;
+    }
+
+    public List<User> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<User> authors) {
+        this.authors = authors;
+    }
+
+    public String getAuthorsAffiliation() {
+        return authorsAffiliation;
+    }
+
+    public void setAuthorsAffiliation(String authorsAffiliation) {
+        this.authorsAffiliation = authorsAffiliation;
+    }
+
+    public String getModuleAbstract() {
+        return moduleAbstract;
+    }
+
+    public void setModuleAbstract(String moduleAbstract) {
+        this.moduleAbstract = moduleAbstract;
+    }
+
+    @Override
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
     @Override

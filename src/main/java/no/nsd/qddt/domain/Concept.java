@@ -17,7 +17,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "Concept")
-public class Concept extends AbstractEntity{
+public class Concept extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name="module_id")
@@ -65,6 +65,11 @@ public class Concept extends AbstractEntity{
         this.comments = comments;
     }
 
+
+    @Override
+    public Agency getAgency() {
+        return getModule().getAgency();
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -20,7 +20,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "question")
-public class Question extends AbstractEntity {
+public class Question extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name="parent_id")

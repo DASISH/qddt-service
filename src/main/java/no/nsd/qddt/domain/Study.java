@@ -22,7 +22,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "study")
-public class Study extends AbstractEntity {
+public class Study extends AbstractEntityAudit {
 
     @JsonIgnore
     @ManyToOne
@@ -39,6 +39,13 @@ public class Study extends AbstractEntity {
     public void setSurvey(Survey survey) {
         this.survey = survey;
     }
+
+    @Override
+    public Agency getAgency() {
+        return getCreatedBy().getAgency();
+    }
+
+
 
     @Override
     public boolean equals(Object o) {

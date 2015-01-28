@@ -14,7 +14,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "survey")
-public class Survey extends AbstractEntity{
+public class Survey extends AbstractEntityAudit {
 
     @Column(name = "survey_name")
     private String surveyName;
@@ -25,16 +25,12 @@ public class Survey extends AbstractEntity{
     @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
 
     public Survey() {
     }
 
-    public Agency getAgency() {return agency;}
+    public Agency getAgency() {return getCreatedBy().getAgency();}
 
-    public void setAgency(Agency agency) {this.agency = agency;}
 
     public String getSurveyName() {
         return surveyName;

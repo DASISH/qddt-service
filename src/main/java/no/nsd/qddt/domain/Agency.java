@@ -1,15 +1,20 @@
 package no.nsd.qddt.domain;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.response.ResponseDomain;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-import javax.persistence.CascadeType;
+import javax.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -25,7 +30,31 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "agency")
-public class Agency extends AbstractEntity {
+public class Agency {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
+    @Column(name = "guid", columnDefinition = "BINARY(16)")
+    private UUID guid = UUID.randomUUID();
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    @Column(name = "created")
+    private LocalDateTime created;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    // Owner/Agency part of the URN
+    private User createdBy;
+
+    @Column(name = "name")
+    private String name;
+
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Survey> surveys = new HashSet<>();
@@ -36,48 +65,80 @@ public class Agency extends AbstractEntity {
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
-    public Set<Survey> getSurveys() {return surveys;}
+    public Long getId() {
+        return id;
+    }
 
-    public void setSurveys(Set<Survey> surveys) {this.surveys = surveys;}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Set<ResponseDomain> getResponses() {return responses;    }
+    public UUID getGuid() {
+        return guid;
+    }
 
-    public void setResponses(Set<ResponseDomain> responses) {this.responses = responses;    }
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
 
-    public Set<Question> getQuestions() {return questions;    }
+    public LocalDateTime getCreated() {
+        return created;
+    }
 
-    public void setQuestions(Set<Question> questions) {this.questions = questions;    }
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         Agency agency = (Agency) o;
 
-        if (questions != null ? !questions.equals(agency.questions) : agency.questions != null) return false;
-        if (responses != null ? !responses.equals(agency.responses) : agency.responses != null) return false;
-        if (surveys != null ? !surveys.equals(agency.surveys) : agency.surveys != null) return false;
+        if (created != null ? !created.equals(agency.created) : agency.created != null) return false;
+        if (createdBy != null ? !createdBy.equals(agency.createdBy) : agency.createdBy != null) return false;
+        if (guid != null ? !guid.equals(agency.guid) : agency.guid != null) return false;
+        if (id != null ? !id.equals(agency.id) : agency.id != null) return false;
+        if (name != null ? !name.equals(agency.name) : agency.name != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (surveys != null ? surveys.hashCode() : 0);
-        result = 31 * result + (responses != null ? responses.hashCode() : 0);
-        result = 31 * result + (questions != null ? questions.hashCode() : 0);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (guid != null ? guid.hashCode() : 0);
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Agency{" +
-                "surveys=" + surveys +
-                ", responses=" + responses +
-                ", questions=" + questions +
+                "id=" + id +
+                ", guid=" + guid +
+                ", created=" + created +
+                ", createdBy=" + createdBy +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

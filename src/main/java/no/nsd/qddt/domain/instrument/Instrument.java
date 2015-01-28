@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Agency;
 import no.nsd.qddt.domain.Survey;
-import no.nsd.qddt.domain.User;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -17,7 +17,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "instrument")
-public class Instrument extends AbstractEntity {
+public class Instrument extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name="survey_id")
@@ -43,6 +43,14 @@ public class Instrument extends AbstractEntity {
 
     public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
         this.instrumentQuestions = instrumentQuestions;
+    }
+    @Override
+    /**
+     * May cause sideffects if there are users from different agencies on the same module
+     * i.e. Agency will change to whomever last saved object.
+     */
+    public Agency getAgency() {
+        return getCreatedBy().getAgency();
     }
 
     @Override

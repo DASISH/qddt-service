@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.security.Authority;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.hibernate.envers.RevisionEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -45,6 +44,10 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
+    @ManyToOne
+    private Agency agency;
+
+
     public User() {
     }
 
@@ -52,6 +55,15 @@ public class User extends AbstractEntity {
         this.email = email;
         this.password = password;
         this.username = username;
+    }
+
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
     public String getUsername() {
