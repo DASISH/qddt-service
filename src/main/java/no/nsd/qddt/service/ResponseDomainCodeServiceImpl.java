@@ -74,4 +74,24 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
     }
 
 
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseDomainCode findById(UUID id) {
+
+        return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, ResponseDomainCode> findLastChange(Long id) {
+
+        return responseDomainCodeRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(Long id, Pageable pageable) {
+
+        return responseDomainCodeRepository.findRevisions(id,pageable);
+    }
 }

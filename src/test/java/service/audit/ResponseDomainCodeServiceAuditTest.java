@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,9 +68,9 @@ public class ResponseDomainCodeServiceAuditTest {
     @Test
     public void getAllRevisionsTest() throws Exception {
         Page<Revision<Integer, ResponseDomainCode>> revisions =
-                responseDomainCodeService.findAllRevisionsPageable(responseDomainCode, 0, 10);
+                responseDomainCodeService.findAllRevisionsPageable(responseDomainCode.getId(), new PageRequest(0,20 ));
 
-        assertEquals("Excepted four revisions.",
+                assertEquals("Excepted four revisions.",
                 revisions.getNumberOfElements(), 4);
     }
 

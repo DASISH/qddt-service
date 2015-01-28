@@ -11,7 +11,7 @@ import java.util.List;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-public interface ResponseDomainCodeService extends AbstractService<ResponseDomainCode> {
+public interface ResponseDomainCodeService extends AbstractServiceAudit<ResponseDomainCode> {
 
     public List<ResponseDomainCode> findByResponseDomainId(Long responseDomainId);
 
