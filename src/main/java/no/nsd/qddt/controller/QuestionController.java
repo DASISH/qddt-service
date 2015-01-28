@@ -14,16 +14,16 @@ import java.util.List;
 /**
  * @author Stig Norland
  */
-@RestController
-@RequestMapping("/question")
+//@RestController
+//@RequestMapping("/question")
 public class QuestionController {
 
-    private QuestionService questionService;
-
-    @Autowired
-    public QuestionController(QuestionService questionService){
-        this.questionService = questionService;
-    }
+//    private QuestionService questionService;
+//
+//    @Autowired
+//    public QuestionController(QuestionService questionService){
+//        this.questionService = questionService;
+//    }
 
     //    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
 //    public HttpEntity<PagedResources<InstrumentQuestion>> getThread(
@@ -33,21 +33,21 @@ public class QuestionController {
 //        return new ResponseEntity<>(assembler.toResource(instrumentQuestions), HttpStatus.OK);
 //    }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<Question> getAll() {
-        return questionService.findAll();
-    }
-
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Question getOne(@PathVariable("id") Long id) {
-
-        return questionService.findById(id);
-    }
-
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Question create(Question question) {
-
-        return questionService.save(question);
-    }
+//    @RequestMapping(value = "/list", method = RequestMethod.GET)
+//    public List<Question> getAll() {
+//        return questionService.findAll();
+//    }
+//
+//
+//    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+//    public Question getOne(@PathVariable("id") Long id) {
+//
+//        return questionService.findById(id);
+//    }
+//
+//    @RequestMapping(value = "/create", method = RequestMethod.POST)
+//    public Question create(Question question) {
+//
+//        return questionService.save(question);
+//    }
 }
