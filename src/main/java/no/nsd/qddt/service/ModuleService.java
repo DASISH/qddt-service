@@ -9,16 +9,6 @@ import java.util.List;
 /**
  * @author Stig Norland
  */
-public interface  ModuleService {
-
-    public Module findById(Long id);
-
-    public List<Module> findAll();
-
-    public Module save(Module module);
-
-    public Revision<Integer, Module> findLastChange(Long id);
-
-    public Page<Revision<Integer, Module>> findAllRevisionsPageable(Module module , int min, int max);
+public interface  ModuleService  extends  AbstractServiceAudit<Module>{
 
 }

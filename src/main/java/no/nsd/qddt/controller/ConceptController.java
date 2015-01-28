@@ -33,7 +33,7 @@ public class ConceptController {
     public HttpEntity<PagedResources<Concept>> getThread(
             @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
     {
-        Page<Concept> comments = conceptService.findByIdPageable(id, pageable);
+        Page<Concept> comments = conceptService.findSiblingsPageable(id, pageable);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 

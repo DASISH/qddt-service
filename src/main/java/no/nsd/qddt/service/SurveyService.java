@@ -9,16 +9,8 @@ import java.util.List;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
-public interface SurveyService {
+public interface SurveyService extends AbstractServiceAudit<Survey> {
 
-    Survey findById(Long id);
-
-    List<Survey> findAll();
-
-    Survey save(Survey survey);
-
-    Revision<Integer, Survey> findLastChange(Long id);
-
-    Page<Revision<Integer,Survey>> findAllRevisionsPageable(Long id, Pageable pageable);
 }

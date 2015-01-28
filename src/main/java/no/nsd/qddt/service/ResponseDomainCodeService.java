@@ -11,15 +11,7 @@ import java.util.List;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-public interface ResponseDomainCodeService {
-
-    public List<ResponseDomainCode> findAll();
-
-    public Revision<Integer, ResponseDomainCode> findLastChange(Long id);
-
-    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(ResponseDomainCode responseDomainCode, int min, int max);
-
-    public ResponseDomainCode save(ResponseDomainCode responseDomainCode);
+public interface ResponseDomainCodeService extends AbstractService<ResponseDomainCode> {
 
     public List<ResponseDomainCode> findByResponseDomainId(Long responseDomainId);
 

@@ -12,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("studyService")
 public class StudyServiceImpl implements StudyService {
@@ -28,9 +30,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Study findOne(Long id) {
-        return studyRepository.findOne(id);
-    }
+    public Study findById(Long id) { return studyRepository.findOne(id);   }
 
     @Override
     @Transactional(readOnly = true)
@@ -39,10 +39,25 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<Study> findAll(Pageable pageable) {  return studyRepository.findAll(pageable);   }
+
+    @Override
     @Transactional(readOnly = false)
-    public Study save(Study study) {
-        study.setCreated(LocalDateTime.now());
-        return studyRepository.save(study);
+    public Study save(Study instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return studyRepository.save(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Study instance) { studyRepository.delete(instance);    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Study findById(UUID id) {
+        return null;
     }
 
     @Override

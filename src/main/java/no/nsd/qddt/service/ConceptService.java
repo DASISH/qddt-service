@@ -9,18 +9,8 @@ import org.springframework.data.history.Revision;
  * @author Stig Norland
  */
 
-public interface ConceptService {
+public interface ConceptService  extends  AbstractServiceAudit<Concept>{
 
-    public Concept findById(Long id);
-
-    public Concept save(Concept concept);
-
-    public Page<Concept> findByIdPageable(Long id, Pageable pageable);
-
-    public void delete(Concept concept);
-
-    public Revision<Integer, Concept> findLastChange(Long id);
-
-    public Page<Revision<Integer, Concept>> findAllRevisionsPageable(Concept concept, Pageable pageable);
+    public Page<Concept> findSiblingsPageable(Long moduleId, Pageable pageable);
 
 }

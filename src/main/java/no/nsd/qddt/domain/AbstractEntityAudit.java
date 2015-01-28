@@ -30,7 +30,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
 //    @ManyToOne
 //    @JoinColumn(name = "change_id")
-    private ChangeReason.ChangeKind changeReason;
+    private ChangeKind changeReason;
 
     @Column(name = "change_comment")
     private String changeComment;
@@ -62,11 +62,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
 
-    public ChangeReason.ChangeKind getChangeReason() {
+    public ChangeKind getChangeReason() {
         return changeReason;
     }
 
-    public void setChangeReason(ChangeReason.ChangeKind changeReason) {
+    public void setChangeReason(ChangeKind changeReason) {
         this.changeReason = changeReason;
     }
 

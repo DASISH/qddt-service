@@ -5,14 +5,18 @@ import no.nsd.qddt.repository.InstrumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("instrumentService")
 public class InstrumentServiceImpl implements InstrumentService {
@@ -37,9 +41,26 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
+    public Page<Instrument> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
     @Transactional(readOnly = false)
-    public Instrument save(Instrument instrument) {
-        return instrumentRepository.save(instrument);
+    public Instrument save(Instrument instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return instrumentRepository.save(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Instrument instance) {instrumentRepository.delete(instance);   }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Instrument findById(UUID id) {
+        return null;
     }
 
     @Override
@@ -50,7 +71,8 @@ public class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Instrument>> findAllRevisionsPageable(Instrument instrument, int page, int size) {
-        return instrumentRepository.findRevisions(instrument.getId(), new PageRequest(page, size));
+    public Page<Revision<Integer, Instrument>> findAllRevisionsPageable( Long id, Pageable pageable) {
+        return instrumentRepository.findRevisions(id,pageable);
     }
+
 }

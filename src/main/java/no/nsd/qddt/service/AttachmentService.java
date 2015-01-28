@@ -11,16 +11,12 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface AttachmentService {
+public interface AttachmentService extends AbstractService<Attachment>{
 
-    Attachment findById(UUID id);
+    public Attachment findById(UUID id);
 
-    List<Attachment> findAll();
+    public Page<Attachment> findSiblings(Attachment instance, Pageable pageable);
 
-    Attachment save(Attachment attachment);
 
-    public Revision<Integer, Attachment> findLastChange(UUID id);
-
-    public Page<Revision<Integer, Attachment>> findAllRevisionsPageable(Attachment attachment, Pageable pageable);
 
 }

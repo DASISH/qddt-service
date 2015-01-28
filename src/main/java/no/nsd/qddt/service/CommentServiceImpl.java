@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("commentService")
 public class CommentServiceImpl implements CommentService {
@@ -32,28 +34,30 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<Comment> findAll() { return commentRepository.findAll();    }
+
+    @Override
+    public Page<Comment> findAll(Pageable pageable) { return commentRepository.findAll(pageable);    }
+
+    @Override
     @Transactional(readOnly = false)
-    public Comment save(Comment comment) {
-        comment.setCreated(LocalDateTime.now());
-        return commentRepository.save(comment);
+    public Comment save(Comment instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return commentRepository.save(instance);
     }
 
     @Override
-    public Page<Comment> findThreadByIdPageable(Long id, Pageable pageable) {
+    public Page<Comment> findSiblingsPageable(Long id, Pageable pageable) {
         return commentRepository.findCommentByParentOrderByIdAsc(
                 commentRepository.findOne(id), pageable);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(Comment comment) {
-        commentRepository.delete(comment);
+    public void delete(Comment instance) {
+        commentRepository.delete(instance);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Comment> findLastChange(Long id) {
-        return commentRepository.findLastChangeRevision(id);
-    }
 
 }

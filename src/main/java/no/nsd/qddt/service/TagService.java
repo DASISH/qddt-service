@@ -1,15 +1,18 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Agency;
+import no.nsd.qddt.domain.HashTag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 
 import java.util.List;
 
 /**
  * @author Stig Norland
  */
-public interface AgencyService extends  AbstractService<Agency>{
+public interface TagService {
+
+    List<HashTag> findAll();
+
+    public Page<HashTag> findAll (Pageable pageable);
 
 }

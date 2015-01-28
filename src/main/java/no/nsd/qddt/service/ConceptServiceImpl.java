@@ -9,6 +9,10 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 /**
  * @author Stig Norland
  */
@@ -30,21 +34,33 @@ public class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public Concept save(Concept concept) {
-        return conceptRepository.save(concept);
+    public List<Concept> findAll() {
+        return null;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Concept> findByIdPageable(Long id, Pageable pageable) {
-        return conceptRepository.findAll(pageable);
+    public Page<Concept> findAll(Pageable pageable) {
+        return null;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(Concept concept) {
-        conceptRepository.delete(concept);
+    public Concept save(Concept instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return conceptRepository.save(instance);
+    }
+
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Concept instance) {
+        conceptRepository.delete(instance);
+    }
+
+    @Override
+    public Concept findById(UUID id) {
+        return null;
     }
 
     @Override
@@ -55,7 +71,15 @@ public class ConceptServiceImpl implements ConceptService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Concept>> findAllRevisionsPageable(Concept concept, Pageable pageable) {
-        return conceptRepository.findRevisions(concept.getId(),pageable);
+    public Page<Revision<Integer, Concept>> findAllRevisionsPageable(Long id, Pageable pageable) {
+        return conceptRepository.findRevisions(id,pageable);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Concept> findSiblingsPageable(Long moduleId, Pageable pageable) {
+
+        return conceptRepository.findByModulePageable(moduleId,pageable);
+    }
+
 }

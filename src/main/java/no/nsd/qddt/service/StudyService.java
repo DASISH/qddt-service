@@ -9,16 +9,8 @@ import java.util.List;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
-public interface StudyService {
+public interface StudyService extends AbstractServiceAudit<Study> {
 
-   public Study findOne(Long id);
-
-   public List<Study> findAll();
-
-   public Study save(Study study);
-
-   public Revision<Integer, Study> findLastChange(Long id);
-
-   public Page<Revision<Integer, Study>> findAllRevisionsPageable(Long id, Pageable pageable);
 }

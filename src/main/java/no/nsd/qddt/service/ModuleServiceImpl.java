@@ -5,11 +5,14 @@ import no.nsd.qddt.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -37,9 +40,25 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<Module> findAll(Pageable pageable) { return moduleRepository.findAll(pageable); }
+
+    @Override
     @Transactional(readOnly = false)
-    public Module save(Module module) {
-        return moduleRepository.save(module);
+    public Module save(Module instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return moduleRepository.save(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Module instance) { moduleRepository.delete(instance);  }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Module findById(UUID id) {
+        return null;
     }
 
     @Override
@@ -50,7 +69,8 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Module>> findAllRevisionsPageable(Module module, int page, int size) {
-        return moduleRepository.findRevisions(module.getId(),new PageRequest(page, size));
+    public Page<Revision<Integer, Module>> findAllRevisionsPageable(Long id, Pageable pageable) {
+        return null;
     }
+
 }

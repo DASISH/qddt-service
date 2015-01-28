@@ -9,6 +9,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -37,20 +38,20 @@ public class AgencyServiceImpl implements AgencyService{
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<Agency> findAll(Pageable pageable) {return agencyRepository.findAll(pageable);}
+
+
+    @Override
     @Transactional(readOnly = false)
-    public Agency save(Agency code) {
-        return agencyRepository.save(code);
+    public Agency save(Agency instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return agencyRepository.save(instance);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Agency> findLastChange(Long id) {
-        return agencyRepository.findLastChangeRevision(id);
-    }
+    @Transactional(readOnly = false)
+    public void delete(Agency value) { agencyRepository.delete(value);   }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Agency>> findAllRevisionsPageable(Agency agency, Pageable pageable) {
-        return agencyRepository.findRevisions(agency.getId(),pageable);
-    }
 }

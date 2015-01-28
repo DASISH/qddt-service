@@ -34,8 +34,7 @@ public class Attachment  {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "change_id")
-    private ChangeReason changeReason;
+    private ChangeKind changeReason;
 
     private String changeComment;
 
@@ -77,11 +76,11 @@ public class Attachment  {
         this.name = name;
     }
 
-    public ChangeReason getChangeReason() {
+    public ChangeKind getChangeReason() {
         return changeReason;
     }
 
-    public void setChangeReason(ChangeReason changeReason) {
+    public void setChangeReason(ChangeKind changeReason) {
         this.changeReason = changeReason;
     }
 

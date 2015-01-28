@@ -3,10 +3,12 @@ package no.nsd.qddt.service;
 import no.nsd.qddt.domain.User;
 
 import java.util.Optional;
+/**
+ * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
+ */
 
-public interface UserService {
-
-    public User findById(Long id);
+public interface UserService extends AbstractService<User> {
 
     /**
      * Return a {@link no.nsd.qddt.domain.User} by email

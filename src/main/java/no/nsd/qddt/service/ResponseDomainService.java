@@ -8,17 +8,9 @@ import java.util.List;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
-public interface ResponseDomainService {
+public interface ResponseDomainService extends AbstractServiceAudit<ResponseDomain> {
 
-    public ResponseDomain findById(Long id);
-
-    public List<ResponseDomain> findAll();
-
-    ResponseDomain save(ResponseDomain responseDomain);
-
-    public Revision<Integer, ResponseDomain> findLastChange(Long id);
-
-    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(ResponseDomain responseDomain, int min, int max);
 
 }

@@ -5,14 +5,18 @@ import no.nsd.qddt.repository.ResponseDomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("responseDomainService")
 public class ResponseDomainServiceImpl implements ResponseDomainService {
@@ -25,28 +29,51 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseDomain findById(Long id) {
         return responseDomainRepository.findOne(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResponseDomain> findAll() {
         return responseDomainRepository.findAll();
     }
 
     @Override
-    public ResponseDomain save(ResponseDomain responseDomain) {
-        responseDomain.setCreated(LocalDateTime.now());
-        return responseDomainRepository.save(responseDomain);
+    @Transactional(readOnly = true)
+    public Page<ResponseDomain> findAll(Pageable pageable) {
+        return responseDomainRepository.findAll(pageable);
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public ResponseDomain save(ResponseDomain instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return responseDomainRepository.save(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(ResponseDomain instance) { responseDomainRepository.delete(instance);  }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseDomain findById(UUID id) {    return null;    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Revision<Integer, ResponseDomain> findLastChange(Long id) {
+
         return responseDomainRepository.findLastChangeRevision(id);
     }
 
     @Override
-    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(ResponseDomain responseDomain, int page, int size) {
-        return responseDomainRepository.findRevisions(responseDomain.getId(), new PageRequest(page, size));
+    @Transactional(readOnly = true)
+    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(Long id, Pageable pageable) {
+
+        return responseDomainRepository.findRevisions(id,pageable);
     }
+
 }

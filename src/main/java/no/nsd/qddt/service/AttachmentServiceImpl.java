@@ -9,6 +9,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,9 +28,17 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Attachment findById(UUID id) {
-        return attachmentRepository.findOne(id);
+    public Attachment findById(UUID id) {return attachmentRepository.findOne(id);}
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Attachment> findSiblings(Attachment instance, Pageable pageable) {
+        return attachmentRepository.findSiblingsPageable(instance,pageable);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Attachment findById(Long id) {return null;}
 
     @Override
     @Transactional(readOnly = true)
@@ -38,19 +47,19 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
+    public Page<Attachment> findAll(Pageable pageable) {return attachmentRepository.findAll(pageable);  }
+
+    @Override
     @Transactional(readOnly = false)
-    public Attachment save(Attachment attachment) {   return attachmentRepository.save(attachment);
+    public Attachment save(Attachment instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return attachmentRepository.save(instance);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Attachment> findLastChange(UUID id) {
-        return attachmentRepository.findLastChangeRevision(id);
+    @Transactional(readOnly = false)
+    public void delete(Attachment instance) { attachmentRepository.delete(instance);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Attachment>> findAllRevisionsPageable(Attachment attachment, Pageable pageable) {
-        return attachmentRepository.findRevisions(attachment.getGuid(),pageable);
-    }
 }

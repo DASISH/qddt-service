@@ -5,12 +5,14 @@ import no.nsd.qddt.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -27,24 +29,39 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Question findById(Long id) {
         return questionRepository.findOne(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Question> findAll() {
+        return questionRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Question> findAll(Pageable pageable) { return questionRepository.findAll(pageable);   }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Question save(Question instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return questionRepository.save(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Question instance) {
+        questionRepository.delete(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Question findById(UUID id) {
         return null;
-    }
-
-    @Override
-    public Question save(Question question) {
-        question.setCreated(LocalDateTime.now());
-        return questionRepository.save(question);
-    }
-
-    @Override
-    public void delete(Question question) {
-        questionRepository.delete(question);
     }
 
     @Override
@@ -55,7 +72,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Question>> findAllRevisionsPageable(Question question, int page, int size) {
-        return questionRepository.findRevisions(question.getId(), new PageRequest(page, size));
+    public Page<Revision<Integer, Question>> findAllRevisionsPageable(Long id, Pageable pageable) {
+        return questionRepository.findRevisions(id,pageable);
     }
+
 }

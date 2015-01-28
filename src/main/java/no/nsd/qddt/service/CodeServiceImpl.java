@@ -12,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("codeService")
 public class CodeServiceImpl implements CodeService {
@@ -34,6 +36,11 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional(readOnly = true)
+    //TODO implement findby uuid
+    public Code findById(UUID id) {return null; /*codeRepository.findOne(id);  */ }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Code> findByHashTag(String tag) {
         return codeRepository.findByNameIgnoreCaseContains(tag);
     }
@@ -45,11 +52,20 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
+    public Page<Code> findAll(Pageable pageable) {return codeRepository.findAll(pageable); }
+
+    @Override
     @Transactional(readOnly = false)
-    public Code save(Code code) {
-        code.setCreated(LocalDateTime.now());
-        return codeRepository.save(code);
+    public Code save(Code instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return codeRepository.save(instance);
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Code instance) { codeRepository.delete(instance);   }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -59,7 +75,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Code code, Pageable pageable) {
-        return codeRepository.findRevisions(code.getId(), pageable);
+    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Long id, Pageable pageable) {
+        return codeRepository.findRevisions(id, pageable);
     }
 }

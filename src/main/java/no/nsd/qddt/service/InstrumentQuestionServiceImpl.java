@@ -7,14 +7,18 @@ import no.nsd.qddt.repository.InstrumentQuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("instrumentQuestionService")
 public class InstrumentQuestionServiceImpl implements InstrumentQuestionService {
@@ -39,10 +43,23 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public InstrumentQuestion save(InstrumentQuestion instrumentQuestion) {
-        return instrumentQuestionRepository.save(instrumentQuestion);
+    @Transactional(readOnly = true)
+    public Page<InstrumentQuestion> findAll(Pageable pageable) {
+
+        return instrumentQuestionRepository.findAll(pageable);
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public InstrumentQuestion save(InstrumentQuestion instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return instrumentQuestionRepository.save(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(InstrumentQuestion instance) { instrumentQuestionRepository.delete(instance);    }
 
     @Override
     @Transactional(readOnly = true)
@@ -58,13 +75,20 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
 
     @Override
     @Transactional(readOnly = true)
+    public InstrumentQuestion findById(UUID id) {
+        return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Revision<Integer, InstrumentQuestion> findLastChange(Long id) {
         return instrumentQuestionRepository.findLastChangeRevision(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, InstrumentQuestion>> findAllRevisionsPageable(InstrumentQuestion instrumentQuestion, int page, int size) {
-        return instrumentQuestionRepository.findRevisions(instrumentQuestion.getId(), new PageRequest(page, size));
+    public Page<Revision<Integer, InstrumentQuestion>> findAllRevisionsPageable(Long id, Pageable pageable) {
+        return instrumentQuestionRepository.findRevisions(id,pageable);
     }
+
 }

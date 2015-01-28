@@ -11,19 +11,7 @@ import java.util.Optional;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface CodeService {
+public interface CodeService extends AbstractServiceAudit<Code>{
 
-    Code findById(Long id);
-
-    List<Code> findByHashTag(String tag);
-
-    List<Code> findAll();
-
-    Code save(Code code);
-
-    public Revision<Integer, Code> findLastChange(Long id);
-
-    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Code study,Pageable pageable);
-
-
+    public List<Code> findByHashTag(String tag);
 }

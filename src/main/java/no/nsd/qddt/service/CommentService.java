@@ -8,17 +8,8 @@ import org.springframework.data.history.Revision;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface CommentService {
+public interface CommentService extends AbstractService<Comment> {
 
-    public Comment findById(Long id);
+    public Page<Comment> findSiblingsPageable(Long id, Pageable pageable);
 
-    public Comment save(Comment comment);
-
-    public Page<Comment> findThreadByIdPageable(Long id, Pageable pageable);
-
-    public void delete(Comment comment);
-
-    public Revision<Integer, Comment> findLastChange(Long id);
-
-    //public Page<Revision<Integer, Comment>> findAllRevisionsPageable(Comment comment , Pageable pageable);
 }

@@ -30,27 +30,13 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "agency")
-public class Agency {
+public class Agency extends AbstractEntity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
     @Column(name = "guid", columnDefinition = "BINARY(16)")
     private UUID guid = UUID.randomUUID();
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    @Column(name = "created")
-    private LocalDateTime created;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    // Owner/Agency part of the URN
-    private User createdBy;
 
     @Column(name = "name")
     private String name;
@@ -65,13 +51,6 @@ public class Agency {
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public UUID getGuid() {
         return guid;
@@ -81,21 +60,6 @@ public class Agency {
         this.guid = guid;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
 
     public String getName() {
         return name;
@@ -112,10 +76,10 @@ public class Agency {
 
         Agency agency = (Agency) o;
 
-        if (created != null ? !created.equals(agency.created) : agency.created != null) return false;
-        if (createdBy != null ? !createdBy.equals(agency.createdBy) : agency.createdBy != null) return false;
+        if (super.getCreated() != null ? !super.getCreated().equals(agency.getCreated()) : agency.getCreated() != null) return false;
+        if (super.getCreatedBy() != null ? !super.getCreatedBy().equals(agency.getCreatedBy()) : agency.getCreatedBy() != null) return false;
         if (guid != null ? !guid.equals(agency.guid) : agency.guid != null) return false;
-        if (id != null ? !id.equals(agency.id) : agency.id != null) return false;
+        if (super.getId() != null ? !super.getId().equals(agency.getId()) : agency.getId() != null) return false;
         if (name != null ? !name.equals(agency.name) : agency.name != null) return false;
 
         return true;
@@ -123,10 +87,10 @@ public class Agency {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = super.getId() != null ? super.getId().hashCode() : 0;
         result = 31 * result + (guid != null ? guid.hashCode() : 0);
-        result = 31 * result + (created != null ? created.hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (super.getCreated() != null ? super.getCreated().hashCode() : 0);
+        result = 31 * result + (super.getCreatedBy() != null ? super.getCreatedBy().hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
@@ -134,10 +98,10 @@ public class Agency {
     @Override
     public String toString() {
         return "Agency{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", guid=" + guid +
-                ", created=" + created +
-                ", createdBy=" + createdBy +
+                ", created=" + super.getCreated() +
+                ", createdBy=" + super.getCreatedBy() +
                 ", name='" + name + '\'' +
                 '}';
     }

@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("surveyService")
 public class SurveyServiceImpl implements SurveyService {
@@ -42,10 +44,25 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<Survey> findAll(Pageable pageable) { return surveyRepository.findAll(pageable); }
+
+    @Override
     @Transactional(readOnly = false)
-    public Survey save(Survey survey) {
-        survey.setCreated(LocalDateTime.now());
-        return surveyRepository.save(survey);
+    public Survey save(Survey instance) {
+
+        instance.setCreated(LocalDateTime.now());
+        return surveyRepository.save(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Survey instance) { surveyRepository.delete(instance); }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Survey findById(UUID id) {
+        return null;
     }
 
     @Override

@@ -33,7 +33,7 @@ public class CommentController {
     public HttpEntity<PagedResources<Comment>> getThread(
             @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
     {
-        Page<Comment> comments = commentService.findThreadByIdPageable(id, pageable);
+        Page<Comment> comments = commentService.findSiblingsPageable(id, pageable);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 
