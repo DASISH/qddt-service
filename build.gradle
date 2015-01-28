@@ -20,7 +20,6 @@ idea {
     project {
         jdkName = '1.8'
         languageLevel = '1.8'
-        vcs = 'Git'
     }
 }
 

@@ -28,7 +28,7 @@ public class StudyController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Study getOne(@PathVariable("id") Long id) {
-        return studyService.findOne(id);
+        return studyService.findById(id);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)

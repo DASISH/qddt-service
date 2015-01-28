@@ -76,4 +76,18 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.findRevisions(id,pageable);
     }
 
+    @Override
+    public Page<Question> findSiblingsPageable(Long id, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<Question> findQuestionConceptPageable(Long id, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<Question> findQuestionInstrumentPageable(Long id, Pageable pageable) {
+        return null;
+    }
 }
