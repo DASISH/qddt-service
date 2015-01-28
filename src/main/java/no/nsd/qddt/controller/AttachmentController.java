@@ -22,7 +22,9 @@ public class AttachmentController {
     private AttachmentService attachmentService;
 
     @Autowired
-    AttachmentController(AttachmentService attachmentService){this.attachmentService = attachmentService;}
+    public AttachmentController(AttachmentService attachmentService){
+        this.attachmentService = attachmentService;
+    }
 
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)

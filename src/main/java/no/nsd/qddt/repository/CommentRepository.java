@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends RevisionRepository<Comment, Long, Integer>, JpaRepository<Comment, Long> {
 
-    Page<Comment> findCommentByParentIdSortByRankAscPageable(Long id, Pageable pageable);
+    Page<Comment> findCommentByParentOrderByIdAsc(Comment parent, Pageable pageable);
 }

@@ -40,7 +40,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Page<Comment> findThreadByIdPageable(Long id, Pageable pageable) {
-        return commentRepository.findCommentByParentIdSortByRankAscPageable(id,pageable);
+        return commentRepository.findCommentByParentOrderByIdAsc(
+                commentRepository.findOne(id), pageable);
     }
 
     @Override
