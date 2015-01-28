@@ -18,7 +18,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 @Configuration
 @EnableResourceServer
 @EnableAuthorizationServer
-class Oauth2Configuration extends AuthorizationServerConfigurerAdapter {
+public class Oauth2Configuration extends AuthorizationServerConfigurerAdapter {
 
     String applicationName = "qddt";
 
