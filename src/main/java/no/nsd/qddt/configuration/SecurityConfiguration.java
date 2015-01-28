@@ -31,9 +31,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // INFO: http://en.wikipedia.org/wiki/Cross-site_request_forgery
         http
                 .csrf().disable();
-//
-//        http.authorizeRequests()
-//                .antMatchers("/**").hasAnyRole("USER", "ADMIN");
+
+        http.authorizeRequests()
+                .antMatchers("/**").hasAnyRole("USER", "ADMIN");
     }
 
     /**
@@ -49,6 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /**
      * Create exceptions for the security filter.
+     *
      * @param web
      * @throws Exception
      */
@@ -56,7 +57,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                        //Open up the swagger json stuff.
                 .antMatchers("/console/*");
     }
 
@@ -74,10 +74,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected static class AUthenticationConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
         @Autowired
-        QDDTUserDetailsService qddtUserDetailsService;
+        private QDDTUserDetailsService qddtUserDetailsService;
 
         @Autowired
-        PasswordEncoder passwordEncoder;
+        private PasswordEncoder passwordEncoder;
 
         @Override
         public void init(AuthenticationManagerBuilder auth) throws Exception {
