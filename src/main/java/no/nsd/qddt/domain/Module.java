@@ -61,14 +61,14 @@ public class Module extends AbstractEntityAudit {
         this.moduleAbstract = moduleAbstract;
     }
 
-    @Override
-    public Agency getAgency() {
-        return agency;
-    }
+//    @Override
+//    public Agency getAgency() {
+//        return agency;
+//    }
 
-    public void setAgency(Agency agency) {
-        this.agency = agency;
-    }
+//    public void setAgency(Agency agency) {
+//        this.agency = agency;
+//    }
 
     @Override
     public boolean equals(Object o) {

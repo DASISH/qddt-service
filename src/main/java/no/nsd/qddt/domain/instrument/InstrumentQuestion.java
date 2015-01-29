@@ -29,11 +29,11 @@ public class InstrumentQuestion extends AbstractEntityAudit implements Serializa
     public InstrumentQuestion() {
     }
 
-    @JsonIgnore
-    @Override
-    public Agency getAgency() {
-        return null;
-    }
+//    @JsonIgnore
+//    @Override
+//    public Agency getAgency() {
+//        return null;
+//    }
 
     public Instrument getInstrument() {
         return instrument;

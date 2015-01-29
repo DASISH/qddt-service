@@ -40,10 +40,10 @@ public class Study extends AbstractEntityAudit {
         this.survey = survey;
     }
 
-    @Override
-    public Agency getAgency() {
-        return getCreatedBy().getAgency();
-    }
+//    @Override
+//    public Agency getAgency() {
+//        return getCreatedBy().getAgency();
+//    }
 
 
 

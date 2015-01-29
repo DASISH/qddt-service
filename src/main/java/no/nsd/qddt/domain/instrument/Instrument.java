@@ -44,14 +44,14 @@ public class Instrument extends AbstractEntityAudit {
     public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
         this.instrumentQuestions = instrumentQuestions;
     }
-    @Override
-    /**
-     * May cause sideffects if there are users from different agencies on the same module
-     * i.e. Agency will change to whomever last saved object.
-     */
-    public Agency getAgency() {
-        return getCreatedBy().getAgency();
-    }
+//    @Override
+//    /**
+//     * May cause sideffects if there are users from different agencies on the same module
+//     * i.e. Agency will change to whomever last saved object.
+//     */
+//    public Agency getAgency() {
+//        return getCreatedBy().getAgency();
+//    }
 
     @Override
     public boolean equals(Object o) {

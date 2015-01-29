@@ -39,7 +39,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     public void setGuid(UUID guid) {this.guid = guid;}
 
-    public abstract Agency getAgency();
+//    public abstract Agency getAgency();
 
     public String getVersion() {
         return version;
@@ -49,9 +49,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.version = version;
     }
 
-    public Urn getUrn() {
-        return new Urn(getAgency(), getGuid(), getVersion());
-    }
+//    public Urn getUrn() {
+//        return new Urn(getAgency(), getGuid(), getVersion());
+//    }
 
     public String getName() {
         return name;

@@ -66,10 +66,10 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
-    @Override
-    public Agency getAgency() {
-        return getModule().getAgency();
-    }
+//    @Override
+//    public Agency getAgency() {
+//        return getModule().getAgency();
+//    }
 
     @Override
     public boolean equals(Object o) {
