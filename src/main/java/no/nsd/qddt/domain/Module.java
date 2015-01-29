@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
 import org.hibernate.envers.Audited;
+import org.springframework.context.annotation.Conditional;
 
 import javax.persistence.*;
 import java.util.List;
@@ -30,6 +31,10 @@ public class Module extends AbstractEntityAudit {
     @ManyToOne
     @JoinColumn(name="study_id")
     private Study study;
+
+    @ManyToOne
+    @JoinColumn(name = "concept_id")
+    private Concept concept;
 
     public Study getStudy() {
         return study;
@@ -69,6 +74,14 @@ public class Module extends AbstractEntityAudit {
 
     public void setAgency(Agency agency) {
         this.agency = agency;
+    }
+
+    public Concept getConcept() {
+        return concept;
+    }
+
+    public void setConcept(Concept concept) {
+        this.concept = concept;
     }
 
     @Override
