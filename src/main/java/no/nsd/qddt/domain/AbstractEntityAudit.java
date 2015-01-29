@@ -14,11 +14,9 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class AbstractEntityAudit extends AbstractEntity {
 
-
     //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
     @Column(name = "guid", columnDefinition = "BINARY(16)")
     private UUID guid = UUID.randomUUID();
-
 
     @Column(name = "name")
     private String name;
@@ -28,8 +26,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     protected AbstractEntityAudit(){}
 
-//    @ManyToOne
-//    @JoinColumn(name = "change_id")
     private ChangeKind changeReason;
 
     @Column(name = "change_comment")

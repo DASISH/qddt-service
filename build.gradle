@@ -40,30 +40,24 @@ repositories {
 }
 
 dependencies {
-    compile(
-            "org.springframework.boot:spring-boot-starter-web",
-            "org.springframework.boot:spring-boot-starter-data-jpa",
-            "org.springframework.hateoas:spring-hateoas",
-            "org.springframework.boot:spring-boot-starter-security",
-            "org.springframework.security.oauth:spring-security-oauth2:2.0.0.RC2",
-            "org.jadira.usertype:usertype.extended:3.2.0.GA",
-            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0",
-
-            "com.h2database:h2:1.4.181",
-            "org.hibernate:hibernate-validator",
-            "org.hibernate:hibernate-core:4.3.8.Final",
-            "org.hibernate:hibernate-envers:4.3.8.Final",
-
-
-            "com.mangofactory:swagger-springmvc:0.9.0",
-            "org.ajar:swagger-spring-mvc-ui:0.2",
-
-            "net.logstash.logback:logstash-logback-encoder:3.5"
-    )
-
-    compile("org.springframework.data:spring-data-envers:0.2.0.RELEASE") {
-        //exclude module: "hibernate-envers"
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
     }
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.hateoas:spring-hateoas")
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.0.RC2")
+    compile("org.jadira.usertype:usertype.extended:3.2.0.GA")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0")
+    compile("com.h2database:h2:1.4.181")
+    compile("org.hibernate:hibernate-validator")
+    compile("org.hibernate:hibernate-core:4.3.8.Final")
+    compile("org.hibernate:hibernate-envers:4.3.8.Final")
+    compile("com.mangofactory:swagger-springmvc:0.9.0")
+    compile("org.ajar:swagger-spring-mvc-ui:0.2")
+    compile("net.logstash.logback:logstash-logback-encoder:3.5")
+    compile("org.springframework.data:spring-data-envers:0.2.0.RELEASE")
 
     testCompile(
             "junit:junit",

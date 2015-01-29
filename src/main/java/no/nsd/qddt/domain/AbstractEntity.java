@@ -1,17 +1,21 @@
 package no.nsd.qddt.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
+@Audited
 @MappedSuperclass
 public abstract class AbstractEntity {
 
@@ -26,6 +30,7 @@ public abstract class AbstractEntity {
     @Column(name = "created")
     private LocalDateTime created;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     // Owner/Agency part of the URN

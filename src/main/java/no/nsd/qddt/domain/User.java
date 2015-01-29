@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.security.Authority;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -35,6 +37,7 @@ public class User extends AbstractEntity {
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Survey> surveys = new HashSet<>();
 
