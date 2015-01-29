@@ -24,18 +24,18 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Transient
     private String version;
 
-    protected AbstractEntityAudit(){}
-
     private ChangeKind changeReason;
 
     @Column(name = "change_comment")
     private String changeComment;
 
+    protected AbstractEntityAudit() {
+
+    }
+
     public UUID getGuid() { return guid;}
 
     public void setGuid(UUID guid) {this.guid = guid;}
-
-//    public abstract Agency getAgency();
 
     public String getVersion() {
         return version;
@@ -45,10 +45,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.version = version;
     }
 
-//    public Urn getUrn() {
-//        return new Urn(getAgency(), getGuid(), getVersion());
-//    }
-
     public String getName() {
         return name;
     }
@@ -56,7 +52,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public ChangeKind getChangeReason() {
         return changeReason;
@@ -108,5 +103,4 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 ", changeReason=" + changeReason +
                 ", changeComment='" + changeComment + '\'';
     }
-
 }
