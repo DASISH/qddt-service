@@ -29,7 +29,7 @@ public class Survey extends AbstractEntityAudit {
     public Survey() {
     }
 
-    public Agency getAgency() {return getCreatedBy().getAgency();}
+//    public Agency getAgency() {return getCreatedBy().getAgency();}
 
 
     public String getSurveyName() {

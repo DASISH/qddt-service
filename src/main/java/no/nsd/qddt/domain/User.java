@@ -45,6 +45,7 @@ public class User extends AbstractEntity {
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToOne
+    @JoinColumn(name = "agency_id")
     private Agency agency;
 
 

@@ -23,6 +23,8 @@ public class Module extends AbstractEntityAudit {
 
     private String  moduleAbstract;
 
+    @ManyToOne
+    @JoinColumn(name = "agency_id")
     private Agency agency;
 
     @ManyToOne
@@ -61,14 +63,13 @@ public class Module extends AbstractEntityAudit {
         this.moduleAbstract = moduleAbstract;
     }
 
-//    @Override
-//    public Agency getAgency() {
-//        return agency;
-//    }
+    public Agency getAgency() {
+        return agency;
+    }
 
-//    public void setAgency(Agency agency) {
-//        this.agency = agency;
-//    }
+    public void setAgency(Agency agency) {
+        this.agency = agency;
+    }
 
     @Override
     public boolean equals(Object o) {

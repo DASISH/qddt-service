@@ -33,7 +33,6 @@ public class Attachment  {
 
     private String name;
 
-    @ManyToOne
     private ChangeKind changeReason;
 
     private String changeComment;
