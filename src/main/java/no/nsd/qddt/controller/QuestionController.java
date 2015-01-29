@@ -41,23 +41,23 @@ public class QuestionController {
     }
 
 
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Question>> getConceptThread(
-            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-    {
-
-        Page<Question> questions = questionService.findQuestionConceptPageable(id, pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Question>> getSiblingsThread(
-            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-    {
-
-        Page<Question> questions = questionService.findSiblingsPageable(id, pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-    }
+//    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Question>> getConceptThread(
+//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
+//    {
+//
+//        Page<Question> questions = questionService.findQuestionConceptPageable(id, pageable);
+//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
+//    }
+//
+//    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Question>> getSiblingsThread(
+//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
+//    {
+//
+//        Page<Question> questions = questionService.findSiblingsPageable(id, pageable);
+//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
+//    }
 
 
 

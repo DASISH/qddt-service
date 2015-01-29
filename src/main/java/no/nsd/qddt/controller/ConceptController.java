@@ -29,13 +29,13 @@ public class ConceptController {
         this.conceptService = conceptService;
     }
 
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Concept>> getThread(
-            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-    {
-        Page<Concept> comments = conceptService.findSiblingsPageable(id, pageable);
-        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
-    }
+//    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Concept>> getThread(
+//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
+//    {
+//        Page<Concept> comments = conceptService.findSiblingsPageable(id, pageable);
+//        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+//    }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

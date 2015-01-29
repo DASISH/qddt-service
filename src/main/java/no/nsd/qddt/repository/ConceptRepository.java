@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConceptRepository extends RevisionRepository<Concept, Long, Integer>, JpaRepository<Concept, Long> {
 
-    Page<Concept> findByModulePageable(Long id, Pageable pageable);
+    //Page<Concept> findByModulePageable(Long id, Pageable pageable);
 }

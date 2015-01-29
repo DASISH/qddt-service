@@ -42,8 +42,8 @@ public class Agency extends AbstractEntity {
     private String name;
 
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
-    private Set<Survey> surveys = new HashSet<>();
+//    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+//    private Set<Survey> surveys = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<ResponseDomain> responses = new HashSet<>();

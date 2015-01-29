@@ -75,11 +75,11 @@ public class ConceptServiceImpl implements ConceptService {
         return conceptRepository.findRevisions(id,pageable);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Concept> findSiblingsPageable(Long moduleId, Pageable pageable) {
-
-        return conceptRepository.findByModulePageable(moduleId,pageable);
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<Concept> findSiblingsPageable(Long moduleId, Pageable pageable) {
+//
+//        return conceptRepository.findByModulePageable(moduleId,pageable);
+//    }
 
 }

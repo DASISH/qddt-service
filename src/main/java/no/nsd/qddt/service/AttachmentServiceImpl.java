@@ -30,11 +30,11 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Transactional(readOnly = true)
     public Attachment findById(UUID id) {return attachmentRepository.findOne(id);}
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Attachment> findSiblings(Attachment instance, Pageable pageable) {
-        return attachmentRepository.findSiblingsPageable(instance,pageable);
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<Attachment> findSiblingsPageable(Attachment instance, Pageable pageable) {
+//        return attachmentRepository.findSiblingsPageable(instance,pageable);
+//    }
 
     @Override
     @Transactional(readOnly = true)

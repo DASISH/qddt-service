@@ -15,6 +15,6 @@ import java.util.UUID;
 @Repository
 public interface AttachmentRepository extends RevisionRepository<Attachment, UUID, Integer>, JpaRepository<Attachment, UUID> {
 
-    Page<Attachment> findSiblingsPageable(Attachment instance, Pageable pageable);
+    //Page<Attachment> findSiblingsPageable(Attachment instance, Pageable pageable);
 
 }
