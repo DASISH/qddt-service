@@ -52,4 +52,13 @@ public class SurveyServiceAuditTest {
         Revisions<Integer, Survey> wrapper = new Revisions<>(revisions.getContent());
         assertThat(wrapper.getLatestRevision(), is(revision));
     }
+
+
+    @Test
+    public void fetchRevisionWithSameRevisionEntitiesTest() throws Exception {
+        Survey survey = surveyService.findById(1L);
+
+        survey.getStudies().forEach(System.out::println);
+
+    }
 }

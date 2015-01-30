@@ -1,6 +1,5 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.instrument.InstrumentQuestion;
 import no.nsd.qddt.domain.response.ResponseDomainCode;
 import no.nsd.qddt.service.ResponseDomainCodeService;
 import org.springframework.beans.factory.annotation.Autowired;

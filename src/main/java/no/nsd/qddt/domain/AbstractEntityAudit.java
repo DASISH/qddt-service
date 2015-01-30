@@ -3,7 +3,9 @@ package no.nsd.qddt.domain;
 import org.hibernate.envers.Audited;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.util.UUID;
 
 /**

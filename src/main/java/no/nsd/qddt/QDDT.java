@@ -1,9 +1,6 @@
 package no.nsd.qddt;
 
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import no.nsd.qddt.domain.Study;
-import no.nsd.qddt.domain.Survey;
-import no.nsd.qddt.domain.User;
 import no.nsd.qddt.service.StudyService;
 import no.nsd.qddt.service.SurveyService;
 import no.nsd.qddt.service.UserService;

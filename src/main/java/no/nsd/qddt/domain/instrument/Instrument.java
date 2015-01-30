@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Agency;
 import no.nsd.qddt.domain.Survey;
 import org.hibernate.envers.Audited;
 

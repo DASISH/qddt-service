@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain;
 
 import org.hibernate.envers.Audited;
-import org.springframework.context.annotation.Conditional;
 
 import javax.persistence.*;
 import java.util.List;

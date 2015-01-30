@@ -1,8 +1,6 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.User;
-
-import java.util.Optional;
 /**
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland

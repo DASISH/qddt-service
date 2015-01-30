@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.instrument.InstrumentQuestion;
 import no.nsd.qddt.repository.InstrumentQuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;

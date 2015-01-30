@@ -1,9 +1,6 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.response.ResponseDomainCode;
-import org.springframework.data.domain.Page;
-import org.springframework.data.history.Revision;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

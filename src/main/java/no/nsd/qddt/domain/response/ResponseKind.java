@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.response;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
