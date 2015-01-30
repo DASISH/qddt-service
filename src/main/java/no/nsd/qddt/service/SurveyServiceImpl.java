@@ -75,4 +75,9 @@ public class SurveyServiceImpl implements SurveyService {
     public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Long id, Pageable pageable) {
         return surveyRepository.findRevisions(id, pageable);
     }
+
+    @Override
+    public Revision<Integer, Survey> findEntityAtRevision(Long id, Integer revision) {
+        return surveyRepository.findEntityAtRevision(id, revision);
+    }
 }

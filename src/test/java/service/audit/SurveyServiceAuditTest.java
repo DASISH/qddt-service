@@ -1,25 +1,31 @@
 package service.audit;
 
 import no.nsd.qddt.QDDT;
+import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.service.SurveyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import java.util.Set;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * This test serves as an example that Hibernat Envers is actually
  * working and that Spring Data Envers is picking up on it.
  */
+@IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class SurveyServiceAuditTest {
@@ -53,12 +59,13 @@ public class SurveyServiceAuditTest {
         assertThat(wrapper.getLatestRevision(), is(revision));
     }
 
-
     @Test
-    public void fetchRevisionWithSameRevisionEntitiesTest() throws Exception {
-        Survey survey = surveyService.findById(1L);
+    public void findSurveyByRevisionTest() throws Exception {
+        Revision<Integer, Survey> surveyRevision = surveyService.findLastChange(6L);
 
-        survey.getStudies().forEach(System.out::println);
+        Revision<Integer, Survey> survey = surveyService.findEntityAtRevision(
+                surveyRevision.getEntity().getId(), 3);
 
+        assertThat(survey.getRevisionNumber(), is(3));
     }
 }

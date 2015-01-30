@@ -19,7 +19,7 @@ public class Survey extends AbstractEntityAudit {
     @Column(name = "survey_name")
     private String surveyName;
 
-    @OneToMany(mappedBy="survey", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
     @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
@@ -28,9 +28,6 @@ public class Survey extends AbstractEntityAudit {
 
     public Survey() {
     }
-
-//    public Agency getAgency() {return getCreatedBy().getAgency();}
-
 
     public String getSurveyName() {
         return surveyName;

@@ -1,6 +1,7 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Survey;
+import org.springframework.data.history.Revision;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -8,4 +9,5 @@ import no.nsd.qddt.domain.Survey;
  */
 public interface SurveyService extends AbstractServiceAudit<Survey> {
 
+    public Revision<Integer, Survey> findEntityAtRevision(Long id, Integer revision);
 }
