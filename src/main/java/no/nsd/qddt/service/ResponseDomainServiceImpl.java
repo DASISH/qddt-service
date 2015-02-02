@@ -1,6 +1,8 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.response.ResponseDomain;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.ResponseDomainRepository;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -31,7 +34,9 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @Transactional(readOnly = true)
     public ResponseDomain findById(Long id) {
-        return responseDomainRepository.findOne(id);
+        return responseDomainRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, ResponseDomain.class)
+        );
     }
 
     @Override

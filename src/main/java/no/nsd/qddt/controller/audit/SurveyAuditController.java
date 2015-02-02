@@ -38,7 +38,7 @@ public class SurveyAuditController {
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Integer, Study> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+    public Revision<Integer, Survey> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
         return surveyService.findEntityAtRevision(id, revision);
     }
 

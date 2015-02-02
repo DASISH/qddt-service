@@ -47,4 +47,9 @@ public class QuestionServiceTest {
         assertThat(questionService.save(question).getChildren().size(), is(3));
     }
 
+    @Test
+    public void fail() throws Exception {
+        Question q = questionService.findById(1000L);
+    }
+
 }

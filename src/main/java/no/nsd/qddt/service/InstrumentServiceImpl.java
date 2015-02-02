@@ -1,6 +1,8 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.InstrumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -30,7 +33,9 @@ public class InstrumentServiceImpl implements InstrumentService {
     @Override
     @Transactional(readOnly = true)
     public Instrument findById(Long id) {
-        return instrumentRepository.findOne(id);
+        return instrumentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Instrument.class)
+        );
     }
 
     @Override

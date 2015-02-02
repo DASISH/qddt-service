@@ -1,5 +1,6 @@
 package no.nsd.qddt.repository;
 
+import no.nsd.qddt.domain.Agency;
 import no.nsd.qddt.domain.Question;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentQuestion;
@@ -13,7 +14,8 @@ import java.util.List;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-public interface InstrumentQuestionRepository extends EnversRevisionRepository<InstrumentQuestion, Long, Integer> {
+public interface InstrumentQuestionRepository extends AbstractRepository<InstrumentQuestion>,
+        EnversRevisionRepository<InstrumentQuestion, Long, Integer> {
 
     public List<InstrumentQuestion> findByInstrument(Instrument instrument);
 

@@ -1,7 +1,6 @@
 package controller;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.service.QDDTUserDetailsService;
 import no.nsd.qddt.service.SurveyService;
 import org.junit.Before;
@@ -21,9 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 import utils.HttpMockAuthSession;
 import utils.RestfulTestUtils;
 
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -33,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class SurveyControllerTest {
+public class StudyControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -64,34 +62,13 @@ public class SurveyControllerTest {
 
     @Test
     public void findByIdFailTest() throws Exception {
-        mvc.perform(get("/survey/-1").session(session))
+        mvc.perform(get("/study/-1").session(session))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void findByIdTest() throws Exception {
-        mvc.perform(get("/survey/1").session(session))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void findOneTest() throws Exception {
-        Survey survey = surveyService.findById(1L);
-
-        // ctx:/survey/id
-        mvc.perform(get("/survey/1").session(session)
-                .contentType(rest.getContentType())
-                .content(rest.json(survey)))
-                .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.id", is(survey.getId().intValue())))
-//                .andExpect(jsonPath("$.guid", is("null")))
-//                .andExpect(jsonPath("$.created", is("null")))
-//                .andExpect(jsonPath("$.createdBy", is("null")))
-//                .andExpect(jsonPath("$.name", is("null")))
-//                .andExpect(jsonPath("$.changeReason", is("null")))
-//                .andExpect(jsonPath("$.changeComment", is("null")))
-                .andExpect(jsonPath("$.surveyName", is(survey.getSurveyName())))
-//                .andExpect(jsonPath("$.agency", is("null")))
+        mvc.perform(get("/study/1").session(session))
                 .andExpect(status().isOk());
     }
 }

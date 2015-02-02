@@ -1,5 +1,6 @@
 package no.nsd.qddt.repository;
 
+import no.nsd.qddt.domain.Agency;
 import no.nsd.qddt.domain.User;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.stereotype.Repository;
@@ -10,7 +11,7 @@ import java.util.Optional;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-public interface UserRepository extends EnversRevisionRepository<User, Long, Integer> {
+public interface UserRepository extends AbstractRepository<User>, EnversRevisionRepository<User, Long, Integer> {
 
     /**
      * Return a user.

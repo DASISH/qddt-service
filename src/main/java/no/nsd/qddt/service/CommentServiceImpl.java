@@ -1,6 +1,7 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Comment;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -28,7 +30,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public Comment findById(Long id) {
-        return commentRepository.findOne(id);
+        return commentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Comment.class)
+        );
     }
 
     @Override

@@ -1,6 +1,8 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.User;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
 import no.nsd.qddt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,9 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public User findById(Long id) {
-        return userRepository.findOne(id); // throw new UserNotFoundException("Id");
+        return userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, User.class)
+        );
     }
 
     @Override
@@ -61,9 +65,8 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public User findByEmail(String email) {
-
         return userRepository.findByEmail(email).orElseThrow(
-                () -> new UserNotFoundException("email")
+                () -> new UserNotFoundException(email)
         );
     }
 }

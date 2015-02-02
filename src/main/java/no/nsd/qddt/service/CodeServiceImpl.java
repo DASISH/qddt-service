@@ -1,6 +1,7 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.response.Code;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.CodeRepository;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -31,7 +33,9 @@ public class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = true)
     public Code findById(Long id) {
-        return codeRepository.findOne(id);
+        return codeRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Code.class)
+        );
     }
 
     @Override

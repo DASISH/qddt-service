@@ -1,6 +1,8 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Concept;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.ConceptRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -31,7 +34,9 @@ public class ConceptServiceImpl implements ConceptService {
     @Override
     @Transactional(readOnly = true)
     public Concept findById(Long id) {
-        return conceptRepository.findOne(id);
+        return conceptRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Concept.class)
+        );
     }
 
     @Override

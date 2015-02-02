@@ -1,6 +1,7 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Attachment;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.AttachmentRepository;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -28,7 +30,9 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Attachment findById(UUID id) {return attachmentRepository.findOne(id);}
+    public Attachment findById(UUID id) {
+        throw new NotImplementedException();
+    }
 
 //    @Override
 //    @Transactional(readOnly = true)
@@ -39,7 +43,9 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     @Transactional(readOnly = true)
     public Attachment findById(Long id) {
-        throw new NotImplementedException();
+        return attachmentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Attachment.class)
+        );
     }
 
     @Override

@@ -1,6 +1,8 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.response.ResponseDomainCode;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.ResponseDomainCodeRepository;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -29,8 +32,11 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDomainCode findById(Long id) { return responseDomainCodeRepository.findOne(id); }
-
+    public ResponseDomainCode findById(Long id) {
+        return responseDomainCodeRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, ResponseDomainCode.class)
+        );
+    }
     @Override
     @Transactional(readOnly = true)
     public List<ResponseDomainCode> findAll() {

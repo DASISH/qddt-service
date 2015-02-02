@@ -1,6 +1,8 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.SurveyNotFoundException;
 import no.nsd.qddt.repository.SurveyRepository;
 import org.apache.commons.lang.NotImplementedException;
@@ -33,7 +35,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional(readOnly = true)
     public Survey findById(Long id) {
         return surveyRepository.findById(id).orElseThrow(
-                () -> new SurveyNotFoundException(String.valueOf(id))
+                () -> new ResourceNotFoundException(id, Survey.class)
         );
     }
 

@@ -1,6 +1,7 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Agency;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.AgencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Stig Norland
@@ -27,7 +29,9 @@ public class AgencyServiceImpl implements AgencyService {
     @Override
     @Transactional(readOnly = true)
     public Agency findById(Long id) {
-        return agencyRepository.findOne(id);
+        return agencyRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Agency.class)
+        );
     }
 
     @Override

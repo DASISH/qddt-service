@@ -1,5 +1,6 @@
 package no.nsd.qddt.repository;
 
+import no.nsd.qddt.domain.Agency;
 import no.nsd.qddt.domain.response.Code;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author Stig Norland
  */
 @Repository
-public interface CodeRepository extends EnversRevisionRepository<Code, Long, Integer> {
+public interface CodeRepository extends AbstractRepository<Code>, EnversRevisionRepository<Code, Long, Integer> {
 
     List<Code> findByNameIgnoreCaseContains(String tags);
 

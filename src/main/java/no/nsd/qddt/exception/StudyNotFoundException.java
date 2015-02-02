@@ -8,13 +8,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author Dag Østgulen Heradstveit
  */
+
+
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class SurveyNotFoundException extends RuntimeException{
+public class StudyNotFoundException extends RuntimeException {
 
-    private static final Logger logger = LoggerFactory.getLogger(SurveyNotFoundException.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudyNotFoundException.class);
 
-    public SurveyNotFoundException(String id) {
-        super("Could not find Survey with id " + id);
+    public StudyNotFoundException(String id) {
+        super("Could not find Study with id " + id);
         logger.error("Could not find Survey with id " + id);
     }
 }

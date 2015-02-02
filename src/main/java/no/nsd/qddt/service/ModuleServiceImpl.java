@@ -1,6 +1,8 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Module;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -29,7 +32,9 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     @Transactional(readOnly = true)
     public Module findById(Long id) {
-        return moduleRepository.findOne(id);
+        return moduleRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Module.class)
+        );
     }
 
     @Override

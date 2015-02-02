@@ -1,8 +1,10 @@
 package no.nsd.qddt.service;
 
+import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Question;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentQuestion;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.InstrumentQuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -32,7 +35,9 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
     @Override
     @Transactional(readOnly = true)
     public InstrumentQuestion findById(Long id) {
-        return instrumentQuestionRepository.findOne(id);
+        return instrumentQuestionRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, InstrumentQuestion.class)
+        );
     }
 
     @Override

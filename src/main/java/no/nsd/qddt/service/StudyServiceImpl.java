@@ -1,6 +1,7 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Study;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.StudyRepository;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,11 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Study findById(Long id) { return studyRepository.findOne(id);   }
+    public Study findById(Long id) {
+        return studyRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Study.class)
+        );
+    }
 
     @Override
     @Transactional(readOnly = true)
