@@ -6,8 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * General exception to catch all resources withouth their
- * wont exception handler.
+ * General exception to catch all resources not found by id.
  *
  * @author Dag Østgulen Heradstveit
  */
