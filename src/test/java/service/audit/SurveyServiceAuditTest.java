@@ -1,7 +1,6 @@
 package service.audit;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.service.SurveyService;
 import org.junit.Test;
@@ -14,11 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 /**

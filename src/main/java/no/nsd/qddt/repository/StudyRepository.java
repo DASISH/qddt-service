@@ -1,11 +1,12 @@
 package no.nsd.qddt.repository;
 
 import no.nsd.qddt.domain.Study;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.history.RevisionRepository;
+import org.springframework.data.envers.repository.support.EnversRevisionRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface StudyRepository  extends RevisionRepository<Study, Long, Integer>, JpaRepository<Study, Long> {
+@Repository
+public interface StudyRepository extends EnversRevisionRepository<Study, Long, Integer> {
 }
