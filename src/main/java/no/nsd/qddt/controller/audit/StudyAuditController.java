@@ -36,6 +36,11 @@ public class StudyAuditController {
         return studyService.findLastChange(id);
     }
 
+    @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
+    public Revision<Integer, Study> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+        return studyService.findEntityAtRevision(id, revision);
+    }
+
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
             @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler){

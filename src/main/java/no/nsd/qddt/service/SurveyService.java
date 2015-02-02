@@ -9,5 +9,4 @@ import org.springframework.data.history.Revision;
  */
 public interface SurveyService extends AbstractServiceAudit<Survey> {
 
-    public Revision<Integer, Survey> findEntityAtRevision(Long id, Integer revision);
 }
