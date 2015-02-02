@@ -40,7 +40,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Module> findAll(Pageable pageable) { return moduleRepository.findAll(pageable); }
+    public Page<Module> findAllPageable(Pageable pageable) { return moduleRepository.findAll(pageable); }
 
     @Override
     @Transactional(readOnly = false)
@@ -64,6 +64,12 @@ public class ModuleServiceImpl implements ModuleService {
     @Transactional(readOnly = true)
     public Revision<Integer, Module> findLastChange(Long id) {
         return moduleRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Module> findEntityAtRevision(Long id, Integer revision) {
+        return moduleRepository.findEntityAtRevision(id, revision);
     }
 
     @Override

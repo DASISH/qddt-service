@@ -40,7 +40,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = true)
-    public Page<User> findAll(Pageable pageable) { return userRepository.findAll(pageable);  }
+    public Page<User> findAllPageable(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
 
     @Override
     @Transactional(readOnly = false)
@@ -52,7 +54,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(User instance) { userRepository.delete(instance);   }
+    public void delete(User instance) {
+        userRepository.delete(instance);
+    }
 
     @Override
     @Transactional(readOnly = true)

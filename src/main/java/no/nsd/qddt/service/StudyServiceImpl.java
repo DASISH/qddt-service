@@ -2,6 +2,7 @@ package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.repository.StudyRepository;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +40,9 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Study> findAll(Pageable pageable) {  return studyRepository.findAll(pageable);   }
+    public Page<Study> findAllPageable(Pageable pageable) {
+        return studyRepository.findAll(pageable);
+    }
 
     @Override
     @Transactional(readOnly = false)
@@ -51,18 +54,26 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(Study instance) { studyRepository.delete(instance);    }
+    public void delete(Study instance) {
+        studyRepository.delete(instance);
+    }
 
     @Override
     @Transactional(readOnly = true)
     public Study findById(UUID id) {
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Study> findLastChange(Long id) {
         return studyRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Study> findEntityAtRevision(Long id, Integer revision) {
+        return studyRepository.findEntityAtRevision(id, revision);
     }
 
     @Override

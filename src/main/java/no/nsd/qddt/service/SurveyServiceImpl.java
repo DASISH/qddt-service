@@ -3,6 +3,7 @@ package no.nsd.qddt.service;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.exception.SurveyNotFoundException;
 import no.nsd.qddt.repository.SurveyRepository;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +45,9 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Survey> findAll(Pageable pageable) { return surveyRepository.findAll(pageable); }
+    public Page<Survey> findAllPageable(Pageable pageable) {
+        return surveyRepository.findAll(pageable);
+    }
 
     @Override
     @Transactional(readOnly = false)
@@ -56,12 +59,14 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(Survey instance) { surveyRepository.delete(instance); }
+    public void delete(Survey instance) {
+        surveyRepository.delete(instance);
+    }
 
     @Override
     @Transactional(readOnly = false)
     public Survey findById(UUID id) {
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override

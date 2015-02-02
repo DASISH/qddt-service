@@ -14,7 +14,7 @@ public interface AbstractService<T> {
 
     public List<T> findAll();
 
-    public Page<T> findAll(Pageable pageable);
+    public Page<T> findAllPageable(Pageable pageable);
 
     public T save(T instance);
 

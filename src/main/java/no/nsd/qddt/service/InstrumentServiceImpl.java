@@ -40,7 +40,7 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public Page<Instrument> findAll(Pageable pageable) {
+    public Page<Instrument> findAllPageable(Pageable pageable) {
         return null;
     }
 
@@ -66,6 +66,12 @@ public class InstrumentServiceImpl implements InstrumentService {
     @Transactional(readOnly = true)
     public Revision<Integer, Instrument> findLastChange(Long id) {
         return instrumentRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Instrument> findEntityAtRevision(Long id, Integer revision) {
+        return instrumentRepository.findEntityAtRevision(id, revision);
     }
 
     @Override

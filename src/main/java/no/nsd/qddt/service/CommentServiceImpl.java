@@ -32,10 +32,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> findAll() { return commentRepository.findAll();    }
+    public List<Comment> findAll() {
+        return commentRepository.findAll();
+    }
 
     @Override
-    public Page<Comment> findAll(Pageable pageable) { return commentRepository.findAll(pageable);    }
+    public Page<Comment> findAllPageable(Pageable pageable) {
+        return commentRepository.findAll(pageable);
+    }
 
     @Override
     @Transactional(readOnly = false)

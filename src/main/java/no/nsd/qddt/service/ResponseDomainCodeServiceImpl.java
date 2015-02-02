@@ -2,6 +2,7 @@ package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.response.ResponseDomainCode;
 import no.nsd.qddt.repository.ResponseDomainCodeRepository;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +39,7 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ResponseDomainCode> findAll(Pageable pageable) {
+    public Page<ResponseDomainCode> findAllPageable(Pageable pageable) {
 
         return responseDomainCodeRepository.findAll(pageable);
     }
@@ -75,13 +76,6 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDomainCode findById(UUID id) {
-
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Revision<Integer, ResponseDomainCode> findLastChange(Long id) {
 
         return responseDomainCodeRepository.findLastChangeRevision(id);
@@ -89,8 +83,13 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(Long id, Pageable pageable) {
+    public Revision<Integer, ResponseDomainCode> findEntityAtRevision(Long id, Integer revision) {
+        return responseDomainCodeRepository.findEntityAtRevision(id, revision);
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(Long id, Pageable pageable) {
         return responseDomainCodeRepository.findRevisions(id,pageable);
     }
 }

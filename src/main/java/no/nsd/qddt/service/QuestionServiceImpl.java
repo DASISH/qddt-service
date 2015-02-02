@@ -41,7 +41,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Question> findAll(Pageable pageable) { return questionRepository.findAll(pageable);   }
+    public Page<Question> findAllPageable(Pageable pageable) { return questionRepository.findAll(pageable);   }
 
     @Override
     @Transactional(readOnly = false)
@@ -67,6 +67,12 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public Revision<Integer, Question> findLastChange(Long id) {
         return questionRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Question> findEntityAtRevision(Long id, Integer revision) {
+        return questionRepository.findEntityAtRevision(id, revision);
     }
 
     @Override

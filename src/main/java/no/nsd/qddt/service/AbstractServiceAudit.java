@@ -1,5 +1,6 @@
 package no.nsd.qddt.service;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
@@ -17,7 +18,9 @@ public interface AbstractServiceAudit<T> extends AbstractService<T> {
      * @param id UUID
      * @return T
      */
-    public T findById(UUID id);
+    default public T findById(UUID id) {
+        throw new NotImplementedException();
+    }
 
     /**
      * Find the latest changed revision.

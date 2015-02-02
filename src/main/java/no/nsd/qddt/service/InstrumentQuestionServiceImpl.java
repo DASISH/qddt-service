@@ -43,7 +43,7 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<InstrumentQuestion> findAll(Pageable pageable) {
+    public Page<InstrumentQuestion> findAllPageable(Pageable pageable) {
 
         return instrumentQuestionRepository.findAll(pageable);
     }
@@ -58,7 +58,9 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(InstrumentQuestion instance) { instrumentQuestionRepository.delete(instance);    }
+    public void delete(InstrumentQuestion instance) {
+        instrumentQuestionRepository.delete(instance);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -82,6 +84,12 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
     @Transactional(readOnly = true)
     public Revision<Integer, InstrumentQuestion> findLastChange(Long id) {
         return instrumentQuestionRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, InstrumentQuestion> findEntityAtRevision(Long id, Integer revision) {
+        return instrumentQuestionRepository.findEntityAtRevision(id, revision);
     }
 
     @Override

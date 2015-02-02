@@ -15,6 +15,7 @@ import java.util.UUID;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 
 @Service("conceptService")
@@ -34,13 +35,15 @@ public class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Concept> findAll() {
-        return null;
+        return conceptRepository.findAll();
     }
 
     @Override
-    public Page<Concept> findAll(Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<Concept> findAllPageable(Pageable pageable) {
+        return conceptRepository.findAll(pageable);
     }
 
     @Override
@@ -51,7 +54,6 @@ public class ConceptServiceImpl implements ConceptService {
         return conceptRepository.save(instance);
     }
 
-
     @Override
     @Transactional(readOnly = false)
     public void delete(Concept instance) {
@@ -59,6 +61,7 @@ public class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Concept findById(UUID id) {
         return null;
     }
@@ -67,6 +70,12 @@ public class ConceptServiceImpl implements ConceptService {
     @Transactional(readOnly = true)
     public Revision<Integer, Concept> findLastChange(Long id) {
         return conceptRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Concept> findEntityAtRevision(Long id, Integer revision) {
+        return conceptRepository.findEntityAtRevision(id, revision);
     }
 
     @Override

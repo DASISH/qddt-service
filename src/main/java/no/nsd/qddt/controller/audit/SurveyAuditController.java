@@ -1,5 +1,6 @@
 package no.nsd.qddt.controller.audit;
 
+import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class SurveyAuditController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, Survey> getLastRevision(@PathVariable("id") Long id) {
         return surveyService.findLastChange(id);
+    }
+
+    @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
+    public Revision<Integer, Study> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+        return surveyService.findEntityAtRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)

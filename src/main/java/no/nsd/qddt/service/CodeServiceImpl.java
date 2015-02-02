@@ -2,6 +2,7 @@ package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.response.Code;
 import no.nsd.qddt.repository.CodeRepository;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,9 @@ public class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = true)
     //TODO implement findby uuid
-    public Code findById(UUID id) {return null; /*codeRepository.findOne(id);  */ }
+    public Code findById(UUID id) {
+        throw new NotImplementedException();
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -51,7 +54,9 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public Page<Code> findAll(Pageable pageable) {return codeRepository.findAll(pageable); }
+    public Page<Code> findAllPageable(Pageable pageable) {
+        return codeRepository.findAll(pageable);
+    }
 
     @Override
     @Transactional(readOnly = false)
@@ -63,13 +68,21 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(Code instance) { codeRepository.delete(instance);   }
+    public void delete(Code instance) {
+        codeRepository.delete(instance);
+    }
 
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Code> findLastChange(Long id) {
         return codeRepository.findLastChangeRevision(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Code> findEntityAtRevision(Long id, Integer revision) {
+        return codeRepository.findEntityAtRevision(id, revision);
     }
 
     @Override

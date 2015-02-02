@@ -15,7 +15,7 @@ import java.util.List;
  * @author Stig Norland
  */
 @Service("agencyService")
-public class AgencyServiceImpl implements AgencyService{
+public class AgencyServiceImpl implements AgencyService {
 
     private AgencyRepository agencyRepository;
 
@@ -38,7 +38,7 @@ public class AgencyServiceImpl implements AgencyService{
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Agency> findAll(Pageable pageable) {return agencyRepository.findAll(pageable);}
+    public Page<Agency> findAllPageable(Pageable pageable) {return agencyRepository.findAll(pageable);}
 
 
     @Override
