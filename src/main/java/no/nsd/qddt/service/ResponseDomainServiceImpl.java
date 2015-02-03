@@ -47,7 +47,7 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ResponseDomain> findAllPageable(Pageable pageable) {
+    public Page<ResponseDomain> findAll(Pageable pageable) {
         return responseDomainRepository.findAll(pageable);
     }
 

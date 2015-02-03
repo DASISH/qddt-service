@@ -42,7 +42,7 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Agency> findAllPageable(Pageable pageable) {return agencyRepository.findAll(pageable);}
+    public Page<Agency> findAll(Pageable pageable) {return agencyRepository.findAll(pageable);}
 
 
     @Override

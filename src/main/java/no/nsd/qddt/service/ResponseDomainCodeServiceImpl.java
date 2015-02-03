@@ -45,7 +45,7 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ResponseDomainCode> findAllPageable(Pageable pageable) {
+    public Page<ResponseDomainCode> findAll(Pageable pageable) {
 
         return responseDomainCodeRepository.findAll(pageable);
     }

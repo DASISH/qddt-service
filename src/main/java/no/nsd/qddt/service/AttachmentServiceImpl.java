@@ -28,17 +28,29 @@ public class AttachmentServiceImpl implements AttachmentService {
         this.attachmentRepository = attachmentRepository;
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public Attachment findById(UUID id) {
-        throw new NotImplementedException();
+         return attachmentRepository.findByGuid(id).orElseThrow(
+                 () -> new ResourceNotFoundException(id, Attachment.class)
+         );
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Page<Attachment> findSiblingsPageable(Attachment instance, Pageable pageable) {
-//        return attachmentRepository.findSiblingsPageable(instance,pageable);
-//    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Attachment> findAllByModule(Long moduleId, Pageable pageable) {
+        return attachmentRepository.findAllByModule(moduleId,pageable);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Attachment> findAllByGuid(UUID id, Pageable pageable) {
+        return attachmentRepository.findAllByModuleGuid(id.toString(),pageable);
+    }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -48,14 +60,18 @@ public class AttachmentServiceImpl implements AttachmentService {
         );
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public List<Attachment> findAll() {
         return attachmentRepository.findAll();
     }
 
+
     @Override
-    public Page<Attachment> findAllPageable(Pageable pageable) {return attachmentRepository.findAll(pageable);  }
+    @Transactional(readOnly = true)
+    public Page<Attachment> findAll(Pageable pageable) {return attachmentRepository.findAll(pageable);  }
+
 
     @Override
     @Transactional(readOnly = false)
@@ -65,9 +81,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         return attachmentRepository.save(instance);
     }
 
+
     @Override
     @Transactional(readOnly = false)
-    public void delete(Attachment instance) { attachmentRepository.delete(instance);
+    public void delete(Attachment instance) {
+        attachmentRepository.delete(instance);
     }
 
 }

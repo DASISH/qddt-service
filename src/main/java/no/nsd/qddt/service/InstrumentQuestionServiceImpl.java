@@ -48,7 +48,7 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
 
     @Override
     @Transactional(readOnly = true)
-    public Page<InstrumentQuestion> findAllPageable(Pageable pageable) {
+    public Page<InstrumentQuestion> findAll(Pageable pageable) {
 
         return instrumentQuestionRepository.findAll(pageable);
     }

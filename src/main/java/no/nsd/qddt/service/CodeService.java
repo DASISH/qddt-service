@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface CodeService extends AbstractServiceAudit<Code>{
+public interface CodeService extends BaseServiceAudit<Code> {
 
     public List<Code> findByHashTag(String tag);
 }

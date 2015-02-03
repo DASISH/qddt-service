@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * @author Stig Norland
  */
 @RestController
 @RequestMapping("/comment")
-public class CommentController {
+public class CommentController  implements BaseHierachyController<Comment> {
 
     private CommentService commentService;
 
@@ -38,9 +41,24 @@ public class CommentController {
     }
 
 
+    @Override
+    public List<Comment> getAll() {
+        return null;
+    }
+
+    @Override
+    public HttpEntity<PagedResources<Comment>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+        return null;
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Comment getOne(@PathVariable("id") Long id) {
         return commentService.findById(id);
+    }
+
+    @Override
+    public Comment getOne(UUID id) {
+        return null;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -48,4 +66,18 @@ public class CommentController {
         return commentService.save(comment);
     }
 
+    @Override
+    public void delete(Comment instance) {
+
+    }
+
+    @Override
+    public HttpEntity<PagedResources<Comment>> getThreadbyId(Long id, Pageable pageable, PagedResourcesAssembler assembler) {
+        return null;
+    }
+
+    @Override
+    public HttpEntity<PagedResources<Comment>> getThreadbyGuid(UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+        return null;
+    }
 }

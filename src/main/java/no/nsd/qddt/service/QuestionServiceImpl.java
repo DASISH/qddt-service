@@ -46,7 +46,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Question> findAllPageable(Pageable pageable) { return questionRepository.findAll(pageable);   }
+    public Page<Question> findAll(Pageable pageable) { return questionRepository.findAll(pageable);   }
 
     @Override
     @Transactional(readOnly = false)
@@ -86,18 +86,19 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.findRevisions(id,pageable);
     }
 
+
     @Override
-    public Page<Question> findSiblingsPageable(Long id, Pageable pageable) {
-        return null;
+    public Page<Question> findByParentPageable(Long parentId, Pageable pageable) {
+        return questionRepository.findByParent(parentId,pageable);
     }
 
     @Override
     public Page<Question> findQuestionConceptPageable(Long id, Pageable pageable) {
-        return null;
+        return questionRepository.findQuestionConcept(id,pageable);
     }
 
     @Override
     public Page<Question> findQuestionInstrumentPageable(Long id, Pageable pageable) {
-        return null;
+        return questionRepository.findQuestionInstrument(id,pageable);
     }
 }

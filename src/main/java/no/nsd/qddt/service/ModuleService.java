@@ -5,6 +5,6 @@ import no.nsd.qddt.domain.Module;
 /**
  * @author Stig Norland
  */
-public interface  ModuleService  extends  AbstractServiceAudit<Module>{
+public interface  ModuleService  extends BaseServiceAudit<Module> {
 
 }

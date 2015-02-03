@@ -45,7 +45,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Module> findAllPageable(Pageable pageable) { return moduleRepository.findAll(pageable); }
+    public Page<Module> findAll(Pageable pageable) { return moduleRepository.findAll(pageable); }
 
     @Override
     @Transactional(readOnly = false)

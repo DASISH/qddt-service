@@ -1,6 +1,5 @@
 package no.nsd.qddt.repository;
 
-import no.nsd.qddt.domain.Agency;
 import no.nsd.qddt.domain.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-public interface CommentRepository extends AbstractRepository<Comment>, EnversRevisionRepository<Comment, Long, Integer> {
+public interface CommentRepository extends BaseRepository<Comment>, EnversRevisionRepository<Comment, Long, Integer> {
 
     Page<Comment> findCommentByParentOrderByIdAsc(Comment parent, Pageable pageable);
 }

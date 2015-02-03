@@ -45,7 +45,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Study> findAllPageable(Pageable pageable) {
+    public Page<Study> findAll(Pageable pageable) {
         return studyRepository.findAll(pageable);
     }
 
@@ -66,7 +66,9 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional(readOnly = true)
     public Study findById(UUID id) {
-        throw new NotImplementedException();
+        return studyRepository.findByGuid(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Study.class)
+        );
     }
 
     @Override

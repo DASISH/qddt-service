@@ -8,4 +8,4 @@ import org.springframework.stereotype.Repository;
  * @author Stig Norland
  */
 @Repository
-public interface AgencyRepository extends AbstractRepository<Agency>, EnversRevisionRepository<Agency, Long, Integer> {}
+public interface AgencyRepository extends BaseRepository<Agency>, EnversRevisionRepository<Agency, Long, Integer> {}

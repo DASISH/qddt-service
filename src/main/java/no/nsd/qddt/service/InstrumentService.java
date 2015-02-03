@@ -5,6 +5,6 @@ import no.nsd.qddt.domain.instrument.Instrument;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface InstrumentService extends AbstractServiceAudit<Instrument>{
+public interface InstrumentService extends BaseServiceAudit<Instrument> {
 
 }

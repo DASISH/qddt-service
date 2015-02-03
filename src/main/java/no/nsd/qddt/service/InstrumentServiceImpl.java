@@ -45,8 +45,9 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public Page<Instrument> findAllPageable(Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<Instrument> findAll(Pageable pageable) {
+        return instrumentRepository.findAll(pageable);
     }
 
     @Override
@@ -64,7 +65,9 @@ public class InstrumentServiceImpl implements InstrumentService {
     @Override
     @Transactional(readOnly = true)
     public Instrument findById(UUID id) {
-        return null;
+        return instrumentRepository.findByGuid(id).orElseThrow(
+                ()-> new ResourceNotFoundException(id, Instrument.class)
+        );
     }
 
     @Override

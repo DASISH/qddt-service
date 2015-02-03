@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface InstrumentQuestionService  extends  AbstractServiceAudit<InstrumentQuestion> {
+public interface InstrumentQuestionService  extends BaseServiceAudit<InstrumentQuestion> {
 
 
     public List<InstrumentQuestion> findByInstrument(Instrument instrument);

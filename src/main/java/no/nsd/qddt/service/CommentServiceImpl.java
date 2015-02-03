@@ -36,12 +36,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> findAll() {
         return commentRepository.findAll();
     }
 
     @Override
-    public Page<Comment> findAllPageable(Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<Comment> findAll(Pageable pageable) {
         return commentRepository.findAll(pageable);
     }
 
@@ -54,6 +56,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Comment> findSiblingsPageable(Long id, Pageable pageable) {
         return commentRepository.findCommentByParentOrderByIdAsc(
                 commentRepository.findOne(id), pageable);

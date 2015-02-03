@@ -58,9 +58,10 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public Page<Code> findAllPageable(Pageable pageable) {
+    public Page<Code> findAll(Pageable pageable) {
         return codeRepository.findAll(pageable);
     }
+
 
     @Override
     @Transactional(readOnly = false)
