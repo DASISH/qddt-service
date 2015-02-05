@@ -77,7 +77,7 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
 
     @Override
     @Transactional(readOnly = true)
-    public InstrumentQuestion findById(UUID id) {
+    public InstrumentQuestion findByGuid(UUID id) {
         return null;
     }
 

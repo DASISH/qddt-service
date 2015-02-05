@@ -2,7 +2,6 @@ package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Agency;
 
-import java.util.Optional;
 import java.util.UUID;
 
 /**

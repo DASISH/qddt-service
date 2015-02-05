@@ -18,7 +18,7 @@ public interface BaseServiceAudit<T> extends BaseService<T> {
      * @param id UUID
      * @return T
      */
-    default public T findById(UUID id) {
+    default public T findByGuid(UUID id) {
         throw new NotImplementedException();
     }
 

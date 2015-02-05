@@ -40,7 +40,7 @@ public class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = true)
     //TODO implement findby uuid
-    public Code findById(UUID id) {
+    public Code findByGuid(UUID id) {
         throw new NotImplementedException();
     }
 

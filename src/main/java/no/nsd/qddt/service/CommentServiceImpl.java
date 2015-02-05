@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -37,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 //    @Override
-//    public Comment findById(UUID id) {
+//    public Comment findByGuid(UUID id) {
 //        return null;
 //    }
 

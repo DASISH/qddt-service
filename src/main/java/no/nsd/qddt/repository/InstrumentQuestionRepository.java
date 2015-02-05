@@ -1,7 +1,5 @@
 package no.nsd.qddt.repository;
 
-import no.nsd.qddt.domain.Question;
-import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentQuestion;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.stereotype.Repository;

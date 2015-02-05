@@ -64,7 +64,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Study findById(UUID id) {
+    public Study findByGuid(UUID id) {
         return studyRepository.findByGuid(id).orElseThrow(
                 () -> new ResourceNotFoundException(id, Study.class)
         );

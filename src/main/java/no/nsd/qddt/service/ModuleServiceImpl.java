@@ -59,7 +59,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     @Transactional(readOnly = true)
-    public Module findById(UUID id) {
+    public Module findByGuid(UUID id) {
         return null;
     }
 

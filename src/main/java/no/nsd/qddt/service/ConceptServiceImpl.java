@@ -39,7 +39,7 @@ public class ConceptServiceImpl implements ConceptService {
 
     @Override
     @Transactional(readOnly = true)
-    public Concept findById(UUID id) {
+    public Concept findByGuid(UUID id) {
         return conceptRepository.findByGuid(id).orElseThrow(
                 () -> new ResourceNotFoundException(id, Concept.class)
         );

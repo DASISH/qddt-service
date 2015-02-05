@@ -1,6 +1,5 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.response.Code;
 import no.nsd.qddt.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +26,7 @@ public abstract class AbstractController<T> {
 
 
     @Autowired
-    AbstractController(BaseService<T> service){
+    public AbstractController(BaseService<T> service){
         this.service = service;
     }
 
@@ -44,7 +43,7 @@ public abstract class AbstractController<T> {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public T getOne(@PathVariable("id") Long id){
+    public T getOneById(@PathVariable("id") Long id){
         return service.findById(id);
     }
 

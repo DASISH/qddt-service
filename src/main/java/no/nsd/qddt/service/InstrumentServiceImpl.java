@@ -62,7 +62,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Instrument findById(UUID id) {
+    public Instrument findByGuid(UUID id) {
         return instrumentRepository.findByGuid(id).orElseThrow(
                 ()-> new ResourceNotFoundException(id, Instrument.class)
         );

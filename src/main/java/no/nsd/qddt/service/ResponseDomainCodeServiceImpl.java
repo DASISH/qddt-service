@@ -26,13 +26,12 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
         this.responseDomainCodeRepository = responseDomainCodeRepository;
     }
 
+
     @Override
-    @Transactional(readOnly = true)
     public ResponseDomainCode findById(Long id) {
-        return responseDomainCodeRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, ResponseDomainCode.class)
-        );
+        return null;
     }
+
     @Override
     @Transactional(readOnly = true)
     public List<ResponseDomainCode> findAll() {

@@ -66,7 +66,7 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = false)
-    public Survey findById(UUID id) {
+    public Survey findByGuid(UUID id) {
         throw new NotImplementedException();
     }
 

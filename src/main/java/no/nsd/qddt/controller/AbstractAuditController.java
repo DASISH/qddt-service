@@ -2,7 +2,6 @@ package no.nsd.qddt.controller;
 
 import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.service.BaseServiceAudit;
-import no.nsd.qddt.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,22 +32,22 @@ public abstract class AbstractAuditController<T> extends AbstractController<T> {
 
 
     @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
-    public T getOne(@PathVariable("id") UUID id){
-        return service.findById(id);
+    public T getOneByGuid(@PathVariable("id") UUID id){
+        return service.findByGuid(id);
     }
 
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/audit/{id}", method = RequestMethod.GET)
     public Revision<Integer, T> getLastRevision(@PathVariable("id") Long id) {
         return service.findLastChange(id);
     }
 
-    @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
+    @RequestMapping(value = "/audit/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, T> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
         return service.findEntityAtRevision(id, revision);
     }
 
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/audit/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> getAllRevision(
             @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler){
 

@@ -62,7 +62,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Question findById(UUID id) {
+    public Question findByGuid(UUID id) {
         return null;
     }
 
@@ -86,17 +86,25 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Question> findByParentPageable(Long parentId, Pageable pageable) {
-        return questionRepository.findByParent(parentId,pageable);
+        return questionRepository.findAllByParent(parentId, pageable);
     }
 
     @Override
-    public Page<Question> findQuestionConceptPageable(Long id, Pageable pageable) {
-        return questionRepository.findQuestionConcept(id,pageable);
+    @Transactional(readOnly = true)
+    public Page<Question> findByParentPageable(UUID guidId, Pageable pageable) {
+        // funker dette?
+        return questionRepository.findAllByParent(findByGuid(guidId).getParent().getId(), pageable);
     }
 
-    @Override
-    public Page<Question> findQuestionInstrumentPageable(Long id, Pageable pageable) {
-        return questionRepository.findQuestionInstrument(id,pageable);
-    }
+//    @Override
+//    public Page<Question> findQuestionConceptPageable(Long id, Pageable pageable) {
+//        return questionRepository.findQuestionConcept(id,pageable);
+//    }
+
+//    @Override
+//    public Page<Question> findQuestionInstrument(Long id, Pageable pageable) {
+//        return questionRepository.findQuestionInstrument(id,pageable);
+//    }
 }

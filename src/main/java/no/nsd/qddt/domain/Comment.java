@@ -5,6 +5,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -14,6 +15,9 @@ import java.util.Set;
 @Entity
 @Table(name = "comment")
 public class Comment extends AbstractEntity {
+
+
+    private UUID guid;
 
     @ManyToOne
     @JoinColumn(name="parent_id")
@@ -34,6 +38,14 @@ public class Comment extends AbstractEntity {
     private Concept concept;
 
     public Comment() {
+    }
+
+    public UUID getGuid() {
+        return guid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
     }
 
     public Comment getParent() {
