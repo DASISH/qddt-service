@@ -1,7 +1,6 @@
 package no.nsd.qddt.controller;
 
 import no.nsd.qddt.domain.Attachment;
-import no.nsd.qddt.domain.Comment;
 import no.nsd.qddt.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +24,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/attachment")
-public class AttachmentController  implements BaseHierachyController<Attachment> {
+public class AttachmentController  extends AbstractController<Attachment> {
 
     private AttachmentService attachmentService;
 
@@ -36,14 +35,13 @@ public class AttachmentController  implements BaseHierachyController<Attachment>
 
 
     @Override
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<Attachment> getAll() {return attachmentService.findAll();}
 
 
     @Override
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Attachment>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
-
         Page<Attachment> instances = attachmentService.findAll(pageable);
         return new ResponseEntity<>(assembler.toResource(instances), HttpStatus.OK);
     }
@@ -52,13 +50,14 @@ public class AttachmentController  implements BaseHierachyController<Attachment>
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Attachment getOne(@PathVariable("id") Long id) {
-        return attachmentService.findById(id);}
+        return attachmentService.findById(id);
+    }
 
 
-    @Override
     @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
     public Attachment getOne(@PathVariable("id") UUID id) {
-        return attachmentService.findById(id);}
+        return attachmentService.findById(id);
+    }
 
 
     @Override
@@ -73,8 +72,7 @@ public class AttachmentController  implements BaseHierachyController<Attachment>
     }
 
 
-    @Override
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/page", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Attachment>> getThreadbyId( @PathVariable("id") Long moduleId, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Attachment> instances = attachmentService.findAllByModule(moduleId, pageable);
@@ -82,8 +80,7 @@ public class AttachmentController  implements BaseHierachyController<Attachment>
     }
 
 
-    @Override
-    @RequestMapping(value = "/UUID/{id}/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/UUID/{id}/page", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Attachment>> getThreadbyGuid( @PathVariable("id") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Attachment> instances = attachmentService.findAllByGuid(id, pageable);

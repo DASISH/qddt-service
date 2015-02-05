@@ -18,6 +18,9 @@ import java.util.UUID;
 @Table(name = "Attachment")
 public class Attachment extends AbstractEntity {
 
+    @Column(name = "guid", columnDefinition = "BINARY(16)")
+    private UUID guid = UUID.randomUUID();
+
     private String name;
 
     private ChangeKind changeReason;
@@ -29,6 +32,15 @@ public class Attachment extends AbstractEntity {
     private Module module;
 
     private String path;
+
+
+    public UUID getGuid() {
+        return guid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
 
     public String getName() {
         return name;

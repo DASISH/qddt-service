@@ -1,7 +1,8 @@
-package no.nsd.qddt.controller.audit;
+package no.nsd.qddt.controller;
 
 import no.nsd.qddt.domain.Study;
-import no.nsd.qddt.service.StudyService;
+import no.nsd.qddt.service.BaseServiceAudit;
+import no.nsd.qddt.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,46 +11,49 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
- * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
-@RestController
-@RequestMapping(value = "/audit/study/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class StudyAuditController {
+public abstract class AbstractAuditController<T> extends AbstractController<T> {
 
-    private StudyService studyService;
+    protected BaseServiceAudit<T> service;
 
     @Autowired
-    public StudyAuditController(StudyService studyService) {
-        this.studyService = studyService;
+    public AbstractAuditController(BaseServiceAudit<T> service) {
+        super(service);
+        this.service = service;
+    }
+
+
+    @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
+    public T getOne(@PathVariable("id") UUID id){
+        return service.findById(id);
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Revision<Integer, Study> getLastRevision(@PathVariable("id") Long id) {
-        return studyService.findLastChange(id);
+    public Revision<Integer, T> getLastRevision(@PathVariable("id") Long id) {
+        return service.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Integer, Study> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
-        return studyService.findEntityAtRevision(id, revision);
+    public Revision<Integer, T> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+        return service.findEntityAtRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
+    public HttpEntity<PagedResources<Revision<Integer, Study>>> getAllRevision(
             @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler){
 
-        Page<Revision<Integer, Study>> studies = studyService.findAllRevisionsPageable(id, pageable);
+        Page<Revision<Integer, T>> studies = service.findAllRevisionsPageable(id, pageable);
         return new ResponseEntity<>(assembler.toResource(studies), HttpStatus.OK);
     }
-
 }

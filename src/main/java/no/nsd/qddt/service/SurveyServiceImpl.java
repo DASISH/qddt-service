@@ -1,6 +1,5 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.SurveyRepository;

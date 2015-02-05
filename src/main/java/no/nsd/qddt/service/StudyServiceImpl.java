@@ -3,7 +3,6 @@ package no.nsd.qddt.service;
 import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.StudyRepository;
-import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

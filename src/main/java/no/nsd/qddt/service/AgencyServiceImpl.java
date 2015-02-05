@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -30,6 +30,14 @@ public class AgencyServiceImpl implements AgencyService {
     @Transactional(readOnly = true)
     public Agency findById(Long id) {
         return agencyRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Agency.class)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Agency findById(UUID id) {
+        return agencyRepository.findByGuid(id).orElseThrow(
                 () -> new ResourceNotFoundException(id, Agency.class)
         );
     }

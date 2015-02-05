@@ -12,8 +12,8 @@ import java.util.List;
 public interface InstrumentQuestionService  extends BaseServiceAudit<InstrumentQuestion> {
 
 
-    public List<InstrumentQuestion> findByInstrument(Instrument instrument);
+    public List<InstrumentQuestion> findByInstrument(Long instrumentId);
 
-    public List<InstrumentQuestion> findByQuestion(Question question);
+    public List<InstrumentQuestion> findByQuestion(Long questionId);
 
 }

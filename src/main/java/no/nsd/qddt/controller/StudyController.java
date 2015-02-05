@@ -1,10 +1,12 @@
 package no.nsd.qddt.controller;
 
+import no.nsd.qddt.controller.audit.BaseAuditController;
 import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.service.StudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
@@ -23,7 +25,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/study")
-public class StudyController implements BaseController<Study> {
+public class StudyController implements BaseAuditController<Study> {
 
     private StudyService studyService;
 
@@ -56,10 +58,25 @@ public class StudyController implements BaseController<Study> {
     }
 
 
-    @Override
     @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
     public Study getOne(@PathVariable("id") UUID id) {
         return studyService.findById(id);
+    }
+
+    @Override
+    public HttpEntity<PagedResources<Revision<Integer, Study>>> getAllRevisionsPageable(Long id, Pageable pageable) {
+        return null;
+    }
+
+
+    @Override
+    public Revision<Integer, Study> getEntityAtRevision(Long id, Integer revision) {
+        return null;
+    }
+
+    @Override
+    public Revision<Integer, Study> getLastChange(Long id) {
+        return null;
     }
 
 

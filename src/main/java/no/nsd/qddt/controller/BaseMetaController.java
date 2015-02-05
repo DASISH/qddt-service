@@ -6,20 +6,18 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
-public interface BaseController<T> {
-
-    List<T> getAll();
-    HttpEntity<PagedResources<T>> getAll(Pageable pageable, PagedResourcesAssembler assembler);
-
-    T getOne(Long id);
-    T getOne(UUID id);
+public interface BaseMetaController<T> {
 
     T create(T instance);
     void delete(T instance);
+
+    List<T> getByFirst(Long firstId);
+
+    List<T> getBySecond(Long secondId);
+
 
 }

@@ -1,10 +1,12 @@
 package no.nsd.qddt.controller;
 
+import no.nsd.qddt.controller.audit.BaseAuditController;
 import no.nsd.qddt.domain.response.ResponseDomain;
 import no.nsd.qddt.service.ResponseDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
@@ -24,7 +26,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/responseDomain")
-public class ResponseDomainController implements BaseController<ResponseDomain> {
+public class ResponseDomainController implements BaseAuditController<ResponseDomain> {
 
     private ResponseDomainService responseDomainService;
 
@@ -33,19 +35,13 @@ public class ResponseDomainController implements BaseController<ResponseDomain> 
         this.responseDomainService = responseDomainService;
     }
 
-    //    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<InstrumentQuestion>> getThread(
-//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-//    {
-//        Page<InstrumentQuestion> instrumentQuestions = instrumentQuestionService (id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(instrumentQuestions), HttpStatus.OK);
-//    }
 
     @Override
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<ResponseDomain> getAll() {
         return responseDomainService.findAll();
     }
+
 
     @Override
     @RequestMapping(value = "/page", method = RequestMethod.GET)
@@ -55,23 +51,41 @@ public class ResponseDomainController implements BaseController<ResponseDomain> 
         return new ResponseEntity<>(assembler.toResource(instances), HttpStatus.OK);
     }
 
+
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseDomain getOne(@PathVariable("id") Long id) {
         return responseDomainService.findById(id);
     }
 
-    @Override
+
     @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
     public ResponseDomain getOne(@PathVariable("id") UUID id) {
         return responseDomainService.findById(id);
     }
 
     @Override
+    public HttpEntity<PagedResources<Revision<Integer, ResponseDomain>>> getAllRevisionsPageable(Long id, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Revision<Integer, ResponseDomain> getEntityAtRevision(Long id, Integer revision) {
+        return null;
+    }
+
+    @Override
+    public Revision<Integer, ResponseDomain> getLastChange(Long id) {
+        return null;
+    }
+
+
+    @Override
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseDomain create(ResponseDomain responseDomain) {
         return responseDomainService.save(responseDomain);
     }
+
 
     @Override
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

@@ -5,6 +5,7 @@ import no.nsd.qddt.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
@@ -90,6 +91,22 @@ public class QuestionController implements BaseHierachyController<Question> {
     @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
     public Question getOne(@PathVariable("id") UUID id) {
         return questionService.findById(id);
+    }
+
+    @Override
+    public HttpEntity<PagedResources<Revision<Integer, Question>>> getAllRevisionsPageable(Long id, Pageable pageable) {
+        return null;
+    }
+
+
+    @Override
+    public Revision<Integer, Question> getEntityAtRevision(Long id, Integer revision) {
+        return null;
+    }
+
+    @Override
+    public Revision<Integer, Question> getLastChange(Long id) {
+        return null;
     }
 
 

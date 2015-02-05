@@ -18,16 +18,16 @@ public interface InstrumentQuestionRepository extends BaseRepository<InstrumentQ
 
     /**
      *
-     * @param instrument
+     * @param instrumentId
      * @return
      */
-    List<InstrumentQuestion> findByInstrument(Instrument instrument);
+    List<InstrumentQuestion> findByInstrument(Long instrumentId);
 
     /**
      *
-     * @param question
+     * @param questionId
      * @return
      */
-    List<InstrumentQuestion> findByQuestion(Question question);
+    List<InstrumentQuestion> findByQuestion(Long questionId);
 
 }

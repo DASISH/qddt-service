@@ -1,10 +1,12 @@
 package no.nsd.qddt.controller;
 
+import no.nsd.qddt.controller.audit.BaseAuditController;
 import no.nsd.qddt.domain.Module;
 import no.nsd.qddt.service.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
@@ -24,7 +26,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/module")
-public class ModuleController implements BaseController<Module> {
+public class ModuleController implements BaseAuditController<Module> {
 
     private ModuleService moduleService;
 
@@ -45,7 +47,6 @@ public class ModuleController implements BaseController<Module> {
     public HttpEntity<PagedResources<Module>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
         Page<Module> instances = moduleService.findAll(pageable);
         return new ResponseEntity<>(assembler.toResource(instances), HttpStatus.OK);
-
     }
 
     @Override
@@ -54,10 +55,25 @@ public class ModuleController implements BaseController<Module> {
         return moduleService.findById(id);
     }
 
-    @Override
+
     @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
     public Module getOne(@PathVariable("id") UUID id) {
         return moduleService.findById(id);
+    }
+
+    @Override
+    public HttpEntity<PagedResources<Revision<Integer, Module>>> getAllRevisionsPageable(Long id, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Revision<Integer, Module> getEntityAtRevision(Long id, Integer revision) {
+        return null;
+    }
+
+    @Override
+    public Revision<Integer, Module> getLastChange(Long id) {
+        return null;
     }
 
 
