@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.User;
  * @author Stig Norland
  */
 
-public interface UserService extends AbstractService<User> {
+public interface UserService extends BaseService<User> {
 
     /**
      * Return a {@link no.nsd.qddt.domain.User} by email

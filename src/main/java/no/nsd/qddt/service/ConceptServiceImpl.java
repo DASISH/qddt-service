@@ -1,6 +1,5 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Concept;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.ConceptRepository;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -41,13 +39,22 @@ public class ConceptServiceImpl implements ConceptService {
 
     @Override
     @Transactional(readOnly = true)
+    public Concept findByGuid(UUID id) {
+        return conceptRepository.findByGuid(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Concept.class)
+        );
+    }
+
+
+        @Override
+    @Transactional(readOnly = true)
     public List<Concept> findAll() {
         return conceptRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Concept> findAllPageable(Pageable pageable) {
+    public Page<Concept> findAll(Pageable pageable) {
         return conceptRepository.findAll(pageable);
     }
 
@@ -65,11 +72,6 @@ public class ConceptServiceImpl implements ConceptService {
         conceptRepository.delete(instance);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Concept findById(UUID id) {
-        return null;
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -89,11 +91,6 @@ public class ConceptServiceImpl implements ConceptService {
         return conceptRepository.findRevisions(id,pageable);
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Page<Concept> findSiblingsPageable(Long moduleId, Pageable pageable) {
-//
-//        return conceptRepository.findByModulePageable(moduleId,pageable);
-//    }
+
 
 }

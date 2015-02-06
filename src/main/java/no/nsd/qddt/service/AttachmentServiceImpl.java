@@ -3,7 +3,6 @@ package no.nsd.qddt.service;
 import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.AttachmentRepository;
-import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -28,17 +26,29 @@ public class AttachmentServiceImpl implements AttachmentService {
         this.attachmentRepository = attachmentRepository;
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public Attachment findById(UUID id) {
-        throw new NotImplementedException();
+         return attachmentRepository.findByGuid(id).orElseThrow(
+                 () -> new ResourceNotFoundException(id, Attachment.class)
+         );
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Page<Attachment> findSiblingsPageable(Attachment instance, Pageable pageable) {
-//        return attachmentRepository.findSiblingsPageable(instance,pageable);
-//    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Attachment> findAllByModule(Long moduleId, Pageable pageable) {
+        return attachmentRepository.findAllByModuleId(moduleId,pageable);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Attachment> findAllByGuid(UUID id, Pageable pageable) {
+        return null; //attachmentRepository.findAllByModuleGuid(id.toString(),pageable);
+    }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -48,14 +58,19 @@ public class AttachmentServiceImpl implements AttachmentService {
         );
     }
 
+
+
     @Override
     @Transactional(readOnly = true)
     public List<Attachment> findAll() {
         return attachmentRepository.findAll();
     }
 
+
     @Override
-    public Page<Attachment> findAllPageable(Pageable pageable) {return attachmentRepository.findAll(pageable);  }
+    @Transactional(readOnly = true)
+    public Page<Attachment> findAll(Pageable pageable) {return attachmentRepository.findAll(pageable);  }
+
 
     @Override
     @Transactional(readOnly = false)
@@ -67,7 +82,8 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(Attachment instance) { attachmentRepository.delete(instance);
+    public void delete(Attachment instance) {
+        attachmentRepository.delete(instance);
     }
 
 }

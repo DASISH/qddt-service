@@ -3,13 +3,8 @@ package no.nsd.qddt.controller;
 import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -17,23 +12,31 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/attachment")
-public class AttachmentController {
+public class AttachmentController  extends AbstractController<Attachment>   {
 
-    private AttachmentService attachmentService;
+//    private AttachmentService attachmentService;
 
     @Autowired
     public AttachmentController(AttachmentService attachmentService){
-        this.attachmentService = attachmentService;
+        super(attachmentService);
+//        this.attachmentService = attachmentService;
     }
 
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<Attachment> getAll() {return attachmentService.findAll();}
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Attachment getOne(@PathVariable("id") UUID id) {return attachmentService.findById(id);}
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Attachment create(Attachment attachment) {return attachmentService.save(attachment);}
-
+//    @RequestMapping(value = "/{id}/page", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Attachment>> getThreadbyId( @PathVariable("id") Long moduleId, Pageable pageable, PagedResourcesAssembler assembler) {
+//
+//        Page<Attachment> instances = attachmentService.findAllByModule(moduleId, pageable);
+//        return new ResponseEntity<>(assembler.toResource(instances), HttpStatus.OK);
+//    }
+//
+//
+//    @RequestMapping(value = "/UUID/{id}/page", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Attachment>> getThreadbyGuid( @PathVariable("id") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+//
+//        Page<Attachment> instances = attachmentService.findAllByGuid(id, pageable);
+//        return new ResponseEntity<>(assembler.toResource(instances), HttpStatus.OK);
+//    }
 }

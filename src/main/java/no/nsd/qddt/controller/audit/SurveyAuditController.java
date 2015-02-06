@@ -1,6 +1,5 @@
 package no.nsd.qddt.controller.audit;
 
-import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/responseDomainCode")
-public class ResponseDomainCodeController {
+public class ResponseDomainCodeController implements BaseMetaController<ResponseDomainCode> {
 
     private ResponseDomainCodeService responseDomainCodeService;
 
@@ -25,30 +25,29 @@ public class ResponseDomainCodeController {
         this.responseDomainCodeService = responseDomainCodeService;
     }
 
-    //    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<InstrumentQuestion>> getThread(
-//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-//    {
-//        Page<InstrumentQuestion> instrumentQuestions = instrumentQuestionService (id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(instrumentQuestions), HttpStatus.OK);
-//    }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<ResponseDomainCode> getAll() {
-        return responseDomainCodeService.findAll();
-    }
-
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseDomainCode getOne(@PathVariable("id") Long id) {
-
-        //TODO denne skal kanskje ikke brukes?
-        return null;
-    }
-
+    @Override
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseDomainCode create(ResponseDomainCode responseDomainCode) {
 
         return responseDomainCodeService.save(responseDomainCode);
+    }
+
+    @Override
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(ResponseDomainCode instance) {
+        responseDomainCodeService.delete(instance);
+    }
+
+    @Override
+    @RequestMapping(value = "/byResponsDomain/{id}", method = RequestMethod.GET)
+    public List<ResponseDomainCode> getByFirst(@PathVariable("id") Long firstId) {
+        return responseDomainCodeService.findByResponseDomainId(firstId);
+    }
+
+    @Override
+    @RequestMapping(value = "/byCode/{id}", method = RequestMethod.GET)
+    public List<ResponseDomainCode> getBySecond(@PathVariable("id") Long secondId) {
+        return responseDomainCodeService.findByCodeId(secondId);
     }
 }

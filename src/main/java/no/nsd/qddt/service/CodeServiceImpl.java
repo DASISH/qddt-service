@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -41,7 +40,7 @@ public class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = true)
     //TODO implement findby uuid
-    public Code findById(UUID id) {
+    public Code findByGuid(UUID id) {
         throw new NotImplementedException();
     }
 
@@ -58,9 +57,10 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public Page<Code> findAllPageable(Pageable pageable) {
+    public Page<Code> findAll(Pageable pageable) {
         return codeRepository.findAll(pageable);
     }
+
 
     @Override
     @Transactional(readOnly = false)

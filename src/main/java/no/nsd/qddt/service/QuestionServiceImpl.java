@@ -1,6 +1,5 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Question;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.QuestionRepository;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -46,7 +44,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Question> findAllPageable(Pageable pageable) { return questionRepository.findAll(pageable);   }
+    public Page<Question> findAll(Pageable pageable) { return questionRepository.findAll(pageable);   }
 
     @Override
     @Transactional(readOnly = false)
@@ -64,7 +62,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Question findById(UUID id) {
+    public Question findByGuid(UUID id) {
         return null;
     }
 
@@ -86,18 +84,27 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.findRevisions(id,pageable);
     }
 
+
     @Override
-    public Page<Question> findSiblingsPageable(Long id, Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<Question> findByParentPageable(Long parentId, Pageable pageable) {
+        return questionRepository.findAllByParent(parentId, pageable);
     }
 
     @Override
-    public Page<Question> findQuestionConceptPageable(Long id, Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<Question> findByParentPageable(UUID guidId, Pageable pageable) {
+        // funker dette?
+        return questionRepository.findAllByParent(findByGuid(guidId).getParent().getId(), pageable);
     }
 
-    @Override
-    public Page<Question> findQuestionInstrumentPageable(Long id, Pageable pageable) {
-        return null;
-    }
+//    @Override
+//    public Page<Question> findQuestionConceptPageable(Long id, Pageable pageable) {
+//        return questionRepository.findQuestionConcept(id,pageable);
+//    }
+
+//    @Override
+//    public Page<Question> findQuestionInstrument(Long id, Pageable pageable) {
+//        return questionRepository.findQuestionInstrument(id,pageable);
+//    }
 }

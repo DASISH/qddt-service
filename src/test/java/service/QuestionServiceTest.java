@@ -2,6 +2,7 @@ package service;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.Question;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.service.QuestionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ public class QuestionServiceTest {
         assertThat(questionService.save(question).getChildren().size(), is(3));
     }
 
-    @Test
+    @Test(expected = ResourceNotFoundException.class)
     public void fail() throws Exception {
         Question q = questionService.findById(1000L);
     }

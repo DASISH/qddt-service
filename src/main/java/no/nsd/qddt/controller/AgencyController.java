@@ -8,34 +8,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
 @RestController
 @RequestMapping("/agency")
-public class AgencyController {
+public class AgencyController extends AbstractController<Agency> {
+
     private AgencyService agencyService;
 
     @Autowired
     public AgencyController(AgencyService agencyService) {
+        super(agencyService);
         this.agencyService = agencyService;
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<Agency> getAll() {
-        return agencyService.findAll();
-    }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Agency getOne(@PathVariable("id") Long id) {
-        return agencyService.findById(id);
-    }
-
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Agency create(Agency agency) {
-        return agencyService.save(agency);
-    }
+//    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+//    public Agency getOneByGuid(@PathVariable("id") UUID id) {
+//        return agencyService.findByGuid(id);
+//    }
+//
 
 }

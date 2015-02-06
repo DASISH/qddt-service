@@ -1,6 +1,5 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.InstrumentRepository;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -45,8 +43,9 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public Page<Instrument> findAllPageable(Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<Instrument> findAll(Pageable pageable) {
+        return instrumentRepository.findAll(pageable);
     }
 
     @Override
@@ -63,8 +62,10 @@ public class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Instrument findById(UUID id) {
-        return null;
+    public Instrument findByGuid(UUID id) {
+        return instrumentRepository.findByGuid(id).orElseThrow(
+                ()-> new ResourceNotFoundException(id, Instrument.class)
+        );
     }
 
     @Override

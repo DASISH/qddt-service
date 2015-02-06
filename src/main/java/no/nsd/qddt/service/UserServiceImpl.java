@@ -1,6 +1,5 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
@@ -44,7 +43,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = true)
-    public Page<User> findAllPageable(Pageable pageable) {
+    public Page<User> findAll(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 

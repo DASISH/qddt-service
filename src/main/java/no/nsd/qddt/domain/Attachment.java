@@ -1,13 +1,6 @@
 package no.nsd.qddt.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -17,6 +10,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "Attachment")
 public class Attachment extends AbstractEntity {
+
+    @Column(name = "guid", columnDefinition = "BINARY(16)")
+    private UUID guid = UUID.randomUUID();
 
     private String name;
 
@@ -29,6 +25,15 @@ public class Attachment extends AbstractEntity {
     private Module module;
 
     private String path;
+
+
+    public UUID getGuid() {
+        return guid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
 
     public String getName() {
         return name;

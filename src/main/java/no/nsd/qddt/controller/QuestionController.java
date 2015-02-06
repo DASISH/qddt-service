@@ -15,33 +15,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
 @RestController
 @RequestMapping("/question")
-public class QuestionController {
+public class QuestionController extends AbstractAuditController<Question>  implements BaseHierachyController<Question> {
 
     private QuestionService questionService;
 
     @Autowired
     public QuestionController(QuestionService questionService){
+        super(questionService);
         this.questionService = questionService;
     }
 
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Question>> getInstrumentThread(
-            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-    {
-
-        Page<Question> questions = questionService.findQuestionInstrumentPageable(id, pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-    }
-
-
 //    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Question>> getInstrumentThread(
+//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
+//    {
+//
+//        Page<Question> questions = questionService.findQuestionInstrument(id, pageable);
+//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
+//    }
+
+
+    //TODO reevaluere hvordan dette skal gjøres
+
+//    @RequestMapping(value = "/{id}/all/concept", method = RequestMethod.GET)
 //    public HttpEntity<PagedResources<Question>> getConceptThread(
 //            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
 //    {
@@ -49,33 +52,21 @@ public class QuestionController {
 //        Page<Question> questions = questionService.findQuestionConceptPageable(id, pageable);
 //        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
 //    }
-//
-//    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<Question>> getSiblingsThread(
-//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-//    {
-//
-//        Page<Question> questions = questionService.findSiblingsPageable(id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-//    }
 
 
+    @Override
+    @RequestMapping(value = "/{id}/page/thread", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Question>> getThreadbyId(Long id, Pageable pageable, PagedResourcesAssembler assembler) {
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<Question> getAll() {
-        return questionService.findAll();
+        Page<Question> questions = questionService.findByParentPageable(id, pageable);
+        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
     }
 
+    @Override
+    @RequestMapping(value = "/UUID{id}/page/thread", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Question>> getThreadbyGuid(UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Question getOne(@PathVariable("id") Long id) {
-
-        return questionService.findById(id);
-    }
-
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Question create(Question question) {
-
-        return questionService.save(question);
+        Page<Question> questions = questionService.findByParentPageable(id, pageable);
+        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
     }
 }

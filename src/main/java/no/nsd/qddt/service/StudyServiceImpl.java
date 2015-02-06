@@ -3,7 +3,6 @@ package no.nsd.qddt.service;
 import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.StudyRepository;
-import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +44,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Study> findAllPageable(Pageable pageable) {
+    public Page<Study> findAll(Pageable pageable) {
         return studyRepository.findAll(pageable);
     }
 
@@ -65,8 +64,10 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public Study findById(UUID id) {
-        throw new NotImplementedException();
+    public Study findByGuid(UUID id) {
+        return studyRepository.findByGuid(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Study.class)
+        );
     }
 
     @Override

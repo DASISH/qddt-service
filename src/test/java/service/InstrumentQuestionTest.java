@@ -56,7 +56,7 @@ public class InstrumentQuestionTest {
 
     @Test
     public void findByInstrumentTest() throws Exception {
-        List<InstrumentQuestion> isq = instrumentQuestionService.findByInstrument(instrumentService.findById(2L));
+        List<InstrumentQuestion> isq = instrumentQuestionService.findByInstrumentId(instrumentService.findById(2L).getId());
         assertEquals("Expected two elements!", isq.size(), 2);
     }
 
@@ -66,7 +66,7 @@ public class InstrumentQuestionTest {
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<InstrumentQuestion> iqs = instrumentQuestionService.findByQuestion(questionService.findById(2L));
+        List<InstrumentQuestion> iqs = instrumentQuestionService.findByQuestionId(questionService.findById(2L).getId());
         assertEquals("Expected two elements!", iqs.size(), 2);
     }
 }

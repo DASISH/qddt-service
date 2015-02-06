@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/instrumentQuestion")
-public class InstrumentQuestionController {
+public class InstrumentQuestionController implements BaseMetaController<InstrumentQuestion> {
 
     private InstrumentQuestionService instrumentQuestionService;
 
@@ -25,29 +25,29 @@ public class InstrumentQuestionController {
         this.instrumentQuestionService = instrumentQuestionService;
     }
 
-//    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<InstrumentQuestion>> getThread(
-//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-//    {
-//        Page<InstrumentQuestion> instrumentQuestions = instrumentQuestionService (id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(instrumentQuestions), HttpStatus.OK);
-//    }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<InstrumentQuestion> getAll() {
-        return instrumentQuestionService.findAll();
-    }
-
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public InstrumentQuestion getOne(@PathVariable("id") Long id) {
-
-        return instrumentQuestionService.findById(id);
-    }
-
+    @Override
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public InstrumentQuestion create(InstrumentQuestion comment) {
 
         return instrumentQuestionService.save(comment);
+    }
+
+    @Override
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(InstrumentQuestion instance) {
+        instrumentQuestionService.delete(instance);
+    }
+
+    @Override
+    @RequestMapping(value = "/byInstrument/{id}", method = RequestMethod.GET)
+    public List<InstrumentQuestion> getByFirst(@PathVariable("id") Long firstId) {
+        return instrumentQuestionService.findByInstrumentId(firstId);
+    }
+
+    @Override
+    @RequestMapping(value = "/byQuestion/{id}", method = RequestMethod.GET)
+    public List<InstrumentQuestion> getBySecond(@PathVariable("id") Long secondId) {
+        return instrumentQuestionService.findByQuestionId(secondId);
     }
 }

@@ -1,6 +1,5 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Attachment;
 import no.nsd.qddt.domain.Module;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.ModuleRepository;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -45,7 +43,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Module> findAllPageable(Pageable pageable) { return moduleRepository.findAll(pageable); }
+    public Page<Module> findAll(Pageable pageable) { return moduleRepository.findAll(pageable); }
 
     @Override
     @Transactional(readOnly = false)
@@ -61,7 +59,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     @Transactional(readOnly = true)
-    public Module findById(UUID id) {
+    public Module findByGuid(UUID id) {
         return null;
     }
 
