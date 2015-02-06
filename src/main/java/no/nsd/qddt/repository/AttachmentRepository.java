@@ -1,9 +1,12 @@
 package no.nsd.qddt.repository;
 
 import no.nsd.qddt.domain.Attachment;
+import org.hibernate.annotations.NamedNativeQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -33,7 +36,7 @@ public interface AttachmentRepository extends BaseRepository<Attachment>, Envers
 //     * @param pageable Pageable object
 //     * @return All attachments that belongs to a module
 //     */
-//    @Query(value = FIND_BY_MODULE_BY_UUID_QUERY, countQuery = COUNT_BY_MODULE_BY_UUID_QUERY)
+//    @NamedNativeQuery(value = FIND_BY_MODULE_BY_UUID_QUERY, countQuery = COUNT_BY_MODULE_BY_UUID_QUERY)
 //    Page<Attachment> findAllByModuleGuid(@Param("guid") String guid, Pageable pageable);
 
     /**
@@ -41,7 +44,7 @@ public interface AttachmentRepository extends BaseRepository<Attachment>, Envers
      * @param pageable Pageable object
      * @return All attachments that belongs to the module with moduleId.
      */
-    Page<Attachment> findAllByModule(Long moduleId, Pageable pageable);
+    Page<Attachment> findAllByModuleId(Long moduleId, Pageable pageable);
 
 
 }

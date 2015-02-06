@@ -10,8 +10,8 @@ import java.util.List;
 public interface InstrumentQuestionService  extends BaseServiceAudit<InstrumentQuestion> {
 
 
-    public List<InstrumentQuestion> findByInstrument(Long instrumentId);
+    public List<InstrumentQuestion> findByInstrumentId(Long instrumentId);
 
-    public List<InstrumentQuestion> findByQuestion(Long questionId);
+    public List<InstrumentQuestion> findByQuestionId(Long questionId);
 
 }

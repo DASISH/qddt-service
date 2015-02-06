@@ -42,12 +42,12 @@ public class InstrumentQuestionController implements BaseMetaController<Instrume
     @Override
     @RequestMapping(value = "/byInstrument/{id}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getByFirst(@PathVariable("id") Long firstId) {
-        return instrumentQuestionService.findByInstrument(firstId);
+        return instrumentQuestionService.findByInstrumentId(firstId);
     }
 
     @Override
     @RequestMapping(value = "/byQuestion/{id}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getBySecond(@PathVariable("id") Long secondId) {
-        return instrumentQuestionService.findByQuestion(secondId);
+        return instrumentQuestionService.findByQuestionId(secondId);
     }
 }

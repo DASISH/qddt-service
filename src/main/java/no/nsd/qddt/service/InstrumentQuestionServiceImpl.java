@@ -65,14 +65,14 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
 
     @Override
     @Transactional(readOnly = true)
-    public List<InstrumentQuestion> findByInstrument(Long instrumentId) {
-        return instrumentQuestionRepository.findByInstrument(instrumentId);
+    public List<InstrumentQuestion> findByInstrumentId(Long instrumentId) {
+        return instrumentQuestionRepository.findByInstrumentId(instrumentId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<InstrumentQuestion> findByQuestion(Long questionId) {
-        return instrumentQuestionRepository.findByQuestion(questionId);
+    public List<InstrumentQuestion> findByQuestionId(Long questionId) {
+        return instrumentQuestionRepository.findByQuestionId(questionId);
     }
 
     @Override

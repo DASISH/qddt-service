@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @RestController
 @RequestMapping("/survey")
