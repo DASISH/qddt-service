@@ -9,12 +9,22 @@ package no.nsd.qddt.exception;
  */
 public class ControllerAdviceExceptionMessage {
 
+    private String id;
     private String url;
     private String exceptionMessage;
 
     public ControllerAdviceExceptionMessage(String url, String exceptionMessage) {
+        this.id = idFromExceptionmessage(exceptionMessage);
         this.url = url;
         this.exceptionMessage = exceptionMessage;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUrl() {
@@ -31,5 +41,15 @@ public class ControllerAdviceExceptionMessage {
 
     public void setExceptionMessage(String exceptionMessage) {
         this.exceptionMessage = exceptionMessage;
+    }
+
+    /**
+     * Get the resource ID which for now is always the last "word" in the exception.
+     * Its no need to parse this as a {@link java.lang.Number} as its REST.
+     * @param exceptionMessage from the exception caster
+     * @return a formatted version.
+     */
+    private String idFromExceptionmessage(String exceptionMessage) {
+        return exceptionMessage.substring(exceptionMessage.lastIndexOf(" ")+1);
     }
 }
