@@ -39,7 +39,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     @Transactional(readOnly = true)
     public Page<Attachment> findAllByModule(Long moduleId, Pageable pageable) {
-        return attachmentRepository.findAllByModule(moduleId,pageable);
+        return attachmentRepository.findAllByModuleId(moduleId,pageable);
     }
 
 
