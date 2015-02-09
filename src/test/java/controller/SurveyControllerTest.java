@@ -1,6 +1,7 @@
 package controller;
 
 import no.nsd.qddt.QDDT;
+import no.nsd.qddt.domain.Comment;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.service.QDDTUserDetailsService;
 import no.nsd.qddt.service.SurveyService;
@@ -23,12 +24,12 @@ import assets.RestfulTestUtils;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
-@Transactional
 @IntegrationTest("server.port:0")
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -74,6 +75,7 @@ public class SurveyControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Transactional
     @Test
     public void findOneTest() throws Exception {
         Survey survey = surveyService.findById(1L);
@@ -93,5 +95,20 @@ public class SurveyControllerTest {
                 .andExpect(jsonPath("$.surveyName", is(survey.getSurveyName())))
 //                .andExpect(jsonPath("$.agency", is("null")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addCommentTest() throws Exception {
+        String c = "This is a test comment";
+
+        Comment comment = new Comment();
+        comment.setComment(c);
+
+        mvc.perform(post("/survey/" + 1 + "/comment").session(session)
+                .contentType(rest.getContentType())
+                .content(rest.json(comment)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(rest.getContentType()))
+                .andExpect(jsonPath("$.comment", is(c)));
     }
 }

@@ -53,6 +53,10 @@ public class Survey extends AbstractEntityAudit {
         this.comments = comments;
     }
 
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,7 +65,6 @@ public class Survey extends AbstractEntityAudit {
 
         Survey survey = (Survey) o;
 
-        if (comments != null ? !comments.equals(survey.comments) : survey.comments != null) return false;
         if (this.getCreated() != null ? !this.getCreated().equals(survey.getCreated()) : survey.getCreated() != null) return false;
         if (this.getCreatedBy() != null ? !this.getCreatedBy().equals(survey.getCreatedBy()) : survey.getCreatedBy() != null) return false;
         if (surveyName != null ? !surveyName.equals(survey.surveyName) : survey.surveyName != null) return false;
@@ -74,7 +77,6 @@ public class Survey extends AbstractEntityAudit {
         int result = surveyName != null ? surveyName.hashCode() : 0;
         result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
         result = 31 * result + (this.getCreatedBy() != null ? this.getCreatedBy().hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 

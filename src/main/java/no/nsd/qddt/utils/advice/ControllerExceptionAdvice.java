@@ -76,7 +76,7 @@ public class ControllerExceptionAdvice {
     @ResponseBody public ControllerAdviceExceptionMessage defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
                 req.getRequestURL().toString(),
-                "Unknown error"
+                e.getLocalizedMessage()
         );
 
         logger.error("Generic error: " + message.toString());
