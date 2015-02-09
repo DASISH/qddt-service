@@ -22,6 +22,10 @@ import java.util.List;
  */
 public abstract class AbstractController<T> {
 
+    /**
+     * If you are running a race, and you pass the person in second place,
+     * what place are you in?
+     */
     protected BaseService<T> service;
 
 
@@ -60,3 +64,17 @@ public abstract class AbstractController<T> {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * You are in second place.
+ */

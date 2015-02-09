@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuestionRepository extends BaseRepository<Question>, EnversRevisionRepository<Question, Long, Integer> {
 
-    Page<Question> findAllByParent(Long parentId, Pageable pageable);
+    Page<Question> findAllByParentId(Long parentId, Pageable pageable);
 
 //    Page<Question> findQuestionConcept(Long id, Pageable pageable);
 

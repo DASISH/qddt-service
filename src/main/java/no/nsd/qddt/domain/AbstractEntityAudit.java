@@ -16,6 +16,12 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class AbstractEntityAudit extends AbstractEntity {
 
+    /**
+     * I am the beginning of the end, and the end of time and space.
+     * I am essential to creation, and I surround every place.
+     * What am I?
+     */
+
     //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
     @Column(name = "guid", columnDefinition = "BINARY(16)")
     private UUID guid = UUID.randomUUID();
@@ -105,4 +111,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 ", changeReason=" + changeReason +
                 ", changeComment='" + changeComment + '\'';
     }
+
+    /**
+     * The letter "E".
+     */
 }
