@@ -18,6 +18,11 @@ import java.time.LocalDateTime;
 @Audited
 @MappedSuperclass
 public abstract class AbstractEntity {
+    /**
+     * Two men are in a desert. They are both wearing backpacks.
+     * One of the men is dead. The man who is alive, has his pack open.
+     * The dead man's pack is closed. What is in their packs?
+     */
 
     @Id
     @Column(name = "id")
@@ -88,4 +93,8 @@ public abstract class AbstractEntity {
                 ", created=" + created +
                 ", createdBy=" + createdBy +'\'';
     }
+
+    /**
+     * A parachute.
+     */
 }

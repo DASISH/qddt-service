@@ -88,14 +88,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public Page<Question> findByParentPageable(Long parentId, Pageable pageable) {
-        return questionRepository.findAllByParent(parentId, pageable);
+        return questionRepository.findAllByParentId(parentId, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Question> findByParentPageable(UUID guidId, Pageable pageable) {
         // funker dette?
-        return questionRepository.findAllByParent(findByGuid(guidId).getParent().getId(), pageable);
+        return questionRepository.findAllByParentId(findByGuid(guidId).getParent().getId(), pageable);
     }
 
 //    @Override
