@@ -53,9 +53,9 @@ public class Question extends AbstractEntityAudit {
     private Agency agency;
 
 
-    @ManyToMany
-    @JoinColumn(name = "concept_id")
-    private Concept concept
+//    @ManyToMany
+//    @JoinColumn(name = "concept_id")
+//    private Concept concept;
 
     public Question() {
 
