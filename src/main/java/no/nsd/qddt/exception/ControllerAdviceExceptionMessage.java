@@ -1,5 +1,7 @@
 package no.nsd.qddt.exception;
 
+import no.nsd.qddt.utils.ExtractResourceIdFromException;
+
 /**
  * Default error message object. Can be used anywhere in the application where
  * exceptions or errors are being returned to the client over API requests.
@@ -14,7 +16,7 @@ public class ControllerAdviceExceptionMessage {
     private String exceptionMessage;
 
     public ControllerAdviceExceptionMessage(String url, String exceptionMessage) {
-        this.id = idFromExceptionmessage(exceptionMessage);
+        this.id = ExtractResourceIdFromException.extract(exceptionMessage);
         this.url = url;
         this.exceptionMessage = exceptionMessage;
     }
@@ -43,13 +45,10 @@ public class ControllerAdviceExceptionMessage {
         this.exceptionMessage = exceptionMessage;
     }
 
-    /**
-     * Get the resource ID which for now is always the last "word" in the exception.
-     * Its no need to parse this as a {@link java.lang.Number} as its REST.
-     * @param exceptionMessage from the exception caster
-     * @return a formatted version.
-     */
-    private String idFromExceptionmessage(String exceptionMessage) {
-        return exceptionMessage.substring(exceptionMessage.lastIndexOf(" ")+1);
+    @Override
+    public String toString() {
+        return  " id='" + id + '\'' +
+                ", url='" + url + '\'' +
+                ", exceptionMessage='" + exceptionMessage;
     }
 }

@@ -34,11 +34,14 @@ public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseBody public ControllerAdviceExceptionMessage handleResourceNotFound(HttpServletRequest req, Exception e) {
-        logger.error("handleResourceNotFound");
-        return new ControllerAdviceExceptionMessage(
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
                 req.getRequestURL().toString(),
                 e.getLocalizedMessage()
         );
+
+        logger.error("Resource not found: " + message.toString());
+
+        return message;
     }
 
     /**
@@ -51,11 +54,14 @@ public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody public ControllerAdviceExceptionMessage handleUserByEmailNotFound(HttpServletRequest req, Exception e) {
-        logger.error("handleUserByEmailNotFound");
-        return new ControllerAdviceExceptionMessage(
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
                 req.getRequestURL().toString(),
                 e.getLocalizedMessage()
         );
+
+        logger.error("User not found: " + message.toString());
+
+        return message;
     }
 
     /**
@@ -68,10 +74,13 @@ public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = Exception.class)
     @ResponseBody public ControllerAdviceExceptionMessage defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
-        logger.error("defaultErrorHandler");
-        return new ControllerAdviceExceptionMessage(
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
                 req.getRequestURL().toString(),
-                "Bad request"
+                "Unknown error"
         );
+
+        logger.error("Generic error: " + message.toString());
+
+        return message;
     }
 }

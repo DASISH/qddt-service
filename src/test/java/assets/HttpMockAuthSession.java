@@ -1,4 +1,4 @@
-package utils;
+package assets;
 
 import no.nsd.qddt.service.QDDTUserDetailsService;
 import org.springframework.mock.web.MockHttpSession;

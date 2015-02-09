@@ -28,13 +28,8 @@ public class Oauth2Configuration extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
-        endpoints.authenticationManager(new AuthenticationManager() {
-            @Override
-            public Authentication authenticate(Authentication authentication)
-                    throws AuthenticationException {
-                return authenticationManager.getOrBuild().authenticate(authentication);
-            }
-        });
+        endpoints.authenticationManager(authentication ->
+                authenticationManager.getOrBuild().authenticate(authentication));
     }
 
     @Override
