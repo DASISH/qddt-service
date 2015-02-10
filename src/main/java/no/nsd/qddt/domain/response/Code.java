@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  *
  * CategoryScheme : Categories provide enumerated representations for
- *      concepts andare used by questions, code lists, and variables
+ *      concepts and are used by questions, code lists, and variables
  *
  * CodeListScheme : Code lists link a specific value with a category and
  *      are used by questions and variables
