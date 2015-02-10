@@ -58,7 +58,7 @@ public class ResponseDomainCodeServiceAuditTest {
 
         responseDomainCode.setRank(2);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
-        responseDomainCode.setRank(3);
+        responseDomainCode.setRank(10);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
         responseDomainCode.setRank(4);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
@@ -76,8 +76,6 @@ public class ResponseDomainCodeServiceAuditTest {
     @Test
     public void getLastRevisionTest() throws Exception {
         Revision<Integer, ResponseDomainCode> revision = responseDomainCodeService.findLastChange(responseDomainCode.getId());
-
-        System.out.println(revision.getRevisionNumber());
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity(), responseDomainCode);

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author Dag Østgulen Heradstveit
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
 public class UserNotFoundException extends RuntimeException{
 
     private static final Logger logger = LoggerFactory.getLogger(UserNotFoundException.class);

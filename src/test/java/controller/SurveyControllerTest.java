@@ -1,6 +1,7 @@
 package controller;
 
 import no.nsd.qddt.QDDT;
+import no.nsd.qddt.domain.Comment;
 import no.nsd.qddt.domain.Survey;
 import no.nsd.qddt.service.QDDTUserDetailsService;
 import no.nsd.qddt.service.SurveyService;
@@ -12,23 +13,26 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import utils.HttpMockAuthSession;
-import utils.RestfulTestUtils;
+import assets.HttpMockAuthSession;
+import assets.RestfulTestUtils;
+
+import java.security.Principal;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
-@Transactional
 @IntegrationTest("server.port:0")
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,6 +41,9 @@ public class SurveyControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private FilterChainProxy springSecurityFilterChain;
 
     private MockMvc mvc;
     private RestfulTestUtils rest;
@@ -48,7 +55,7 @@ public class SurveyControllerTest {
     private SurveyService surveyService;
 
     @Autowired
-    QDDTUserDetailsService qddtUserDetailsService;
+    private QDDTUserDetailsService qddtUserDetailsService;
 
     private MockHttpSession session;
 
@@ -58,6 +65,7 @@ public class SurveyControllerTest {
         rest = new RestfulTestUtils(mappingJackson2HttpMessageConverter);
         mvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
+                .addFilter(springSecurityFilterChain)
                 .dispatchOptions(true)
                 .build();
     }
@@ -74,6 +82,7 @@ public class SurveyControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Transactional
     @Test
     public void findOneTest() throws Exception {
         Survey survey = surveyService.findById(1L);
@@ -93,5 +102,20 @@ public class SurveyControllerTest {
                 .andExpect(jsonPath("$.surveyName", is(survey.getSurveyName())))
 //                .andExpect(jsonPath("$.agency", is("null")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addCommentTest() throws Exception {
+        String c = "This is a test comment";
+
+        Comment comment = new Comment();
+        comment.setComment(c);
+
+        mvc.perform(post("/survey/" + 1 + "/comment").session(session)
+                .contentType(rest.getContentType())
+                .content(rest.json(comment)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(rest.getContentType()))
+                .andExpect(jsonPath("$.comment", is(c)));
     }
 }

@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -16,7 +17,6 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity {
 
-
     private UUID guid;
 
     @ManyToOne
@@ -26,6 +26,7 @@ public class Comment extends AbstractEntity {
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Comment> children = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "survey_id")
     private Survey survey;
@@ -126,9 +127,7 @@ public class Comment extends AbstractEntity {
     @Override
     public String toString() {
         return "Comment{" +
-                "parent=" + parent +
-                ", survey=" + survey +
-                ", created=" + this.getCreated() +
+                "comment='" + comment + '\'' +
                 '}';
     }
 }

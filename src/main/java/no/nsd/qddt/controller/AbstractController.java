@@ -9,9 +9,7 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,15 +49,15 @@ public abstract class AbstractController<T> {
         return service.findById(id);
     }
 
-
+    @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public T create(T instance){
+    public T create(@RequestBody T instance){
         return service.save(instance);
     }
 
-
+    @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(T instance){
+    public void delete(@RequestBody T instance){
         service.delete(instance);
     }
 
