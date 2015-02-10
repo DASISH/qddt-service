@@ -10,7 +10,6 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +21,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/question")
-public class QuestionController extends AbstractAuditController<Question>  implements BaseHierachyController<Question> {
+public class QuestionController extends AbstractAuditController<Question>  {
 
     private QuestionService questionService;
 
@@ -54,7 +53,7 @@ public class QuestionController extends AbstractAuditController<Question>  imple
 //    }
 
 
-    @Override
+//    HierachyController<Question>
     @RequestMapping(value = "/{id}/page/thread", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Question>> getThreadbyId(Long id, Pageable pageable, PagedResourcesAssembler assembler) {
 
@@ -62,7 +61,7 @@ public class QuestionController extends AbstractAuditController<Question>  imple
         return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
     }
 
-    @Override
+//    HierachyController<Question>
     @RequestMapping(value = "/UUID{id}/page/thread", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Question>> getThreadbyGuid(UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 

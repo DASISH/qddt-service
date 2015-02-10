@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
+ * This controller relates to a meta storage, which has a rank property, and thus need control
+ *
  * @author Stig Norland
  */
 
 @RestController
 @RequestMapping("/responseDomainCode")
-public class ResponseDomainCodeController implements BaseMetaController<ResponseDomainCode> {
+public class ResponseDomainCodeController  {
 
     private ResponseDomainCodeService responseDomainCodeService;
 
@@ -26,26 +28,26 @@ public class ResponseDomainCodeController implements BaseMetaController<Response
     }
 
 
-    @Override
+//    MetaController
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseDomainCode create(ResponseDomainCode responseDomainCode) {
 
         return responseDomainCodeService.save(responseDomainCode);
     }
 
-    @Override
+    //    MetaController
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void delete(ResponseDomainCode instance) {
         responseDomainCodeService.delete(instance);
     }
 
-    @Override
+    //    MetaController
     @RequestMapping(value = "/byResponsDomain/{id}", method = RequestMethod.GET)
     public List<ResponseDomainCode> getByFirst(@PathVariable("id") Long firstId) {
         return responseDomainCodeService.findByResponseDomainId(firstId);
     }
 
-    @Override
+    //    MetaController
     @RequestMapping(value = "/byCode/{id}", method = RequestMethod.GET)
     public List<ResponseDomainCode> getBySecond(@PathVariable("id") Long secondId) {
         return responseDomainCodeService.findByCodeId(secondId);

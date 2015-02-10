@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * This interface should only be extented by other interfaces.
+ *
  *
  * @author Stig Norland
  */

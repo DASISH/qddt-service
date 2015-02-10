@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
+ * This controller relates to a meta storage, which has a rank,logic & Rankrationale property, and thus need control
+ *
  * @author Stig Norland
  */
 
 @RestController
 @RequestMapping("/instrumentQuestion")
-public class InstrumentQuestionController implements BaseMetaController<InstrumentQuestion> {
+public class InstrumentQuestionController {
 
     private InstrumentQuestionService instrumentQuestionService;
 
@@ -26,26 +28,26 @@ public class InstrumentQuestionController implements BaseMetaController<Instrume
     }
 
 
-    @Override
+    //    MetaController
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public InstrumentQuestion create(InstrumentQuestion comment) {
 
         return instrumentQuestionService.save(comment);
     }
 
-    @Override
+    //    MetaController
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void delete(InstrumentQuestion instance) {
         instrumentQuestionService.delete(instance);
     }
 
-    @Override
+    //    MetaController
     @RequestMapping(value = "/byInstrument/{id}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getByFirst(@PathVariable("id") Long firstId) {
         return instrumentQuestionService.findByInstrumentId(firstId);
     }
 
-    @Override
+    //    MetaController
     @RequestMapping(value = "/byQuestion/{id}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getBySecond(@PathVariable("id") Long secondId) {
         return instrumentQuestionService.findByQuestionId(secondId);

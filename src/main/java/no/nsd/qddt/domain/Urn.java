@@ -4,6 +4,10 @@ package no.nsd.qddt.domain;
 import java.util.UUID;
 
 /**
+ * URN's are the ID's that are used for all entities that can be exported out of this solution.
+ * This Solution will also need to keep track of these while importing entities from external systems,
+ * so that entities will keep their relationship even when they are reintroduced into this system.
+ *
  * @author Stig Norland
  */
 public class Urn {

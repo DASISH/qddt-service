@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * A ResponseKind define what kind of ResponseDomain (answer) this is,
+ * this will also define the way the Question is formatted.
+ *
+ * This Class would be a good candidate to change into a ENUM, as every entry
+ * will have to be mapped to specific behaviour in GUI and intruments/surveys.
+ *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
