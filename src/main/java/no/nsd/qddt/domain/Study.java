@@ -8,6 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * A Study will have of one or more Modules.
+ *      A Module will have one or more Concepts.
+ *          A Concept consist of one or more Questions.
+ *              Every Question will have a ResponseDomain.
  *
  * A publication structure for a specific study. Structures identification information, full
  * bibliographic and discovery information, administrative information, all of the reusable

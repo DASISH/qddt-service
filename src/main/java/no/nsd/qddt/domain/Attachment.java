@@ -4,6 +4,11 @@ import javax.persistence.*;
 import java.util.UUID;
 
 /**
+ * This class is just a placeholder for functionality not implemented.
+ * Storing of arbitrary data is best suited for none relational datastores.
+ * A simple but not very recommended solution would be to use file system and
+ * rename files to guid and store the original filename in the attachment repository.
+ *
  * @author Stig Norland
  */
 

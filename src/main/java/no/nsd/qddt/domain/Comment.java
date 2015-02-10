@@ -9,6 +9,13 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
+ * Current demand for comments is just for Survey. If we want to extend this to other entities we must change
+ * the relationship and hold the entry comment at each entity that wants a comment tree. Today we hold this in comments themselves.
+ * Today this relationship is like this ( Survey <- comment <- comment child )
+ *
+ * If we need to change this, we'll have to add a empty root comment for every survey and replace survey_id with this root element,
+ * and add a reference for this root element to the corresponding survey , the relationship will be like this ( entity(survey) -> comment root <- comments)
+ *
  * @author Dag Østgulen Heradstveit
  */
 
@@ -17,6 +24,7 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity {
 
+    // This property is not in use for comments, it is here to simplify the class hierarchy (All AbstractEntities has a guid)
     private UUID guid;
 
     @ManyToOne

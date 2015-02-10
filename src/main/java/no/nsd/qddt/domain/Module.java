@@ -6,6 +6,11 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
+ * A Module should be a collection of Questions and Concepts that has a theme that is broader than a Concept.
+ * All Questions that doesn't belong to a specific Concept, will be collected in a default Concept that
+ * every Module should have. This default Concept should not be visualized as a Concept, but as a
+ * "Virtual Module". The reason for this is a simplified data model.
+ *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */

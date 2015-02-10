@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
+ * This controller relates to a meta storage, which has a rank,logic & Rankrationale property, and thus need control
+ *
  * @author Stig Norland
  */
 
