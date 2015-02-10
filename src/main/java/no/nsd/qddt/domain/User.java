@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.security.Authority;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -17,7 +16,12 @@ import java.util.Set;
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "user")
-public class User extends AbstractEntity {
+public class User  {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "username")
     private String username;
@@ -36,13 +40,15 @@ public class User extends AbstractEntity {
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Survey> surveys = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
@@ -60,13 +66,12 @@ public class User extends AbstractEntity {
         this.username = username;
     }
 
-
-    public Agency getAgency() {
-        return agency;
+    public Long getId() {
+        return id;
     }
 
-    public void setAgency(Agency agency) {
-        this.agency = agency;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -94,7 +99,7 @@ public class User extends AbstractEntity {
     }
 
     public Set<Authority> getAuthorities() {
-        return new HashSet<>(authorities);
+        return authorities;
     }
 
     public void setAuthorities(Set<Authority> authorities) {
@@ -125,6 +130,14 @@ public class User extends AbstractEntity {
         this.comments = comments;
     }
 
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,29 +145,31 @@ public class User extends AbstractEntity {
 
         User user = (User) o;
 
-        return !(email != null ? !email.equals(user.email) : user.email != null) &&
-                !(this.getId() != null ? !this.getId().equals(user.getId()) : user.getId() != null) &&
-                !(password != null ? !password.equals(user.password) : user.password != null) &&
-                !(username != null ? !username.equals(user.username) : user.username != null);
+        if (authorities != null ? !authorities.equals(user.authorities) : user.authorities != null) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = this.getId() != null ? this.getId().hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (authorities != null ? authorities.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + this.getId() +
+                "email='" + email + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
+                ", id=" + id +
                 '}';
     }
 }
