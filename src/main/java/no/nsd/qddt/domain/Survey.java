@@ -30,7 +30,7 @@ public class Survey extends AbstractEntityAudit {
     @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
-    @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
 

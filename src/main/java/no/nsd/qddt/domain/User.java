@@ -12,7 +12,6 @@ import java.util.Set;
 /**
  * @author Dag Østgulen Heradstveit
  */
-
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "user")
@@ -40,15 +39,12 @@ public class User  {
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Survey> surveys = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 

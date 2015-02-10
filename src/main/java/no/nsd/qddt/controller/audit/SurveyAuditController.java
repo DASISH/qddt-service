@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author Dag Østgulen Heradstveit
  */
 @RestController
-@RequestMapping(value = "/audit/survey/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/audit/survey/")
 public class SurveyAuditController {
 
     private SurveyService surveyService;
@@ -32,17 +34,17 @@ public class SurveyAuditController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Revision<Integer, Survey> getLastRevision(@PathVariable("id") Long id) {
+    public Revision<Integer, Survey> findLastRevisionById(@PathVariable("id") Long id) {
         return surveyService.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Integer, Survey> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+    public Revision<Integer, Survey> findByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
         return surveyService.findEntityAtRevision(id, revision);
     }
 
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, Survey>>> allProjects(
+    @RequestMapping(value = "/{id}/list", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Revision<Integer, Survey>>> list(
             @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler){
 
         Page<Revision<Integer, Survey>> studies = surveyService.findAllRevisionsPageable(id, pageable);
