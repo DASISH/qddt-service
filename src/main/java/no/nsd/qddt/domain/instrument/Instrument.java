@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * You change your meaning by emphasizing different words in your sentence. ex: "I never said she stole my money" has 7 meanings.
+ *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */

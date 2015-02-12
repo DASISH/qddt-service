@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
+ *
  * @author Dag Østgulen Heradstveit
  */
 @Audited

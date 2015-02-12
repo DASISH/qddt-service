@@ -12,7 +12,7 @@ import java.util.Set;
  * QuestionScheme : Contains Question Items, Question Grids, and Question Blocks used by Control Constructs in
  *      creating questionnaires.
  *
- * Question can have
+ * A Question can have a parent and siblings, if it is part of a ScaleDomain
  *
  * @author Stig Norland
  */
@@ -29,12 +29,14 @@ public class Question extends AbstractEntityAudit {
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Question> children = new HashSet<>();
 
-    /// Only used for questionText with a parent
+    /// Only used for Questions with a Question parent
     private int rank;
 
+    /// Reason why this Question is before or after its siblings
     private String rankRationale;
 
     /// QuestionIntent: what the questionText is supposed to gather information about.
+    @Column(name = "question_intent", length = 2000)
     private String questionIntent;
 
     /// QuestionText: the actual questionText to ask.

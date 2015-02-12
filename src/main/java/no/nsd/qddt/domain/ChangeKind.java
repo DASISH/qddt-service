@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain;
 
 /**
- * ChangeKind is the different ways an entity can be modified by the system/user.
+ * ChangeKinds are the different ways an entity can be modified by the system/user.
  * First entry will always be CREATED.
  * NEW_REVISION used for taging a version as a release.
  * TYPO, can be used modify without breaking a release.

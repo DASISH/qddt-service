@@ -44,6 +44,12 @@ public class Agency extends AbstractEntity {
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
+    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<Concept> concepts = new HashSet<>();
+
+    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<Module> modules = new HashSet<>();
+
 
     public UUID getGuid() {
         return guid;
