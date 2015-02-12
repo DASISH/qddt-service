@@ -7,14 +7,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A Survey is a root element of this model. Every Survey has atleast one Study and one Instrument.
- *      A Study will have of one or more Modules.
- *          A Module will have one or more Concepts.
- *              A Concept consist of one or more Questions.
- *                  Every Question will have a ResponseDomain.
- *      An Instrument will have a ordered list of Questions, all of which are contained in Concepts
- *      belonging to Modules that belongs to the Studies that this Survey has.
- *
+ * <ul class="inheritance">
+ * <li>A Survey is a root element of this model. Every Survey has atleast one Study and one Instrument.
+ *     <ul class="inheritance">
+ *         <li>A Study will have of one or more Modules.</li>
+ *         <ul class="inheritance">
+ *             <li>A Module will have one or more Concepts.</li>
+ *             <ul class="inheritance">
+ *                 <li>A Concept consist of one or more Questions.</li>
+ *                 <ul class="inheritance">
+ *                     <li>Every Question will have a ResponseDomain.</li>
+ *                 </ul>
+ *              </ul>
+ *          </ul>
+ *      </ul>
+ *      <ul class="inheritance"><li>An Instrument will have a ordered list of Questions, all of which are contained in Concepts
+ *      belonging to Modules that belongs to the Studies that this Survey has.</li>
+ *      </ul>
+ * </li>
+ * </ul>
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
