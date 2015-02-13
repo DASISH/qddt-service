@@ -2,6 +2,7 @@ package no.nsd.qddt;
 
 import no.nsd.qddt.domain.Study;
 import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.domain.User;
 import no.nsd.qddt.service.StudyService;
 import no.nsd.qddt.service.SurveyService;
 import no.nsd.qddt.service.UserService;
@@ -15,19 +16,22 @@ public class SampleApplicationData {
     private SurveyService surveyService;
     private UserService userService;
 
+    private User user;
+
     public SampleApplicationData(StudyService studyService, SurveyService surveyService, UserService userService) {
         this.studyService = studyService;
         this.surveyService = surveyService;
         this.userService = userService;
+        this.user = userService.findByEmail("user@example.org");
 
         Survey survey = addSurvey();
-
         addStudy(survey);
         addSecondStudy(survey);
     }
 
     private Survey addSurvey() {
         Survey survey = new Survey();
+        survey.setCreatedBy(user);
         survey.setSurveyName("A demo survey");
         survey.setCreatedBy(userService.findByEmail("user@example.org"));
 
@@ -43,6 +47,7 @@ public class SampleApplicationData {
 
     public void addStudy(Survey survey) {
         Study study = new Study();
+        study.setCreatedBy(user);
         study.setName("A study of something");
         study.setChangeComment("Nothing yet.");
         study.setSurvey(survey);
@@ -60,6 +65,7 @@ public class SampleApplicationData {
 
     public void addSecondStudy(Survey survey) {
         Study study = new Study();
+        study.setCreatedBy(user);
         study.setName("Study on studies");
         study.setChangeComment("Nothing yet.");
         study.setSurvey(survey);

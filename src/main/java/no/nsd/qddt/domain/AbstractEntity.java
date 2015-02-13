@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @Audited
 @MappedSuperclass
 public abstract class AbstractEntity {
@@ -35,7 +37,6 @@ public abstract class AbstractEntity {
     @Column(name = "created")
     private LocalDateTime created;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     // Owner/Agency part of the URN

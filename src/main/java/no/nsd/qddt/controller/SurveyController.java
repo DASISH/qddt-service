@@ -7,6 +7,7 @@ import no.nsd.qddt.service.SurveyService;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -32,7 +33,7 @@ public class SurveyController extends AbstractAuditController<Survey> {
      * @return the added comment with no relations
      */
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public Comment addComment(@RequestBody Comment comment, @PathVariable("id") Long id) {
         Survey survey = service.findById(id);
         comment.setSurvey(survey);

@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -34,7 +33,6 @@ public class Comment extends AbstractEntity {
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Comment> children = new HashSet<>();
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "survey_id")
     private Survey survey;
@@ -113,7 +111,6 @@ public class Comment extends AbstractEntity {
 
         Comment comment1 = (Comment) o;
 
-        if (children != null ? !children.equals(comment1.children) : comment1.children != null) return false;
         if (comment != null ? !comment.equals(comment1.comment) : comment1.comment != null) return false;
         if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
         if (survey != null ? !survey.equals(comment1.survey) : comment1.survey != null) return false;
@@ -126,7 +123,6 @@ public class Comment extends AbstractEntity {
     public int hashCode() {
         int result = parent != null ? parent.hashCode() : 0;
         result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
-        result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + (survey != null ? survey.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;

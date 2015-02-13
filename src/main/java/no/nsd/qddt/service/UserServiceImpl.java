@@ -49,10 +49,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = false)
-    public User save(User instance) {
-
-        instance.setCreated(LocalDateTime.now());
-        return userRepository.save(instance);
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     @Override
