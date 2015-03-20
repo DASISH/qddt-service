@@ -7,7 +7,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * <ul class="inheritance">
+ *     <li>A Concept consist of one or more Questions.
+ *     <ul class="inheritance">
+ *         <li>Every Question will have a ResponseDomain.</li>
+ *     </ul>
+ * </li>
+ * </ul>
+ * </br>
  * ConceptScheme: Concepts express ideas associated with objects and means of representing the concept
  *
  * @author Stig Norland
