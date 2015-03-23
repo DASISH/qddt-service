@@ -39,6 +39,9 @@ public class Concept extends AbstractEntityAudit {
     @OneToMany(mappedBy="concept", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "concept_id")
+    private Agency agency;
 
     public Module getModule() {
         return module;
@@ -72,6 +75,13 @@ public class Concept extends AbstractEntityAudit {
         this.comments = comments;
     }
 
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
+    }
 
 //    @Override
 //    public Agency getAgency() {
