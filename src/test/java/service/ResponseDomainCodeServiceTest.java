@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.validation.constraints.AssertTrue;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -42,6 +44,7 @@ public class ResponseDomainCodeServiceTest {
         code.setCategory("Test class code");
         code.setCodeValue("500");
         code = codeService.save(code);
+
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("This is a response domain");

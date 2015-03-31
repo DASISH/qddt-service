@@ -1,6 +1,6 @@
 package no.nsd.qddt;
 
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.jsr310.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import no.nsd.qddt.service.StudyService;
 import no.nsd.qddt.service.SurveyService;

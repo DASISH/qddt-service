@@ -12,8 +12,20 @@ import java.util.UUID;
  */
 public interface QuestionService extends BaseServiceAudit<Question> {
 
+    /**
+     *
+     * @param parentId
+     * @param pageable
+     * @return
+     */
     Page<Question> findByParentPageable(Long parentId, Pageable pageable);
 
+    /**
+     *
+     * @param parentId
+     * @param pageable
+     * @return
+     */
     Page<Question> findByParentPageable(UUID parentId, Pageable pageable);
 
 //    Page<Question> findQuestionConceptPageable(Long id, Pageable pageable);

@@ -6,6 +6,18 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
+ *
+ * <ul class="inheritance">
+ *         <li>A Module will have one or more Concepts.
+ *         <ul class="inheritance">
+ *             <li>A Concept consist of one or more Questions.</li>
+ *             <ul class="inheritance">
+ *                 <li>Every Question will have a ResponseDomain.</li>
+ *             </ul>
+ *          </ul>
+ *      </li>
+ * </ul>
+ * </br>
  * A Module should be a collection of Questions and Concepts that has a theme that is broader than a Concept.
  * All Questions that doesn't belong to a specific Concept, will be collected in a default Concept that
  * every Module should have. This default Concept should not be visualized as a Concept, but as a

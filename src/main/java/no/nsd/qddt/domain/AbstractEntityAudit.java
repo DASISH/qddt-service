@@ -37,9 +37,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Column(name = "change_comment")
     private String changeComment;
 
-    protected AbstractEntityAudit() {
-
-    }
+    protected AbstractEntityAudit() { }
 
     public UUID getGuid() { return guid;}
 

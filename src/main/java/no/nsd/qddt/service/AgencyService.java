@@ -9,6 +9,11 @@ import java.util.UUID;
  */
 public interface AgencyService extends BaseService<Agency> {
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     Agency findById(UUID id);
 
 }

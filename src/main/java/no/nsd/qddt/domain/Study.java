@@ -8,11 +8,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A Study will have of one or more Modules.
- *      A Module will have one or more Concepts.
- *          A Concept consist of one or more Questions.
- *              Every Question will have a ResponseDomain.
- *
+ * <ul class="inheritance">
+ *     <li>A Study will have of one or more Modules.
+ *     <ul class="inheritance">
+ *         <li>A Module will have one or more Concepts.</li>
+ *         <ul class="inheritance">
+ *             <li>A Concept consist of one or more Questions.</li>
+ *             <ul class="inheritance">
+ *                 <li>Every Question will have a ResponseDomain.</li>
+ *             </ul>
+ *          </ul>
+ *      </ul>
+ *      </li>
+ * </ul>
+ * </br>
  * A publication structure for a specific study. Structures identification information, full
  * bibliographic and discovery information, administrative information, all of the reusable
  * delineations used for response domains and variable representations, and modules covering

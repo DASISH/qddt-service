@@ -10,8 +10,18 @@ import java.util.List;
 public interface InstrumentQuestionService  extends BaseServiceAudit<InstrumentQuestion> {
 
 
+    /**
+     *
+     * @param instrumentId
+     * @return
+     */
     public List<InstrumentQuestion> findByInstrumentId(Long instrumentId);
 
+    /**
+     *
+     * @param questionId
+     * @return
+     */
     public List<InstrumentQuestion> findByQuestionId(Long questionId);
 
 }
