@@ -50,9 +50,9 @@ public class Question extends AbstractEntityAudit {
     @Column(name = "instruction", length = 2000)
     private String instruction;
 
-    @ManyToOne
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
+//    @ManyToOne
+//    @JoinColumn(name = "agency_id")
+//    private Agency agency;
 
 
 //    @ManyToMany
@@ -142,9 +142,9 @@ public class Question extends AbstractEntityAudit {
         this.instruction = instruction;
     }
 
-    public Agency getAgency() {return agency;}
-
-    public void setAgency(Agency agency) {this.agency = agency;}
+//    public Agency getAgency() {return agency;}
+//
+//    public void setAgency(Agency agency) {this.agency = agency;}
 
     @Override
     public boolean equals(Object o) {

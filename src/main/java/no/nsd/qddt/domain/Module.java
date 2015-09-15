@@ -40,9 +40,9 @@ public class Module extends AbstractEntityAudit {
 
     private String  moduleAbstract;
 
-    @ManyToOne
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
+//    @ManyToOne
+//    @JoinColumn(name = "agency_id")
+//    private Agency agency;
 
     @ManyToOne
     @JoinColumn(name="study_id")
@@ -84,13 +84,13 @@ public class Module extends AbstractEntityAudit {
         this.moduleAbstract = moduleAbstract;
     }
 
-    public Agency getAgency() {
-        return agency;
-    }
-
-    public void setAgency(Agency agency) {
-        this.agency = agency;
-    }
+//    public Agency getAgency() {
+//        return agency;
+//    }
+//
+//    public void setAgency(Agency agency) {
+//        this.agency = agency;
+//    }
 
     public Concept getConcept() {
         return concept;

@@ -24,7 +24,7 @@ import java.util.UUID;
 public class Comment extends AbstractEntity {
 
     // This property is not in use for comments, it is here to simplify the class hierarchy (All AbstractEntities has a guid)
-    private UUID guid;
+//    private UUID guid;
 
     @ManyToOne
     @JoinColumn(name="parent_id")
@@ -47,13 +47,13 @@ public class Comment extends AbstractEntity {
     public Comment() {
     }
 
-    public UUID getGuid() {
-        return guid;
-    }
-
-    public void setGuid(UUID guid) {
-        this.guid = guid;
-    }
+//    public UUID getGuid() {
+//        return guid;
+//    }
+//
+//    public void setGuid(UUID guid) {
+//        this.guid = guid;
+//    }
 
     public Comment getParent() {
         return parent;

@@ -3,9 +3,7 @@ package no.nsd.qddt.domain;
 import org.hibernate.envers.Audited;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
@@ -21,6 +19,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      * I am essential to creation, and I surround every place.
      * What am I?
      */
+
+    @ManyToOne
+    @JoinColumn(name = "agentcy_id")
+    private long agentcy;
 
     //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
     @Column(name = "guid", columnDefinition = "BINARY(16)")
@@ -38,6 +40,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private String changeComment;
 
     protected AbstractEntityAudit() { }
+
+    public long getAgentcy() {
+        return agentcy;
+    }
+
+    public void setAgentcy(long agentcy) {
+        this.agentcy = agentcy;
+    }
+
 
     public UUID getGuid() { return guid;}
 
@@ -109,6 +120,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 ", changeReason=" + changeReason +
                 ", changeComment='" + changeComment + '\'';
     }
+
 
     /**
      * The letter "E".
