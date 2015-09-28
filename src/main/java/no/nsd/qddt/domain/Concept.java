@@ -27,44 +27,49 @@ import java.util.Set;
 public class Concept extends AbstractEntityAudit {
 
     @ManyToOne
-    @JoinColumn(name="module_id")
-    private Module module;
+    @JoinColumn(name="topicgroup_id")
+    private TopicGroup topicGroup;
 
-    @Column(name = "concept_label")
-    private String conceptLabel;
+    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    private Set<Question> children = new HashSet<>();
 
-    @Column(name = "concept_description")
-    private String conceptDescription;
 
-    @OneToMany(mappedBy="concept", cascade = CascadeType.ALL)
+    @Column(name = "label")
+    private String label;
+
+    // name kommer fra AbstractEntityAudit
+
+    @Column(name = "description")
+    private String description;
+
+    public TopicGroup getTopicGroup() {
+        return topicGroup;
+    }
+
+    public void setTopicGroup(TopicGroup topicGroup) {
+        this.topicGroup = topicGroup;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
     private Set<Comment> comments = new HashSet<>();
-
-
-//    private Agency agency;
-
-    public Module getModule() {
-        return module;
-    }
-
-    public void setModule(Module module) {
-        this.module = module;
-    }
-
-    public String getConceptLabel() {
-        return conceptLabel;
-    }
-
-    public void setConceptLabel(String conceptLabel) {
-        this.conceptLabel = conceptLabel;
-    }
-
-    public String getConceptDescription() {
-        return conceptDescription;
-    }
-
-    public void setConceptDescription(String conceptDescription) {
-        this.conceptDescription = conceptDescription;
-    }
 
     public Set<Comment> getComments() {
         return comments;
@@ -74,43 +79,47 @@ public class Concept extends AbstractEntityAudit {
         this.comments = comments;
     }
 
-//    public Agency getAgency() {
-//        return agency;
-//    }
-//
-//    public void setAgency(Agency agency) {
-//        this.agency = agency;
-//    }
+    public void addComment(Comment comment) {
+        comment.setOwnerGuid(this.getGuid());
+        comments.add(comment);
+    }
 
-//    @Override
-//    public Agency getAgency() {
-//        return getModule().getAgency();
-//    }
+
+    public Set<Question> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Question> children) {
+        this.children = children;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Concept)) return false;
         if (!super.equals(o)) return false;
 
         Concept concept = (Concept) o;
 
-        if (comments != null ? !comments.equals(concept.comments) : concept.comments != null) return false;
-        if (conceptDescription != null ? !conceptDescription.equals(concept.conceptDescription) : concept.conceptDescription != null)
+        if (getTopicGroup() != null ? !getTopicGroup().equals(concept.getTopicGroup()) : concept.getTopicGroup() != null) return false;
+        if (getChildren() != null ? !getChildren().equals(concept.getChildren()) : concept.getChildren() != null)
             return false;
-        if (conceptLabel != null ? !conceptLabel.equals(concept.conceptLabel) : concept.conceptLabel != null)
+        if (getLabel() != null ? !getLabel().equals(concept.getLabel()) : concept.getLabel() != null)
             return false;
-        if (module != null ? !module.equals(concept.module) : concept.module != null) return false;
+        if (getDescription() != null ? !getDescription().equals(concept.getDescription()) : concept.getDescription() != null)
+            return false;
+        return !(getComments() != null ? !getComments().equals(concept.getComments()) : concept.getComments() != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = module != null ? module.hashCode() : 0;
-        result = 31 * result + (conceptLabel != null ? conceptLabel.hashCode() : 0);
-        result = 31 * result + (conceptDescription != null ? conceptDescription.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 * result + (getTopicGroup() != null ? getTopicGroup().hashCode() : 0);
+        result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
+        result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getComments() != null ? getComments().hashCode() : 0);
         return result;
     }
 
@@ -120,9 +129,9 @@ public class Concept extends AbstractEntityAudit {
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "Concept{" +
-                "  module=" + module +
-                ", conceptLabel='" + conceptLabel + '\'' +
-                ", conceptDescription='" + conceptDescription + '\'' +
+                "  module=" + topicGroup +
+                ", label='" + label + '\'' +
+                ", description='" + description + '\'' +
                 ", comments=" + comments) ;
         sb.append(super.toString());
         sb.append('}');

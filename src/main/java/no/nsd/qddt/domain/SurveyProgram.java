@@ -32,37 +32,18 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "survey")
-public class Survey extends AbstractEntityAudit {
+@Table(name = "SurveyProgram")
+public class SurveyProgram extends AbstractEntityAudit {
 
-    @Column(name = "survey_name")
-    private String surveyName;
-
-    @OneToMany(mappedBy="survey", cascade = CascadeType.ALL)
+    @OneToMany( cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
-    @OneToMany(mappedBy="survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy="survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
     private Set<Comment> comments = new HashSet<>();
-
-
-    public Survey() {
-    }
-
-    public String getSurveyName() {
-        return surveyName;
-    }
-
-    public void setSurveyName(String surveyName) {
-        this.surveyName = surveyName;
-    }
-
-    public Set<Study> getStudies() {
-        return studies;
-    }
-
-    public void setStudies(Set<Study> studies) {
-        this.studies = studies;
-    }
 
     public Set<Comment> getComments() {
         return comments;
@@ -73,8 +54,22 @@ public class Survey extends AbstractEntityAudit {
     }
 
     public void addComment(Comment comment) {
+        comment.setOwnerGuid(this.getGuid());
         comments.add(comment);
     }
+
+
+    public SurveyProgram() {
+    }
+
+    public Set<Study> getStudies() {
+        return studies;
+    }
+
+    public void setStudies(Set<Study> studies) {
+        this.studies = studies;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -82,18 +77,17 @@ public class Survey extends AbstractEntityAudit {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        Survey survey = (Survey) o;
+        SurveyProgram surveyProgram = (SurveyProgram) o;
 
-        if (this.getCreated() != null ? !this.getCreated().equals(survey.getCreated()) : survey.getCreated() != null) return false;
-        if (this.getCreatedBy() != null ? !this.getCreatedBy().equals(survey.getCreatedBy()) : survey.getCreatedBy() != null) return false;
-        if (surveyName != null ? !surveyName.equals(survey.surveyName) : survey.surveyName != null) return false;
+        if (this.getCreated() != null ? !this.getCreated().equals(surveyProgram.getCreated()) : surveyProgram.getCreated() != null) return false;
+        if (this.getCreatedBy() != null ? !this.getCreatedBy().equals(surveyProgram.getCreatedBy()) : surveyProgram.getCreatedBy() != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = surveyName != null ? surveyName.hashCode() : 0;
+        int result = super.hashCode();
         result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
         result = 31 * result + (this.getCreatedBy() != null ? this.getCreatedBy().hashCode() : 0);
         return result;
@@ -101,8 +95,7 @@ public class Survey extends AbstractEntityAudit {
 
     @Override
     public String toString() {
-        return "Survey{" +
-                "surveyName='" + surveyName + '\'' +
+        return "Survey{" + this.getName() +
                 ", created=" + this.getCreated() +
                 ", createdBy=" + this.getCreatedBy() +
                 '}';

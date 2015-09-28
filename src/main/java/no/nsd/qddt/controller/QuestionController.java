@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/question")
-public class QuestionController extends AbstractAuditController<Question>  {
+public class QuestionController extends AbstractAuditController<Question,UUID>  {
 
     private QuestionService questionService;
 
@@ -53,19 +53,19 @@ public class QuestionController extends AbstractAuditController<Question>  {
 //    }
 
 
-//    HierachyController<Question>
-    @RequestMapping(value = "/{id}/page/thread", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Question>> getThreadbyId(Long id, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Question> questions = questionService.findByParentPageable(id, pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-    }
-
-//    HierachyController<Question>
-    @RequestMapping(value = "/UUID{id}/page/thread", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Question>> getThreadbyGuid(UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Question> questions = questionService.findByParentPageable(id, pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-    }
+////    HierachyController<Question>
+//    @RequestMapping(value = "/{id}/page/thread", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Question>> getThreadbyId(Long id, Pageable pageable, PagedResourcesAssembler assembler) {
+//
+//        Page<Question> questions = questionService.findByParentPageable(id, pageable);
+//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
+//    }
+//
+////    HierachyController<Question>
+//    @RequestMapping(value = "/UUID{id}/page/thread", method = RequestMethod.GET)
+//    public HttpEntity<PagedResources<Question>> getThreadbyGuid(UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+//
+//        Page<Question> questions = questionService.findByParentPageable(id, pageable);
+//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
+//    }
 }

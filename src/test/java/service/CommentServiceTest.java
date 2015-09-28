@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -24,26 +27,40 @@ public class CommentServiceTest {
 
     @Test
     public void saveCommentTest() throws Exception {
-        Comment comment = new Comment();
-        comment.setComment("PARENT");
 
-        Comment commentChildOne = new Comment();
-        commentChildOne.setComment("CHILD-ONE");
+        Comment parent = commentService.save(new Comment("PARENT"));
+        Comment saved = commentService.save(new Comment("CHILD-ONE"));
+        parent.addComment(saved);
+        saved.addComment(commentService.save(new Comment("CHILD OF CHILD-ONE")));
+        parent.addComment(commentService.save(new Comment("CHILD-TWO")));
+        parent.addComment(commentService.save(new Comment("CHILD-THREE")));
+        commentService.save(parent);
 
-        Comment commentChildTwo = new Comment();
-        commentChildTwo.setComment("CHILD-TWO");
+        Comment root  = commentService.findOne(parent.getGuid());
 
-        Comment commentChildThree = new Comment();
-        commentChildThree.setComment("CHILD-THREE");
-
-        comment.addComment(commentChildOne);
-        comment.addComment(commentChildTwo);
-        comment.addComment(commentChildThree);
-
-        Comment c = commentService.save(comment);
-
-        assertThat(commentService.save(comment).getChildren().size(), is(3));
+        assertTrue(5L == parent.treeSize());
+        assertThat(parent.getChildren().size(), is(3));
+        assertThat(parent, is(root));
     }
+
+
+    @Test
+    public void saveCommentTest2() throws Exception {
+
+        Comment parent = new Comment("PARENT");
+        Comment to  = new Comment("CHILD-ONE");
+            to.addComment(new Comment("CHILD OF CHILD-ONE"));
+            parent.addComment(to);
+        parent.addComment(new Comment("CHILD-TWO"));
+        parent.addComment(new Comment("CHILD-THREE"));
+        commentService.save(parent);
+
+        assertThat(parent.treeSize(), is(5));
+        assertThat(commentService.save(parent).getChildren().size(), is(3));
+    }
+
+
+
 
     /**
      * Tests for the child -> parent relation are not

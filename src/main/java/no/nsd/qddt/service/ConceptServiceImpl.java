@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -30,23 +31,24 @@ public class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Concept findById(Long id) {
-        return conceptRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Concept.class)
-        );
+    public long count() {
+        return conceptRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return conceptRepository.exists(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Concept findByGuid(UUID id) {
-        return conceptRepository.findByGuid(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Concept.class)
-        );
+    public Concept findOne(UUID uuid) {
+        return conceptRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Concept.class));
+
     }
 
-
-        @Override
+    @Override
     @Transactional(readOnly = true)
     public List<Concept> findAll() {
         return conceptRepository.findAll();
@@ -59,6 +61,12 @@ public class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
+    public List<Concept> findAll(Iterable<UUID> uuids) {
+        return null;
+    }
+
+
+    @Override
     @Transactional(readOnly = false)
     public Concept save(Concept instance) {
 
@@ -67,30 +75,23 @@ public class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(Concept instance) {
-        conceptRepository.delete(instance);
+    public void delete(UUID uuid) {
+        conceptRepository.delete(uuid);
     }
 
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Concept> findLastChange(Long id) {
-        return conceptRepository.findLastChangeRevision(id);
+    public Revision<Integer, Concept> findLastChange(UUID uuid) {
+        return conceptRepository.findLastChangeRevision(uuid);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Concept> findEntityAtRevision(Long id, Integer revision) {
-        return conceptRepository.findEntityAtRevision(id, revision);
+    public Revision<Integer, Concept> findEntityAtRevision(UUID uuid, Integer revision) {
+        return conceptRepository.findEntityAtRevision(uuid,revision);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Concept>> findAllRevisionsPageable(Long id, Pageable pageable) {
-        return conceptRepository.findRevisions(id,pageable);
+    public Page<Revision<Integer, Concept>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return conceptRepository.findRevisions(uuid,pageable);
     }
-
-
-
 }

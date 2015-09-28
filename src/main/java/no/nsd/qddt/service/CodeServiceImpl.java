@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -31,23 +32,28 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Code findById(Long id) {
-        return codeRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Code.class)
-        );
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    //TODO implement findby uuid
-    public Code findByGuid(UUID id) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Code> findByHashTag(String tag) {
         return codeRepository.findByNameIgnoreCaseContains(tag);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long count() {
+        return 0;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean exists(UUID uuid) {
+        return false;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Code findOne(UUID uuid) {
+        return codeRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Code.class)
+        );
     }
 
     @Override
@@ -61,6 +67,11 @@ public class CodeServiceImpl implements CodeService {
         return codeRepository.findAll(pageable);
     }
 
+    @Override
+    public List<Code> findAll(Iterable<UUID> uuids) {
+        return codeRepository.findAll(uuids);
+    }
+
 
     @Override
     @Transactional(readOnly = false)
@@ -70,28 +81,28 @@ public class CodeServiceImpl implements CodeService {
         return codeRepository.save(instance);
     }
 
+
     @Override
-    @Transactional(readOnly = false)
-    public void delete(Code instance) {
-        codeRepository.delete(instance);
+    public void delete(UUID uuid) {
+        codeRepository.delete(uuid);
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Code> findLastChange(Long id) {
-        return codeRepository.findLastChangeRevision(id);
+    public Revision<Integer, Code> findLastChange(UUID uuid) {
+        return codeRepository.findLastChangeRevision(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Code> findEntityAtRevision(Long id, Integer revision) {
-        return codeRepository.findEntityAtRevision(id, revision);
+    public Revision<Integer, Code> findEntityAtRevision(UUID uuid, Integer revision) {
+        return codeRepository.findEntityAtRevision(uuid,revision);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Code>> findAllRevisionsPageable(Long id, Pageable pageable) {
-        return codeRepository.findRevisions(id, pageable);
+    public Page<Revision<Integer, Code>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return codeRepository.findRevisions(uuid,pageable);
     }
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/agency")
-public class AgencyController extends AbstractController<Agency> {
+public class AgencyController extends AbstractController<Agency,UUID> {
 
     private AgencyService agencyService;
 

@@ -1,7 +1,7 @@
 package no.nsd.qddt;
 
 import no.nsd.qddt.domain.Study;
-import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.domain.SurveyProgram;
 import no.nsd.qddt.domain.User;
 import no.nsd.qddt.service.StudyService;
 import no.nsd.qddt.service.SurveyService;
@@ -24,33 +24,33 @@ public class SampleApplicationData {
         this.userService = userService;
         this.user = userService.findByEmail("user@example.org");
 
-        Survey survey = addSurvey();
-        addStudy(survey);
-        addSecondStudy(survey);
+        SurveyProgram surveyProgram = addSurvey();
+        addStudy(surveyProgram);
+        addSecondStudy(surveyProgram);
     }
 
-    private Survey addSurvey() {
-        Survey survey = new Survey();
-        survey.setCreatedBy(user);
-        survey.setSurveyName("A demo survey");
-        survey.setCreatedBy(userService.findByEmail("user@example.org"));
+    private SurveyProgram addSurvey() {
+        SurveyProgram surveyProgram = new SurveyProgram();
+        surveyProgram.setCreatedBy(user);
+        surveyProgram.setName("A demo survey");
+        surveyProgram.setCreatedBy(userService.findByEmail("user@example.org"));
 
-        survey.setChangeComment("Changed it.");
-        survey = surveyService.save(survey);
+        surveyProgram.setChangeComment("Changed it.");
+        surveyProgram = surveyService.save(surveyProgram);
 
-        survey.setChangeComment("Changed it once again.");
-        survey = surveyService.save(survey);
+        surveyProgram.setChangeComment("Changed it once again.");
+        surveyProgram = surveyService.save(surveyProgram);
 
-        survey.setChangeComment("Yet again reasons to change.");
-        return surveyService.save(survey);
+        surveyProgram.setChangeComment("Yet again reasons to change.");
+        return surveyService.save(surveyProgram);
     }
 
-    public void addStudy(Survey survey) {
+    public void addStudy(SurveyProgram surveyProgram) {
         Study study = new Study();
         study.setCreatedBy(user);
         study.setName("A study of something");
         study.setChangeComment("Nothing yet.");
-        study.setSurvey(survey);
+        study.setSurveyProgram(surveyProgram);
         study = studyService.save(study);
 
         study.setChangeComment("We had to change it again.");
@@ -63,12 +63,12 @@ public class SampleApplicationData {
         studyService.save(study);
     }
 
-    public void addSecondStudy(Survey survey) {
+    public void addSecondStudy(SurveyProgram surveyProgram) {
         Study study = new Study();
         study.setCreatedBy(user);
         study.setName("Study on studies");
         study.setChangeComment("Nothing yet.");
-        study.setSurvey(survey);
+        study.setSurveyProgram(surveyProgram);
         study = studyService.save(study);
 
         study.setChangeComment("Had to change study on studies.");

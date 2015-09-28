@@ -20,36 +20,31 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public abstract class AbstractAuditController<T> extends AbstractController<T> {
+public abstract class AbstractAuditController<T,ID> extends AbstractController<T,ID> {
 
-    protected BaseServiceAudit<T> service;
+    protected BaseServiceAudit<T,ID> service;
 
     @Autowired
-    public AbstractAuditController(BaseServiceAudit<T> service) {
+    public AbstractAuditController(BaseServiceAudit<T,ID> service) {
         super(service);
         this.service = service;
     }
 
 
-    @RequestMapping(value = "/UUID/{id}", method = RequestMethod.GET)
-    public T getOneByGuid(@PathVariable("id") UUID id){
-        return service.findByGuid(id);
-    }
-
 
     @RequestMapping(value = "/audit/{id}", method = RequestMethod.GET)
-    public Revision<Integer, T> getLastRevision(@PathVariable("id") Long id) {
+    public Revision<Integer, T> getLastRevision(@PathVariable("id") ID id) {
         return service.findLastChange(id);
     }
 
     @RequestMapping(value = "/audit/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Integer, T> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+    public Revision<Integer, T> getByRevision(@PathVariable("id") ID id, @PathVariable("revision") Integer revision) {
         return service.findEntityAtRevision(id, revision);
     }
 
     @RequestMapping(value = "/audit/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> getAllRevision(
-            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler){
+            @PathVariable("id") ID id,Pageable pageable, PagedResourcesAssembler assembler){
 
         Page<Revision<Integer, T>> studies = service.findAllRevisionsPageable(id, pageable);
         return new ResponseEntity<>(assembler.toResource(studies), HttpStatus.OK);

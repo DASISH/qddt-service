@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "question")
+@Table(name = "Question")
 public class Question extends AbstractEntityAudit {
 
     @ManyToOne
@@ -30,34 +30,19 @@ public class Question extends AbstractEntityAudit {
     private Set<Question> children = new HashSet<>();
 
     /// Only used for Questions with a Question parent
-    private int rank;
+    private int gridIdx;
 
     /// Reason why this Question is before or after its siblings
-    private String rankRationale;
+    private String gridIdxRationale;
 
-    /// QuestionIntent: what the questionText is supposed to gather information about.
-    @Column(name = "question_intent", length = 2000)
-    private String questionIntent;
+    /// QuestionIntent: what the question is supposed to gather information about.
+    @Column(name = "intent", length = 2000)
+    private String intent;
 
-    /// QuestionText: the actual questionText to ask.
-    @Column(name = "question_text", length = 1500)
-    private String questionText;
+    /// QuestionText: the actual question to ask.
+    @Column(name = "question", length = 1500)
+    private String question;
 
-    /// InstructionLabel: header for instruction
-    private String instructionLabel;
-
-    /// Instruction on how to ask questionText.
-    @Column(name = "instruction", length = 2000)
-    private String instruction;
-
-//    @ManyToOne
-//    @JoinColumn(name = "agency_id")
-//    private Agency agency;
-
-
-//    @ManyToMany
-//    @JoinColumn(name = "concept_id")
-//    private Concept concept;
 
     public Question() {
 
@@ -94,57 +79,54 @@ public class Question extends AbstractEntityAudit {
 
     public void setChildren(Set<Question> children) {this.children = children;}
 
-    public int getRank() {
-        return rank;
+    public int getGridIdx() {
+        return gridIdx;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setGridIdx(int gridIdx) {
+        this.gridIdx = gridIdx;
     }
 
-    public String getRankRationale() {
-        return rankRationale;
+    public String getGridIdxRationale() {
+        return gridIdxRationale;
     }
 
-    public void setRankRationale(String rankRationale) {
-        this.rankRationale = rankRationale;
+    public void setGridIdxRationale(String gridIdxRationale) {
+        this.gridIdxRationale = gridIdxRationale;
     }
 
-    public String getQuestionIntent() {
-        return questionIntent;
+    public String getIntent() {
+        return intent;
     }
 
-    public void setQuestionIntent(String questionIntent) {
-        this.questionIntent = questionIntent;
+    public void setIntent(String intent) {
+        this.intent = intent;
     }
 
-    public String getQuestionText() {
-        return questionText;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setQuestionText(String text) {
-        this.questionText = text;
+    public void setQuestion(String text) {
+        this.question = text;
     }
 
-    public String getInstructionLabel() {
-        return instructionLabel;
+    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
+    private Set<Comment> comments = new HashSet<>();
+
+    public Set<Comment> getComments() {
+        return comments;
     }
 
-    public void setInstructionLabel(String instructionLabel) {
-        this.instructionLabel = instructionLabel;
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
-    public String getInstruction() {
-        return instruction;
+    public void addComment(Comment comment) {
+        comment.setOwnerGuid(this.getGuid());
+        comments.add(comment);
     }
-
-    public void setInstruction(String instruction) {
-        this.instruction = instruction;
-    }
-
-//    public Agency getAgency() {return agency;}
-//
-//    public void setAgency(Agency agency) {this.agency = agency;}
 
     @Override
     public boolean equals(Object o) {
@@ -154,21 +136,16 @@ public class Question extends AbstractEntityAudit {
 
         Question question = (Question) o;
 
-        if (rank != question.rank) return false;
-        if (agency != null ? !agency.equals(question.agency) : question.agency != null) return false;
+        if (gridIdx != question.gridIdx) return false;
         if (children != null ? !children.equals(question.children) : question.children != null) return false;
-        if (instruction != null ? !instruction.equals(question.instruction) : question.instruction != null)
-            return false;
-        if (instructionLabel != null ? !instructionLabel.equals(question.instructionLabel) : question.instructionLabel != null)
-            return false;
-        if (instrumentQuestions != null ? !instrumentQuestions.equals(question.instrumentQuestions) : question.instrumentQuestions != null)
+         if (instrumentQuestions != null ? !instrumentQuestions.equals(question.instrumentQuestions) : question.instrumentQuestions != null)
             return false;
         if (parent != null ? !parent.equals(question.parent) : question.parent != null) return false;
-        if (questionIntent != null ? !questionIntent.equals(question.questionIntent) : question.questionIntent != null)
+        if (intent != null ? !intent.equals(question.intent) : question.intent != null)
             return false;
-        if (questionText != null ? !questionText.equals(question.questionText) : question.questionText != null)
+        if (this.question != null ? !this.question.equals(question.question) : question.question != null)
             return false;
-        if (rankRationale != null ? !rankRationale.equals(question.rankRationale) : question.rankRationale != null)
+        if (gridIdxRationale != null ? !gridIdxRationale.equals(question.gridIdxRationale) : question.gridIdxRationale != null)
             return false;
 
         return true;
@@ -179,13 +156,10 @@ public class Question extends AbstractEntityAudit {
         int result = super.hashCode();
         result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + (children != null ? children.hashCode() : 0);
-        result = 31 * result + rank;
-        result = 31 * result + (rankRationale != null ? rankRationale.hashCode() : 0);
-        result = 31 * result + (questionIntent != null ? questionIntent.hashCode() : 0);
-        result = 31 * result + (questionText != null ? questionText.hashCode() : 0);
-        result = 31 * result + (instructionLabel != null ? instructionLabel.hashCode() : 0);
-        result = 31 * result + (instruction != null ? instruction.hashCode() : 0);
-        result = 31 * result + (agency != null ? agency.hashCode() : 0);
+        result = 31 * result + gridIdx;
+        result = 31 * result + (gridIdxRationale != null ? gridIdxRationale.hashCode() : 0);
+        result = 31 * result + (intent != null ? intent.hashCode() : 0);
+        result = 31 * result + (question != null ? question.hashCode() : 0);
         result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
         return result;
     }
@@ -193,14 +167,13 @@ public class Question extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "Question{" +
-                "rank=" + rank +
-                ", rankRationale='" + rankRationale + '\'' +
-                ", questionIntent='" + questionIntent + '\'' +
-                ", questionText='" + questionText + '\'' +
-                ", instructionLabel='" + instructionLabel + '\'' +
-                ", instruction='" + instruction + '\'' +
+                "gridIdx=" + gridIdx +
+                ", gridIdxRationale='" + gridIdxRationale + '\'' +
+                ", intent='" + intent + '\'' +
+                ", question='" + question + '\'' +
                 '}';
     }
+
 }
 
 

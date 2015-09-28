@@ -1,6 +1,7 @@
 package service;
 
 import no.nsd.qddt.QDDT;
+import no.nsd.qddt.domain.Comment;
 import no.nsd.qddt.domain.Question;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.service.QuestionService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,6 +35,10 @@ public class QuestionServiceTest {
 
         Question q1 = new Question();
         q1.setName("1 CHILD");
+        Comment c1 = new Comment("første test kommentar");
+        q1.addComment(c1);
+        c1.addComment(new Comment("barn kommentar, nivå 2"));
+        q1.addComment(new Comment("neste kommentar nivå 1"));
 
         Question q2 = new Question();
         q2.setName("2 CHILD");
@@ -43,9 +50,9 @@ public class QuestionServiceTest {
         question.addChild(q2);
         question.addChild(q3);
 
-
-
         assertThat(questionService.save(question).getChildren().size(), is(3));
+        assertThat(q1.getComments().size(), is(2));
+
     }
 
 
@@ -53,7 +60,7 @@ public class QuestionServiceTest {
 
     @Test(expected = ResourceNotFoundException.class)
     public void fail() throws Exception {
-        Question q = questionService.findById(1000L);
+        Question q = questionService.findOne(UUID.randomUUID());
     }
 
 }

@@ -23,37 +23,47 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity {
 
-    // This property is not in use for comments, it is here to simplify the class hierarchy (All AbstractEntities has a guid)
-//    private UUID guid;
+    @Column(name = "guid", columnDefinition = "BINARY(16)")
+    private UUID guid = UUID.randomUUID();
 
-    @ManyToOne
+    @Column(name = "owner_guid", columnDefinition = "BINARY(16)")
+    private UUID ownerGuid;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="parent_id")
     private Comment parent;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Comment> children = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "survey_id")
-    private Survey survey;
 
     @Column(name = "comment")
     public String comment;
 
-    @ManyToOne
-    @JoinColumn(name="concept_id")
-    private Concept concept;
 
     public Comment() {
     }
 
-//    public UUID getGuid() {
-//        return guid;
-//    }
-//
-//    public void setGuid(UUID guid) {
-//        this.guid = guid;
-//    }
+    public Comment(String comment) {
+        setComment(comment);
+    }
+
+
+    public UUID getGuid() {
+        return guid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public UUID getOwnerGuid() {
+        return ownerGuid;
+    }
+
+    public void setOwnerGuid(UUID ownerGuid) {
+        this.ownerGuid = ownerGuid;
+    }
 
     public Comment getParent() {
         return parent;
@@ -77,15 +87,9 @@ public class Comment extends AbstractEntity {
      */
     public void addComment(Comment comment) {
         this.children.add(comment);
+      //  comment.setParent(this);
     }
 
-    public Survey getSurvey() {
-        return survey;
-    }
-
-    public void setSurvey(Survey survey) {
-        this.survey = survey;
-    }
 
     public String getComment() {
         return comment;
@@ -95,43 +99,48 @@ public class Comment extends AbstractEntity {
         this.comment = comment;
     }
 
-    public Concept getConcept() {
-        return concept;
+    public Long treeSize(){
+        return getChildren() == null ? 1 : getChildren().stream().mapToLong(c->c.treeSize()).sum() + 1;
     }
 
-    public void setConcept(Concept concept) {
-        this.concept = concept;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Comment)) return false;
         if (!super.equals(o)) return false;
 
         Comment comment1 = (Comment) o;
 
-        if (comment != null ? !comment.equals(comment1.comment) : comment1.comment != null) return false;
-        if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
-        if (survey != null ? !survey.equals(comment1.survey) : comment1.survey != null) return false;
-        if (this.getCreated() != null ? !this.getCreated().equals(comment1.getCreated()) : comment1.getCreated() != null) return false;
+        if (getGuid() != null ? !getGuid().equals(comment1.getGuid()) : comment1.getGuid() != null) return false;
+        if (getOwnerGuid() != null ? !getOwnerGuid().equals(comment1.getOwnerGuid()) : comment1.getOwnerGuid() != null)
+            return false;
+        if (getParent() != null ? !getParent().equals(comment1.getParent()) : comment1.getParent() != null)
+            return false;
+        if (getChildren() != null ? !getChildren().equals(comment1.getChildren()) : comment1.getChildren() != null)
+            return false;
+        return !(getComment() != null ? !getComment().equals(comment1.getComment()) : comment1.getComment() != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = parent != null ? parent.hashCode() : 0;
-        result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
-        result = 31 * result + (survey != null ? survey.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 * result + (getGuid() != null ? getGuid().hashCode() : 0);
+        result = 31 * result + (getOwnerGuid() != null ? getOwnerGuid().hashCode() : 0);
+        result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
+        result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
+        result = 31 * result + (getComment() != null ? getComment().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Comment{" +
-                "comment='" + comment + '\'' +
+                "guid=" + guid +
+                ", ownerGuid=" + ownerGuid +
+                ", children=" + children +
+                ", comment='" + comment + '\'' +
                 '}';
     }
 }

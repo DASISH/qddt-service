@@ -21,8 +21,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      */
 
     @ManyToOne
-    @JoinColumn(name = "agentcy_id")
-    private long agentcy;
+    @JoinColumn(name = "agency_id")
+    private Agency agency;
 
     //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
     @Column(name = "guid", columnDefinition = "BINARY(16)")
@@ -41,14 +41,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     protected AbstractEntityAudit() { }
 
-    public long getAgentcy() {
-        return agentcy;
+    public Agency getAgency() {
+        return agency;
     }
 
-    public void setAgentcy(long agentcy) {
-        this.agentcy = agentcy;
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
-
 
     public UUID getGuid() { return guid;}
 
@@ -95,12 +94,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
             return false;
         }
         AbstractEntityAudit that = (AbstractEntityAudit) obj;
-        return ObjectUtils.nullSafeEquals(super.getId(), that.getId());
+        return ObjectUtils.nullSafeEquals(super.getUrn().getId(), that.getUrn().getId());
     }
 
     @Override
     public int hashCode() {
-        int result = super.getId() != null ? super.getId().hashCode() : 0;
+        int result = super.getUrn().getId() != null ? super.getUrn().getId().hashCode() : 0;
         result = 31 * result + (guid != null ? guid.hashCode() : 0);
         result = 31 * result + (super.getCreated() != null ? super.getCreated().hashCode() : 0);
         result = 31 * result + (super.getCreatedBy() != null ? super.getCreatedBy().hashCode() : 0);
@@ -112,7 +111,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @Override
     public String toString() {
-        return  " ,id=" + super.getId() +
+        return  " ,id=" + super.getUrn().getId() +
                 ", guid=" + guid +
                 ", created=" + super.getCreated() +
                 ", createdBy=" + super.getCreatedBy() +

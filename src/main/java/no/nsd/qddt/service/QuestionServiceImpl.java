@@ -29,10 +29,19 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Question findById(Long id) {
-        return questionRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Question.class)
+    public long count() {
+        return questionRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return questionRepository.exists(uuid);
+    }
+
+    @Override
+    public Question findOne(UUID uuid) {
+        return questionRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Question.class)
         );
     }
 
@@ -47,6 +56,11 @@ public class QuestionServiceImpl implements QuestionService {
     public Page<Question> findAll(Pageable pageable) { return questionRepository.findAll(pageable);   }
 
     @Override
+    public List<Question> findAll(Iterable<UUID> uuids) {
+        return questionRepository.findAll(uuids);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public Question save(Question instance) {
 
@@ -55,56 +69,31 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(Question instance) {
-        questionRepository.delete(instance);
+    public void delete(UUID uuid) {
+        questionRepository.delete(uuid);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Question findByGuid(UUID id) {
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Question> findLastChange(Long id) {
-        return questionRepository.findLastChangeRevision(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Question> findEntityAtRevision(Long id, Integer revision) {
-        return questionRepository.findEntityAtRevision(id, revision);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Question>> findAllRevisionsPageable(Long id, Pageable pageable) {
-        return questionRepository.findRevisions(id,pageable);
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Question> findByParentPageable(Long parentId, Pageable pageable) {
-        return questionRepository.findAllByParentId(parentId, pageable);
-    }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Question> findByParentPageable(UUID guidId, Pageable pageable) {
-        // funker dette?
-        return questionRepository.findAllByParentId(findByGuid(guidId).getParent().getId(), pageable);
+        Question child= questionRepository.findOne(guidId);
+        return questionRepository.findAllByParentId(child.getParent().getId(), pageable);
     }
 
-//    @Override
-//    public Page<Question> findQuestionConceptPageable(Long id, Pageable pageable) {
-//        return questionRepository.findQuestionConcept(id,pageable);
-//    }
+    @Override
+    public Revision<Integer, Question> findLastChange(UUID uuid) {
+        return questionRepository.findLastChangeRevision(uuid);
+    }
 
-//    @Override
-//    public Page<Question> findQuestionInstrument(Long id, Pageable pageable) {
-//        return questionRepository.findQuestionInstrument(id,pageable);
-//    }
+    @Override
+    public Revision<Integer, Question> findEntityAtRevision(UUID uuid, Integer revision) {
+        return questionRepository.findEntityAtRevision(uuid,revision);
+    }
+
+    @Override
+    public Page<Revision<Integer, Question>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return questionRepository.findRevisions(uuid,pageable);
+    }
+
 }

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
 
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
@@ -12,18 +13,33 @@ import java.util.UUID;
  *
  * @author Stig Norland
  */
+@Embeddable
+@Access(AccessType.PROPERTY)
 public class Urn {
 
+    @Id
+    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id = UUID.randomUUID();
     private Agency agency;
-    private UUID guid;
     private String version;
 
-    public Urn(Agency agency, UUID guid, String version){
+    public Urn(){}
+
+    public Urn(Agency agency, UUID id, String version){
         this.agency = agency;
-        this.guid = guid;
+        this.id = id;
         this.version = version;
     }
 
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID guid) {
+        this.id = guid;
+    }
 
     public Agency getAgency() {
         return agency;
@@ -31,14 +47,6 @@ public class Urn {
 
     public void setAgency(Agency agency) {
         this.agency = agency;
-    }
-
-    public UUID getGuid() {
-        return guid;
-    }
-
-    public void setGuid(UUID guid) {
-        this.guid = guid;
     }
 
     public String getVersion() {
@@ -57,7 +65,7 @@ public class Urn {
         Urn urn = (Urn) o;
 
         if (agency != null ? !agency.equals(urn.agency) : urn.agency != null) return false;
-        if (guid != null ? !guid.equals(urn.guid) : urn.guid != null) return false;
+        if (id != null ? !id.equals(urn.id) : urn.id != null) return false;
         if (version != null ? !version.equals(urn.version) : urn.version != null) return false;
 
         return true;
@@ -66,14 +74,17 @@ public class Urn {
     @Override
     public int hashCode() {
         int result = agency != null ? agency.hashCode() : 0;
-        result = 31 * result + (guid != null ? guid.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (version != null ? version.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Urn{"+ agency.getName() +"-"+ guid.toString() + "-"+ version.toString() + '}';
+        return "Urn{" +
+                "id=" + id +
+                ", agency=" + agency +
+                ", version='" + version + '\'' +
+                '}';
     }
-
 }

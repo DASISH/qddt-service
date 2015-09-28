@@ -28,12 +28,21 @@ public class InstrumentServiceImpl implements InstrumentService {
         this.instrumentRepository = instrumentRepository;
     }
 
+
     @Override
-    @Transactional(readOnly = true)
-    public Instrument findById(Long id) {
-        return instrumentRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Instrument.class)
-        );
+    public long count() {
+        return instrumentRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return instrumentRepository.exists(uuid);
+    }
+
+    @Override
+    public Instrument findOne(UUID uuid) {
+        return instrumentRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Instrument.class));
     }
 
     @Override
@@ -49,6 +58,11 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
+    public List<Instrument> findAll(Iterable<UUID> uuids) {
+        return instrumentRepository.findAll(uuids);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public Instrument save(Instrument instance) {
 
@@ -57,33 +71,23 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(Instrument instance) {instrumentRepository.delete(instance);   }
+    public void delete(UUID uuid) {
+        instrumentRepository.delete(uuid);
+    }
+
 
     @Override
-    @Transactional(readOnly = true)
-    public Instrument findByGuid(UUID id) {
-        return instrumentRepository.findByGuid(id).orElseThrow(
-                ()-> new ResourceNotFoundException(id, Instrument.class)
-        );
+    public Revision<Integer, Instrument> findLastChange(UUID uuid) {
+        return instrumentRepository.findLastChangeRevision(uuid);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Instrument> findLastChange(Long id) {
-        return instrumentRepository.findLastChangeRevision(id);
+    public Revision<Integer, Instrument> findEntityAtRevision(UUID uuid, Integer revision) {
+        return instrumentRepository.findEntityAtRevision(uuid,revision);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Instrument> findEntityAtRevision(Long id, Integer revision) {
-        return instrumentRepository.findEntityAtRevision(id, revision);
+    public Page<Revision<Integer, Instrument>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return instrumentRepository.findRevisions(uuid,pageable);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Instrument>> findAllRevisionsPageable( Long id, Pageable pageable) {
-        return instrumentRepository.findRevisions(id,pageable);
-    }
-
 }

@@ -34,27 +34,42 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "study")
+@Table(name = "Study")
 public class Study extends AbstractEntityAudit {
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="survey_id")
-    public Survey survey;
+    public SurveyProgram surveyProgram;
 
     @OneToMany(mappedBy="study", cascade = CascadeType.ALL)
-    public Set<Module> modules = new HashSet<>();
+    public Set<TopicGroup> topicGroups = new HashSet<>();
 
-    public Survey getSurvey() {
-        return survey;
+    public SurveyProgram getSurveyProgram() {
+        return surveyProgram;
     }
 
-    public void setSurvey(Survey survey) {
-        this.survey = survey;
+    public void setSurveyProgram(SurveyProgram surveyProgram) {
+        this.surveyProgram = surveyProgram;
     }
 
 
+    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
+    private Set<Comment> comments = new HashSet<>();
 
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void addComment(Comment comment) {
+        comment.setOwnerGuid(this.getGuid());
+        comments.add(comment);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -63,7 +78,7 @@ public class Study extends AbstractEntityAudit {
         if (!super.equals(o)) return false;
 
         Study study = (Study) o;
-        if (survey != null ? !survey.equals(study.survey) : study.survey != null) return false;
+        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null) return false;
 
         return true;
     }
@@ -71,7 +86,7 @@ public class Study extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (survey != null ? survey.hashCode() : 0);
+        result = 31 * result + (surveyProgram != null ? surveyProgram.hashCode() : 0);
         return result;
     }
 

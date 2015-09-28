@@ -10,15 +10,7 @@ import java.util.UUID;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
-public interface QuestionService extends BaseServiceAudit<Question> {
-
-    /**
-     *
-     * @param parentId
-     * @param pageable
-     * @return
-     */
-    Page<Question> findByParentPageable(Long parentId, Pageable pageable);
+public interface QuestionService extends BaseServiceAudit<Question,UUID> {
 
     /**
      *

@@ -1,7 +1,7 @@
 package service.audit;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.domain.SurveyProgram;
 import no.nsd.qddt.service.SurveyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,42 +24,42 @@ import static org.junit.Assert.assertThat;
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class SurveyServiceAuditTest {
+public class SurveyProgramServiceAuditTest {
 
     @Autowired
     private SurveyService surveyService;
 
     @Test
     public void testSaveSurveyWithAudit() throws Exception {
-        Survey survey = new Survey();
-        survey.setSurveyName("This is the FIRST version");
+        SurveyProgram surveyProgram = new SurveyProgram();
+        surveyProgram.setName("This is the FIRST version");
 
-        survey = surveyService.save(survey);
+        surveyProgram = surveyService.save(surveyProgram);
 
-        survey.setSurveyName("This is the SECOND version");
-        survey = surveyService.save(survey);
+        surveyProgram.setName("This is the SECOND version");
+        surveyProgram = surveyService.save(surveyProgram);
 
-        survey.setSurveyName("This is the THIRD version");
-        survey = surveyService.save(survey);
+        surveyProgram.setName("This is the THIRD version");
+        surveyProgram = surveyService.save(surveyProgram);
 
         // Find the last revision based on the entity id
-        Revision<Integer, Survey> revision = surveyService.findLastChange(survey.getId());
+        Revision<Integer, SurveyProgram> revision = surveyService.findLastChange(surveyProgram.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, Survey>> revisions = surveyService.findAllRevisionsPageable(
-                survey.getId(), new PageRequest(0, 10));
+        Page<Revision<Integer, SurveyProgram>> revisions = surveyService.findAllRevisionsPageable(
+                surveyProgram.getId(), new PageRequest(0, 10));
         assertThat(revisions.getNumberOfElements(), is(3));
 
         // Find all revisions
-        Revisions<Integer, Survey> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, SurveyProgram> wrapper = new Revisions<>(revisions.getContent());
         assertThat(wrapper.getLatestRevision(), is(revision));
     }
 
     @Test
     public void findSurveyByRevisionTest() throws Exception {
-        Revision<Integer, Survey> surveyRevision = surveyService.findLastChange(6L);
+        Revision<Integer, SurveyProgram> surveyRevision = surveyService.findLastChange(surveyService.findAll().get(0).getId());
 
-        Revision<Integer, Survey> survey = surveyService.findEntityAtRevision(
+        Revision<Integer, SurveyProgram> survey = surveyService.findEntityAtRevision(
                 surveyRevision.getEntity().getId(), 3);
 
         assertThat(survey.getRevisionNumber(), is(3));

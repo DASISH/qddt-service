@@ -3,7 +3,9 @@ package no.nsd.qddt.domain;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -29,20 +31,8 @@ import java.util.List;
 
 @Audited
 @Entity
-@Table(name = "Module")
-public class Module extends AbstractEntityAudit {
-
-    @OneToMany
-    @JoinColumn(name="author_id")
-    private List<User> authors;
-
-    private String authorsAffiliation;
-
-    private String  moduleAbstract;
-
-//    @ManyToOne
-//    @JoinColumn(name = "agency_id")
-//    private Agency agency;
+@Table(name = "TopicGroup")
+public class TopicGroup extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name="study_id")
@@ -52,12 +42,50 @@ public class Module extends AbstractEntityAudit {
     @JoinColumn(name = "concept_id")
     private Concept concept;
 
+    @OneToMany
+    @JoinColumn(name="author_id")
+    private List<User> authors;
+
+    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "guid")
+    private List<OtherMaterial> otherMaterials;
+
+    private String authorsAffiliation;
+
+    private String Abstract;
+
+    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
+    private Set<Comment> comments = new HashSet<>();
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void addComment(Comment comment) {
+        comment.setOwnerGuid(this.getGuid());
+        comments.add(comment);
+    }
+
+
     public Study getStudy() {
         return study;
     }
 
     public void setStudy(Study study) {
         this.study = study;
+    }
+
+    public Concept getConcept() {
+        return concept;
+    }
+
+    public void setConcept(Concept concept) {
+        this.concept = concept;
     }
 
     public List<User> getAuthors() {
@@ -68,6 +96,14 @@ public class Module extends AbstractEntityAudit {
         this.authors = authors;
     }
 
+    public List<OtherMaterial> getOtherMaterials() {
+        return otherMaterials;
+    }
+
+    public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
+        this.otherMaterials = otherMaterials;
+    }
+
     public String getAuthorsAffiliation() {
         return authorsAffiliation;
     }
@@ -76,28 +112,12 @@ public class Module extends AbstractEntityAudit {
         this.authorsAffiliation = authorsAffiliation;
     }
 
-    public String getModuleAbstract() {
-        return moduleAbstract;
+    public String getAbstract() {
+        return Abstract;
     }
 
-    public void setModuleAbstract(String moduleAbstract) {
-        this.moduleAbstract = moduleAbstract;
-    }
-
-//    public Agency getAgency() {
-//        return agency;
-//    }
-//
-//    public void setAgency(Agency agency) {
-//        this.agency = agency;
-//    }
-
-    public Concept getConcept() {
-        return concept;
-    }
-
-    public void setConcept(Concept concept) {
-        this.concept = concept;
+    public void setAbstract(String anAbstract) {
+        this.Abstract = anAbstract;
     }
 
     @Override
@@ -106,9 +126,9 @@ public class Module extends AbstractEntityAudit {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        Module module = (Module) o;
+        TopicGroup topicGroup = (TopicGroup) o;
 
-        if (study != null ? !study.equals(module.study) : module.study != null) return false;
+        if (study != null ? !study.equals(topicGroup.study) : topicGroup.study != null) return false;
 
         return true;
     }

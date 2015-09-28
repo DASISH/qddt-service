@@ -6,11 +6,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
+//import javax.persistence.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -26,10 +30,23 @@ public abstract class AbstractEntity {
      * The dead man's pack is closed. What is in their packs?
      */
 
+    //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
+
+//    @Embedded
+//    public Urn urn;
+
+    public Urn getUrn() {
+        return new Urn(agency,id,"latest");
+    }
+
+
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Type(type="pg-uuid")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+            @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    private UUID id;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -37,16 +54,25 @@ public abstract class AbstractEntity {
     @Column(name = "created")
     private LocalDateTime created;
 
+    private Agency agency;
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
+    }
+
     @ManyToOne
     @JoinColumn(name = "user_id")
-    // Owner/Agency part of the URN
     private User createdBy;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -69,30 +95,31 @@ public abstract class AbstractEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof AbstractEntity)) return false;
 
         AbstractEntity that = (AbstractEntity) o;
 
-        if (created != null ? !created.equals(that.created) : that.created != null) return false;
-        if (createdBy != null ? !createdBy.equals(that.createdBy) : that.createdBy != null) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (getUrn() != null ? !getUrn().equals(that.getUrn()) : that.getUrn() != null) return false;
+        if (getCreated() != null ? !getCreated().equals(that.getCreated()) : that.getCreated() != null) return false;
+        return !(getCreatedBy() != null ? !getCreatedBy().equals(that.getCreatedBy()) : that.getCreatedBy() != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (created != null ? created.hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        int result = getUrn() != null ? getUrn().hashCode() : 0;
+        result = 31 * result + (getCreated() != null ? getCreated().hashCode() : 0);
+        result = 31 * result + (getCreatedBy() != null ? getCreatedBy().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return  ", id=" + id +
+        return "AbstractEntity{" +
+                "urn=" + getUrn() +
                 ", created=" + created +
-                ", createdBy=" + createdBy +'\'';
+                ", createdBy=" + createdBy +
+                '}';
     }
 
     /**

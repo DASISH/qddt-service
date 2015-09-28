@@ -28,13 +28,25 @@ public class StudyServiceImpl implements StudyService {
         this.studyRepository = studyRepository;
     }
 
+
     @Override
     @Transactional(readOnly = true)
-    public Study findById(Long id) {
-        return studyRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Study.class)
-        );
+    public long count() {
+        return studyRepository.count();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean exists(UUID uuid) {
+        return studyRepository.exists(uuid);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Study findOne(UUID uuid) {
+        return studyRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Study.class)
+        );    }
 
     @Override
     @Transactional(readOnly = true)
@@ -49,6 +61,12 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Study> findAll(Iterable<UUID> uuids) {
+        return studyRepository.findAll(uuids);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public Study save(Study instance) {
 
@@ -58,33 +76,26 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(Study instance) {
-        studyRepository.delete(instance);
+    public void delete(UUID uuid) {
+        studyRepository.delete(uuid);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Revision<Integer, Study> findLastChange(UUID uuid) {
+        return studyRepository.findLastChangeRevision(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Study findByGuid(UUID id) {
-        return studyRepository.findByGuid(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Study.class)
-        );
+    public Revision<Integer, Study> findEntityAtRevision(UUID uuid, Integer revision) {
+        return studyRepository.findEntityAtRevision(uuid,revision);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Study> findLastChange(Long id) {
-        return studyRepository.findLastChangeRevision(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Study> findEntityAtRevision(Long id, Integer revision) {
-        return studyRepository.findEntityAtRevision(id, revision);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Study>> findAllRevisionsPageable(Long id, Pageable pageable) {
-        return studyRepository.findRevisions(id, pageable);
+    public Page<Revision<Integer, Study>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return studyRepository.findRevisions(uuid,pageable);
     }
 }

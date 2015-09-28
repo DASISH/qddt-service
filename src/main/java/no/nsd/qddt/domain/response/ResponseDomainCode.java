@@ -1,9 +1,14 @@
 package no.nsd.qddt.domain.response;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  *
@@ -16,8 +21,11 @@ public class ResponseDomainCode implements Serializable {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Type(type="pg-uuid")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+            @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    private UUID id;
 
     @Column(name = "rank")
     private int rank;
@@ -39,11 +47,11 @@ public class ResponseDomainCode implements Serializable {
         this.code = code;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -101,8 +109,8 @@ public class ResponseDomainCode implements Serializable {
         return "ResponseDomainCode{" +
                 "id=" + id +
                 ", rank=" + rank +
-                ", responseDomain= {" + responseDomain.getName() + " - " + responseDomain.getId() + "} "+
-                ", code={" + code.getName() + " - " + code.getId() + "} "+
+                ", responseDomain= {" + responseDomain.getName() + " - " + responseDomain.getUrn().getId() + "} "+
+                ", code={" + code.getName() + " - " + code.getUrn().getId() + "} "+
                 '}';
     }
 }

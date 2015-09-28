@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This controller relates to a meta storage, which has a rank,logic & Rankrationale property, and thus need control
@@ -38,18 +39,18 @@ public class InstrumentQuestionController {
     //    MetaController
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void delete(InstrumentQuestion instance) {
-        instrumentQuestionService.delete(instance);
+        instrumentQuestionService.delete(instance.getGuid());
     }
 
     //    MetaController
-    @RequestMapping(value = "/byInstrument/{id}", method = RequestMethod.GET)
-    public List<InstrumentQuestion> getByFirst(@PathVariable("id") Long firstId) {
+    @RequestMapping(value = "/byInstrument/{uuid}", method = RequestMethod.GET)
+    public List<InstrumentQuestion> getByFirst(@PathVariable("uuid") UUID firstId) {
         return instrumentQuestionService.findByInstrumentId(firstId);
     }
 
     //    MetaController
-    @RequestMapping(value = "/byQuestion/{id}", method = RequestMethod.GET)
-    public List<InstrumentQuestion> getBySecond(@PathVariable("id") Long secondId) {
+    @RequestMapping(value = "/byQuestion/{uuid}", method = RequestMethod.GET)
+    public List<InstrumentQuestion> getBySecond(@PathVariable("uuid") UUID secondId) {
         return instrumentQuestionService.findByQuestionId(secondId);
     }
 }

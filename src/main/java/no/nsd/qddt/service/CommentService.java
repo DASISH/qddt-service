@@ -3,12 +3,15 @@ package no.nsd.qddt.service;
 import no.nsd.qddt.domain.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
+
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface CommentService extends BaseServiceAudit<Comment> {
+public interface CommentService extends BaseServiceAudit<Comment,UUID> {
+
+    Page<Comment> findAllByOwnerGuidPageable(UUID guid, Pageable pageable);
 
 //    /**
 //     * Find the latest changed revision.

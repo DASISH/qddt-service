@@ -26,18 +26,22 @@ public class AgencyServiceImpl implements AgencyService {
         this.agencyRepository = agencyRepository;
     }
 
+
+
     @Override
-    @Transactional(readOnly = true)
-    public Agency findById(Long id) {
-        return agencyRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Agency.class)
-        );
+    public long count() {
+        return 0;
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return false;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Agency findById(UUID id) {
-        return agencyRepository.findByGuid(id).orElseThrow(
+    public Agency findOne(UUID id) {
+        return agencyRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(id, Agency.class)
         );
     }
@@ -52,6 +56,11 @@ public class AgencyServiceImpl implements AgencyService {
     @Transactional(readOnly = true)
     public Page<Agency> findAll(Pageable pageable) {return agencyRepository.findAll(pageable);}
 
+    @Override
+    public List<Agency> findAll(Iterable<UUID> uuids) {
+        return agencyRepository.findAll(uuids);
+    }
+
 
     @Override
     @Transactional(readOnly = false)
@@ -62,7 +71,14 @@ public class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(Agency value) { agencyRepository.delete(value);   }
+    public void delete(UUID uuid) {
+        agencyRepository.delete(uuid);
+    }
+
+
+
+
+
+
 
 }

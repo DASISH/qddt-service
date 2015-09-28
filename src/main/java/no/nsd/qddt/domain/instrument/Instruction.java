@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Comment;
-import no.nsd.qddt.domain.Study;
-import no.nsd.qddt.domain.SurveyProgram;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -11,35 +9,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * You change your meaning by emphasizing different words in your sentence. ex: "I never said she stole my money" has 7 meanings.
- *
  * @author Stig Norland
- * @author Dag Østgulen Heradstveit
  */
-
 @Audited
 @Entity
-@Table(name = "instrument")
-public class Instrument extends AbstractEntityAudit {
+@Table(name = "Instruction")
+public class Instruction extends AbstractEntityAudit {
 
-    @ManyToOne
-    @JoinColumn(name="study_id")
-    private Study study;
+    public Instruction() {
+    }
 
-
-    @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "instruction", cascade = CascadeType.ALL)
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
-
-    public Instrument() {
-    }
-
-    public Study getStudy() {
-        return study;
-    }
-
-    public void setStudy(Study study) {
-        this.study = study;
-    }
 
     public Set<InstrumentQuestion> getInstrumentQuestions() {
         return instrumentQuestions;
@@ -48,6 +29,17 @@ public class Instrument extends AbstractEntityAudit {
     public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
         this.instrumentQuestions = instrumentQuestions;
     }
+
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
     @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
@@ -69,13 +61,14 @@ public class Instrument extends AbstractEntityAudit {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Instrument)) return false;
+        if (!(o instanceof Instruction)) return false;
         if (!super.equals(o)) return false;
 
-        Instrument that = (Instrument) o;
+        Instruction that = (Instruction) o;
 
-        if (getStudy() != null ? !getStudy().equals(that.getStudy()) : that.getStudy() != null) return false;
         if (getInstrumentQuestions() != null ? !getInstrumentQuestions().equals(that.getInstrumentQuestions()) : that.getInstrumentQuestions() != null)
+            return false;
+        if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null)
             return false;
         return !(getComments() != null ? !getComments().equals(that.getComments()) : that.getComments() != null);
 
@@ -84,18 +77,18 @@ public class Instrument extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getStudy() != null ? getStudy().hashCode() : 0);
         result = 31 * result + (getInstrumentQuestions() != null ? getInstrumentQuestions().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
         result = 31 * result + (getComments() != null ? getComments().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Instrument{" +
-                "study=" + study +
-                ", instrumentQuestions=" + instrumentQuestions +
-                ", comments=" + comments +
+        return "Instruction{" +
+                "instrumentQuestions=" + instrumentQuestions.toString() +
+                ", description='" + description + '\'' +
+                ", comments=" + comments.toString() +
                 '}';
     }
 }

@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * @author Stig Norland
  */
 @RestController
 @RequestMapping("/code")
-public class CodeController  extends AbstractAuditController<Code> {
+public class CodeController  extends AbstractAuditController<Code,UUID> {
 
     @Autowired
     public CodeController(CodeService service){ super(service);}

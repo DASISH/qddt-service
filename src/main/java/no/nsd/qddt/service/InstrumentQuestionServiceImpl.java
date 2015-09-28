@@ -29,8 +29,18 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
     }
 
     @Override
+    public long count() {
+        return instrumentQuestionRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return instrumentQuestionRepository.exists(uuid);
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public InstrumentQuestion findById(Long id) {
+    public InstrumentQuestion findOne(UUID id) {
         return instrumentQuestionRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(id, InstrumentQuestion.class)
         );
@@ -50,6 +60,11 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
     }
 
     @Override
+    public List<InstrumentQuestion> findAll(Iterable<UUID> uuids) {
+        return instrumentQuestionRepository.findAll(uuids);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public InstrumentQuestion save(InstrumentQuestion instance) {
 
@@ -58,44 +73,38 @@ public class InstrumentQuestionServiceImpl implements InstrumentQuestionService 
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(InstrumentQuestion instance) {
-        instrumentQuestionRepository.delete(instance);
+    public void delete(UUID uuid) {
+
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<InstrumentQuestion> findByInstrumentId(Long instrumentId) {
+    public List<InstrumentQuestion> findByInstrumentId(UUID instrumentId) {
         return instrumentQuestionRepository.findByInstrumentId(instrumentId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<InstrumentQuestion> findByQuestionId(Long questionId) {
+    public List<InstrumentQuestion> findByQuestionId(UUID questionId) {
         return instrumentQuestionRepository.findByQuestionId(questionId);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public InstrumentQuestion findByGuid(UUID id) {
-        return null;
-    }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, InstrumentQuestion> findLastChange(Long id) {
+    public Revision<Integer, InstrumentQuestion> findLastChange(UUID id) {
         return instrumentQuestionRepository.findLastChangeRevision(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, InstrumentQuestion> findEntityAtRevision(Long id, Integer revision) {
+    public Revision<Integer, InstrumentQuestion> findEntityAtRevision(UUID id, Integer revision) {
         return instrumentQuestionRepository.findEntityAtRevision(id, revision);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, InstrumentQuestion>> findAllRevisionsPageable(Long id, Pageable pageable) {
+    public Page<Revision<Integer, InstrumentQuestion>> findAllRevisionsPageable(UUID id, Pageable pageable) {
         return instrumentQuestionRepository.findRevisions(id,pageable);
     }
 

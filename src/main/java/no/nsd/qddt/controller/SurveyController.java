@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
 import no.nsd.qddt.domain.Comment;
-import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.domain.SurveyProgram;
 import no.nsd.qddt.service.CommentService;
 import no.nsd.qddt.service.SurveyService;
 import no.nsd.qddt.utils.SecurityContext;
@@ -10,13 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
 @RestController
 @RequestMapping("/survey")
-public class SurveyController extends AbstractAuditController<Survey> {
+public class SurveyController extends AbstractAuditController<SurveyProgram,UUID> {
 
     private CommentService commentService;
 
@@ -34,9 +36,9 @@ public class SurveyController extends AbstractAuditController<Survey> {
      */
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Comment addComment(@RequestBody Comment comment, @PathVariable("id") Long id) {
-        Survey survey = service.findById(id);
-        comment.setSurvey(survey);
+    public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
+        SurveyProgram surveyProgram = service.findOne(id);
+        comment.setOwnerGuid(surveyProgram.getGuid());
         comment.setCreatedBy(SecurityContext.getUserDetails().getUser());
 
         return commentService.save(comment);

@@ -1,12 +1,10 @@
 package no.nsd.qddt.repository;
 
-import no.nsd.qddt.domain.Attachment;
-import org.hibernate.annotations.NamedNativeQuery;
+import no.nsd.qddt.domain.OtherMaterial;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -15,19 +13,19 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-public interface AttachmentRepository extends BaseRepository<Attachment>, EnversRevisionRepository<Attachment, UUID, Integer> {
+public interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, EnversRevisionRepository<OtherMaterial, UUID, Integer> {
 
 
     // Tar denne med for å teste funksjonaliteten, den er strengt tatt unødvendig å ha med, da findAllByModule gir deg det du trenger.
-    public final static String FIND_BY_MODULE_BY_UUID_QUERY =
-            "SELECT A.* FROM Attachment A " +
-                    " LEFT JOIN Attachment B ON B.moduleid = A.moduleid " +
-                    " WHERE B.Guid = :guid";
-
-    public final static String COUNT_BY_MODULE_BY_UUID_QUERY =
-            "SELECT COUNT(*) FROM Attachment A " +
-                    " LEFT JOIN Attachment B ON B.moduleid = A.moduleid " +
-                    " WHERE B.Guid = :guid";
+//    public final static String FIND_BY_MODULE_BY_UUID_QUERY =
+//            "SELECT A.* FROM OtherMaterial A " +
+//                    " LEFT JOIN OtherMaterial B ON B.moduleid = A.moduleid " +
+//                    " WHERE B.Guid = :guid";
+//
+//    public final static String COUNT_BY_MODULE_BY_UUID_QUERY =
+//            "SELECT COUNT(*) FROM OtherMaterial A " +
+//                    " LEFT JOIN OtherMaterial B ON B.moduleid = A.moduleid " +
+//                    " WHERE B.Guid = :guid";
 
 
     // TODO fix this query?
@@ -40,11 +38,11 @@ public interface AttachmentRepository extends BaseRepository<Attachment>, Envers
 //    Page<Attachment> findAllByModuleGuid(@Param("guid") String guid, Pageable pageable);
 
     /**
-     * @param moduleId Is an moduleId.
+     * @param guid Is an topicGroupGuid.
      * @param pageable Pageable object
      * @return All attachments that belongs to the module with moduleId.
      */
-    Page<Attachment> findAllByModuleId(Long moduleId, Pageable pageable);
+    Page<OtherMaterial> findAllByOwnerGuid(UUID guid, Pageable pageable);
 
 
 }

@@ -1,19 +1,12 @@
 package no.nsd.qddt.service;
 
 import no.nsd.qddt.domain.Agency;
-
 import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
-public interface AgencyService extends BaseService<Agency> {
+public interface AgencyService extends BaseService<Agency,UUID> {
 
-    /**
-     *
-     * @param id
-     * @return
-     */
-    Agency findById(UUID id);
 
 }

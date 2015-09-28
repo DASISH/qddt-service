@@ -7,22 +7,15 @@ import org.springframework.data.envers.repository.support.EnversRevisionReposito
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-public interface ResponseDomainCodeRepository extends EnversRevisionRepository<ResponseDomainCode, Long, Integer> {
+public interface ResponseDomainCodeRepository extends BaseRepository<ResponseDomainCode,UUID>, EnversRevisionRepository<ResponseDomainCode, UUID, Integer> {
 
-    List<ResponseDomainCode> findAll();
+    List<ResponseDomainCode> findByResponseDomainIdOrderByRankAsc(UUID responseDomainId);
 
-    Page<ResponseDomainCode> findAll(Pageable pageable);
-
-    ResponseDomainCode save(ResponseDomainCode instance);
-
-    void delete(ResponseDomainCode instance);
-
-    List<ResponseDomainCode> findByResponseDomainIdOrderByRankAsc(Long responseDomainId);
-
-    List<ResponseDomainCode> findByCodeIdOrderByResponseDomainIdAsc(Long codeId);
+    List<ResponseDomainCode> findByCodeIdOrderByResponseDomainIdAsc(UUID codeId);
 }

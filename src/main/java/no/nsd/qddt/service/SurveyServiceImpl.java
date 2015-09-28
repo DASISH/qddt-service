@@ -1,6 +1,6 @@
 package no.nsd.qddt.service;
 
-import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.domain.SurveyProgram;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.repository.SurveyRepository;
 import org.apache.commons.lang.NotImplementedException;
@@ -29,61 +29,68 @@ public class SurveyServiceImpl implements SurveyService {
         this.surveyRepository = surveyRepository;
     }
 
+
     @Override
-    @Transactional(readOnly = true)
-    public Survey findById(Long id) {
-        return surveyRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Survey.class)
+    public long count() {
+        return surveyRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return surveyRepository.exists(uuid);
+    }
+
+    @Override
+    public SurveyProgram findOne(UUID uuid) {
+        return surveyRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, SurveyProgram.class)
         );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Survey> findAll() {
+    public List<SurveyProgram> findAll() {
         return surveyRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Survey> findAll(Pageable pageable) {
+    public Page<SurveyProgram> findAll(Pageable pageable) {
         return surveyRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<SurveyProgram> findAll(Iterable<UUID> uuids) {
+        return surveyRepository.findAll(uuids);
     }
 
 
     @Override
     @Transactional(readOnly = false)
-    public Survey save(Survey instance) {
+    public SurveyProgram save(SurveyProgram instance) {
 
         instance.setCreated(LocalDateTime.now());
         return surveyRepository.save(instance);
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(Survey instance) {
-        surveyRepository.delete(instance);
+    public void delete(UUID uuid) {
+        surveyRepository.delete(uuid);
+    }
+
+
+    @Override
+    public Revision<Integer, SurveyProgram> findLastChange(UUID uuid) {
+        return surveyRepository.findLastChangeRevision(uuid);
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public Survey findByGuid(UUID id) {
-        throw new NotImplementedException();
+    public Revision<Integer, SurveyProgram> findEntityAtRevision(UUID uuid, Integer revision) {
+        return surveyRepository.findEntityAtRevision(uuid,revision);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Survey> findLastChange(Long id) {
-        return surveyRepository.findLastChangeRevision(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Survey>> findAllRevisionsPageable(Long id, Pageable pageable) {
-        return surveyRepository.findRevisions(id, pageable);
-    }
-
-    @Override
-    public Revision<Integer, Survey> findEntityAtRevision(Long id, Integer revision) {
-        return surveyRepository.findEntityAtRevision(id, revision);
+    public Page<Revision<Integer, SurveyProgram>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return surveyRepository.findRevisions(uuid,pageable);
     }
 }

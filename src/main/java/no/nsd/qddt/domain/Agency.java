@@ -22,21 +22,13 @@ import java.util.UUID;
 
 @Audited
 @Entity
-@Table(name = "agency")
+@Table(name = "Agency")
 public class Agency extends AbstractEntity {
-
-
-    //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
-    @Column(name = "guid", columnDefinition = "BINARY(16)")
-    private UUID guid = UUID.randomUUID();
 
 
     @Column(name = "name")
     private String name;
 
-
-//    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
-//    private Set<Survey> surveys = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<ResponseDomain> responses = new HashSet<>();
@@ -48,16 +40,8 @@ public class Agency extends AbstractEntity {
     private Set<Concept> concepts = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
-    private Set<Module> modules = new HashSet<>();
+    private Set<TopicGroup> topicGroups = new HashSet<>();
 
-
-    public UUID getGuid() {
-        return guid;
-    }
-
-    public void setGuid(UUID guid) {
-        this.guid = guid;
-    }
 
 
     public String getName() {
@@ -77,8 +61,7 @@ public class Agency extends AbstractEntity {
 
         if (super.getCreated() != null ? !super.getCreated().equals(agency.getCreated()) : agency.getCreated() != null) return false;
         if (super.getCreatedBy() != null ? !super.getCreatedBy().equals(agency.getCreatedBy()) : agency.getCreatedBy() != null) return false;
-        if (guid != null ? !guid.equals(agency.guid) : agency.guid != null) return false;
-        if (super.getId() != null ? !super.getId().equals(agency.getId()) : agency.getId() != null) return false;
+        if (super.getUrn().getId() != null ? !super.getUrn().getId().equals(agency.getUrn().getId()) : agency.getUrn().getId() != null) return false;
         if (name != null ? !name.equals(agency.name) : agency.name != null) return false;
 
         return true;
@@ -86,8 +69,7 @@ public class Agency extends AbstractEntity {
 
     @Override
     public int hashCode() {
-        int result = super.getId() != null ? super.getId().hashCode() : 0;
-        result = 31 * result + (guid != null ? guid.hashCode() : 0);
+        int result = super.getUrn().getId() != null ? super.getUrn().getId().hashCode() : 0;
         result = 31 * result + (super.getCreated() != null ? super.getCreated().hashCode() : 0);
         result = 31 * result + (super.getCreatedBy() != null ? super.getCreatedBy().hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
@@ -97,8 +79,7 @@ public class Agency extends AbstractEntity {
     @Override
     public String toString() {
         return "Agency{" +
-                "id=" + super.getId() +
-                ", guid=" + guid +
+                "id=" + super.getUrn() +
                 ", created=" + super.getCreated() +
                 ", createdBy=" + super.getCreatedBy() +
                 ", name='" + name + '\'' +

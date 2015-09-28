@@ -8,6 +8,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -20,7 +21,7 @@ public class User  {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private UUID id;
 
     @Column(name = "username")
     private String username;
@@ -40,7 +41,7 @@ public class User  {
     private Set<Authority> authorities = new HashSet<>();
 
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
-    private Set<Survey> surveys = new HashSet<>();
+    private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
@@ -62,11 +63,11 @@ public class User  {
         this.username = username;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -102,12 +103,12 @@ public class User  {
         this.authorities = authorities;
     }
 
-    public Set<Survey> getSurveys() {
-        return surveys;
+    public Set<SurveyProgram> getSurveyPrograms() {
+        return surveyPrograms;
     }
 
-    public void setSurveys(Set<Survey> surveys) {
-        this.surveys = surveys;
+    public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
+        this.surveyPrograms = surveyPrograms;
     }
 
     public Set<Study> getStudies() {

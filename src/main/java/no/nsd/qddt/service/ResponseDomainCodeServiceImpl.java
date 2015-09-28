@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -28,8 +29,18 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
 
 
     @Override
-    public ResponseDomainCode findById(Long id) {
-        return null;
+    public long count() {
+        return responseDomainCodeRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return responseDomainCodeRepository.exists(uuid);
+    }
+
+    @Override
+    public ResponseDomainCode findOne(UUID uuid) {
+        return responseDomainCodeRepository.findOne(uuid);
     }
 
     @Override
@@ -45,6 +56,11 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
         return responseDomainCodeRepository.findAll(pageable);
     }
 
+    @Override
+    public List<ResponseDomainCode> findAll(Iterable<UUID> uuids) {
+        return responseDomainCodeRepository.findAll(uuids);
+    }
+
 
     @Override
     @Transactional(readOnly = false)
@@ -54,43 +70,32 @@ public class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService 
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(ResponseDomainCode instance) {
-
-        responseDomainCodeRepository.delete(instance);
+    public void delete(UUID uuid) {
+        responseDomainCodeRepository.delete(uuid);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ResponseDomainCode> findByResponseDomainId(Long responseDomainId) {
-
+    public List<ResponseDomainCode> findByResponseDomainId(UUID responseDomainId) {
         return responseDomainCodeRepository.findByResponseDomainIdOrderByRankAsc(responseDomainId);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ResponseDomainCode> findByCodeId(Long codeId) {
-
-        return responseDomainCodeRepository.findByCodeIdOrderByResponseDomainIdAsc(codeId);
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, ResponseDomainCode> findLastChange(Long id) {
-
-        return responseDomainCodeRepository.findLastChangeRevision(id);
+    public List<ResponseDomainCode> findByCodeId(UUID codeId) {
+        return null;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, ResponseDomainCode> findEntityAtRevision(Long id, Integer revision) {
-        return responseDomainCodeRepository.findEntityAtRevision(id, revision);
+    public Revision<Integer, ResponseDomainCode> findLastChange(UUID uuid) {
+        return null;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(Long id, Pageable pageable) {
-        return responseDomainCodeRepository.findRevisions(id,pageable);
+    public Revision<Integer, ResponseDomainCode> findEntityAtRevision(UUID uuid, Integer revision) {
+        return null;
+    }
+
+    @Override
+    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return null;
     }
 }

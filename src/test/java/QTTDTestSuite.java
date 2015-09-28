@@ -3,7 +3,7 @@ import org.junit.runners.Suite;
 import org.springframework.test.context.ActiveProfiles;
 import service.*;
 import service.audit.ResponseDomainCodeServiceAuditTest;
-import service.audit.SurveyServiceAuditTest;
+import service.audit.SurveyProgramServiceAuditTest;
 import utils.ExtractResourceIdFromExceptionTest;
 
 @ActiveProfiles("test")
@@ -11,7 +11,7 @@ import utils.ExtractResourceIdFromExceptionTest;
 @Suite.SuiteClasses({
         ExtractResourceIdFromExceptionTest.class,
         ResponseDomainCodeServiceAuditTest.class,
-        SurveyServiceAuditTest.class,
+        SurveyProgramServiceAuditTest.class,
         CommentServiceTest.class,
         QuestionServiceTest.class,
         ResponseDomainCodeHierarchyTest.class,

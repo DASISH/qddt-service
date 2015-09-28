@@ -2,7 +2,7 @@ package controller;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.Comment;
-import no.nsd.qddt.domain.Survey;
+import no.nsd.qddt.domain.SurveyProgram;
 import no.nsd.qddt.service.QDDTUserDetailsService;
 import no.nsd.qddt.service.SurveyService;
 import org.junit.Before;
@@ -23,8 +23,6 @@ import org.springframework.web.context.WebApplicationContext;
 import assets.HttpMockAuthSession;
 import assets.RestfulTestUtils;
 
-import java.security.Principal;
-
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class SurveyControllerTest {
+public class SurveyProgramControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -85,21 +83,21 @@ public class SurveyControllerTest {
     @Transactional
     @Test
     public void findOneTest() throws Exception {
-        Survey survey = surveyService.findById(1L);
+        SurveyProgram surveyProgram = surveyService.findAll().get(0);
 
         // ctx:/survey/id
         mvc.perform(get("/survey/1").session(session)
                 .contentType(rest.getContentType())
-                .content(rest.json(survey)))
+                .content(rest.json(surveyProgram)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.id", is(survey.getId().intValue())))
+                .andExpect(jsonPath("$.id", is(surveyProgram.getId())))
 //                .andExpect(jsonPath("$.guid", is("null")))
 //                .andExpect(jsonPath("$.created", is("null")))
 //                .andExpect(jsonPath("$.createdBy", is("null")))
 //                .andExpect(jsonPath("$.name", is("null")))
 //                .andExpect(jsonPath("$.changeReason", is("null")))
 //                .andExpect(jsonPath("$.changeComment", is("null")))
-                .andExpect(jsonPath("$.surveyName", is(survey.getSurveyName())))
+                .andExpect(jsonPath("$.name", is(surveyProgram.getName())))
 //                .andExpect(jsonPath("$.agency", is("null")))
                 .andExpect(status().isOk());
     }

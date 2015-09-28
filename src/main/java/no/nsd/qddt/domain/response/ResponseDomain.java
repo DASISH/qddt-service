@@ -54,19 +54,12 @@ import java.util.Set;
 public class ResponseDomain extends AbstractEntityAudit implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
-
-    @ManyToOne
     @JoinColumn(name = "response_kind_id")
     private ResponseKind responseKind;
 
     @OneToMany(mappedBy="responseDomain", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    public Agency getAgency() {return agency;}
-
-    public void setAgency(Agency agency) {this.agency = agency;}
 
     public ResponseKind getResponseKind() {
         return responseKind;
@@ -92,7 +85,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Serializable 
 
         ResponseDomain that = (ResponseDomain) o;
 
-        if (agency != null ? !agency.equals(that.agency) : that.agency != null) return false;
         if (responseKind != null ? !responseKind.equals(that.responseKind) : that.responseKind != null) return false;
 
         return true;
@@ -101,7 +93,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Serializable 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (agency != null ? agency.hashCode() : 0);
         result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
         return result;
     }
@@ -109,7 +100,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Serializable 
     @Override
     public String toString() {
         return "ResponseDomain{" +
-                "agency=" + agency +
                 ", responseKind=" + responseKind +
                 super.toString() +
                 '}';

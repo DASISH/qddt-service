@@ -1,6 +1,7 @@
 package no.nsd.qddt.utils.builders;
 
 import no.nsd.qddt.domain.Question;
+import no.nsd.qddt.domain.instrument.InstrumentQuestion;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -30,7 +31,6 @@ public class QuestionBuilder {
         Question question = new Question();
         question.setName(this.name);
         question.setChangeComment(this.changeComment);
-        question.setInstruction(this.instructions);
 
         return question;
     }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -29,11 +30,21 @@ public class UserServiceImpl implements UserService{
         this.userRepository = userRepository;
     }
 
+
     @Override
-    @Transactional(readOnly = true)
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, User.class)
+    public long count() {
+        return userRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return userRepository.exists(uuid);
+    }
+
+    @Override
+    public User findOne(UUID uuid) {
+        return userRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, User.class)
         );
     }
 
@@ -48,16 +59,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public List<User> findAll(Iterable<UUID> uuids) {
+        return userRepository.findAll(uuids);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public User save(User user) {
         return userRepository.save(user);
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(User instance) {
-        userRepository.delete(instance);
+    public void delete(UUID uuid) {
+        userRepository.delete(uuid);
     }
+
 
     @Override
     @Transactional(readOnly = true)

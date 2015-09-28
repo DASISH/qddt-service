@@ -27,14 +27,13 @@ public class InstrumentQuestion extends AbstractEntityAudit implements Serializa
     @JoinColumn(name = "question_id")
     private Question question;
 
+
+    @ManyToOne
+    @JoinColumn(name = "instruction_id")
+    private  Instruction instruction;
+
     public InstrumentQuestion() {
     }
-
-//    @JsonIgnore
-//    @Override
-//    public Agency getAgency() {
-//        return null;
-//    }
 
     public Instrument getInstrument() {
         return instrument;
@@ -52,25 +51,36 @@ public class InstrumentQuestion extends AbstractEntityAudit implements Serializa
         this.question = question;
     }
 
+    public Instruction getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(Instruction instruction) {
+        this.instruction = instruction;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof InstrumentQuestion)) return false;
         if (!super.equals(o)) return false;
 
         InstrumentQuestion that = (InstrumentQuestion) o;
 
-        if (instrument != null ? !instrument.equals(that.instrument) : that.instrument != null) return false;
-        if (question != null ? !question.equals(that.question) : that.question != null) return false;
+        if (getInstrument() != null ? !getInstrument().equals(that.getInstrument()) : that.getInstrument() != null)
+            return false;
+        if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
+            return false;
+        return !(getInstruction() != null ? !getInstruction().equals(that.getInstruction()) : that.getInstruction() != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (instrument != null ? instrument.hashCode() : 0);
-        result = 31 * result + (question != null ? question.hashCode() : 0);
+        result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
+        result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
+        result = 31 * result + (getInstruction() != null ? getInstruction().hashCode() : 0);
         return result;
     }
 

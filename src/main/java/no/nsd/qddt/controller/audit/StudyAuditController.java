@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * @author Dag Østgulen Heradstveit
  */
@@ -33,18 +35,18 @@ public class StudyAuditController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Revision<Integer, Study> getLastRevision(@PathVariable("id") Long id) {
+    public Revision<Integer, Study> getLastRevision(@PathVariable("id") UUID id) {
         return studyService.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Integer, Study> getByRevision(@PathVariable("id") Long id, @PathVariable("revision") Integer revision) {
+    public Revision<Integer, Study> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return studyService.findEntityAtRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
-            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler){
+            @PathVariable("id") UUID id,Pageable pageable, PagedResourcesAssembler assembler){
 
         Page<Revision<Integer, Study>> studies = studyService.findAllRevisionsPageable(id, pageable);
         return new ResponseEntity<>(assembler.toResource(studies), HttpStatus.OK);

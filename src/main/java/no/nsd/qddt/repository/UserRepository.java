@@ -5,12 +5,13 @@ import org.springframework.data.envers.repository.support.EnversRevisionReposito
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-public interface UserRepository extends  EnversRevisionRepository<User, Long, Integer> {
+public interface UserRepository extends  EnversRevisionRepository<User, UUID, Integer> {
 
     /**
      * Return a user.
@@ -20,5 +21,5 @@ public interface UserRepository extends  EnversRevisionRepository<User, Long, In
      */
     Optional<User> findByEmail(String email);
 
-    Optional<User> findById(Long id);
+    Optional<User> findById(UUID id);
 }

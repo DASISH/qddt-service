@@ -18,17 +18,17 @@ import java.util.List;
  *
  * @author Stig Norland
  */
-public abstract class AbstractController<T> {
+public abstract class AbstractController<T,ID> {
 
     /**
      * If you are running a race, and you pass the person in second place,
      * what place are you in?
      */
-    protected BaseService<T> service;
+    protected BaseService<T,ID> service;
 
 
     @Autowired
-    public AbstractController(BaseService<T> service){
+    public AbstractController(BaseService<T,ID> service){
         this.service = service;
     }
 
@@ -45,8 +45,8 @@ public abstract class AbstractController<T> {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public T getOneById(@PathVariable("id") Long id){
-        return service.findById(id);
+    public T getOneById(@PathVariable("id") ID id){
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -57,8 +57,8 @@ public abstract class AbstractController<T> {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(@RequestBody T instance){
-        service.delete(instance);
+    public void delete(@RequestBody ID id){
+        service.delete(id);
     }
 
 }

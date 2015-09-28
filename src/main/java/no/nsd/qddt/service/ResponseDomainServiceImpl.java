@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -27,11 +28,21 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
         this.responseDomainRepository = responseDomainRepository;
     }
 
+
     @Override
-    @Transactional(readOnly = true)
-    public ResponseDomain findById(Long id) {
-        return responseDomainRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, ResponseDomain.class)
+    public long count() {
+        return responseDomainRepository.count();
+    }
+
+    @Override
+    public boolean exists(UUID uuid) {
+        return responseDomainRepository.exists(uuid);
+    }
+
+    @Override
+    public ResponseDomain findOne(UUID uuid) {
+        return responseDomainRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, ResponseDomain.class)
         );
     }
 
@@ -48,6 +59,11 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
+    public List<ResponseDomain> findAll(Iterable<UUID> uuids) {
+        return responseDomainRepository.findAll(uuids);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
 
@@ -56,27 +72,23 @@ public class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void delete(ResponseDomain instance) { responseDomainRepository.delete(instance);  }
+    public void delete(UUID uuid) {
+        responseDomainRepository.delete(uuid);
+    }
+
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, ResponseDomain> findLastChange(Long id) {
-
-        return responseDomainRepository.findLastChangeRevision(id);
+    public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
+        return responseDomainRepository.findLastChangeRevision(uuid);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, ResponseDomain> findEntityAtRevision(Long id, Integer revision) {
-        return responseDomainRepository.findEntityAtRevision(id, revision);
+    public Revision<Integer, ResponseDomain> findEntityAtRevision(UUID uuid, Integer revision) {
+        return responseDomainRepository.findEntityAtRevision(uuid,revision);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(Long id, Pageable pageable) {
-
-        return responseDomainRepository.findRevisions(id,pageable);
+    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
+        return responseDomainRepository.findRevisions(uuid,pageable);
     }
-
 }
