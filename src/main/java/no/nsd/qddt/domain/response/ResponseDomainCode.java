@@ -109,8 +109,8 @@ public class ResponseDomainCode implements Serializable {
         return "ResponseDomainCode{" +
                 "id=" + id +
                 ", rank=" + rank +
-                ", responseDomain= {" + responseDomain.getName() + " - " + responseDomain.getUrn().getId() + "} "+
-                ", code={" + code.getName() + " - " + code.getUrn().getId() + "} "+
+                ", responseDomain=" + responseDomain +
+                ", code=" + code +
                 '}';
     }
 }

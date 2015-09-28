@@ -54,13 +54,13 @@ dependencies {
     compile("org.jadira.usertype:usertype.extended:3.2.0.GA")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.0")
-    compile("com.h2database:h2:1.4.181")
     compile("org.hibernate:hibernate-validator")
     compile("org.hibernate:hibernate-core:4.3.8.Final")
     compile("org.hibernate:hibernate-envers:4.3.8.Final")
     compile("com.mangofactory:swagger-springmvc:0.9.0")
     compile("org.ajar:swagger-spring-mvc-ui:0.2")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
+    compile("postgresql:postgresql:9.1-901-1.jdbc4")
 //    compile("org.springframework.data:spring-data-envers:0.2.0.RELEASE")
 
     testCompile(

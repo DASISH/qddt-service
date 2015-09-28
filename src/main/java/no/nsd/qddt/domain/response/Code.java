@@ -45,15 +45,6 @@ public class Code extends AbstractEntityAudit implements Serializable {
 
     public Code(){}
 
-//    @Override
-//    /**
-//     * May cause sideffects if there are users from different agencies on the same module
-//     * i.e. Agency will change to whomever last saved object.
-//     */
-//    public Agency getAgency() {
-//        return getCreatedBy().getAgency();
-//    }
-
     public String getCategory() {
         return category;
     }

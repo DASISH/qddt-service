@@ -1,8 +1,13 @@
 package no.nsd.qddt.domain;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -23,10 +28,18 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity {
 
-    @Column(name = "guid", columnDefinition = "BINARY(16)")
-    private UUID guid = UUID.randomUUID();
+    @Column(name = "guid")
+    @Type(type="pg-uuid")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    private UUID guid;
 
-    @Column(name = "owner_guid", columnDefinition = "BINARY(16)")
+    @Column(name = "owner_guid")
+            @Type(type="pg-uuid")
+            @GeneratedValue(generator = "uuid")
+            @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+            @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
     private UUID ownerGuid;
 
     @ManyToOne(cascade = CascadeType.ALL)

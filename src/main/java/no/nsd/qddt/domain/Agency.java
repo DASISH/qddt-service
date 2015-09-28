@@ -52,26 +52,22 @@ public class Agency extends AbstractEntity {
         this.name = name;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Agency agency = (Agency) o;
 
-        if (super.getCreated() != null ? !super.getCreated().equals(agency.getCreated()) : agency.getCreated() != null) return false;
-        if (super.getCreatedBy() != null ? !super.getCreatedBy().equals(agency.getCreatedBy()) : agency.getCreatedBy() != null) return false;
-        if (super.getUrn().getId() != null ? !super.getUrn().getId().equals(agency.getUrn().getId()) : agency.getUrn().getId() != null) return false;
-        if (name != null ? !name.equals(agency.name) : agency.name != null) return false;
+        return !(name != null ? !name.equals(agency.name) : agency.name != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = super.getUrn().getId() != null ? super.getUrn().getId().hashCode() : 0;
-        result = 31 * result + (super.getCreated() != null ? super.getCreated().hashCode() : 0);
-        result = 31 * result + (super.getCreatedBy() != null ? super.getCreatedBy().hashCode() : 0);
+        int result = super.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
@@ -79,7 +75,6 @@ public class Agency extends AbstractEntity {
     @Override
     public String toString() {
         return "Agency{" +
-                "id=" + super.getUrn() +
                 ", created=" + super.getCreated() +
                 ", createdBy=" + super.getCreatedBy() +
                 ", name='" + name + '\'' +

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class OtherMaterial extends AbstractEntityAudit {
 
     @Column(name = "owner_guid")
+    @Type(type="pg-uuid")
     private UUID ownerGuid;
 
     @ManyToOne

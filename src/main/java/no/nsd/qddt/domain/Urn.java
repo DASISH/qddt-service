@@ -1,7 +1,10 @@
 package no.nsd.qddt.domain;
 
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.AccessType;
 import java.util.UUID;
 
 /**
@@ -18,9 +21,12 @@ import java.util.UUID;
 public class Urn {
 
     @Id
-    @Column(name = "id", columnDefinition = "BINARY(16)")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id = UUID.randomUUID();
+    @Column(name = "id")
+    @Type(type="pg-uuid")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    private UUID id;
     private Agency agency;
     private String version;
 

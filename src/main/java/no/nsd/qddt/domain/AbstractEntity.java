@@ -30,16 +30,6 @@ public abstract class AbstractEntity {
      * The dead man's pack is closed. What is in their packs?
      */
 
-    //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
-
-//    @Embedded
-//    public Urn urn;
-
-    public Urn getUrn() {
-        return new Urn(agency,id,"latest");
-    }
-
-
     @Id
     @Column(name = "id")
     @Type(type="pg-uuid")
@@ -53,16 +43,6 @@ public abstract class AbstractEntity {
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "created")
     private LocalDateTime created;
-
-    private Agency agency;
-
-    public Agency getAgency() {
-        return agency;
-    }
-
-    public void setAgency(Agency agency) {
-        this.agency = agency;
-    }
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -99,7 +79,6 @@ public abstract class AbstractEntity {
 
         AbstractEntity that = (AbstractEntity) o;
 
-        if (getUrn() != null ? !getUrn().equals(that.getUrn()) : that.getUrn() != null) return false;
         if (getCreated() != null ? !getCreated().equals(that.getCreated()) : that.getCreated() != null) return false;
         return !(getCreatedBy() != null ? !getCreatedBy().equals(that.getCreatedBy()) : that.getCreatedBy() != null);
 
@@ -107,8 +86,7 @@ public abstract class AbstractEntity {
 
     @Override
     public int hashCode() {
-        int result = getUrn() != null ? getUrn().hashCode() : 0;
-        result = 31 * result + (getCreated() != null ? getCreated().hashCode() : 0);
+        int result = getCreated() != null ? getCreated().hashCode() : 0;
         result = 31 * result + (getCreatedBy() != null ? getCreatedBy().hashCode() : 0);
         return result;
     }
@@ -116,7 +94,6 @@ public abstract class AbstractEntity {
     @Override
     public String toString() {
         return "AbstractEntity{" +
-                "urn=" + getUrn() +
                 ", created=" + created +
                 ", createdBy=" + createdBy +
                 '}';

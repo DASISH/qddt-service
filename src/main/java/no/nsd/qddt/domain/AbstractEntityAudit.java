@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
 import org.springframework.util.ObjectUtils;
 
@@ -25,8 +26,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private Agency agency;
 
     //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
-    @Column(name = "guid", columnDefinition = "BINARY(16)")
-    private UUID guid = UUID.randomUUID();
+    @Column(name = "guid")
+    @Type(type="pg-uuid")
+//    @GeneratedValue(generator = "uuid")
+//    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+//            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    private UUID guid;
 
     @Column(name = "name")
     private String name;
@@ -86,33 +91,32 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof AbstractEntityAudit)) {
-            return false;
-        }
-        AbstractEntityAudit that = (AbstractEntityAudit) obj;
-        return ObjectUtils.nullSafeEquals(super.getUrn().getId(), that.getUrn().getId());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        AbstractEntityAudit that = (AbstractEntityAudit) o;
+
+        if (agency != null ? !agency.equals(that.agency) : that.agency != null) return false;
+        if (guid != null ? !guid.equals(that.guid) : that.guid != null) return false;
+        return !(name != null ? !name.equals(that.name) : that.name != null);
+
     }
 
     @Override
     public int hashCode() {
-        int result = super.getUrn().getId() != null ? super.getUrn().getId().hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (agency != null ? agency.hashCode() : 0);
         result = 31 * result + (guid != null ? guid.hashCode() : 0);
-        result = 31 * result + (super.getCreated() != null ? super.getCreated().hashCode() : 0);
-        result = 31 * result + (super.getCreatedBy() != null ? super.getCreatedBy().hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (changeReason != null ? changeReason.hashCode() : 0);
-        result = 31 * result + (changeComment != null ? changeComment.hashCode() : 0);
         return result;
     }
 
+
     @Override
     public String toString() {
-        return  " ,id=" + super.getUrn().getId() +
-                ", guid=" + guid +
+        return  "guid=" + guid +
                 ", created=" + super.getCreated() +
                 ", createdBy=" + super.getCreatedBy() +
                 ", name='" + name + '\'' +

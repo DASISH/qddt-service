@@ -1,10 +1,15 @@
 package no.nsd.qddt.domain.response;
 
+import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * A ResponseKind define what kind of ResponseDomain (answer) this is,
@@ -25,12 +30,16 @@ import java.util.Set;
  */
 @Audited//(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
-@Table(name = "ResponseKind")
+@Table(name = "response_kind")
 public class ResponseKind {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(name = "id")
+    @Type(type="pg-uuid")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    private UUID id;
 
     @Column(name = "code")
     private String code;
@@ -41,11 +50,11 @@ public class ResponseKind {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseKind", cascade = CascadeType.ALL)
     private Set<ResponseDomain> response = new HashSet<>();
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

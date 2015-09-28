@@ -1,13 +1,18 @@
 package no.nsd.qddt.domain.security;
 
 import no.nsd.qddt.domain.User;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -18,9 +23,12 @@ import java.util.Set;
 public class Authority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "authority_id")
-    private Long id;
+    @Column(name = "id")
+    @Type(type="pg-uuid")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
+            @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    private UUID id;
 
     @Column(name = "name")
     private String name;
@@ -39,11 +47,11 @@ public class Authority {
         this.authority = authority;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
