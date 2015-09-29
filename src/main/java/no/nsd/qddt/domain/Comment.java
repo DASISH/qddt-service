@@ -27,7 +27,7 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity {
 
-    @Column(name = "owner_guid")
+    @Column(name = "owner_uuid")
     @Type(type="pg-uuid")
     private UUID ownerUUID;
 
