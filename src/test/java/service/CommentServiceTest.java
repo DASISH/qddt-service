@@ -10,6 +10,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -31,7 +33,9 @@ public class CommentServiceTest {
     public void saveCommentTest() throws Exception {
 
         Comment parent = commentService.save(new Comment("PARENT"));
+        parent.setOwnerUUID(UUID.fromString("2fed9aab-748e-48d2-ac7f-57c076029a0b"));
         Comment saved = commentService.save(new Comment("CHILD-ONE"));
+        saved.setOwnerUUID(UUID.fromString("2fed9aab-748e-48d2-ac7f-57c076029a0b"));
         parent.addComment(saved);
         saved.addComment(commentService.save(new Comment("CHILD OF CHILD-ONE")));
         parent.addComment(commentService.save(new Comment("CHILD-TWO")));

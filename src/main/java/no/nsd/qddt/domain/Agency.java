@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Audited
 @Entity
-@Table(name = "Agency")
+@Table(name = "AGENCY")
 public class Agency extends AbstractEntity {
 
 

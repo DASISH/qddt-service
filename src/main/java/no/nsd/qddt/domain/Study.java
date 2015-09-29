@@ -34,7 +34,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "Study")
+@Table(name = "STUDY")
 public class Study extends AbstractEntityAudit {
 
     @JsonIgnore

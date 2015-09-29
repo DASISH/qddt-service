@@ -79,8 +79,8 @@ public class Comment extends AbstractEntity {
      * @param comment to be added to parent.
      */
     public void addComment(Comment comment) {
-        this.children.add(comment);
-      //  comment.setParent(this);
+        comment.setParent(this);
+        //this.children.add(comment);
     }
 
 

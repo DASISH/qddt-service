@@ -13,7 +13,7 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "instruction")
+@Table(name = "INSTRUCTION")
 public class Instruction extends AbstractEntityAudit {
 
     public Instruction() {

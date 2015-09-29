@@ -31,7 +31,7 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "code")
+@Table(name = "CODE")
 public class Code extends AbstractEntityAudit {
 
     @Column(name = "category")

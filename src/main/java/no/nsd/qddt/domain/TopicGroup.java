@@ -31,7 +31,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "TopicGroup")
+@Table(name = "TOPIC_GROUP")
 public class TopicGroup extends AbstractEntityAudit {
 
     @ManyToOne

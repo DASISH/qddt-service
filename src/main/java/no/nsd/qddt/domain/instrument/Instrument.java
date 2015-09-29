@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "instrument")
+@Table(name = "INSTRUMENT")
 public class Instrument extends AbstractEntityAudit {
 
     @ManyToOne

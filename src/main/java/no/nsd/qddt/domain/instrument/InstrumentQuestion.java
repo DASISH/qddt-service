@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @Audited
 @Entity
-@Table(name = "instrument_question")
+@Table(name = "INSTRUMENT_QUESTION")
 public class InstrumentQuestion extends AbstractEntityAudit {
 
     @ManyToOne

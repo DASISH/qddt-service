@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "Question")
+@Table(name = "QUESTION")
 public class Question extends AbstractEntityAudit {
 
     @ManyToOne
@@ -46,6 +46,17 @@ public class Question extends AbstractEntityAudit {
 
     public Question() {
 
+    }
+
+    @OneToMany(mappedBy="concept", cascade = CascadeType.ALL)
+    private Set<Concept> concepts = new HashSet<>();
+
+    public Set<Concept> getConcepts() {
+        return concepts;
+    }
+
+    public void setConcepts(Set<Concept> concepts) {
+        this.concepts = concepts;
     }
 
     @OneToMany(mappedBy = "question")
