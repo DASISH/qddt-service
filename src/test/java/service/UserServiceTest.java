@@ -1,9 +1,9 @@
 package service;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.User;
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.UserNotFoundException;
-import no.nsd.qddt.service.UserService;
+import no.nsd.qddt.domain.user.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

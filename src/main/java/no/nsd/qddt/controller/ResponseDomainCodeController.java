@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.response.ResponseDomainCode;
-import no.nsd.qddt.service.ResponseDomainCodeService;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

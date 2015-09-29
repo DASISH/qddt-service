@@ -2,9 +2,9 @@ package no.nsd.qddt;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import no.nsd.qddt.service.StudyService;
-import no.nsd.qddt.service.SurveyService;
-import no.nsd.qddt.service.UserService;
+import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.domain.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -54,7 +54,7 @@ public class QDDT extends SpringBootServletInitializer {
     private StudyService studyService;
 
     @Autowired
-    private SurveyService surveyService;
+    private SurveyProgramService surveyProgramService;
 
     @Autowired
     private UserService userService;
@@ -62,7 +62,7 @@ public class QDDT extends SpringBootServletInitializer {
     @PostConstruct
     public void init() {
         SampleApplicationData sampleApplicationData =
-                new SampleApplicationData(studyService, surveyService, userService);
+                new SampleApplicationData(studyService, surveyProgramService, userService);
     }
 
 

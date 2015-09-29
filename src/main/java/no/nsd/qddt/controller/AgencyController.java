@@ -1,11 +1,9 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.Agency;
-import no.nsd.qddt.service.AgencyService;
+import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.agency.AgencyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;

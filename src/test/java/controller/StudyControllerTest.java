@@ -1,8 +1,8 @@
 package controller;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.service.QDDTUserDetailsService;
-import no.nsd.qddt.service.SurveyService;
+import no.nsd.qddt.domain.user.QDDTUserDetailsService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +43,7 @@ public class StudyControllerTest {
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     @Autowired
-    private SurveyService surveyService;
+    private SurveyProgramService surveyProgramService;
 
     @Autowired
     QDDTUserDetailsService qddtUserDetailsService;

@@ -1,12 +1,12 @@
 package service.audit;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.response.Code;
-import no.nsd.qddt.domain.response.ResponseDomain;
-import no.nsd.qddt.domain.response.ResponseDomainCode;
-import no.nsd.qddt.service.CodeService;
-import no.nsd.qddt.service.ResponseDomainCodeService;
-import no.nsd.qddt.service.ResponseDomainService;
+import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
+import no.nsd.qddt.domain.code.CodeService;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +70,7 @@ public class ResponseDomainCodeServiceAuditTest {
                 responseDomainCodeService.findAllRevisionsPageable(responseDomainCode.getId(), new PageRequest(0,20 ));
 
                 assertEquals("Excepted four revisions.",
-                revisions.getNumberOfElements(), 4);
+                        revisions.getNumberOfElements(), 4);
     }
 
     @Test

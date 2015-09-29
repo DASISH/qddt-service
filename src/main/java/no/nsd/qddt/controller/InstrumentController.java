@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.service.InstrumentService;
+import no.nsd.qddt.domain.instrument.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

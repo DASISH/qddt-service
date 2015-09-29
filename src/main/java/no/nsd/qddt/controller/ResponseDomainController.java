@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.response.ResponseDomain;
-import no.nsd.qddt.service.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

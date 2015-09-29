@@ -1,9 +1,9 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.Comment;
-import no.nsd.qddt.domain.SurveyProgram;
-import no.nsd.qddt.service.CommentService;
-import no.nsd.qddt.service.SurveyService;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class SurveyController extends AbstractAuditController<SurveyProgram,UUID
     private CommentService commentService;
 
     @Autowired
-    public SurveyController(SurveyService service, CommentService commentService) {
+    public SurveyController(SurveyProgramService service, CommentService commentService) {
         super(service);
         this.commentService = commentService;
     }

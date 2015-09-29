@@ -1,6 +1,6 @@
 package no.nsd.qddt.utils.builders;
 
-import no.nsd.qddt.domain.Question;
+import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentQuestion;
 

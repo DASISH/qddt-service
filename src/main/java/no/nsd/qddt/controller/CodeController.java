@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.response.Code;
-import no.nsd.qddt.service.CodeService;
+import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.code.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

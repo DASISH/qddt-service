@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.User;
-import no.nsd.qddt.service.UserService;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

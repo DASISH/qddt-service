@@ -1,6 +1,6 @@
 package assets;
 
-import no.nsd.qddt.service.QDDTUserDetailsService;
+import no.nsd.qddt.domain.user.QDDTUserDetailsService;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

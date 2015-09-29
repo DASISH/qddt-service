@@ -1,8 +1,8 @@
 package service.audit;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.SurveyProgram;
-import no.nsd.qddt.service.SurveyService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,26 +27,26 @@ import static org.junit.Assert.assertThat;
 public class SurveyProgramServiceAuditTest {
 
     @Autowired
-    private SurveyService surveyService;
+    private SurveyProgramService surveyProgramService;
 
     @Test
     public void testSaveSurveyWithAudit() throws Exception {
         SurveyProgram surveyProgram = new SurveyProgram();
         surveyProgram.setName("This is the FIRST version");
 
-        surveyProgram = surveyService.save(surveyProgram);
+        surveyProgram = surveyProgramService.save(surveyProgram);
 
         surveyProgram.setName("This is the SECOND version");
-        surveyProgram = surveyService.save(surveyProgram);
+        surveyProgram = surveyProgramService.save(surveyProgram);
 
         surveyProgram.setName("This is the THIRD version");
-        surveyProgram = surveyService.save(surveyProgram);
+        surveyProgram = surveyProgramService.save(surveyProgram);
 
         // Find the last revision based on the entity id
-        Revision<Integer, SurveyProgram> revision = surveyService.findLastChange(surveyProgram.getId());
+        Revision<Integer, SurveyProgram> revision = surveyProgramService.findLastChange(surveyProgram.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, SurveyProgram>> revisions = surveyService.findAllRevisionsPageable(
+        Page<Revision<Integer, SurveyProgram>> revisions = surveyProgramService.findAllRevisionsPageable(
                 surveyProgram.getId(), new PageRequest(0, 10));
         assertThat(revisions.getNumberOfElements(), is(3));
 
@@ -57,9 +57,9 @@ public class SurveyProgramServiceAuditTest {
 
     @Test
     public void findSurveyByRevisionTest() throws Exception {
-        Revision<Integer, SurveyProgram> surveyRevision = surveyService.findLastChange(surveyService.findAll().get(0).getId());
+        Revision<Integer, SurveyProgram> surveyRevision = surveyProgramService.findLastChange(surveyProgramService.findAll().get(0).getId());
 
-        Revision<Integer, SurveyProgram> survey = surveyService.findEntityAtRevision(
+        Revision<Integer, SurveyProgram> survey = surveyProgramService.findEntityAtRevision(
                 surveyRevision.getEntity().getId(), 3);
 
         assertThat(survey.getRevisionNumber(), is(3));
