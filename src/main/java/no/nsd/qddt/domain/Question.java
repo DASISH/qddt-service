@@ -124,7 +124,7 @@ public class Question extends AbstractEntityAudit {
     }
 
     public void addComment(Comment comment) {
-        comment.setOwnerGuid(this.getGuid());
+        comment.setOwnerGuid(this.getId());
         comments.add(comment);
     }
 

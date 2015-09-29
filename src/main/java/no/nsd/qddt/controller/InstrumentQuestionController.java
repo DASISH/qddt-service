@@ -39,7 +39,7 @@ public class InstrumentQuestionController {
     //    MetaController
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void delete(InstrumentQuestion instance) {
-        instrumentQuestionService.delete(instance.getGuid());
+        instrumentQuestionService.delete(instance.getId());
     }
 
     //    MetaController

@@ -80,7 +80,7 @@ public class TopicGroupServiceImpl implements TopicGroupService {
 
 
     @Transactional(readOnly = false)
-    public void delete(TopicGroup instance) { topicGroupRepository.delete(instance.getGuid());  }
+    public void delete(TopicGroup instance) { topicGroupRepository.delete(instance.getId());  }
 
 
     @Override
