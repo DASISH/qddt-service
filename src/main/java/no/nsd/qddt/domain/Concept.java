@@ -31,7 +31,7 @@ public class Concept extends AbstractEntityAudit {
     private TopicGroup topicGroup;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-    private Set<Question> children = new HashSet<>();
+    private Set<Concept> children = new HashSet<>();
 
     public Set<Concept> getChildren() {
         return children;
