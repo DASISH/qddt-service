@@ -1,7 +1,7 @@
 package no.nsd.qddt.utils.advice;
 
-import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.ControllerAdviceExceptionMessage;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -10,10 +10,11 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-//import javax.persistence.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+//import javax.persistence.*;
 
 /**
  * @author Stig Norland

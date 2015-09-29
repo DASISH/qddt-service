@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain;
 
-import no.nsd.qddt.domain.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;

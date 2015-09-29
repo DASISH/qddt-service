@@ -1,16 +1,5 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import org.hibernate.annotations.*;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 /**
  * A ResponseKind define what kind of ResponseDomain (answer) this is,
  * this will also define the way the Question is formatted.

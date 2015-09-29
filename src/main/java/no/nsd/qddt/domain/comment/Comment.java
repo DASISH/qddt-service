@@ -1,13 +1,10 @@
 package no.nsd.qddt.domain.comment;
 
 import no.nsd.qddt.domain.AbstractEntity;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

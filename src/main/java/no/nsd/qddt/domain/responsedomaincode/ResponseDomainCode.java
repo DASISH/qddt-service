@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.envers.Audited;
 
-
 import javax.persistence.*;
 
 /**

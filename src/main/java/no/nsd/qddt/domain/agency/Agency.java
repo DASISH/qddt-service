@@ -4,8 +4,8 @@ package no.nsd.qddt.domain.agency;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

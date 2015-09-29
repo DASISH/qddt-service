@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.user;
 
-import no.nsd.qddt.domain.user.User;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.stereotype.Repository;
 

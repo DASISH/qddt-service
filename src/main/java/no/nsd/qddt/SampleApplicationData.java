@@ -1,10 +1,10 @@
 package no.nsd.qddt;
 
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
-import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserService;
 
 /**

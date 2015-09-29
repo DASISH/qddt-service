@@ -1,8 +1,8 @@
 package no.nsd.qddt.controller;
 
 import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;

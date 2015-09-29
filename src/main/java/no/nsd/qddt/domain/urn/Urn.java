@@ -2,10 +2,10 @@ package no.nsd.qddt.domain.urn;
 
 
 import no.nsd.qddt.domain.agency.Agency;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.persistence.AccessType;
 import java.util.UUID;
 
 /**

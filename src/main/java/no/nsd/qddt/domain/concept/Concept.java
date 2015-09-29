@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.comment.Comment;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

@@ -2,11 +2,11 @@ package service;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.code.Code;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import no.nsd.qddt.domain.code.CodeService;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
 import no.nsd.qddt.utils.builders.CodeBuilder;
 import org.junit.Before;
 import org.junit.Test;
