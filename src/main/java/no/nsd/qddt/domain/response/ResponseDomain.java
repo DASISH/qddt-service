@@ -53,8 +53,7 @@ import java.util.Set;
 @Table(name = "responseDomain")
 public class ResponseDomain extends AbstractEntityAudit implements Serializable {
 
-    @ManyToOne
-    @JoinColumn(name = "response_kind_id")
+
     private ResponseKind responseKind;
 
     @OneToMany(mappedBy="responseDomain", cascade = CascadeType.ALL)
