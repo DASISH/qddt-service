@@ -55,7 +55,7 @@ public class CommentServiceTest {
         parent.addComment(new Comment("CHILD-THREE"));
         commentService.save(parent);
 
-        assertThat(parent.treeSize(), is(5));
+        assertThat(parent.treeSize(), is(5L));
         assertThat(commentService.save(parent).getChildren().size(), is(3));
     }
 
