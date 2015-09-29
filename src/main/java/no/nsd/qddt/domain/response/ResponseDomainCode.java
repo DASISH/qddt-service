@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.response;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -17,15 +18,7 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "responseDomain_code")
-public class ResponseDomainCode implements Serializable {
-
-    @Id
-    @Column(name = "id")
-    @Type(type="pg-uuid")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
-            @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
-    private UUID id;
+public class ResponseDomainCode extends AbstractEntityAudit {
 
     @Column(name = "rank")
     private int rank;
@@ -45,14 +38,6 @@ public class ResponseDomainCode implements Serializable {
         this.rank = rank;
         this.responseDomain = responseDomain;
         this.code = code;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public int getRank() {
@@ -88,7 +73,6 @@ public class ResponseDomainCode implements Serializable {
 
         if (rank != that.rank) return false;
         if (code != null ? !code.equals(that.code) : that.code != null) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
             return false;
 
@@ -97,9 +81,8 @@ public class ResponseDomainCode implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = responseDomain != null ? responseDomain.hashCode() : 0;
         result = 31 * result + rank;
-        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
         result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
     }
@@ -107,7 +90,6 @@ public class ResponseDomainCode implements Serializable {
     @Override
     public String toString() {
         return "ResponseDomainCode{" +
-                "id=" + id +
                 ", rank=" + rank +
                 ", responseDomain=" + responseDomain +
                 ", code=" + code +

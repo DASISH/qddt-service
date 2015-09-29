@@ -51,7 +51,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "responseDomain")
-public class ResponseDomain extends AbstractEntityAudit implements Serializable {
+public class ResponseDomain extends AbstractEntityAudit {
 
 
     private ResponseKind responseKind;

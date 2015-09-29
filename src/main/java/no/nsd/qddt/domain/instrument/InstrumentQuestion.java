@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Audited
 @Entity
 @Table(name = "instrument_question")
-public class InstrumentQuestion extends AbstractEntityAudit implements Serializable {
+public class InstrumentQuestion extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name = "instrument_id")

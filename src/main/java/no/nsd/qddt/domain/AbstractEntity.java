@@ -20,7 +20,7 @@ import java.util.UUID;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @Audited
 @MappedSuperclass
 public abstract class AbstractEntity {

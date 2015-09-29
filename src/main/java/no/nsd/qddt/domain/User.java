@@ -163,6 +163,86 @@ public class User {
         this.comments = comments;
     }
 
+    public Set<Instrument> getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Set<Instrument> instrument) {
+        this.instrument = instrument;
+    }
+
+    public Set<InstrumentQuestion> getInstrumentQuestions() {
+        return instrumentQuestions;
+    }
+
+    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
+        this.instrumentQuestions = instrumentQuestions;
+    }
+
+    public Set<Instruction> getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(Set<Instruction> instructions) {
+        this.instructions = instructions;
+    }
+
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
+
+    public Set<TopicGroup> getTopicGroups() {
+        return topicGroups;
+    }
+
+    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+        this.topicGroups = topicGroups;
+    }
+
+    public Set<OtherMaterial> getOtherMaterials() {
+        return otherMaterials;
+    }
+
+    public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
+        this.otherMaterials = otherMaterials;
+    }
+
+    public Set<Concept> getConcepts() {
+        return concepts;
+    }
+
+    public void setConcepts(Set<Concept> concepts) {
+        this.concepts = concepts;
+    }
+
+    public Set<ResponseDomain> getResponseDomains() {
+        return responseDomains;
+    }
+
+    public void setResponseDomains(Set<ResponseDomain> responseDomains) {
+        this.responseDomains = responseDomains;
+    }
+
+    public Set<ResponseDomainCode> getResponseDomainCodes() {
+        return responseDomainCodes;
+    }
+
+    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
+        this.responseDomainCodes = responseDomainCodes;
+    }
+
+    public Set<Code> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(Set<Code> codes) {
+        this.codes = codes;
+    }
+
     public Agency getAgency() {
         return agency;
     }

@@ -32,7 +32,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "code")
-public class Code extends AbstractEntityAudit implements Serializable {
+public class Code extends AbstractEntityAudit {
 
     @Column(name = "category")
     private String category;
