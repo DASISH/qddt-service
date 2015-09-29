@@ -1,7 +1,7 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.instrumentquestion.web;
 
-import no.nsd.qddt.domain.instrument.InstrumentQuestion;
-import no.nsd.qddt.domain.instrument.InstrumentQuestionService;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

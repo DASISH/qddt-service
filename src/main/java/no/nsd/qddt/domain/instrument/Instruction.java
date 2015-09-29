@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

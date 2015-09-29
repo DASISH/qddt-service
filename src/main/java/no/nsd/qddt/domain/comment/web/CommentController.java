@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.comment.web;
 
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;

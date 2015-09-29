@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.AbstractAuditController;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;

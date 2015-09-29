@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.othermaterial.web;
 
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/othermaterial")
-public class OtherMaterialController extends AbstractController<OtherMaterial,UUID>   {
+public class OtherMaterialController extends AbstractController<OtherMaterial,UUID> {
 
 //    private AttachmentService attachmentService;
 

@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.instrument.web;
 
+import no.nsd.qddt.domain.AbstractAuditController;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;

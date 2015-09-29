@@ -1,6 +1,5 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain;
 
-import no.nsd.qddt.domain.BaseServiceAudit;
 import no.nsd.qddt.domain.study.Study;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

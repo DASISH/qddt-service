@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.surveyprogram.web;
 
+import no.nsd.qddt.domain.AbstractAuditController;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -17,13 +18,13 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @RestController
-@RequestMapping("/survey")
-public class SurveyController extends AbstractAuditController<SurveyProgram,UUID> {
+@RequestMapping("/surveyprogram")
+public class SurveyProgramController extends AbstractAuditController<SurveyProgram,UUID> {
 
     private CommentService commentService;
 
     @Autowired
-    public SurveyController(SurveyProgramService service, CommentService commentService) {
+    public SurveyProgramController(SurveyProgramService service, CommentService commentService) {
         super(service);
         this.commentService = commentService;
     }

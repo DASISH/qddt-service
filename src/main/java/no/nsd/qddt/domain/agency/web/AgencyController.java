@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.agency.web;
 
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.agency.AgencyService;
 import org.springframework.beans.factory.annotation.Autowired;

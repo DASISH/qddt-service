@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.question.web;
 
+import no.nsd.qddt.domain.AbstractAuditController;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/question")
-public class QuestionController extends AbstractAuditController<Question,UUID>  {
+public class QuestionController extends AbstractAuditController<Question,UUID> {
 
     private QuestionService questionService;
 

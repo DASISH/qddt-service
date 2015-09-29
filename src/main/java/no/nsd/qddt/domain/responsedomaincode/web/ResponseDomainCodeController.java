@@ -1,4 +1,4 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.responsedomaincode.web;
 
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;

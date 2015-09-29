@@ -1,4 +1,4 @@
-package no.nsd.qddt.controller.audit;
+package no.nsd.qddt.domain;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;

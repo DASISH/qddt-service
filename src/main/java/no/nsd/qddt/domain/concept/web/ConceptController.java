@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.concept.web;
 
+import no.nsd.qddt.domain.AbstractAuditController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;

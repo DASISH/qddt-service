@@ -1,4 +1,4 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.user.web;
 
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserService;

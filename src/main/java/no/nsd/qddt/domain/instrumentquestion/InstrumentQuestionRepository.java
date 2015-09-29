@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instrumentquestion;
 
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;

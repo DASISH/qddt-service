@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instrumentquestion;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

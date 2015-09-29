@@ -1,6 +1,8 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instrumentquestion;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.instrument.Instruction;
+import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.question.Question;
 import org.hibernate.envers.Audited;
 
@@ -29,7 +31,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name = "instruction_id")
-    private  Instruction instruction;
+    private Instruction instruction;
 
     public InstrumentQuestion() {
     }

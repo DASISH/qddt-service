@@ -1,5 +1,6 @@
-package no.nsd.qddt.controller;
+package no.nsd.qddt.domain.code.web;
 
+import no.nsd.qddt.domain.AbstractAuditController;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
