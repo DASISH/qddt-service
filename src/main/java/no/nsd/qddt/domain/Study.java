@@ -55,7 +55,7 @@ public class Study extends AbstractEntityAudit {
 
 
     @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
+    @JoinColumn(name="owner_uuid", foreignKey = @ForeignKey(name="id"))
     private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {

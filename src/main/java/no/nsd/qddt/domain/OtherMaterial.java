@@ -21,12 +21,12 @@ import java.util.UUID;
 @Table(name = "OtherMaterial")
 public class OtherMaterial extends AbstractEntityAudit {
 
-    @Column(name = "owner_guid")
+    @Column(name = "owner_uuid")
     @Type(type="pg-uuid")
     private UUID ownerGuid;
 
     @ManyToOne
-    @JoinColumn(name="owner_guid", insertable=false, updatable=false)
+    @JoinColumn(name="owner_uuid", insertable=false, updatable=false)
     private TopicGroup topicGroup;
 
     private String path;
