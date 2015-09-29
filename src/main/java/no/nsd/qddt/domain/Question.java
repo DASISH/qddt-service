@@ -43,6 +43,8 @@ public class Question extends AbstractEntityAudit {
     @Column(name = "question", length = 1500)
     private String question;
 
+    @Transient
+    private Set<Comment> comments = new HashSet<>();
 
     public Question() {
 
@@ -121,10 +123,6 @@ public class Question extends AbstractEntityAudit {
     public void setQuestion(String text) {
         this.question = text;
     }
-
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_uuid", foreignKey = @ForeignKey(name="id"))
-    private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {
         return comments;

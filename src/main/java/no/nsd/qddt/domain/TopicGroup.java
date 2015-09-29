@@ -54,8 +54,7 @@ public class TopicGroup extends AbstractEntityAudit {
 
     private String Abstract;
 
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_uuid", foreignKey = @ForeignKey(name="id"))
+    @Transient
     private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {

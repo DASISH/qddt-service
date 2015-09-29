@@ -30,9 +30,8 @@ public class Concept extends AbstractEntityAudit {
     @JoinColumn(name="topicgroup_id")
     private TopicGroup topicGroup;
 
-
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-    private Set<Concept> children = new HashSet<>();
+    private Set<Question> children = new HashSet<>();
 
     public Set<Concept> getChildren() {
         return children;
@@ -56,10 +55,11 @@ public class Concept extends AbstractEntityAudit {
     @Column(name = "label")
     private String label;
 
-    // name kommer fra AbstractEntityAudit
-
     @Column(name = "description")
     private String description;
+
+    @Transient
+    private Set<Comment> comments = new HashSet<>();
 
     public TopicGroup getTopicGroup() {
         return topicGroup;
@@ -86,9 +86,6 @@ public class Concept extends AbstractEntityAudit {
         this.description = description;
     }
 
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_uuid", foreignKey = @ForeignKey(name="id"))
-    private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {
         return comments;

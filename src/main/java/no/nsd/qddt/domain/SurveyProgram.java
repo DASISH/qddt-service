@@ -38,11 +38,7 @@ public class SurveyProgram extends AbstractEntityAudit {
     @OneToMany( cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
-//    @OneToMany(mappedBy="survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private Set<Comment> comments = new HashSet<>();
-
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_uuid", foreignKey = @ForeignKey(name="id"))
+    @Transient
     private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {
