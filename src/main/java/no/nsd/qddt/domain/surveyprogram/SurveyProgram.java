@@ -35,7 +35,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "SurveyProgram")
+@Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit {
 
     @OneToMany( cascade = CascadeType.ALL)

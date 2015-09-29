@@ -25,7 +25,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "Agency")
+@Table(name = "AGENCY")
 public class Agency extends AbstractEntity {
 
 

@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
-@Table(name = "user_account")
+@Table(name = "USER_ACCOUNT")
 public class User {
 
     @Id

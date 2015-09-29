@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Audited
 @Entity
-@Table(name = "OtherMaterial")
+@Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntityAudit {
 
     @Column(name = "owner_uuid")

@@ -27,7 +27,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "Concept")
+@Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit {
 
     @ManyToOne
@@ -36,6 +36,25 @@ public class Concept extends AbstractEntityAudit {
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Question> children = new HashSet<>();
+
+    public Set<Concept> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Concept> children) {
+        this.children = children;
+    }
+
+    @OneToMany(mappedBy="question", cascade = CascadeType.ALL)
+    private Set<Question> questions = new HashSet<>();
+
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
 
     @Column(name = "label")
     private String label;
@@ -86,13 +105,6 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
-    public Set<Question> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<Question> children) {
-        this.children = children;
-    }
 
     @Override
     public boolean equals(Object o) {

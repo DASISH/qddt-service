@@ -52,7 +52,7 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "responseDomain")
+@Table(name = "RESPONSEDOMAIN")
 public class ResponseDomain extends AbstractEntityAudit {
 
 

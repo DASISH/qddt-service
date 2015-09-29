@@ -13,7 +13,7 @@ import javax.persistence.*;
  */
 @Audited
 @Entity
-@Table(name = "responseDomain_code")
+@Table(name = "RESPONSEDOMAIN_CODE")
 public class ResponseDomainCode extends AbstractEntityAudit {
 
     @Column(name = "rank")
