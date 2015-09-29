@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.question;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instrument.InstrumentQuestion;
 import org.hibernate.envers.Audited;
 
