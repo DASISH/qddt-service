@@ -32,7 +32,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Transient
     private String version;
 
-    private ChangeKind changeReason;
+    private ChangeKind changeReason = ChangeKind.CREATED;
 
     @Column(name = "change_comment")
     private String changeComment;
