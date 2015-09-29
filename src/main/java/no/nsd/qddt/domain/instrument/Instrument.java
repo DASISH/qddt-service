@@ -29,6 +29,9 @@ public class Instrument extends AbstractEntityAudit {
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
+    @Transient
+    private Set<Comment> comments = new HashSet<>();
+
     public Instrument() {
     }
 
@@ -47,10 +50,6 @@ public class Instrument extends AbstractEntityAudit {
     public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
         this.instrumentQuestions = instrumentQuestions;
     }
-
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
-    private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {
         return comments;

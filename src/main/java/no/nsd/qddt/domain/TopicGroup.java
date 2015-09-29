@@ -31,7 +31,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "TopicGroup")
+@Table(name = "topic_group")
 public class TopicGroup extends AbstractEntityAudit {
 
     @ManyToOne
@@ -54,8 +54,7 @@ public class TopicGroup extends AbstractEntityAudit {
 
     private String Abstract;
 
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
+    @Transient
     private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {

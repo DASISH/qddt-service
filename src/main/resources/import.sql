@@ -34,8 +34,8 @@ INSERT INTO response_domain(id) VALUES('d5dbb332-65d0-11e5-9d70-feff819cdc9f');
 INSERT INTO response_domain(id) VALUES('d5dbb418-65d0-11e5-9d70-feff819cdc9f');
 INSERT INTO response_domain(id) VALUES('d5dbb4ea-65d0-11e5-9d70-feff819cdc9f');
 
-INSERT INTO response_domain_code(id, response_domain_id, code_id, rank) VALUES('05f9a484-65d1-11e5-9d70-feff819cdc9f', '3789577a-65d0-11e5-9d70-feff819cdc9f','378949ec-65d0-11e5-9d70-feff819cdc9f', 1);
-INSERT INTO response_domain_code(id, response_domain_id, code_id, rank) VALUES('05f9a89e-65d1-11e5-9d70-feff819cdc9f', '3789590a-65d0-11e5-9d70-feff819cdc9f','37894d7a-65d0-11e5-9d70-feff819cdc9f', 2);
-INSERT INTO response_domain_code(id, response_domain_id, code_id, rank) VALUES('05f9a9c0-65d1-11e5-9d70-feff819cdc9f', '37895cd4-65d0-11e5-9d70-feff819cdc9f','37894f32-65d0-11e5-9d70-feff819cdc9f', 3);
-INSERT INTO response_domain_code(id, response_domain_id, code_id, rank) VALUES('05f9abd2-65d1-11e5-9d70-feff819cdc9f', '37895ee6-65d0-11e5-9d70-feff819cdc9f','378953c4-65d0-11e5-9d70-feff819cdc9f', 4);
-INSERT INTO response_domain_code(id, response_domain_id, code_id, rank) VALUES('05f9ad12-65d1-11e5-9d70-feff819cdc9f', '378960a8-65d0-11e5-9d70-feff819cdc9f','378955cc-65d0-11e5-9d70-feff819cdc9f', 5);
+INSERT INTO response_domain_code(id, responsedomain_id, code_id, rank) VALUES('05f9a484-65d1-11e5-9d70-feff819cdc9f', '3789577a-65d0-11e5-9d70-feff819cdc9f','378949ec-65d0-11e5-9d70-feff819cdc9f', 1);
+INSERT INTO response_domain_code(id, responsedomain_id, code_id, rank) VALUES('05f9a89e-65d1-11e5-9d70-feff819cdc9f', '3789590a-65d0-11e5-9d70-feff819cdc9f','37894d7a-65d0-11e5-9d70-feff819cdc9f', 2);
+INSERT INTO response_domain_code(id, responsedomain_id, code_id, rank) VALUES('05f9a9c0-65d1-11e5-9d70-feff819cdc9f', '37895cd4-65d0-11e5-9d70-feff819cdc9f','37894f32-65d0-11e5-9d70-feff819cdc9f', 3);
+INSERT INTO response_domain_code(id, responsedomain_id, code_id, rank) VALUES('05f9abd2-65d1-11e5-9d70-feff819cdc9f', '37895ee6-65d0-11e5-9d70-feff819cdc9f','378953c4-65d0-11e5-9d70-feff819cdc9f', 4);
+INSERT INTO response_domain_code(id, responsedomain_id, code_id, rank) VALUES('05f9ad12-65d1-11e5-9d70-feff819cdc9f', '378960a8-65d0-11e5-9d70-feff819cdc9f','378955cc-65d0-11e5-9d70-feff819cdc9f', 5);

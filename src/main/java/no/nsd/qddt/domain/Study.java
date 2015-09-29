@@ -53,9 +53,7 @@ public class Study extends AbstractEntityAudit {
         this.surveyProgram = surveyProgram;
     }
 
-
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="owner_guid", foreignKey = @ForeignKey(name="guid"))
+    @Transient
     private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {
