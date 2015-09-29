@@ -1,6 +1,12 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.domain.instrument.Instruction;
+import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.InstrumentQuestion;
+import no.nsd.qddt.domain.response.Code;
+import no.nsd.qddt.domain.response.ResponseDomain;
+import no.nsd.qddt.domain.response.ResponseDomainCode;
 import no.nsd.qddt.domain.security.Authority;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -53,6 +59,37 @@ public class User {
 
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<Instrument> instrument = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<Instruction> instructions = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<Question> questions = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<TopicGroup> topicGroups = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<OtherMaterial> otherMaterials = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<Concept> concepts = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<ResponseDomain> responseDomains = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+
+    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    private Set<Code> codes = new HashSet<>();
+
 
     @ManyToOne
     @JoinColumn(name = "agency_id")
