@@ -25,13 +25,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
-    //UUID part of the URN, saves as binary for most db's (PostgreSQL, SQL Server have native types)
-    @Column(name = "guid")
-    @Type(type="pg-uuid")
-//    @GeneratedValue(generator = "uuid")
-//    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
-//            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
-    private UUID guid;
 
     @Column(name = "name")
     private String name;
@@ -53,10 +46,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public void setAgency(Agency agency) {
         this.agency = agency;
     }
-
-    public UUID getGuid() { return guid;}
-
-    public void setGuid(UUID guid) {this.guid = guid;}
 
     public String getVersion() {
         return version;
@@ -99,8 +88,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         AbstractEntityAudit that = (AbstractEntityAudit) o;
 
         if (agency != null ? !agency.equals(that.agency) : that.agency != null) return false;
-        if (guid != null ? !guid.equals(that.guid) : that.guid != null) return false;
-        return !(name != null ? !name.equals(that.name) : that.name != null);
+         return !(name != null ? !name.equals(that.name) : that.name != null);
 
     }
 
@@ -108,7 +96,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (agency != null ? agency.hashCode() : 0);
-        result = 31 * result + (guid != null ? guid.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
@@ -116,9 +103,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @Override
     public String toString() {
-        return  "guid=" + guid +
-                ", created=" + super.getCreated() +
-                ", createdBy=" + super.getCreatedBy() +
+        return  super.toString()+ '\'' +
                 ", name='" + name + '\'' +
                 ", changeReason=" + changeReason +
                 ", changeComment='" + changeComment + '\'';
