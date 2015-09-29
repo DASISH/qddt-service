@@ -67,7 +67,7 @@ public class TopicGroup extends AbstractEntityAudit {
     }
 
     public void addComment(Comment comment) {
-        comment.setOwnerGuid(this.getId());
+        comment.setOwnerUUID(this.getId());
         comments.add(comment);
     }
 

@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.instrument;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Comment;
 import no.nsd.qddt.domain.Study;
-import no.nsd.qddt.domain.SurveyProgram;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -62,7 +61,7 @@ public class Instrument extends AbstractEntityAudit {
     }
 
     public void addComment(Comment comment) {
-        comment.setOwnerGuid(this.getId());
+        comment.setOwnerUUID(this.getId());
         comments.add(comment);
     }
 

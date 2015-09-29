@@ -16,15 +16,12 @@ import java.util.UUID;
 @Repository
 public interface CommentRepository extends BaseRepository<Comment,UUID>, EnversRevisionRepository<Comment, UUID, Integer> {
 
-//    Page<Comment> findCommentByParentOrderByIdAsc(Comment parent, Pageable pageable);
-
-
     /**
-     * @param ownerGuid Is a parentGuid.
+     * @param ownerUUID Is a parentUUID.
      * @param pageable Pageable object
      * @return All attachments that belongs to the module with moduleId.
      */
 
-    Page<Comment> findAllByOwnerGuidOrderByCreatedDesc(UUID ownerGuid, Pageable pageable);
+    Page<Comment> findAllByOwnerUUIDOrderByCreatedDesc(UUID ownerUUID, Pageable pageable);
 
 }

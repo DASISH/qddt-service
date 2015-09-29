@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public interface CommentService extends BaseServiceAudit<Comment,UUID> {
 
-    Page<Comment> findAllByOwnerGuidPageable(UUID guid, Pageable pageable);
+    Page<Comment> findAllByOwnerUUIDPageable(UUID ownerUUID, Pageable pageable);
 
 //    /**
 //     * Find the latest changed revision.

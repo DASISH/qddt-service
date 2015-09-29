@@ -99,8 +99,8 @@ public class CommentServiceImpl  implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Comment> findAllByOwnerGuidPageable(UUID guid, Pageable pageable) {
-        return commentRepository.findAllByOwnerGuidOrderByCreatedDesc(guid, pageable);
+    public Page<Comment> findAllByOwnerUUIDPageable(UUID ownerUUID, Pageable pageable) {
+        return commentRepository.findAllByOwnerUUIDOrderByCreatedDesc(ownerUUID, pageable);
     }
 
 

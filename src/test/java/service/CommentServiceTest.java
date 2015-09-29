@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
@@ -26,6 +27,7 @@ public class CommentServiceTest {
     private CommentService commentService;
 
     @Test
+    @Transactional
     public void saveCommentTest() throws Exception {
 
         Comment parent = commentService.save(new Comment("PARENT"));
@@ -36,7 +38,7 @@ public class CommentServiceTest {
         parent.addComment(commentService.save(new Comment("CHILD-THREE")));
         commentService.save(parent);
 
-        Comment root  = commentService.findOne(parent.getGuid());
+        Comment root  = commentService.findOne(parent.getId());
 
         assertTrue(5L == parent.treeSize());
         assertThat(parent.getChildren().size(), is(3));

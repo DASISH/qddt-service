@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain;
 
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -28,19 +27,9 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity {
 
-    @Column(name = "guid")
-    @Type(type="pg-uuid")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
-            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
-    private UUID guid;
-
     @Column(name = "owner_guid")
-            @Type(type="pg-uuid")
-            @GeneratedValue(generator = "uuid")
-            @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
-            @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
-    private UUID ownerGuid;
+    @Type(type="pg-uuid")
+    private UUID ownerUUID;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="parent_id")
@@ -61,21 +50,12 @@ public class Comment extends AbstractEntity {
         setComment(comment);
     }
 
-
-    public UUID getGuid() {
-        return guid;
+    public UUID getOwnerUUID() {
+        return ownerUUID;
     }
 
-    public void setGuid(UUID guid) {
-        this.guid = guid;
-    }
-
-    public UUID getOwnerGuid() {
-        return ownerGuid;
-    }
-
-    public void setOwnerGuid(UUID ownerGuid) {
-        this.ownerGuid = ownerGuid;
+    public void setOwnerUUID(UUID ownerUUID) {
+        this.ownerUUID = ownerUUID;
     }
 
     public Comment getParent() {
@@ -113,7 +93,7 @@ public class Comment extends AbstractEntity {
     }
 
     public Long treeSize(){
-        return getChildren() == null ? 1 : getChildren().stream().mapToLong(c->c.treeSize()).sum() + 1;
+        return getChildren() == null ? 1 : getChildren().stream().mapToLong(Comment::treeSize).sum() + 1;
     }
 
 
@@ -125,8 +105,7 @@ public class Comment extends AbstractEntity {
 
         Comment comment1 = (Comment) o;
 
-        if (getGuid() != null ? !getGuid().equals(comment1.getGuid()) : comment1.getGuid() != null) return false;
-        if (getOwnerGuid() != null ? !getOwnerGuid().equals(comment1.getOwnerGuid()) : comment1.getOwnerGuid() != null)
+        if (getOwnerUUID() != null ? !getOwnerUUID().equals(comment1.getOwnerUUID()) : comment1.getOwnerUUID() != null)
             return false;
         if (getParent() != null ? !getParent().equals(comment1.getParent()) : comment1.getParent() != null)
             return false;
@@ -139,8 +118,7 @@ public class Comment extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getGuid() != null ? getGuid().hashCode() : 0);
-        result = 31 * result + (getOwnerGuid() != null ? getOwnerGuid().hashCode() : 0);
+        result = 31 * result + (getOwnerUUID() != null ? getOwnerUUID().hashCode() : 0);
         result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
         result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
         result = 31 * result + (getComment() != null ? getComment().hashCode() : 0);
@@ -150,8 +128,7 @@ public class Comment extends AbstractEntity {
     @Override
     public String toString() {
         return "Comment{" +
-                "guid=" + guid +
-                ", ownerGuid=" + ownerGuid +
+                ", ownerUUID=" + ownerUUID +
                 ", children=" + children +
                 ", comment='" + comment + '\'' +
                 '}';

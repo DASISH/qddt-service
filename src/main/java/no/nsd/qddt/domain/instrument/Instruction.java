@@ -13,7 +13,7 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "Instruction")
+@Table(name = "instruction")
 public class Instruction extends AbstractEntityAudit {
 
     public Instruction() {
@@ -54,7 +54,7 @@ public class Instruction extends AbstractEntityAudit {
     }
 
     public void addComment(Comment comment) {
-        comment.setOwnerGuid(this.getId());
+        comment.setOwnerUUID(this.getId());
         comments.add(comment);
     }
 
