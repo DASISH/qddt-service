@@ -1,11 +1,11 @@
 package no.nsd.qddt;
 
-import no.nsd.qddt.domain.Study;
-import no.nsd.qddt.domain.SurveyProgram;
-import no.nsd.qddt.domain.User;
-import no.nsd.qddt.service.StudyService;
-import no.nsd.qddt.service.SurveyService;
-import no.nsd.qddt.service.UserService;
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.UserService;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -13,14 +13,14 @@ import no.nsd.qddt.service.UserService;
 public class SampleApplicationData {
 
     private StudyService studyService;
-    private SurveyService surveyService;
+    private SurveyProgramService surveyProgramService;
     private UserService userService;
 
     private User user;
 
-    public SampleApplicationData(StudyService studyService, SurveyService surveyService, UserService userService) {
+    public SampleApplicationData(StudyService studyService, SurveyProgramService surveyProgramService, UserService userService) {
         this.studyService = studyService;
-        this.surveyService = surveyService;
+        this.surveyProgramService = surveyProgramService;
         this.userService = userService;
         this.user = userService.findByEmail("user@example.org");
 
@@ -36,13 +36,13 @@ public class SampleApplicationData {
         surveyProgram.setCreatedBy(userService.findByEmail("user@example.org"));
 
         surveyProgram.setChangeComment("Changed it.");
-        surveyProgram = surveyService.save(surveyProgram);
+        surveyProgram = surveyProgramService.save(surveyProgram);
 
         surveyProgram.setChangeComment("Changed it once again.");
-        surveyProgram = surveyService.save(surveyProgram);
+        surveyProgram = surveyProgramService.save(surveyProgram);
 
         surveyProgram.setChangeComment("Yet again reasons to change.");
-        return surveyService.save(surveyProgram);
+        return surveyProgramService.save(surveyProgram);
     }
 
     public void addStudy(SurveyProgram surveyProgram) {

@@ -1,6 +1,6 @@
 package no.nsd.qddt.utils;
 
-import no.nsd.qddt.domain.security.QDDTUserDetails;
+import no.nsd.qddt.domain.user.QDDTUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**

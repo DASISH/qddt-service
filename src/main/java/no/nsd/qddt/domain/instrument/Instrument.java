@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Comment;
-import no.nsd.qddt.domain.Study;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

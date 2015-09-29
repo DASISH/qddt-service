@@ -1,7 +1,7 @@
 package no.nsd.qddt.utils.builders;
 
 
-import no.nsd.qddt.domain.response.Code;
+import no.nsd.qddt.domain.code.Code;
 
 /**
  * @author Stig Norland

@@ -1,20 +1,18 @@
 package service;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.response.Code;
-import no.nsd.qddt.domain.response.ResponseDomain;
-import no.nsd.qddt.domain.response.ResponseDomainCode;
-import no.nsd.qddt.service.CodeService;
-import no.nsd.qddt.service.ResponseDomainCodeService;
-import no.nsd.qddt.service.ResponseDomainService;
+import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.code.CodeService;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.validation.constraints.AssertTrue;
 
 import static org.junit.Assert.assertEquals;
 

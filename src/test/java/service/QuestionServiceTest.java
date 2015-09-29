@@ -1,10 +1,10 @@
 package service;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.Comment;
-import no.nsd.qddt.domain.Question;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.service.QuestionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

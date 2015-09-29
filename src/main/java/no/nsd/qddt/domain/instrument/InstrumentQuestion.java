@@ -1,14 +1,13 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Question;
+import no.nsd.qddt.domain.question.Question;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 /**
  * @author Stig Norland

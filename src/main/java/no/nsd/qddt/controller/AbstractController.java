@@ -1,6 +1,6 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.service.BaseService;
+import no.nsd.qddt.domain.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

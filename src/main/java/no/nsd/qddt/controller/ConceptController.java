@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.Concept;
-import no.nsd.qddt.service.ConceptService;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

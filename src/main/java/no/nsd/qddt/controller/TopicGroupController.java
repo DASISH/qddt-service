@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.TopicGroup;
-import no.nsd.qddt.service.TopicGroupService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

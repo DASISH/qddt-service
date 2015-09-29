@@ -2,9 +2,9 @@ package service;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.instrument.InstrumentQuestion;
-import no.nsd.qddt.service.InstrumentQuestionService;
-import no.nsd.qddt.service.InstrumentService;
-import no.nsd.qddt.service.QuestionService;
+import no.nsd.qddt.domain.instrument.InstrumentQuestionService;
+import no.nsd.qddt.domain.instrument.InstrumentService;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.utils.builders.InstrumentBuilder;
 import no.nsd.qddt.utils.builders.InstrumentQuestionBuilder;
 import no.nsd.qddt.utils.builders.QuestionBuilder;

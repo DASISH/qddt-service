@@ -1,10 +1,12 @@
 package controller;
 
+import assets.HttpMockAuthSession;
+import assets.RestfulTestUtils;
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.Comment;
-import no.nsd.qddt.domain.SurveyProgram;
-import no.nsd.qddt.service.QDDTUserDetailsService;
-import no.nsd.qddt.service.SurveyService;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.domain.user.QDDTUserDetailsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import assets.HttpMockAuthSession;
-import assets.RestfulTestUtils;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,7 +50,7 @@ public class SurveyProgramControllerTest {
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     @Autowired
-    private SurveyService surveyService;
+    private SurveyProgramService surveyProgramService;
 
     @Autowired
     private QDDTUserDetailsService qddtUserDetailsService;
@@ -83,7 +83,7 @@ public class SurveyProgramControllerTest {
     @Transactional
     @Test
     public void findOneTest() throws Exception {
-        SurveyProgram surveyProgram = surveyService.findAll().get(0);
+        SurveyProgram surveyProgram = surveyProgramService.findAll().get(0);
 
         // ctx:/survey/id
         mvc.perform(get("/survey/1").session(session)

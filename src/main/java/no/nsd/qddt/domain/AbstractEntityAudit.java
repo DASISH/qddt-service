@@ -1,11 +1,9 @@
 package no.nsd.qddt.domain;
 
-import org.hibernate.annotations.*;
+import no.nsd.qddt.domain.agency.Agency;
 import org.hibernate.envers.Audited;
-import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -14,6 +12,24 @@ import java.util.UUID;
 @Audited
 @MappedSuperclass
 public abstract class AbstractEntityAudit extends AbstractEntity {
+
+    /**
+     * ChangeKinds are the different ways an entity can be modified by the system/user.
+     * First entry will always be CREATED.
+     * NEW_REVISION used for taging a version as a release.
+     * TYPO, can be used modify without breaking a release.
+     * NEW_COPY_OF, used when someone reuses an existing Responsedomain, but want to modify it.
+     * Every other version is a IN_DEVELOPMENT change.
+     *
+     * @author Stig Norland
+     */
+    public enum ChangeKind {
+        CREATED,
+        NEW_REVISION,
+        TYPO,
+        NEW_COPY_OF,
+        IN_DEVELOPMENT
+    }
 
     /**
      * I am the beginning of the end, and the end of time and space.

@@ -1,7 +1,7 @@
 package no.nsd.qddt.controller;
 
-import no.nsd.qddt.domain.OtherMaterial;
-import no.nsd.qddt.service.OtherMaterialService;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
