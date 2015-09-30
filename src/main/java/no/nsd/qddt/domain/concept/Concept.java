@@ -34,27 +34,19 @@ public class Concept extends AbstractEntityAudit {
     @JoinColumn(name="topicgroup_id")
     private TopicGroup topicGroup;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="parent_id")
+    private Concept parent;
+
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-    private Set<Question> children = new HashSet<>();
+    private Set<Concept> children = new HashSet<>();
 
-    public Set<Concept> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<Concept> children) {
-        this.children = children;
-    }
-
-    @OneToMany(mappedBy="question", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "question_concept", joinColumns = {
+            @JoinColumn(name = "concept_it", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "question_id",
+                    nullable = false, updatable = false) })
     private Set<Question> questions = new HashSet<>();
-
-    public Set<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(Set<Question> questions) {
-        this.questions = questions;
-    }
 
     @Column(name = "label")
     private String label;
@@ -73,6 +65,30 @@ public class Concept extends AbstractEntityAudit {
         this.topicGroup = topicGroup;
     }
 
+    public Concept getParent() {
+        return parent;
+    }
+
+    public void setParent(Concept parent) {
+        this.parent = parent;
+    }
+
+    public Set<Concept> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Concept> children) {
+        this.children = children;
+    }
+
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
+
     public String getLabel() {
         return label;
     }
@@ -80,7 +96,6 @@ public class Concept extends AbstractEntityAudit {
     public void setLabel(String label) {
         this.label = label;
     }
-
 
     public String getDescription() {
         return description;
@@ -90,7 +105,6 @@ public class Concept extends AbstractEntityAudit {
         this.description = description;
     }
 
-
     public Set<Comment> getComments() {
         return comments;
     }
@@ -99,57 +113,33 @@ public class Concept extends AbstractEntityAudit {
         this.comments = comments;
     }
 
-    public void addComment(Comment comment) {
-        comment.setOwnerUUID(this.getId());
-        comments.add(comment);
-    }
-
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Concept)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
         Concept concept = (Concept) o;
 
-        if (getTopicGroup() != null ? !getTopicGroup().equals(concept.getTopicGroup()) : concept.getTopicGroup() != null) return false;
-        if (getChildren() != null ? !getChildren().equals(concept.getChildren()) : concept.getChildren() != null)
-            return false;
-        if (getLabel() != null ? !getLabel().equals(concept.getLabel()) : concept.getLabel() != null)
-            return false;
-        if (getDescription() != null ? !getDescription().equals(concept.getDescription()) : concept.getDescription() != null)
-            return false;
-        return !(getComments() != null ? !getComments().equals(concept.getComments()) : concept.getComments() != null);
+        if (label != null ? !label.equals(concept.label) : concept.label != null) return false;
+        return !(description != null ? !description.equals(concept.description) : concept.description != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getTopicGroup() != null ? getTopicGroup().hashCode() : 0);
-        result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
-        result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getComments() != null ? getComments().hashCode() : 0);
+        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
     @Override
-    /* tester ut latmanns to string, skulle funke det? */
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(
-                "Concept{" +
-                "  module=" + topicGroup +
+        return "Concept{" +
+                "description='" + description + '\'' +
                 ", label='" + label + '\'' +
-                ", description='" + description + '\'' +
-                ", comments=" + comments) ;
-        sb.append(super.toString());
-        sb.append('}');
-        return sb.toString();
+                '}';
     }
-
 }
 

@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.question;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
 import org.hibernate.envers.Audited;
 
@@ -21,14 +22,14 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "QUESTION")
+@Table(name = "question")
 public class Question extends AbstractEntityAudit {
 
     @ManyToOne
-    @JoinColumn(name="parent_id")
+    @JoinColumn(name = "parent_id")
     private Question parent;
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private Set<Question> children = new HashSet<>();
 
     /// Only used for Questions with a Question parent
@@ -45,33 +46,17 @@ public class Question extends AbstractEntityAudit {
     @Column(name = "question", length = 1500)
     private String question;
 
-    @Transient
-    private Set<Comment> comments = new HashSet<>();
 
-    public Question() {
-
-    }
-
-    @OneToMany(mappedBy="concept", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "questions", fetch = FetchType.LAZY)
     private Set<Concept> concepts = new HashSet<>();
-
-    public Set<Concept> getConcepts() {
-        return concepts;
-    }
-
-    public void setConcepts(Set<Concept> concepts) {
-        this.concepts = concepts;
-    }
 
     @OneToMany(mappedBy = "question")
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
-    public Set<InstrumentQuestion> getInstrumentQuestions() {
-        return instrumentQuestions;
-    }
+    @Transient
+    private Set<Comment> comments = new HashSet<>();
 
-    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
-        this.instrumentQuestions = instrumentQuestions;
+    public Question() {
     }
 
     public Question getParent() {
@@ -82,17 +67,13 @@ public class Question extends AbstractEntityAudit {
         this.parent = parent;
     }
 
-    public Set<Question> getChildren() {return children;}
-
-    /**
-     * Add a new comment to the set.
-     * @param question to be added to parent.
-     */
-    public void addChild(Question question) {
-        this.children.add(question);
+    public Set<Question> getChildren() {
+        return children;
     }
 
-    public void setChildren(Set<Question> children) {this.children = children;}
+    public void setChildren(Set<Question> children) {
+        this.children = children;
+    }
 
     public int getGridIdx() {
         return gridIdx;
@@ -122,8 +103,28 @@ public class Question extends AbstractEntityAudit {
         return question;
     }
 
-    public void setQuestion(String text) {
-        this.question = text;
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
+
+    public Set<Concept> getConcepts() {
+        return concepts;
+    }
+
+    public void setConcepts(Set<Concept> concepts) {
+        this.concepts = concepts;
+    }
+
+    public Set<InstrumentQuestion> getInstrumentQuestions() {
+        return instrumentQuestions;
+    }
+
+    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
+        this.instrumentQuestions = instrumentQuestions;
     }
 
     public Set<Comment> getComments() {
@@ -134,9 +135,13 @@ public class Question extends AbstractEntityAudit {
         this.comments = comments;
     }
 
-    public void addComment(Comment comment) {
-        comment.setOwnerUUID(this.getId());
-        comments.add(comment);
+    /**
+     * Add a new comment to the set.
+     *
+     * @param question to be added to parent.
+     */
+    public void addChild(Question question) {
+        this.children.add(question);
     }
 
     @Override
@@ -145,33 +150,23 @@ public class Question extends AbstractEntityAudit {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        Question question = (Question) o;
+        Question question1 = (Question) o;
 
-        if (gridIdx != question.gridIdx) return false;
-        if (children != null ? !children.equals(question.children) : question.children != null) return false;
-         if (instrumentQuestions != null ? !instrumentQuestions.equals(question.instrumentQuestions) : question.instrumentQuestions != null)
+        if (gridIdx != question1.gridIdx) return false;
+        if (gridIdxRationale != null ? !gridIdxRationale.equals(question1.gridIdxRationale) : question1.gridIdxRationale != null)
             return false;
-        if (parent != null ? !parent.equals(question.parent) : question.parent != null) return false;
-        if (intent != null ? !intent.equals(question.intent) : question.intent != null)
-            return false;
-        if (this.question != null ? !this.question.equals(question.question) : question.question != null)
-            return false;
-        if (gridIdxRationale != null ? !gridIdxRationale.equals(question.gridIdxRationale) : question.gridIdxRationale != null)
-            return false;
+        if (intent != null ? !intent.equals(question1.intent) : question1.intent != null) return false;
+        return !(question != null ? !question.equals(question1.question) : question1.question != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (parent != null ? parent.hashCode() : 0);
-        result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + gridIdx;
         result = 31 * result + (gridIdxRationale != null ? gridIdxRationale.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);
-        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
         return result;
     }
 
@@ -184,7 +179,8 @@ public class Question extends AbstractEntityAudit {
                 ", question='" + question + '\'' +
                 '}';
     }
-
 }
+
+
 
 
