@@ -43,7 +43,7 @@ public class Concept extends AbstractEntityAudit {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "question_concept", joinColumns = {
-            @JoinColumn(name = "concept_it", nullable = false, updatable = false) },
+            @JoinColumn(name = "concept_id", nullable = false, updatable = false) },
             inverseJoinColumns = { @JoinColumn(name = "question_id",
                     nullable = false, updatable = false) })
     private Set<Question> questions = new HashSet<>();
