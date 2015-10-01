@@ -16,9 +16,6 @@ import javax.persistence.*;
 @Table(name = "RESPONSEDOMAIN_CODE")
 public class ResponseDomainCode extends AbstractEntityAudit {
 
-    @Column(name = "rank")
-    private int rank;
-
     @ManyToOne
     @JoinColumn(name = "responsedomain_id")
     private ResponseDomain responseDomain;
@@ -27,21 +24,37 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     @JoinColumn(name = "code_id")
     private Code code;
 
+    @Column(name = "code_idx")
+    private int codeIdx;
+
+    @Column(name = "code_value")
+    private String codeValue;
+
+
     public ResponseDomainCode() {
     }
 
-    public ResponseDomainCode(int rank, ResponseDomain responseDomain, Code code) {
-        this.rank = rank;
+
+    public ResponseDomainCode(int codeIdx, ResponseDomain responseDomain, Code code) {
+        this.codeIdx = codeIdx;
         this.responseDomain = responseDomain;
         this.code = code;
     }
 
-    public int getRank() {
-        return rank;
+    public int getCodeIdx() {
+        return codeIdx;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setCodeIdx(int codeIdx) {
+        this.codeIdx = codeIdx;
+    }
+
+    public String getCodeValue() {
+        return codeValue;
+    }
+
+    public void setCodeValue(String codeValue) {
+        this.codeValue = codeValue;
     }
 
     public ResponseDomain getResponseDomain() {
@@ -63,30 +76,33 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ResponseDomainCode)) return false;
+        if (!super.equals(o)) return false;
 
         ResponseDomainCode that = (ResponseDomainCode) o;
 
-        if (rank != that.rank) return false;
-        if (code != null ? !code.equals(that.code) : that.code != null) return false;
-        if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
+        if (getCodeIdx() != that.getCodeIdx()) return false;
+        if (getResponseDomain() != null ? !getResponseDomain().equals(that.getResponseDomain()) : that.getResponseDomain() != null)
             return false;
+        if (getCode() != null ? !getCode().equals(that.getCode()) : that.getCode() != null) return false;
+        return !(getCodeValue() != null ? !getCodeValue().equals(that.getCodeValue()) : that.getCodeValue() != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = responseDomain != null ? responseDomain.hashCode() : 0;
-        result = 31 * result + rank;
-        result = 31 * result + (code != null ? code.hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 * result + (getResponseDomain() != null ? getResponseDomain().hashCode() : 0);
+        result = 31 * result + (getCode() != null ? getCode().hashCode() : 0);
+        result = 31 * result + getCodeIdx();
+        result = 31 * result + (getCodeValue() != null ? getCodeValue().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "ResponseDomainCode{" +
-                ", rank=" + rank +
+                ", codeIdx=" + codeIdx +
                 ", responseDomain=" + responseDomain +
                 ", code=" + code +
                 '}';

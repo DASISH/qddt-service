@@ -34,6 +34,12 @@ public class OtherMaterial extends AbstractEntityAudit {
 
     private String description;
 
+
+    public OtherMaterial(){
+
+    }
+
+
     public TopicGroup getTopicGroup() {
         return topicGroup;
     }

@@ -28,13 +28,20 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     @JoinColumn(name = "question_id")
     private Question question;
 
-
     @ManyToOne
     @JoinColumn(name = "instruction_id")
     private Instruction instruction;
 
+    private Long instrumentIdx;
+
+    private String indexRationale;
+
+    private String logic;
+
+
     public InstrumentQuestion() {
     }
+
 
     public Instrument getInstrument() {
         return instrument;
@@ -60,6 +67,30 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         this.instruction = instruction;
     }
 
+    public Long getInstrumentIdx() {
+        return instrumentIdx;
+    }
+
+    public void setInstrumentIdx(Long instrumentIdx) {
+        this.instrumentIdx = instrumentIdx;
+    }
+
+    public String getIndexRationale() {
+        return indexRationale;
+    }
+
+    public void setIndexRationale(String indexRationale) {
+        this.indexRationale = indexRationale;
+    }
+
+    public String getLogic() {
+        return logic;
+    }
+
+    public void setLogic(String logic) {
+        this.logic = logic;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,7 +103,13 @@ public class InstrumentQuestion extends AbstractEntityAudit {
             return false;
         if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
             return false;
-        return !(getInstruction() != null ? !getInstruction().equals(that.getInstruction()) : that.getInstruction() != null);
+        if (getInstruction() != null ? !getInstruction().equals(that.getInstruction()) : that.getInstruction() != null)
+            return false;
+        if (getInstrumentIdx() != null ? !getInstrumentIdx().equals(that.getInstrumentIdx()) : that.getInstrumentIdx() != null)
+            return false;
+        if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
+            return false;
+        return !(getLogic() != null ? !getLogic().equals(that.getLogic()) : that.getLogic() != null);
 
     }
 
@@ -82,14 +119,24 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
         result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
         result = 31 * result + (getInstruction() != null ? getInstruction().hashCode() : 0);
+        result = 31 * result + (getInstrumentIdx() != null ? getInstrumentIdx().hashCode() : 0);
+        result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
+        result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
         return result;
     }
+
 
     @Override
     public String toString() {
         return "InstrumentQuestion{" +
                 "instrument=" + instrument +
                 ", question=" + question +
+                ", instruction=" + instruction +
+                ", instrumentIdx=" + instrumentIdx +
+                ", indexRationale='" + indexRationale + '\'' +
+                ", logic='" + logic + '\'' +
                 '}';
     }
 }
+
+

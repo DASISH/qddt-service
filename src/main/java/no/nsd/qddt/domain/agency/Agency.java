@@ -2,9 +2,14 @@ package no.nsd.qddt.domain.agency;
 
 
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.instrument.Instruction;
+import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 
@@ -28,23 +33,39 @@ import java.util.Set;
 @Table(name = "AGENCY")
 public class Agency extends AbstractEntity {
 
-
-    @Column(name = "name")
-    private String name;
-
+    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
-    private Set<ResponseDomain> responses = new HashSet<>();
+    private Set<Study>  studies = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
-    private Set<Question> questions = new HashSet<>();
+    private Set<Instrument> instruments = new HashSet<>();
+
+    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<Instruction> instructions = new HashSet<>();
+
+    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<TopicGroup> topicGroups = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Concept> concepts = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
-    private Set<TopicGroup> topicGroups = new HashSet<>();
+    private Set<Question> questions = new HashSet<>();
 
+    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<ResponseDomain> responses = new HashSet<>();
+
+    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<Code> codes = new HashSet<>();
+
+    @Column(name = "name")
+    private String name;
+
+    public Agency(){
+
+    }
 
 
     public String getName() {
@@ -55,6 +76,77 @@ public class Agency extends AbstractEntity {
         this.name = name;
     }
 
+    public Set<SurveyProgram> getSurveyPrograms() {
+        return surveyPrograms;
+    }
+
+    public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
+        this.surveyPrograms = surveyPrograms;
+    }
+
+    public Set<Study> getStudies() {
+        return studies;
+    }
+
+    public void setStudies(Set<Study> studies) {
+        this.studies = studies;
+    }
+
+    public Set<Instrument> getInstruments() {
+        return instruments;
+    }
+
+    public void setInstruments(Set<Instrument> instruments) {
+        this.instruments = instruments;
+    }
+
+    public Set<Instruction> getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(Set<Instruction> instructions) {
+        this.instructions = instructions;
+    }
+
+    public Set<TopicGroup> getTopicGroups() {
+        return topicGroups;
+    }
+
+    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+        this.topicGroups = topicGroups;
+    }
+
+    public Set<Concept> getConcepts() {
+        return concepts;
+    }
+
+    public void setConcepts(Set<Concept> concepts) {
+        this.concepts = concepts;
+    }
+
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
+
+    public Set<ResponseDomain> getResponses() {
+        return responses;
+    }
+
+    public void setResponses(Set<ResponseDomain> responses) {
+        this.responses = responses;
+    }
+
+    public Set<Code> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(Set<Code> codes) {
+        this.codes = codes;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -42,10 +42,10 @@ public class ResponseDomainCodeHierarchyTest {
     public void setUp() {
 
 
-        code = codeService.save(new CodeBuilder().setCategory("Opel").setValue("0").setTag("#BILER").createCode());
-        codeService.save(new CodeBuilder().setCategory("KVINNE").setValue("0").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("MANN").setValue("1").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setValue("2").setTag("#KJØNN").createCode());
+        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag("#BILER").createCode());
+        codeService.save(new CodeBuilder().setCategory("KVINNE").setTag("#KJØNN").createCode());
+        codeService.save(new CodeBuilder().setCategory("MANN").setTag("#KJØNN").createCode());
+        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag("#KJØNN").createCode());
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("response domain Kjønn");
@@ -60,7 +60,7 @@ public class ResponseDomainCodeHierarchyTest {
         int i = 0;
         for (Code code : codeService.findByHashTag("#KjøNN")) {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
-            responseDomainCode.setRank(i++);
+            responseDomainCode.setCodeIdx(i++);
             responseDomainCode.setCode(code);
             responseDomainCode.setResponseDomain(responseDomain);
             responseDomainCodeService.save(responseDomainCode);

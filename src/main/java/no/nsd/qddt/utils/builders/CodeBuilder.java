@@ -8,7 +8,6 @@ import no.nsd.qddt.domain.code.Code;
  */
 public class CodeBuilder {
     private String category;
-    private String value;
     private String tag;
 
     public CodeBuilder setCategory(String category) {
@@ -21,16 +20,11 @@ public class CodeBuilder {
         return this;
     }
 
-    public CodeBuilder setValue(String value) {
-        this.value = value;
-        return this;
-    }
 
     public Code createCode() {
         Code code = new Code();
         code.setName(this.tag);
         code.setCategory(this.category);
-        code.setCodeValue(this.value);
         return code;
     }
 

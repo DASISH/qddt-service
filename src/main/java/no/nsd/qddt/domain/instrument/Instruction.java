@@ -17,14 +17,17 @@ import java.util.Set;
 @Table(name = "INSTRUCTION")
 public class Instruction extends AbstractEntityAudit {
 
-    public Instruction() {
-    }
-
     @OneToMany(mappedBy = "instruction", cascade = CascadeType.ALL)
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
+    private String description;
+
     @Transient
     private Set<Comment> comments = new HashSet<>();
+
+
+    public Instruction() {
+    }
 
     public Set<InstrumentQuestion> getInstrumentQuestions() {
         return instrumentQuestions;
@@ -33,8 +36,6 @@ public class Instruction extends AbstractEntityAudit {
     public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
         this.instrumentQuestions = instrumentQuestions;
     }
-
-    private String description;
 
     public String getDescription() {
         return description;

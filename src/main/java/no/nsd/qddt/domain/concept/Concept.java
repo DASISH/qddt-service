@@ -31,30 +31,23 @@ import java.util.Set;
 public class Concept extends AbstractEntityAudit {
 
     @ManyToOne
-    @JoinColumn(name="topicgroup_id")
-    private TopicGroup topicGroup;
+    @JoinColumn(name="parent_id")
+    private Concept parent;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Concept> children = new HashSet<>();
 
-    public Set<Concept> getChildren() {
-        return children;
-    }
+    @ManyToOne
+    @JoinColumn(name="topicgroup_id")
+    private TopicGroup topicGroup;
 
-    public void setChildren(Set<Concept> children) {
-        this.children = children;
-    }
 
-    @OneToMany(mappedBy="question", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "CONCEPT_QUESTION",
+            joinColumns = {@JoinColumn(name ="concept_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "question_id", nullable = false,updatable = false)})
     private Set<Question> questions = new HashSet<>();
 
-    public Set<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(Set<Question> questions) {
-        this.questions = questions;
-    }
 
     @Column(name = "label")
     private String label;
@@ -65,12 +58,42 @@ public class Concept extends AbstractEntityAudit {
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
+
+    public Concept(){
+
+    }
+
+
+    public Concept getParent() {
+        return parent;
+    }
+
+    public void setParent(Concept parent) {
+        this.parent = parent;
+    }
+
     public TopicGroup getTopicGroup() {
         return topicGroup;
     }
 
     public void setTopicGroup(TopicGroup topicGroup) {
         this.topicGroup = topicGroup;
+    }
+
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
+
+    public Set<Concept> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Concept> children) {
+        this.children = children;
     }
 
     public String getLabel() {
@@ -81,7 +104,6 @@ public class Concept extends AbstractEntityAudit {
         this.label = label;
     }
 
-
     public String getDescription() {
         return description;
     }
@@ -89,7 +111,6 @@ public class Concept extends AbstractEntityAudit {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public Set<Comment> getComments() {
         return comments;
@@ -103,7 +124,6 @@ public class Concept extends AbstractEntityAudit {
         comment.setOwnerUUID(this.getId());
         comments.add(comment);
     }
-
 
 
     @Override

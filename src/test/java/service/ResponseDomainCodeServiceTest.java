@@ -40,7 +40,6 @@ public class ResponseDomainCodeServiceTest {
     public void setUp() {
         Code code = new Code();
         code.setCategory("Test class code");
-        code.setCodeValue("500");
         code = codeService.save(code);
 
 
@@ -49,7 +48,7 @@ public class ResponseDomainCodeServiceTest {
         responseDomain = responseDomainService.save(responseDomain);
 
         responseDomainCode = new ResponseDomainCode();
-        responseDomainCode.setRank(1);
+        responseDomainCode.setCodeIdx(1);
         responseDomainCode.setCode(code);
         responseDomainCode.setResponseDomain(responseDomain);
         responseDomainCodeService.save(responseDomainCode);
@@ -59,6 +58,6 @@ public class ResponseDomainCodeServiceTest {
     public void findByResponseDomain() throws Exception {
         ResponseDomainCode rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).get(0);
         assertEquals("Expected objects to be equal().", responseDomainCode, rdc);
-        assertEquals("Excepted rank to be 1", responseDomainCode.getRank(), 1);
+        assertEquals("Excepted rank to be 1", responseDomainCode.getCodeIdx(), 1);
     }
 }

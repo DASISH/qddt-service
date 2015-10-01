@@ -1,13 +1,12 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,14 +52,32 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "RESPONSEDOMAIN")
-public class ResponseDomain extends AbstractEntityAudit {
+public class ResponseDomain extends AbstractEntityAudit{
 
-
-    private ResponseKind responseKind;
+    @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
+    private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy="responseDomain", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
+    @Transient
+    private Set<Comment> comments = new HashSet<>();
+
+    private ResponseKind responseKind;
+
+
+    public ResponseDomain(){
+
+    }
+
+
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
 
     public ResponseKind getResponseKind() {
         return responseKind;
@@ -77,6 +94,21 @@ public class ResponseDomain extends AbstractEntityAudit {
     public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
         this.responseDomainCodes = responseDomainCodes;
     }
+
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void addComment(Comment comment) {
+        comment.setOwnerUUID(this.getId());
+        comments.add(comment);
+    }
+
 
     @Override
     public boolean equals(Object o) {

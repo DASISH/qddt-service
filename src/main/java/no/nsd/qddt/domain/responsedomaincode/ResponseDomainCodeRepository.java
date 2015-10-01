@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 interface ResponseDomainCodeRepository extends BaseRepository<ResponseDomainCode,UUID>, EnversRevisionRepository<ResponseDomainCode, UUID, Integer> {
 
-    List<ResponseDomainCode> findByResponseDomainIdOrderByRankAsc(UUID responseDomainId);
+    List<ResponseDomainCode> findByResponseDomainIdOrderByCodeIdxAsc(UUID responseDomainId);
 
     List<ResponseDomainCode> findByCodeIdOrderByResponseDomainIdAsc(UUID codeId);
 }

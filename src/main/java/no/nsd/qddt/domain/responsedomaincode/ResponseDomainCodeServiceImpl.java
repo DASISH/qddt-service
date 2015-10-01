@@ -73,7 +73,7 @@ class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
 
     @Override
     public List<ResponseDomainCode> findByResponseDomainId(UUID responseDomainId) {
-        return responseDomainCodeRepository.findByResponseDomainIdOrderByRankAsc(responseDomainId);
+        return responseDomainCodeRepository.findByResponseDomainIdOrderByCodeIdxAsc(responseDomainId);
     }
 
     @Override

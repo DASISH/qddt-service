@@ -34,14 +34,13 @@ import java.util.Set;
 @Table(name = "CODE")
 public class Code extends AbstractEntityAudit {
 
+    @OneToMany(mappedBy="code", cascade = CascadeType.ALL)
+    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+
     @Column(name = "category")
     private String category;
 
-    @Column(name = "code_value")
-    private  String codeValue;
 
-    @OneToMany(mappedBy="code", cascade = CascadeType.ALL)
-    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     public Code(){}
 
@@ -53,13 +52,6 @@ public class Code extends AbstractEntityAudit {
         this.category = category;
     }
 
-    public String getCodeValue() {
-        return codeValue;
-    }
-
-    public void setCodeValue(String codeValue) {
-        this.codeValue = codeValue;
-    }
 
     public Set<ResponseDomainCode> getResponseDomainCodes() {
         return responseDomainCodes;
@@ -77,7 +69,6 @@ public class Code extends AbstractEntityAudit {
         Code code1 = (Code) o;
 
         if (category != null ? !category.equals(code1.category) : code1.category != null) return false;
-        if (codeValue != null ? !codeValue.equals(code1.codeValue) : code1.codeValue != null) return false;
 
         return true;
     }
@@ -86,7 +77,6 @@ public class Code extends AbstractEntityAudit {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (category != null ? category.hashCode() : 0);
-        result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
         return result;
     }
 
@@ -94,7 +84,6 @@ public class Code extends AbstractEntityAudit {
     public String toString() {
         return "Code{" +
                 " category='" + category + '\'' +
-                ", codeValue='" + codeValue + '\'' +
                 super.toString() +
                 '}';
     }

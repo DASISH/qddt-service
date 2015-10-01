@@ -47,7 +47,6 @@ public class ResponseDomainCodeServiceAuditTest {
     public void setUp() {
         Code code = new Code();
         code.setCategory("Test class code");
-        code.setCodeValue("500");
         code = codeService.save(code);
 
         ResponseDomain responseDomain = new ResponseDomain();
@@ -56,11 +55,11 @@ public class ResponseDomainCodeServiceAuditTest {
 
         responseDomainCode = responseDomainCodeService.save(new ResponseDomainCode(1, responseDomain, code));
 
-        responseDomainCode.setRank(2);
+        responseDomainCode.setCodeIdx(2);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
-        responseDomainCode.setRank(10);
+        responseDomainCode.setCodeIdx(10);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
-        responseDomainCode.setRank(4);
+        responseDomainCode.setCodeIdx(4);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
     }
 
@@ -79,6 +78,6 @@ public class ResponseDomainCodeServiceAuditTest {
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity(), responseDomainCode);
-        assertEquals("Expected rank to be 4.", revision.getEntity().getRank(), 4);
+        assertEquals("Expected rank to be 4.", revision.getEntity().getCodeIdx(), 4);
     }
 }
