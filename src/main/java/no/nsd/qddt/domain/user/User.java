@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instrument.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.instrument.InstrumentQuestion;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
