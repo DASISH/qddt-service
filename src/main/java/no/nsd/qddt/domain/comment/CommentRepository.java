@@ -20,6 +20,6 @@ interface CommentRepository extends BaseRepository<Comment,UUID>, EnversRevision
      * @return All attachments that belongs to the module with moduleId.
      */
 
-    Page<Comment> findAllByOwnerUUIDOrderByCreatedDesc(UUID ownerUUID, Pageable pageable);
+    Page<Comment> findAllByOwnerIdOrderByCreatedDesc(UUID ownerUUID, Pageable pageable);
 
 }

@@ -44,18 +44,10 @@ public class ResponseDomainCodeHierarchyTest {
     @Before
     public void setUp() {
 
-
-<<<<<<< HEAD
-        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag("#BILER").createCode());
-        codeService.save(new CodeBuilder().setCategory("KVINNE").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("MANN").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag("#KJØNN").createCode());
-=======
-        code = codeService.save(new CodeBuilder().setCategory("Opel").setValue("0").setTag(HASH_TAG_SEX).createCode());
-        codeService.save(new CodeBuilder().setCategory("KVINNE").setValue("0").setTag(HASH_TAG_SEX).createCode());
-        codeService.save(new CodeBuilder().setCategory("MANN").setValue("1").setTag(HASH_TAG_SEX).createCode());
-        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setValue("2").setTag(HASH_TAG_CAR).createCode());
->>>>>>> 51123bf444acc8f829c291d0acb8d07cd5c7d7cb
+        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("KVINNE").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("MANN").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag(HASH_TAG_CAR).createCode());
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("response domain Kjønn");

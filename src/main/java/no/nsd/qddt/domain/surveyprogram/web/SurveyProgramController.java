@@ -39,7 +39,7 @@ public class SurveyProgramController extends AbstractAuditController<SurveyProgr
     @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
         SurveyProgram surveyProgram = service.findOne(id);
-        comment.setOwnerUUID(surveyProgram.getId());
+        comment.setOwnerId(surveyProgram.getId());
         comment.setCreatedBy(SecurityContext.getUserDetails().getUser());
 
         return commentService.save(comment);

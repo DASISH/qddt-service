@@ -1,4 +1,6 @@
-package no.nsd.qddt.domain.comment;
+package no.nsd.qddt.domain.commentable;
+
+import no.nsd.qddt.domain.comment.Comment;
 
 import java.util.Set;
 
