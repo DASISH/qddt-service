@@ -48,6 +48,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Transient
     private String version;
 
+    @Enumerated(EnumType.STRING)
     private ChangeKind changeReason = ChangeKind.CREATED;
 
     @Column(name = "change_comment")

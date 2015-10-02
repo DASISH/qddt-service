@@ -63,6 +63,7 @@ public class ResponseDomain extends AbstractEntityAudit{
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
 
 

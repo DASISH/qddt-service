@@ -27,7 +27,7 @@ interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, En
 //                    " WHERE B.Guid = :guid";
 
 
-    // TODO fix this query?
+// TODO fix this query?
 //    /**
 //     * @param guid Is an UUID of an attachment that belongs to a module
 //     * @param pageable Pageable object
@@ -35,13 +35,13 @@ interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, En
 //     */
 //    @NamedNativeQuery(value = FIND_BY_MODULE_BY_UUID_QUERY, countQuery = COUNT_BY_MODULE_BY_UUID_QUERY)
 //    Page<Attachment> findAllByModuleGuid(@Param("guid") String guid, Pageable pageable);
-
+//
     /**
-     * @param guid Is an topicGroupGuid.
+     * @param id Is an topicGroupid.
      * @param pageable Pageable object
      * @return All attachments that belongs to the module with moduleId.
      */
-    Page<OtherMaterial> findAllByOwnerGuid(UUID guid, Pageable pageable);
+    Page<OtherMaterial> findAllByTopicGroupId(UUID id, Pageable pageable);
 
 
 }

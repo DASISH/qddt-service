@@ -22,23 +22,17 @@ import java.util.UUID;
 @Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntityAudit {
 
-    @Column(name = "owner_uuid")
-    @Type(type="pg-uuid")
-    private UUID ownerGuid;
-
     @ManyToOne
-    @JoinColumn(name="owner_uuid", insertable=false, updatable=false)
+    @JoinColumn(name="topicgroup_id", insertable=false, updatable=false)
     private TopicGroup topicGroup;
 
     private String path;
 
     private String description;
 
-
     public OtherMaterial(){
 
     }
-
 
     public TopicGroup getTopicGroup() {
         return topicGroup;
@@ -48,13 +42,6 @@ public class OtherMaterial extends AbstractEntityAudit {
         this.topicGroup = topicGroup;
     }
 
-    public UUID getOwnerGuid() {
-        return ownerGuid;
-    }
-
-    public void setOwnerGuid(UUID ownerGuid) {
-        this.ownerGuid = ownerGuid;
-    }
 
     public String getPath() {
         return path;

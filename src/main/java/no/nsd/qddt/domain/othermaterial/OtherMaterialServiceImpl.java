@@ -28,7 +28,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Override
     @Transactional(readOnly = true)
     public Page<OtherMaterial> findAllByTopicGroup(UUID guid, Pageable pageable) {
-        return otherMaterialRepository.findAllByOwnerGuid(guid, pageable);
+        return otherMaterialRepository.findAllByTopicGroupId(guid, pageable);
     }
 
 

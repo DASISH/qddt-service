@@ -38,7 +38,8 @@ import java.util.Set;
 @Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit {
 
-    @OneToMany( cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "surveyProgram",cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
     @Transient

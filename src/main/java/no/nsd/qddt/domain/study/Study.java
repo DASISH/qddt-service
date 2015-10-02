@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.study;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
@@ -41,13 +42,21 @@ import java.util.Set;
 @Table(name = "STUDY")
 public class Study extends AbstractEntityAudit {
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="survey_id")
-    public SurveyProgram surveyProgram;
+    private SurveyProgram surveyProgram;
 
     @OneToMany(mappedBy="study", cascade = CascadeType.ALL)
-    public Set<TopicGroup> topicGroups = new HashSet<>();
+    private Set<Instrument> instruments = new HashSet<>();
+
+    @OneToMany(mappedBy="study", cascade = CascadeType.ALL)
+    private Set<TopicGroup> topicGroups = new HashSet<>();
+
+
+    public Study(){
+
+    }
 
     public SurveyProgram getSurveyProgram() {
         return surveyProgram;

@@ -52,8 +52,7 @@ public class TopicGroup extends AbstractEntityAudit {
     @JoinColumn(name="author_id")
     private List<User> authors;
 
-    @OneToMany(cascade =CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "guid")
+    @OneToMany(mappedBy = "topicGroup", cascade =CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OtherMaterial> otherMaterials;
 
     private String authorsAffiliation;

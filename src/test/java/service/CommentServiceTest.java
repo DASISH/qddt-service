@@ -44,7 +44,7 @@ public class CommentServiceTest {
         Comment root  = commentService.findOne(parent.getId());
 
         assertTrue(5L == parent.treeSize());
-        assertThat(parent.getChildren().size(), is(3));
+        assertThat(parent.getChildren().size(), is(3L));
         assertThat(parent, is(root));
     }
 
@@ -61,7 +61,7 @@ public class CommentServiceTest {
         commentService.save(parent);
 
         assertThat(parent.treeSize(), is(5L));
-        assertThat(commentService.save(parent).getChildren().size(), is(3));
+        assertThat(commentService.save(parent).getChildren().size(), is(3L));
     }
 
 
