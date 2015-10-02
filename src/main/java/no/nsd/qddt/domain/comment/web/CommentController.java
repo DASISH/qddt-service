@@ -33,10 +33,10 @@ public class CommentController  extends AbstractController<Comment,UUID> {
     }
 
 
-    @RequestMapping(value = "/byowner/{ownerUUID}/page/thread", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Comment>> get(UUID ownerUUID, Pageable pageable, PagedResourcesAssembler assembler) {
+    @RequestMapping(value = "/byowner/{ownerId}/page/thread", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Comment>> get(UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Comment> comments = commentService.findAllByOwnerUUIDPageable(ownerUUID, pageable);
+        Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 

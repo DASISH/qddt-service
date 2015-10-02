@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.comment;
 
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.commentable.Commentable;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -23,11 +24,11 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "comment")
-public class Comment extends AbstractEntity {
+public class Comment extends AbstractEntity implements Commentable {
 
     @Column(name = "owner_uuid")
     @Type(type="pg-uuid")
-    private UUID ownerUUID;
+    private UUID ownerId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="parent_id")
@@ -48,12 +49,12 @@ public class Comment extends AbstractEntity {
         setComment(comment);
     }
 
-    public UUID getOwnerUUID() {
-        return ownerUUID;
+    public UUID getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwnerUUID(UUID ownerUUID) {
-        this.ownerUUID = ownerUUID;
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Comment getParent() {
@@ -72,14 +73,20 @@ public class Comment extends AbstractEntity {
         this.children = children;
     }
 
-    /**
-     * Add a new comment to the set.
-     * @param comment to be added to parent.
-     */
+    @Override
     public void addComment(Comment comment) {
-        comment.setOwnerUUID(this.getOwnerUUID());
+        comment.setOwnerId(this.getOwnerId());
         comment.setParent(this);
-        //this.children.add(comment);
+    }
+
+    @Override
+    public Set<Comment> getComments() {
+        return this.children;
+    }
+
+    @Override
+    public void setComments(Set<Comment> comments) {
+        this.children = comments;
     }
 
 
@@ -104,7 +111,7 @@ public class Comment extends AbstractEntity {
 
         Comment comment1 = (Comment) o;
 
-        if (getOwnerUUID() != null ? !getOwnerUUID().equals(comment1.getOwnerUUID()) : comment1.getOwnerUUID() != null)
+        if (getOwnerId() != null ? !getOwnerId().equals(comment1.getOwnerId()) : comment1.getOwnerId() != null)
             return false;
         if (getParent() != null ? !getParent().equals(comment1.getParent()) : comment1.getParent() != null)
             return false;
@@ -117,7 +124,7 @@ public class Comment extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getOwnerUUID() != null ? getOwnerUUID().hashCode() : 0);
+        result = 31 * result + (getOwnerId() != null ? getOwnerId().hashCode() : 0);
         result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
         result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
         result = 31 * result + (getComment() != null ? getComment().hashCode() : 0);
@@ -127,7 +134,7 @@ public class Comment extends AbstractEntity {
     @Override
     public String toString() {
         return "Comment{" +
-                ", ownerUUID=" + ownerUUID +
+                ", ownerId=" + ownerId +
                 ", children=" + children +
                 ", comment='" + comment + '\'' +
                 '}';

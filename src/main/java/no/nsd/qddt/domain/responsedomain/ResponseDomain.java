@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import org.hibernate.envers.Audited;
@@ -52,7 +53,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "RESPONSEDOMAIN")
-public class ResponseDomain extends AbstractEntityAudit{
+public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
@@ -96,17 +97,19 @@ public class ResponseDomain extends AbstractEntityAudit{
         this.responseDomainCodes = responseDomainCodes;
     }
 
-
+    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
+    @Override
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
+    @Override
     public void addComment(Comment comment) {
-        comment.setOwnerUUID(this.getId());
+        comment.setOwnerId(this.getId());
         comments.add(comment);
     }
 

@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
 import org.hibernate.envers.Audited;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "INSTRUCTION")
-public class Instruction extends AbstractEntityAudit {
+public class Instruction extends AbstractEntityAudit implements Commentable {
 
     @OneToMany(mappedBy = "instruction", cascade = CascadeType.ALL)
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
@@ -45,16 +46,19 @@ public class Instruction extends AbstractEntityAudit {
         this.description = description;
     }
 
+    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
+    @Override
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
+    @Override
     public void addComment(Comment comment) {
-        comment.setOwnerUUID(this.getId());
+        comment.setOwnerId(this.getId());
         comments.add(comment);
     }
 

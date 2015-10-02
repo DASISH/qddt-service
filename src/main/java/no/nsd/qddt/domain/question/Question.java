@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.question;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -24,7 +25,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "QUESTION")
-public class Question extends AbstractEntityAudit {
+public class Question extends AbstractEntityAudit implements Commentable {
 
     @ManyToOne
     @JoinColumn(name="parent_id")
@@ -145,16 +146,19 @@ public class Question extends AbstractEntityAudit {
 
     public void setChildren(Set<Question> children) {this.children = children;}
 
+    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
+    @Override
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
+    @Override
     public void addComment(Comment comment) {
-        comment.setOwnerUUID(this.getId());
+        comment.setOwnerId(this.getId());
         comments.add(comment);
     }
 

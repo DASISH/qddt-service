@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.study;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -40,12 +40,14 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit {
+public class Study extends AbstractEntityAudit implements Commentable {
 
-//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="survey_id")
     private SurveyProgram surveyProgram;
+
+    @Transient
+    private Set<Comment> comments = new HashSet<>();
 
     @OneToMany(mappedBy="study", cascade = CascadeType.ALL)
     private Set<Instrument> instruments = new HashSet<>();
@@ -53,8 +55,7 @@ public class Study extends AbstractEntityAudit {
     @OneToMany(mappedBy="study", cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-
-    public Study(){
+    public Study() {
 
     }
 
@@ -66,20 +67,36 @@ public class Study extends AbstractEntityAudit {
         this.surveyProgram = surveyProgram;
     }
 
-    @Transient
-    private Set<Comment> comments = new HashSet<>();
-
+    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
+    @Override
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
+    @Override
     public void addComment(Comment comment) {
-        comment.setOwnerUUID(this.getId());
+        comment.setOwnerId(this.getId());
         comments.add(comment);
+    }
+
+    public Set<Instrument> getInstruments() {
+        return instruments;
+    }
+
+    public void setInstruments(Set<Instrument> instruments) {
+        this.instruments = instruments;
+    }
+
+    public Set<TopicGroup> getTopicGroups() {
+        return topicGroups;
+    }
+
+    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+        this.topicGroups = topicGroups;
     }
 
     @Override
@@ -104,12 +121,9 @@ public class Study extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "Study{" +
-                "name='" + this.getName() + '\'' +
-                ", created=" + this.getCreated() + '\'' +
-                ", createdBy=" + this.getCreatedBy() + '\'' +
-                ", changeReason='" + this.getChangeReason() + '\'' +
-                ", changeComment='" + this.getChangeComment() + '\'' +
-                super.toString() +
-                '}';
+                "surveyProgram=" + surveyProgram +
+                ", instruments=" + instruments +
+                ", topicGroups=" + topicGroups +
+                "} " + super.toString();
     }
 }

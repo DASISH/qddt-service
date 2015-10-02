@@ -38,14 +38,16 @@ public class ResponseDomainCodeHierarchyTest {
 
     private Code code;
 
+    private static final String HASH_TAG_SEX = "#KJØNN";
+    private static final String HASH_TAG_CAR = "#BIL";
+
     @Before
     public void setUp() {
 
-
-        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag("#BILER").createCode());
-        codeService.save(new CodeBuilder().setCategory("KVINNE").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("MANN").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag("#KJØNN").createCode());
+        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("KVINNE").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("MANN").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag(HASH_TAG_CAR).createCode());
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("response domain Kjønn");
@@ -56,9 +58,9 @@ public class ResponseDomainCodeHierarchyTest {
     @Test
     public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
 
-        codeService.findByHashTag("jØnn").forEach(System.out::println);
+        codeService.findByHashTag(HASH_TAG_SEX).forEach(System.out::println);
         int i = 0;
-        for (Code code : codeService.findByHashTag("#KjøNN")) {
+        for (Code code : codeService.findByHashTag(HASH_TAG_SEX)) {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
             responseDomainCode.setCodeIdx(i++);
             responseDomainCode.setCode(code);
