@@ -38,14 +38,17 @@ public class ResponseDomainCodeHierarchyTest {
 
     private Code code;
 
+    private static final String HASH_TAG_SEX = "#KJØNN";
+    private static final String HASH_TAG_CAR = "#BIL";
+
     @Before
     public void setUp() {
 
 
-        code = codeService.save(new CodeBuilder().setCategory("Opel").setValue("0").setTag("#BILER").createCode());
-        codeService.save(new CodeBuilder().setCategory("KVINNE").setValue("0").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("MANN").setValue("1").setTag("#KJØNN").createCode());
-        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setValue("2").setTag("#KJØNN").createCode());
+        code = codeService.save(new CodeBuilder().setCategory("Opel").setValue("0").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("KVINNE").setValue("0").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("MANN").setValue("1").setTag(HASH_TAG_SEX).createCode());
+        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setValue("2").setTag(HASH_TAG_CAR).createCode());
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("response domain Kjønn");
@@ -56,9 +59,9 @@ public class ResponseDomainCodeHierarchyTest {
     @Test
     public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
 
-        codeService.findByHashTag("jØnn").forEach(System.out::println);
+        codeService.findByHashTag(HASH_TAG_SEX).forEach(System.out::println);
         int i = 0;
-        for (Code code : codeService.findByHashTag("#KjøNN")) {
+        for (Code code : codeService.findByHashTag(HASH_TAG_SEX)) {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
             responseDomainCode.setRank(i++);
             responseDomainCode.setCode(code);
