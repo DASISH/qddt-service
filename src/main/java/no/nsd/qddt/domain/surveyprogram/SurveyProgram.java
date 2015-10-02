@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
@@ -36,27 +37,13 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit {
+public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
     @OneToMany( cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
-
 
     public SurveyProgram() {
     }
@@ -69,6 +56,21 @@ public class SurveyProgram extends AbstractEntityAudit {
         this.studies = studies;
     }
 
+    @Override
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    @Override
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public void addComment(Comment comment) {
+        comment.setOwnerId(this.getId());
+        comments.add(comment);
+    }
 
     @Override
     public boolean equals(Object o) {
