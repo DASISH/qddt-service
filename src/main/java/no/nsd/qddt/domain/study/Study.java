@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.study;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.Commentable;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
@@ -39,7 +40,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit {
+public class Study extends AbstractEntityAudit implements Commentable {
 
     @JsonIgnore
     @ManyToOne
@@ -60,14 +61,17 @@ public class Study extends AbstractEntityAudit {
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
+    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
+    @Override
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
+    @Override
     public void addComment(Comment comment) {
         comment.setOwnerUUID(this.getId());
         comments.add(comment);
