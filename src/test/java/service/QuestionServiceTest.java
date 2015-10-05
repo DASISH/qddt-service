@@ -56,8 +56,6 @@ public class QuestionServiceTest {
     }
 
 
-
-
     @Test(expected = ResourceNotFoundException.class)
     public void fail() throws Exception {
         Question q = questionService.findOne(UUID.randomUUID());

@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
 import org.junit.Before;
@@ -47,10 +48,12 @@ public class ResponseDomainCodeServiceAuditTest {
     public void setUp() {
         Code code = new Code();
         code.setCategory("Test class code");
+        code.setName("DaCode");
         code = codeService.save(code);
 
         ResponseDomain responseDomain = new ResponseDomain();
         responseDomain.setName("This is a response domain");
+        responseDomain.setResponseKind(ResponseKind.Code);
         responseDomain = responseDomainService.save(responseDomain);
 
         responseDomainCode = responseDomainCodeService.save(new ResponseDomainCode(1, responseDomain, code));

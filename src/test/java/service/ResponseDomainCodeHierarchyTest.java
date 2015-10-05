@@ -14,8 +14,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Stig Norland
@@ -44,10 +46,11 @@ public class ResponseDomainCodeHierarchyTest {
     @Before
     public void setUp() {
 
-        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag(HASH_TAG_SEX).createCode());
+        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag(HASH_TAG_CAR).createCode());
         codeService.save(new CodeBuilder().setCategory("KVINNE").setTag(HASH_TAG_SEX).createCode());
         codeService.save(new CodeBuilder().setCategory("MANN").setTag(HASH_TAG_SEX).createCode());
-        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag(HASH_TAG_CAR).createCode());
+        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag(HASH_TAG_SEX).createCode());
+
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("response domain Kjønn");
@@ -58,7 +61,7 @@ public class ResponseDomainCodeHierarchyTest {
     @Test
     public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
 
-        codeService.findByHashTag(HASH_TAG_SEX).forEach(System.out::println);
+//        codeService.findByHashTag(HASH_TAG_SEX).forEach(System.out::println);
         int i = 0;
         for (Code code : codeService.findByHashTag(HASH_TAG_SEX)) {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
@@ -69,11 +72,9 @@ public class ResponseDomainCodeHierarchyTest {
         }
 
         assertEquals(responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).size(), 3);
-        responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
+//        responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
 
-        // responseDomainCode doesn't have this code attached
-        assertEquals(responseDomainCodeService.findByCodeId(code.getId()).size(), 0);
-        responseDomainCodeService.findByCodeId(code.getId()).forEach(System.out::println);
+        assertNull("responsDomainCode should not contain any items.", responseDomainCodeService.findByCodeId(code.getId()));
 
     }
 }

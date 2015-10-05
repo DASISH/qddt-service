@@ -1,5 +1,8 @@
 package no.nsd.qddt.domain.comment;
 
+import no.nsd.qddt.domain.commentable.Commentable;
+import no.nsd.qddt.domain.commentable.CommentableService;
+import no.nsd.qddt.domain.commentable.CommentableServiceImpl;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +20,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Service("commentService")
-class CommentServiceImpl  implements CommentService {
+class CommentServiceImpl  implements CommentService  {
 
     private CommentRepository commentRepository;
 
@@ -100,7 +103,5 @@ class CommentServiceImpl  implements CommentService {
     public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable) {
         return commentRepository.findAllByOwnerIdOrderByCreatedDesc(ownerId, pageable);
     }
-
-
 
 }
