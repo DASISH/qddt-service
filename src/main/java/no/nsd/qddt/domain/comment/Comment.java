@@ -30,11 +30,11 @@ public class Comment extends AbstractEntity implements Commentable {
     @Type(type="pg-uuid")
     private UUID ownerId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="parent_id")
     private Comment parent;
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Comment> children = new HashSet<>();
 
 
@@ -77,6 +77,7 @@ public class Comment extends AbstractEntity implements Commentable {
     public void addComment(Comment comment) {
         comment.setOwnerId(this.getOwnerId());
         comment.setParent(this);
+        this.children.add(comment);
     }
 
     @Override
@@ -98,10 +99,9 @@ public class Comment extends AbstractEntity implements Commentable {
         this.comment = comment;
     }
 
-    public Long treeSize(){
-        return getChildren() == null ? 1 : getChildren().stream().mapToLong(Comment::treeSize).sum() + 1;
+    public int treeSize(){
+        return getChildren() == null ? 1 : getChildren().stream().mapToInt(Comment::treeSize).sum() + 1;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -111,32 +111,26 @@ public class Comment extends AbstractEntity implements Commentable {
 
         Comment comment1 = (Comment) o;
 
-        if (getOwnerId() != null ? !getOwnerId().equals(comment1.getOwnerId()) : comment1.getOwnerId() != null)
-            return false;
-        if (getParent() != null ? !getParent().equals(comment1.getParent()) : comment1.getParent() != null)
-            return false;
-        if (getChildren() != null ? !getChildren().equals(comment1.getChildren()) : comment1.getChildren() != null)
-            return false;
-        return !(getComment() != null ? !getComment().equals(comment1.getComment()) : comment1.getComment() != null);
+        if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
+        if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
+        return !(comment != null ? !comment.equals(comment1.comment) : comment1.comment != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getOwnerId() != null ? getOwnerId().hashCode() : 0);
-        result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
-        result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
-        result = 31 * result + (getComment() != null ? getComment().hashCode() : 0);
+        result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Comment{" +
-                ", ownerId=" + ownerId +
-                ", children=" + children +
+                "ownerId=" + ownerId +
                 ", comment='" + comment + '\'' +
-                '}';
+                "} " + super.toString();
     }
 }
