@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.conceptquestion;
 
-import org.scalastuff.scalabeans.sig.Mirror;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
-import scala.io.BytePickle;
 
 import java.util.List;
 import java.util.UUID;

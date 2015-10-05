@@ -70,29 +70,26 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
 
         Instruction that = (Instruction) o;
 
-        if (getInstrumentQuestions() != null ? !getInstrumentQuestions().equals(that.getInstrumentQuestions()) : that.getInstrumentQuestions() != null)
+        if (instrumentQuestions != null ? !instrumentQuestions.equals(that.instrumentQuestions) : that.instrumentQuestions != null)
             return false;
-        if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null)
-            return false;
-        return !(getComments() != null ? !getComments().equals(that.getComments()) : that.getComments() != null);
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getInstrumentQuestions() != null ? getInstrumentQuestions().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getComments() != null ? getComments().hashCode() : 0);
+        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Instruction{" +
-                "instrumentQuestions=" + instrumentQuestions.toString() +
-                ", description='" + description + '\'' +
-                ", comments=" + comments.toString() +
-                '}';
+                "description='" + description + '\'' +
+                "} " + super.toString();
     }
 }

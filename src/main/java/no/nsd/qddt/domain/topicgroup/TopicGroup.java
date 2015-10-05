@@ -75,7 +75,6 @@ public class TopicGroup extends AbstractEntityAudit {
         comments.add(comment);
     }
 
-
     public Study getStudy() {
         return study;
     }
@@ -127,28 +126,41 @@ public class TopicGroup extends AbstractEntityAudit {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TopicGroup)) return false;
         if (!super.equals(o)) return false;
 
-        TopicGroup topicGroup = (TopicGroup) o;
+        TopicGroup that = (TopicGroup) o;
 
-        if (study != null ? !study.equals(topicGroup.study) : topicGroup.study != null) return false;
+        if (study != null ? !study.equals(that.study) : that.study != null) return false;
+        if (concept != null ? !concept.equals(that.concept) : that.concept != null) return false;
+        if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
+        if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
+            return false;
+        if (authorsAffiliation != null ? !authorsAffiliation.equals(that.authorsAffiliation) : that.authorsAffiliation != null)
+            return false;
+        if (Abstract != null ? !Abstract.equals(that.Abstract) : that.Abstract != null) return false;
+        return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (study != null ? study.hashCode() : 0);
+        result = 31 * result + (concept != null ? concept.hashCode() : 0);
+        result = 31 * result + (authors != null ? authors.hashCode() : 0);
+        result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
+        result = 31 * result + (authorsAffiliation != null ? authorsAffiliation.hashCode() : 0);
+        result = 31 * result + (Abstract != null ? Abstract.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Module{" +
-                "study=" + study +
-                super.toString() +
-                '}';
+        return "TopicGroup{" +
+                "authorsAffiliation='" + authorsAffiliation + '\'' +
+                ", Abstract='" + Abstract + '\'' +
+                "} " + super.toString();
     }
 }

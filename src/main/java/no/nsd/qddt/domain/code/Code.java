@@ -40,9 +40,9 @@ public class Code extends AbstractEntityAudit {
     @Column(name = "category")
     private String category;
 
+    public Code() {
 
-
-    public Code(){}
+    }
 
     public String getCategory() {
         return category;
@@ -64,18 +64,21 @@ public class Code extends AbstractEntityAudit {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Code)) return false;
+        if (!super.equals(o)) return false;
 
-        Code code1 = (Code) o;
+        Code code = (Code) o;
 
-        if (category != null ? !category.equals(code1.category) : code1.category != null) return false;
+        if (responseDomainCodes != null ? !responseDomainCodes.equals(code.responseDomainCodes) : code.responseDomainCodes != null)
+            return false;
+        return !(category != null ? !category.equals(code.category) : code.category != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = 31 * result + (responseDomainCodes != null ? responseDomainCodes.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
         return result;
     }
@@ -83,8 +86,7 @@ public class Code extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "Code{" +
-                " category='" + category + '\'' +
-                super.toString() +
-                '}';
+                "category='" + category + '\'' +
+                "} " + super.toString();
     }
 }

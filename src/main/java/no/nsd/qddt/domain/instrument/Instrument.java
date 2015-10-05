@@ -77,19 +77,19 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
         Instrument that = (Instrument) o;
 
-        if (getStudy() != null ? !getStudy().equals(that.getStudy()) : that.getStudy() != null) return false;
-        if (getInstrumentQuestions() != null ? !getInstrumentQuestions().equals(that.getInstrumentQuestions()) : that.getInstrumentQuestions() != null)
+        if (study != null ? !study.equals(that.study) : that.study != null) return false;
+        if (instrumentQuestions != null ? !instrumentQuestions.equals(that.instrumentQuestions) : that.instrumentQuestions != null)
             return false;
-        return !(getComments() != null ? !getComments().equals(that.getComments()) : that.getComments() != null);
+        return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getStudy() != null ? getStudy().hashCode() : 0);
-        result = 31 * result + (getInstrumentQuestions() != null ? getInstrumentQuestions().hashCode() : 0);
-        result = 31 * result + (getComments() != null ? getComments().hashCode() : 0);
+        result = 31 * result + (study != null ? study.hashCode() : 0);
+        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 
@@ -97,8 +97,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public String toString() {
         return "Instrument{" +
                 "study=" + study +
-                ", instrumentQuestions=" + instrumentQuestions +
-                ", comments=" + comments +
-                '}';
+                "} " + super.toString();
     }
 }

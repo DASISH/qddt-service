@@ -2,11 +2,12 @@ package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * This class is just a placeholder for functionality not implemented.
@@ -42,7 +43,6 @@ public class OtherMaterial extends AbstractEntityAudit {
         this.topicGroup = topicGroup;
     }
 
-
     public String getPath() {
         return path;
     }
@@ -67,19 +67,18 @@ public class OtherMaterial extends AbstractEntityAudit {
 
         OtherMaterial that = (OtherMaterial) o;
 
-        if (getTopicGroup() != null ? !getTopicGroup().equals(that.getTopicGroup()) : that.getTopicGroup() != null)
-            return false;
-        if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) return false;
-        return !(getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null);
+        if (topicGroup != null ? !topicGroup.equals(that.topicGroup) : that.topicGroup != null) return false;
+        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        return !(description != null ? !description.equals(that.description) : that.description != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getTopicGroup() != null ? getTopicGroup().hashCode() : 0);
-        result = 31 * result + (getPath() != null ? getPath().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
@@ -89,6 +88,6 @@ public class OtherMaterial extends AbstractEntityAudit {
                 "topicGroup=" + topicGroup +
                 ", path='" + path + '\'' +
                 ", description='" + description + '\'' +
-                '}';
+                "} " + super.toString();
     }
 }

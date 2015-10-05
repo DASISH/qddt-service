@@ -41,13 +41,11 @@ public class Concept extends AbstractEntityAudit {
     @JoinColumn(name="topicgroup_id")
     private TopicGroup topicGroup;
 
-
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "CONCEPT_QUESTION",
             joinColumns = {@JoinColumn(name ="concept_id", nullable = false, updatable = false)},
             inverseJoinColumns = {@JoinColumn(name = "question_id", nullable = false,updatable = false)})
     private Set<Question> questions = new HashSet<>();
-
 
     @Column(name = "label")
     private String label;
@@ -58,11 +56,9 @@ public class Concept extends AbstractEntityAudit {
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
-
     public Concept(){
 
     }
-
 
     public Concept getParent() {
         return parent;
@@ -125,7 +121,6 @@ public class Concept extends AbstractEntityAudit {
         comments.add(comment);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -134,42 +129,34 @@ public class Concept extends AbstractEntityAudit {
 
         Concept concept = (Concept) o;
 
-        if (getTopicGroup() != null ? !getTopicGroup().equals(concept.getTopicGroup()) : concept.getTopicGroup() != null) return false;
-        if (getChildren() != null ? !getChildren().equals(concept.getChildren()) : concept.getChildren() != null)
-            return false;
-        if (getLabel() != null ? !getLabel().equals(concept.getLabel()) : concept.getLabel() != null)
-            return false;
-        if (getDescription() != null ? !getDescription().equals(concept.getDescription()) : concept.getDescription() != null)
-            return false;
-        return !(getComments() != null ? !getComments().equals(concept.getComments()) : concept.getComments() != null);
-
+        if (parent != null ? !parent.equals(concept.parent) : concept.parent != null) return false;
+        if (children != null ? !children.equals(concept.children) : concept.children != null) return false;
+        if (topicGroup != null ? !topicGroup.equals(concept.topicGroup) : concept.topicGroup != null) return false;
+        if (questions != null ? !questions.equals(concept.questions) : concept.questions != null) return false;
+        if (label != null ? !label.equals(concept.label) : concept.label != null) return false;
+        if (description != null ? !description.equals(concept.description) : concept.description != null) return false;
+        return !(comments != null ? !comments.equals(concept.comments) : concept.comments != null);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getTopicGroup() != null ? getTopicGroup().hashCode() : 0);
-        result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
-        result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getComments() != null ? getComments().hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (children != null ? children.hashCode() : 0);
+        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
+        result = 31 * result + (questions != null ? questions.hashCode() : 0);
+        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 
     @Override
-    /* tester ut latmanns to string, skulle funke det? */
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(
-                "Concept{" +
-                "  module=" + topicGroup +
-                ", label='" + label + '\'' +
+        return "Concept{" +
+                "label='" + label + '\'' +
                 ", description='" + description + '\'' +
-                ", comments=" + comments) ;
-        sb.append(super.toString());
-        sb.append('}');
-        return sb.toString();
+                "} " + super.toString();
     }
-
 }
 

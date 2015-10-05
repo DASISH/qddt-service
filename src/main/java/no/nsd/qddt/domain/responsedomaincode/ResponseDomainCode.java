@@ -30,10 +30,9 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     @Column(name = "code_value")
     private String codeValue;
 
-
     public ResponseDomainCode() {
-    }
 
+    }
 
     public ResponseDomainCode(int codeIdx, ResponseDomain responseDomain, Code code) {
         this.codeIdx = codeIdx;
@@ -81,30 +80,31 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
         ResponseDomainCode that = (ResponseDomainCode) o;
 
-        if (getCodeIdx() != that.getCodeIdx()) return false;
-        if (getResponseDomain() != null ? !getResponseDomain().equals(that.getResponseDomain()) : that.getResponseDomain() != null)
+        if (codeIdx != that.codeIdx) return false;
+        if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
             return false;
-        if (getCode() != null ? !getCode().equals(that.getCode()) : that.getCode() != null) return false;
-        return !(getCodeValue() != null ? !getCodeValue().equals(that.getCodeValue()) : that.getCodeValue() != null);
+        if (code != null ? !code.equals(that.code) : that.code != null) return false;
+        return !(codeValue != null ? !codeValue.equals(that.codeValue) : that.codeValue != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getResponseDomain() != null ? getResponseDomain().hashCode() : 0);
-        result = 31 * result + (getCode() != null ? getCode().hashCode() : 0);
-        result = 31 * result + getCodeIdx();
-        result = 31 * result + (getCodeValue() != null ? getCodeValue().hashCode() : 0);
+        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
+        result = 31 * result + (code != null ? code.hashCode() : 0);
+        result = 31 * result + codeIdx;
+        result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "ResponseDomainCode{" +
-                ", codeIdx=" + codeIdx +
-                ", responseDomain=" + responseDomain +
+                "responseDomain=" + responseDomain +
                 ", code=" + code +
-                '}';
+                ", codeIdx=" + codeIdx +
+                ", codeValue='" + codeValue + '\'' +
+                "} " + super.toString();
     }
 }

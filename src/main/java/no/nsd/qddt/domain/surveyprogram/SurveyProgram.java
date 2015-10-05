@@ -76,30 +76,27 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof SurveyProgram)) return false;
         if (!super.equals(o)) return false;
 
-        SurveyProgram surveyProgram = (SurveyProgram) o;
+        SurveyProgram that = (SurveyProgram) o;
 
-        if (this.getCreated() != null ? !this.getCreated().equals(surveyProgram.getCreated()) : surveyProgram.getCreated() != null) return false;
-        if (this.getCreatedBy() != null ? !this.getCreatedBy().equals(surveyProgram.getCreatedBy()) : surveyProgram.getCreatedBy() != null) return false;
+        if (studies != null ? !studies.equals(that.studies) : that.studies != null) return false;
+        return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (this.getCreated() != null ? this.getCreated().hashCode() : 0);
-        result = 31 * result + (this.getCreatedBy() != null ? this.getCreatedBy().hashCode() : 0);
+        result = 31 * result + (studies != null ? studies.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Survey{" + this.getName() +
-                ", created=" + this.getCreated() +
-                ", createdBy=" + this.getCreatedBy() +
-                '}';
+        return "SurveyProgram{" +
+                "} " + super.toString();
     }
 }

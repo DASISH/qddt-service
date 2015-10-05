@@ -6,7 +6,6 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -81,27 +80,32 @@ public class Authority {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Authority)) return false;
 
-        Authority authority = (Authority) o;
+        Authority authority1 = (Authority) o;
 
-        return id.equals(authority.id) && !(name != null ? !name.equals(authority.name) : authority.name != null);
+        if (id != null ? !id.equals(authority1.id) : authority1.id != null) return false;
+        if (name != null ? !name.equals(authority1.name) : authority1.name != null) return false;
+        if (authority != null ? !authority.equals(authority1.authority) : authority1.authority != null) return false;
+        return !(users != null ? !users.equals(authority1.users) : authority1.users != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (authority != null ? authority.hashCode() : 0);
+        result = 31 * result + (users != null ? users.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return new ToStringCreator(this)
-                .append("id", id)
-                .append("name", name)
-                .append("authority", authority)
-                .toString();
+        return "Authority{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", authority='" + authority + '\'' +
+                '}';
     }
 }

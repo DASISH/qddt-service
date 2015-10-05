@@ -38,17 +38,14 @@ public class Question extends AbstractEntityAudit implements Commentable {
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Question> children = new HashSet<>();
 
-//    @OneToMany(mappedBy="concept", cascade = CascadeType.ALL)
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "questions")
     private Set<Concept> concepts = new HashSet<>();
 
     @OneToMany(mappedBy = "question")
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
-
     @Transient
     private Set<Comment> comments = new HashSet<>();
-
 
     /// Only used for Questions with a Question parent
     private int gridIdx;
@@ -165,36 +162,40 @@ public class Question extends AbstractEntityAudit implements Commentable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Question)) return false;
         if (!super.equals(o)) return false;
 
-        Question question = (Question) o;
+        Question question1 = (Question) o;
 
-        if (gridIdx != question.gridIdx) return false;
-        if (children != null ? !children.equals(question.children) : question.children != null) return false;
-         if (instrumentQuestions != null ? !instrumentQuestions.equals(question.instrumentQuestions) : question.instrumentQuestions != null)
+        if (gridIdx != question1.gridIdx) return false;
+        if (parent != null ? !parent.equals(question1.parent) : question1.parent != null) return false;
+        if (responseDomain != null ? !responseDomain.equals(question1.responseDomain) : question1.responseDomain != null)
             return false;
-        if (parent != null ? !parent.equals(question.parent) : question.parent != null) return false;
-        if (intent != null ? !intent.equals(question.intent) : question.intent != null)
+        if (children != null ? !children.equals(question1.children) : question1.children != null) return false;
+        if (concepts != null ? !concepts.equals(question1.concepts) : question1.concepts != null) return false;
+        if (instrumentQuestions != null ? !instrumentQuestions.equals(question1.instrumentQuestions) : question1.instrumentQuestions != null)
             return false;
-        if (this.question != null ? !this.question.equals(question.question) : question.question != null)
+        if (comments != null ? !comments.equals(question1.comments) : question1.comments != null) return false;
+        if (gridIdxRationale != null ? !gridIdxRationale.equals(question1.gridIdxRationale) : question1.gridIdxRationale != null)
             return false;
-        if (gridIdxRationale != null ? !gridIdxRationale.equals(question.gridIdxRationale) : question.gridIdxRationale != null)
-            return false;
+        if (intent != null ? !intent.equals(question1.intent) : question1.intent != null) return false;
+        return !(question != null ? !question.equals(question1.question) : question1.question != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
         result = 31 * result + (children != null ? children.hashCode() : 0);
+        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
+        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         result = 31 * result + gridIdx;
         result = 31 * result + (gridIdxRationale != null ? gridIdxRationale.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);
-        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
         return result;
     }
 
@@ -205,9 +206,8 @@ public class Question extends AbstractEntityAudit implements Commentable {
                 ", gridIdxRationale='" + gridIdxRationale + '\'' +
                 ", intent='" + intent + '\'' +
                 ", question='" + question + '\'' +
-                '}';
+                "} " + super.toString();
     }
-
 }
 
 

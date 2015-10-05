@@ -67,11 +67,9 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
 
-
     public ResponseDomain(){
 
     }
-
 
     public Set<Question> getQuestions() {
         return questions;
@@ -113,23 +111,28 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ResponseDomain)) return false;
         if (!super.equals(o)) return false;
 
         ResponseDomain that = (ResponseDomain) o;
 
-        if (responseKind != null ? !responseKind.equals(that.responseKind) : that.responseKind != null) return false;
+        if (questions != null ? !questions.equals(that.questions) : that.questions != null) return false;
+        if (responseDomainCodes != null ? !responseDomainCodes.equals(that.responseDomainCodes) : that.responseDomainCodes != null)
+            return false;
+        if (comments != null ? !comments.equals(that.comments) : that.comments != null) return false;
+        return responseKind == that.responseKind;
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = 31 * result + (questions != null ? questions.hashCode() : 0);
+        result = 31 * result + (responseDomainCodes != null ? responseDomainCodes.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
         return result;
     }
@@ -137,8 +140,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Override
     public String toString() {
         return "ResponseDomain{" +
-                ", responseKind=" + responseKind +
-                super.toString() +
-                '}';
+                "} " + super.toString();
     }
 }

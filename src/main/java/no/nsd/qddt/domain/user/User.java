@@ -98,11 +98,9 @@ public class User {
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Code> codes = new HashSet<>();
 
-
     @ManyToOne
     @JoinColumn(name = "agency_id")
     private Agency agency;
-
 
     public User() {
     }
@@ -262,17 +260,14 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof User)) return false;
 
         User user = (User) o;
 
-        if (authorities != null ? !authorities.equals(user.authorities) : user.authorities != null) return false;
-        if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (username != null ? !username.equals(user.username) : user.username != null) return false;
-
-        return true;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        return (email != null ? !email.equals(user.email) : user.email != null);
     }
 
     @Override
@@ -281,16 +276,16 @@ public class User {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (authorities != null ? authorities.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "email='" + email + '\'' +
+                "id=" + id +
                 ", username='" + username + '\'' +
-                ", id=" + id +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
