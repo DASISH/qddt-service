@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -31,40 +32,22 @@ public class CommentServiceTest {
     @Transactional
     public void saveCommentTest() throws Exception {
 
-        Comment parent = commentService.save(new Comment("PARENT"));
-        parent.setOwnerId(UUID.fromString("2fed9aab-748e-48d2-ac7f-57c076029a0b"));
-        Comment saved = commentService.save(new Comment("CHILD-ONE"));
-        saved.setOwnerId(UUID.fromString("2fed9aab-748e-48d2-ac7f-57c076029a0b"));
-        parent.addComment(saved);
-        saved.addComment(commentService.save(new Comment("CHILD OF CHILD-ONE")));
-        parent.addComment(commentService.save(new Comment("CHILD-TWO")));
-        parent.addComment(commentService.save(new Comment("CHILD-THREE")));
-        commentService.save(parent);
-
-        Comment root  = commentService.findOne(parent.getId());
-
-        assertTrue(5L == parent.treeSize());
-        assertThat(parent.getChildren().size(), is(3L));
-        assertThat(parent, is(root));
-    }
-
-
-    @Test
-    public void saveCommentTest2() throws Exception {
-
         Comment parent = new Comment("PARENT");
-        Comment to  = new Comment("CHILD-ONE");
-            to.addComment(new Comment("CHILD OF CHILD-ONE"));
-            parent.addComment(to);
+        parent.setOwnerId(UUID.fromString("2fed9aab-748e-48d2-ac7f-57c076029a0b"));
+        Comment firstChild = new Comment("CHILD-ONE");
+            firstChild.setOwnerId(UUID.fromString("2fed9aab-748e-48d2-ac7f-57c076029a0b"));
+            firstChild.addComment(new Comment("CHILD OF CHILD-ONE"));
+        parent.addComment(firstChild);
         parent.addComment(new Comment("CHILD-TWO"));
         parent.addComment(new Comment("CHILD-THREE"));
         commentService.save(parent);
 
-        assertThat(parent.treeSize(), is(5L));
-        assertThat(commentService.save(parent).getChildren().size(), is(3L));
+        Comment root  = commentService.findOne(parent.getId());
+
+        assertEquals("Her skal vi ha 5 stk...",is(5L), parent.treeSize());
+        assertEquals("Her skal vi ha 3 stk...", is(3L), parent.getChildren().size());
+        assertThat("Parent må være root element",parent, is(root));
     }
-
-
 
 
     /**
