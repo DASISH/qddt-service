@@ -40,7 +40,7 @@ import java.util.Set;
 public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
 
-    @OneToMany(mappedBy = "surveyProgram",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "surveyProgram",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
     @Transient

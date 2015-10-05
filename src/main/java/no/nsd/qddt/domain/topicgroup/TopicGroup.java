@@ -44,9 +44,8 @@ public class TopicGroup extends AbstractEntityAudit {
     @JoinColumn(name="study_id")
     private Study study;
 
-    @ManyToOne
-    @JoinColumn(name = "concept_id")
-    private Concept concept;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup")
+    private List<Concept> concepts;
 
     @OneToMany
     @JoinColumn(name="author_id")
@@ -83,12 +82,12 @@ public class TopicGroup extends AbstractEntityAudit {
         this.study = study;
     }
 
-    public Concept getConcept() {
-        return concept;
+    public List<Concept> getConcepts() {
+        return concepts;
     }
 
-    public void setConcept(Concept concept) {
-        this.concept = concept;
+    public void setConcepts(List<Concept> concepts) {
+        this.concepts = concepts;
     }
 
     public List<User> getAuthors() {
@@ -132,7 +131,7 @@ public class TopicGroup extends AbstractEntityAudit {
         TopicGroup that = (TopicGroup) o;
 
         if (study != null ? !study.equals(that.study) : that.study != null) return false;
-        if (concept != null ? !concept.equals(that.concept) : that.concept != null) return false;
+        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
@@ -147,7 +146,7 @@ public class TopicGroup extends AbstractEntityAudit {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (study != null ? study.hashCode() : 0);
-        result = 31 * result + (concept != null ? concept.hashCode() : 0);
+        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
         result = 31 * result + (authorsAffiliation != null ? authorsAffiliation.hashCode() : 0);
