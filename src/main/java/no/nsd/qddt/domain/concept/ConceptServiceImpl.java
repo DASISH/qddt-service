@@ -84,7 +84,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Revision<Integer, Concept> findEntityAtRevision(UUID uuid, Integer revision) {
-        return conceptRepository.findEntityAtRevision(uuid,revision);
+        return conceptRepository.findRevision(uuid,revision);
     }
 
     @Override

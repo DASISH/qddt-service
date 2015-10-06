@@ -97,7 +97,7 @@ class InstrumentQuestionServiceImpl implements InstrumentQuestionService {
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, InstrumentQuestion> findEntityAtRevision(UUID id, Integer revision) {
-        return instrumentQuestionRepository.findEntityAtRevision(id, revision);
+        return instrumentQuestionRepository.findRevision(id, revision);
     }
 
     @Override

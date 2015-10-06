@@ -89,7 +89,7 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Comment> findEntityAtRevision(UUID id, Integer revision) {
-        return commentRepository.findEntityAtRevision(id, revision);
+        return commentRepository.findRevision(id, revision);
     }
 
     @Override

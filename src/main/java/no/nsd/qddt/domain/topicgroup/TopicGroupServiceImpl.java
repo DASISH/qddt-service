@@ -90,7 +90,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, TopicGroup> findEntityAtRevision(UUID uuid, Integer revision) {
-        return topicGroupRepository.findEntityAtRevision(uuid, revision);
+        return topicGroupRepository.findRevision(uuid, revision);
     }
 
     @Override

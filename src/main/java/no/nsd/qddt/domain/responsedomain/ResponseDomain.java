@@ -119,20 +119,12 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
         ResponseDomain that = (ResponseDomain) o;
 
-        if (questions != null ? !questions.equals(that.questions) : that.questions != null) return false;
-        if (responseDomainCodes != null ? !responseDomainCodes.equals(that.responseDomainCodes) : that.responseDomainCodes != null)
-            return false;
-        if (comments != null ? !comments.equals(that.comments) : that.comments != null) return false;
         return responseKind == that.responseKind;
-
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (questions != null ? questions.hashCode() : 0);
-        result = 31 * result + (responseDomainCodes != null ? responseDomainCodes.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
         return result;
     }
