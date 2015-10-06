@@ -8,7 +8,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -88,10 +87,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
     @Override
     public int hashCode() {
-        return super.hashCode() * new Random(10).nextInt();
-//        result = 31 * result + (studies != null ? studies.hashCode() : 0);
-//        result = 31 * result + (comments != null ? comments.hashCode() : 0);
-//        return result;
+        return super.hashCode();
     }
 
     @Override
