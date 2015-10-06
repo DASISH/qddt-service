@@ -12,5 +12,4 @@ import java.util.UUID;
 @Repository
 interface SurveyProgramRepository extends BaseRepository<SurveyProgram,UUID>, EnversRevisionRepository<SurveyProgram, UUID, Integer> {
 
-    //Optional<Survey> findBySuvey(Long id);
 }

@@ -65,8 +65,6 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     @Transactional(readOnly = false)
     public SurveyProgram save(SurveyProgram instance) {
-
-        instance.setCreated(LocalDateTime.now());
         return surveyProgramRepository.save(instance);
     }
 

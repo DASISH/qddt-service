@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,10 +18,13 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
+import org.springframework.data.history.Revisions;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test is provided to make sure that we still get the relevant
@@ -64,6 +68,23 @@ public class ResponseDomainCodeServiceAuditTest {
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
         responseDomainCode.setCodeIdx(4);
         responseDomainCode = responseDomainCodeService.save(responseDomainCode);
+    }
+
+    @Test
+    public void testSaveSurveyWithAudit() throws Exception {
+        responseDomainCode = responseDomainCodeService.findOne(responseDomainCode.getId());
+
+        // Find the last revision based on the entity id
+        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeService.findLastChange(responseDomainCode.getId());
+
+        // Find all revisions based on the entity id as a page
+        Page<Revision<Integer, ResponseDomainCode>> revisions = responseDomainCodeService.findAllRevisionsPageable(
+                responseDomainCode.getId(), new PageRequest(0, 10));
+        assertThat(revisions.getNumberOfElements(), is(4));
+
+        // Find all revisions
+        Revisions<Integer, ResponseDomainCode> wrapper = new Revisions<>(revisions.getContent());
+        assertThat(wrapper.getLatestRevision(), is(revision));
     }
 
     @Test

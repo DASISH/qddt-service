@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +21,6 @@ import static org.junit.Assert.assertThat;
  * This test serves as an example that Hibernat Envers is actually
  * working and that Spring Data Envers is picking up on it.
  */
-@IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class SurveyProgramServiceAuditTest {
@@ -44,14 +42,12 @@ public class SurveyProgramServiceAuditTest {
 
         surveyProgram.setName("This is the THIRD version");
         surveyProgram = surveyProgramService.save(surveyProgram);
-
     }
 
 
     @Test
     public void testSaveSurveyWithAudit() throws Exception {
-
-        SurveyProgram surveyProgram = surveyProgramService.findAll().get(0);
+        surveyProgram = surveyProgramService.findOne(surveyProgram.getId());
 
         // Find the last revision based on the entity id
         Revision<Integer, SurveyProgram> revision = surveyProgramService.findLastChange(surveyProgram.getId());
