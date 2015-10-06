@@ -13,8 +13,7 @@ INSERT INTO user_authority (user_id, authority_id) VALUES('83d4c034-4ff9-11e5-88
 // Set up user authorities
 INSERT INTO user_authority (user_id, authority_id) VALUES('83d4c39a-4ff9-11e5-885d-feff819cdc9f', '9bec2d6a-4ff9-11e5-885d-feff819cdc9f');
 
-// POPULATE SURVEY DUMMY DATA
--- INSERT INTO SURVEY(survey_name) VALUES('A SURVEY');
+
 -- INSERT INTO SURVEY(survey_name) VALUES('MORE SURVEY');
 -- INSERT INTO SURVEY(survey_name) VALUES('SUCH SURVEY');
 -- INSERT INTO SURVEY(survey_name) VALUES('MUCH WOW SURVEY');
@@ -38,3 +37,12 @@ INSERT INTO responsedomain_code(id,created,change_reason, responsedomain_id, cod
 INSERT INTO responsedomain_code(id,created,change_reason, responsedomain_id, code_id, code_idx, code_value) VALUES('05f9a9c0-65d1-11e5-9d70-feff819cdc9f','01-01-2015','CREATED', 'd5dbaebe-65d0-11e5-9d70-feff819cdc9f','37894f32-65d0-11e5-9d70-feff819cdc9f', 3,'13');
 INSERT INTO responsedomain_code(id,created,change_reason, responsedomain_id, code_id, code_idx, code_value) VALUES('05f9abd2-65d1-11e5-9d70-feff819cdc9f','01-01-2015','CREATED', 'd5dbaebe-65d0-11e5-9d70-feff819cdc9f','378953c4-65d0-11e5-9d70-feff819cdc9f', 4,'14');
 INSERT INTO responsedomain_code(id,created,change_reason, responsedomain_id, code_id, code_idx, code_value) VALUES('05f9ad12-65d1-11e5-9d70-feff819cdc9f','01-01-2015','CREATED', 'd5dbaebe-65d0-11e5-9d70-feff819cdc9f','378955cc-65d0-11e5-9d70-feff819cdc9f', 5,'15');
+
+
+// POPULATE SURVEY DUMMY DATA
+INSERT INTO SURVEY_PROGRAM(id,name,change_reason, created) VALUES('a9fe6c58-5038-1fe0-8150-382001480000', 'THE SURVEY','CREATED','01-01-2015');
+INSERT INTO STUDY(id,created,change_reason,name,survey_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480001','01-01-2015','CREATED','myStudy','a9fe6c58-5038-1fe0-8150-382001480000');
+INSERT INTO TOPIC_GROUP(id,created,change_reason,name,study_id)VALUES('a9fe6c58-5038-1fe0-8150-382001480002','01-01-2015','CREATED','Module test','a9fe6c58-5038-1fe0-8150-382001480001');
+INSERT INTO CONCEPT(id,created,change_reason,name,topicgroup_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480003','01-01-2015','CREATED','Test Concept','a9fe6c58-5038-1fe0-8150-382001480002');
+INSERT INTO QUESTION(id,created,change_reason,grid_idx,name,question,responsedomain_id)  VALUES('a9fe6c58-5038-1fe0-8150-382001480004','01-01-2015','CREATED',0,'How to DDI?','How would you DDI if you could?','d5dbaebe-65d0-11e5-9d70-feff819cdc9f');
+INSERT INTO CONCEPT_QUESTION (question_id,concept_id) VALUES ('a9fe6c58-5038-1fe0-8150-382001480004','a9fe6c58-5038-1fe0-8150-382001480003')
