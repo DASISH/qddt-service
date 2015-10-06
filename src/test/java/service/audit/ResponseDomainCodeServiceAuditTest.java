@@ -80,11 +80,11 @@ public class ResponseDomainCodeServiceAuditTest {
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, ResponseDomainCode>> revisions = responseDomainCodeService.findAllRevisionsPageable(
                 responseDomainCode.getId(), new PageRequest(0, 10));
-        assertThat(revisions.getNumberOfElements(), is(4));
 
-        // Find all revisions
         Revisions<Integer, ResponseDomainCode> wrapper = new Revisions<>(revisions.getContent());
-        assertThat(wrapper.getLatestRevision(), is(revision));
+
+        assertEquals(wrapper.getLatestRevision().getEntity(), responseDomainCode);
+        assertThat(revisions.getNumberOfElements(), is(4));
     }
 
     @Test

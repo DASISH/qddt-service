@@ -15,6 +15,7 @@ import org.springframework.data.history.Revisions;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -55,11 +56,11 @@ public class SurveyProgramServiceAuditTest {
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, SurveyProgram>> revisions = surveyProgramService.findAllRevisionsPageable(
                 surveyProgram.getId(), new PageRequest(0, 10));
-        assertThat(revisions.getNumberOfElements(), is(3));
 
-        // Find all revisions
         Revisions<Integer, SurveyProgram> wrapper = new Revisions<>(revisions.getContent());
-        assertThat(wrapper.getLatestRevision(), is(revision));
+
+        assertEquals(wrapper.getLatestRevision().getEntity(), surveyProgram);
+        assertThat(revisions.getNumberOfElements(), is(3));
     }
 
     @Test

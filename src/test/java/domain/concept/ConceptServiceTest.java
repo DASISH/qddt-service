@@ -51,7 +51,7 @@ public class ConceptServiceTest {
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, Concept>> revisions = conceptService.findAllRevisionsPageable(
                 concept.getId(), new PageRequest(0, 10));
-        assertThat(revisions.getNumberOfElements(), is(3));
+        assertThat(revisions.getNumberOfElements(), is(4));
 
         // Find all revisions
         Revisions<Integer, Concept> wrapper = new Revisions<>(revisions.getContent());
