@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
-import no.nsd.qddt.domain.AbstractAuditController;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -19,13 +18,14 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/surveyprogram")
-public class SurveyProgramController extends AbstractAuditController<SurveyProgram,UUID> {
+public class SurveyProgramController {
 
+    private SurveyProgramService surveyProgramService;
     private CommentService commentService;
 
     @Autowired
-    public SurveyProgramController(SurveyProgramService service, CommentService commentService) {
-        super(service);
+    public SurveyProgramController(SurveyProgramService surveyProgramService, CommentService commentService) {
+        this.surveyProgramService = surveyProgramService;
         this.commentService = commentService;
     }
 
@@ -38,7 +38,7 @@ public class SurveyProgramController extends AbstractAuditController<SurveyProgr
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
-        SurveyProgram surveyProgram = service.findOne(id);
+        SurveyProgram surveyProgram = surveyProgramService.findOne(id);
         comment.setOwnerId(surveyProgram.getId());
         comment.setCreatedBy(SecurityContext.getUserDetails().getUser());
 

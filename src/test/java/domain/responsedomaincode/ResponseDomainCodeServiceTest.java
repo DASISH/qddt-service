@@ -1,4 +1,4 @@
-package service;
+package domain.responsedomaincode;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.code.Code;

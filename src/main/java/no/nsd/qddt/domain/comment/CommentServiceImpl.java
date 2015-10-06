@@ -1,13 +1,9 @@
 package no.nsd.qddt.domain.comment;
 
-import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.commentable.CommentableService;
-import no.nsd.qddt.domain.commentable.CommentableServiceImpl;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,25 +73,6 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     public void delete(UUID uuid) {
         commentRepository.delete(uuid);
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Comment> findLastChange(UUID id) {
-        return commentRepository.findLastChangeRevision(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Comment> findEntityAtRevision(UUID id, Integer revision) {
-        return commentRepository.findRevision(id, revision);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Comment>> findAllRevisionsPageable(UUID id, Pageable pageable) {
-        return commentRepository.findRevisions(id, pageable);
     }
 
     @Override

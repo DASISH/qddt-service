@@ -14,7 +14,7 @@ import java.util.Optional;
  * @author Stig Norland
  */
 @NoRepositoryBean
-public interface BaseRepository<T, ID extends Serializable>  extends JpaRepository<T,ID> {
+public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T,ID> {
 
     Optional<T> findById(ID id);
 }

@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface AgencyService extends BaseService<Agency,UUID> {
+public interface AgencyService extends BaseService<Agency, UUID> {
 
 
 }

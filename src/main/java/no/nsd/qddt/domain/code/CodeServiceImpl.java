@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,24 +80,5 @@ class CodeServiceImpl implements CodeService {
     @Override
     public void delete(UUID uuid) {
         codeRepository.delete(uuid);
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Code> findLastChange(UUID uuid) {
-        return codeRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Code> findEntityAtRevision(UUID uuid, Integer revision) {
-        return codeRepository.findRevision(uuid, revision);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Code>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return codeRepository.findRevisions(uuid,pageable);
     }
 }

@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instruction;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;

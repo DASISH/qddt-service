@@ -1,8 +1,9 @@
-package service.audit;
+package domain.surveyprogram.audit;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +25,13 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class SurveyProgramServiceAuditTest {
+public class SurveyProgramAuditServicTest {
 
     @Autowired
     private SurveyProgramService surveyProgramService;
+
+    @Autowired
+    private SurveyProgramAuditService surveyProgramAuditService;
 
     SurveyProgram surveyProgram;
 
@@ -51,10 +55,10 @@ public class SurveyProgramServiceAuditTest {
         surveyProgram = surveyProgramService.findOne(surveyProgram.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, SurveyProgram> revision = surveyProgramService.findLastChange(surveyProgram.getId());
+        Revision<Integer, SurveyProgram> revision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, SurveyProgram>> revisions = surveyProgramService.findAllRevisionsPageable(
+        Page<Revision<Integer, SurveyProgram>> revisions = surveyProgramAuditService.findRevisions(
                 surveyProgram.getId(), new PageRequest(0, 10));
 
         Revisions<Integer, SurveyProgram> wrapper = new Revisions<>(revisions.getContent());
@@ -67,9 +71,9 @@ public class SurveyProgramServiceAuditTest {
     public void findSurveyByRevisionTest() throws Exception {
         surveyProgram = surveyProgramService.findOne(surveyProgram.getId());
 
-        Revision<Integer, SurveyProgram> surveyRevision = surveyProgramService.findLastChange(surveyProgram.getId());
+        Revision<Integer, SurveyProgram> surveyRevision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
 
-        Revision<Integer, SurveyProgram> survey = surveyProgramService.findEntityAtRevision(
+        Revision<Integer, SurveyProgram> survey = surveyProgramAuditService.findRevision(
                 surveyRevision.getEntity().getId(), 2);
 
         assertThat(survey.getRevisionNumber(), is(2));

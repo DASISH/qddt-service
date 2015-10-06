@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,19 +75,4 @@ class ConceptServiceImpl implements ConceptService {
         conceptRepository.delete(uuid);
     }
 
-
-    @Override
-    public Revision<Integer, Concept> findLastChange(UUID uuid) {
-        return conceptRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    public Revision<Integer, Concept> findEntityAtRevision(UUID uuid, Integer revision) {
-        return conceptRepository.findRevision(uuid,revision);
-    }
-
-    @Override
-    public Page<Revision<Integer, Concept>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return conceptRepository.findRevisions(uuid,pageable);
-    }
 }

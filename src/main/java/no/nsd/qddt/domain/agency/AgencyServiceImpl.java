@@ -24,8 +24,6 @@ class AgencyServiceImpl implements AgencyService {
         this.agencyRepository = agencyRepository;
     }
 
-
-
     @Override
     public long count() {
         return 0;
@@ -72,11 +70,4 @@ class AgencyServiceImpl implements AgencyService {
     public void delete(UUID uuid) {
         agencyRepository.delete(uuid);
     }
-
-
-
-
-
-
-
 }

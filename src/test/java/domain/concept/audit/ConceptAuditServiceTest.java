@@ -1,8 +1,9 @@
-package domain.concept;
+package domain.concept.audit;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +23,13 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class ConceptServiceTest {
+public class ConceptAuditServiceTest {
 
     @Autowired
     private ConceptService conceptService;
+
+    @Autowired
+    private ConceptAuditService conceptAuditService;
 
     private Concept concept;
 
@@ -46,10 +50,10 @@ public class ConceptServiceTest {
         concept = conceptService.findOne(concept.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, Concept> revision = conceptService.findLastChange(concept.getId());
+        Revision<Integer, Concept> revision = conceptAuditService.findLastChange(concept.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, Concept>> revisions = conceptService.findAllRevisionsPageable(
+        Page<Revision<Integer, Concept>> revisions = conceptAuditService.findRevisions(
                 concept.getId(), new PageRequest(0, 10));
         assertThat(revisions.getNumberOfElements(), is(4));
 

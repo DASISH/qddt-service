@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,22 +79,4 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Transactional(readOnly = false)
     public void delete(TopicGroup instance) { topicGroupRepository.delete(instance.getId());  }
 
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, TopicGroup> findLastChange(UUID uuid) {
-        return topicGroupRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, TopicGroup> findEntityAtRevision(UUID uuid, Integer revision) {
-        return topicGroupRepository.findRevision(uuid, revision);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, TopicGroup>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return topicGroupRepository.findRevisions(uuid,pageable);
-    }
 }

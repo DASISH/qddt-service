@@ -3,15 +3,12 @@ package no.nsd.qddt.domain.concept;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.commentable.CommentableService;
-import no.nsd.qddt.domain.commentable.CommentableServiceImpl;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

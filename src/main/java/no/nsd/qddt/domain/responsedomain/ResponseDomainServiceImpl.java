@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +24,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository) {
         this.responseDomainRepository = responseDomainRepository;
     }
-
 
     @Override
     public long count() {
@@ -72,21 +70,5 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     public void delete(UUID uuid) {
         responseDomainRepository.delete(uuid);
-    }
-
-
-    @Override
-    public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
-        return responseDomainRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    public Revision<Integer, ResponseDomain> findEntityAtRevision(UUID uuid, Integer revision) {
-        return responseDomainRepository.findRevision(uuid, revision);
-    }
-
-    @Override
-    public Page<Revision<Integer, ResponseDomain>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return responseDomainRepository.findRevisions(uuid,pageable);
     }
 }

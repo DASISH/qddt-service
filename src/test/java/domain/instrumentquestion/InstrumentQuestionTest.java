@@ -1,4 +1,4 @@
-package service;
+package domain.instrumentquestion;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.instrument.InstrumentService;

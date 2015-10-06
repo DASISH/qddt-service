@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,24 +75,5 @@ class StudyServiceImpl implements StudyService {
     @Transactional(readOnly = false)
     public void delete(UUID uuid) {
         studyRepository.delete(uuid);
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Study> findLastChange(UUID uuid) {
-        return studyRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, Study> findEntityAtRevision(UUID uuid, Integer revision) {
-        return studyRepository.findRevision(uuid, revision);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, Study>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return studyRepository.findRevisions(uuid,pageable);
     }
 }

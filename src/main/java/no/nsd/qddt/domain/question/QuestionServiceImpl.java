@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,20 +77,4 @@ class QuestionServiceImpl implements QuestionService {
         Question child= questionRepository.findOne(guidId);
         return questionRepository.findAllByParentId(child.getParent().getId(), pageable);
     }
-
-    @Override
-    public Revision<Integer, Question> findLastChange(UUID uuid) {
-        return questionRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    public Revision<Integer, Question> findEntityAtRevision(UUID uuid, Integer revision) {
-        return questionRepository.findRevision(uuid,revision);
-    }
-
-    @Override
-    public Page<Revision<Integer, Question>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return questionRepository.findRevisions(uuid,pageable);
-    }
-
 }

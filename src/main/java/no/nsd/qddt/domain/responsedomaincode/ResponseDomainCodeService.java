@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
-import no.nsd.qddt.domain.BaseServiceAudit;
+import no.nsd.qddt.domain.BaseService;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-public interface ResponseDomainCodeService extends BaseServiceAudit<ResponseDomainCode,UUID> {
+public interface ResponseDomainCodeService extends BaseService<ResponseDomainCode, UUID> {
 
     /**
      * Find ResponseDomainCode by responseDomain

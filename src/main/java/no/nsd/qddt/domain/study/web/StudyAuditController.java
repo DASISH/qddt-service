@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.study.web;
 
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,29 +26,29 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/study/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudyAuditController {
 
-    private StudyService studyService;
+    private StudyAuditService studyAuditService;
 
     @Autowired
-    public StudyAuditController(StudyService studyService) {
-        this.studyService = studyService;
+    public StudyAuditController(StudyAuditService studyAuditService) {
+        this.studyAuditService = studyAuditService;
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, Study> getLastRevision(@PathVariable("id") UUID id) {
-        return studyService.findLastChange(id);
+        return studyAuditService.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, Study> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
-        return studyService.findEntityAtRevision(id, revision);
+        return studyAuditService.findRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
             @PathVariable("id") UUID id,Pageable pageable, PagedResourcesAssembler assembler){
 
-        Page<Revision<Integer, Study>> studies = studyService.findAllRevisionsPageable(id, pageable);
+        Page<Revision<Integer, Study>> studies = studyAuditService.findRevisions(id, pageable);
         return new ResponseEntity<>(assembler.toResource(studies), HttpStatus.OK);
     }
 

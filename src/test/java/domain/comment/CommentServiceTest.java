@@ -1,4 +1,4 @@
-package service;
+package domain.comment;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.comment.Comment;

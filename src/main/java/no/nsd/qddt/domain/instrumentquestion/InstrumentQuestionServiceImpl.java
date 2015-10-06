@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,24 +85,4 @@ class InstrumentQuestionServiceImpl implements InstrumentQuestionService {
     public List<InstrumentQuestion> findByQuestionId(UUID questionId) {
         return instrumentQuestionRepository.findByQuestionId(questionId);
     }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, InstrumentQuestion> findLastChange(UUID id) {
-        return instrumentQuestionRepository.findLastChangeRevision(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Revision<Integer, InstrumentQuestion> findEntityAtRevision(UUID id, Integer revision) {
-        return instrumentQuestionRepository.findRevision(id, revision);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Revision<Integer, InstrumentQuestion>> findAllRevisionsPageable(UUID id, Pageable pageable) {
-        return instrumentQuestionRepository.findRevisions(id,pageable);
-    }
-
 }

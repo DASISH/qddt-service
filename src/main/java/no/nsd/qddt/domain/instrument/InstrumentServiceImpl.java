@@ -4,7 +4,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,21 +70,5 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     public void delete(UUID uuid) {
         instrumentRepository.delete(uuid);
-    }
-
-
-    @Override
-    public Revision<Integer, Instrument> findLastChange(UUID uuid) {
-        return instrumentRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    public Revision<Integer, Instrument> findEntityAtRevision(UUID uuid, Integer revision) {
-        return instrumentRepository.findRevision(uuid,revision);
-    }
-
-    @Override
-    public Page<Revision<Integer, Instrument>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return instrumentRepository.findRevisions(uuid,pageable);
     }
 }

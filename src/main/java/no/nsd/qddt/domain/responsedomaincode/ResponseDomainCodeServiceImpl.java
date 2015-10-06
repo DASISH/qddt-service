@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.responsedomaincode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,20 +77,5 @@ class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
     @Override
     public List<ResponseDomainCode> findByCodeId(UUID codeId) {
         return null;
-    }
-
-    @Override
-    public Revision<Integer, ResponseDomainCode> findLastChange(UUID uuid) {
-        return responseDomainCodeRepository.findLastChangeRevision(uuid);
-    }
-
-    @Override
-    public Revision<Integer, ResponseDomainCode> findEntityAtRevision(UUID uuid, Integer revision) {
-        return responseDomainCodeRepository.findRevision(uuid, revision);
-    }
-
-    @Override
-    public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return responseDomainCodeRepository.findRevisions(uuid, pageable);
     }
 }

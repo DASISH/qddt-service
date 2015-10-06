@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.authority.Authority;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.instrument.Instruction;
+import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;

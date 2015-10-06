@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.instrumentquestion;
 
 import no.nsd.qddt.domain.BaseRepository;
-import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface InstrumentQuestionRepository extends BaseRepository<InstrumentQuestion,UUID>,EnversRevisionRepository<InstrumentQuestion, UUID, Integer> {
+interface InstrumentQuestionRepository extends BaseRepository<InstrumentQuestion,UUID> {
 
     /**
      *

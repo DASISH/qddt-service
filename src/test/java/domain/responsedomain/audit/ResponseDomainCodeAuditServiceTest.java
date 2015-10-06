@@ -1,4 +1,4 @@
-package service.audit;
+package domain.responsedomain.audit;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.code.Code;
@@ -8,19 +8,17 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
-import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.responsedomaincode.audit.ResponseDomainCodeAuditService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -35,13 +33,17 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class ResponseDomainCodeServiceAuditTest {
+public class ResponseDomainCodeAuditServiceTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;
 
     @Autowired
     private ResponseDomainService responseDomainService;
+
+    @Autowired
+    private ResponseDomainCodeAuditService responseDomainCodeAuditService;
+
 
     @Autowired
     private CodeService codeService;
@@ -75,10 +77,10 @@ public class ResponseDomainCodeServiceAuditTest {
         responseDomainCode = responseDomainCodeService.findOne(responseDomainCode.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeService.findLastChange(responseDomainCode.getId());
+        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeAuditService.findLastChange(responseDomainCode.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, ResponseDomainCode>> revisions = responseDomainCodeService.findAllRevisionsPageable(
+        Page<Revision<Integer, ResponseDomainCode>> revisions = responseDomainCodeAuditService.findRevisions(
                 responseDomainCode.getId(), new PageRequest(0, 10));
 
         Revisions<Integer, ResponseDomainCode> wrapper = new Revisions<>(revisions.getContent());
@@ -90,7 +92,7 @@ public class ResponseDomainCodeServiceAuditTest {
     @Test
     public void getAllRevisionsTest() throws Exception {
         Page<Revision<Integer, ResponseDomainCode>> revisions =
-                responseDomainCodeService.findAllRevisionsPageable(responseDomainCode.getId(), new PageRequest(0,20));
+                responseDomainCodeAuditService.findRevisions(responseDomainCode.getId(), new PageRequest(0, 20));
 
                 assertEquals("Excepted four revisions.",
                         revisions.getNumberOfElements(), 4);
@@ -98,7 +100,7 @@ public class ResponseDomainCodeServiceAuditTest {
 
     @Test
     public void getLastRevisionTest() throws Exception {
-        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeService.findLastChange(responseDomainCode.getId());
+        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeAuditService.findLastChange(responseDomainCode.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity(), responseDomainCode);

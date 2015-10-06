@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instrumentquestion;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.instrument.Instruction;
+import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.question.Question;
 import org.hibernate.envers.Audited;
