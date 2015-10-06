@@ -86,7 +86,7 @@ class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Revision<Integer, Question> findEntityAtRevision(UUID uuid, Integer revision) {
-        return questionRepository.findEntityAtRevision(uuid,revision);
+        return questionRepository.findRevision(uuid,revision);
     }
 
     @Override

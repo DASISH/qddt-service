@@ -8,6 +8,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -38,7 +39,6 @@ import java.util.Set;
 @Entity
 @Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit implements Commentable {
-
 
     @OneToMany(mappedBy = "surveyProgram",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
@@ -88,10 +88,10 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (studies != null ? studies.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
-        return result;
+        return super.hashCode() * new Random(10).nextInt();
+//        result = 31 * result + (studies != null ? studies.hashCode() : 0);
+//        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+//        return result;
     }
 
     @Override

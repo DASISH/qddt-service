@@ -62,7 +62,6 @@ class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
     @Override
     @Transactional(readOnly = false)
     public ResponseDomainCode save(ResponseDomainCode instance) {
-
         return responseDomainCodeRepository.save(instance);
     }
 
@@ -83,16 +82,16 @@ class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
 
     @Override
     public Revision<Integer, ResponseDomainCode> findLastChange(UUID uuid) {
-        return null;
+        return responseDomainCodeRepository.findLastChangeRevision(uuid);
     }
 
     @Override
     public Revision<Integer, ResponseDomainCode> findEntityAtRevision(UUID uuid, Integer revision) {
-        return null;
+        return responseDomainCodeRepository.findRevision(uuid, revision);
     }
 
     @Override
     public Page<Revision<Integer, ResponseDomainCode>> findAllRevisionsPageable(UUID uuid, Pageable pageable) {
-        return null;
+        return responseDomainCodeRepository.findRevisions(uuid, pageable);
     }
 }

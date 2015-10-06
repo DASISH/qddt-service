@@ -93,7 +93,7 @@ class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Code> findEntityAtRevision(UUID uuid, Integer revision) {
-        return codeRepository.findEntityAtRevision(uuid, revision);
+        return codeRepository.findRevision(uuid, revision);
     }
 
     @Override

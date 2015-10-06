@@ -69,8 +69,6 @@ public class Code extends AbstractEntityAudit {
 
         Code code = (Code) o;
 
-        if (responseDomainCodes != null ? !responseDomainCodes.equals(code.responseDomainCodes) : code.responseDomainCodes != null)
-            return false;
         return !(category != null ? !category.equals(code.category) : code.category != null);
 
     }
@@ -78,7 +76,6 @@ public class Code extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responseDomainCodes != null ? responseDomainCodes.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
         return result;
     }

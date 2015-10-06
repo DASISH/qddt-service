@@ -83,7 +83,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     public Revision<Integer, SurveyProgram> findEntityAtRevision(UUID uuid, Integer revision) {
-        return surveyProgramRepository.findEntityAtRevision(uuid, revision);
+        return surveyProgramRepository.findRevision(uuid, revision);
     }
 
     @Override

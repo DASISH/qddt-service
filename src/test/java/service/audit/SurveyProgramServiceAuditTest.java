@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -31,9 +30,11 @@ public class SurveyProgramServiceAuditTest {
     @Autowired
     private SurveyProgramService surveyProgramService;
 
+    SurveyProgram surveyProgram;
+
     @Before
     public void setup(){
-        SurveyProgram surveyProgram = new SurveyProgram();
+        surveyProgram = new SurveyProgram();
         surveyProgram.setName("This is the FIRST version");
 
         surveyProgram = surveyProgramService.save(surveyProgram);
@@ -42,7 +43,7 @@ public class SurveyProgramServiceAuditTest {
         surveyProgram = surveyProgramService.save(surveyProgram);
 
         surveyProgram.setName("This is the THIRD version");
-        surveyProgramService.save(surveyProgram);
+        surveyProgram = surveyProgramService.save(surveyProgram);
 
     }
 
@@ -67,13 +68,13 @@ public class SurveyProgramServiceAuditTest {
 
     @Test
     public void findSurveyByRevisionTest() throws Exception {
-        SurveyProgram surveyProgram = surveyProgramService.findAll().get(0);
+        surveyProgram = surveyProgramService.findOne(surveyProgram.getId());
 
         Revision<Integer, SurveyProgram> surveyRevision = surveyProgramService.findLastChange(surveyProgram.getId());
 
         Revision<Integer, SurveyProgram> survey = surveyProgramService.findEntityAtRevision(
-                surveyRevision.getEntity().getId(), 3);
+                surveyRevision.getEntity().getId(), 2);
 
-        assertThat(survey.getRevisionNumber(), is(3));
+        assertThat(survey.getRevisionNumber(), is(2));
     }
 }

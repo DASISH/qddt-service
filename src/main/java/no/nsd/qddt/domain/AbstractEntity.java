@@ -14,8 +14,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-//import javax.persistence.*;
-
 /**
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
@@ -23,12 +21,8 @@ import java.util.UUID;
 //@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @Audited
 @MappedSuperclass
+@EntityListeners(EntityCreatedModifiedDateAuditEventConfiguration.class)
 public abstract class AbstractEntity {
-    /**
-     * Two men are in a desert. They are both wearing backpacks.
-     * One of the men is dead. The man who is alive, has his pack open.
-     * The dead man's pack is closed. What is in their packs?
-     */
 
     @Id
     @Column(name = "id")
@@ -43,6 +37,12 @@ public abstract class AbstractEntity {
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "created")
     private LocalDateTime created;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    @Column(name = "updated")
+    private LocalDateTime updated;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -72,6 +72,14 @@ public abstract class AbstractEntity {
         this.createdBy = createdBy;
     }
 
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,12 +102,10 @@ public abstract class AbstractEntity {
     @Override
     public String toString() {
         return "AbstractEntity{" +
+                "id=" + id +
                 ", created=" + created +
+                ", updated=" + updated +
                 ", createdBy=" + createdBy +
                 '}';
     }
-
-    /**
-     * A parachute.
-     */
 }

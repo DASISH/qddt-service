@@ -88,7 +88,7 @@ class StudyServiceImpl implements StudyService {
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Study> findEntityAtRevision(UUID uuid, Integer revision) {
-        return studyRepository.findEntityAtRevision(uuid, revision);
+        return studyRepository.findRevision(uuid, revision);
     }
 
     @Override

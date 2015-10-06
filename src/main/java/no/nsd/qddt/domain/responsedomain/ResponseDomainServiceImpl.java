@@ -82,7 +82,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public Revision<Integer, ResponseDomain> findEntityAtRevision(UUID uuid, Integer revision) {
-        return responseDomainRepository.findEntityAtRevision(uuid, revision);
+        return responseDomainRepository.findRevision(uuid, revision);
     }
 
     @Override

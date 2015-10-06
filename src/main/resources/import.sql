@@ -40,9 +40,9 @@ INSERT INTO responsedomain_code(id,created,change_reason, responsedomain_id, cod
 
 
 // POPULATE SURVEY DUMMY DATA
-INSERT INTO SURVEY_PROGRAM(id,name,change_reason, created) VALUES('a9fe6c58-5038-1fe0-8150-382001480000', 'THE SURVEY','CREATED','01-01-2015');
-INSERT INTO STUDY(id,created,change_reason,name,survey_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480001','01-01-2015','CREATED','myStudy','a9fe6c58-5038-1fe0-8150-382001480000');
-INSERT INTO TOPIC_GROUP(id,created,change_reason,name,study_id)VALUES('a9fe6c58-5038-1fe0-8150-382001480002','01-01-2015','CREATED','Module test','a9fe6c58-5038-1fe0-8150-382001480001');
-INSERT INTO CONCEPT(id,created,change_reason,name,topicgroup_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480003','01-01-2015','CREATED','Test Concept','a9fe6c58-5038-1fe0-8150-382001480002');
-INSERT INTO QUESTION(id,created,change_reason,grid_idx,name,question,responsedomain_id)  VALUES('a9fe6c58-5038-1fe0-8150-382001480004','01-01-2015','CREATED',0,'How to DDI?','How would you DDI if you could?','d5dbaebe-65d0-11e5-9d70-feff819cdc9f');
-INSERT INTO CONCEPT_QUESTION (question_id,concept_id) VALUES ('a9fe6c58-5038-1fe0-8150-382001480004','a9fe6c58-5038-1fe0-8150-382001480003')
+-- INSERT INTO survey_program(id,name,change_reason) VALUES('a9fe6c58-5038-1fe0-8150-382001480000', 'THE SURVEY','CREATED');
+-- INSERT INTO study(id,change_reason,name,survey_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480001', 'CREATED','myStudy','a9fe6c58-5038-1fe0-8150-382001480000');
+-- INSERT INTO topic_group(id,change_reason,name,study_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480002','CREATED','Module test','a9fe6c58-5038-1fe0-8150-382001480001');
+-- INSERT INTO concept(id,change_reason,name,topicgroup_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480003','CREATED','Test Concept','a9fe6c58-5038-1fe0-8150-382001480002');
+-- INSERT INTO question(id,change_reason,grid_idx,name,question,responsedomain_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480004','CREATED',0,'How to DDI?','How would you DDI if you could?','d5dbaebe-65d0-11e5-9d70-feff819cdc9f');
+-- INSERT INTO concept_question(question_id,concept_id) VALUES('a9fe6c58-5038-1fe0-8150-382001480004','a9fe6c58-5038-1fe0-8150-382001480003')

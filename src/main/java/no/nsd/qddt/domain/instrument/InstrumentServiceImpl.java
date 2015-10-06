@@ -81,7 +81,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Revision<Integer, Instrument> findEntityAtRevision(UUID uuid, Integer revision) {
-        return instrumentRepository.findEntityAtRevision(uuid,revision);
+        return instrumentRepository.findRevision(uuid,revision);
     }
 
     @Override
