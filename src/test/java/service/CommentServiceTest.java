@@ -42,7 +42,7 @@ public class CommentServiceTest {
 
         Comment root  = commentService.findOne(parent.getId());
 
-        assertThat("Parent tree should have 5 elements.",  parent.treeSize(), is(5));
+        assertThat("Parent tree should hold 5 elements.",  parent.treeSize(), is(5));
         assertThat("Parent should have 3 children.", parent.getChildren().size(), is(3));
         assertEquals("Parent and root should be equal.", parent, root);
     }
