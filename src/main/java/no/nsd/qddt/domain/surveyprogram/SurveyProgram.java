@@ -46,6 +46,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
     private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {
+
     }
 
     public Set<Study> getStudies() {
@@ -87,7 +88,10 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (studies != null ? studies.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        return result;
     }
 
     @Override
