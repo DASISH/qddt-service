@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.agency;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.ServiceTest;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class AgencyServiceTest extends AbstractServiceTest {
+public class AgencyServiceTest extends AbstractServiceTest implements ServiceTest {
 
     @Autowired
     private AgencyService agencyService;
@@ -23,12 +23,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
-
-    }
-
-    @After
-    public void tearDown() {
-        agencyRepository.deleteAll();
+        super.setBaseRepositories(agencyRepository);
     }
 
     @Test
