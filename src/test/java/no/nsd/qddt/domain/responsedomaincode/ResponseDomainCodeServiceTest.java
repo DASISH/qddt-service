@@ -1,16 +1,16 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.code.Code;
-import no.nsd.qddt.domain.code.CodeService;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
 
 public class ResponseDomainCodeServiceTest extends AbstractServiceTest {
 
@@ -18,38 +18,109 @@ public class ResponseDomainCodeServiceTest extends AbstractServiceTest {
     private ResponseDomainCodeService responseDomainCodeService;
 
     @Autowired
-    private ResponseDomainService responseDomainService;
-
-    @Autowired
-    private CodeService codeService;
-
-    private ResponseDomain responseDomain;
-
-    private ResponseDomainCode responseDomainCode;
+    private ResponseDomainCodeRepository responseDomainCodeRepository;
 
     @Before
-    public void setUp() {
-        Code code = new Code();
-        code.setCategory("Test class code");
-        code = codeService.save(code);
-
-
-        responseDomain = new ResponseDomain();
-        responseDomain.setName("This is a response domain");
-        responseDomain = responseDomainService.save(responseDomain);
-
-        responseDomainCode = new ResponseDomainCode();
-        responseDomainCode.setCodeIdx(1);
-        responseDomainCode.setCode(code);
-        responseDomainCode.setResponseDomain(responseDomain);
-        responseDomainCodeService.save(responseDomainCode);
+    public void setup() {
+        super.setBaseRepositories(responseDomainCodeRepository);
     }
 
     @Test
-    @Transactional
-    public void findByResponseDomain() throws Exception {
-        ResponseDomainCode rdc = responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).get(0);
-        assertEquals("Expected objects to be equal().", responseDomainCode, rdc);
-        assertEquals("Excepted rank to be 1", responseDomainCode.getCodeIdx(), 1);
+    @Override
+    public void testCount() throws Exception {
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode One");
+        responseDomainCodeService.save(responseDomainCode);
+
+        responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode Two");
+        responseDomainCodeService.save(responseDomainCode);
+
+        responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode Three");
+        responseDomainCodeService.save(responseDomainCode);
+
+        assertThat("Should be three", responseDomainCodeService.count(), is(3L));
+    }
+
+    @Test
+    @Override
+    public void testExists() throws Exception {
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Existing responseDomainCode");
+        responseDomainCode = responseDomainCodeService.save(responseDomainCode);
+        assertTrue("ResponseDomainCode should exist", responseDomainCodeService.exists(responseDomainCode.getId()));
+    }
+
+    @Test
+    @Override
+    public void testFindOne() throws Exception {
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Existing responseDomainCode");
+        responseDomainCode = responseDomainCodeService.save(responseDomainCode);
+        assertNotNull("ResponseDomainCode should not be null", responseDomainCodeService.findOne(responseDomainCode.getId()));
+    }
+
+    @Test
+    @Override
+    public void testSave() throws Exception {
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Existing responseDomainCode");
+        assertNotNull("ResponseDomainCode should be saved", responseDomainCodeService.save(responseDomainCode));
+    }
+
+    @Test
+    @Override
+    public void testSaveAll() throws Exception {
+        List<ResponseDomainCode> agencyList = new ArrayList<>();
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode One");
+        agencyList.add(responseDomainCode);
+
+        responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode Two");
+        agencyList.add(responseDomainCode);
+
+        responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode Three");
+        agencyList.add(responseDomainCode);
+
+        responseDomainCodeService.save(agencyList);
+
+        assertEquals("Should return 3", responseDomainCodeService.count(), 3L);
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    @Override
+    public void testDelete() throws Exception {
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Existing responseDomainCode");
+        responseDomainCode = responseDomainCodeService.save(responseDomainCode);
+        responseDomainCodeService.delete(responseDomainCode.getId());
+
+        assertNull("Should return null", responseDomainCodeService.findOne(responseDomainCode.getId()));
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    @Override
+    public void testDeleteAll() throws Exception {
+        List<ResponseDomainCode> agencyList = new ArrayList<>();
+        ResponseDomainCode responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode One");
+        agencyList.add(responseDomainCode);
+
+        responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode Two");
+        agencyList.add(responseDomainCode);
+
+        responseDomainCode = new ResponseDomainCode();
+        responseDomainCode.setName("Test ResponseDomainCode Three");
+        agencyList.add(responseDomainCode);
+
+        agencyList = responseDomainCodeService.save(agencyList);
+        responseDomainCodeService.delete(agencyList);
+
+        agencyList.forEach(a -> assertNull("Should return null", responseDomainCodeService.findOne(a.getId())));
+
     }
 }

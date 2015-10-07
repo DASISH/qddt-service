@@ -3,51 +3,132 @@ package no.nsd.qddt.domain.question;
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.hamcrest.core.Is;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 @Transactional
-public class QuestionServiceTest extends AbstractServiceTest {
+public class QuestionServiceTest  extends AbstractServiceTest {
 
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Before
+    public void setup() {
+        super.setBaseRepositories(questionRepository);
+    }
+
     @Test
-    public void saveQuestionTest() throws Exception {
+    @Override
+    public void testCount() throws Exception {
         Question question = new Question();
-        question.setName("PARENT - FØRSTE SPØRSMÅL");
+        question.setName("Test Question One");
+        questionService.save(question);
 
-        Question q1 = new Question();
-        q1.setName("1 CHILD");
-        Comment c1 = new Comment("første test kommentar");
-        q1.addComment(c1);
-        c1.addComment(new Comment("barn kommentar, nivå 2"));
-        q1.addComment(new Comment("neste kommentar nivå 1"));
+        question = new Question();
+        question.setName("Test Question Two");
+        questionService.save(question);
 
-        Question q2 = new Question();
-        q2.setName("2 CHILD");
+        question = new Question();
+        question.setName("Test Question Three");
+        questionService.save(question);
 
-        Question q3 = new Question();
-        q3.setName("3 CHILD");
+        Assert.assertThat("Should be three", questionService.count(), Is.is(3L));
+    }
 
-        question.addChild(q1);
-        question.addChild(q2);
-        question.addChild(q3);
+    @Test
+    @Override
+    public void testExists() throws Exception {
+        Question question = new Question();
+        question.setName("Existing question");
+        question = questionService.save(question);
+        assertTrue("Question should exist", questionService.exists(question.getId()));
+    }
 
-        assertThat(questionService.save(question).getChildren().size(), is(3));
-        assertThat(q1.getComments().size(), is(2));
+    @Test
+    @Override
+    public void testFindOne() throws Exception {
+        Question question = new Question();
+        question.setName("Existing question");
+        question = questionService.save(question);
+        assertNotNull("Question should not be null", questionService.findOne(question.getId()));
+    }
 
+    @Test
+    @Override
+    public void testSave() throws Exception {
+        Question question = new Question();
+        question.setName("Existing question");
+        assertNotNull("Question should be saved", questionService.save(question));
+    }
+
+    @Test
+    @Override
+    public void testSaveAll() throws Exception {
+        List<Question> agencyList = new ArrayList<>();
+        Question question = new Question();
+        question.setName("Test Question One");
+        agencyList.add(question);
+
+        question = new Question();
+        question.setName("Test Question Two");
+        agencyList.add(question);
+
+        question = new Question();
+        question.setName("Test Question Three");
+        agencyList.add(question);
+
+        questionService.save(agencyList);
+
+        assertEquals("Should return 3", questionService.count(), 3L);
     }
 
     @Test(expected = ResourceNotFoundException.class)
-    public void fail() throws Exception {
-         questionService.findOne(UUID.randomUUID());
+    @Override
+    public void testDelete() throws Exception {
+        Question question = new Question();
+        question.setName("Existing question");
+        question = questionService.save(question);
+        questionService.delete(question.getId());
+
+        assertNull("Should return null", questionService.findOne(question.getId()));
     }
 
+    @Test(expected = ResourceNotFoundException.class)
+    @Override
+    public void testDeleteAll() throws Exception {
+        List<Question> agencyList = new ArrayList<>();
+        Question question = new Question();
+        question.setName("Test Question One");
+        agencyList.add(question);
+
+        question = new Question();
+        question.setName("Test Question Two");
+        agencyList.add(question);
+
+        question = new Question();
+        question.setName("Test Question Three");
+        agencyList.add(question);
+
+        agencyList = questionService.save(agencyList);
+        questionService.delete(agencyList);
+
+        agencyList.forEach(a -> assertNull("Should return null", questionService.findOne(a.getId())));
+
+    }
 }

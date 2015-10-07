@@ -31,5 +31,4 @@ public abstract class AbstractServiceTest implements ServiceTest {
     public void tearDown() {
         baseRepository.forEach(CrudRepository::deleteAll);
     }
-
 }
