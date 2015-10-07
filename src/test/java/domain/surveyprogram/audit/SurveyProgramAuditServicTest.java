@@ -1,5 +1,6 @@
 package domain.surveyprogram.audit;
 
+import domain.AbstractServiceTest;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
@@ -19,13 +20,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-/**
- * This test serves as an example that Hibernat Envers is actually
- * working and that Spring Data Envers is picking up on it.
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class SurveyProgramAuditServicTest {
+public class SurveyProgramAuditServicTest  extends AbstractServiceTest {
 
     @Autowired
     private SurveyProgramService surveyProgramService;

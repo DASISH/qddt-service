@@ -1,15 +1,12 @@
 package domain.question;
 
-import no.nsd.qddt.QDDT;
+import domain.AbstractServiceTest;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -17,14 +14,9 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-/**
- * @author Stig Norland
- */
-
 @Transactional
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class QuestionServiceTest {
+public class QuestionServiceTest extends AbstractServiceTest {
+
     @Autowired
     private QuestionService questionService;
 
@@ -55,10 +47,9 @@ public class QuestionServiceTest {
 
     }
 
-
     @Test(expected = ResourceNotFoundException.class)
     public void fail() throws Exception {
-        Question q = questionService.findOne(UUID.randomUUID());
+         questionService.findOne(UUID.randomUUID());
     }
 
 }

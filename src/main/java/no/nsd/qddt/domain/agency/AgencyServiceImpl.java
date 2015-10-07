@@ -26,7 +26,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public long count() {
-        return 0;
+        return agencyRepository.count();
     }
 
     @Override
@@ -42,12 +42,9 @@ class AgencyServiceImpl implements AgencyService {
         );
     }
 
-
     @Override
     @Transactional(readOnly = false)
     public Agency save(Agency instance) {
-
-        instance.setCreated(LocalDateTime.now());
         return agencyRepository.save(instance);
     }
 

@@ -1,5 +1,6 @@
 package domain.responsedomaincode;
 
+import domain.AbstractServiceTest;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
@@ -17,12 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dag Østgulen Heradstveit
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class ResponseDomainCodeServiceTest {
+public class ResponseDomainCodeServiceTest extends AbstractServiceTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;

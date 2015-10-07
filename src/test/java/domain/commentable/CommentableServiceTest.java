@@ -1,5 +1,6 @@
 package domain.commentable;
 
+import domain.AbstractServiceTest;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
@@ -14,18 +15,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by Dag Østgulen Heradstveit.
- */
 @Transactional
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class CommentableServiceTest {
+public class CommentableServiceTest extends AbstractServiceTest {
 
     @Autowired
     private CommentableService commentableService;
@@ -69,10 +66,12 @@ public class CommentableServiceTest {
 
     @Test
     public void testPopulate() throws Exception {
+        UUID id = null; //Any id. Does not matter that it gets overridden.
         for(int i = 0; i < 2; i++) {
             Study owner = new Study();
             owner.setName("This is study " + i);
             owner = studyService.save(owner);
+            id = owner.getId();
 
             for(int j = 0; j < 2; j++) {
                 Comment parent = new Comment();
@@ -90,7 +89,7 @@ public class CommentableServiceTest {
             }
         }
 
-        Study study = studyService.findAll().get(0);
+        Study study = studyService.findOne(id);
         List<Comment> comments = commentableService.populate(study);
 
         comments.forEach( c -> {

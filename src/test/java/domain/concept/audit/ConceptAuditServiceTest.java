@@ -1,5 +1,6 @@
 package domain.concept.audit;
 
+import domain.AbstractServiceTest;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
@@ -18,12 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by Dag Østgulen Heradstveit.
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class ConceptAuditServiceTest {
+public class ConceptAuditServiceTest extends AbstractServiceTest {
 
     @Autowired
     private ConceptService conceptService;

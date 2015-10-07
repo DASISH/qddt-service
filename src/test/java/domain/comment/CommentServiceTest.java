@@ -1,5 +1,6 @@
 package domain.comment;
 
+import domain.AbstractServiceTest;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
@@ -15,13 +16,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-
-/**
- * @author Dag Østgulen Heradstveit
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class CommentServiceTest {
+public class CommentServiceTest extends AbstractServiceTest {
 
     @Autowired
     private CommentService commentService;

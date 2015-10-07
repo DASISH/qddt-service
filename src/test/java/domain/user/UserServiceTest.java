@@ -1,5 +1,6 @@
 package domain.user;
 
+import domain.AbstractServiceTest;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserService;
@@ -10,15 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class UserServiceTest {
-
-    /**
-     * User test data
-     * admin:password:admin@example.org
-     * user:password:user@example.org
-     */
+public class UserServiceTest extends AbstractServiceTest {
 
     @Autowired
     private UserService userService;
@@ -33,5 +26,4 @@ public class UserServiceTest {
     public void testFailFindUserByEmail() throws Exception {
         userService.findByEmail("null");
     }
-
 }

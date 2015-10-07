@@ -57,6 +57,8 @@ public class SurveyProgramControllerTest {
 
     private MockHttpSession session;
 
+    private SurveyProgram surveyProgram;
+
     @Before
     public void setUp() {
         session = HttpMockAuthSession.createSession(qddtUserDetailsService, "admin@example.org");
@@ -66,6 +68,10 @@ public class SurveyProgramControllerTest {
                 .addFilter(springSecurityFilterChain)
                 .dispatchOptions(true)
                 .build();
+
+        surveyProgram = new SurveyProgram();
+        surveyProgram.setName("This is a survey program");
+        surveyProgram = surveyProgramService.save(surveyProgram);
     }
 
     @Test
@@ -83,10 +89,8 @@ public class SurveyProgramControllerTest {
     @Transactional
     @Test
     public void findOneTest() throws Exception {
-        SurveyProgram surveyProgram = surveyProgramService.findAll().get(0);
-
         // ctx:/survey/id
-        mvc.perform(get("/survey/1").session(session)
+        mvc.perform(get("/survey/"+surveyProgram.getId()).session(session)
                 .contentType(rest.getContentType())
                 .content(rest.json(surveyProgram)))
                 .andExpect(content().contentType(rest.getContentType()))

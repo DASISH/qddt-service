@@ -1,5 +1,6 @@
 package domain.responsedomaincode;
 
+import domain.AbstractServiceTest;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
@@ -18,13 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- * @author Stig Norland
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class ResponseDomainCodeHierarchyTest {
-
+public class ResponseDomainCodeHierarchyTest extends AbstractServiceTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;

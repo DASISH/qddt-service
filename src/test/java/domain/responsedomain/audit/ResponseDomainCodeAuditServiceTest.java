@@ -1,6 +1,6 @@
 package domain.responsedomain.audit;
 
-import no.nsd.qddt.QDDT;
+import domain.AbstractServiceTest;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -11,29 +11,17 @@ import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
 import no.nsd.qddt.domain.responsedomaincode.audit.ResponseDomainCodeAuditService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-/**
- * Test is provided to make sure that we still get the relevant
- * data after moving from @EmbeddedId and @Embeddable composite
- * keys to surrogate keys to provide Envers support.
- *
- * @author Dag Østgulen Heradstveit
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
-public class ResponseDomainCodeAuditServiceTest {
+public class ResponseDomainCodeAuditServiceTest extends AbstractServiceTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;
