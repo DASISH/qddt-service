@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.audit;
 
-import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.AbstractAuditServiceTest;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class ResponseDomainCodeAuditServiceTest extends AbstractServiceTest {
+public class ResponseDomainCodeAuditServiceTest extends AbstractAuditServiceTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;

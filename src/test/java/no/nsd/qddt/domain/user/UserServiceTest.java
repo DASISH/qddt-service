@@ -18,8 +18,13 @@ public class UserServiceTest extends AbstractServiceTest {
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Before
+    public void setup() {
+        super.setBaseRepositories(userRepository);
+    }
 
     @Test
     public void testFindUserByEmail() throws Exception {
@@ -30,11 +35,6 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test(expected = UserNotFoundException.class)
     public void testFailFindUserByEmail() throws Exception {
         userService.findByEmail("null");
-    }
-
-    @Before
-    public void setup() {
-//        userRepository = new UserRepository();
     }
 
     @Test

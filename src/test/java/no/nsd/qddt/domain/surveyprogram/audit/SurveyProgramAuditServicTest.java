@@ -1,11 +1,9 @@
 package no.nsd.qddt.domain.surveyprogram.audit;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +132,7 @@ public class SurveyProgramAuditServicTest  extends AbstractServiceTest {
         surveyProgram.setName("Third");
         surveyProgramArrayList.add(surveyProgram);
 
-        assertNotNull("Should have saved 3 Surveys",surveyProgramService.save(surveyProgramArrayList));
+        assertNotNull("Should have saved 3 Surveys", surveyProgramService.save(surveyProgramArrayList));
 
         assertEquals("Should have saved 3 Surveys", surveyProgramService.count(), is(3L));
 

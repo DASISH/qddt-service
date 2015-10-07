@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.commentable;
 
 import no.nsd.qddt.domain.BaseRepository;
 import no.nsd.qddt.domain.comment.Comment;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

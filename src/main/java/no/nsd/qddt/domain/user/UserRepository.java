@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.user;
 
-import org.springframework.data.envers.repository.support.EnversRevisionRepository;
+import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,7 +10,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface UserRepository extends  EnversRevisionRepository<User, UUID, Integer> {
+interface UserRepository extends BaseRepository<User, UUID> {
 
     /**
      * Return a user.

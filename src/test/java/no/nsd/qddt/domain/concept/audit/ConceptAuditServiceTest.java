@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept.audit;
 
-import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.AbstractAuditServiceTest;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import org.junit.Before;
@@ -14,7 +14,7 @@ import org.springframework.data.history.Revisions;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ConceptAuditServiceTest extends AbstractServiceTest {
+public class ConceptAuditServiceTest extends AbstractAuditServiceTest {
 
     @Autowired
     private ConceptService conceptService;

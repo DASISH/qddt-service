@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.question;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
@@ -12,12 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNull;
 
 @Transactional
 public class QuestionServiceTest  extends AbstractServiceTest {

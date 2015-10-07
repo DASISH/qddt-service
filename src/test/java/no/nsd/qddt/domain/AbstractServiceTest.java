@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain;
 
-import com.google.common.collect.Lists;
 import no.nsd.qddt.QDDT;
 import org.junit.After;
 import org.junit.runner.RunWith;

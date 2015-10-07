@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
-import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -8,12 +8,17 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.utils.builders.CodeBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class ResponseDomainCodeHierarchyTest extends AbstractServiceTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = QDDT.class)
+public class ResponseDomainCodeHierarchyTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;
