@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.agency;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.ServiceTest;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.After;
 import org.junit.Before;
@@ -14,7 +13,7 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class AgencyServiceTest extends AbstractServiceTest implements ServiceTest {
+public class AgencyServiceTest extends AbstractServiceTest {
 
     @Autowired
     private AgencyService agencyService;
