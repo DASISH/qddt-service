@@ -17,14 +17,19 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         LocalDateTime now = LocalDateTime.now();
-        if(entity.getCreated() != null)
+        if(entity.getCreated() != null) {
             entity.setUpdated(now);
+        }
         else
             entity.setCreated(now);
     }
 
     @PreUpdate
-    public void update(AbstractEntity entity) {
+    public void update(AbstractEntityAudit entity) {
         entity.setUpdated(LocalDateTime.now());
+        if (entity.getChangeReason() == AbstractEntityAudit.ChangeKind.CREATED)
+            entity.setChangeReason(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
     }
+
+
 }
