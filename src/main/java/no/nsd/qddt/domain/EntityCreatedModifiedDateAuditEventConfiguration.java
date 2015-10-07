@@ -17,9 +17,8 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         LocalDateTime now = LocalDateTime.now();
-        if(entity.getCreated() != null) {
+        if(entity.getCreated() != null)
             entity.setUpdated(now);
-        }
         else
             entity.setCreated(now);
     }
