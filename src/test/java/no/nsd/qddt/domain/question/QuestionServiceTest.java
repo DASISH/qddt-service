@@ -90,7 +90,7 @@ public class QuestionServiceTest  extends AbstractServiceTest {
 
         questionService.save(agencyList);
 
-        assertEquals("Should return 3", questionService.count(), 3L);
+        assertEquals("Should return 3", 3L, questionService.count());
     }
 
     @Test(expected = ResourceNotFoundException.class)

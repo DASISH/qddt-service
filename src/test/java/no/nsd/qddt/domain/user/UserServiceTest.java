@@ -28,8 +28,10 @@ public class UserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testFindUserByEmail() throws Exception {
-        User user = userService.findByEmail("user@example.org");
-        assert user.getUsername().equals("user");
+        User user = new User();
+        user.setUsername("tester@example.org");
+        user = userService.save(user);
+        assertEquals("Username should not be null", userService.findByEmail("tester@example.org"), user);
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -40,17 +42,17 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testCount() throws Exception {
-        User User = new User();
-        User.setEmail("Test User One");
-        userService.save(User);
+        User user = new User();
+        user.setEmail("Test User One");
+        userService.save(user);
 
-        User = new User();
-        User.setEmail("Test User Two");
-        userService.save(User);
+        user = new User();
+        user.setEmail("Test User Two");
+        userService.save(user);
 
-        User = new User();
-        User.setEmail("Test User Three");
-        userService.save(User);
+        user = new User();
+        user.setEmail("Test User Three");
+        userService.save(user);
 
         assertThat("Should be three", userService.count(), is(3L));
     }
@@ -58,44 +60,44 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testExists() throws Exception {
-        User User = new User();
-        User.setEmail("Existing User");
-        User = userService.save(User);
-        assertTrue("User should exist", userService.exists(User.getId()));
+        User user = new User();
+        user.setEmail("Existing User");
+        user = userService.save(user);
+        assertTrue("User should exist", userService.exists(user.getId()));
     }
 
     @Test
     @Override
     public void testFindOne() throws Exception {
-        User User = new User();
-        User.setEmail("Existing User");
-        User = userService.save(User);
-        assertNotNull("User should not be null", userService.findOne(User.getId()));
+        User user = new User();
+        user.setEmail("Existing User");
+        user = userService.save(user);
+        assertNotNull("User should not be null", userService.findOne(user.getId()));
     }
 
     @Test
     @Override
     public void testSave() throws Exception {
-        User User = new User();
-        User.setEmail("Existing User");
-        assertNotNull("User should be saved", userService.save(User));
+        User user = new User();
+        user.setEmail("Existing User");
+        assertNotNull("User should be saved", userService.save(user));
     }
 
     @Test
     @Override
     public void testSaveAll() throws Exception {
         List<User> agencyList = new ArrayList<>();
-        User User = new User();
-        User.setEmail("Test User One");
-        agencyList.add(User);
+        User user = new User();
+        user.setEmail("Test User One");
+        agencyList.add(user);
 
-        User = new User();
-        User.setEmail("Test User Two");
-        agencyList.add(User);
+        user = new User();
+        user.setEmail("Test User Two");
+        agencyList.add(user);
 
-        User = new User();
-        User.setEmail("Test User Three");
-        agencyList.add(User);
+        user = new User();
+        user.setEmail("Test User Three");
+        agencyList.add(user);
 
         userService.save(agencyList);
 
@@ -105,29 +107,29 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     @Override
     public void testDelete() throws Exception {
-        User User = new User();
-        User.setEmail("Existing User");
-        User = userService.save(User);
-        userService.delete(User.getId());
+        User user = new User();
+        user.setEmail("Existing User");
+        user = userService.save(user);
+        userService.delete(user.getId());
 
-        assertNull("Should return null", userService.findOne(User.getId()));
+        assertNull("Should return null", userService.findOne(user.getId()));
     }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
     public void testDeleteAll() throws Exception {
         List<User> agencyList = new ArrayList<>();
-        User User = new User();
-        User.setEmail("Test User One");
-        agencyList.add(User);
+        User user = new User();
+        user.setEmail("Test User One");
+        agencyList.add(user);
 
-        User = new User();
-        User.setEmail("Test User Two");
-        agencyList.add(User);
+        user = new User();
+        user.setEmail("Test User Two");
+        agencyList.add(user);
 
-        User = new User();
-        User.setEmail("Test User Three");
-        agencyList.add(User);
+        user = new User();
+        user.setEmail("Test User Three");
+        agencyList.add(user);
 
         agencyList = userService.save(agencyList);
         userService.delete(agencyList);
