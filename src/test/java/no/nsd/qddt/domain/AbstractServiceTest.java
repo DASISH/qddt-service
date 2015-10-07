@@ -13,6 +13,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public abstract class AbstractServiceTest {
+public abstract class AbstractServiceTest implements ServiceTest {
 
 }
