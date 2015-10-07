@@ -31,17 +31,6 @@ public abstract class AbstractController<T,ID> {
         this.service = service;
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<T> getAll() {
-        return service.findAll();
-    }
-
-    @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<T>> getAll(Pageable pageable, PagedResourcesAssembler assembler){
-
-        Page<T> instances = service.findAll(pageable);
-        return new ResponseEntity<>(assembler.toResource(instances), HttpStatus.OK);
-    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public T getOneById(@PathVariable("id") ID id){
