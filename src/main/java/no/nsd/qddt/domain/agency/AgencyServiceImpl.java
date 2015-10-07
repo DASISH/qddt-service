@@ -42,21 +42,6 @@ class AgencyServiceImpl implements AgencyService {
         );
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Agency> findAll() {
-        return agencyRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Agency> findAll(Pageable pageable) {return agencyRepository.findAll(pageable);}
-
-    @Override
-    public List<Agency> findAll(Iterable<UUID> uuids) {
-        return agencyRepository.findAll(uuids);
-    }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -67,7 +52,17 @@ class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
+    public List<Agency> save(List<Agency> instances) {
+        return agencyRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         agencyRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Agency> instances) {
+        agencyRepository.delete(instances);
     }
 }

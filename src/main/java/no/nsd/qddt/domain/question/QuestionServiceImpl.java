@@ -43,21 +43,6 @@ class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Question> findAll() {
-        return questionRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Question> findAll(Pageable pageable) { return questionRepository.findAll(pageable);   }
-
-    @Override
-    public List<Question> findAll(Iterable<UUID> uuids) {
-        return questionRepository.findAll(uuids);
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public Question save(Question instance) {
 
@@ -66,8 +51,18 @@ class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Question> save(List<Question> instances) {
+        return questionRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         questionRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Question> instances) {
+        questionRepository.delete(instances);
     }
 
 

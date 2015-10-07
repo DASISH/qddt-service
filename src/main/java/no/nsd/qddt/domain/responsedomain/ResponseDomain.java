@@ -119,8 +119,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
         ResponseDomain that = (ResponseDomain) o;
 
-        return responseKind == that.responseKind;
+        return getResponseKind() == that.getResponseKind();
+
     }
+
 
     @Override
     public int hashCode() {

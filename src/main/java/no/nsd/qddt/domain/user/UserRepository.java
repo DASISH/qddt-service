@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.user;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,4 +22,5 @@ interface UserRepository extends  EnversRevisionRepository<User, UUID, Integer> 
     Optional<User> findByEmail(String email);
 
     Optional<User> findById(UUID id);
+
 }

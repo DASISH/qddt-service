@@ -45,24 +45,6 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Concept> findAll() {
-        return conceptRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Concept> findAll(Pageable pageable) {
-        return conceptRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Concept> findAll(Iterable<UUID> uuids) {
-        return null;
-    }
-
-
-    @Override
     @Transactional(readOnly = false)
     public Concept save(Concept instance) {
 
@@ -71,8 +53,18 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
+    public List<Concept> save(List<Concept> instances) {
+        return conceptRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         conceptRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Concept> instances) {
+        conceptRepository.delete(instances);
     }
 
 }

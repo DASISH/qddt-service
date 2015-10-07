@@ -50,23 +50,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<OtherMaterial> findAll() {
-        return otherMaterialRepository.findAll();
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<OtherMaterial> findAll(Pageable pageable) {return otherMaterialRepository.findAll(pageable);  }
-
-    @Override
-    public List<OtherMaterial> findAll(Iterable<UUID> uuids) {
-        return otherMaterialRepository.findAll(uuids);
-    }
-
-
-    @Override
     @Transactional(readOnly = false)
     public OtherMaterial save(OtherMaterial instance) {
 
@@ -75,8 +58,18 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
     @Override
+    public List<OtherMaterial> save(List<OtherMaterial> instances) {
+        return otherMaterialRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         otherMaterialRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<OtherMaterial> instances) {
+        otherMaterialRepository.delete(instances);
     }
 
 

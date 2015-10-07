@@ -1,8 +1,5 @@
 package no.nsd.qddt.domain;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 
 /**
@@ -37,7 +34,12 @@ public interface BaseService<T,ID> {
      */
     T save(T instance);
 
-    T save(List<T> instances);
+    /**
+     * Store collection og objects Ts to backstore.
+     * @param instances collection of objects to store
+     * @return collection of saved objects returned from backstore.
+     */
+    List<T> save(List<T> instances);
 
     /**
      * Deletes object with id ID from backstore, exception raised by failure.
@@ -45,11 +47,13 @@ public interface BaseService<T,ID> {
      */
     void delete(ID id);
 
+    /**
+     * Deletes object with these IDs from backstore, exception raised by failure.
+     * @param instances list of indetifier IDs
+     */
     void delete(List<T> instances);
 
-    void purge(ID id);
 
-    void purge(List<T> instance);
 
 
 }

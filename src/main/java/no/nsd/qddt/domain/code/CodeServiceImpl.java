@@ -51,22 +51,6 @@ class CodeServiceImpl implements CodeService {
         );
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Code> findAll() {
-        return codeRepository.findAll();
-    }
-
-    @Override
-    public Page<Code> findAll(Pageable pageable) {
-        return codeRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Code> findAll(Iterable<UUID> uuids) {
-        return codeRepository.findAll(uuids);
-    }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -76,9 +60,19 @@ class CodeServiceImpl implements CodeService {
         return codeRepository.save(instance);
     }
 
+    @Override
+    public List<Code> save(List<Code> instances) {
+        return codeRepository.save(instances);
+    }
+
 
     @Override
     public void delete(UUID uuid) {
         codeRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Code> instances) {
+        codeRepository.delete(instances);
     }
 }

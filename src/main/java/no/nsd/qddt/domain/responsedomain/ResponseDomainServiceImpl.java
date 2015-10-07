@@ -43,23 +43,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ResponseDomain> findAll() {
-        return responseDomainRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<ResponseDomain> findAll(Pageable pageable) {
-        return responseDomainRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<ResponseDomain> findAll(Iterable<UUID> uuids) {
-        return responseDomainRepository.findAll(uuids);
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
 
@@ -68,7 +51,17 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
+    public List<ResponseDomain> save(List<ResponseDomain> instances) {
+        return responseDomainRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         responseDomainRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<ResponseDomain> instances) {
+        responseDomainRepository.delete(instances);
     }
 }

@@ -45,20 +45,6 @@ class UserServiceImpl implements UserService{
         );
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<User> findAll() { return userRepository.findAll(); }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<User> findAll(Iterable<UUID> uuids) {
-        return userRepository.findAll(uuids);
-    }
 
     @Override
     @Transactional(readOnly = false)
@@ -67,8 +53,18 @@ class UserServiceImpl implements UserService{
     }
 
     @Override
+    public List<User> save(List<User> instances) {
+        return userRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         userRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<User> instances) {
+        userRepository.delete(instances);
     }
 
 

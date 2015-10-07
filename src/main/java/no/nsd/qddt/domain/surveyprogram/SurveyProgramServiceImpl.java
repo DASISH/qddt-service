@@ -42,23 +42,6 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         );
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<SurveyProgram> findAll() {
-        return surveyProgramRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<SurveyProgram> findAll(Pageable pageable) {
-        return surveyProgramRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<SurveyProgram> findAll(Iterable<UUID> uuids) {
-        return surveyProgramRepository.findAll(uuids);
-    }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -67,7 +50,17 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     @Override
+    public List<SurveyProgram> save(List<SurveyProgram> instances) {
+        return surveyProgramRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         surveyProgramRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<SurveyProgram> instances) {
+        surveyProgramRepository.delete(instances);
     }
 }

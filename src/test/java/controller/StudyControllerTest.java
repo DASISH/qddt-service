@@ -61,14 +61,21 @@ public class StudyControllerTest {
     }
 
     @Test
-    public void findByIdFailTest() throws Exception {
+    public void findByIdFailBadTest() throws Exception {
         mvc.perform(get("/study/-1").session(session))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
+    public void findByIdFailNotFoundTest() throws Exception {
+        mvc.perform(get("/study//a9fe6c58-5038-1fe0-8150-000000000000").session(session))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
     public void findByIdTest() throws Exception {
-        mvc.perform(get("/study/1").session(session))
+        mvc.perform(get("/study/a9fe6c58-5038-1fe0-8150-382001480001").session(session))
                 .andExpect(status().isOk());
     }
 }

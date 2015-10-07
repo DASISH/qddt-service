@@ -43,23 +43,6 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Instrument> findAll() {
-        return instrumentRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Instrument> findAll(Pageable pageable) {
-        return instrumentRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Instrument> findAll(Iterable<UUID> uuids) {
-        return instrumentRepository.findAll(uuids);
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public Instrument save(Instrument instance) {
 
@@ -68,7 +51,17 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
+    public List<Instrument> save(List<Instrument> instances) {
+        return instrumentRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         instrumentRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Instrument> instances) {
+        instrumentRepository.delete(instances);
     }
 }

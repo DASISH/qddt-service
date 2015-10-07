@@ -44,25 +44,6 @@ class CommentServiceImpl  implements CommentService  {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Comment> findAll() {
-        return commentRepository.findAll();
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Comment> findAll(Pageable pageable) {
-        return commentRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Comment> findAll(Iterable<UUID> uuids) {
-        return commentRepository.findAll(uuids);
-    }
-
-
-    @Override
     @Transactional(readOnly = false)
     public Comment save(Comment instance) {
 
@@ -71,8 +52,18 @@ class CommentServiceImpl  implements CommentService  {
     }
 
     @Override
+    public List<Comment> save(List<Comment> instances) {
+        return commentRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         commentRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Comment> instances) {
+        commentRepository.delete(instances);
     }
 
     @Override

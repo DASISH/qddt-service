@@ -23,7 +23,6 @@ class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
         this.responseDomainCodeRepository = responseDomainCodeRepository;
     }
 
-
     @Override
     public long count() {
         return responseDomainCodeRepository.count();
@@ -40,33 +39,24 @@ class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ResponseDomainCode> findAll() {
-        return responseDomainCodeRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<ResponseDomainCode> findAll(Pageable pageable) {
-
-        return responseDomainCodeRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<ResponseDomainCode> findAll(Iterable<UUID> uuids) {
-        return responseDomainCodeRepository.findAll(uuids);
-    }
-
-
-    @Override
     @Transactional(readOnly = false)
     public ResponseDomainCode save(ResponseDomainCode instance) {
         return responseDomainCodeRepository.save(instance);
     }
 
     @Override
+    public List<ResponseDomainCode> save(List<ResponseDomainCode> instances) {
+        return responseDomainCodeRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         responseDomainCodeRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<ResponseDomainCode> instances) {
+        responseDomainCodeRepository.delete(instances);
     }
 
     @Override

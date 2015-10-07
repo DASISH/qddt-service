@@ -44,21 +44,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
         );
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<TopicGroup> findAll() {
-        return topicGroupRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<TopicGroup> findAll(Pageable pageable) { return topicGroupRepository.findAll(pageable); }
-
-    @Override
-    public List<TopicGroup> findAll(Iterable<UUID> uuids) {
-        return topicGroupRepository.findAll(uuids);
-    }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -68,6 +53,11 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return topicGroupRepository.save(instance);
     }
 
+    @Override
+    public List<TopicGroup> save(List<TopicGroup> instances) {
+        return topicGroupRepository.save(instances);
+    }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -75,8 +65,15 @@ class TopicGroupServiceImpl implements TopicGroupService {
         topicGroupRepository.delete(uuid);
     }
 
+    @Override
+    public void delete(List<TopicGroup> instances) {
+        topicGroupRepository.delete(instances);
+    }
+
 
     @Transactional(readOnly = false)
-    public void delete(TopicGroup instance) { topicGroupRepository.delete(instance.getId());  }
+    public void delete(TopicGroup instance) {
+        topicGroupRepository.delete(instance.getId());
+    }
 
 }

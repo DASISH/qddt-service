@@ -106,7 +106,7 @@ public class Study extends AbstractEntityAudit implements Commentable {
         if (!super.equals(o)) return false;
 
         Study study = (Study) o;
-        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null) return false;
+//        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null) return false;
 
         return true;
     }
@@ -114,14 +114,13 @@ public class Study extends AbstractEntityAudit implements Commentable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (surveyProgram != null ? surveyProgram.hashCode() : 0);
+//        result = 31 * result + (surveyProgram != null ? surveyProgram.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Study{" +
-                "surveyProgram=" + surveyProgram +
                 ", instruments=" + instruments +
                 ", topicGroups=" + topicGroups +
                 "} " + super.toString();

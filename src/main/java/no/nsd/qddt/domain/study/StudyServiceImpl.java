@@ -45,23 +45,6 @@ class StudyServiceImpl implements StudyService {
                 () -> new ResourceNotFoundException(uuid, Study.class)
         );    }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Study> findAll() {
-        return studyRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Study> findAll(Pageable pageable) {
-        return studyRepository.findAll(pageable);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Study> findAll(Iterable<UUID> uuids) {
-        return studyRepository.findAll(uuids);
-    }
 
     @Override
     @Transactional(readOnly = false)
@@ -72,8 +55,18 @@ class StudyServiceImpl implements StudyService {
     }
 
     @Override
+    public List<Study> save(List<Study> instances) {
+        return studyRepository.save(instances);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void delete(UUID uuid) {
         studyRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Study> instances) {
+        studyRepository.delete(instances);
     }
 }

@@ -25,7 +25,6 @@ class InstructionServiceImpl implements InstructionService {
         this.instructionRepository = instructionRepository;
     }
 
-
     @Override
     public long count() {
         return instructionRepository.count();
@@ -43,23 +42,6 @@ class InstructionServiceImpl implements InstructionService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Instrument> findAll() {
-        return instructionRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Instrument> findAll(Pageable pageable) {
-        return instructionRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Instrument> findAll(Iterable<UUID> uuids) {
-        return instructionRepository.findAll(uuids);
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public Instrument save(Instrument instance) {
 
@@ -68,7 +50,17 @@ class InstructionServiceImpl implements InstructionService {
     }
 
     @Override
+    public List<Instrument> save(List<Instrument> instances) {
+        return instructionRepository.save(instances);
+    }
+
+    @Override
     public void delete(UUID uuid) {
         instructionRepository.delete(uuid);
+    }
+
+    @Override
+    public void delete(List<Instrument> instances) {
+        instructionRepository.delete(instances);
     }
 }
