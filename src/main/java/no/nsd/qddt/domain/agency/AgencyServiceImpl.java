@@ -31,7 +31,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return false;
+        return agencyRepository.exists(uuid);
     }
 
     @Override
