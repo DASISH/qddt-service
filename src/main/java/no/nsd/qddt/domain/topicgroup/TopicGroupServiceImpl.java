@@ -27,13 +27,13 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = true)
     public long count() {
-        return 0;
+        return topicGroupRepository.count();
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return false;
+        return topicGroupRepository.exists(uuid);
     }
 
     @Override

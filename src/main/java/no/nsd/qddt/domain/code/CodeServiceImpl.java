@@ -34,13 +34,13 @@ class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = true)
     public long count() {
-        return 0;
+        return codeRepository.count();
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return false;
+        return codeRepository.exists(uuid);
     }
 
     @Override

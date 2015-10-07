@@ -46,8 +46,6 @@ class InstrumentQuestionServiceImpl implements InstrumentQuestionService {
     @Override
     @Transactional(readOnly = false)
     public InstrumentQuestion save(InstrumentQuestion instance) {
-
-        instance.setCreated(LocalDateTime.now());
         return instrumentQuestionRepository.save(instance);
     }
 
