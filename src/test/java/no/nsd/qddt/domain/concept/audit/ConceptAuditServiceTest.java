@@ -46,7 +46,7 @@ public class ConceptAuditServiceTest extends AbstractAuditServiceTest {
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, Concept>> revisions = conceptAuditService.findRevisions(
                 concept.getId(), new PageRequest(0, 10));
-        assertThat(revisions.getNumberOfElements(), is(4));
+        assertThat(revisions.getNumberOfElements(), is(3));
 
         // Find all revisions
         Revisions<Integer, Concept> wrapper = new Revisions<>(revisions.getContent());

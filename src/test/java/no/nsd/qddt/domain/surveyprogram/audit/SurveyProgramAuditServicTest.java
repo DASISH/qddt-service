@@ -63,8 +63,8 @@ public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
 
         Revision<Integer, SurveyProgram> surveyRevision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
 
-        Revision<Integer, SurveyProgram> survey = surveyProgramAuditService.findRevision(surveyRevision.getEntity().getId(), 2);
+        Revision<Integer, SurveyProgram> survey = surveyProgramAuditService.findRevision(surveyRevision.getEntity().getId(), surveyRevision.getMetadata().getRevisionNumber());
 
-        assertThat(survey.getRevisionNumber(), is(2));
+        assertThat(survey.getRevisionNumber(),is(surveyRevision.getMetadata().getRevisionNumber()));
     }
 }

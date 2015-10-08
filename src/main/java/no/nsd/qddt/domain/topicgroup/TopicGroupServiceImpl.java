@@ -52,18 +52,20 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public List<TopicGroup> save(List<TopicGroup> instances) {
         return topicGroupRepository.save(instances);
     }
 
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public void delete(UUID uuid) {
         topicGroupRepository.delete(uuid);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(List<TopicGroup> instances) {
         topicGroupRepository.delete(instances);
     }

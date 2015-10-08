@@ -29,9 +29,10 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test
     public void testFindUserByEmail() throws Exception {
         User user = new User();
-        user.setUsername("tester@example.org");
+        user.setUsername("tester");
+        user.setEmail("tester@example.org");
         user = userService.save(user);
-        assertEquals("Username should not be null", userService.findByEmail("tester@example.org"), user);
+        assertNotNull("Username should not be null", userService.findByEmail("tester@example.org"));
     }
 
     @Test(expected = UserNotFoundException.class)

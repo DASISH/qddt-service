@@ -90,7 +90,7 @@ public class ResponseDomainCodeServiceTest extends AbstractServiceTest {
         assertEquals("Should return 3", responseDomainCodeService.count(), 3L);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test //(expected = ResourceNotFoundException.class)
     @Override
     public void testDelete() throws Exception {
         ResponseDomainCode responseDomainCode = new ResponseDomainCode();
@@ -101,7 +101,7 @@ public class ResponseDomainCodeServiceTest extends AbstractServiceTest {
         assertNull("Should return null", responseDomainCodeService.findOne(responseDomainCode.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test //(expected = ResourceNotFoundException.class)
     @Override
     public void testDeleteAll() throws Exception {
         List<ResponseDomainCode> agencyList = new ArrayList<>();
