@@ -10,7 +10,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface InstructionRepository extends BaseRepository<Instrument, UUID> {
+interface InstructionRepository extends BaseRepository<Instruction, UUID> {
 
 }
 

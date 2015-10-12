@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.instruction;
 
-import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,41 +22,45 @@ class InstructionServiceImpl implements InstructionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long count() {
         return instructionRepository.count();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
         return instructionRepository.exists(uuid);
     }
 
     @Override
-    public Instrument findOne(UUID uuid) {
+    @Transactional(readOnly = true)
+    public Instruction findOne(UUID uuid) {
         return instructionRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Instrument.class));
+                () -> new ResourceNotFoundException(uuid, Instruction.class));
     }
 
     @Override
     @Transactional(readOnly = false)
-    public Instrument save(Instrument instance) {
-
-        instance.setCreated(LocalDateTime.now());
-        return instructionRepository.save(instance);
+    public Instruction save(Instruction instruction) {
+        return instructionRepository.save(instruction);
     }
 
     @Override
-    public List<Instrument> save(List<Instrument> instances) {
-        return instructionRepository.save(instances);
+    @Transactional(readOnly = false)
+    public List<Instruction> save(List<Instruction> instructions) {
+        return instructionRepository.save(instructions);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(UUID uuid) {
         instructionRepository.delete(uuid);
     }
 
     @Override
-    public void delete(List<Instrument> instances) {
-        instructionRepository.delete(instances);
+    @Transactional(readOnly = false)
+    public void delete(List<Instruction> instructions) {
+        instructionRepository.delete(instructions);
     }
 }

@@ -8,6 +8,6 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface InstructionService extends BaseService<Instrument, UUID> {
+public interface InstructionService extends BaseService<Instruction, UUID> {
 
 }
