@@ -1,9 +1,12 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 
 /**
@@ -18,6 +21,23 @@ public class TopicGroupController {
     @Autowired
     public TopicGroupController(TopicGroupService topicGroupService) {
         this.topicGroupService = topicGroupService;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public TopicGroup getOneById(@PathVariable("id") UUID id){
+        return topicGroupService.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public TopicGroup create(@RequestBody TopicGroup instance){
+        return topicGroupService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(@RequestBody UUID id){
+        topicGroupService.delete(id);
     }
 
 }

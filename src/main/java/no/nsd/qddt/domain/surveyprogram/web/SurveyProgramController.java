@@ -45,4 +45,21 @@ public class SurveyProgramController {
         return commentService.save(comment);
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public SurveyProgram getOneById(@PathVariable("id") UUID id){
+        return surveyProgramService.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public SurveyProgram create(@RequestBody SurveyProgram instance){
+        return surveyProgramService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(@RequestBody UUID id){
+        surveyProgramService.delete(id);
+    }
+
 }

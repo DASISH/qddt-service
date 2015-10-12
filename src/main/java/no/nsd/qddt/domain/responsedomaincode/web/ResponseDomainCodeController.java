@@ -32,7 +32,6 @@ public class ResponseDomainCodeController  {
 //    MetaController
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseDomainCode create(ResponseDomainCode responseDomainCode) {
-
         return responseDomainCodeService.save(responseDomainCode);
     }
 
