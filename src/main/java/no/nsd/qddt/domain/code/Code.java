@@ -40,6 +40,9 @@ public class Code extends AbstractEntityAudit {
     @Column(name = "category")
     private String category;
 
+    @Column(name = "description", length = 2000)
+    private String description;
+
     public Code() {
 
     }
@@ -52,6 +55,13 @@ public class Code extends AbstractEntityAudit {
         this.category = category;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Set<ResponseDomainCode> getResponseDomainCodes() {
         return responseDomainCodes;
@@ -61,6 +71,7 @@ public class Code extends AbstractEntityAudit {
         this.responseDomainCodes = responseDomainCodes;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,7 +79,7 @@ public class Code extends AbstractEntityAudit {
         if (!super.equals(o)) return false;
 
         Code code = (Code) o;
-
+        if (description != null ? !description.equals(code.description) : code.description != null) return false;
         return !(category != null ? !category.equals(code.category) : code.category != null);
 
     }
@@ -77,13 +88,17 @@ public class Code extends AbstractEntityAudit {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (category != null ? category.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Code{" +
-                "category='" + category + '\'' +
+                " category='" + category + '\'' +
+                ", description='" + description + '\'' +
                 "} " + super.toString();
     }
+
+
 }

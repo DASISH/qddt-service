@@ -61,6 +61,9 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(mappedBy="responseDomain", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
+    @Column(name = "description", length = 2000)
+    private String description;
+
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
@@ -69,6 +72,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     public ResponseDomain(){
 
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set<Question> getQuestions() {
@@ -118,6 +129,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         if (!super.equals(o)) return false;
 
         ResponseDomain that = (ResponseDomain) o;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
 
         return getResponseKind() == that.getResponseKind();
 
@@ -128,12 +140,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "ResponseDomain{" +
+                " description='" + description + '\'' +
                 "} " + super.toString();
     }
 }
