@@ -11,33 +11,56 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 @RestController
 @RequestMapping("/comment")
-public class CommentController  extends AbstractController<Comment,UUID> {
+public class CommentController {
 
     private CommentService commentService;
 
     @Autowired
     public CommentController(CommentService commentService){
-        super(commentService);
         this.commentService = commentService;
     }
 
-
-    @RequestMapping(value = "/byowner/{ownerId}/page/thread", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Comment>> get(UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/{ownerId}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public Comment get(@PathVariable("id") UUID id) {
+        return commentService.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    public Comment update(@RequestBody Comment comment) {
+        return commentService.save(comment);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create/{ownerId}", method = RequestMethod.POST)
+    public Comment create(@RequestBody Comment comment, @PathVariable("id") UUID ownerId) {
+        comment.setOwnerId(ownerId);
+        return commentService.save(comment);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        commentService.delete(id);
     }
 
 

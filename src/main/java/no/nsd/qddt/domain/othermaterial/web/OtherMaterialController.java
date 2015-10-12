@@ -4,25 +4,48 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 @RestController
 @RequestMapping("/othermaterial")
-public class OtherMaterialController extends AbstractController<OtherMaterial,UUID> {
+public class OtherMaterialController {
 
-//    private AttachmentService attachmentService;
+    private OtherMaterialService otherMaterialService;
 
     @Autowired
     public OtherMaterialController(OtherMaterialService otherMaterialService){
-        super(otherMaterialService);
-//        this.attachmentService = attachmentService;
+        this.otherMaterialService = otherMaterialService;
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public OtherMaterial get(@PathVariable("id") UUID id) {
+        return otherMaterialService.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    public OtherMaterial update(@RequestBody OtherMaterial responseDomain) {
+        return otherMaterialService.save(responseDomain);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public OtherMaterial create(@RequestBody OtherMaterial responseDomain) {
+        return otherMaterialService.save(responseDomain);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        otherMaterialService.delete(id);
+    }
 }
