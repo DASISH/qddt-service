@@ -17,8 +17,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 @EnableAuthorizationServer
 public class Oauth2Configuration extends AuthorizationServerConfigurerAdapter {
 
-    String applicationName = "qddt";
-
     @Autowired
     private AuthenticationManagerBuilder authenticationManager;
 
@@ -32,11 +30,12 @@ public class Oauth2Configuration extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("html5-" + applicationName)
+                .withClient("client")
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token")
                 .authorities("ROLE_USER")
                 .scopes("write")
-                .resourceIds(applicationName)
-                .secret("123456");
+                .redirectUris("http://localhost:3000")
+//                .resourceIds("client")
+                .secret("password");
     }
 }
