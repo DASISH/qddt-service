@@ -49,7 +49,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private String version;
 
     @Enumerated(EnumType.STRING)
-    private ChangeKind changeReason = ChangeKind.CREATED;
+    private ChangeKind changeKind = ChangeKind.CREATED;
 
     @Column(name = "change_comment")
     private String changeComment;
@@ -80,12 +80,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.name = name;
     }
 
-    public ChangeKind getChangeReason() {
-        return changeReason;
+    public ChangeKind getChangeKind() {
+        return changeKind;
     }
 
-    public void setChangeReason(ChangeKind changeReason) {
-        this.changeReason = changeReason;
+    public void setChangeKind(ChangeKind changeKind) {
+        this.changeKind = changeKind;
     }
 
     public String getChangeComment() {
@@ -122,7 +122,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public String toString() {
         return  super.toString()+ '\'' +
                 ", name='" + name + '\'' +
-                ", changeReason=" + changeReason +
+                ", changeKind=" + changeKind +
                 ", changeComment='" + changeComment + '\'';
     }
 
