@@ -46,7 +46,6 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     public void setCodeIdx(int codeIdx) {
         this.codeIdx = codeIdx;
-        setChangeKind(ChangeKind.IN_DEVELOPMENT);
     }
 
     public String getCodeValue() {
@@ -55,7 +54,6 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     public void setCodeValue(String codeValue) {
         this.codeValue = codeValue;
-        setChangeKind(ChangeKind.IN_DEVELOPMENT);
     }
 
     public ResponseDomain getResponseDomain() {
@@ -64,8 +62,6 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     public void setResponseDomain(ResponseDomain responseDomain) {
         this.responseDomain = responseDomain;
-        setChangeKind(ChangeKind.IN_DEVELOPMENT);
-
     }
 
     public Code getCode() {
@@ -74,8 +70,6 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     public void setCode(Code code) {
         this.code = code;
-        setChangeKind(ChangeKind.IN_DEVELOPMENT);
-
     }
 
     @Override

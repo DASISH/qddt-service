@@ -6,10 +6,9 @@ import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.question.Question;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Stig Norland
@@ -28,9 +27,8 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @ManyToOne
-    @JoinColumn(name = "instruction_id")
-    private Instruction instruction;
+    @OneToMany(mappedBy="instruction", cascade = CascadeType.ALL)
+    private Set<Instruction> instructions = new HashSet<>();
 
     private Long instrumentIdx;
 
@@ -59,12 +57,12 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         this.question = question;
     }
 
-    public Instruction getInstruction() {
-        return instruction;
+    public Set<Instruction> getInstructions() {
+        return instructions;
     }
 
-    public void setInstruction(Instruction instruction) {
-        this.instruction = instruction;
+    public void setInstructions(Set<Instruction> instructions) {
+        this.instructions = instructions;
     }
 
     public Long getInstrumentIdx() {
@@ -103,8 +101,6 @@ public class InstrumentQuestion extends AbstractEntityAudit {
             return false;
         if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
             return false;
-        if (getInstruction() != null ? !getInstruction().equals(that.getInstruction()) : that.getInstruction() != null)
-            return false;
         if (getInstrumentIdx() != null ? !getInstrumentIdx().equals(that.getInstrumentIdx()) : that.getInstrumentIdx() != null)
             return false;
         if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
@@ -118,7 +114,6 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         int result = super.hashCode();
         result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
         result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
-        result = 31 * result + (getInstruction() != null ? getInstruction().hashCode() : 0);
         result = 31 * result + (getInstrumentIdx() != null ? getInstrumentIdx().hashCode() : 0);
         result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
         result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
@@ -131,7 +126,6 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         return "InstrumentQuestion{" +
                 "instrument=" + instrument +
                 ", question=" + question +
-                ", instruction=" + instruction +
                 ", instrumentIdx=" + instrumentIdx +
                 ", indexRationale='" + indexRationale + '\'' +
                 ", logic='" + logic + '\'' +
