@@ -15,11 +15,24 @@ import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 /**
+ * Sets up the test environment for a controller test that
+ * needs a {@link WebIntegrationTest} and Oauth2 tokens for headers
+ * when testing secured resources.
+ *
+ * Example on simple controller test
+ *
+ *  @Test
+ *  public void simpleTest() throws Exception {
+ *      mvc.perform(get(RESOURCE-PATH).header("Authorization", "Bearer " + accessToken))
+ *      .andExpect(status().isOk());
+ *  }
+ *
  * @author Dag Heradstveit
  */
 @WebIntegrationTest
@@ -34,7 +47,7 @@ public class ControllerWebIntegrationTest {
     private WebApplicationContext webApplicationContext;
 
     public MockMvc mvc;
-    private RestfulTestUtils rest;
+    public RestfulTestUtils rest;
 
     @Autowired
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
