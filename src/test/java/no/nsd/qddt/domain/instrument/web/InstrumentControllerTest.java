@@ -48,7 +48,7 @@ public class InstrumentControllerTest  extends ControllerWebIntegrationTest {
                 .content(rest.json(instrument)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(instrument.getName())))
-                .andExpect(jsonPath("$.changeReason", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
 
@@ -62,7 +62,7 @@ public class InstrumentControllerTest  extends ControllerWebIntegrationTest {
                 .content(rest.json(aInstrument)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(aInstrument.getName())))
-                .andExpect(jsonPath("$.changeReason", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
+                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
 
