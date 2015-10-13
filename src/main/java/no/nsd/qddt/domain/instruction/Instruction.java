@@ -18,8 +18,9 @@ import java.util.Set;
 @Table(name = "INSTRUCTION")
 public class Instruction extends AbstractEntityAudit implements Commentable {
 
-    @OneToMany(mappedBy = "instruction", cascade = CascadeType.ALL)
-    private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "instrumentquestion_id")
+    private InstrumentQuestion instrumentQuestion;
 
     private String description;
 
@@ -30,12 +31,12 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     public Instruction() {
     }
 
-    public Set<InstrumentQuestion> getInstrumentQuestions() {
-        return instrumentQuestions;
+    public InstrumentQuestion getInstrumentQuestion() {
+        return instrumentQuestion;
     }
 
-    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
-        this.instrumentQuestions = instrumentQuestions;
+    public void setInstrumentQuestion(InstrumentQuestion instrumentQuestion) {
+        this.instrumentQuestion = instrumentQuestion;
     }
 
     public String getDescription() {
@@ -70,8 +71,6 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
 
         Instruction that = (Instruction) o;
 
-        if (instrumentQuestions != null ? !instrumentQuestions.equals(that.instrumentQuestions) : that.instrumentQuestions != null)
-            return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
@@ -80,7 +79,6 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
