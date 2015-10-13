@@ -6,6 +6,10 @@ import no.nsd.qddt.domain.comment.CommentServiceTest;
 import no.nsd.qddt.domain.commentable.CommentableServiceTest;
 import no.nsd.qddt.domain.concept.ConceptServiceTest;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditServiceTest;
+import no.nsd.qddt.domain.instruction.InstructionServiceTest;
+import no.nsd.qddt.domain.instruction.audit.InstructionAuditService;
+import no.nsd.qddt.domain.instruction.audit.InstructionAuditServiceTest;
+import no.nsd.qddt.domain.instruction.web.InstructionControllerTest;
 import no.nsd.qddt.domain.instrument.InstrumentServiceTest;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionServiceTest;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialServiceTest;
@@ -42,6 +46,11 @@ import org.springframework.test.context.ActiveProfiles;
         // ====== Concept ======
         ConceptServiceTest.class,
         ConceptAuditServiceTest.class,
+
+        // ====== Instruction ======
+        InstructionServiceTest.class,
+        InstructionControllerTest.class,
+        InstructionAuditServiceTest.class,
 
         // ====== Instrument ======
         InstrumentServiceTest.class,
