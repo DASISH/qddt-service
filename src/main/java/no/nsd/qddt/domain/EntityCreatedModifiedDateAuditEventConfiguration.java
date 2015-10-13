@@ -24,11 +24,11 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
     @PreUpdate
-    public void update(AbstractEntityAudit entity) {
+    public void update(AbstractEntity entity) {
         entity.setUpdated(LocalDateTime.now());
-        if (entity.getChangeReason() == AbstractEntityAudit.ChangeKind.CREATED)
-            entity.setChangeReason(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
+        if(entity instanceof AbstractEntityAudit) {
+            if (((AbstractEntityAudit)entity).getChangeReason() == AbstractEntityAudit.ChangeKind.CREATED)
+                ((AbstractEntityAudit)entity).setChangeReason(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
+        }
     }
-
-
 }
