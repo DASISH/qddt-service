@@ -131,7 +131,7 @@ public class TopicGroup extends AbstractEntityAudit {
         TopicGroup that = (TopicGroup) o;
 
         if (study != null ? !study.equals(that.study) : that.study != null) return false;
-        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
+//        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;

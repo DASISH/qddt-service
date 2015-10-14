@@ -103,7 +103,7 @@ public class StudyControllerTest {
                                 fieldWithPath("createdBy").description(""),
                                 fieldWithPath("changeComment").description(""),
                                 fieldWithPath("agency").description(Agency.class),
-                                fieldWithPath("changeReason").description(""),
+                                fieldWithPath("changeKind").description(""),
                                 fieldWithPath("surveyProgram").description(""),
                                 fieldWithPath("instruments").description(""),
                                 fieldWithPath("topicGroups").description(""))

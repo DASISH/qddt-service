@@ -171,7 +171,6 @@ public class Question extends AbstractEntityAudit implements Commentable {
         if (parent != null ? !parent.equals(question1.parent) : question1.parent != null) return false;
         if (responseDomain != null ? !responseDomain.equals(question1.responseDomain) : question1.responseDomain != null)
             return false;
-        if (children != null ? !children.equals(question1.children) : question1.children != null) return false;
         if (concepts != null ? !concepts.equals(question1.concepts) : question1.concepts != null) return false;
         if (instrumentQuestions != null ? !instrumentQuestions.equals(question1.instrumentQuestions) : question1.instrumentQuestions != null)
             return false;

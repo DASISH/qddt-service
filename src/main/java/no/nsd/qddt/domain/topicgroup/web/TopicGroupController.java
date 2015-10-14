@@ -42,9 +42,9 @@ public class TopicGroupController {
         return topicGroupService.save(instance);
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(@RequestBody UUID id){
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id){
         topicGroupService.delete(id);
     }
 

@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Stig Norland
  */
-public class ResponseDomainCodeServiceAuditTest  extends AbstractAuditServiceTest {
+public class ResponseDomainCodeAuditServiceTest  extends AbstractAuditServiceTest {
 
     @Autowired
     private ResponseDomainCodeService codeService;

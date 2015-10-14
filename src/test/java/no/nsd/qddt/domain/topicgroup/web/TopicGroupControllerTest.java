@@ -1,9 +1,11 @@
-package no.nsd.qddt.domain.othermaterial.web;
+package no.nsd.qddt.domain.topicgroup.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,23 +13,25 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * @author Dag Heradstveit
+ * @author Stig Norland
  */
-public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
+public class TopicGroupControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired
-    private OtherMaterialService entityService;
+    private TopicGroupService entityService;
 
-    private OtherMaterial entity;
+    private TopicGroup entity;
 
     @Override
     public void setup() {
         super.setup();
 
-        entity = new OtherMaterial();
+        entity = new TopicGroup();
         entity.setName("A test entity");
         entity = entityService.save(entity);
 
@@ -35,7 +39,7 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
 
     @Test
     public void testGet() throws Exception {
-        mvc.perform(get("/othermaterial/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(get("/topicgroup/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
     }
 
@@ -43,7 +47,7 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
     public void testUpdate() throws Exception {
         entity.setName(entity.getName() + " edited");
 
-        mvc.perform(post("/othermaterial").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/topicgroup").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(entity)))
                 .andExpect(content().contentType(rest.getContentType()))
@@ -54,10 +58,10 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
 
     @Test
     public void testCreate() throws Exception {
-        OtherMaterial aEntity = new OtherMaterial();
+        TopicGroup aEntity = new TopicGroup();
         aEntity.setName("Posted entity");
 
-        mvc.perform(post("/othermaterial/create").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/topicgroup/create").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
@@ -68,7 +72,7 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
 
     @Test
     public void testDelete() throws Exception {
-        mvc.perform(post("/othermaterial/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(post("/topicgroup/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
 
         assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));

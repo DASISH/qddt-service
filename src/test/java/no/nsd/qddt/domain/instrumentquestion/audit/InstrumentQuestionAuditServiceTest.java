@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.comment.audit;
+package no.nsd.qddt.domain.instrumentquestion.audit;
 
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,27 +18,27 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Stig Norland
  */
-public class CommentServiceAuditTest extends AbstractAuditServiceTest {
+public class InstrumentQuestionAuditServiceTest  extends AbstractAuditServiceTest {
 
     @Autowired
-    private CommentService codeService;
+    private InstrumentQuestionService codeService;
 
     @Autowired
-    private CommentAuditService codeAuditService;
+    private InstrumentQuestionAuditService codeAuditService;
 
-    private Comment entity;
+    private InstrumentQuestion entity;
 
     @Before
     public void setUp() {
 
 
-        entity = codeService.save(new Comment());
+        entity = codeService.save(new InstrumentQuestion());
 
-        entity.setComment("First");
+        entity.setName("First");
         entity = codeService.save(entity);
-        entity.setComment("Second");
+        entity.setName("Second");
         entity = codeService.save(entity);
-        entity.setComment("Third");
+        entity.setName("Third");
         entity = codeService.save(entity);
     }
 
@@ -47,13 +47,13 @@ public class CommentServiceAuditTest extends AbstractAuditServiceTest {
         entity = codeService.findOne(entity.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, Comment> revision = codeAuditService.findLastChange(entity.getId());
+        Revision<Integer, InstrumentQuestion> revision = codeAuditService.findLastChange(entity.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, Comment>> revisions = codeAuditService.findRevisions(
+        Page<Revision<Integer, InstrumentQuestion>> revisions = codeAuditService.findRevisions(
                 entity.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, Comment> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, InstrumentQuestion> wrapper = new Revisions<>(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity(), entity);
         assertThat(revisions.getNumberOfElements(), is(4));
@@ -61,7 +61,7 @@ public class CommentServiceAuditTest extends AbstractAuditServiceTest {
 
     @Test
     public void getAllRevisionsTest() throws Exception {
-        Page<Revision<Integer, Comment>> revisions =
+        Page<Revision<Integer, InstrumentQuestion>> revisions =
                 codeAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
 
         assertEquals("Excepted four revisions.",
@@ -70,10 +70,10 @@ public class CommentServiceAuditTest extends AbstractAuditServiceTest {
 
     @Test
     public void getLastRevisionTest() throws Exception {
-        Revision<Integer, Comment> revision = codeAuditService.findLastChange(entity.getId());
+        Revision<Integer, InstrumentQuestion> revision = codeAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity(), entity);
-        assertEquals("Expected Name to be 'Third'", revision.getEntity().getComment(), "Third");
+        assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

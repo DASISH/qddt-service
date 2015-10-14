@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 
 @RestController
-@RequestMapping("/responseDomainCode")
+@RequestMapping("/responsedomaincode")
 public class ResponseDomainCodeController  {
 
     private ResponseDomainCodeService responseDomainCodeService;

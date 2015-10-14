@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 
 @RestController
-@RequestMapping("/instrumentQuestion")
+@RequestMapping("/instrumentquestion")
 public class InstrumentQuestionController {
 
     private InstrumentQuestionService instrumentQuestionService;

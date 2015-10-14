@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@Transactional
+
 public class QuestionServiceTest  extends AbstractServiceTest {
 
     @Autowired
