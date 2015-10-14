@@ -121,6 +121,5 @@ public class ResponseDomainCodeServiceTest extends AbstractServiceTest {
         responseDomainCodeService.delete(agencyList);
 
         agencyList.forEach(a -> assertNull("Should return null", responseDomainCodeService.findOne(a.getId())));
-
     }
 }

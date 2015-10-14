@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class InstrumentQuestionTest {
+public class InstrumentQuestionMetaTest {
 
     @Autowired
     private QuestionService questionService;

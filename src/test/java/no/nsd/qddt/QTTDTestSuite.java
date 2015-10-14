@@ -14,12 +14,14 @@ import no.nsd.qddt.domain.instruction.web.InstructionControllerTest;
 import no.nsd.qddt.domain.instrument.InstrumentServiceTest;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditServiceTest;
 import no.nsd.qddt.domain.instrument.web.InstrumentControllerTest;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionMetaTest;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionServiceTest;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialServiceTest;
 import no.nsd.qddt.domain.question.QuestionServiceTest;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainServiceTest;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainCodeAuditServiceTest;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeHierarchyTest;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeMetaTest;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeServiceTest;
 import no.nsd.qddt.domain.study.StudyServiceTest;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramServiceTest;
@@ -55,6 +57,7 @@ import org.springframework.test.context.ActiveProfiles;
         InstructionServiceTest.class,
         InstructionControllerTest.class,
         InstructionServiceAuditTest.class,
+        InstrumentQuestionMetaTest.class,
 
         // ====== Instrument ======
         InstrumentServiceTest.class,
@@ -77,6 +80,7 @@ import org.springframework.test.context.ActiveProfiles;
         ResponseDomainCodeHierarchyTest.class,
         ResponseDomainCodeAuditServiceTest.class,
         ResponseDomainCodeServiceTest.class,
+        ResponseDomainCodeMetaTest.class,
 
         // ====== Study ======
         StudyServiceTest.class,
