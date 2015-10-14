@@ -31,7 +31,7 @@ public class InstrumentController  {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public Instrument update(@RequestBody Instrument instrument) {
         return instrumentService.save(instrument);
     }

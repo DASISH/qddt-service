@@ -30,7 +30,7 @@ public class InstructionController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public Instruction update(@RequestBody Instruction instruction) {
         return instructionService.save(instruction);
     }
