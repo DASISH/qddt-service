@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.UUID;
+
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -94,7 +96,7 @@ public class StudyControllerTest {
                 .andExpect(status().isOk())
                 .andDo(document("project-by-id",
                         responseFields(
-                                fieldWithPath("id").description(""),
+                                fieldWithPath("id").description(UUID.class),
                                 fieldWithPath("name").description(""),
                                 fieldWithPath("created").description(""),
                                 fieldWithPath("updated").description(""),

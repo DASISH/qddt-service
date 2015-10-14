@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.version.SemVer;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -26,6 +27,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public enum ChangeKind {
         CREATED,
         NEW_REVISION,
+        NEW_MAJOR,
+        NEW_MINOR,
+        NEW_PATCH,
         TYPO,
         NEW_COPY_OF,
         IN_DEVELOPMENT
@@ -46,7 +50,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private String name;
 
     @Transient
-    private String version;
+    private SemVer version;
 
     @Enumerated(EnumType.STRING)
     private ChangeKind changeKind = ChangeKind.CREATED;
@@ -64,11 +68,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.agency = agency;
     }
 
-    public String getVersion() {
+    public SemVer getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(SemVer version) {
         this.version = version;
     }
 

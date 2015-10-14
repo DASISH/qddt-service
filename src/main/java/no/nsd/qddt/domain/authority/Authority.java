@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
-@Table(name = "authority")
+@Table(name = "AUTHORITY")
 public class Authority {
 
     @Id

@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.urn;
 
 
 import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.version.SemVer;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -18,7 +19,6 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Embeddable
-@Access(AccessType.PROPERTY)
 public class Urn {
 
     @Id
@@ -29,11 +29,11 @@ public class Urn {
             @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
     private UUID id;
     private Agency agency;
-    private String version;
+    private SemVer version;
 
     public Urn(){}
 
-    public Urn(Agency agency, UUID id, String version){
+    public Urn(Agency agency, UUID id, SemVer version){
         this.agency = agency;
         this.id = id;
         this.version = version;
@@ -56,11 +56,11 @@ public class Urn {
         this.agency = agency;
     }
 
-    public String getVersion() {
+    public SemVer getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(SemVer version) {
         this.version = version;
     }
 

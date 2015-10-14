@@ -28,12 +28,5 @@ interface InstrumentQuestionRepository extends BaseRepository<InstrumentQuestion
     List<InstrumentQuestion> findByQuestionId(UUID questionId);
 
 
-    /**
-     *
-     * @param instructionId
-     * @return
-     */
-    List<InstrumentQuestion> findByInstructionId(UUID instructionId);
-
 
 }

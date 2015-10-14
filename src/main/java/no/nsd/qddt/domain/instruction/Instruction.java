@@ -87,7 +87,7 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     @Override
     public String toString() {
         return "Instruction{" +
-                "description='" + description + '\'' +
+                ", description='" + description + '\'' +
                 "} " + super.toString();
     }
 }

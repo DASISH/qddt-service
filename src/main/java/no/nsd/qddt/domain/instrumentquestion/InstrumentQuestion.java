@@ -27,7 +27,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany(mappedBy="instruction", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="instrumentQuestion", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
     private Long instrumentIdx;

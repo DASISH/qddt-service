@@ -52,7 +52,7 @@ public class CommentController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{ownerId}", method = RequestMethod.POST)
-    public Comment create(@RequestBody Comment comment, @PathVariable("id") UUID ownerId) {
+    public Comment create(@RequestBody Comment comment, @PathVariable("ownerId") UUID ownerId) {
         comment.setOwnerId(ownerId);
         return commentService.save(comment);
     }
