@@ -3,6 +3,10 @@ package no.nsd.qddt.domain.instrument.audit;
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,12 @@ public class InstrumentAuditServiceTest extends AbstractAuditServiceTest {
     @Autowired
     private InstrumentAuditService instrumentAuditService;
 
+    @Autowired
+    private InstrumentQuestionService instrumentQuestionService;
+
+    @Autowired
+    private QuestionService questionService;
+
     private Instrument instrument;
 
     @Before
@@ -33,6 +43,15 @@ public class InstrumentAuditServiceTest extends AbstractAuditServiceTest {
 
 
         instrument = instrumentService.save(new Instrument());
+
+        Question question = new Question();
+        question.setQuestion("What does the fox say");
+        questionService.save(question);
+
+        InstrumentQuestion instrumentQuestion =  new InstrumentQuestion();
+        instrumentQuestion.setInstrument(instrument);
+        instrumentQuestion.setQuestion(question);
+        instrumentQuestionService.save(instrumentQuestion);
 
         instrument.setName("First");
         instrument = instrumentService.save(instrument);
