@@ -8,6 +8,6 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface TopicGroupService extends BaseServiceAudit<TopicGroup, UUID, Integer> {
+public interface TopicGroupAuditService extends BaseServiceAudit<TopicGroup, UUID, Integer> {
 
 }

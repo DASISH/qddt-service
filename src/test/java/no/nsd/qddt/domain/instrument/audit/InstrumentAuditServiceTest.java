@@ -30,6 +30,14 @@ public class InstrumentAuditServiceTest extends AbstractAuditServiceTest {
     @Autowired
     private InstrumentAuditService instrumentAuditService;
 
+    @Autowired
+    private QuestionService questionService;
+
+    @Autowired
+    private InstrumentQuestionService instrumentQuestionService;
+
+
+
     private Instrument instrument;
 
     @Before
@@ -37,6 +45,17 @@ public class InstrumentAuditServiceTest extends AbstractAuditServiceTest {
 
 
         instrument = instrumentService.save(new Instrument());
+
+        Question question = new Question();
+        question.setQuestion("What does the fox say");
+        question = questionService.save(question);
+
+        InstrumentQuestion instrumentQuestion =  new InstrumentQuestion();
+        instrumentQuestion.setInstrument(instrument);
+        instrumentQuestion.setQuestion(question);
+        instrumentQuestionService.save(instrumentQuestion);
+
+        instrument = instrumentService.findOne(instrument.getId());
 
         instrument.setName("First");
         instrument = instrumentService.save(instrument);
