@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Stig Norland
  */
-public class ResponseDomainControllerTest2 extends ControllerWebIntegrationTest {
+public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired
     private ResponseDomainService entityService;
