@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @RestController
-@RequestMapping(value = "/audit/survey/")
+@RequestMapping(value = "/audit/surveyprogram/")
 public class SurveyProgramAuditController {
 
     private SurveyProgramAuditService surveyProgramAuditService;

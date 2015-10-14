@@ -50,6 +50,6 @@ public class SemVer {
 
     @Override
     public String toString() {
-        return  "v" +major + "." + minor +"." + patch +  (label.isEmpty()? "": "-"+ label);
+        return  "v" + major + "." + minor + "." + patch +  (label.isEmpty()? "": "-"+ label);
     }
 }
