@@ -18,8 +18,8 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
     private InstrumentAuditRepository instrumentAuditRepository;
 
     @Autowired
-    public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentRepository) {
-        this.instrumentAuditRepository = instrumentRepository;
+    public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository) {
+        this.instrumentAuditRepository = instrumentAuditRepository;
     }
 
     @Override

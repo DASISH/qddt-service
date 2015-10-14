@@ -23,7 +23,6 @@ class InstrumentServiceImpl implements InstrumentService {
         this.instrumentRepository = instrumentRepository;
     }
 
-
     @Override
     public long count() {
         return instrumentRepository.count();
@@ -43,8 +42,6 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     @Transactional(readOnly = false)
     public Instrument save(Instrument instance) {
-
-        instance.setCreated(LocalDateTime.now());
         return instrumentRepository.save(instance);
     }
 

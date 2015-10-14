@@ -190,7 +190,6 @@ public class Question extends AbstractEntityAudit implements Commentable {
         result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
         result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
-        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         result = 31 * result + gridIdx;
         result = 31 * result + (gridIdxRationale != null ? gridIdxRationale.hashCode() : 0);

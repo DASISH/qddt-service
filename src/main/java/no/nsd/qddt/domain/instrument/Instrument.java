@@ -78,8 +78,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
         Instrument that = (Instrument) o;
 
         if (study != null ? !study.equals(that.study) : that.study != null) return false;
-//        if (instrumentQuestions != null ? !instrumentQuestions.equals(that.instrumentQuestions) : that.instrumentQuestions != null)
-//            return false;
         return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
     }
@@ -88,7 +86,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (study != null ? study.hashCode() : 0);
-//        result = 31 * result + (instrumentQuestions != null ? instrumentQuestions.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
