@@ -13,7 +13,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("topicGroupAuditService")
-class TopicGroupAuditServiceImpl implements TopicGroupAuditService{
+class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
     private TopicGroupAuditRepository topicGroupAuditRepository;
 
