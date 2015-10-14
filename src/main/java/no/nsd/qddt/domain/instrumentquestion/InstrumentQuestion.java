@@ -11,6 +11,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Instrument is the significant relation.
+ * Instrument will be asked for all {@link Question} instances it has and the
+ * metadata in this class will be used as visual logic for each {@link Question}.
+ *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
