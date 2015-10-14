@@ -3,10 +3,8 @@ package no.nsd.qddt.domain.instrumentquestion.web;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
 import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,26 +27,37 @@ public class InstrumentQuestionController {
     }
 
 
-    //    MetaController
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public InstrumentQuestion get(@PathVariable("id") UUID id) {
+        return instrumentQuestionService.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public InstrumentQuestion update(@RequestBody InstrumentQuestion instance) {
+        return instrumentQuestionService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public InstrumentQuestion create(InstrumentQuestion comment) {
-
-        return instrumentQuestionService.save(comment);
+    public InstrumentQuestion create(@RequestBody InstrumentQuestion instance) {
+        return instrumentQuestionService.save(instance);
     }
 
-    //    MetaController
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(InstrumentQuestion instance) {
-        instrumentQuestionService.delete(instance.getId());
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        instrumentQuestionService.delete(id);
     }
 
-    //    MetaController
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/byInstrument/{uuid}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getByFirst(@PathVariable("uuid") UUID firstId) {
         return instrumentQuestionService.findByInstrumentId(firstId);
     }
 
-    //    MetaController
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/byQuestion/{uuid}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getBySecond(@PathVariable("uuid") UUID secondId) {
         return instrumentQuestionService.findByQuestionId(secondId);

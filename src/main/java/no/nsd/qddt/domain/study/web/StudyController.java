@@ -23,21 +23,29 @@ public class StudyController {
         this.studyService = studyService;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public   Study getOneById(@PathVariable("id") UUID id){
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public Study get(@PathVariable("id") UUID id) {
         return studyService.findOne(id);
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public   Study create(@RequestBody Study instance){
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Study update(@RequestBody Study instance) {
         return studyService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(@RequestBody UUID id){
-          studyService.delete(id);
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public Study create(@RequestBody Study instance) {
+        return studyService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        studyService.delete(id);
     }
 
 

@@ -3,10 +3,8 @@ package no.nsd.qddt.domain.responsedomaincode.web;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,16 +27,28 @@ public class ResponseDomainCodeController  {
     }
 
 
-//    MetaController
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseDomainCode create(ResponseDomainCode responseDomainCode) {
-        return responseDomainCodeService.save(responseDomainCode);
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public ResponseDomainCode get(@PathVariable("id") UUID id) {
+        return responseDomainCodeService.findOne(id);
     }
 
-    //    MetaController
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(ResponseDomainCode instance) {
-        responseDomainCodeService.delete(instance.getId());
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseDomainCode update(@RequestBody ResponseDomainCode instance) {
+        return responseDomainCodeService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public ResponseDomainCode create(@RequestBody ResponseDomainCode instance) {
+        return responseDomainCodeService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        responseDomainCodeService.delete(id);
     }
 
     //    MetaController

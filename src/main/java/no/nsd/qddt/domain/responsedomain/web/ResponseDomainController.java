@@ -31,7 +31,7 @@ public class ResponseDomainController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseDomain update(@RequestBody ResponseDomain responseDomain) {
         return responseDomainService.save(responseDomain);
     }

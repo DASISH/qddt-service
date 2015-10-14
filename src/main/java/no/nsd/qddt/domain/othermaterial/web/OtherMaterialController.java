@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.othermaterial.web;
 
-import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +31,15 @@ public class OtherMaterialController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "{id}", method = RequestMethod.POST)
-    public OtherMaterial update(@RequestBody OtherMaterial responseDomain) {
-        return otherMaterialService.save(responseDomain);
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public OtherMaterial update(@RequestBody OtherMaterial instance) {
+        return otherMaterialService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public OtherMaterial create(@RequestBody OtherMaterial responseDomain) {
-        return otherMaterialService.save(responseDomain);
+    public OtherMaterial create(@RequestBody OtherMaterial instance) {
+        return otherMaterialService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

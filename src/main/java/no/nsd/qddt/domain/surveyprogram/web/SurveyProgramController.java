@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.surveyprogram.web;
 
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.utils.SecurityContext;
@@ -45,21 +46,29 @@ public class SurveyProgramController {
         return commentService.save(comment);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public SurveyProgram getOneById(@PathVariable("id") UUID id){
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public SurveyProgram get(@PathVariable("id") UUID id) {
         return surveyProgramService.findOne(id);
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public SurveyProgram create(@RequestBody SurveyProgram instance){
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public SurveyProgram update(@RequestBody SurveyProgram instance) {
         return surveyProgramService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(@RequestBody UUID id){
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public SurveyProgram create(@RequestBody SurveyProgram instance) {
+        return surveyProgramService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
         surveyProgramService.delete(id);
     }
+
 
 }

@@ -23,10 +23,18 @@ public class TopicGroupController {
         this.topicGroupService = topicGroupService;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public TopicGroup getOneById(@PathVariable("id") UUID id){
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public TopicGroup get(@PathVariable("id") UUID id) {
         return topicGroupService.findOne(id);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public TopicGroup update(@RequestBody TopicGroup instance) {
+        return topicGroupService.save(instance);
+    }
+
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)

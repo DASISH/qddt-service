@@ -1,9 +1,13 @@
 package no.nsd.qddt.domain.question.web;
 
+import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
+import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -19,41 +23,27 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-//    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<Question>> getInstrumentThread(
-//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-//    {
-//
-//        Page<Question> questions = questionService.findQuestionInstrument(id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-//    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public Question get(@PathVariable("id") UUID id) {
+        return questionService.findOne(id);
+    }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Question update(@RequestBody Question instance) {
+        return questionService.save(instance);
+    }
 
-    //TODO reevaluere hvordan dette skal gjøres
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public Question create(@RequestBody Question instance) {
+        return questionService.save(instance);
+    }
 
-//    @RequestMapping(value = "/{id}/all/concept", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<Question>> getConceptThread(
-//            @PathVariable("id") Long id,Pageable pageable, PagedResourcesAssembler assembler)
-//    {
-//
-//        Page<Question> questions = questionService.findQuestionConceptPageable(id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-//    }
-
-
-////    HierachyController<Question>
-//    @RequestMapping(value = "/{id}/page/thread", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<Question>> getThreadbyId(Long id, Pageable pageable, PagedResourcesAssembler assembler) {
-//
-//        Page<Question> questions = questionService.findByParentPageable(id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-//    }
-//
-////    HierachyController<Question>
-//    @RequestMapping(value = "/UUID{id}/page/thread", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<Question>> getThreadbyGuid(UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
-//
-//        Page<Question> questions = questionService.findByParentPageable(id, pageable);
-//        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-//    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        questionService.delete(id);
+    }
 }
