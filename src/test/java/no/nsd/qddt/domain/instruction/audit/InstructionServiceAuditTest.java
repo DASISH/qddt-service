@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Stig Norland
  */
-public class InstructionAuditTest extends AbstractAuditServiceTest {
+public class InstructionServiceAuditTest extends AbstractAuditServiceTest {
 
     @Autowired
     private InstructionService instructionService;
