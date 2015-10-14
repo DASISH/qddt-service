@@ -2,11 +2,14 @@ package no.nsd.qddt;
 
 import no.nsd.qddt.domain.agency.AgencyServiceTest;
 import no.nsd.qddt.domain.code.CodeServiceTest;
+import no.nsd.qddt.domain.code.web.CodeControllerTest;
 import no.nsd.qddt.domain.comment.CommentServiceTest;
 import no.nsd.qddt.domain.commentable.CommentableServiceTest;
 import no.nsd.qddt.domain.concept.ConceptServiceTest;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditServiceTest;
+import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instruction.InstructionServiceTest;
+import no.nsd.qddt.domain.instruction.audit.InstructionServiceAuditTest;
 import no.nsd.qddt.domain.instruction.web.InstructionControllerTest;
 import no.nsd.qddt.domain.instrument.InstrumentServiceTest;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditServiceTest;
@@ -36,6 +39,7 @@ import org.springframework.test.context.ActiveProfiles;
 
         // ====== Code ======
         CodeServiceTest.class,
+        CodeControllerTest.class,
 
         // ====== Comment ======
         CommentServiceTest.class,
@@ -50,7 +54,7 @@ import org.springframework.test.context.ActiveProfiles;
         // ====== Instruction ======
         InstructionServiceTest.class,
         InstructionControllerTest.class,
-
+        InstructionServiceAuditTest.class,
 
         // ====== Instrument ======
         InstrumentServiceTest.class,

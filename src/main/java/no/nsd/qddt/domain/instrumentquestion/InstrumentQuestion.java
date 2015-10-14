@@ -97,10 +97,10 @@ public class InstrumentQuestion extends AbstractEntityAudit {
 
         InstrumentQuestion that = (InstrumentQuestion) o;
 
-        if (getInstrument() != null ? !getInstrument().equals(that.getInstrument()) : that.getInstrument() != null)
-            return false;
-        if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
-            return false;
+//        if (getInstrument() != null ? !getInstrument().equals(that.getInstrument()) : that.getInstrument() != null)
+//            return false;
+//        if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
+//            return false;
         if (getInstrumentIdx() != null ? !getInstrumentIdx().equals(that.getInstrumentIdx()) : that.getInstrumentIdx() != null)
             return false;
         if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
@@ -112,8 +112,8 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
-        result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
+//        result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
+//        result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
         result = 31 * result + (getInstrumentIdx() != null ? getInstrumentIdx().hashCode() : 0);
         result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
         result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
@@ -124,8 +124,8 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "InstrumentQuestion{" +
-                "instrument=" + instrument +
-                ", question=" + question +
+//                "instrument=" + instrument +
+//                ", question=" + question +
                 ", instrumentIdx=" + instrumentIdx +
                 ", indexRationale='" + indexRationale + '\'' +
                 ", logic='" + logic + '\'' +

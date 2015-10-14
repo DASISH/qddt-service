@@ -26,13 +26,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      */
     public enum ChangeKind {
         CREATED,
-        NEW_REVISION,
-        NEW_MAJOR,
-        NEW_MINOR,
-        NEW_PATCH,
+        IN_DEVELOPMENT,
         TYPO,
-        NEW_COPY_OF,
-        IN_DEVELOPMENT
+        NEW_PATCH,
+        NEW_REVISION,
+        NEW_MINOR,
+        NEW_MAJOR,
+        NEW_COPY_OF
     }
 
     /**

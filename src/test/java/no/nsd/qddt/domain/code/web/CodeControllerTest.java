@@ -49,7 +49,7 @@ public class CodeControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(code)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(code.getName())))
-                .andExpect(jsonPath("$.changeReason", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
 
@@ -63,7 +63,7 @@ public class CodeControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(aCode)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(aCode.getName())))
-                .andExpect(jsonPath("$.changeReason", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
+                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
 
