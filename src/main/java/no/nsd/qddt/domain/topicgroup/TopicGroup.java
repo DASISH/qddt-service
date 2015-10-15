@@ -46,18 +46,18 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
     private Study study;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup")
-    private List<Concept> concepts;
+    private Set<Concept> concepts = new HashSet<>();
 
     @OneToMany
     @JoinColumn(name="author_id")
-    private List<User> authors;
+    private Set<User> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "topicGroup", cascade =CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OtherMaterial> otherMaterials;
+    private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     private String authorsAffiliation;
 
-    private String Abstract;
+    private String abstractDescription;
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
@@ -86,27 +86,27 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
         this.study = study;
     }
 
-    public List<Concept> getConcepts() {
+    public Set<Concept> getConcepts() {
         return concepts;
     }
 
-    public void setConcepts(List<Concept> concepts) {
+    public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
 
-    public List<User> getAuthors() {
+    public Set<User> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<User> authors) {
+    public void setAuthors(Set<User> authors) {
         this.authors = authors;
     }
 
-    public List<OtherMaterial> getOtherMaterials() {
+    public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
     }
 
-    public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
+    public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 
@@ -118,12 +118,12 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
         this.authorsAffiliation = authorsAffiliation;
     }
 
-    public String getAbstract() {
-        return Abstract;
+    public String getAbstractDescription() {
+        return abstractDescription;
     }
 
-    public void setAbstract(String anAbstract) {
-        this.Abstract = anAbstract;
+    public void setAbstractDescription(String abstractDescription) {
+        this.abstractDescription = abstractDescription;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
             return false;
         if (authorsAffiliation != null ? !authorsAffiliation.equals(that.authorsAffiliation) : that.authorsAffiliation != null)
             return false;
-        if (Abstract != null ? !Abstract.equals(that.Abstract) : that.Abstract != null) return false;
+        if (abstractDescription != null ? !abstractDescription.equals(that.abstractDescription) : that.abstractDescription != null) return false;
         return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
     }
@@ -153,7 +153,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
         result = 31 * result + (authorsAffiliation != null ? authorsAffiliation.hashCode() : 0);
-        result = 31 * result + (Abstract != null ? Abstract.hashCode() : 0);
+        result = 31 * result + (abstractDescription != null ? abstractDescription.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
@@ -161,8 +161,13 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
     @Override
     public String toString() {
         return "TopicGroup{" +
-                "authorsAffiliation='" + authorsAffiliation + '\'' +
-                ", Abstract='" + Abstract + '\'' +
+                "study=" + study +
+                ", concepts=" + concepts +
+                ", authors=" + authors +
+                ", otherMaterials=" + otherMaterials +
+                ", authorsAffiliation='" + authorsAffiliation + '\'' +
+                ", abstractDescription='" + abstractDescription + '\'' +
+                ", comments=" + comments +
                 "} " + super.toString();
     }
 }

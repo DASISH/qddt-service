@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -30,10 +31,7 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
 
     @Before
     public void setUp() {
-
-
         topicGroup = topicGroupService.save(new TopicGroup());
-
         topicGroup.setName("First");
         topicGroup = topicGroupService.save(topicGroup);
         topicGroup.setName("Second");
@@ -44,9 +42,6 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
 
     @Test
     public void testSaveSurveyWithAudit() throws Exception {
-        // Find the last revision based on the topicGroup id
-        Revision<Integer, TopicGroup> revision = topicGroupAuditService.findLastChange(topicGroup.getId());
-
         // Find all revisions based on the topicGroup id as a page
         Page<Revision<Integer, TopicGroup>> revisions = topicGroupAuditService.findRevisions(
                 topicGroup.getId(), new PageRequest(0, 10));
@@ -70,7 +65,7 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
     public void getLastRevisionTest() throws Exception {
         Revision<Integer, TopicGroup> revision = topicGroupAuditService.findLastChange(topicGroup.getId());
 
-        assertEquals("Excepted initial ResponseDomain Object.",
+        assertEquals("Excepted initial TopicGroup object.",
                 revision.getEntity(), topicGroup);
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
