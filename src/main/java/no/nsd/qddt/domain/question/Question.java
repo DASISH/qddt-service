@@ -172,8 +172,6 @@ public class Question extends AbstractEntityAudit implements Commentable {
         if (responseDomain != null ? !responseDomain.equals(question1.responseDomain) : question1.responseDomain != null)
             return false;
         if (concepts != null ? !concepts.equals(question1.concepts) : question1.concepts != null) return false;
-        if (instrumentQuestions != null ? !instrumentQuestions.equals(question1.instrumentQuestions) : question1.instrumentQuestions != null)
-            return false;
         if (comments != null ? !comments.equals(question1.comments) : question1.comments != null) return false;
         if (gridIdxRationale != null ? !gridIdxRationale.equals(question1.gridIdxRationale) : question1.gridIdxRationale != null)
             return false;

@@ -101,29 +101,28 @@ public class InstrumentQuestion extends AbstractEntityAudit {
 
         InstrumentQuestion that = (InstrumentQuestion) o;
 
-        if (getInstrument() != null ? !getInstrument().equals(that.getInstrument()) : that.getInstrument() != null)
+        if (instrument != null ? !instrument.equals(that.instrument) : that.instrument != null) return false;
+        if (question != null ? !question.equals(that.question) : that.question != null) return false;
+        if (instructions != null ? !instructions.equals(that.instructions) : that.instructions != null) return false;
+        if (instrumentIdx != null ? !instrumentIdx.equals(that.instrumentIdx) : that.instrumentIdx != null)
             return false;
-        if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
+        if (indexRationale != null ? !indexRationale.equals(that.indexRationale) : that.indexRationale != null)
             return false;
-        if (getInstrumentIdx() != null ? !getInstrumentIdx().equals(that.getInstrumentIdx()) : that.getInstrumentIdx() != null)
-            return false;
-        if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
-            return false;
-        return !(getLogic() != null ? !getLogic().equals(that.getLogic()) : that.getLogic() != null);
+        return !(logic != null ? !logic.equals(that.logic) : that.logic != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
-        result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
-        result = 31 * result + (getInstrumentIdx() != null ? getInstrumentIdx().hashCode() : 0);
-        result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
-        result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
+        result = 31 * result + (instrument != null ? instrument.hashCode() : 0);
+        result = 31 * result + (question != null ? question.hashCode() : 0);
+        result = 31 * result + (instructions != null ? instructions.hashCode() : 0);
+        result = 31 * result + (instrumentIdx != null ? instrumentIdx.hashCode() : 0);
+        result = 31 * result + (indexRationale != null ? indexRationale.hashCode() : 0);
+        result = 31 * result + (logic != null ? logic.hashCode() : 0);
         return result;
     }
-
 
     @Override
     public String toString() {

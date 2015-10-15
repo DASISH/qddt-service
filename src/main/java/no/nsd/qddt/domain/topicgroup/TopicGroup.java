@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
@@ -38,7 +39,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit {
+public class TopicGroup extends AbstractEntityAudit implements Commentable {
 
     @ManyToOne
     @JoinColumn(name="study_id")
@@ -61,14 +62,17 @@ public class TopicGroup extends AbstractEntityAudit {
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
+    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
+    @Override
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
+    @Override
     public void addComment(Comment comment) {
         comment.setOwnerId(this.getId());
         comments.add(comment);
@@ -131,7 +135,6 @@ public class TopicGroup extends AbstractEntityAudit {
         TopicGroup that = (TopicGroup) o;
 
         if (study != null ? !study.equals(that.study) : that.study != null) return false;
-//        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;

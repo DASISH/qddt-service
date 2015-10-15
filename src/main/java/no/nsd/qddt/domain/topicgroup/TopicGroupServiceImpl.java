@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-@Service("moduleService")
+@Service("topicGroupService")
 class TopicGroupServiceImpl implements TopicGroupService {
 
     private TopicGroupRepository topicGroupRepository;
@@ -46,8 +46,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = false)
     public TopicGroup save(TopicGroup instance) {
-
-        instance.setCreated(LocalDateTime.now());
         return topicGroupRepository.save(instance);
     }
 

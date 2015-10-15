@@ -21,48 +21,46 @@ import static org.junit.Assert.assertThat;
 public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
 
     @Autowired
-    private TopicGroupService codeService;
+    private TopicGroupService topicGroupService;
 
     @Autowired
-    private TopicGroupAuditService codeAuditService;
+    private TopicGroupAuditService topicGroupAuditService;
 
-    private TopicGroup entity;
+    private TopicGroup topicGroup;
 
     @Before
     public void setUp() {
 
 
-        entity = codeService.save(new TopicGroup());
+        topicGroup = topicGroupService.save(new TopicGroup());
 
-        entity.setName("First");
-        entity = codeService.save(entity);
-        entity.setName("Second");
-        entity = codeService.save(entity);
-        entity.setName("Third");
-        entity = codeService.save(entity);
+        topicGroup.setName("First");
+        topicGroup = topicGroupService.save(topicGroup);
+        topicGroup.setName("Second");
+        topicGroup = topicGroupService.save(topicGroup);
+        topicGroup.setName("Third");
+        topicGroup = topicGroupService.save(topicGroup);
     }
 
     @Test
     public void testSaveSurveyWithAudit() throws Exception {
-        entity = codeService.findOne(entity.getId());
+        // Find the last revision based on the topicGroup id
+        Revision<Integer, TopicGroup> revision = topicGroupAuditService.findLastChange(topicGroup.getId());
 
-        // Find the last revision based on the entity id
-        Revision<Integer, TopicGroup> revision = codeAuditService.findLastChange(entity.getId());
-
-        // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, TopicGroup>> revisions = codeAuditService.findRevisions(
-                entity.getId(), new PageRequest(0, 10));
+        // Find all revisions based on the topicGroup id as a page
+        Page<Revision<Integer, TopicGroup>> revisions = topicGroupAuditService.findRevisions(
+                topicGroup.getId(), new PageRequest(0, 10));
 
         Revisions<Integer, TopicGroup> wrapper = new Revisions<>(revisions.getContent());
 
-        assertEquals(wrapper.getLatestRevision().getEntity(), entity);
+        assertEquals(wrapper.getLatestRevision().getEntity(), topicGroup);
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
     @Test
     public void getAllRevisionsTest() throws Exception {
         Page<Revision<Integer, TopicGroup>> revisions =
-                codeAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
+                topicGroupAuditService.findRevisions(topicGroup.getId(), new PageRequest(0, 20));
 
         assertEquals("Excepted four revisions.",
                 revisions.getNumberOfElements(), 4);
@@ -70,10 +68,10 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
 
     @Test
     public void getLastRevisionTest() throws Exception {
-        Revision<Integer, TopicGroup> revision = codeAuditService.findLastChange(entity.getId());
+        Revision<Integer, TopicGroup> revision = topicGroupAuditService.findLastChange(topicGroup.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity(), entity);
+                revision.getEntity(), topicGroup);
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }
