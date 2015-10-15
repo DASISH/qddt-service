@@ -18,10 +18,10 @@ import static org.junit.Assert.assertThat;
 public class ResponseDomainAuditServiceTest extends AbstractAuditServiceTest {
 
     @Autowired
-    private ResponseDomainService codeService;
+    private ResponseDomainService responseDomainService;
 
     @Autowired
-    private ResponseDomainAuditService codeAuditService;
+    private ResponseDomainAuditService responseDomainAuditService;
 
     private ResponseDomain entity;
 
@@ -29,25 +29,25 @@ public class ResponseDomainAuditServiceTest extends AbstractAuditServiceTest {
     public void setUp() {
 
 
-        entity = codeService.save(new ResponseDomain());
+        entity = responseDomainService.save(new ResponseDomain());
 
         entity.setName("First");
-        entity = codeService.save(entity);
+        entity = responseDomainService.save(entity);
         entity.setName("Second");
-        entity = codeService.save(entity);
+        entity = responseDomainService.save(entity);
         entity.setName("Third");
-        entity = codeService.save(entity);
+        entity = responseDomainService.save(entity);
     }
 
     @Test
     public void testSaveSurveyWithAudit() throws Exception {
-        entity = codeService.findOne(entity.getId());
+        entity = responseDomainService.findOne(entity.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, ResponseDomain> revision = codeAuditService.findLastChange(entity.getId());
+        Revision<Integer, ResponseDomain> revision = responseDomainAuditService.findLastChange(entity.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, ResponseDomain>> revisions = codeAuditService.findRevisions(
+        Page<Revision<Integer, ResponseDomain>> revisions = responseDomainAuditService.findRevisions(
                 entity.getId(), new PageRequest(0, 10));
 
         Revisions<Integer, ResponseDomain> wrapper = new Revisions<>(revisions.getContent());
@@ -59,7 +59,7 @@ public class ResponseDomainAuditServiceTest extends AbstractAuditServiceTest {
     @Test
     public void getAllRevisionsTest() throws Exception {
         Page<Revision<Integer, ResponseDomain>> revisions =
-                codeAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
+                responseDomainAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
 
         assertEquals("Excepted four revisions.",
                 revisions.getNumberOfElements(), 4);
@@ -67,7 +67,7 @@ public class ResponseDomainAuditServiceTest extends AbstractAuditServiceTest {
 
     @Test
     public void getLastRevisionTest() throws Exception {
-        Revision<Integer, ResponseDomain> revision = codeAuditService.findLastChange(entity.getId());
+        Revision<Integer, ResponseDomain> revision = responseDomainAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity(), entity);

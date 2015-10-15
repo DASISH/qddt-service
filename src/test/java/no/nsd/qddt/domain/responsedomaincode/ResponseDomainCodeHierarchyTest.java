@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
@@ -67,7 +69,7 @@ public class ResponseDomainCodeHierarchyTest {
         assertEquals(responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).size(), 3);
 //        responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
 
-        assertNull("responsDomainCode should not contain any items.", responseDomainCodeService.findByCodeId(code.getId()));
+        assertThat("responsDomainCode should not contain any items.", responseDomainCodeService.findByCodeId(code.getId()).size(), is(0));
 
     }
 }
