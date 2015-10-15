@@ -36,16 +36,25 @@ public class InstrumentQuestion extends AbstractEntityAudit {
 
     private Long instrumentIndex;
 
+    @Column(length = 300)
     private String indexRationale;
 
     private String logic;
 
+    @Column(length = 3000)
     private String instruction;
 
 
     public InstrumentQuestion() {
     }
 
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
+    }
 
     public Instrument getInstrument() {
         return instrument;
