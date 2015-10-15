@@ -34,11 +34,13 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     @OneToMany(mappedBy="instrumentQuestion", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
-    private Long instrumentIdx;
+    private Long instrumentIndex;
 
     private String indexRationale;
 
     private String logic;
+
+    private String instruction;
 
 
     public InstrumentQuestion() {
@@ -69,12 +71,12 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         this.instructions = instructions;
     }
 
-    public Long getInstrumentIdx() {
-        return instrumentIdx;
+    public Long getInstrumentIndex() {
+        return instrumentIndex;
     }
 
-    public void setInstrumentIdx(Long instrumentIdx) {
-        this.instrumentIdx = instrumentIdx;
+    public void setInstrumentIndex(Long instrumentIndex) {
+        this.instrumentIndex = instrumentIndex;
     }
 
     public String getIndexRationale() {
@@ -105,7 +107,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
             return false;
         if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
             return false;
-        if (getInstrumentIdx() != null ? !getInstrumentIdx().equals(that.getInstrumentIdx()) : that.getInstrumentIdx() != null)
+        if (getInstrumentIndex() != null ? !getInstrumentIndex().equals(that.getInstrumentIndex()) : that.getInstrumentIndex() != null)
             return false;
         if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
             return false;
@@ -118,7 +120,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         int result = super.hashCode();
         result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
         result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
-        result = 31 * result + (getInstrumentIdx() != null ? getInstrumentIdx().hashCode() : 0);
+        result = 31 * result + (getInstrumentIndex() != null ? getInstrumentIndex().hashCode() : 0);
         result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
         result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
         return result;
@@ -130,7 +132,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         return "InstrumentQuestion{" +
                 "instrument=" + instrument +
                 ", question=" + question +
-                ", instrumentIdx=" + instrumentIdx +
+                ", instrumentIndex=" + instrumentIndex +
                 ", indexRationale='" + indexRationale + '\'' +
                 ", logic='" + logic + '\'' +
                 '}';
