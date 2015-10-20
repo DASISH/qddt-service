@@ -47,6 +47,17 @@ public class Code extends AbstractEntityAudit {
 
     }
 
+    /**
+     *
+     * @param tag tags
+     * @param category a category
+     */
+    public Code(String tag, String category){
+        setCategory(category);
+        setName(tag);
+    }
+
+
     public String getCategory() {
         return category;
     }

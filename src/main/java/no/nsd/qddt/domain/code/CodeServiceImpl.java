@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.code;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,11 @@ class CodeServiceImpl implements CodeService {
     }
 
     @Override
+    public Page<Code> findByHashTagPageable(String tag, Pageable pageable) {
+        return codeRepository.findByNameIgnoreCaseContains(tag.split("#, "),pageable);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public long count() {
         return codeRepository.count();
@@ -53,16 +60,14 @@ class CodeServiceImpl implements CodeService {
     @Override
     @Transactional(readOnly = false)
     public Code save(Code instance) {
-
-        instance.setCreated(LocalDateTime.now());
         return codeRepository.save(instance);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public List<Code> save(List<Code> instances) {
         return codeRepository.save(instances);
     }
-
 
     @Override
     public void delete(UUID uuid) {

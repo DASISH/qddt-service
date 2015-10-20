@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.code;
 
 import no.nsd.qddt.domain.BaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +17,9 @@ interface CodeRepository extends BaseRepository<Code,UUID> {
 
     List<Code> findByNameIgnoreCaseContains(String tags);
 
+    Page<Code> findByNameIgnoreCaseContains(String[] tags, Pageable pageable);
+
+//    List<String> findAllCategory();
+//
+//    Page<String> findAllCategory(Pageable pageable);
 }

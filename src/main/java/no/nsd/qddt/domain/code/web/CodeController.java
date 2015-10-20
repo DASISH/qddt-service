@@ -2,8 +2,15 @@ package no.nsd.qddt.domain.code.web;
 
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.code.CodeService;
+import no.nsd.qddt.domain.comment.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -21,6 +28,14 @@ public class CodeController {
     @Autowired
     public CodeController(CodeService codeService) {
         this.codeService = codeService;
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/{TAG}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Code>> get(@PathVariable("TAG")String tag, Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Code> comments = codeService.findByHashTagPageable(tag, pageable);
+        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

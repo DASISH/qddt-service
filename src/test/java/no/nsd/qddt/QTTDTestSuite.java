@@ -1,5 +1,6 @@
 package no.nsd.qddt;
 
+import no.nsd.qddt.domain.Category.CategoryServiceTest;
 import no.nsd.qddt.domain.agency.AgencyServiceTest;
 import no.nsd.qddt.domain.agency.web.AgencyControllerTest;
 import no.nsd.qddt.domain.code.CodeServiceTest;
@@ -54,6 +55,10 @@ import org.springframework.test.context.ActiveProfiles;
         // ====== Agency ======
         AgencyServiceTest.class,
         AgencyControllerTest.class,
+
+        // ====== Category ======
+
+        CategoryServiceTest.class,
 
         // ====== Code ======
         CodeServiceTest.class,

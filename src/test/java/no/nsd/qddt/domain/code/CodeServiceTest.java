@@ -22,6 +22,8 @@ public class CodeServiceTest extends AbstractServiceTest {
     
     @Autowired    
     private CodeRepository codeRepository;
+
+
     
     @Before
     public void setup() {
@@ -107,23 +109,24 @@ public class CodeServiceTest extends AbstractServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     @Override
     public void testDeleteAll() throws Exception {
-        List<Code> agencyList = new ArrayList<>();
+        List<Code> codeList = new ArrayList<>();
         Code code = new Code();
         code.setName("Test Code One");
-        agencyList.add(code);
+        codeList.add(code);
 
         code = new Code();
         code.setName("Test Code Two");
-        agencyList.add(code);
+        codeList.add(code);
 
         code = new Code();
         code.setName("Test Code Three");
-        agencyList.add(code);
+        codeList.add(code);
 
-        agencyList = codeService.save(agencyList);
-        codeService.delete(agencyList);
+        codeList = codeService.save(codeList);
+        codeService.delete(codeList);
 
-        agencyList.forEach(a -> assertNull("Should return null", codeService.findOne(a.getId())));
+        codeList.forEach(a -> assertNull("Should return null", codeService.findOne(a.getId())));
 
     }
+
 }
