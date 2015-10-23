@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.bcategory.Category;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.envers.Audited;
 

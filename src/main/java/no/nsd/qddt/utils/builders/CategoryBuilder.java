@@ -1,7 +1,7 @@
 package no.nsd.qddt.utils.builders;
 
 
-import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.bcategory.Category;
 
 /**
  * @author Stig Norland
