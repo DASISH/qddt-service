@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "GROUP")
+@Table(name = "_GROUP")
 public class Group extends AbstractEntityAudit {
 
     @ManyToOne
@@ -39,7 +39,7 @@ public class Group extends AbstractEntityAudit {
             inverseJoinColumns = {@JoinColumn(name = "concept_id", nullable = false,updatable = false)})
     private Set<Concept> concepts = new HashSet<>();
 
-// VAriabler er enda ikke tenkt på, men de kommer, da å denne være med...
+// TODO implement variables
 
 //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "GROUP_VARIABLE",
@@ -117,6 +117,12 @@ public class Group extends AbstractEntityAudit {
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
+
+    public void addComment(Comment comment) {
+        comment.setOwnerId(this.getId());
+        comments.add(comment);
+    }
+
 
     @Override
     public boolean equals(Object o) {

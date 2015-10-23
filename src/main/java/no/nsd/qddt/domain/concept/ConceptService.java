@@ -7,6 +7,5 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-
 public interface ConceptService  extends BaseService<Concept, UUID> {
 }

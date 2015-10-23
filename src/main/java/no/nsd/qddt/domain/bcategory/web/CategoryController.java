@@ -33,7 +33,7 @@ public class CategoryController {
     @RequestMapping(value = "/page/{TAG}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> get(@PathVariable("TAG")String tag, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Category> comments = categoryService.findByHashTagPageable(tag, pageable);
+        Page<Category> comments = categoryService.findByTagPageable(tag, pageable);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 

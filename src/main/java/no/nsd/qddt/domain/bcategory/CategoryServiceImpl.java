@@ -27,13 +27,13 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Category> findByHashTag(String tag) {
-        return categoryRepository.findByNameIgnoreCaseContains(tag);
+    public List<Category> findByTag(String tag) {
+        return categoryRepository.findByTagIgnoreCaseContains(tag);
     }
 
     @Override
-    public Page<Category> findByHashTagPageable(String tag, Pageable pageable) {
-        return categoryRepository.findByNameIgnoreCaseContains(tag.split("#, "),pageable);
+    public Page<Category> findByTagPageable(String tag, Pageable pageable) {
+        return categoryRepository.findByTagIgnoreCaseContains(tag.split("#, "),pageable);
     }
 
     @Override

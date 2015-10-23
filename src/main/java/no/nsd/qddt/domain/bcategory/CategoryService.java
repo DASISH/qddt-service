@@ -12,9 +12,9 @@ import java.util.UUID;
  */
 public interface CategoryService extends BaseService<Category, UUID> {
 
-    List<Category> findByHashTag(String tag);
+    List<Category>findByTag(String name);
 
-    Page<Category>findByHashTagPageable(String tag, Pageable pageable);
+    Page<Category>findByTagPageable(String name, Pageable pageable);
 
 //    public List<String> findAllCategoies();
 //

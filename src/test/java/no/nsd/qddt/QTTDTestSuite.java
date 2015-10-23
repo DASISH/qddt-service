@@ -29,7 +29,7 @@ import no.nsd.qddt.domain.question.web.QuestionControllerTest;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainServiceTest;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditServiceTest;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainControllerTest;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCategoryHierarchyTest;
+import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeHierarchyTest;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCategoryServiceTest;
 import no.nsd.qddt.domain.responsedomaincode.audit.ResponseDomainCategoryAuditServiceTest;
 import no.nsd.qddt.domain.responsedomaincode.web.ResponseDomainCategoryControllerTest;
@@ -107,7 +107,7 @@ import org.springframework.test.context.ActiveProfiles;
         ResponseDomainCategoryServiceTest.class,
         ResponseDomainCategoryAuditServiceTest.class,
         ResponseDomainCategoryControllerTest.class,
-        ResponseDomainCategoryHierarchyTest.class,
+        ResponseDomainCodeHierarchyTest.class,
 
         // ====== Study ======
         StudyServiceTest.class,

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.bcategory.Category;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.question.Question;
@@ -64,11 +65,22 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Column(name = "description", length = 2000)
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    /*
+        a link to a category root (template)
+     */
+    private Category category;
+
+
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
+
+
+
 
     public ResponseDomain(){
 
@@ -104,6 +116,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
         this.responseDomainCodes = responseDomainCodes;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override

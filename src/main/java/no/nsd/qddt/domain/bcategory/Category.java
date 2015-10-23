@@ -1,11 +1,13 @@
 package no.nsd.qddt.domain.bcategory;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -39,12 +41,15 @@ public class Category extends AbstractEntityAudit {
     @OneToMany(mappedBy="category", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
+    @OneToMany(mappedBy="category", cascade = CascadeType.ALL)
+    private Set<ResponseDomain> responseDomain = new HashSet<>();
+
+
+
 //    @ManyToOne
 //    @JoinColumn(name="parent_id")
 //    private Category parent;
 
-//    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST} )
     @JoinTable(name = "CATEGORY_CATEGORY",
             joinColumns = {@JoinColumn(name ="id", nullable = false)},
@@ -59,6 +64,10 @@ public class Category extends AbstractEntityAudit {
 
     @Column(name = "description", length = 2000)
     private String description;
+
+    @Column(name = "tag", length = 300)
+    private String tag;
+
 
     @Column(name = "concept_reference", nullable = true)
     @Type(type="pg-uuid")
@@ -122,13 +131,21 @@ public class Category extends AbstractEntityAudit {
         this.responseDomainCodes = responseDomainCodes;
     }
 
-//    public Category getParent() {
-//        return parent;
-//    }
-//
-//    public void setParent(Category parent) {
-//        this.parent = parent;
-//    }
+    public Set<ResponseDomain> getResponseDomain() {
+        return responseDomain;
+    }
+
+    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
+        this.responseDomain = responseDomain;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
     public Set<Category> getChildren() {
         return children;
@@ -150,26 +167,38 @@ public class Category extends AbstractEntityAudit {
         if (!super.equals(o)) return false;
 
         Category category = (Category) o;
-        if (description != null ? !description.equals(category.description) : category.description != null) return false;
-        return !(this.label != null ? !this.label.equals(category.label) : category.label != null);
+
+        if (getResponseDomainCodes() != null ? !getResponseDomainCodes().equals(category.getResponseDomainCodes()) : category.getResponseDomainCodes() != null)
+            return false;
+        if (getLabel() != null ? !getLabel().equals(category.getLabel()) : category.getLabel() != null) return false;
+        if (getDescription() != null ? !getDescription().equals(category.getDescription()) : category.getDescription() != null)
+            return false;
+        if (getTag() != null ? !getTag().equals(category.getTag()) : category.getTag() != null) return false;
+        if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
+            return false;
+        return getCategorySchemaType() == category.getCategorySchemaType();
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (label != null ? label.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (getResponseDomainCodes() != null ? getResponseDomainCodes().hashCode() : 0);
+        result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getTag() != null ? getTag().hashCode() : 0);
+        result = 31 * result + (getConceptReference() != null ? getConceptReference().hashCode() : 0);
+        result = 31 * result + (getCategorySchemaType() != null ? getCategorySchemaType().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Code{" +
-                " category='" + label + '\'' +
-                ", description='" + description + '\'' +
-                "} " + super.toString();
+        return "Category{" +
+                " name='" + super.getName() + '\'' +
+                ", label='" + label + '\'' +
+                ", tags=" + tag +
+                ", categorySchemaType=" + categorySchemaType +
+                "} "; //+ super.toString();
     }
-
-
 }
