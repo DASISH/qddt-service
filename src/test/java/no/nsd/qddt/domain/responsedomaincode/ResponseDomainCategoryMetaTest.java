@@ -1,19 +1,10 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.code.Code;
-import no.nsd.qddt.domain.code.CodeService;
-import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.instrument.InstrumentService;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
-import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.question.QuestionService;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
-import no.nsd.qddt.utils.builders.InstrumentBuilder;
-import no.nsd.qddt.utils.builders.InstrumentQuestionBuilder;
-import no.nsd.qddt.utils.builders.QuestionBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,19 +21,19 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class ResponseDomainCodeMetaTest {
+public class ResponseDomainCategoryMetaTest {
 
     @Autowired
     private ResponseDomainService responseDomainService;
 
     @Autowired
-    private CodeService codeService;
+    private CategoryService categoryService;
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;
 
     private ResponseDomain r1,r2;
-    private Code c1,c2;
+    private Category c1,c2;
 
     @Before
     public void setUp() {
@@ -50,8 +41,8 @@ public class ResponseDomainCodeMetaTest {
         r1 = responseDomainService.save(new ResponseDomain());
         r2 = responseDomainService.save(new ResponseDomain());
 
-        c1 = codeService.save(new Code());
-        c2 = codeService.save(new Code());
+        c1 = categoryService.save(new Category());
+        c2 = categoryService.save(new Category());
 
         responseDomainCodeService.save(new ResponseDomainCode(0, r1, c1));
         responseDomainCodeService.save(new ResponseDomainCode(0, r2, c2));
@@ -60,7 +51,7 @@ public class ResponseDomainCodeMetaTest {
 
     @Test
     public void findByInstrumentTest() throws Exception {
-        List<ResponseDomainCode> rdcs = responseDomainCodeService.findByCodeId(c1.getId());
+        List<ResponseDomainCode> rdcs = responseDomainCodeService.findByCategoryId(c1.getId());
         assertEquals("Expected one element!", rdcs.size(), 1);
     }
 

@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.authority.Authority;
-import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
@@ -96,7 +96,7 @@ public class User {
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
-    private Set<Code> codes = new HashSet<>();
+    private Set<Category> categories = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "agency_id")
@@ -241,12 +241,12 @@ public class User {
         this.responseDomainCodes = responseDomainCodes;
     }
 
-    public Set<Code> getCodes() {
-        return codes;
+    public Set<Category> getCategories() {
+        return categories;
     }
 
-    public void setCodes(Set<Code> codes) {
-        this.codes = codes;
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     public Agency getAgency() {

@@ -2,9 +2,11 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.version.SemVer;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -42,12 +44,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      */
 
     @ManyToOne
-    @JoinColumn(name = "agency_id")
+    @JoinColumn(name = "agency_id", nullable = true)
     private Agency agency;
-
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "based_on_object", nullable = true)
+    @Type(type="pg-uuid")
+    private UUID basedOnObject;
 
     @Transient
     private SemVer version;
@@ -66,6 +71,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     public void setAgency(Agency agency) {
         this.agency = agency;
+    }
+
+    public UUID getBasedOnObject() {
+        return basedOnObject;
+    }
+
+    public void setBasedOnObject(UUID basedOnObject) {
+        this.basedOnObject = basedOnObject;
     }
 
     public SemVer getVersion() {

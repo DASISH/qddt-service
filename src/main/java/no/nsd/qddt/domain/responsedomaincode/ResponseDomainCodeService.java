@@ -23,10 +23,10 @@ public interface ResponseDomainCodeService extends BaseService<ResponseDomainCod
     List<ResponseDomainCode> findByResponseDomainId(UUID responseDomainId);
 
     /**
-     * Find ResponseDomainCode by code
+     * Find ResponseDomainCode by category
      * @param codeId
      * @return
      */
-    List<ResponseDomainCode> findByCodeId(UUID codeId);
+    List<ResponseDomainCode> findByCategoryId(UUID codeId);
 
 }

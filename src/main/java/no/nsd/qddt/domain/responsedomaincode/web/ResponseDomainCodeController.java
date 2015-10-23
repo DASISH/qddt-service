@@ -60,6 +60,6 @@ public class ResponseDomainCodeController  {
     //    MetaController
     @RequestMapping(value = "/byCode/{id}", method = RequestMethod.GET)
     public List<ResponseDomainCode> getBySecond(@PathVariable("id") UUID secondId) {
-        return responseDomainCodeService.findByCodeId(secondId);
+        return responseDomainCodeService.findByCategoryId(secondId);
     }
 }

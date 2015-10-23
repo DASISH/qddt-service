@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.code.Code;
-import no.nsd.qddt.domain.code.CodeService;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
-import no.nsd.qddt.utils.builders.CodeBuilder;
+import no.nsd.qddt.utils.builders.CategoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class ResponseDomainCodeHierarchyTest {
+public class ResponseDomainCategoryHierarchyTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;
@@ -29,11 +29,11 @@ public class ResponseDomainCodeHierarchyTest {
     private ResponseDomainService responseDomainService;
 
     @Autowired
-    private CodeService codeService;
+    private CategoryService categoryService;
 
     private ResponseDomain responseDomain;
 
-    private Code code;
+    private Category category;
 
     private static final String HASH_TAG_SEX = "#KJØNN";
     private static final String HASH_TAG_CAR = "#BIL";
@@ -41,10 +41,10 @@ public class ResponseDomainCodeHierarchyTest {
     @Before
     public void setUp() {
 
-        code = codeService.save(new CodeBuilder().setCategory("Opel").setTag(HASH_TAG_CAR).createCode());
-        codeService.save(new CodeBuilder().setCategory("KVINNE").setTag(HASH_TAG_SEX).createCode());
-        codeService.save(new CodeBuilder().setCategory("MANN").setTag(HASH_TAG_SEX).createCode());
-        codeService.save(new CodeBuilder().setCategory("TVEKJØNNET").setTag(HASH_TAG_SEX).createCode());
+        category = categoryService.save(new CategoryBuilder().setCategory("Opel").setLabel(HASH_TAG_CAR).createCode());
+        categoryService.save(new CategoryBuilder().setCategory("KVINNE").setLabel(HASH_TAG_SEX).createCode());
+        categoryService.save(new CategoryBuilder().setCategory("MANN").setLabel(HASH_TAG_SEX).createCode());
+        categoryService.save(new CategoryBuilder().setCategory("TVEKJØNNET").setLabel(HASH_TAG_SEX).createCode());
 
 
         responseDomain = new ResponseDomain();
@@ -58,10 +58,10 @@ public class ResponseDomainCodeHierarchyTest {
 
 //        codeService.findByHashTag(HASH_TAG_SEX).forEach(System.out::println);
         int i = 0;
-        for (Code code : codeService.findByHashTag(HASH_TAG_SEX)) {
+        for (Category category : categoryService.findByHashTag(HASH_TAG_SEX)) {
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
-            responseDomainCode.setCodeIdx(i++);
-            responseDomainCode.setCode(code);
+            responseDomainCode.setCategoryIndex(i++);
+            responseDomainCode.setCategory(category);
             responseDomainCode.setResponseDomain(responseDomain);
             responseDomainCodeService.save(responseDomainCode);
         }
@@ -69,7 +69,7 @@ public class ResponseDomainCodeHierarchyTest {
         assertEquals(responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).size(), 3);
 //        responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
 
-        assertThat("responsDomainCode should not contain any items.", responseDomainCodeService.findByCodeId(code.getId()).size(), is(0));
+        assertThat("responsDomainCode should not contain any items.", responseDomainCodeService.findByCategoryId(category.getId()).size(), is(0));
 
     }
 }

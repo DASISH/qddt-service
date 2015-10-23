@@ -106,7 +106,8 @@ public class StudyControllerTest {
                                 fieldWithPath("changeKind").description(""),
                                 fieldWithPath("surveyProgram").description(""),
                                 fieldWithPath("instruments").description(""),
-                                fieldWithPath("topicGroups").description(""))
+                                fieldWithPath("topicGroups").description(""),
+                                fieldWithPath("basedOnObject").description(""))
                 ));
     }
 }

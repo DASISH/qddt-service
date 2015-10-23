@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.agency;
 
 
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
@@ -58,7 +58,7 @@ public class Agency extends AbstractEntity {
     private Set<ResponseDomain> responses = new HashSet<>();
 
     @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
-    private Set<Code> codes = new HashSet<>();
+    private Set<Category> categories = new HashSet<>();
 
     @Column(name = "name")
     private String name;
@@ -139,12 +139,12 @@ public class Agency extends AbstractEntity {
         this.responses = responses;
     }
 
-    public Set<Code> getCodes() {
-        return codes;
+    public Set<Category> getCategories() {
+        return categories;
     }
 
-    public void setCodes(Set<Code> codes) {
-        this.codes = codes;
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     @Override
@@ -165,7 +165,7 @@ public class Agency extends AbstractEntity {
         if (concepts != null ? !concepts.equals(agency.concepts) : agency.concepts != null) return false;
         if (questions != null ? !questions.equals(agency.questions) : agency.questions != null) return false;
         if (responses != null ? !responses.equals(agency.responses) : agency.responses != null) return false;
-        if (codes != null ? !codes.equals(agency.codes) : agency.codes != null) return false;
+        if (categories != null ? !categories.equals(agency.categories) : agency.categories != null) return false;
         return !(name != null ? !name.equals(agency.name) : agency.name != null);
 
     }
@@ -181,7 +181,7 @@ public class Agency extends AbstractEntity {
         result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
         result = 31 * result + (questions != null ? questions.hashCode() : 0);
         result = 31 * result + (responses != null ? responses.hashCode() : 0);
-        result = 31 * result + (codes != null ? codes.hashCode() : 0);
+        result = 31 * result + (categories != null ? categories.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }

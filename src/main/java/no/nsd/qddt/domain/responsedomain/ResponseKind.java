@@ -7,7 +7,7 @@ package no.nsd.qddt.domain.responsedomain;
  * This Class would be a good candidate to change into a ENUM, as every entry
  * will have to be mapped to specific behaviour in GUI and intruments/surveys.
  *<dl>
- *      <dt>Category</dt><dd>A category (without an attached code) response for a question item.</dd>
+ *      <dt>Category</dt><dd>A category (without an attached category) response for a question item.</dd>
  *      <dt>Code</dt><dd>A coded response (where both codes and their related category value are displayed) for a question item.</dd>
  *      <dt>Numeric</dt><dd>A numeric response (the intent is to analyze the response as a number) for a question item.</dd>
  *      <dt>Scale</dt><dd>A scale response which describes a 1..n dimensional scale of various display types for a question.</dd>
@@ -40,8 +40,8 @@ public enum ResponseKind {
 //            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
 //    private UUID id;
 //
-//    @Column(name = "code")
-//    private String code;
+//    @Column(name = "category")
+//    private String category;
 //
 //    @Column(name = "name")
 //    private String name;
@@ -58,11 +58,11 @@ public enum ResponseKind {
 //    }
 //
 //    public String getCode() {
-//        return code;
+//        return category;
 //    }
 //
-//    public void setCode(String code) {
-//        this.code = code;
+//    public void setCode(String category) {
+//        this.category = category;
 //    }
 //
 //    public String getName() {
@@ -88,7 +88,7 @@ public enum ResponseKind {
 //
 //        ResponseKind that = (ResponseKind) o;
 //
-//        if (code != null ? !code.equals(that.code) : that.code != null) return false;
+//        if (category != null ? !category.equals(that.category) : that.category != null) return false;
 //        if (id != null ? !id.equals(that.id) : that.id != null) return false;
 //        if (name != null ? !name.equals(that.name) : that.name != null) return false;
 //
@@ -98,7 +98,7 @@ public enum ResponseKind {
 //    @Override
 //    public int hashCode() {
 //        int result = id != null ? id.hashCode() : 0;
-//        result = 31 * result + (code != null ? code.hashCode() : 0);
+//        result = 31 * result + (category != null ? category.hashCode() : 0);
 //        result = 31 * result + (name != null ? name.hashCode() : 0);
 //        return result;
 //    }
@@ -107,7 +107,7 @@ public enum ResponseKind {
 //    public String toString() {
 //        return "ResponsKind{" +
 //                "id=" + id +
-//                ", code='" + code + '\'' +
+//                ", category='" + category + '\'' +
 //                ", name='" + name + '\'' +
 //                '}';
 //    }

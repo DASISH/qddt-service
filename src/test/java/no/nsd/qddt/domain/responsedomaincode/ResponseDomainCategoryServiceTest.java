@@ -12,7 +12,7 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class ResponseDomainCodeServiceTest extends AbstractServiceTest {
+public class ResponseDomainCategoryServiceTest extends AbstractServiceTest {
 
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;

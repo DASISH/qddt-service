@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.envers.Audited;
 
@@ -21,11 +21,11 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     private ResponseDomain responseDomain;
 
     @ManyToOne
-    @JoinColumn(name = "code_id")
-    private Code code;
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column(name = "code_idx")
-    private int codeIdx;
+    @Column(name = "category_idx")
+    private int categoryIndex;
 
     @Column(name = "code_value")
     private String codeValue;
@@ -34,18 +34,18 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     }
 
-    public ResponseDomainCode(int codeIdx, ResponseDomain responseDomain, Code code) {
-        this.codeIdx = codeIdx;
+    public ResponseDomainCode(int categoryIndex, ResponseDomain responseDomain, Category category) {
+        this.categoryIndex = categoryIndex;
         this.responseDomain = responseDomain;
-        this.code = code;
+        this.category = category;
     }
 
-    public int getCodeIdx() {
-        return codeIdx;
+    public int getCategoryIndex() {
+        return categoryIndex;
     }
 
-    public void setCodeIdx(int codeIdx) {
-        this.codeIdx = codeIdx;
+    public void setCategoryIndex(int categoryIndex) {
+        this.categoryIndex = categoryIndex;
     }
 
     public String getCodeValue() {
@@ -64,12 +64,12 @@ public class ResponseDomainCode extends AbstractEntityAudit {
         this.responseDomain = responseDomain;
     }
 
-    public Code getCode() {
-        return code;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCode(Code code) {
-        this.code = code;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override
@@ -80,10 +80,10 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
         ResponseDomainCode that = (ResponseDomainCode) o;
 
-        if (codeIdx != that.codeIdx) return false;
+        if (categoryIndex != that.categoryIndex) return false;
         if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
             return false;
-        if (code != null ? !code.equals(that.code) : that.code != null) return false;
+        if (category != null ? !category.equals(that.category) : that.category != null) return false;
         return !(codeValue != null ? !codeValue.equals(that.codeValue) : that.codeValue != null);
 
     }
@@ -92,8 +92,8 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + codeIdx;
+        result = 31 * result + (category != null ? category.hashCode() : 0);
+        result = 31 * result + categoryIndex;
         result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
         return result;
     }
@@ -102,8 +102,8 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     public String toString() {
         return "ResponseDomainCode{" +
                 "responseDomain=" + responseDomain +
-                ", code=" + code +
-                ", codeIdx=" + codeIdx +
+                ", category=" + category +
+                ", categoryIndex=" + categoryIndex +
                 ", codeValue='" + codeValue + '\'' +
                 "} " + super.toString();
     }

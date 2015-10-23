@@ -11,6 +11,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -28,12 +29,12 @@ import java.util.Set;
 public class Question extends AbstractEntityAudit implements Commentable {
 
     @ManyToOne
-    @JoinColumn(name="parent_id")
-    private Question parent;
-
-    @ManyToOne
     @JoinColumn(name = "responsedomain_id")
     private ResponseDomain responseDomain;
+
+    @ManyToOne
+    @JoinColumn(name="parent_id")
+    private Question parent;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Question> children = new HashSet<>();
@@ -60,6 +61,9 @@ public class Question extends AbstractEntityAudit implements Commentable {
     /// QuestionText: the actual question to ask.
     @Column(name = "question", length = 1500)
     private String question;
+
+    @Column(name = "concept_reference", nullable = true)
+    private UUID conceptReference;
 
     public Question() {
 
@@ -131,6 +135,14 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public UUID getConceptReference() {
+        return conceptReference;
+    }
+
+    public void setConceptReference(UUID conceptReference) {
+        this.conceptReference = conceptReference;
     }
 
     /**
