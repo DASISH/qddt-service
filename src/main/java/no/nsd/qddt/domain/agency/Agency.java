@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.agency;
 
 
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.aategory.Category;
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;

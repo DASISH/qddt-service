@@ -1,6 +1,10 @@
 package no.nsd.qddt.domain.aategory;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryRepository;
+import no.nsd.qddt.domain.category.CategorySchemaType;
+import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;

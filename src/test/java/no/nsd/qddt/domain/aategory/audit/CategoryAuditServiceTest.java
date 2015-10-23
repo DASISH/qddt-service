@@ -1,8 +1,9 @@
 package no.nsd.qddt.domain.aategory.audit;
 
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
-import no.nsd.qddt.domain.aategory.Category;
-import no.nsd.qddt.domain.aategory.CategoryService;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
+import no.nsd.qddt.domain.category.audit.CategoryAuditService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

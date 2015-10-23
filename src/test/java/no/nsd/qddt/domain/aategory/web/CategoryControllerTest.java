@@ -2,8 +2,8 @@ package no.nsd.qddt.domain.aategory.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.aategory.Category;
-import no.nsd.qddt.domain.aategory.CategoryService;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

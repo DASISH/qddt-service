@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.aategory.Category;
-import no.nsd.qddt.domain.aategory.CategoryService;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.utils.builders.CategoryBuilder;

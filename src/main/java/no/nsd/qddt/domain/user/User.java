@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.authority.Authority;
-import no.nsd.qddt.domain.aategory.Category;
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
