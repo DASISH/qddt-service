@@ -1,18 +1,22 @@
-package no.nsd.qddt.domain.Category;
+package no.nsd.qddt.domain.category;
 
-import no.nsd.qddt.domain.Category.Category;
+import no.nsd.qddt.domain.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
- * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
-public interface CategoryService {
+public interface CategoryService extends BaseService<Category, UUID> {
 
-    List<Category> findAll();
+    List<Category> findByHashTag(String tag);
 
-    Page<Category> findAll(Pageable pageable);
+    Page<Category>findByHashTagPageable(String tag, Pageable pageable);
 
+//    public List<String> findAllCategoies();
+//
+//    public Page<String> findAllCategoies(Pageable pageable);
 }

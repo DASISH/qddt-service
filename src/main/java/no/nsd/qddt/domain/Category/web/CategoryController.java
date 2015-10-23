@@ -1,7 +1,7 @@
-package no.nsd.qddt.domain.Category.web;
+package no.nsd.qddt.domain.category.web;
 
-import no.nsd.qddt.domain.Category.Category;
-import no.nsd.qddt.domain.Category.CategoryService;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,15 +10,13 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
+ * @author Dag Østgulen Heradstveit
  */
 @RestController
 @RequestMapping("/category")
@@ -27,23 +25,39 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryService service) {
-        this.categoryService = service;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/{TAG}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Category>> get(@PathVariable("TAG")String tag, Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Category> comments = categoryService.findByHashTagPageable(tag, pageable);
+        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public List<Category> allCategories(){
-        return categoryService.findAll();
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public Category get(@PathVariable("id") UUID id) {
+        return categoryService.findOne(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Category update(@RequestBody Category category) {
+        return categoryService.save(category);
+    }
 
-    @RequestMapping(value = "/allPageable", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Category>> allCategoriesPage(
-            Pageable pageable, PagedResourcesAssembler assembler){
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public Category create(@RequestBody Category category) {
+        return categoryService.save(category);
+    }
 
-        Page<Category> categories = categoryService.findAll(pageable);
-        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        categoryService.delete(id);
     }
 }
