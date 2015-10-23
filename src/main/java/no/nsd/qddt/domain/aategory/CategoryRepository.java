@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.category;
+package no.nsd.qddt.domain.aategory;
 
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;

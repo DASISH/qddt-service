@@ -1,7 +1,7 @@
-package no.nsd.qddt.domain.category.web;
+package no.nsd.qddt.domain.aategory.web;
 
-import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.audit.CategoryAuditService;
+import no.nsd.qddt.domain.aategory.Category;
+import no.nsd.qddt.domain.aategory.audit.CategoryAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

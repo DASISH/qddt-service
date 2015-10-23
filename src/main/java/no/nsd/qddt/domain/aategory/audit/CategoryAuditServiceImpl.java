@@ -1,6 +1,6 @@
-package no.nsd.qddt.domain.category.audit;
+package no.nsd.qddt.domain.aategory.audit;
 
-import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.aategory.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

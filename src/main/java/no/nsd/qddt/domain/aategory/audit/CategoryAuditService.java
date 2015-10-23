@@ -1,7 +1,7 @@
-package no.nsd.qddt.domain.category.audit;
+package no.nsd.qddt.domain.aategory.audit;
 
 import no.nsd.qddt.domain.BaseServiceAudit;
-import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.aategory.Category;
 
 import java.util.UUID;
 

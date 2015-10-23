@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.category;
+package no.nsd.qddt.domain.aategory;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
