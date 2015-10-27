@@ -1,9 +1,9 @@
 package no.nsd.qddt.utils.builders;
 
 
-import no.nsd.qddt.domain.bcategory.Category;
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.HierarchyLevel;
-import no.nsd.qddt.domain.bcategory.CategoryType;
+import no.nsd.qddt.domain.category.CategoryType;
 
 /**
  * @author Stig Norland

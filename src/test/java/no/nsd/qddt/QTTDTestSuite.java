@@ -2,9 +2,9 @@ package no.nsd.qddt;
 
 import no.nsd.qddt.domain.agency.AgencyServiceTest;
 import no.nsd.qddt.domain.agency.web.AgencyControllerTest;
-import no.nsd.qddt.domain.bcategory.CategoryServiceTest;
-import no.nsd.qddt.domain.bcategory.audit.CategoryAuditServiceTest;
-import no.nsd.qddt.domain.bcategory.web.CategoryControllerTest;
+import no.nsd.qddt.domain.category.CategoryServiceTest;
+import no.nsd.qddt.domain.category.audit.CategoryAuditServiceTest;
+import no.nsd.qddt.domain.category.web.CategoryControllerTest;
 import no.nsd.qddt.domain.comment.CommentServiceTest;
 import no.nsd.qddt.domain.comment.audit.CommentAuditServiceTest;
 import no.nsd.qddt.domain.comment.web.CommentControllerTest;
