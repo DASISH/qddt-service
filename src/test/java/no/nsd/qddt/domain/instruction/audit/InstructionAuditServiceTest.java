@@ -56,7 +56,7 @@ public class InstructionAuditServiceTest extends AbstractAuditServiceTest {
         Revisions<Integer, Instruction> wrapper = new Revisions<>(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity(), instruction);
-        assertThat(revisions.getNumberOfElements(), is(4));
+        assertThat(3,is(revisions.getNumberOfElements()));
     }
 
     @Test

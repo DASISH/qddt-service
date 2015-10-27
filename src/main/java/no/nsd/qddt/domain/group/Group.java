@@ -15,15 +15,15 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "_GROUP")
+@Table(name = "GROUP_")
 public class Group extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name="parent_id")
-    private Concept parent;
+    private Group parent;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-    private Set<Concept> children = new HashSet<>();
+    private Set<Group> children = new HashSet<>();
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -40,7 +40,6 @@ public class Group extends AbstractEntityAudit {
     private Set<Concept> concepts = new HashSet<>();
 
 // TODO implement variables
-
 //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "GROUP_VARIABLE",
 //            joinColumns = {@JoinColumn(name ="group_id", nullable = false, updatable = false)},
@@ -62,19 +61,19 @@ public class Group extends AbstractEntityAudit {
     }
 
 
-    public Concept getParent() {
+    public Group getParent() {
         return parent;
     }
 
-    public void setParent(Concept parent) {
+    public void setParent(Group parent) {
         this.parent = parent;
     }
 
-    public Set<Concept> getChildren() {
+    public Set<Group> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<Concept> children) {
+    public void setChildren(Set<Group> children) {
         this.children = children;
     }
 
@@ -132,27 +131,26 @@ public class Group extends AbstractEntityAudit {
 
         Group group = (Group) o;
 
-        if (getParent() != null ? !getParent().equals(group.getParent()) : group.getParent() != null) return false;
-        if (getChildren() != null ? !getChildren().equals(group.getChildren()) : group.getChildren() != null)
+        if (parent != null ? !parent.equals(group.parent) : group.parent != null) return false;
+        if (children != null ? !children.equals(group.children) : group.children != null) return false;
+        if (questions != null ? !questions.equals(group.questions) : group.questions != null)
             return false;
-        if (getQuestions() != null ? !getQuestions().equals(group.getQuestions()) : group.getQuestions() != null)
+        if (concepts != null ? !concepts.equals(group.concepts) : group.concepts != null)
             return false;
-        if (getConcepts() != null ? !getConcepts().equals(group.getConcepts()) : group.getConcepts() != null)
-            return false;
-        if (getLabel() != null ? !getLabel().equals(group.getLabel()) : group.getLabel() != null) return false;
-        return !(getDescription() != null ? !getDescription().equals(group.getDescription()) : group.getDescription() != null);
+        if (label != null ? !label.equals(group.label) : group.label != null) return false;
+        return !(description != null ? !description.equals(group.description) : group.description != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
-        result = 31 * result + (getChildren() != null ? getChildren().hashCode() : 0);
-        result = 31 * result + (getQuestions() != null ? getQuestions().hashCode() : 0);
-        result = 31 * result + (getConcepts() != null ? getConcepts().hashCode() : 0);
-        result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (children != null ? children.hashCode() : 0);
+        result = 31 * result + (questions != null ? questions.hashCode() : 0);
+        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
+        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
