@@ -1,13 +1,13 @@
 package no.nsd.qddt.domain.bcategory;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -38,10 +38,10 @@ import java.util.UUID;
 @Table(name = "CATEGORY")
 public class Category extends AbstractEntityAudit {
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="category", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="category", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<ResponseDomain> responseDomain = new HashSet<>();
 
 
@@ -65,17 +65,18 @@ public class Category extends AbstractEntityAudit {
     @Column(name = "description", length = 2000)
     private String description;
 
-    @Column(name = "tag", length = 300)
-    private String tag;
-
-
     @Column(name = "concept_reference", nullable = true)
     @Type(type="pg-uuid")
     private UUID conceptReference;
 
+    @Column(name = "Hierarchy_level")
+    @Enumerated(EnumType.STRING)
+    private HierarchyLevel hierarchyLevel;
+
     @Column(name = "category_kind")
     @Enumerated(EnumType.STRING)
-    private CategorySchemaType categorySchemaType;
+    private CategoryType categoryType;
+
 
     public Category() {
 
@@ -91,12 +92,20 @@ public class Category extends AbstractEntityAudit {
         setLabel(label);
     }
 
-    public CategorySchemaType getCategorySchemaType() {
-        return categorySchemaType;
+    public CategoryType getCategoryType() {
+        return categoryType;
     }
 
-    public void setCategorySchemaType(CategorySchemaType categorySchemaType) {
-        this.categorySchemaType = categorySchemaType;
+    public void setCategoryType(CategoryType categoryType) {
+        this.categoryType = categoryType;
+    }
+
+    public HierarchyLevel getHierarchyLevel() {
+        return hierarchyLevel;
+    }
+
+    public void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
+        this.hierarchyLevel = hierarchyLevel;
     }
 
     public String getLabel() {
@@ -139,14 +148,6 @@ public class Category extends AbstractEntityAudit {
         this.responseDomain = responseDomain;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
     public Set<Category> getChildren() {
         return children;
     }
@@ -157,8 +158,20 @@ public class Category extends AbstractEntityAudit {
 
     public void addChild(Category children) {
         this.children.add(children);
-//        children.setParent(this);
     }
+
+    public Set<Category> getGrandChildren(){
+        Set<Category> grandchildren = new HashSet<>();
+
+        for(Category c:this.getChildren()){
+            if (c.getHierarchyLevel() == HierarchyLevel.ENTITY)
+                grandchildren.add(c);
+            else
+                grandchildren.addAll(c.getGrandChildren());
+        }
+        return grandchildren;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -168,27 +181,22 @@ public class Category extends AbstractEntityAudit {
 
         Category category = (Category) o;
 
-        if (getResponseDomainCodes() != null ? !getResponseDomainCodes().equals(category.getResponseDomainCodes()) : category.getResponseDomainCodes() != null)
-            return false;
         if (getLabel() != null ? !getLabel().equals(category.getLabel()) : category.getLabel() != null) return false;
         if (getDescription() != null ? !getDescription().equals(category.getDescription()) : category.getDescription() != null)
             return false;
-        if (getTag() != null ? !getTag().equals(category.getTag()) : category.getTag() != null) return false;
         if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
             return false;
-        return getCategorySchemaType() == category.getCategorySchemaType();
+        return getHierarchyLevel() == category.getHierarchyLevel();
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getResponseDomainCodes() != null ? getResponseDomainCodes().hashCode() : 0);
         result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getTag() != null ? getTag().hashCode() : 0);
         result = 31 * result + (getConceptReference() != null ? getConceptReference().hashCode() : 0);
-        result = 31 * result + (getCategorySchemaType() != null ? getCategorySchemaType().hashCode() : 0);
+        result = 31 * result + (getHierarchyLevel() != null ? getHierarchyLevel().hashCode() : 0);
         return result;
     }
 
@@ -197,8 +205,7 @@ public class Category extends AbstractEntityAudit {
         return "Category{" +
                 " name='" + super.getName() + '\'' +
                 ", label='" + label + '\'' +
-                ", tags=" + tag +
-                ", categorySchemaType=" + categorySchemaType +
+                ", categorySchemaType=" + hierarchyLevel +
                 "} "; //+ super.toString();
     }
 }

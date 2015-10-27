@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.bcategory;
 
 import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.HierarchyLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,9 +13,17 @@ import java.util.UUID;
  */
 public interface CategoryService extends BaseService<Category, UUID> {
 
-    List<Category>findByTag(String name);
+    List<Category>findByNameLike(String name);
 
-    Page<Category>findByTagPageable(String name, Pageable pageable);
+    Page<Category>findByNamePageable(String name, Pageable pageable);
+
+    Page<Category>findByCategoryTypeAndNameLike(CategoryType categoryType,String name,Pageable pageable );
+
+    Page<Category>findRootLevelByName(String name,Pageable pageable );
+
+    Page<Category>findGroupByName(String name,Pageable pageable );
+
+    Page<Category>findByHierarchyAndCategoryAndName(HierarchyLevel hierarchyLevel, CategoryType categoryType,String name,Pageable pageable);
 
 //    public List<String> findAllCategoies();
 //

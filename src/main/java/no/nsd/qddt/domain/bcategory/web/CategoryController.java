@@ -30,10 +30,10 @@ public class CategoryController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/{TAG}", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Category>> get(@PathVariable("TAG")String tag, Pageable pageable, PagedResourcesAssembler assembler) {
+    @RequestMapping(value = "/page/{name}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Category>> get(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Category> comments = categoryService.findByTagPageable(tag, pageable);
+        Page<Category> comments = categoryService.findByNamePageable(name, pageable);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.bcategory;
 
+import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,14 +28,37 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Category> findByTag(String tag) {
-        return categoryRepository.findByTagIgnoreCaseContains(tag);
+    public List<Category> findByNameLike(String name) {
+        return categoryRepository.findByNameIgnoreCaseLike(name);
     }
 
     @Override
-    public Page<Category> findByTagPageable(String tag, Pageable pageable) {
-        return categoryRepository.findByTagIgnoreCaseContains(tag.split("#, "),pageable);
+    public Page<Category> findByNamePageable(String name, Pageable pageable) {
+        return categoryRepository.findByNameIgnoreCaseLike(name, pageable);
     }
+
+    @Override
+    public Page<Category> findRootLevelByName(String name, Pageable pageable) {
+        return categoryRepository.findByHierarchyLevelAndNameLike(HierarchyLevel.ROOT_ENTITY, name, pageable);
+    }
+
+    @Override
+    public Page<Category> findGroupByName(String name, Pageable pageable) {
+        return categoryRepository.findByHierarchyLevelAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
+    }
+
+    @Override
+    public Page<Category> findByHierarchyAndCategoryAndName(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
+        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameLike(hierarchyLevel,categoryType,name,pageable);
+    }
+
+    @Override
+    public Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable) {
+        return categoryRepository.findByCategoryTypeAndNameLike(categoryType, name, pageable);
+    }
+
+
+
 
     @Override
     @Transactional(readOnly = true)

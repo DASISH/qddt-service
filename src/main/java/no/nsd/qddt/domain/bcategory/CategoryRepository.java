@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.bcategory;
 
 import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.HierarchyLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -16,11 +17,14 @@ import java.util.UUID;
 interface CategoryRepository extends BaseRepository<Category,UUID> {
 //    @NamedNativeQuery(name = "findUniqueCategoryInOrder", query= "select distinct category as name from Code  order by category", resultClass= Category.class)
 
-    List<Category> findByTagIgnoreCaseContains(String tags);
+    List<Category> findByNameIgnoreCaseLike(String name);
 
-    Page<Category> findByTagIgnoreCaseContains(String[] tags, Pageable pageable);
+    Page<Category> findByNameIgnoreCaseLike(String name, Pageable pageable);
 
-//    List<String> findAllCategory();
-//
-//    Page<String> findAllCategory(Pageable pageable);
+    Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable);
+
+    Page<Category> findByHierarchyLevelAndNameLike(HierarchyLevel hierarchyLevel, String name, Pageable pageable);
+
+    Page<Category> findByHierarchyLevelAndCategoryTypeAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable);
+
 }

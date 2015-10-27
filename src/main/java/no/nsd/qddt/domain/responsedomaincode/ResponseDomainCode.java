@@ -101,10 +101,10 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "ResponseDomainCode{" +
-                "responseDomain=" + responseDomain +
                 ", category=" + category +
                 ", categoryIndex=" + categoryIndex +
                 ", codeValue='" + codeValue + '\'' +
+                responseDomain +
                 "} " + super.toString();
     }
 }

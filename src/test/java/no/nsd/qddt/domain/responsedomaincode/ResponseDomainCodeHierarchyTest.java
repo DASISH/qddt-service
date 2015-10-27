@@ -2,8 +2,9 @@ package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.bcategory.Category;
-import no.nsd.qddt.domain.bcategory.CategorySchemaType;
+import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.bcategory.CategoryService;
+import no.nsd.qddt.domain.bcategory.CategoryType;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
@@ -39,33 +40,32 @@ public class ResponseDomainCodeHierarchyTest {
 
     private Category rootCategory;
 
-    private static final String HASH_TAG_SEX = "#KJØNN";
-
     @Before
     public void setUp() {
 
-        rootCategory = new CategoryBuilder().setCategory("Kjønn")
-                .setType(CategorySchemaType.CATEGORY_GROUP)
-                .setLabel(HASH_TAG_SEX).createCode();
-        rootCategory.addChild(new CategoryBuilder().setCategory("KVINNE")
-                .setType(CategorySchemaType.CATEGORY)
-                .setLabel(HASH_TAG_SEX).createCode());
-        rootCategory.addChild(new CategoryBuilder().setCategory("MANN")
-                .setType(CategorySchemaType.CATEGORY)
-                .setLabel(HASH_TAG_SEX).createCode());
-        rootCategory.addChild(new CategoryBuilder().setCategory("TVEKJØNNET")
-                .setType(CategorySchemaType.CATEGORY)
-                .setLabel(HASH_TAG_SEX).createCode());
-
+        //Create a categorySchema
+        rootCategory = new CategoryBuilder().setName("KJØNN")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.MULTIPLE_SINGLE)
+                .setLabel("Kjønn").createCategory();
+        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kvinne").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Mann").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Transperson").createCategory());
         categoryService.save(rootCategory);
 
+
+        // Create a responsdomain with a categoryschema.
         responseDomain = new ResponseDomain();
-        responseDomain.setName("response domain Kjønn");
-        responseDomain.setResponseKind(ResponseKind.Category);
+        responseDomain.setName("Kjønn obligatorisk svar");
+        responseDomain.setResponseKind(ResponseKind.Code);
         responseDomain.setCategory(rootCategory);
         responseDomain = responseDomainService.save(responseDomain);
 
 
+        // add codevalues to the responsdomain/categoryschema instanse
         Integer i = 0;
         for(Category cat:rootCategory.getChildren()){
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
@@ -79,23 +79,13 @@ public class ResponseDomainCodeHierarchyTest {
     }
 
     @Test
-    public void saveCodeAndResponseDomainToResponseDomainCodeTest() throws Exception {
-
-//        codeService.findByHashTag(HASH_TAG_SEX).forEach(System.out::println);
-//        int i = 0;
-//        for (Category rootCategory : categoryService.findByTag(HASH_TAG_SEX)) {
-//            ResponseDomainCode responseDomainCode = new ResponseDomainCode();
-//            responseDomainCode.setCategoryIndex(i++);
-//            responseDomainCode.setCategory(rootCategory);
-//            responseDomainCode.setResponseDomain(responseDomain);
-//            responseDomainCodeService.save(responseDomainCode);
-//        }
+    public void findByResponseDomainAndCategoryTest() throws Exception {
 
         List<ResponseDomainCode> responseDomainCodeList = responseDomainCodeService.findByResponseDomainId(responseDomain.getId());
         assertEquals(3, responseDomainCodeList.size());
-//        responseDomainCodeService.findByResponseDomainId(responseDomain.getId()).forEach(System.out::println);
-
         assertThat("responsDomainCode should not contain any items.", responseDomainCodeService.findByCategoryId(rootCategory.getId()).size(), is(0));
 
     }
+
+
 }
