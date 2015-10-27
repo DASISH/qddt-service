@@ -43,7 +43,7 @@ public class InstructionAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveInstructionWithAudit() throws Exception {
         instruction = instructionService.findOne(instruction.getId());
 
         // Find the last revision based on the entity id
