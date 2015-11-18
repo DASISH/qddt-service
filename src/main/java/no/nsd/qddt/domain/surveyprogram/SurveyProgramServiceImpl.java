@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram;
 
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,10 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     public void delete(List<SurveyProgram> instances) {
         surveyProgramRepository.delete(instances);
+    }
+
+    @Override
+    public List<SurveyProgram> findByCreatedBy(User user) {
+        return surveyProgramRepository.findByCreatedBy(user);
     }
 }

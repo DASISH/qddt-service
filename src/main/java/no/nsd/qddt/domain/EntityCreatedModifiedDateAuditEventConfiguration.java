@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.PrePersist;
@@ -8,7 +9,9 @@ import java.time.LocalDateTime;
 
 /**
  * Creates and updates entities based on global rules
- * of implementations of {@link AbstractEntity} and {@link AbstractEntityAudit}
+ * of implementations of {@link AbstractEntity} and {@link AbstractEntityAudit}.
+ *
+ * Be aware that this class will cause {@link NullPointerException} if BeforeSecurityContext is not set in tests.
  *
  * @author Dag Østgulen Heradstveit
  */
@@ -23,6 +26,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     public void create(AbstractEntity entity) {
         LocalDateTime now = LocalDateTime.now();
         entity.setCreated(now);
+        entity.setCreatedBy(SecurityContext.getUserDetails().getUser());
         if (entity instanceof AbstractEntityAudit) {
             ((AbstractEntityAudit)entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
         }

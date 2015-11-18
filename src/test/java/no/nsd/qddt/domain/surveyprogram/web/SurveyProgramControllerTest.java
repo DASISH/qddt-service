@@ -26,11 +26,13 @@ public class SurveyProgramControllerTest extends ControllerWebIntegrationTest {
     @Override
     public void setup() {
         super.setup();
+        super.getBeforeSecurityContext().createSecurityContext();
 
         entity = new SurveyProgram();
         entity.setName("A test entity");
         entity = entityService.save(entity);
 
+        super.getBeforeSecurityContext().destroySecurityContext();
     }
 
     @Test

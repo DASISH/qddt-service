@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.QDDT;
+import no.nsd.qddt.domain.user.QDDTUserDetailsService;
+import no.nsd.qddt.utils.BeforeSecurityContext;
 import no.nsd.qddt.utils.RestfulTestUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,11 +13,15 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.restdocs.RestDocumentation;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -38,7 +44,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 @WebIntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class ControllerWebIntegrationTest {
+public abstract class ControllerWebIntegrationTest {
 
     @Rule
     public final RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
@@ -60,8 +66,15 @@ public class ControllerWebIntegrationTest {
     @Value("${test.username}")
     private String username;
 
+    private BeforeSecurityContext beforeSecurityContext;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Before
     public void setup() {
+        this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
+
         rest = new RestfulTestUtils(mappingJackson2HttpMessageConverter);
         mvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
@@ -77,4 +90,10 @@ public class ControllerWebIntegrationTest {
                 "password",
                 "http://localhost:8080/oauth/token");
     }
+
+    public BeforeSecurityContext getBeforeSecurityContext() {
+        return beforeSecurityContext;
+    }
+
+
 }
