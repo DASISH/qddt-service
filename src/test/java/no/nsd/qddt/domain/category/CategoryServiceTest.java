@@ -234,7 +234,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
         Page<Category> rootList= categoryService.findRootLevelByName( "%", new PageRequest(0, 20));
         assertEquals("Should be 1 element in list",  1L,rootList.getTotalElements());
-        assertEquals("Should be 5 Grandchildren elements", 5L, rootList.getContent().get(0).getGrandChildren().size());
+        assertEquals("Should be 5 Grandchildren elements", 5L, rootList.getContent().get(0).getAllChildrenFlatten().size());
 
     }
 
@@ -277,7 +277,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 "%", new PageRequest(0, 20));
 
         assertEquals("Should be 2 element in list",  2L,page.getTotalElements());
-        assertEquals("Should be 0 Grandchildren elements", 0L, page.getContent().get(0).getGrandChildren().size());
+        assertEquals("Should be 0 Grandchildren elements", 0L, page.getContent().get(0).getAllChildrenFlatten().size());
 
         page =categoryService.findByHierarchyAndCategoryAndName(
                 HierarchyLevel.GROUP_ENTITY,
@@ -285,6 +285,6 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 "%", new PageRequest(0, 20));
 
         assertEquals("Should be 1 element in list",  1L,page.getTotalElements());
-        assertEquals("Should be 3 Grandchildren elements", 3L, page.getContent().get(0).getGrandChildren().size());
+        assertEquals("Should be 3 Grandchildren elements", 3L, page.getContent().get(0).getAllChildrenFlatten().size());
     }
 }

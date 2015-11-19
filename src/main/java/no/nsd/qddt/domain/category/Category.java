@@ -59,9 +59,20 @@ public class Category extends AbstractEntityAudit {
 
     //name -> A description of a particular category or response.
 
+    /*
+    A display label for the category.
+    May be expressed in multiple languages.
+    Repeat for labels with different content, for example,
+    labels with differing length limitations or of different types or applications.
+     */
     @Column(name = "label")
     private String label;
 
+    /*
+    A description of the content and purpose of the category.
+    May be expressed in multiple languages and supports the use of structured content.
+    Note that comparison of categories is done using the content of description.
+     */
     @Column(name = "description", length = 2000)
     private String description;
 
@@ -160,14 +171,14 @@ public class Category extends AbstractEntityAudit {
         this.children.add(children);
     }
 
-    public Set<Category> getGrandChildren(){
+    public Set<Category> getAllChildrenFlatten(){
         Set<Category> grandchildren = new HashSet<>();
 
         for(Category c:this.getChildren()){
             if (c.getHierarchyLevel() == HierarchyLevel.ENTITY)
                 grandchildren.add(c);
             else
-                grandchildren.addAll(c.getGrandChildren());
+                grandchildren.addAll(c.getAllChildrenFlatten());
         }
         return grandchildren;
     }
