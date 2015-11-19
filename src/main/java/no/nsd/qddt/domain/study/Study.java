@@ -14,9 +14,9 @@ import java.util.Set;
 
 /**
  * <ul class="inheritance">
- *     <li>A Study will have of one or more Modules.
+ *     <li>A Study will have of one or more TopicGroups.
  *     <ul class="inheritance">
- *         <li>A Module will have one or more Concepts.</li>
+ *         <li>A TopicGroup will have one or more Concepts.</li>
  *         <ul class="inheritance">
  *             <li>A Concept consist of one or more Questions.</li>
  *             <ul class="inheritance">
@@ -29,7 +29,7 @@ import java.util.Set;
  * </br>
  * A publication structure for a specific study. Structures identification information, full
  * bibliographic and discovery information, administrative information, all of the reusable
- * delineations used for response domains and variable representations, and modules covering
+ * delineations used for response domains and variable representations, and TopicGroups covering
  * different points in the lifecycle of the study (DataCollection, LogicalProduct,
  * PhysicalDataProduct, PhysicalInstance, Archive, and DDIProfile).
  *
@@ -46,6 +46,10 @@ public class Study extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name="survey_id")
     private SurveyProgram surveyProgram;
 
+    private String description;
+
+    private String authors;
+
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
@@ -57,6 +61,22 @@ public class Study extends AbstractEntityAudit implements Commentable {
 
     public Study() {
 
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String authors) {
+        this.authors = authors;
     }
 
     public SurveyProgram getSurveyProgram() {
@@ -102,27 +122,40 @@ public class Study extends AbstractEntityAudit implements Commentable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Study)) return false;
         if (!super.equals(o)) return false;
 
         Study study = (Study) o;
-//        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null) return false;
 
-        return true;
+        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null)
+            return false;
+        if (description != null ? !description.equals(study.description) : study.description != null) return false;
+        if (authors != null ? !authors.equals(study.authors) : study.authors != null) return false;
+        if (comments != null ? !comments.equals(study.comments) : study.comments != null) return false;
+        if (instruments != null ? !instruments.equals(study.instruments) : study.instruments != null) return false;
+        return !(topicGroups != null ? !topicGroups.equals(study.topicGroups) : study.topicGroups != null);
+
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-//        result = 31 * result + (surveyProgram != null ? surveyProgram.hashCode() : 0);
+        result = 31 * result + (surveyProgram != null ? surveyProgram.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (authors != null ? authors.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        result = 31 * result + (instruments != null ? instruments.hashCode() : 0);
+        result = 31 * result + (topicGroups != null ? topicGroups.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Study{" +
-                ", instruments=" + instruments +
-                ", topicGroups=" + topicGroups +
+                "surveyProgram=" + surveyProgram +
+                ", description='" + description + '\'' +
+                ", authors='" + authors + '\'' +
+                ", comments=" + comments +
                 "} " + super.toString();
     }
 }
