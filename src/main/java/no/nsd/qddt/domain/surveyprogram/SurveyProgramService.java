@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.user.User;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -10,4 +12,5 @@ import java.util.UUID;
  */
 public interface SurveyProgramService extends BaseService<SurveyProgram, UUID> {
 
+    List<SurveyProgram> findByCreatedBy(User user);
 }

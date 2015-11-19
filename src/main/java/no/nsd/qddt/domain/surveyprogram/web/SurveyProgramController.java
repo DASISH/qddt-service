@@ -5,12 +5,16 @@ import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.domain.user.QDDTUserDetails;
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -61,8 +65,17 @@ public class SurveyProgramController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public SurveyProgram create(@RequestBody SurveyProgram instance) {
+        User user = ((QDDTUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        System.out.println(user);
         return surveyProgramService.save(instance);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/list/user", method = RequestMethod.GET)
+    public List<SurveyProgram> listByUser() {
+        return surveyProgramService.findByCreatedBy(SecurityContext.getUserDetails().getUser());
+    }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
