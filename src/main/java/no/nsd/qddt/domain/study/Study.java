@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -48,7 +49,9 @@ public class Study extends AbstractEntityAudit implements Commentable {
 
     private String description;
 
-    private String authors;
+    @OneToMany
+    @JoinColumn(name="author_id")
+    private Set<User> authors = new HashSet<>();
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
@@ -71,11 +74,11 @@ public class Study extends AbstractEntityAudit implements Commentable {
         this.description = description;
     }
 
-    public String getAuthors() {
+    public Set<User> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(String authors) {
+    public void setAuthors(Set<User> authors) {
         this.authors = authors;
     }
 
