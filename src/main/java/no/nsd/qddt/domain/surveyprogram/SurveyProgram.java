@@ -42,11 +42,32 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
     @OneToMany(mappedBy = "surveyProgram",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
+    private String description;
+
+    private String authors;
+
+
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {
 
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String authors) {
+        this.authors = authors;
     }
 
     public Set<Study> getStudies() {
@@ -82,6 +103,8 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
         SurveyProgram that = (SurveyProgram) o;
 
         if (studies != null ? !studies.equals(that.studies) : that.studies != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
     }
@@ -90,6 +113,8 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (studies != null ? studies.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
@@ -97,6 +122,10 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
     @Override
     public String toString() {
         return "SurveyProgram{" +
+                "studies=" + studies +
+                ", description='" + description + '\'' +
+                ", authors='" + authors + '\'' +
+                ", comments=" + comments +
                 "} " + super.toString();
     }
 }
