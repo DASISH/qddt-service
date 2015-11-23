@@ -58,7 +58,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private SemVer version;
 
     @Enumerated(EnumType.STRING)
-    private ChangeKind changeKind = ChangeKind.CREATED;
+    private ChangeKind changeKind;
 
     @Column(name = "change_comment")
     private String changeComment;
