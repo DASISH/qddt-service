@@ -27,9 +27,13 @@ public class InstrumentQuestionControllerTest extends ControllerWebIntegrationTe
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
+
         entity = new InstrumentQuestion();
         entity.setName("A test entity");
         entity = entityService.save(entity);
+
+        super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 

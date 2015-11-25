@@ -28,9 +28,12 @@ public class CommentControllerTest extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
+
         entity = new Comment();
         entity.setComment("A test entity");
         entity = entityService.save(entity);
+        super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 

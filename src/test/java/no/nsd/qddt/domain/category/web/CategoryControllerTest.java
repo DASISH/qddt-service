@@ -26,12 +26,13 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
     @Override
     public void setup() {
         super.setup();
-
+        super.getBeforeSecurityContext().createSecurityContext();
         category = new Category();
         category.setLabel("Test category");
         category.setName("A test category");
         category = categoryService.save(category);
 
+        super.getBeforeSecurityContext().destroySecurityContext();
     }
 
     @Test

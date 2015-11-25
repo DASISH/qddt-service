@@ -27,9 +27,13 @@ public class InstrumentControllerTest  extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
+
         instrument = new Instrument();
         instrument.setName("A test instrument");
         instrument = instrumentService.save(instrument);
+
+        super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 

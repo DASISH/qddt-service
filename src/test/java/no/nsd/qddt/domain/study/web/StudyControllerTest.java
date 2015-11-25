@@ -63,6 +63,10 @@ public class StudyControllerTest {
 
     @Before
     public void setUp() {
+
+//        super.setup();
+//        super.getBeforeSecurityContext().createSecurityContext();
+
         rest = new RestfulTestUtils(mappingJackson2HttpMessageConverter);
         mvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
@@ -81,6 +85,8 @@ public class StudyControllerTest {
         study = new Study();
         study.setName("Test Study One");
         study = studyService.save(study);
+
+//        super.getBeforeSecurityContext().destroySecurityContext();
     }
 
     @Test

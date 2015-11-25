@@ -27,11 +27,13 @@ public class GroupControllerTest extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
         group = new Group();
         group.setName("A test group");
         group.setDescription("Beskrivelse");
         group = groupService.save(group);
 
+        super.getBeforeSecurityContext().destroySecurityContext();
     }
 
     @Test

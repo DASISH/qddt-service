@@ -27,9 +27,13 @@ public class QuestionControllerTest  extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
+
         entity = new Question();
         entity.setName("A test entity");
         entity = entityService.save(entity);
+
+        super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 

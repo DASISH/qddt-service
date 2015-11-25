@@ -27,9 +27,13 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
+
         entity = new ResponseDomain();
         entity.setName("A test entity");
         entity = entityService.save(entity);
+
+        super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 

@@ -27,9 +27,11 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
         entity = new Concept();
         entity.setName("A test entity");
         entity = entityService.save(entity);
+        super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 

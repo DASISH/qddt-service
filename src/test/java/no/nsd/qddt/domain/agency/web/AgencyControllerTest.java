@@ -30,10 +30,12 @@ public class AgencyControllerTest extends ControllerWebIntegrationTest {
     @Override
     public void setup() {
         super.setup();
-
+        super.getBeforeSecurityContext().createSecurityContext();
         agency = new Agency();
         agency.setName("Test agency");
         agency = agencyService.save(agency);
+        super.getBeforeSecurityContext().destroySecurityContext();
+
     }
 
     @Test

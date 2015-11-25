@@ -29,10 +29,13 @@ public class InstructionControllerTest  extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
 
+        super.getBeforeSecurityContext().createSecurityContext();
+
         instruction = new Instruction();
         instruction.setName("A test instruction");
         instruction.setDescription("Beskrivelse");
         instruction = instructionService.save(instruction);
+        super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 
