@@ -98,7 +98,7 @@ public class User {
     @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "agency_id")
     private Agency agency;
 

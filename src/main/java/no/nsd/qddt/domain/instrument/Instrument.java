@@ -24,6 +24,13 @@ import java.util.Set;
 public class Instrument extends AbstractEntityAudit implements Commentable {
 
     @ManyToOne
+    @JoinColumn(name="parent_id")
+    private Instrument parent;
+
+    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    private Set<Instrument> children = new HashSet<>();
+
+    @ManyToOne
     @JoinColumn(name="study_id")
     private Study study;
 
@@ -51,6 +58,22 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
     public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
         this.instrumentQuestions = instrumentQuestions;
+    }
+
+    public Instrument getParent() {
+        return parent;
+    }
+
+    public void setParent(Instrument parent) {
+        this.parent = parent;
+    }
+
+    public Set<Instrument> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Instrument> children) {
+        this.children = children;
     }
 
     @Override

@@ -24,7 +24,6 @@ public class UserController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public User getLoggedInUser() {
-        //This can be outdated, but for the prurposes here, its okay.
         return userService.findOne(SecurityContext.getUserDetails().getUser().getId());
     }
 }
