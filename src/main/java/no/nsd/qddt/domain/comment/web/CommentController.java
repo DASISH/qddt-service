@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.comment.web;
 
-import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @RestController
-@RequestMapping("/comment")
+@RequestMapping(value = "/comment" , produces = {MediaType.APPLICATION_JSON_VALUE})
 public class CommentController {
 
     private CommentService commentService;
@@ -31,7 +31,7 @@ public class CommentController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/{ownerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "by-owner/{ownerId}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
