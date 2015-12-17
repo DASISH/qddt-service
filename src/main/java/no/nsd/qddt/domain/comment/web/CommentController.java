@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.comment.web;
 
-import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class CommentController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/{ownerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/by-owner/{ownerId}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
