@@ -80,9 +80,7 @@ ext {
 
 //This exclude the test suite, which we use for IDE test support.
 test {
-//    systemProperty "spring.profiles.active", "testing"
-
-    exclude 'QTTDTestSuite.class'
+    exclude 'no/nsd/qddt/QTTDTestSuite.class'
     outputs.dir snippetsDir
 
     testLogging {
