@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.urn.Urn;
 import no.nsd.qddt.domain.version.SemVer;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -55,6 +56,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private UUID basedOnObject;
 
     @Transient
+    private Urn urn;
+
+
     private SemVer version;
 
     @Enumerated(EnumType.STRING)
@@ -64,6 +68,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private String changeComment;
 
     protected AbstractEntityAudit() { }
+
+    public Urn getUrn() {
+        return urn;
+    }
+
+    public void setUrn(Urn urn) {
+        this.urn = urn;
+    }
 
     public Agency getAgency() {
         return agency;
