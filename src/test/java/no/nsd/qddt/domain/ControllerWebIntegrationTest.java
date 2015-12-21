@@ -1,7 +1,8 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.user.QDDTUserDetailsService;
+import no.nsd.qddt.domain.agency.AgencyService;
+import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.utils.BeforeSecurityContext;
 import no.nsd.qddt.utils.RestfulTestUtils;
 import org.junit.Before;
@@ -9,15 +10,11 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +25,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 
 /**
  * Sets up the test environment for a controller test that
- * needs a {@link WebIntegrationTest} and Oauth2 tokens for headers
+ * needs a {@link IntegrationTest} and Oauth2 tokens for headers
  * when testing secured resources.
  *
  * Example on simple controller test
@@ -41,7 +38,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
  *
  * @author Dag Heradstveit
  */
-@WebIntegrationTest
+@IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public abstract class ControllerWebIntegrationTest {
@@ -70,6 +67,12 @@ public abstract class ControllerWebIntegrationTest {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AgencyService agencyService;
 
     @Before
     public void setup() {

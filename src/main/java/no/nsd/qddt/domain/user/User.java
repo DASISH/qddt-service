@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.authority.Authority;
 import no.nsd.qddt.domain.category.Category;
