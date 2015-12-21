@@ -31,8 +31,35 @@ public class OtherMaterial extends AbstractEntityAudit {
 
     private String description;
 
+    private String fileType;
+
+    private long size;
+
     public OtherMaterial(){
 
+    }
+
+    public OtherMaterial(String name, String fileType, long size) {
+        setName(name);
+        this.fileType = fileType;
+        this.size = size;
+    }
+
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 
     public TopicGroup getTopicGroup() {
