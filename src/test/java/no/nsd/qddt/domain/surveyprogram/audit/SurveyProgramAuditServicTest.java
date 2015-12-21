@@ -3,18 +3,22 @@ package no.nsd.qddt.domain.surveyprogram.audit;
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.utils.BeforeSecurityContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.IntegrationTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+@IntegrationTest
 public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
 
     @Autowired
@@ -25,8 +29,16 @@ public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
 
     SurveyProgram surveyProgram;
 
+    private BeforeSecurityContext beforeSecurityContext;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Before
     public void setup() {
+        this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
+        this.beforeSecurityContext.createSecurityContext();
+
         surveyProgram = new SurveyProgram();
         surveyProgram.setName("This is the FIRST version");
 
@@ -37,6 +49,8 @@ public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
 
         surveyProgram.setName("This is the THIRD version");
         surveyProgram = surveyProgramService.save(surveyProgram);
+
+        this.beforeSecurityContext.destroySecurityContext();
     }
 
 

@@ -23,8 +23,7 @@ public class BeforeSecurityContext {
     }
 
     public void createSecurityContext() {
-        System.out.println("Setup XFC");
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken("admin@example.org", "password");
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken("user@example.org", "password");
         Authentication authentication = authenticationManager.authenticate(authRequest);
         org.springframework.security.core.context.SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);

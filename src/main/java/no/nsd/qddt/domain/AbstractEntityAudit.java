@@ -134,17 +134,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         return result;
     }
 
-
     @Override
     public String toString() {
-        return  super.toString()+ '\'' +
+        return "AbstractEntityAudit{" +
+                "changeComment='" + changeComment + '\'' +
+                ", basedOnObject=" + basedOnObject +
                 ", name='" + name + '\'' +
-                ", changeKind=" + changeKind +
-                ", changeComment='" + changeComment + '\'';
+                ", version=" + version +
+                "} " + super.toString();
     }
-
-
-    /**
-     * The letter "E".
-     */
 }
