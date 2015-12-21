@@ -9,7 +9,6 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +19,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @RestController
-@RequestMapping(value = "/comment" , produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/comment")
 public class CommentController {
 
     private CommentService commentService;
@@ -31,7 +30,7 @@ public class CommentController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "by-owner/{ownerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/by-owner/{ownerId}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
