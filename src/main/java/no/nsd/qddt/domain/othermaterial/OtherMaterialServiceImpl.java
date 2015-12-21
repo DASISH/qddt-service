@@ -1,12 +1,21 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import net.logstash.logback.encoder.org.apache.commons.io.FilenameUtils;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +79,36 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Override
     public void delete(List<OtherMaterial> instances) {
         otherMaterialRepository.delete(instances);
+    }
+
+    @Override
+    public File save(MultipartFile multipartFile, UUID uuid) throws FileUploadException {
+
+        String directory = createFolder(uuid.toString());
+        String filepath = Paths.get(directory, multipartFile.getOriginalFilename()).toString();
+
+        try {
+            Files.copy(multipartFile.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);
+            return new File(filepath);
+        }
+        catch (IOException e) {
+            throw new FileUploadException(multipartFile.getName());
+        }
+    }
+
+
+    @Value("${qddt.fileroot}")
+    String fileRoot;
+
+    private String createFolder(String uuid) {
+        File directory;
+
+        directory= new File(fileRoot + uuid.substring(1, 3));
+        if(!directory.exists()) {
+            directory.mkdir();
+        }
+
+        return directory.getAbsolutePath();
     }
 
 

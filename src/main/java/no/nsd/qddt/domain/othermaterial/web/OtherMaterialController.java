@@ -5,7 +5,11 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.UUID;
 
 
@@ -47,4 +51,27 @@ public class OtherMaterialController {
     public void delete(@PathVariable("id") UUID id) {
         otherMaterialService.delete(id);
     }
+
+    @RequestMapping(value="/upload", method=RequestMethod.GET)
+    public @ResponseBody String provideUploadInfo() {
+        return "You can upload a file by posting to this same URL.";
+    }
+
+    @RequestMapping(value="/upload", method=RequestMethod.POST)
+    public @ResponseBody String handleFileUpload(@RequestParam("id") UUID id,
+                                                 @RequestParam("file") MultipartFile file){
+        if (!file.isEmpty()) {
+            try {
+                otherMaterialService.save(file,id);
+                return "You successfully uploaded " + file.getName() + "!";
+            } catch (Exception e) {
+                return "You failed to upload file => " + e.getMessage();
+            }
+        } else {
+            return "You failed to upload, because the file was empty.";
+        }
+    }
+
+
+
 }
