@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.attribute.standard.MediaSize;
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -24,7 +25,7 @@ public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
      */
     Page<OtherMaterial> findAllByTopicGroup(UUID  guid, Pageable pageable);
 
-    File save(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
+    File saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
 
-
+    MultipartFile loadFile(UUID id) throws IOException;
 }
