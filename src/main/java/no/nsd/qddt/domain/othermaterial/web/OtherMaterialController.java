@@ -7,9 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 
@@ -62,13 +60,23 @@ public class OtherMaterialController {
                                                  @RequestParam("file") MultipartFile file){
         if (!file.isEmpty()) {
             try {
-                otherMaterialService.save(file,id);
+                otherMaterialService.saveFile(file,id);
                 return "You successfully uploaded " + file.getName() + "!";
             } catch (Exception e) {
                 return "You failed to upload file => " + e.getMessage();
             }
         } else {
             return "You failed to upload, because the file was empty.";
+        }
+    }
+
+    @RequestMapping(value="/files/{id}", method=RequestMethod.GET)
+    public @ResponseBody MultipartFile handleFileDownload(@PathVariable("id") UUID id) {
+        try {
+            return otherMaterialService.loadFile(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  null;
         }
     }
 
