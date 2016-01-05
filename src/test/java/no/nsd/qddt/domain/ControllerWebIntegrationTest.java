@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,7 +39,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
  *
  * @author Dag Heradstveit
  */
-@IntegrationTest
+@WebIntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
 public abstract class ControllerWebIntegrationTest {
