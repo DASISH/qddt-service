@@ -8,12 +8,14 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
+import no.nsd.qddt.utils.BeforeSecurityContext;
 import no.nsd.qddt.utils.builders.CategoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -40,9 +42,17 @@ public class ResponseDomainCodeHierarchyTest {
 
     private Category rootCategory;
 
+    private BeforeSecurityContext beforeSecurityContext;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+
     @Before
     public void setUp() {
 
+        this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
+        this.beforeSecurityContext.createSecurityContext();
         //Create a categorySchema
         rootCategory = new CategoryBuilder().setName("KJØNN")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)

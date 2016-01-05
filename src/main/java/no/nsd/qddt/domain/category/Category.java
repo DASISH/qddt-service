@@ -53,7 +53,7 @@ public class Category extends AbstractEntityAudit {
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST} )
     @JoinTable(name = "CATEGORY_CATEGORY",
             joinColumns = {@JoinColumn(name ="id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "parent_id", nullable = false)})
+            inverseJoinColumns = {@JoinColumn(name = "parent_id", nullable = false, unique = false)})
     private Set<Category> children = new HashSet<>();
 
 

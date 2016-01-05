@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.user;
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,19 @@ public class UserServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(userRepository);
+    }
+
+    @After
+    @Override
+    public void tearDown() {
+        List<User> list = userRepository.findAll();
+        for (User user:list) {
+            if(user.getAgency() == null) {
+                userRepository.delete(user);
+            }
+        }
     }
 
     @Test
@@ -55,7 +68,7 @@ public class UserServiceTest extends AbstractServiceTest {
         user.setEmail("Test User Three");
         userService.save(user);
 
-        assertThat("Should be three", userService.count(), is(3L));
+        assertThat("Should be three ", 5L,is(userService.count()));
     }
 
     @Test
@@ -102,7 +115,7 @@ public class UserServiceTest extends AbstractServiceTest {
 
         userService.save(agencyList);
 
-        assertEquals("Should have saved 3 agencies", userService.count(), 3L);
+        assertEquals("Should have saved (3+2) agencies", 5L,userService.count());
     }
 
     @Test(expected = ResourceNotFoundException.class)

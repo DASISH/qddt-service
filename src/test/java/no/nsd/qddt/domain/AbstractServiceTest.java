@@ -37,7 +37,9 @@ public abstract class AbstractServiceTest implements ServiceTest {
 
     @Before
     public void setup() {
+
         this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
+        this.beforeSecurityContext.createSecurityContext();
     }
 
     public void setBaseRepositories(BaseRepository...baseRepository) {

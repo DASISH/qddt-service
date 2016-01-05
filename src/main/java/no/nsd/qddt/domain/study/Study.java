@@ -49,7 +49,7 @@ public class Study extends AbstractEntityAudit implements Commentable {
 
     private String description;
 
-    @OneToMany
+    @OneToMany (fetch = FetchType.EAGER)
     @JoinColumn(name="author_id")
     private Set<User> authors = new HashSet<>();
 
@@ -147,8 +147,8 @@ public class Study extends AbstractEntityAudit implements Commentable {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
-        result = 31 * result + (instruments != null ? instruments.hashCode() : 0);
-        result = 31 * result + (topicGroups != null ? topicGroups.hashCode() : 0);
+//        result = 31 * result + (instruments != null ? instruments.hashCode() : 0);
+//        result = 31 * result + (topicGroups != null ? topicGroups.hashCode() : 0);
         return result;
     }
 

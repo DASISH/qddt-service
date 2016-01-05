@@ -27,6 +27,7 @@ public class InstructionServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(instructionRepository);
     }
 

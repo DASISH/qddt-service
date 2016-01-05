@@ -47,7 +47,7 @@ class CommentServiceImpl  implements CommentService  {
     @Transactional(readOnly = false)
     public Comment save(Comment instance) {
 
-        instance.setCreated(LocalDateTime.now());
+//        instance.setCreated(LocalDateTime.now());
         return commentRepository.save(instance);
     }
 

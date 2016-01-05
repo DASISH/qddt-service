@@ -59,7 +59,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private Urn urn;
 
 
-    private SemVer version;
+    private String version;
 
     @Enumerated(EnumType.STRING)
     private ChangeKind changeKind;
@@ -93,11 +93,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.basedOnObject = basedOnObject;
     }
 
-    public SemVer getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(SemVer version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 

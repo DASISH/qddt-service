@@ -55,7 +55,7 @@ public class ResponseDomainCategoryAuditServiceTest extends AbstractAuditService
 
         Revisions<Integer, ResponseDomainCode> wrapper = new Revisions<>(revisions.getContent());
 
-        assertEquals(wrapper.getLatestRevision().getEntity(), entity);
+        assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), entity.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
@@ -73,7 +73,7 @@ public class ResponseDomainCategoryAuditServiceTest extends AbstractAuditService
         Revision<Integer, ResponseDomainCode> revision = responseDomainCodeAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity(), entity);
+                revision.getEntity().hashCode(), entity.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

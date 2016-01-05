@@ -55,8 +55,8 @@ public class InstructionAuditServiceTest extends AbstractAuditServiceTest {
 
         Revisions<Integer, Instruction> wrapper = new Revisions<>(revisions.getContent());
 
-        assertEquals(wrapper.getLatestRevision().getEntity(), instruction);
-        assertThat(3,is(revisions.getNumberOfElements()));
+        assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), instruction.hashCode());
+        assertThat(4,is(revisions.getNumberOfElements()));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class InstructionAuditServiceTest extends AbstractAuditServiceTest {
         Revision<Integer, Instruction> revision = instructionAuditService.findLastChange(instruction.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity(), instruction);
+                revision.getEntity().hashCode(), instruction.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

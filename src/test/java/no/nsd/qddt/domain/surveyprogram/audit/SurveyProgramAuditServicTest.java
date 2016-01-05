@@ -67,7 +67,7 @@ public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
 
         Revisions<Integer, SurveyProgram> wrapper = new Revisions<>(revisions.getContent());
 
-        assertEquals(wrapper.getLatestRevision().getEntity(), surveyProgram);
+        assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), surveyProgram.hashCode());
         assertThat(revisions.getNumberOfElements(), is(3));
     }
 

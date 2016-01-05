@@ -33,6 +33,8 @@ public class OtherMaterial extends AbstractEntityAudit {
 
     private String fileType;
 
+    private String originalName;
+
     private long size;
 
     public OtherMaterial(){
@@ -86,6 +88,14 @@ public class OtherMaterial extends AbstractEntityAudit {
         this.description = description;
     }
 
+    public String getOriginalName() {
+        return originalName;
+    }
+
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,19 +104,13 @@ public class OtherMaterial extends AbstractEntityAudit {
 
         OtherMaterial that = (OtherMaterial) o;
 
+        if (size != that.size) return false;
         if (topicGroup != null ? !topicGroup.equals(that.topicGroup) : that.topicGroup != null) return false;
         if (path != null ? !path.equals(that.path) : that.path != null) return false;
-        return !(description != null ? !description.equals(that.description) : that.description != null);
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (fileType != null ? !fileType.equals(that.fileType) : that.fileType != null) return false;
+        return originalName != null ? originalName.equals(that.originalName) : that.originalName == null;
 
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
-        result = 31 * result + (path != null ? path.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
     }
 
     @Override
@@ -115,6 +119,23 @@ public class OtherMaterial extends AbstractEntityAudit {
                 "topicGroup=" + topicGroup +
                 ", path='" + path + '\'' +
                 ", description='" + description + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", originalName='" + originalName + '\'' +
+                ", size=" + size +
                 "} " + super.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (fileType != null ? fileType.hashCode() : 0);
+        result = 31 * result + (originalName != null ? originalName.hashCode() : 0);
+        result = 31 * result + (int) (size ^ (size >>> 32));
+        return result;
+    }
+
+
 }

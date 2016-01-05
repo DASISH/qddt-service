@@ -5,14 +5,15 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +26,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
+@PropertySource(value={"classpath:application.properties"})
 @Service("otherMaterialService")
 class OtherMaterialServiceImpl implements OtherMaterialService {
 
@@ -87,36 +89,28 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     public File saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException {
 
         String directory = createFolder(uuid.toString());
-        String filepath = Paths.get(directory, multipartFile.getOriginalFilename()).toString();
+        String filepath = Paths.get(directory, multipartFile.getName()).toString();
 
-            OtherMaterial om = findOne(uuid);
-            om.setSize(multipartFile.getSize());
-            om.setFileType(multipartFile.getContentType());
-            om.setPath(filepath);
-            om.setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
-            save(om);
+        OtherMaterial om = findOne(uuid);
+        om.setSize(multipartFile.getSize());
+        om.setFileType(multipartFile.getContentType());
+        om.setPath(filepath);
+        om.setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
+        om.setOriginalName(multipartFile.getOriginalFilename());
+        om.setName(multipartFile.getName());
+        save(om);
 
         try {
             Files.copy(multipartFile.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);
             return new File(filepath);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new FileUploadException(multipartFile.getName());
         }
     }
 
-    @Override
-    public MultipartFile loadFile(UUID id) throws IOException {
-
-        OtherMaterial om = findOne(id);
-        Path path = Paths.get(fileRoot + id.toString().substring(1, 3)+ "\\" + om.getName() );
-
-        return  new MockMultipartFile(om.getName(),Files.readAllBytes(path));
-    }
-
-
     @Value("${qddt.fileroot}")
-    String fileRoot;
+    private String fileRoot;
+
 
     private String createFolder(String uuid) {
 
@@ -125,7 +119,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         if(!directory.exists()) {
             directory.mkdir();
         }
-
         return directory.getAbsolutePath();
     }
 

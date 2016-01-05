@@ -40,12 +40,12 @@ import java.util.Set;
 @Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
-    @OneToMany(mappedBy = "surveyProgram",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
     private String description;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="author_id")
     private Set<User> authors = new HashSet<>();
 
