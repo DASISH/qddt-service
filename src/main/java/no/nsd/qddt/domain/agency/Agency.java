@@ -33,34 +33,34 @@ import java.util.Set;
 @Table(name = "AGENCY")
 public class Agency extends AbstractEntity {
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Study>  studies = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Concept> concepts = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<ResponseDomain> responses = new HashSet<>();
 
-    @OneToMany(mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
-    @Column(name = "name")
+    @Column(name = "name", length = 50)
     private String name;
 
     public Agency(){
@@ -154,18 +154,17 @@ public class Agency extends AbstractEntity {
         if (!super.equals(o)) return false;
 
         Agency agency = (Agency) o;
-
-        if (surveyPrograms != null ? !surveyPrograms.equals(agency.surveyPrograms) : agency.surveyPrograms != null)
-            return false;
-        if (studies != null ? !studies.equals(agency.studies) : agency.studies != null) return false;
-        if (instruments != null ? !instruments.equals(agency.instruments) : agency.instruments != null) return false;
-        if (instructions != null ? !instructions.equals(agency.instructions) : agency.instructions != null)
-            return false;
-        if (topicGroups != null ? !topicGroups.equals(agency.topicGroups) : agency.topicGroups != null) return false;
-        if (concepts != null ? !concepts.equals(agency.concepts) : agency.concepts != null) return false;
-        if (questions != null ? !questions.equals(agency.questions) : agency.questions != null) return false;
-        if (responses != null ? !responses.equals(agency.responses) : agency.responses != null) return false;
-        if (categories != null ? !categories.equals(agency.categories) : agency.categories != null) return false;
+//        if (surveyPrograms != null ? !surveyPrograms.equals(agency.surveyPrograms) : agency.surveyPrograms != null)
+//            return false;
+//        if (studies != null ? !studies.equals(agency.studies) : agency.studies != null) return false;
+//        if (instruments != null ? !instruments.equals(agency.instruments) : agency.instruments != null) return false;
+//        if (instructions != null ? !instructions.equals(agency.instructions) : agency.instructions != null)
+//            return false;
+//        if (topicGroups != null ? !topicGroups.equals(agency.topicGroups) : agency.topicGroups != null) return false;
+//        if (concepts != null ? !concepts.equals(agency.concepts) : agency.concepts != null) return false;
+//        if (questions != null ? !questions.equals(agency.questions) : agency.questions != null) return false;
+//        if (responses != null ? !responses.equals(agency.responses) : agency.responses != null) return false;
+//        if (categories != null ? !categories.equals(agency.categories) : agency.categories != null) return false;
         return !(name != null ? !name.equals(agency.name) : agency.name != null);
 
     }
@@ -173,15 +172,15 @@ public class Agency extends AbstractEntity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (surveyPrograms != null ? surveyPrograms.hashCode() : 0);
-        result = 31 * result + (studies != null ? studies.hashCode() : 0);
-        result = 31 * result + (instruments != null ? instruments.hashCode() : 0);
-        result = 31 * result + (instructions != null ? instructions.hashCode() : 0);
-        result = 31 * result + (topicGroups != null ? topicGroups.hashCode() : 0);
-        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
-        result = 31 * result + (questions != null ? questions.hashCode() : 0);
-        result = 31 * result + (responses != null ? responses.hashCode() : 0);
-        result = 31 * result + (categories != null ? categories.hashCode() : 0);
+//        result = 31 * result + (surveyPrograms != null ? surveyPrograms.hashCode() : 0);
+//        result = 31 * result + (studies != null ? studies.hashCode() : 0);
+//        result = 31 * result + (instruments != null ? instruments.hashCode() : 0);
+//        result = 31 * result + (instructions != null ? instructions.hashCode() : 0);
+//        result = 31 * result + (topicGroups != null ? topicGroups.hashCode() : 0);
+//        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
+//        result = 31 * result + (questions != null ? questions.hashCode() : 0);
+//        result = 31 * result + (responses != null ? responses.hashCode() : 0);
+//        result = 31 * result + (categories != null ? categories.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
@@ -190,6 +189,6 @@ public class Agency extends AbstractEntity {
     public String toString() {
         return "Agency{" +
                 "name='" + name + '\'' +
-                "} " + super.toString();
+                "} "; //+ super.toString();
     }
 }

@@ -285,8 +285,9 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + (password != null ? "[NOT NULL]":"[NULL]") + '\'' +
                 ", email='" + email + '\'' +
+//                ", agency='"  + (agency != null ? agency.getName(): "[NULL]") + '\'' +
                 '}';
     }
 }

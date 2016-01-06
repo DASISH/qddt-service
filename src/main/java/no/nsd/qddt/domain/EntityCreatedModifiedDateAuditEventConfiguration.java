@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.domain.version.SemVer;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -28,6 +29,9 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
         entity.setCreated(now);
         entity.setCreatedBy(SecurityContext.getUserDetails().getUser());
         if (entity instanceof AbstractEntityAudit) {
+            SemVer ver = new SemVer();
+            ver.incPatch();
+            ((AbstractEntityAudit) entity).setVersion(ver);
             ((AbstractEntityAudit)entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
         }
     }
@@ -40,6 +44,10 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     public void update(AbstractEntity entity) {
         entity.setUpdated(LocalDateTime.now());
         if(entity instanceof AbstractEntityAudit) {
+            SemVer ver = ((AbstractEntityAudit) entity).getVersion();
+                    ver.incPatch();
+            ((AbstractEntityAudit) entity).setVersion(ver);
+
             if (((AbstractEntityAudit)entity).getChangeKind() == AbstractEntityAudit.ChangeKind.CREATED)
                 ((AbstractEntityAudit)entity).setChangeKind(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
         }

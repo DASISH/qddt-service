@@ -1,5 +1,9 @@
 package no.nsd.qddt.domain.version;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+
+import java.io.Serializable;
+
 /**
  * http://semver.org/
  * MAJOR version when you make incompatible API changes,
@@ -10,8 +14,8 @@ package no.nsd.qddt.domain.version;
  * @author Stig Norland
  */
 
-
-public class SemVer{
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class SemVer {
 //    implements UserType {
 
 //    @Override
@@ -78,48 +82,49 @@ public class SemVer{
         label
     }
 
+    public SemVer(){
+        versionString = "0.0.0 ";
+    }
+
+    public SemVer(String versionString) {
+        this.versionString = versionString;
+    }
 
     private String versionString;
 
-    public int getMajor() {
-        return Integer.getInteger(versionString.split(".")[VPos.major.ordinal()]);
+
+    public void incMajor() {
+        String[] version = versionString.split(". ");
+        Long inc = Long.decode(version[VPos.major.ordinal()]);
+        version[VPos.major.ordinal()] = (inc++).toString();
+        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
     }
 
-    public void setMajor(int major) {
-        String[] version = versionString.split(".");
-        versionString = String.format("{0}.{1}.{2}{4}",major,version[1],version[2],version[3].isEmpty()?"":"."+version[3]);
+
+    public void setMinor() {
+        String[] version = versionString.split(". ");
+        Long inc = Long.decode(version[VPos.minor.ordinal()]);
+        version[VPos.minor.ordinal()] = (inc++).toString();
+        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
     }
 
-    public int getMinor() {
-        return Integer.getInteger(versionString.split(".")[VPos.minor.ordinal()]);
+
+    public void incPatch() {
+        String[] version = versionString.split(". ");
+        Long inc = Long.decode(version[VPos.patch.ordinal()]);
+        version[VPos.patch.ordinal()] = (inc++).toString();
+        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
     }
 
-    public void setMinor(int minor) {
-        String[] version = versionString.split(".");
-        versionString = String.format("{0}.{1}.{2}{4}",version[0],minor,version[2],version[3].isEmpty()?"":"."+version[3]);
-    }
-
-    public int getPatch() {
-        return Integer.getInteger(versionString.split(".")[VPos.patch.ordinal()]);
-    }
-
-    public void setPatch(int patch) {
-        String[] version = versionString.split(".");
-        versionString = String.format("{0}.{1}.{2}{4}",version[0],version[1],patch,version[3].isEmpty()?"":"."+version[3]);
-    }
-
-    public String getVersionLabel() {
-        return versionString.split(".")[VPos.patch.ordinal()];
-
-    }
 
     public void setVersionLabel(String versionLabel) {
-        String[] version = versionString.split(".");
-        versionString = String.format("{0}.{1}.{2}{4}",version[0],version[1],version[2],versionLabel.isEmpty()?"":"."+versionLabel);
+        String[] version = versionString.split(". ");
+        version[VPos.label.ordinal()] = versionLabel;
+        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
     }
 
     @Override
     public String toString() {
-        return  "v" + versionString;
+        return  versionString;
     }
 }

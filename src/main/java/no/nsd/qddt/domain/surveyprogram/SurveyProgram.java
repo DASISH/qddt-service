@@ -127,7 +127,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
         return "SurveyProgram{" +
                 "studies=" + studies +
                 ", description='" + description + '\'' +
-//                ", authors='" + authors + '\'' +
+                ", authors='" + authors + '\'' +
                 ", comments=" + comments +
                 "} " + super.toString();
     }

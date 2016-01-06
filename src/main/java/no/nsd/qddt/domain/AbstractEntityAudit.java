@@ -58,6 +58,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Transient
     private Urn urn;
 
+    @Transient
+    private SemVer qddtVersion;
 
     private String version;
 
@@ -67,7 +69,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Column(name = "change_comment")
     private String changeComment;
 
-    protected AbstractEntityAudit() { }
+    protected AbstractEntityAudit() {
+        qddtVersion = new SemVer();
+        version = qddtVersion.toString();
+    }
 
     public Urn getUrn() {
         return urn;
@@ -93,13 +98,24 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.basedOnObject = basedOnObject;
     }
 
-    public String getVersion() {
-        return version;
+    public SemVer getVersion() {
+        return new SemVer(version);
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setVersion(SemVer qddtVersion) {
+        System.out.println(qddtVersion);
+        this.version = qddtVersion.toString();
     }
+
+    //    public String getVersion() {
+//        return  version;
+//    }
+//
+//    public void setVersion(String version) {
+//        qddtVersion = new SemVer(version);
+//        this.version = version;
+//
+//    }
 
     public String getName() {
         return name;
@@ -149,10 +165,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Override
     public String toString() {
         return "AbstractEntityAudit{" +
-                "changeComment='" + changeComment + '\'' +
-                ", basedOnObject=" + basedOnObject +
+                 agency +
                 ", name='" + name + '\'' +
-                ", version=" + version +
+                ", basedOnObject=" + basedOnObject +
+//                ", urn=" + urn +
+                ", SemVer=" + qddtVersion +
+                ", version='" + version + '\'' +
+                ", changeKind=" + changeKind +
+                ", changeComment='" + changeComment + '\'' +
                 "} " + super.toString();
     }
 }
