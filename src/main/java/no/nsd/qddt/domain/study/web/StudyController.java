@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.study.web;
 
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,13 @@ import java.util.UUID;
 public class StudyController {
 
     private StudyService studyService;
+    private SurveyProgramService surveyProgramService;
 
     @Autowired
-    public StudyController(StudyService studyService) {
+    public StudyController(StudyService studyService, SurveyProgramService surveyProgramService) {
         this.studyService = studyService;
+        this.surveyProgramService = surveyProgramService;
     }
-
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -42,11 +44,9 @@ public class StudyController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Study create(@RequestBody Study instance) {
-        User user = SecurityContext.getUserDetails().getUser();
-        instance.setCreatedBy(user);
-        instance.setAgency(user.getAgency());
+    @RequestMapping(value = "/{surveyId}/create", method = RequestMethod.POST)
+    public Study create(@RequestBody Study instance, @PathVariable("surveyId")UUID surveyId) {
+        instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
         return studyService.save(instance);
     }
 
@@ -55,6 +55,5 @@ public class StudyController {
     public void delete(@PathVariable("id") UUID id) {
         studyService.delete(id);
     }
-
 
 }

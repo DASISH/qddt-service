@@ -30,6 +30,9 @@ import java.util.UUID;
 @Service("otherMaterialService")
 class OtherMaterialServiceImpl implements OtherMaterialService {
 
+    @Value("${fileroot}")
+    private String fileRoot;
+
     private OtherMaterialRepository otherMaterialRepository;
 
     @Autowired
@@ -108,10 +111,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         }
     }
 
-    @Value("${qddt.fileroot}")
-    private String fileRoot;
-
-
     private String createFolder(String uuid) {
 
         File directory= new File(fileRoot + uuid.substring(1, 3));
@@ -121,6 +120,4 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         }
         return directory.getAbsolutePath();
     }
-
-
 }

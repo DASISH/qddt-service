@@ -96,7 +96,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     public void setVersion(String version){
         this.version = version;
-        System.out.println("SETVERSION->" + version);
     }
 
     public SemVer getSemVer(){
@@ -154,7 +153,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                  agency +
                 ", name='" + name + '\'' +
                 ", basedOnObject=" + basedOnObject +
-//                ", urn=" + urn +
                 ", SemVer=" + getSemVer() +
                 ", version='" + version + '\'' +
                 ", changeKind=" + changeKind +
