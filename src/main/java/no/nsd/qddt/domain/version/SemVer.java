@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.version;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
-import java.io.Serializable;
-
 /**
  * http://semver.org/
  * MAJOR version when you make incompatible API changes,
@@ -16,7 +14,7 @@ import java.io.Serializable;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SemVer {
-//    implements UserType {
+    //    implements UserType {
 
 //    @Override
 //    public int[] sqlTypes() {
@@ -82,6 +80,9 @@ public class SemVer {
         label
     }
 
+    private static final String searchPattern = "\\.|\\s";
+    private static final String versionFormat = "%1$s.%2$s.%3$s %4$s";
+
     public SemVer(){
         versionString = "0.0.0 ";
     }
@@ -94,33 +95,44 @@ public class SemVer {
 
 
     public void incMajor() {
-        String[] version = versionString.split(". ");
+        String[] version = versionString.split(searchPattern);
         Long inc = Long.decode(version[VPos.major.ordinal()]);
-        version[VPos.major.ordinal()] = (inc++).toString();
-        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
+        version[VPos.major.ordinal()] = (++inc).toString();
+        if (version.length == 4)
+            versionString = String.format(versionFormat, version[0],version[1],version[2],version[3]);
+        else
+            versionString = String.format(versionFormat, version[0],version[1],version[2],"");
+
     }
 
 
     public void setMinor() {
-        String[] version = versionString.split(". ");
+        String[] version = versionString.split(searchPattern);
         Long inc = Long.decode(version[VPos.minor.ordinal()]);
-        version[VPos.minor.ordinal()] = (inc++).toString();
-        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
+        version[VPos.minor.ordinal()] = (++inc).toString();
+        if (version.length == 4)
+            versionString = String.format(versionFormat, version[0],version[1],version[2],version[3]);
+        else
+            versionString = String.format(versionFormat, version[0],version[1],version[2],"");
     }
 
 
     public void incPatch() {
-        String[] version = versionString.split(". ");
+        String[] version = versionString.split(searchPattern);
         Long inc = Long.decode(version[VPos.patch.ordinal()]);
-        version[VPos.patch.ordinal()] = (inc++).toString();
-        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
+        version[VPos.patch.ordinal()] = (++inc).toString();
+        if (version.length == 4)
+            versionString = String.format(versionFormat, version[0],version[1],version[2],version[3]);
+        else
+            versionString = String.format(versionFormat, version[0],version[1],version[2],"");
     }
 
 
     public void setVersionLabel(String versionLabel) {
-        String[] version = versionString.split(". ");
-        version[VPos.label.ordinal()] = versionLabel;
-        versionString = String.format("{0}.{1}.{2} {3}", version[0],version[1],version[2],version[3].isEmpty()?"":" "+version[3]);
+        String[] version = versionString.split(searchPattern);
+        Long inc = Long.decode(version[VPos.patch.ordinal()]);
+        version[VPos.patch.ordinal()] = (++inc).toString();
+        versionString = String.format(versionFormat, version[0],version[1],version[2],versionLabel);
     }
 
     @Override

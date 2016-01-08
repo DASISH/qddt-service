@@ -45,8 +45,10 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="author_id")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "ENTITY_AUTHOR",
+            joinColumns = {@JoinColumn(name ="entity_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false,updatable = false)})
     private Set<User> authors = new HashSet<>();
 
 

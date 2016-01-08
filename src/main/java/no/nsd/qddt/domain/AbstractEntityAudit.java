@@ -58,9 +58,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Transient
     private Urn urn;
 
-    @Transient
-    private SemVer qddtVersion;
-
     private String version;
 
     @Enumerated(EnumType.STRING)
@@ -70,16 +67,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private String changeComment;
 
     protected AbstractEntityAudit() {
-        qddtVersion = new SemVer();
-        version = qddtVersion.toString();
+
     }
 
     public Urn getUrn() {
-        return urn;
-    }
-
-    public void setUrn(Urn urn) {
-        this.urn = urn;
+        return new Urn(this.getAgency(),this.getId(),this.getVersion());
     }
 
     public Agency getAgency() {
@@ -98,24 +90,18 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.basedOnObject = basedOnObject;
     }
 
-    public SemVer getVersion() {
-        return new SemVer(version);
+    public String getVersion() {
+        return version;
     }
 
-    public void setVersion(SemVer qddtVersion) {
-        System.out.println(qddtVersion);
-        this.version = qddtVersion.toString();
+    public void setVersion(String version){
+        this.version = version;
+        System.out.println("SETVERSION->" + version);
     }
 
-    //    public String getVersion() {
-//        return  version;
-//    }
-//
-//    public void setVersion(String version) {
-//        qddtVersion = new SemVer(version);
-//        this.version = version;
-//
-//    }
+    public SemVer getSemVer(){
+        return new SemVer(getVersion());
+    }
 
     public String getName() {
         return name;
@@ -169,7 +155,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 ", name='" + name + '\'' +
                 ", basedOnObject=" + basedOnObject +
 //                ", urn=" + urn +
-                ", SemVer=" + qddtVersion +
+                ", SemVer=" + getSemVer() +
                 ", version='" + version + '\'' +
                 ", changeKind=" + changeKind +
                 ", changeComment='" + changeComment + '\'' +
