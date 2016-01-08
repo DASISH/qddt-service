@@ -48,7 +48,7 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
 
         Revisions<Integer, TopicGroup> wrapper = new Revisions<>(revisions.getContent());
 
-        assertEquals(wrapper.getLatestRevision().getEntity(), topicGroup);
+        assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), topicGroup.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
@@ -66,7 +66,7 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
         Revision<Integer, TopicGroup> revision = topicGroupAuditService.findLastChange(topicGroup.getId());
 
         assertEquals("Excepted initial TopicGroup object.",
-                revision.getEntity(), topicGroup);
+                revision.getEntity().hashCode(), topicGroup.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

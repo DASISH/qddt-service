@@ -41,20 +41,22 @@ import java.util.Set;
 @Table(name = "TOPIC_GROUP")
 public class TopicGroup extends AbstractEntityAudit implements Commentable {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id")
     private Study study;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup")
     private Set<Concept> concepts = new HashSet<>();
 
-    @OneToMany
+
+    @OneToMany (fetch = FetchType.EAGER)
     @JoinColumn(name="author_id")
     private Set<User> authors = new HashSet<>();
 
-    @OneToMany(mappedBy = "topicGroup", cascade =CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
+    // høres ut som noe som skal følge med authors...
     private String authorsAffiliation;
 
     private String abstractDescription;
@@ -148,8 +150,8 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (study != null ? study.hashCode() : 0);
-        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
+//        result = 31 * result + (study != null ? study.hashCode() : 0);
+//        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
         result = 31 * result + (authorsAffiliation != null ? authorsAffiliation.hashCode() : 0);

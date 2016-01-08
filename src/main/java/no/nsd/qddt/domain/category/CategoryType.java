@@ -5,33 +5,41 @@ package no.nsd.qddt.domain.category;
  */
 public enum CategoryType {
     /*
-    single Category
+    Time: single Category
      */
     TIME,
     /*
-    single Category
+    Date: single Category
      */
     DATE,
     /*
-    single Category
+    DateTime: single Category
      */
     DATETIME,
     /*
-    single Category
+    Text: single Category
      */
     TEXT,
     /*
-    single Category
+    TextMulti: single Category
      */
     TEXT_MULTI,
     /*
-    single Category
+    Numeric: single Category
      */
     NUMERIC,
     /*
-    single Category
+    Code: single Category
+     */
+    CODE,
+    /*
+    List: single Category
      */
     LIST,
+    /*
+    Label: single Category, not for input
+     */
+    LABEL,
     /*
     CategoryGroup/root
      */

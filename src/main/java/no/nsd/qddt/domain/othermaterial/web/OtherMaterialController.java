@@ -3,11 +3,18 @@ package no.nsd.qddt.domain.othermaterial.web;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 
@@ -52,7 +59,7 @@ public class OtherMaterialController {
 
     @RequestMapping(value="/upload", method=RequestMethod.GET)
     public @ResponseBody String provideUploadInfo() {
-        return "You can upload a file by posting to this same URL.";
+        return "You can upload a file by posting to this URL.";
     }
 
     @RequestMapping(value="/upload", method=RequestMethod.POST)
@@ -71,9 +78,18 @@ public class OtherMaterialController {
     }
 
     @RequestMapping(value="/files/{id}", method=RequestMethod.GET)
-    public @ResponseBody MultipartFile handleFileDownload(@PathVariable("id") UUID id) {
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> handleFileDownload(@PathVariable("id") UUID id) {
         try {
-            return otherMaterialService.loadFile(id);
+            OtherMaterial om = otherMaterialService.findOne(id);
+            Path path = Paths.get(om.getPath());
+            File file= path.toFile();
+            return ResponseEntity
+                    .ok()
+//                    .headers(headers)
+                    .contentLength(file.length())
+                    .contentType(MediaType.parseMediaType(om.getFileType()))
+                    .body(new InputStreamResource(new FileInputStream(file)));
         } catch (IOException e) {
             e.printStackTrace();
             return  null;

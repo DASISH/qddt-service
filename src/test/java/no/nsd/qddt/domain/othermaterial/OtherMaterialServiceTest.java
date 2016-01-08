@@ -25,6 +25,7 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(otherMaterialRepository);
     }
 

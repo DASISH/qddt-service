@@ -58,8 +58,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Transient
     private Urn urn;
 
-
-//    private SemVer version;
+    private String version;
 
     @Enumerated(EnumType.STRING)
     private ChangeKind changeKind;
@@ -67,14 +66,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Column(name = "change_comment")
     private String changeComment;
 
-    protected AbstractEntityAudit() { }
+    protected AbstractEntityAudit() {
 
-    public Urn getUrn() {
-        return urn;
     }
 
-    public void setUrn(Urn urn) {
-        this.urn = urn;
+    public Urn getUrn() {
+        return new Urn(this.getAgency(),this.getId(),this.getVersion());
     }
 
     public Agency getAgency() {
@@ -93,13 +90,17 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.basedOnObject = basedOnObject;
     }
 
-//    public SemVer getVersion() {
-//        return version;
-//    }
-//
-//    public void setVersion(SemVer version) {
-//        this.version = version;
-//    }
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version){
+        this.version = version;
+    }
+
+    public SemVer getSemVer(){
+        return new SemVer(getVersion());
+    }
 
     public String getName() {
         return name;
@@ -149,10 +150,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Override
     public String toString() {
         return "AbstractEntityAudit{" +
-                "changeComment='" + changeComment + '\'' +
-                ", basedOnObject=" + basedOnObject +
+                 agency +
                 ", name='" + name + '\'' +
-//                ", version=" + version +
+                ", basedOnObject=" + basedOnObject +
+                ", SemVer=" + getSemVer() +
+                ", version='" + version + '\'' +
+                ", changeKind=" + changeKind +
+                ", changeComment='" + changeComment + '\'' +
                 "} " + super.toString();
     }
 }

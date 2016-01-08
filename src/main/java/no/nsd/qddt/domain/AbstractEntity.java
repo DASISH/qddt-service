@@ -89,15 +89,19 @@ public abstract class AbstractEntity {
 
         AbstractEntity that = (AbstractEntity) o;
 
-        if (getCreated() != null ? !getCreated().equals(that.getCreated()) : that.getCreated() != null) return false;
-        return !(getCreatedBy() != null ? !getCreatedBy().equals(that.getCreatedBy()) : that.getCreatedBy() != null);
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (created != null ? !created.equals(that.created) : that.created != null) return false;
+        if (updated != null ? !updated.equals(that.updated) : that.updated != null) return false;
+        return createdBy != null ? createdBy.equals(that.createdBy) : that.createdBy == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = getCreated() != null ? getCreated().hashCode() : 0;
-        result = 31 * result + (getCreatedBy() != null ? getCreatedBy().hashCode() : 0);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (updated != null ? updated.hashCode() : 0);
+        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
         return result;
     }
 

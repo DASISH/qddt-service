@@ -43,7 +43,7 @@ public class SurveyProgramAuditController {
         return surveyProgramAuditService.findRevision(id, revision);
     }
 
-    @RequestMapping(value = "/{id}/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/list", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> list(
             @PathVariable("id") UUID id,Pageable pageable, PagedResourcesAssembler assembler){
 

@@ -1,11 +1,14 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.domain.version.SemVer;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 /**
  * Creates and updates entities based on global rules
@@ -24,11 +27,16 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
      */
     @PrePersist
     public void create(AbstractEntity entity) {
-        LocalDateTime now = LocalDateTime.now();
-        entity.setCreated(now);
-        entity.setCreatedBy(SecurityContext.getUserDetails().getUser());
-        if (entity instanceof AbstractEntityAudit) {
-            ((AbstractEntityAudit)entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            entity.setCreated(now);
+            entity.setCreatedBy(SecurityContext.getUserDetails().getUser());
+            if (entity instanceof AbstractEntityAudit) {
+                ((AbstractEntityAudit) entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
+                ((AbstractEntityAudit) entity).setVersion("0.0.1");
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -38,10 +46,47 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
      */
     @PreUpdate
     public void update(AbstractEntity entity) {
-        entity.setUpdated(LocalDateTime.now());
-        if(entity instanceof AbstractEntityAudit) {
-            if (((AbstractEntityAudit)entity).getChangeKind() == AbstractEntityAudit.ChangeKind.CREATED)
-                ((AbstractEntityAudit)entity).setChangeKind(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
+        try {
+            entity.setUpdated(LocalDateTime.now());
+
+            if (entity instanceof AbstractEntityAudit) {
+                SemVer ver = ((AbstractEntityAudit) entity).getSemVer();
+                AbstractEntityAudit.ChangeKind change = ((AbstractEntityAudit) entity).getChangeKind();
+
+                if (change == AbstractEntityAudit.ChangeKind.CREATED) {
+                    change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+                }
+                switch (change) {
+                    case NEW_COPY_OF:
+                        ver = new SemVer();
+                        System.out.println("PREUPDATE -> NEW_COPY_OF");
+                        break;
+                    case NEW_MAJOR:
+                        ver.incMajor();
+                        System.out.println("PREUPDATE -> NEW_MAJOR ");
+                        break;
+                    case NEW_MINOR:
+                        ver.setMinor();
+                        System.out.println("PREUPDATE -> NEW_MINOR");
+                        break;
+                    default:
+                        ver.incPatch();
+                        System.out.println("PREUPDATE -> DEFAULT");
+                        break;
+                }
+                ((AbstractEntityAudit) entity).setChangeKind(change);
+                ((AbstractEntityAudit) entity).setVersion(ver.toString());
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR -> " + e.getClass().toString() + " - " +  e.getMessage());
+            System.out.println(entity);
         }
     }
+
+//    @PostLoad
+//    public void loaded(AbstractEntityAudit entity){
+//        if (entity != null)
+//            System.out.println("LOADED ->" + entity.getVersion());
+//    }
+
 }

@@ -54,11 +54,11 @@ public class GroupAuditServiceTest extends AbstractAuditServiceTest {
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, Group>> revisions = groupAuditService.findRevisions(
                 group.getId(), new PageRequest(0, 10));
-        assertThat(revisions.getNumberOfElements(), is(3));
+        assertThat(revisions.getNumberOfElements(), is(4));
 
         // Find all revisions
         Revisions<Integer, Group> wrapper = new Revisions<>(revisions.getContent());
-        assertThat(wrapper.getLatestRevision(), is(revision));
+        assertThat(wrapper.getLatestRevision().getRevisionNumber(), is(revision.getRevisionNumber()));
     }
 
     @Test
@@ -74,8 +74,8 @@ public class GroupAuditServiceTest extends AbstractAuditServiceTest {
     public void getLastRevisionTest() throws Exception {
         Revision<Integer, Group> revision = groupAuditService.findLastChange(group.getId());
 
-        assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity(), group);
+        assertThat("Excepted initial ResponseDomain Object.",
+                revision.getEntity().hashCode(), is(group.hashCode()));
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

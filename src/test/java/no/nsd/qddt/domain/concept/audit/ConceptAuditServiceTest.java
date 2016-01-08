@@ -26,6 +26,7 @@ public class ConceptAuditServiceTest extends AbstractAuditServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         concept = new Concept();
         concept.setLabel("A concept in version 1");
         concept = conceptService.save(concept);
@@ -50,6 +51,6 @@ public class ConceptAuditServiceTest extends AbstractAuditServiceTest {
 
         // Find all revisions
         Revisions<Integer, Concept> wrapper = new Revisions<>(revisions.getContent());
-        assertThat(wrapper.getLatestRevision(), is(revision));
+        assertThat(wrapper.getLatestRevision().getRevisionNumber() , is(revision.getRevisionNumber()));
     }
 }

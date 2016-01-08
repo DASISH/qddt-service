@@ -25,6 +25,7 @@ public class SurveyProgramServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(surveyProgramRepository);
     }
 

@@ -48,7 +48,7 @@ class StudyServiceImpl implements StudyService {
     @Transactional(readOnly = false)
     public Study save(Study instance) {
 
-        instance.setCreated(LocalDateTime.now());
+//        instance.setCreated(LocalDateTime.now());
         return studyRepository.save(instance);
     }
 

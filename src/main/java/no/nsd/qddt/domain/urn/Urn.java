@@ -29,11 +29,11 @@ public class Urn {
             @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
     private UUID id;
     private Agency agency;
-    private SemVer version;
+    private String version;
 
     public Urn(){}
 
-    public Urn(Agency agency, UUID id, SemVer version){
+    public Urn(Agency agency, UUID id, String version){
         this.agency = agency;
         this.id = id;
         this.version = version;
@@ -56,11 +56,11 @@ public class Urn {
         this.agency = agency;
     }
 
-    public SemVer getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(SemVer version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 

@@ -25,6 +25,7 @@ public class GroupServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(groupRepository);
     }
 

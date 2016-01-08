@@ -55,7 +55,7 @@ public class QuestionAuditServiceTest extends AbstractAuditServiceTest {
 
         Revisions<Integer, Question> wrapper = new Revisions<>(revisions.getContent());
 
-        assertEquals(wrapper.getLatestRevision().getEntity(), question);
+        assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), question.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
@@ -73,7 +73,7 @@ public class QuestionAuditServiceTest extends AbstractAuditServiceTest {
         Revision<Integer, Question> revision = questionAuditService.findLastChange(question.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity(), question);
+                revision.getEntity().hashCode(), question.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

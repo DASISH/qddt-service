@@ -30,6 +30,7 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
 
     @Before
     public void setUp() {
+        super.setup();
 
 
         entity = categoryService.save(new Category());
@@ -55,7 +56,7 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
 
         Revisions<Integer, Category> wrapper = new Revisions<>(revisions.getContent());
 
-        assertEquals(wrapper.getLatestRevision().getEntity(), entity);
+        assertEquals(wrapper.getLatestRevision().getEntity().getId(), entity.getId());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
@@ -73,7 +74,7 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
         Revision<Integer, Category> revision = categoryAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity(), entity);
+                revision.getEntity().hashCode(), entity.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

@@ -39,6 +39,7 @@ public class InstrumentQuestionMetaTest {
 
     @Before
     public void setUp() {
+
         i1 = instrumentService.save(new InstrumentBuilder().setName("Test Instrument 1").setChangeComment("Changed for tests.").createInstrument());
         i2 = instrumentService.save(new InstrumentBuilder().setName("Test Instrument 2").setChangeComment("Changed for more tests.").createInstrument());
 

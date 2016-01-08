@@ -25,6 +25,7 @@ public class InstrumentQuestionServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(instrumentRepository);
     }
 

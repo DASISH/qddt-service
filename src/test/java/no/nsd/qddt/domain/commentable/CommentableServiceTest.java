@@ -1,12 +1,16 @@
 package no.nsd.qddt.domain.commentable;
 
 import no.nsd.qddt.QDDT;
+import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.utils.BeforeSecurityContext;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +24,27 @@ import static org.junit.Assert.assertThat;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class CommentableServiceTest {
+public class CommentableServiceTest  {
 
     @Autowired
     private CommentableService commentableService;
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    private BeforeSecurityContext beforeSecurityContext;
+
+
+    @Before
+    public void setup() {
+
+        this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
+        this.beforeSecurityContext.createSecurityContext();
+    }
+
 
     @Test
     public void testSaveWithComment() throws Exception {

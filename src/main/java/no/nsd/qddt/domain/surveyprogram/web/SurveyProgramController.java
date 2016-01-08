@@ -43,37 +43,50 @@ public class SurveyProgramController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
+        System.out.println("COMMENTS->");
+
+        User user = SecurityContext.getUserDetails().getUser();
         SurveyProgram surveyProgram = surveyProgramService.findOne(id);
+
         comment.setOwnerId(surveyProgram.getId());
-        comment.setCreatedBy(SecurityContext.getUserDetails().getUser());
+        comment.setCreatedBy(user);
 
         return commentService.save(comment);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     public SurveyProgram get(@PathVariable("id") UUID id) {
+        System.out.println("GET ONE -> " + id);
+
         return surveyProgramService.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public SurveyProgram update(@RequestBody SurveyProgram instance) {
+        System.out.println("CONTROLLER UPDATE SURVEY ->");
         return surveyProgramService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public SurveyProgram create(@RequestBody SurveyProgram instance) {
-        User user = ((QDDTUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
-        System.out.println(user);
+        System.out.println("CONTROLLER CREATE SURVEY ->");
+
+        User user = SecurityContext.getUserDetails().getUser();
+        instance.setCreatedBy(user);
+        instance.setAgency(user.getAgency());
+
         return surveyProgramService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/user", method = RequestMethod.GET)
     public List<SurveyProgram> listByUser() {
-        return surveyProgramService.findByCreatedBy(SecurityContext.getUserDetails().getUser());
+        User user = SecurityContext.getUserDetails().getUser();
+        System.out.println("LIST BY USER ->" + user.getUsername());
+        return surveyProgramService.findByCreatedBy(user);
     }
 
 

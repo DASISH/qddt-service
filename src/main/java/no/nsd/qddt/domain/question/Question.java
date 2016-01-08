@@ -36,7 +36,7 @@ public class Question extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name="parent_id")
     private Question parent;
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Question> children = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "questions")

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -45,10 +46,19 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     @Transactional(readOnly = false)
     public SurveyProgram save(SurveyProgram instance) {
-        return surveyProgramRepository.save(instance);
+        System.out.println("SAVING SURVEY ->");
+        System.out.println(instance);
+        SurveyProgram retval=null;
+        try {
+            retval= surveyProgramRepository.save(instance);
+        }catch (Exception e){
+            System.out.println("SAVING SURVEY FAILED ->" + e.getMessage());
+        }
+        return retval;
     }
 
     @Override
+    @Transactional(readOnly = false)
     public List<SurveyProgram> save(List<SurveyProgram> instances) {
         return surveyProgramRepository.save(instances);
     }

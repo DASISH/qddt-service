@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.agency;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,25 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(agencyRepository);
+    }
+
+    @After
+    @Override
+    public void tearDown() {
+        List<Agency> agencyList = agencyRepository.findAll();
+        for (Agency ag :agencyList ) {
+            if(!ag.getName().equals("NSD-qddt")){
+                agencyRepository.delete(ag);
+            }
+        }
     }
 
     @Test
     @Override
     public void testCount() throws Exception {
+        super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Test Agency One");
         agencyService.save(agency);
@@ -48,12 +62,13 @@ public class AgencyServiceTest extends AbstractServiceTest {
         agency.setName("Test Agency Three");
         agencyService.save(agency);
 
-        assertThat("Should be three", agencyService.count(), is(3L));
+        assertThat("Should be four (3+1)", agencyService.count(), is(4L));
     }
 
     @Test
     @Override
     public void testExists() throws Exception {
+        super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");
         agency = agencyService.save(agency);
@@ -63,6 +78,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testFindOne() throws Exception {
+        super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");
         agency = agencyService.save(agency);
@@ -72,6 +88,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testSave() throws Exception {
+        super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");
         assertNotNull("Agency should be saved", agencyService.save(agency));
@@ -80,6 +97,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testSaveAll() throws Exception {
+        super.getBeforeSecurityContext();
         List<Agency> agencyList = new ArrayList<>();
         Agency agency = new Agency();
         agency.setName("Test Agency One");
@@ -95,12 +113,13 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
         agencyService.save(agencyList);
 
-        assertEquals("Should have saved 3 agencies", agencyService.count(), 3L);
+        assertEquals("Should have saved (3+1) agencies", agencyService.count(), 4L);
     }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
     public void testDelete() throws Exception {
+        super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");
         agency = agencyService.save(agency);
@@ -112,6 +131,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     @Override
     public void testDeleteAll() throws Exception {
+        super.getBeforeSecurityContext();
         List<Agency> agencyList = new ArrayList<>();
         Agency agency = new Agency();
         agency.setName("Test Agency One");

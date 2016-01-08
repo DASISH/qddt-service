@@ -40,14 +40,18 @@ import java.util.Set;
 @Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit implements Commentable {
 
-    @OneToMany(mappedBy = "surveyProgram",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
+    @Column(length = 1000)
     private String description;
 
-    @OneToMany
-    @JoinColumn(name="author_id")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "ENTITY_AUTHOR",
+            joinColumns = {@JoinColumn(name ="entity_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false,updatable = false)})
     private Set<User> authors = new HashSet<>();
+
 
 
     @Transient
@@ -127,7 +131,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
         return "SurveyProgram{" +
                 "studies=" + studies +
                 ", description='" + description + '\'' +
-//                ", authors='" + authors + '\'' +
+                ", authors='" + authors + '\'' +
                 ", comments=" + comments +
                 "} " + super.toString();
     }

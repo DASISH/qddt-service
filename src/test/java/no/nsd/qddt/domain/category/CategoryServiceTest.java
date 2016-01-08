@@ -35,6 +35,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
     @Before
     public void setup() {
+        super.setup();
         super.setBaseRepositories(categoryRepository);
     }
 
@@ -95,11 +96,11 @@ public class CategoryServiceTest extends AbstractServiceTest {
         parent.addChild(new CategoryBuilder().setName("TVEKJØNNET")
                 .setLabel("Transperson").createCategory());
 
-        categoryService.save(parent);
+        parent = categoryService.save(parent);
 
         Category category =  categoryRepository.findOne(parent.getId());
 
-        assertEquals("Should be equal", parent,category);
+        assertEquals("Should be equal", parent.hashCode(),category.hashCode());
         assertEquals("Should return 4",  4L,categoryService.count());
 
         categoryRepository.delete(category);
