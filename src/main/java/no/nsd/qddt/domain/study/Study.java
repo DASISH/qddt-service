@@ -146,18 +146,13 @@ public class Study extends AbstractEntityAudit implements Commentable {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
-//        result = 31 * result + (instruments != null ? instruments.hashCode() : 0);
-//        result = 31 * result + (topicGroups != null ? topicGroups.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Study{" +
-                "surveyProgram=" + surveyProgram +
                 ", description='" + description + '\'' +
-//                ", authors='" + authors + '\'' +
-//                ", comments=" + comments +
                 "} " + super.toString();
     }
 }
