@@ -60,6 +60,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                 switch (change) {
                     case NEW_COPY_OF:
                         ver = new SemVer();
+                        ver.incMajor();
                         System.out.println("PREUPDATE -> NEW_COPY_OF");
                         break;
                     case NEW_MAJOR:
