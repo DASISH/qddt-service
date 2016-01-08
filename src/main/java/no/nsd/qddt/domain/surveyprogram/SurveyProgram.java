@@ -43,6 +43,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
+    @Column(length = 1000)
     private String description;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -50,6 +51,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
             joinColumns = {@JoinColumn(name ="entity_id", nullable = false, updatable = false)},
             inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false,updatable = false)})
     private Set<User> authors = new HashSet<>();
+
 
 
     @Transient
