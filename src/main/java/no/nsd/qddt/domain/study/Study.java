@@ -156,8 +156,8 @@ public class Study extends AbstractEntityAudit implements Commentable {
         return "Study{" +
                 "surveyProgram=" + surveyProgram +
                 ", description='" + description + '\'' +
-                ", authors='" + authors + '\'' +
-                ", comments=" + comments +
+//                ", authors='" + authors + '\'' +
+//                ", comments=" + comments +
                 "} " + super.toString();
     }
 }
