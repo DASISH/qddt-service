@@ -1,14 +1,13 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.version.SemVer;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 /**
  * Creates and updates entities based on global rules
@@ -30,8 +29,10 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
         try {
             LocalDateTime now = LocalDateTime.now();
             entity.setCreated(now);
-            entity.setCreatedBy(SecurityContext.getUserDetails().getUser());
+            User user = SecurityContext.getUserDetails().getUser();
+            entity.setCreatedBy(user);
             if (entity instanceof AbstractEntityAudit) {
+                ((AbstractEntityAudit) entity).setAgency(user.getAgency());
                 ((AbstractEntityAudit) entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
                 ((AbstractEntityAudit) entity).setVersion("0.0.1");
             }
@@ -71,7 +72,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                         break;
                     default:
                         ver.incPatch();
-                        System.out.println("PREUPDATE -> DEFAULT");
                         break;
                 }
                 ((AbstractEntityAudit) entity).setChangeKind(change);
@@ -83,10 +83,5 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
         }
     }
 
-//    @PostLoad
-//    public void loaded(AbstractEntityAudit entity){
-//        if (entity != null)
-//            System.out.println("LOADED ->" + entity.getVersion());
-//    }
 
 }
