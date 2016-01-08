@@ -59,7 +59,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private Urn urn;
 
 
-    private SemVer version;
+//    private SemVer version;
 
     @Enumerated(EnumType.STRING)
     private ChangeKind changeKind;
@@ -93,13 +93,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.basedOnObject = basedOnObject;
     }
 
-    public SemVer getVersion() {
-        return version;
-    }
-
-    public void setVersion(SemVer version) {
-        this.version = version;
-    }
+//    public SemVer getVersion() {
+//        return version;
+//    }
+//
+//    public void setVersion(SemVer version) {
+//        this.version = version;
+//    }
 
     public String getName() {
         return name;
@@ -152,7 +152,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 "changeComment='" + changeComment + '\'' +
                 ", basedOnObject=" + basedOnObject +
                 ", name='" + name + '\'' +
-                ", version=" + version +
+//                ", version=" + version +
                 "} " + super.toString();
     }
 }

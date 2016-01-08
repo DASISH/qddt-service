@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +26,9 @@ import java.util.UUID;
  */
 @Service("otherMaterialService")
 class OtherMaterialServiceImpl implements OtherMaterialService {
+
+    @Value("${fileroot}")
+    private String fileRoot;
 
     private OtherMaterialRepository otherMaterialRepository;
 
@@ -111,12 +113,8 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         OtherMaterial om = findOne(id);
         Path path = Paths.get(fileRoot + id.toString().substring(1, 3)+ "\\" + om.getName() );
 
-        return  new MockMultipartFile(om.getName(),Files.readAllBytes(path));
+        return null; //  new MockMultipartFile(om.getName(),Files.readAllBytes(path));
     }
-
-
-    @Value("${qddt.fileroot}")
-    String fileRoot;
 
     private String createFolder(String uuid) {
 
