@@ -75,16 +75,14 @@ public class SemVer {
 
     private enum VPos{
         major,
-        minor,
-        patch,
-        label
+        minor
     }
 
     private static final String searchPattern = "\\.|\\s";
-    private static final String versionFormat = "%1$s.%2$s.%3$s %4$s";
+    private static final String versionFormat = "%1$s.%2$s %3$s";
 
     public SemVer(){
-        versionString = "0.0.0 ";
+        versionString = "0.0 ";
     }
 
     public SemVer(String versionString) {
@@ -98,41 +96,29 @@ public class SemVer {
         String[] version = versionString.split(searchPattern);
         Long inc = Long.decode(version[VPos.major.ordinal()]);
         version[VPos.major.ordinal()] = (++inc).toString();
-        if (version.length == 4)
-            versionString = String.format(versionFormat, version[0],version[1],version[2],version[3]);
+        if (version.length == 3)
+            versionString = String.format(versionFormat, version[0],"0",version[2]);
         else
-            versionString = String.format(versionFormat, version[0],version[1],version[2],"");
+            versionString = String.format(versionFormat, version[0],"0","");
 
     }
 
 
-    public void setMinor() {
+    public void incMinor() {
         String[] version = versionString.split(searchPattern);
         Long inc = Long.decode(version[VPos.minor.ordinal()]);
         version[VPos.minor.ordinal()] = (++inc).toString();
-        if (version.length == 4)
-            versionString = String.format(versionFormat, version[0],version[1],version[2],version[3]);
+        if (version.length == 3)
+            versionString = String.format(versionFormat, version[0],version[1],version[2]);
         else
-            versionString = String.format(versionFormat, version[0],version[1],version[2],"");
+            versionString = String.format(versionFormat, version[0],version[1],"");
     }
 
-
-    public void incPatch() {
-        String[] version = versionString.split(searchPattern);
-        Long inc = Long.decode(version[VPos.patch.ordinal()]);
-        version[VPos.patch.ordinal()] = (++inc).toString();
-        if (version.length == 4)
-            versionString = String.format(versionFormat, version[0],version[1],version[2],version[3]);
-        else
-            versionString = String.format(versionFormat, version[0],version[1],version[2],"");
-    }
 
 
     public void setVersionLabel(String versionLabel) {
         String[] version = versionString.split(searchPattern);
-        Long inc = Long.decode(version[VPos.patch.ordinal()]);
-        version[VPos.patch.ordinal()] = (++inc).toString();
-        versionString = String.format(versionFormat, version[0],version[1],version[2],versionLabel);
+        versionString = String.format(versionFormat, version[0],version[1],versionLabel);
     }
 
     @Override

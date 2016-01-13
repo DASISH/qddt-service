@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.study;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instrument.Instrument;
@@ -49,10 +50,6 @@ public class Study extends AbstractEntityAudit implements Commentable {
 
     private String description;
 
-    @OneToMany (fetch = FetchType.EAGER)
-    @JoinColumn(name="author_id")
-    private Set<User> authors = new HashSet<>();
-
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
@@ -61,6 +58,9 @@ public class Study extends AbstractEntityAudit implements Commentable {
 
     @OneToMany(mappedBy="study", cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "studies", cascade = CascadeType.ALL)
+    private Set<Author> authors = new HashSet<>();
 
     public Study() {
 
@@ -74,11 +74,11 @@ public class Study extends AbstractEntityAudit implements Commentable {
         this.description = description;
     }
 
-    public Set<User> getAuthors() {
+    public Set<Author> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<User> authors) {
+    public void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
 

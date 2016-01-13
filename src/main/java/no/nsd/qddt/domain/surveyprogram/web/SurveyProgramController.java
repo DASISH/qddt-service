@@ -45,11 +45,8 @@ public class SurveyProgramController {
     public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
         System.out.println("COMMENTS->");
 
-//        User user = SecurityContext.getUserDetails().getUser();
         SurveyProgram surveyProgram = surveyProgramService.findOne(id);
-
         comment.setOwnerId(surveyProgram.getId());
-//        comment.setCreatedBy(user);
 
         return commentService.save(comment);
     }
@@ -61,7 +58,7 @@ public class SurveyProgramController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public SurveyProgram update(@RequestBody SurveyProgram instance) {
         return surveyProgramService.save(instance);
     }

@@ -21,6 +21,8 @@ INSERT INTO user_authority (user_id, authority_id) VALUES('83d4c034-4ff9-11e5-88
 --user:
 INSERT INTO user_authority (user_id, authority_id) VALUES('83d4c39a-4ff9-11e5-885d-feff819cdc9f', '9bec2d6a-4ff9-11e5-885d-feff819cdc9f');
 
+INSERT INTO author (id,  name, picture) VALUES ('83d4c30a-4ff9-11e5-885d-feff819cdc9f',  'Prof Drøvell', 'http://coraljs.com/example/contact/john-doe.jpeg');
+
 -- INSERT INTO SURVEY_PROGRAM(id,name,CREATED,CHANGE_KIND,USER_ID) VALUES('a9fe6c00-51af-1ced-8151-af0dd96a0000','MORE SURVEY','01-12-2015 07:00:01','CREATED','83d4c034-4ff9-11e5-885d-feff819cdc9f');
 -- INSERT INTO SURVEY_PROGRAM(id,name,CREATED,CHANGE_KIND,USER_ID) VALUES('a9fe6c01-51af-1ced-8151-af0dd96a0000','SUCH SURVEY','01-12-2015 09:00:02','CREATED','83d4c034-4ff9-11e5-885d-feff819cdc9f');
 -- INSERT INTO SURVEY_PROGRAM(id,name,CREATED,CHANGE_KIND,USER_ID) VALUES('a9fe6c02-51af-1ced-8151-af0dd96a0000','MUCH WOW SURVEY','01-12-2015 11:00:03','CREATED','83d4c034-4ff9-11e5-885d-feff819cdc9f');

@@ -18,6 +18,6 @@ interface CommentRepository extends BaseRepository<Comment,UUID> {
      * @param pageable Pageable object
      * @return All attachments that belongs to the module with moduleId.
      */
-    Page<Comment> findAllByOwnerIdOrderByCreatedDesc(UUID ownerUUID, Pageable pageable);
+    Page<Comment> findAllByOwnerIdOrderByCreatedAsc(UUID ownerUUID, Pageable pageable);
 
 }

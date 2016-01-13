@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.author.Author;
+import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.study.Study;
@@ -38,7 +40,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit implements Commentable {
+public class SurveyProgram extends AbstractEntityAudit implements Commentable,Authorable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
@@ -46,11 +48,19 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
     @Column(length = 1000)
     private String description;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "ENTITY_AUTHOR",
-            joinColumns = {@JoinColumn(name ="entity_id", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false,updatable = false)})
-    private Set<User> authors = new HashSet<>();
+//    @JoinTable(name = "ENTITY_AUTHOR",
+//                joinColumns = {@JoinColumn(
+//                        name ="entity_id",
+//                        nullable = false,
+//                        referencedColumnName = "id")},
+//                inverseJoinColumns = {@JoinColumn(
+//                        name = "user_id",
+//                        nullable = false,
+//                        referencedColumnName = "id")})
+
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "surveyPrograms", cascade = CascadeType.ALL)
+    private Set<Author> authors = new HashSet<>();
 
 
 
@@ -69,12 +79,17 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
         this.description = description;
     }
 
-    public Set<User> getAuthors() {
+    public Set<Author> getAuthors() {
         return authors;
+
     }
 
-    public void setAuthors(Set<User> authors) {
+    public void setAuthors(Set<Author> authors) {
         this.authors = authors;
+    }
+
+    public void addAuthor(Author user){
+        authors.add(user);
     }
 
     public Set<Study> getStudies() {
@@ -131,8 +146,8 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable {
         return "SurveyProgram{" +
                 "studies=" + studies +
                 ", description='" + description + '\'' +
-                ", authors='" + authors + '\'' +
-                ", comments=" + comments +
+//                ", authors='" + authors + '\'' +
+//                ", comments=" + comments +
                 "} " + super.toString();
     }
 }

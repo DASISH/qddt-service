@@ -11,6 +11,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -59,6 +60,9 @@ public class Agency extends AbstractEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
+    private Set<User> users = new HashSet<>();
 
     @Column(name = "name", length = 50)
     private String name;
@@ -145,6 +149,14 @@ public class Agency extends AbstractEntity {
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     @Override

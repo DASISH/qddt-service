@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.version.SemVer;
+import no.nsd.qddt.domain.version.Version;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -34,8 +34,15 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             if (entity instanceof AbstractEntityAudit) {
                 ((AbstractEntityAudit) entity).setAgency(user.getAgency());
                 ((AbstractEntityAudit) entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
-                ((AbstractEntityAudit) entity).setVersion("0.0.1");
+                Version version = new Version();
+                version.incMinor();
+                ((AbstractEntityAudit) entity).setVersion(version);
             }
+//            if (entity instanceof Authorable){
+//                if (!((Authorable) entity).getAuthors().contains(user)) {
+//                    ((Authorable) entity).addAuthor(user);
+//                }
+//            }
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -49,17 +56,20 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     public void update(AbstractEntity entity) {
         try {
             entity.setUpdated(LocalDateTime.now());
+            User user = SecurityContext.getUserDetails().getUser();
+            entity.setCreatedBy(user);
 
             if (entity instanceof AbstractEntityAudit) {
-                SemVer ver = ((AbstractEntityAudit) entity).getSemVer();
+                Version ver = ((AbstractEntityAudit) entity).getVersion();
                 AbstractEntityAudit.ChangeKind change = ((AbstractEntityAudit) entity).getChangeKind();
 
                 if (change == AbstractEntityAudit.ChangeKind.CREATED) {
                     change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+                    ((AbstractEntityAudit) entity).setChangeKind(change);
                 }
                 switch (change) {
                     case NEW_COPY_OF:
-                        ver = new SemVer();
+                        ver = new Version();
                         ver.incMajor();
                         System.out.println("PREUPDATE -> NEW_COPY_OF");
                         break;
@@ -68,16 +78,23 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                         System.out.println("PREUPDATE -> NEW_MAJOR ");
                         break;
                     case NEW_MINOR:
-                        ver.setMinor();
+                    case TYPO:
+                        ver.incMinor();
                         System.out.println("PREUPDATE -> NEW_MINOR");
                         break;
                     default:
-                        ver.incPatch();
                         break;
                 }
-                ((AbstractEntityAudit) entity).setChangeKind(change);
-                ((AbstractEntityAudit) entity).setVersion(ver.toString());
+                ((AbstractEntityAudit) entity).setVersion(ver);
             }
+
+//            if (entity instanceof Authorable){
+//                User author = SecurityContext.getUserDetails().getUser();
+//                if (!((Authorable) entity).getAuthors().contains(author)) {
+//                    ((Authorable) entity).addAuthor(author);
+//                }
+//            }
+
         } catch (Exception e) {
             System.out.println("ERROR -> " + e.getClass().toString() + " - " +  e.getMessage());
             System.out.println(entity);

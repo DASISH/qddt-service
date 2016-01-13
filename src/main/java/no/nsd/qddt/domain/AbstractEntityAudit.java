@@ -2,7 +2,8 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.urn.Urn;
-import no.nsd.qddt.domain.version.SemVer;
+import no.nsd.qddt.domain.version.*;
+import no.nsd.qddt.domain.version.Version;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -31,8 +32,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         CREATED,
         IN_DEVELOPMENT,
         TYPO,
-        NEW_PATCH,
-        NEW_REVISION,
         NEW_MINOR,
         NEW_MAJOR,
         NEW_COPY_OF
@@ -44,8 +43,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      * What am I?
      */
 
-    @ManyToOne
-    @JoinColumn(name = "agency_id", nullable = true)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "agency_id")
     private Agency agency;
 
     @Column(name = "name")
@@ -55,10 +54,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    @Transient
-    private Urn urn;
+//    @Embedded
+//    private Urn urn;
 
-    private String version;
+    @Embedded
+    private Version version;
 
     @Enumerated(EnumType.STRING)
     private ChangeKind changeKind;
@@ -69,10 +69,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     protected AbstractEntityAudit() {
 
     }
+//
+//    public Urn getUrn() {
+//        return urn;
+//    }
+//
+//    public void setUrn(Urn urn) {
+//        this.urn = urn;
+//    }
 
-    public Urn getUrn() {
-        return new Urn(this.getAgency(),this.getId(),this.getVersion());
-    }
 
     public Agency getAgency() {
         return agency;
@@ -90,16 +95,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.basedOnObject = basedOnObject;
     }
 
-    public String getVersion() {
+    public Version getVersion() {
         return version;
     }
 
-    public void setVersion(String version){
+    public void setVersion(Version version) {
         this.version = version;
-    }
-
-    public SemVer getSemVer(){
-        return new SemVer(getVersion());
     }
 
     public String getName() {
@@ -152,8 +153,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         return "AbstractEntityAudit{" +
                  agency +
                 ", name='" + name + '\'' +
+//                ", Urn='" + getUrn() + '\'' +
                 ", basedOnObject=" + basedOnObject +
-                ", SemVer=" + getSemVer() +
                 ", version='" + version + '\'' +
                 ", changeKind=" + changeKind +
                 ", changeComment='" + changeComment + '\'' +

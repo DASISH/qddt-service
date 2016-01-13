@@ -14,19 +14,19 @@ public class SemVerTest {
     public void testExists() throws Exception {
 
         SemVer ver = new SemVer();
-        assertTrue(ver.toString().equals("0.0.0 "));
+        assertTrue(ver.toString().equals("0.0 "));
 
         ver.incMajor();
-        assertTrue(ver.toString().equals("1.0.0 "));
+        assertTrue(ver.toString().equals("1.0 "));
 
-        ver.setMinor();
-        assertTrue(ver.toString().equals("1.1.0 "));
+        ver.incMinor();
+        assertTrue(ver.toString().equals("1.1 "));
 
-        ver.incPatch();
-        assertTrue(ver.toString().equals("1.1.1 "));
+        ver.incMajor();
+        assertTrue(ver.toString().equals("2.0 "));
 
         ver.setVersionLabel("TEST");
-        assertTrue(ver.toString().equals("1.1.1 TEST"));
+        assertTrue(ver.toString().equals("2.0 TEST"));
 
     }
 }
