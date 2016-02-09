@@ -73,7 +73,7 @@ public class SurveyProgramController {
     @RequestMapping(value = "/list/user", method = RequestMethod.GET)
     public List<SurveyProgram> listByUser() {
         User user = SecurityContext.getUserDetails().getUser();
-        return surveyProgramService.findByCreatedBy(user);
+        return surveyProgramService.findByAgency(user);
     }
 
 

@@ -46,8 +46,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     @Transactional(readOnly = false)
     public SurveyProgram save(SurveyProgram instance) {
-        System.out.println("SAVING SURVEY ->");
-        System.out.println(instance);
+
         SurveyProgram retval=null;
         try {
             retval= surveyProgramRepository.save(instance);
@@ -76,5 +75,10 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     public List<SurveyProgram> findByCreatedBy(User user) {
         return surveyProgramRepository.findByCreatedBy(user);
+    }
+
+    @Override
+    public List<SurveyProgram> findByAgency(User user) {
+        return surveyProgramRepository.findByAgency(user.getAgency());
     }
 }
