@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.author;
 
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -32,18 +34,32 @@ public class Author extends AbstractEntity {
 
     private URL picture;
 
+    private String authorsAffiliation;
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "AUTHOR_ENTITY",
+    @JoinTable(name = "AUTHOR_SURVEY",
             joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "entity_id", nullable = false,referencedColumnName = "id")})
+            inverseJoinColumns = {@JoinColumn(name = "survey_id", nullable = false,referencedColumnName = "id")})
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "AUTHOR_ENTITY",
+    @JoinTable(name = "AUTHOR_STUDY",
             joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "entity_id", nullable = false,referencedColumnName = "id")})
+            inverseJoinColumns = {@JoinColumn(name = "study_id", nullable = false,referencedColumnName = "id")})
     private Set<Study> studies = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "AUTHOR_TOPIC",
+            joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "topic_id", nullable = false,referencedColumnName = "id")})
+    private Set<TopicGroup> topicGroups = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "AUTHOR_CONCEPTS",
+            joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "concept_id", nullable = false,referencedColumnName = "id")})
+    private Set<Concept> concepts = new HashSet<>();
 
 
 
@@ -147,5 +163,13 @@ public class Author extends AbstractEntity {
                 ", homepage=" + homepage +
                 ", picture=" + picture +
                 "} " + super.toString();
+    }
+
+    public String getAuthorsAffiliation() {
+        return authorsAffiliation;
+    }
+
+    public void setAuthorsAffiliation(String authorsAffiliation) {
+        this.authorsAffiliation = authorsAffiliation;
     }
 }

@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.author.Author;
+import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.question.Question;
@@ -29,7 +31,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements Commentable {
+public class Concept extends AbstractEntityAudit implements Commentable, Authorable {
 
     @ManyToOne
     @JoinColumn(name="parent_id")
@@ -47,6 +49,9 @@ public class Concept extends AbstractEntityAudit implements Commentable {
             joinColumns = {@JoinColumn(name ="concept_id", nullable = false, updatable = false)},
             inverseJoinColumns = {@JoinColumn(name = "question_id", nullable = false,updatable = false)})
     private Set<Question> questions = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = CascadeType.ALL)
+    private Set<Author> authors = new HashSet<>();
 
     @Column(name = "label")
     private String label;
@@ -122,6 +127,22 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
+
+    @Override
+    public void addAuthor(Author user) {
+        authors.add(user);
+    }
+
+    @Override
+    public Set<Author> getAuthors() {
+        return authors;
+    }
+
+    @Override
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -159,5 +180,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
                 ", description='" + description + '\'' +
                 "} " + super.toString();
     }
+
 }
 

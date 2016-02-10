@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.study;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
+import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instrument.Instrument;
@@ -42,12 +43,13 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements Commentable {
+public class Study extends AbstractEntityAudit implements Commentable,Authorable {
 
     @ManyToOne
     @JoinColumn(name="survey_id")
     private SurveyProgram surveyProgram;
 
+    @Column(length = 1500)
     private String description;
 
     @Transient
@@ -72,6 +74,12 @@ public class Study extends AbstractEntityAudit implements Commentable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public void addAuthor(Author user) {
+        //user.addStudy(this); would this work?
+        authors.add(user);
     }
 
     public Set<Author> getAuthors() {

@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.author.Author;
+import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
@@ -39,7 +41,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements Commentable {
+public class TopicGroup extends AbstractEntityAudit implements Commentable,Authorable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id")
@@ -49,17 +51,28 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
     private Set<Concept> concepts = new HashSet<>();
 
 
-    @OneToMany (fetch = FetchType.EAGER)
-    @JoinColumn(name="author_id")
-    private Set<User> authors = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "topicGroups", cascade = CascadeType.ALL)
+    private Set<Author> authors = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-    // høres ut som noe som skal følge med authors...
-    private String authorsAffiliation;
-
     private String abstractDescription;
+
+    @Override
+    public void addAuthor(Author user) {
+        authors.add(user);
+    }
+
+    @Override
+    public Set<Author> getAuthors() {
+        return this.authors;
+    }
+
+    @Override
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
@@ -96,13 +109,6 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
         this.concepts = concepts;
     }
 
-    public Set<User> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(Set<User> authors) {
-        this.authors = authors;
-    }
 
     public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
@@ -112,13 +118,6 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
         this.otherMaterials = otherMaterials;
     }
 
-    public String getAuthorsAffiliation() {
-        return authorsAffiliation;
-    }
-
-    public void setAuthorsAffiliation(String authorsAffiliation) {
-        this.authorsAffiliation = authorsAffiliation;
-    }
 
     public String getAbstractDescription() {
         return abstractDescription;
@@ -140,8 +139,6 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
-        if (authorsAffiliation != null ? !authorsAffiliation.equals(that.authorsAffiliation) : that.authorsAffiliation != null)
-            return false;
         if (abstractDescription != null ? !abstractDescription.equals(that.abstractDescription) : that.abstractDescription != null) return false;
         return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
@@ -154,7 +151,6 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
 //        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
-        result = 31 * result + (authorsAffiliation != null ? authorsAffiliation.hashCode() : 0);
         result = 31 * result + (abstractDescription != null ? abstractDescription.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
@@ -167,9 +163,10 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable {
                 ", concepts=" + concepts +
                 ", authors=" + authors +
                 ", otherMaterials=" + otherMaterials +
-                ", authorsAffiliation='" + authorsAffiliation + '\'' +
                 ", abstractDescription='" + abstractDescription + '\'' +
                 ", comments=" + comments +
                 "} " + super.toString();
     }
+
+
 }
