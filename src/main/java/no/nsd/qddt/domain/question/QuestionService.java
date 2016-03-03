@@ -20,6 +20,9 @@ public interface QuestionService extends BaseService<Question, UUID> {
      */
     Page<Question> findByParentPageable(UUID parentId, Pageable pageable);
 
+    Page<Question> findAllPageable(Pageable pageable);
+
+	
 //    Page<Question> findQuestionConceptPageable(Long id, Pageable pageable);
 
 //    Page<Question> findQuestionInstrumentPageable(Long id, Pageable pageable);

@@ -72,4 +72,11 @@ class QuestionServiceImpl implements QuestionService {
         Question child= questionRepository.findOne(guidId);
         return questionRepository.findAllByParentId(child.getParent().getId(), pageable);
     }
+	
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Question> findAllPageable(Pageable pageable){
+        return questionRepository.findAll(pageable);
+    }
+	
 }

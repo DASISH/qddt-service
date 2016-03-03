@@ -15,6 +15,9 @@ interface QuestionRepository extends BaseRepository<Question,UUID> {
 
     Page<Question> findAllByParentId(UUID parentId, Pageable pageable);
 
+    Page<Question> findAll(Pageable pageable);
+	
+	
 //    Page<Question> findQuestionConcept(Long id, Pageable pageable);
 
 //    Page<Question> findQuestionInstrument(Long id, Pageable pageable);
