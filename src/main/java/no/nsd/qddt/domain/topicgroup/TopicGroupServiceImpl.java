@@ -74,4 +74,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
         topicGroupRepository.delete(instance.getId());
     }
 
+    @Override
+    public List<TopicGroup> findByStudyId(UUID id) {
+        return topicGroupRepository.findByStudyId(id);
+    }
 }

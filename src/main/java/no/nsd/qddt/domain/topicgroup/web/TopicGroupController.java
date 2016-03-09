@@ -1,11 +1,14 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -17,10 +20,12 @@ import java.util.UUID;
 public class TopicGroupController {
 
     private TopicGroupService topicGroupService;
+    private StudyService studyService;
 
     @Autowired
-    public TopicGroupController(TopicGroupService topicGroupService) {
+    public TopicGroupController(TopicGroupService topicGroupService, StudyService studyService) {
         this.topicGroupService = topicGroupService;
+        this.studyService = studyService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -37,10 +42,18 @@ public class TopicGroupController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public TopicGroup create(@RequestBody TopicGroup instance){
-        return topicGroupService.save(instance);
+    @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
+    public TopicGroup create(@RequestBody TopicGroup topicGroup, @PathVariable("studyId") UUID studyId) {
+        topicGroup.setStudy(studyService.findOne(studyId));
+        return topicGroupService.save(topicGroup);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/all/{studyId}", method = RequestMethod.GET)
+    public List<TopicGroup> findByStudy(@PathVariable("studyId") UUID studyId) {
+        return topicGroupService.findByStudyId(studyId);
+    }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)

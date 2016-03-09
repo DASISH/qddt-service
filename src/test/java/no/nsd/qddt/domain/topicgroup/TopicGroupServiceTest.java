@@ -1,12 +1,16 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -19,6 +23,9 @@ public class TopicGroupServiceTest extends AbstractServiceTest {
 
     @Autowired
     private TopicGroupService topicGroupService;
+
+    @Autowired
+    private StudyService studyService;
 
     @Autowired
     private TopicGroupRepository codeRepository;
@@ -126,5 +133,29 @@ public class TopicGroupServiceTest extends AbstractServiceTest {
 
         agencyList.forEach(a -> assertNull("Should return null", topicGroupService.findOne(a.getId())));
 
+    }
+
+    @Test
+    public void findByStudyId() throws Exception {
+        Study study1 = studyService.save(new Study());
+        Study study2 = studyService.save(new Study());
+        TopicGroup topic = new TopicGroup();
+        topic.setStudy(study1);
+        topicGroupService.save(topic);
+
+        assertNotNull("Should contain the belonging topic", topicGroupService.findByStudyId(study1.getId()));
+        assertEquals("Should not contain any topic", Collections.emptyList(), topicGroupService.findByStudyId(study2.getId()));
+    }
+
+    @Test
+    public void findByStudyIdReverse() throws Exception {
+        Study study1 = studyService.save(new Study());
+        Study study2 = studyService.save(new Study());
+        TopicGroup topic = new TopicGroup();
+        study1.getTopicGroups().add(topic);
+        studyService.save(study1);
+
+        assertNotNull("Should contain the belonging topic", topicGroupService.findByStudyId(study1.getId()));
+        assertEquals("Should not contain any topic", Collections.emptyList(), topicGroupService.findByStudyId(study2.getId()));
     }
 }
