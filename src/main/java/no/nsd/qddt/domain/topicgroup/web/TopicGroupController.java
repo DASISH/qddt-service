@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -48,12 +49,16 @@ public class TopicGroupController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/all/{studyId}", method = RequestMethod.GET)
+    public List<TopicGroup> findByStudy(@PathVariable("studyId") UUID studyId) {
+        return topicGroupService.findByStudyId(studyId);
+    }
+
+
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id){
         topicGroupService.delete(id);
     }
-
-
-
 
 }
