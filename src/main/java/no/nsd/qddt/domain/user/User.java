@@ -60,43 +60,43 @@ public class User {
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Instrument> instrument = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Concept> concepts = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<ResponseDomain> responseDomains = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
-    @OneToMany(mappedBy="createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)

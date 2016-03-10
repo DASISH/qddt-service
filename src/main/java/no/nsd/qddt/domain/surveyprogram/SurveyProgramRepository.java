@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 interface SurveyProgramRepository extends BaseRepository<SurveyProgram,UUID> {
 
-    List<SurveyProgram> findByCreatedByOrderByCreatedAsc(User user);
+    List<SurveyProgram> findByModifiedByOrderByModifiedAsc(User user);
 
-    List<SurveyProgram> findByAgencyOrderByCreatedAsc(Agency agency);
+    List<SurveyProgram> findByAgencyOrderByModifiedAsc(Agency agency);
 }

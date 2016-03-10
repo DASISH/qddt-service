@@ -46,7 +46,7 @@ class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = false)
     public Question save(Question instance) {
 
-        instance.setCreated(LocalDateTime.now());
+//        instance.setModified(LocalDateTime.now());
         return questionRepository.save(instance);
     }
 

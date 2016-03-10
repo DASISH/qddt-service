@@ -69,7 +69,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Transactional(readOnly = false)
     public OtherMaterial save(OtherMaterial instance) {
 
-        instance.setCreated(LocalDateTime.now());
+//        instance.setCreated(LocalDateTime.now());
         return otherMaterialRepository.save(instance);
     }
 
