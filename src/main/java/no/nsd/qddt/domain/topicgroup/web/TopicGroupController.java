@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,12 @@ import java.util.UUID;
 public class TopicGroupController {
 
     private TopicGroupService topicGroupService;
+    private StudyService studyService;
 
     @Autowired
-    public TopicGroupController(TopicGroupService topicGroupService) {
+    public TopicGroupController(TopicGroupService topicGroupService, StudyService studyService) {
         this.topicGroupService = topicGroupService;
+        this.studyService = studyService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -37,8 +41,9 @@ public class TopicGroupController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public TopicGroup create(@RequestBody TopicGroup instance){
+    @RequestMapping(value = "/{studyId}/create", method = RequestMethod.POST)
+    public TopicGroup create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
+        instance.setStudy(studyService.findOne(studyId));
         return topicGroupService.save(instance);
     }
 
@@ -47,5 +52,8 @@ public class TopicGroupController {
     public void delete(@PathVariable("id") UUID id){
         topicGroupService.delete(id);
     }
+
+
+
 
 }

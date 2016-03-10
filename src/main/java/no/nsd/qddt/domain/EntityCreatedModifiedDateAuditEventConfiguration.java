@@ -28,7 +28,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     public void create(AbstractEntity entity) {
         try {
             LocalDateTime now = LocalDateTime.now();
-            entity.setCreated(now);
+            entity.setUpdated(now);
             User user = SecurityContext.getUserDetails().getUser();
             entity.setCreatedBy(user);
             if (entity instanceof AbstractEntityAudit) {

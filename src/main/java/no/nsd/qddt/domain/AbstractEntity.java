@@ -34,11 +34,6 @@ public abstract class AbstractEntity {
             @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
     private UUID id;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    @Column(name = "created")
-    private LocalDateTime created;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -58,13 +53,6 @@ public abstract class AbstractEntity {
         this.id = id;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
 
     public User getCreatedBy() {
         return createdBy;
@@ -90,7 +78,6 @@ public abstract class AbstractEntity {
         AbstractEntity that = (AbstractEntity) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (created != null ? !created.equals(that.created) : that.created != null) return false;
         if (updated != null ? !updated.equals(that.updated) : that.updated != null) return false;
         return createdBy != null ? createdBy.equals(that.createdBy) : that.createdBy == null;
 
@@ -99,7 +86,6 @@ public abstract class AbstractEntity {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (created != null ? created.hashCode() : 0);
         result = 31 * result + (updated != null ? updated.hashCode() : 0);
         result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
         return result;
@@ -109,7 +95,6 @@ public abstract class AbstractEntity {
     public String toString() {
         return "AbstractEntity{" +
                 "id=" + id +
-                ", created=" + created +
                 ", updated=" + updated +
                 ", createdBy=" + createdBy +
                 '}';
