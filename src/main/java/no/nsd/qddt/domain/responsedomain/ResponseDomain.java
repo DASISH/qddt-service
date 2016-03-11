@@ -169,7 +169,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         return "ResponseDomain{" +
                 " name='" + super.getName() + '\'' +
                 " id='" + super.getId() + '\'' +
-                " created='" + super.getCreated() + '\'' +
+                " modified='" + super.getModified() + '\'' +
                 " category = " + category + '\'' +
                 "}";
     }

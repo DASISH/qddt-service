@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 public interface SurveyProgramService extends BaseService<SurveyProgram, UUID> {
 
-    List<SurveyProgram> findByCreatedBy(User user);
+    List<SurveyProgram> findByModifiedBy(User user);
 
     List<SurveyProgram> findByAgency(User user);
 

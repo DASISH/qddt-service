@@ -39,7 +39,7 @@ public class StudyController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Study update(@RequestBody Study instance) {
         User user = SecurityContext.getUserDetails().getUser();
-        instance.setCreatedBy(user);
+        instance.setModifiedBy(user);
         return studyService.save(instance);
     }
 

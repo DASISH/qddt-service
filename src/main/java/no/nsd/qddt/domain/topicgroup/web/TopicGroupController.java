@@ -42,10 +42,10 @@ public class TopicGroupController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
-    public TopicGroup create(@RequestBody TopicGroup topicGroup, @PathVariable("studyId") UUID studyId) {
-        topicGroup.setStudy(studyService.findOne(studyId));
-        return topicGroupService.save(topicGroup);
+    @RequestMapping(value = "/{studyId}/create", method = RequestMethod.POST)
+    public TopicGroup create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
+        instance.setStudy(studyService.findOne(studyId));
+        return topicGroupService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

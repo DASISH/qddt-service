@@ -34,21 +34,16 @@ public abstract class AbstractEntity {
             @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
     private UUID id;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    @Column(name = "created")
-    private LocalDateTime created;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated")
-    private LocalDateTime updated;
+    private LocalDateTime modified;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User createdBy;
+    private User modifiedBy;
 
     public UUID getId() {
         return id;
@@ -58,28 +53,20 @@ public abstract class AbstractEntity {
         this.id = id;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
+    public LocalDateTime getModified() {
+        return modified;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
+    public void setModified(LocalDateTime modified) {
+        this.modified = modified;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public User getModifiedBy() {
+        return modifiedBy;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
+    public void setModifiedBy(User modifiedBy) {
+        this.modifiedBy = modifiedBy;
     }
 
     @Override
@@ -90,18 +77,16 @@ public abstract class AbstractEntity {
         AbstractEntity that = (AbstractEntity) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (created != null ? !created.equals(that.created) : that.created != null) return false;
-        if (updated != null ? !updated.equals(that.updated) : that.updated != null) return false;
-        return createdBy != null ? createdBy.equals(that.createdBy) : that.createdBy == null;
+        if (modified != null ? !modified.equals(that.modified) : that.modified != null) return false;
+        return modifiedBy != null ? modifiedBy.equals(that.modifiedBy) : that.modifiedBy == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (created != null ? created.hashCode() : 0);
-        result = 31 * result + (updated != null ? updated.hashCode() : 0);
-        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (modified != null ? modified.hashCode() : 0);
+        result = 31 * result + (modifiedBy != null ? modifiedBy.hashCode() : 0);
         return result;
     }
 
@@ -109,9 +94,8 @@ public abstract class AbstractEntity {
     public String toString() {
         return "AbstractEntity{" +
                 "id=" + id +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", createdBy=" + createdBy +
+                ", modified=" + modified +
+                ", modifiedBy=" + modifiedBy +
                 '}';
     }
 }

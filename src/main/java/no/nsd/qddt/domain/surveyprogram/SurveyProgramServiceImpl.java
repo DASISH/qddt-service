@@ -73,12 +73,12 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     @Override
-    public List<SurveyProgram> findByCreatedBy(User user) {
-        return surveyProgramRepository.findByCreatedByOrderByCreatedAsc(user);
+    public List<SurveyProgram> findByModifiedBy(User user) {
+        return surveyProgramRepository.findByModifiedByOrderByModifiedAsc(user);
     }
 
     @Override
     public List<SurveyProgram> findByAgency(User user) {
-        return surveyProgramRepository.findByAgencyOrderByCreatedAsc(user.getAgency());
+        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency());
     }
 }

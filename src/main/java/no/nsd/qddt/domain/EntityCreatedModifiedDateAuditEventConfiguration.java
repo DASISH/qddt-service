@@ -28,9 +28,9 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     public void create(AbstractEntity entity) {
         try {
             LocalDateTime now = LocalDateTime.now();
-            entity.setCreated(now);
+            entity.setModified(now);
             User user = SecurityContext.getUserDetails().getUser();
-            entity.setCreatedBy(user);
+            entity.setModifiedBy(user);
             if (entity instanceof AbstractEntityAudit) {
                 ((AbstractEntityAudit) entity).setAgency(user.getAgency());
                 ((AbstractEntityAudit) entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
@@ -55,9 +55,9 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void update(AbstractEntity entity) {
         try {
-            entity.setUpdated(LocalDateTime.now());
+            entity.setModified(LocalDateTime.now());
             User user = SecurityContext.getUserDetails().getUser();
-            entity.setCreatedBy(user);
+            entity.setModifiedBy(user);
 
             if (entity instanceof AbstractEntityAudit) {
                 Version ver = ((AbstractEntityAudit) entity).getVersion();
