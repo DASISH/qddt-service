@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,4 +67,8 @@ class ConceptServiceImpl implements ConceptService {
         conceptRepository.delete(instances);
     }
 
+    @Override
+    public Page<Concept> findAllPageable(Pageable pageable) {
+        return conceptRepository.findAll(pageable);
+    }
 }
