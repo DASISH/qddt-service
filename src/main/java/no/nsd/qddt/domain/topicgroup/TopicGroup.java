@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -43,7 +44,8 @@ import java.util.Set;
 @Table(name = "TOPIC_GROUP")
 public class TopicGroup extends AbstractEntityAudit implements Commentable,Authorable {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name="study_id")
     private Study study;
 

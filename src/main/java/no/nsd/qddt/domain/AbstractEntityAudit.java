@@ -43,7 +43,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      * What am I?
      */
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "agency_id")
     private Agency agency;
 

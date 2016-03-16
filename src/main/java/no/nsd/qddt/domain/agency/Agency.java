@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.agency;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
@@ -34,33 +36,43 @@ import java.util.Set;
 @Table(name = "AGENCY")
 public class Agency extends AbstractEntity {
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Study>  studies = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Instrument> instruments = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Concept> concepts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<ResponseDomain> responses = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
+    
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<User> users = new HashSet<>();
 

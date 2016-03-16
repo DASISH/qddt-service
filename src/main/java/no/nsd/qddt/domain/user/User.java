@@ -60,42 +60,55 @@ public class User {
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
+    @JsonIgnore
+	@OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Instrument> instrument = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Concept> concepts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<ResponseDomain> responseDomains = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 

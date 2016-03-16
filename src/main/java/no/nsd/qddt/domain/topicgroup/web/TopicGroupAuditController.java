@@ -23,7 +23,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @RestController
-@RequestMapping(value = "/audit/topicgroup/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/audit/topicgroup", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TopicGroupAuditController {
 
     private TopicGroupAuditService studyAuditService;

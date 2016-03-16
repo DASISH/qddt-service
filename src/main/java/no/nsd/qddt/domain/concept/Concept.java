@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -40,6 +41,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Concept> children = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="topicgroup_id")
     private TopicGroup topicGroup;

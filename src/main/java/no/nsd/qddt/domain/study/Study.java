@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.study;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -45,6 +46,7 @@ import java.util.Set;
 @Table(name = "STUDY")
 public class Study extends AbstractEntityAudit implements Commentable,Authorable {
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="survey_id")
     private SurveyProgram surveyProgram;
