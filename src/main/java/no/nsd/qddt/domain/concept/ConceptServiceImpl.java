@@ -71,4 +71,9 @@ class ConceptServiceImpl implements ConceptService {
     public Page<Concept> findAllPageable(Pageable pageable) {
         return conceptRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
+        conceptRepository.findByTopicGroup(id,pageable);
+    }
 }

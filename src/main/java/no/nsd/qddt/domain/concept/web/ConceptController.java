@@ -43,6 +43,12 @@ public class ConceptController {
         return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/topicgroup/{id}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<Concept>> getbyTopicGroup(@PathVariable("id") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<Concept> questions = conceptService.findByTopicGroupPageable(id,pageable);
+        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
+    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Concept update(@RequestBody Concept concept) {

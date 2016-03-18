@@ -15,4 +15,5 @@ interface ConceptRepository extends BaseRepository<Concept,UUID> {
 
     Page<Concept> findAll(Pageable pageable);
 
+    Page<Concept> findByTopicGroup(UUID id, Pageable pageable);
 }
