@@ -68,11 +68,13 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Concept> findAllPageable(Pageable pageable) {
         return conceptRepository.findAll(pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         conceptRepository.findByTopicGroup(id,pageable);
     }
