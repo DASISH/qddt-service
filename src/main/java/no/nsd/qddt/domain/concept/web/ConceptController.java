@@ -36,19 +36,6 @@ public class ConceptController {
         return conceptService.findOne(id);
     }
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/list", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Concept>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<Concept> questions = conceptService.findAllPageable(pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-    }
-
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/topicgroup/{id}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Concept>> getbyTopicGroup(@PathVariable("id") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<Concept> questions = conceptService.findByTopicGroupPageable(id,pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
-    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Concept update(@RequestBody Concept concept) {
@@ -65,6 +52,20 @@ public class ConceptController {
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
         conceptService.delete(id);
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<Concept>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<Concept> concepts = conceptService.findAllPageable(pageable);
+        return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/by-topicgroup/{uuid}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<Concept>> getbyTopicGroup(@PathVariable("uuid") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<Concept> concepts = conceptService.findByTopicGroupPageable(id,pageable);
+        return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
 }

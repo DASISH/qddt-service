@@ -42,23 +42,23 @@ public class TopicGroupController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/{studyId}/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroup create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
         instance.setStudy(studyService.findOne(studyId));
         return topicGroupService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/all/{studyId}", method = RequestMethod.GET)
-    public List<TopicGroup> findByStudy(@PathVariable("studyId") UUID studyId) {
-        return topicGroupService.findByStudyId(studyId);
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id){
+        topicGroupService.delete(id);
     }
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") UUID id){
-        topicGroupService.delete(id);
+    @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
+    public List<TopicGroup> findByStudy(@PathVariable("uuid") UUID studyId) {
+        return topicGroupService.findByStudyId(studyId);
     }
 
 }

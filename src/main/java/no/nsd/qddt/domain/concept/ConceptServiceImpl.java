@@ -47,8 +47,6 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @Transactional(readOnly = false)
     public Concept save(Concept instance) {
-
-//        instance.setCreated(LocalDateTime.now());
         return conceptRepository.save(instance);
     }
 
@@ -76,6 +74,6 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @Transactional(readOnly = true)
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
-        conceptRepository.findByTopicGroup(id,pageable);
+        return conceptRepository.findByTopicGroup(id,pageable);
     }
 }

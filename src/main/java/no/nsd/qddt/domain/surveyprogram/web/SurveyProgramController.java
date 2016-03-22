@@ -34,6 +34,32 @@ public class SurveyProgramController {
         this.commentService = commentService;
     }
 
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    public SurveyProgram get(@PathVariable("id") UUID id) {
+        return surveyProgramService.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public SurveyProgram update(@RequestBody SurveyProgram instance) {
+        return surveyProgramService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public SurveyProgram create(@RequestBody SurveyProgram instance) {
+        return surveyProgramService.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") UUID id) {
+        surveyProgramService.delete(id);
+    }
+
+
     /**
      * Add a comment to the survey
      * @param id of the survey
@@ -52,35 +78,10 @@ public class SurveyProgramController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    public SurveyProgram get(@PathVariable("id") UUID id) {
-        return surveyProgramService.findOne(id);
-    }
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public SurveyProgram update(@RequestBody SurveyProgram instance) {
-        return surveyProgramService.save(instance);
-    }
-
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public SurveyProgram create(@RequestBody SurveyProgram instance) {
-        return surveyProgramService.save(instance);
-    }
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/user", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)
     public List<SurveyProgram> listByUser() {
         User user = SecurityContext.getUserDetails().getUser();
         return surveyProgramService.findByAgency(user);
-    }
-
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") UUID id) {
-        surveyProgramService.delete(id);
     }
 
 

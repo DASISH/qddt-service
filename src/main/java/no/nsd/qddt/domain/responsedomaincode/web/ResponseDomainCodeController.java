@@ -52,14 +52,14 @@ public class ResponseDomainCodeController  {
     }
 
     //    MetaController
-    @RequestMapping(value = "/byResponsDomain/{id}", method = RequestMethod.GET)
-    public List<ResponseDomainCode> getByFirst(@PathVariable("id") UUID firstId) {
+    @RequestMapping(value = "/list/by-responsDomain/{uuid}", method = RequestMethod.GET)
+    public List<ResponseDomainCode> getByFirst(@PathVariable("uuid") UUID firstId) {
         return responseDomainCodeService.findByResponseDomainId(firstId);
     }
 
     //    MetaController
-    @RequestMapping(value = "/byCode/{id}", method = RequestMethod.GET)
-    public List<ResponseDomainCode> getBySecond(@PathVariable("id") UUID secondId) {
+    @RequestMapping(value = "/list/by-code/{uuid}", method = RequestMethod.GET)
+    public List<ResponseDomainCode> getBySecond(@PathVariable("uuid") UUID secondId) {
         return responseDomainCodeService.findByCategoryId(secondId);
     }
 }

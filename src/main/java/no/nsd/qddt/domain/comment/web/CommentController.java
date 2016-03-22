@@ -29,14 +29,6 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/by-owner/{ownerId}", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
-        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
-    }
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Comment get(@PathVariable("id") UUID id) {
@@ -62,7 +54,12 @@ public class CommentController {
         commentService.delete(id);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
 
-
+        Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
+        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+    }
 
 }

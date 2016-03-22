@@ -29,14 +29,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/{name}", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Category>> get(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Category> comments = categoryService.findByNamePageable(name, pageable);
-        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
-    }
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Category get(@PathVariable("id") UUID id) {
@@ -60,4 +52,13 @@ public class CategoryController {
     public void delete(@PathVariable("id") UUID id) {
         categoryService.delete(id);
     }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/by-name/{name}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Category>> get(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Category> comments = categoryService.findByNamePageable(name, pageable);
+        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+    }
+
 }

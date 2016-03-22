@@ -52,13 +52,13 @@ public class InstrumentQuestionController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/byInstrument/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/by-instrument/{uuid}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getByFirst(@PathVariable("uuid") UUID firstId) {
         return instrumentQuestionService.findByInstrumentId(firstId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/byQuestion/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<InstrumentQuestion> getBySecond(@PathVariable("uuid") UUID secondId) {
         return instrumentQuestionService.findByQuestionId(secondId);
     }
