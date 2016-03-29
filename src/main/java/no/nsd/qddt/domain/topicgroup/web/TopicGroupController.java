@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -37,6 +36,7 @@ public class TopicGroupController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public TopicGroup update(@RequestBody TopicGroup instance) {
+
         return topicGroupService.save(instance);
     }
 
@@ -44,8 +44,11 @@ public class TopicGroupController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroup create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
-        instance.setStudy(studyService.findOne(studyId));
-        return topicGroupService.save(instance);
+
+        if(instance.getStudy() == null ){
+            instance.setStudy(studyService.findOne(studyId));
+        }
+       return topicGroupService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

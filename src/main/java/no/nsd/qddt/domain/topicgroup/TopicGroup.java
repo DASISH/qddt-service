@@ -9,12 +9,10 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -49,7 +47,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @JoinColumn(name="study_id")
     private Study study;
 
-    @OneToMany(fetch = FetchType.EAGER , mappedBy = "topicGroup")
+    @OneToMany(fetch = FetchType.EAGER )
     private Set<Concept> concepts = new HashSet<>();
 
 
