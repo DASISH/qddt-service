@@ -44,7 +44,7 @@ public class StudyController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/{surveyId}/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{surveyId}", method = RequestMethod.POST)
     public Study create(@RequestBody Study instance, @PathVariable("surveyId")UUID surveyId) {
         instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
         return studyService.save(instance);
