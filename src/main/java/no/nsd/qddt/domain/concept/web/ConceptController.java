@@ -56,8 +56,6 @@ public class ConceptController {
         return conceptService.save(concept);
     }
 
-
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
@@ -72,8 +70,8 @@ public class ConceptController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/by-topicgroup/{uuid}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Concept>> getbyTopicGroup(@PathVariable("uuid") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+    @RequestMapping(value = "/page/by-topicgroup/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<Concept>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
         Page<Concept> concepts = conceptService.findByTopicGroupPageable(id,pageable);
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
