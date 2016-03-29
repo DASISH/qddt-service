@@ -37,7 +37,7 @@ public class Author extends AbstractEntity {
     private String authorsAffiliation;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "AUTHOR_SURVEY",
             joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "survey_id", nullable = false,referencedColumnName = "id")})

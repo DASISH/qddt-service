@@ -7,6 +7,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
+
 /**
  *
  * @author Dag Østgulen Heradstveit

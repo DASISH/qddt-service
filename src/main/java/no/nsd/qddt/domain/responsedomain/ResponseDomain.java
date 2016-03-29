@@ -59,7 +59,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
-    @OneToMany(mappedBy="responseDomain", cascade = CascadeType.ALL)
+
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     @Column(name = "description", length = 2000)
@@ -78,8 +79,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
-
-
 
 
     public ResponseDomain(){

@@ -49,11 +49,11 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @JoinColumn(name="study_id")
     private Study study;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup")
+    @OneToMany(fetch = FetchType.EAGER , mappedBy = "topicGroup")
     private Set<Concept> concepts = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "topicGroups", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER,  mappedBy = "topicGroups" , cascade = CascadeType.ALL)
     private Set<Author> authors = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade =CascadeType.ALL)
