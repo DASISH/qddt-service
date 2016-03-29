@@ -47,7 +47,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @JoinColumn(name="study_id")
     private Study study;
 
-    @OneToMany(fetch = FetchType.EAGER )
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = CascadeType.ALL)
     private Set<Concept> concepts = new HashSet<>();
 
 
@@ -107,6 +107,11 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
 
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
+    }
+
+    public void addConcept(Concept concept){
+        concept.setTopicGroup(this);
+        concepts.add(concept);
     }
 
 

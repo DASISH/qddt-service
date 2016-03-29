@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -48,7 +49,11 @@ public class TopicGroupController {
         if(instance.getStudy() == null ){
             instance.setStudy(studyService.findOne(studyId));
         }
-       return topicGroupService.save(instance);
+
+        if(instance.getConcepts().isEmpty()){
+            instance.addConcept(new Concept());
+        }
+        return topicGroupService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
