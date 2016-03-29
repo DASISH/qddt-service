@@ -48,6 +48,16 @@ public class ConceptController {
         return conceptService.save(concept);
     }
 
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create/{parentId}", method = RequestMethod.POST)
+    public Concept create(@RequestBody Concept concept,@PathVariable("parentId") UUID parentId) {
+        Concept parent = conceptService.findOne(parentId);
+        concept.setParent(parent);
+        return conceptService.save(concept);
+    }
+
+
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
