@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +26,14 @@ import java.util.UUID;
 public class ConceptController {
 
     private ConceptService conceptService;
+    private TopicGroupService topicGroupService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService) {
         this.conceptService = conceptService;
+        this.topicGroupService = topicGroupService;
     }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -36,11 +41,13 @@ public class ConceptController {
         return conceptService.findOne(id);
     }
 
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Concept update(@RequestBody Concept concept) {
         return conceptService.save(concept);
     }
+
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -48,13 +55,21 @@ public class ConceptController {
         return conceptService.save(concept);
     }
 
+
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create/{parentId}", method = RequestMethod.POST)
-    public Concept create(@RequestBody Concept concept,@PathVariable("parentId") UUID parentId) {
-        Concept parent = conceptService.findOne(parentId);
-        concept.setParent(parent);
+    @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
+    public Concept createByParent(@RequestBody Concept concept,@PathVariable("uuid") UUID parentId) {
+        concept.setParent(conceptService.findOne(parentId));
         return conceptService.save(concept);
     }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
+    public Concept createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
+        concept.setTopicGroup(topicGroupService.findOne(topicId));
+        return conceptService.save(concept);
+    }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
@@ -62,12 +77,14 @@ public class ConceptController {
         conceptService.delete(id);
     }
 
+
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Concept>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
         Page<Concept> concepts = conceptService.findAllPageable(pageable);
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
+
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-topicgroup/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
