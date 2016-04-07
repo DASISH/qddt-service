@@ -1,11 +1,9 @@
 package no.nsd.qddt.domain.concept.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +49,6 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Concept update(@RequestBody Concept concept) {
-
-//        if(concept.getParent() == null && concept.getTopicGroup() == null){
-//            Concept original= conceptService.findOne(concept.getId());
-//            concept.setParent(original.getParent());
-//            concept.setTopicGroup(original.getTopicGroup());
-//        }
         return conceptService.save(concept);
     }
 
@@ -82,17 +74,15 @@ public class ConceptController {
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
     public Concept createByParent(@RequestBody Concept concept,@PathVariable("uuid") UUID parentId) {
 
-        Concept saved = conceptService.save(concept);
         Concept parent = conceptService.findOne(parentId);
-        parent.addChildren(saved);
-        parent.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-        conceptService.save(parent);
+        parent.addChildren(concept);
+        parent = conceptService.save(parent);
 
+        System.out.println("returning");
         return parent.getChildren().stream()
-                .filter(c -> c.getId() == saved.getId()).findFirst()
-                .orElseThrow( ()-> new ResourceNotFoundException(saved.getId(), Concept.class));
+                .filter(c -> c.getName() == concept.getName()).findFirst()
+                .orElseThrow( ()-> new ResourceNotFoundException(0, Concept.class));
     }
-
 
 
     @ResponseStatus(value = HttpStatus.CREATED)

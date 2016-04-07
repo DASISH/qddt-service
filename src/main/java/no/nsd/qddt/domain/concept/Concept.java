@@ -41,11 +41,13 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 //    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
 //    private Set<Concept> children = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name="parent_id")
-    private Concept parent;
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name="parent_id",updatable= false)
+//    private Concept parent;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_id")
     private Set<Concept> children = new HashSet<>();
 
 
@@ -76,34 +78,42 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
     }
 
-    public Concept getParent() {
-        return parent;
-    }
+//    public Concept getParent() {
+//        return parent;
+//    }
+//
+//
+//    public void setParent(Concept parent) {
+//        this.parent = parent;
+//        parent.addChildren(this);
+//    }
 
-    public void setParent(Concept parent) {
-        this.parent = parent;
-    }
 
     public TopicGroup getTopicGroup() {
         return topicGroup;
     }
 
+
     public void setTopicGroup(TopicGroup topicGroup) {
         this.topicGroup = topicGroup;
     }
+
 
     public Set<Question> getQuestions() {
         return questions;
     }
 
+
     public void setQuestions(Set<Question> questions) {
         this.questions = questions;
     }
+
 
     public void addQuestion(Question question) {
         Set<Concept> concepts = question.getConcepts();
         concepts.add(this);
         question.setConcepts(concepts);
+        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
         this.questions.add(question);
     }
 
@@ -112,12 +122,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         return children;
     }
 
+
     public void setChildren(Set<Concept> children) {
         this.children = children;
     }
 
+
     public void addChildren(Concept concept){
-        concept.setParent(this);
+        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
         this.children.add(concept);
     }
 
@@ -126,25 +138,31 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         return label;
     }
 
+
     public void setLabel(String label) {
         this.label = label;
     }
+
 
     public String getDescription() {
         return description;
     }
 
+
     public void setDescription(String description) {
         this.description = description;
     }
+
 
     public Set<Comment> getComments() {
         return comments;
     }
 
+
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
+
 
     public void addComment(Comment comment) {
         comment.setOwnerId(this.getId());
@@ -175,7 +193,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
         Concept concept = (Concept) o;
 
-        if (parent != null ? !parent.equals(concept.parent) : concept.parent != null) return false;
+//        if (parent != null ? !parent.equals(concept.parent) : concept.parent != null) return false;
         if (children != null ? !children.equals(concept.children) : concept.children != null) return false;
         if (topicGroup != null ? !topicGroup.equals(concept.topicGroup) : concept.topicGroup != null) return false;
         if (questions != null ? !questions.equals(concept.questions) : concept.questions != null) return false;
@@ -187,7 +205,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+//        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + (children != null ? children.hashCode() : 0);
         result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
         result = 31 * result + (questions != null ? questions.hashCode() : 0);
