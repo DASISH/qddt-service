@@ -34,16 +34,24 @@ import java.util.Set;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements Commentable, Authorable {
 
+//    @ManyToOne
+//    @JoinColumn(name="parent_id")
+//    private Concept parent;
+//
+//    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+//    private Set<Concept> children = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name="parent_id")
     private Concept parent;
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL)
     private Set<Concept> children = new HashSet<>();
+
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="topicgroup_id")
+    @JoinColumn(name="topicgroup_id", updatable= false)
     private TopicGroup topicGroup;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -92,6 +100,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         this.questions = questions;
     }
 
+    public void addQuestion(Question question) {
+        Set<Concept> concepts = question.getConcepts();
+        concepts.add(this);
+        question.setConcepts(concepts);
+        this.questions.add(question);
+    }
+
+
     public Set<Concept> getChildren() {
         return children;
     }
@@ -99,6 +115,12 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     public void setChildren(Set<Concept> children) {
         this.children = children;
     }
+
+    public void addChildren(Concept concept){
+        concept.setParent(this);
+        this.children.add(concept);
+    }
+
 
     public String getLabel() {
         return label;

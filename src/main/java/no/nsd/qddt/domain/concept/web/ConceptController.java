@@ -50,11 +50,11 @@ public class ConceptController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Concept update(@RequestBody Concept concept) {
 
-        if(concept.getParent() == null && concept.getTopicGroup() == null){
-            Concept original= conceptService.findOne(concept.getId());
-            concept.setParent(original.getParent());
-            concept.setTopicGroup(original.getTopicGroup());
-        }
+//        if(concept.getParent() == null && concept.getTopicGroup() == null){
+//            Concept original= conceptService.findOne(concept.getId());
+//            concept.setParent(original.getParent());
+//            concept.setTopicGroup(original.getTopicGroup());
+//        }
         return conceptService.save(concept);
     }
 
@@ -65,7 +65,7 @@ public class ConceptController {
 
         Question question = questionService.findOne(questionId);
         concept.addQuestion(question);
-        return update(concept);
+        return conceptService.save(concept);
     }
 
 

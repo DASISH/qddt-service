@@ -43,6 +43,7 @@ public class StudyController {
         if (instance.getSurveyProgram() == null){
             Study original =  studyService.findOne(instance.getId());
             instance.setSurveyProgram(original.getSurveyProgram());
+            System.out.println("UPS, this code shouldn't have been triggered... (fetching Survey ID)");
         }
         instance.setModifiedBy(SecurityContext.getUserDetails().getUser());
         return studyService.save(instance);

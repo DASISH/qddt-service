@@ -44,7 +44,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="study_id")
+    @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = CascadeType.ALL)
