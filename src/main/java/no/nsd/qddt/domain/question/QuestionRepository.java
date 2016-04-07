@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.question;
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -13,13 +14,19 @@ import java.util.UUID;
 @Repository
 interface QuestionRepository extends BaseRepository<Question,UUID> {
 
-    Page<Question> findAllByParentId(UUID parentId, Pageable pageable);
-
     Page<Question> findAll(Pageable pageable);
-	
-	
-//    Page<Question> findQuestionConcept(Long id, Pageable pageable);
 
-//    Page<Question> findQuestionInstrument(Long id, Pageable pageable);
+//    @Query("select n from Question n  left join fetch  n.children")
+//    Page<Question> getHierarchy(Pageable pageable);
+
+    @Query("select n from Question n  where n.parent is null")
+    Page<Question> getRootElements(Pageable pageable);
+
+
+
+//    @Query("select n from Question n left join fetch n.children where ")
+//    Page<Question> GetHierarchy(Pageable pageable);
+
+
 }
 

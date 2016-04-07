@@ -14,11 +14,10 @@ public interface QuestionService extends BaseService<Question, UUID> {
 
     /**
      *
-     * @param parentId
      * @param pageable
      * @return
      */
-    Page<Question> findByParentPageable(UUID parentId, Pageable pageable);
+    Page<Question> getHierarchy(Pageable pageable);
 
     Page<Question> findAllPageable(Pageable pageable);
 

@@ -81,11 +81,11 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
     }
 
-    public UUID getParent() {
+    public Question getParent() {
         return parent;
     }
 
-    public void setParent_id(UUID parent) {
+    public void setParent(Question parent) {
         this.parent = parent;
     }
 

@@ -65,14 +65,11 @@ class QuestionServiceImpl implements QuestionService {
         questionRepository.delete(instances);
     }
 
-
     @Override
-    @Transactional(readOnly = true)
-    public Page<Question> findByParentPageable(UUID guidId, Pageable pageable) {
-        Question child= questionRepository.findOne(guidId);
-        return questionRepository.findAllByParentId(child.getParent().getId(), pageable);
+    public Page<Question> getHierarchy(Pageable pageable) {
+        return  questionRepository.getRootElements(pageable);
     }
-	
+
     @Override
     @Transactional(readOnly = true)
     public Page<Question> findAllPageable(Pageable pageable){
