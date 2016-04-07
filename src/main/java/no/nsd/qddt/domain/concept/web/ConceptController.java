@@ -1,11 +1,13 @@
 package no.nsd.qddt.domain.concept.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -80,11 +82,15 @@ public class ConceptController {
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
     public Concept createByParent(@RequestBody Concept concept,@PathVariable("uuid") UUID parentId) {
 
+        Concept saved = conceptService.save(concept);
         Concept parent = conceptService.findOne(parentId);
-        parent.addChildren(concept);
+        parent.addChildren(saved);
+        parent.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
         conceptService.save(parent);
 
-        return conceptService.save(concept);
+        return parent.getChildren().stream()
+                .filter(c -> c.getId() == saved.getId()).findFirst()
+                .orElseThrow( ()-> new ResourceNotFoundException(saved.getId(), Concept.class));
     }
 
 
