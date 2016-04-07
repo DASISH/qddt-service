@@ -27,12 +27,12 @@ import java.util.UUID;
 public class SurveyProgramController {
 
     private SurveyProgramService surveyProgramService;
-    private CommentService commentService;
+//    private CommentService commentService;
 
     @Autowired
-    public SurveyProgramController(SurveyProgramService surveyProgramService, CommentService commentService) {
+    public SurveyProgramController(SurveyProgramService surveyProgramService){ //, CommentService commentService) {
         this.surveyProgramService = surveyProgramService;
-        this.commentService = commentService;
+//        this.commentService = commentService;
     }
 
 
@@ -63,22 +63,21 @@ public class SurveyProgramController {
     }
 
 
-    /**
-     * Add a comment to the survey
-     * @param id of the survey
-     * @param comment to add
-     * @return the added comment with no relations
-     */
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
-        System.out.println("COMMENTS->");
-
-        SurveyProgram surveyProgram = surveyProgramService.findOne(id);
-        comment.setOwnerId(surveyProgram.getId());
-
-        return commentService.save(comment);
-    }
+//    /**
+//     * Add a comment to the survey, this should
+//     * @param id of the survey
+//     * @param comment to add
+//     * @return the added comment with no relations
+//     */
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
+//
+//        System.out.println("COMMENTS->");
+//        SurveyProgram surveyProgram = surveyProgramService.findOne(id);
+//        comment.setOwnerId(surveyProgram.getId());
+//        return commentService.save(comment);
+//    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)
