@@ -4,11 +4,15 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -21,7 +25,11 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
     @Autowired
     private ConceptService entityService;
 
+    @Autowired
+    private TopicGroupService topicGroupService;
+
     private Concept entity;
+    private TopicGroup topicGroup;
 
     @Override
     public void setup() {
@@ -31,6 +39,11 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
         entity = new Concept();
         entity.setName("A test entity");
         entity = entityService.save(entity);
+
+        topicGroup = new TopicGroup();
+        topicGroup.setName("a module");
+        topicGroup =  topicGroupService.save(topicGroup);
+
         super.getBeforeSecurityContext().destroySecurityContext();
 
     }
@@ -59,7 +72,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
         Concept aEntity = new Concept();
         aEntity.setName("Posted entity");
 
-        mvc.perform(post("/concept/create").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/concept/create/by-topicgroup/" +topicGroup.getId()).header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
@@ -75,4 +88,18 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
 
         assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));
     }
+
+    @Test
+    public void testHierarchy() throws Exception {
+        Concept concept = new Concept();
+        concept.setName("FIRST");
+
+        mvc.perform(post("/concept/create/by-parent/"+ entity.getId()).header("Authorization", "Bearer " + accessToken)
+                .contentType(rest.getContentType())
+                .content(rest.json(concept)));
+//                .andExpect(jsonPath("$."))
+        concept =  entityService.findOne(entity.getId());
+        assertThat("Should be three", concept.getChildren().size(), is(1));
+    }
+
 }
