@@ -30,6 +30,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      */
     public enum ChangeKind {
         CREATED,
+        UPDATED_PARENT,
+        UPDATED_HIERARCY_RELATION,
         IN_DEVELOPMENT,
         TYPO,
         NEW_MINOR,

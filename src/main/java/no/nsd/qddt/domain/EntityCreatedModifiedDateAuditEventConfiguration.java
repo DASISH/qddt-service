@@ -38,11 +38,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                 version.incMinor();
                 ((AbstractEntityAudit) entity).setVersion(version);
             }
-//            if (entity instanceof Authorable){
-//                if (!((Authorable) entity).getAuthors().contains(user)) {
-//                    ((Authorable) entity).addAuthor(user);
-//                }
-//            }
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -71,29 +66,20 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                     case NEW_COPY_OF:
                         ver = new Version();
                         ver.incMajor();
-                        System.out.println("PREUPDATE -> NEW_COPY_OF");
                         break;
                     case NEW_MAJOR:
                         ver.incMajor();
-                        System.out.println("PREUPDATE -> NEW_MAJOR ");
                         break;
                     case NEW_MINOR:
                     case TYPO:
                         ver.incMinor();
-                        System.out.println("PREUPDATE -> NEW_MINOR");
                         break;
                     default:
+                        System.out.println("PREUPDATE -> [" + change+ "] (no change in version)");
                         break;
                 }
                 ((AbstractEntityAudit) entity).setVersion(ver);
             }
-
-//            if (entity instanceof Authorable){
-//                User author = SecurityContext.getUserDetails().getUser();
-//                if (!((Authorable) entity).getAuthors().contains(author)) {
-//                    ((Authorable) entity).addAuthor(author);
-//                }
-//            }
 
         } catch (Exception e) {
             System.out.println("ERROR -> " + e.getClass().toString() + " - " +  e.getMessage());
