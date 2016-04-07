@@ -38,6 +38,11 @@ public class TopicGroupController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public TopicGroup update(@RequestBody TopicGroup instance) {
 
+        //Surveyprogram has JsonIgnore, needs to fetch Survey from the DB
+        if (instance.getStudy() == null){
+            TopicGroup original =  topicGroupService.findOne(instance.getId());
+            instance.setStudy(original.getStudy());
+        }
         return topicGroupService.save(instance);
     }
 

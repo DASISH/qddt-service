@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.study.web;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
-import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +30,7 @@ public class StudyController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Study get(@PathVariable("id") UUID id) {
+
         System.out.println("FINDONE STUDY->" +id);
         return studyService.findOne(id);
     }
@@ -38,16 +38,25 @@ public class StudyController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Study update(@RequestBody Study instance) {
-        User user = SecurityContext.getUserDetails().getUser();
-        instance.setModifiedBy(user);
+
+        //Surveyprogram has JsonIgnore, needs to fetch Survey from the DB
+        if (instance.getSurveyProgram() == null){
+            Study original =  studyService.findOne(instance.getId());
+            instance.setSurveyProgram(original.getSurveyProgram());
+        }
+        instance.setModifiedBy(SecurityContext.getUserDetails().getUser());
         return studyService.save(instance);
+
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{surveyId}", method = RequestMethod.POST)
     public Study create(@RequestBody Study instance, @PathVariable("surveyId")UUID surveyId) {
+
         instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
+        instance.setModifiedBy(SecurityContext.getUserDetails().getUser());
         return studyService.save(instance);
+
     }
 
     @ResponseStatus(value = HttpStatus.OK)
