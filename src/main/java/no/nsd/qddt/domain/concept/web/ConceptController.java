@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +29,13 @@ public class ConceptController {
 
     private ConceptService conceptService;
     private TopicGroupService topicGroupService;
+    private QuestionService questionService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService, QuestionService questionService) {
         this.conceptService = conceptService;
         this.topicGroupService = topicGroupService;
+        this.questionService = questionService;
     }
 
 
@@ -45,23 +49,45 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Concept update(@RequestBody Concept concept) {
+
+        if(concept.getParent() == null && concept.getTopicGroup() == null){
+            Concept original= conceptService.findOne(concept.getId());
+            concept.setParent(original.getParent());
+            concept.setTopicGroup(original.getTopicGroup());
+        }
         return conceptService.save(concept);
     }
 
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Concept create(@RequestBody Concept concept) {
-        return conceptService.save(concept);
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "add-question/{uuid}", method = RequestMethod.POST)
+    public Concept addQuestion(@RequestBody Concept concept,@PathVariable("uuid") UUID questionId) {
+
+        Question question = questionService.findOne(questionId);
+        concept.addQuestion(question);
+        return update(concept);
     }
+
+
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @RequestMapping(value = "/create", method = RequestMethod.POST)
+//    public Concept create(@RequestBody Concept concept) {
+//        return conceptService.save(concept);
+//    }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
     public Concept createByParent(@RequestBody Concept concept,@PathVariable("uuid") UUID parentId) {
-        concept.setParent(conceptService.findOne(parentId));
+
+        Concept parent = conceptService.findOne(parentId);
+        parent.addChildren(concept);
+        conceptService.save(parent);
+
         return conceptService.save(concept);
     }
+
+
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
@@ -81,6 +107,7 @@ public class ConceptController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Concept>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+
         Page<Concept> concepts = conceptService.findAllPageable(pageable);
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
@@ -89,6 +116,7 @@ public class ConceptController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-topicgroup/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Concept>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+
         Page<Concept> concepts = conceptService.findByTopicGroupPageable(id,pageable);
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
