@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.study.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
@@ -46,6 +47,9 @@ public class StudyController {
             System.out.println("UPS, this code shouldn't have been triggered... (fetching Survey ID)");
         }
         instance.setModifiedBy(SecurityContext.getUserDetails().getUser());
+        instance.getInstruments().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+        instance.getTopicGroups().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+
         return studyService.save(instance);
 
     }

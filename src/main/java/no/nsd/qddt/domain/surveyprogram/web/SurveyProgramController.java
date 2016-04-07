@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
@@ -44,6 +45,8 @@ public class SurveyProgramController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public SurveyProgram update(@RequestBody SurveyProgram instance) {
+
+        instance.getStudies().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
         return surveyProgramService.save(instance);
     }
 

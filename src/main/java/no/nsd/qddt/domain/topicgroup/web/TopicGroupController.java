@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -38,11 +39,8 @@ public class TopicGroupController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public TopicGroup update(@RequestBody TopicGroup instance) {
 
-//        //Surveyprogram has JsonIgnore, needs to fetch Survey from the DB
-//        if (instance.getStudy() == null){
-//            TopicGroup original =  topicGroupService.findOne(instance.getId());
-//            instance.setStudy(original.getStudy());
-//        }
+        instance.getConcepts().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+        instance.getOtherMaterials().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
         return topicGroupService.save(instance);
     }
 
