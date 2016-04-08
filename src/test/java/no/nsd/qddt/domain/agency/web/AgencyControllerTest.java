@@ -58,18 +58,10 @@ public class AgencyControllerTest extends ControllerWebIntegrationTest {
                         responseFields(
                                 fieldWithPath("id").description(""),
                                 fieldWithPath("name").description(""),
-                                fieldWithPath("created").description(""),
-                                fieldWithPath("updated").description(""),
-                                fieldWithPath("createdBy").description(""),
-                                fieldWithPath("surveyPrograms").description(Agency.class),
-                                fieldWithPath("studies").description(""),
-                                fieldWithPath("instructions").description(""),
-                                fieldWithPath("concepts").description(""),
-                                fieldWithPath("questions").description(""),
-                                fieldWithPath("responses").description(""),
-                                fieldWithPath("instruments").description(""),
-                                fieldWithPath("topicGroups").description(""),
-                                fieldWithPath("categories").description(""))
+                                fieldWithPath("modified").description(""),
+                                fieldWithPath("modifiedBy").description(""),
+                                fieldWithPath("users").description("")
+                                )
                 ));
     }
 

@@ -105,8 +105,8 @@ public class Question extends AbstractEntityAudit implements Commentable {
         if (!this.concepts.contains(concept)){
             this.concepts.add(concept);
             this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+            concept.addQuestion(this);
         }
-        concept.addQuestion(this);
     }
 
 
@@ -200,11 +200,9 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
         Question question1 = (Question) o;
 
-//        if (parent_ORDER != question1.parent_ORDER) return false;
-//        if (parent != null ? !parent.equals(question1.parent) : question1.parent != null) return false;
         if (responseDomain != null ? !responseDomain.equals(question1.responseDomain) : question1.responseDomain != null)
             return false;
-        if (concepts != null ? !concepts.equals(question1.concepts) : question1.concepts != null) return false;
+//        if (concepts != null ? !concepts.equals(question1.concepts) : question1.concepts != null) return false;
         if (comments != null ? !comments.equals(question1.comments) : question1.comments != null) return false;
         if (gridIdxRationale != null ? !gridIdxRationale.equals(question1.gridIdxRationale) : question1.gridIdxRationale != null)
             return false;
@@ -216,12 +214,9 @@ public class Question extends AbstractEntityAudit implements Commentable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-//        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
-        result = 31 * result + (children != null ? children.hashCode() : 0);
-        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
-//        result = 31 * result + parent_ORDER;
+        result = 31 * result + (children != null ? children.size() : 0);
+        result = 31 * result + (comments != null ? comments.size() : 0);
         result = 31 * result + (gridIdxRationale != null ? gridIdxRationale.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);

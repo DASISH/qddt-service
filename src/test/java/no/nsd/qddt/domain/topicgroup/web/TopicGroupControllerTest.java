@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.concept.Concept;
@@ -7,7 +8,12 @@ import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -20,6 +26,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Stig Norland
  */
+@Transactional
+@WebIntegrationTest
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = QDDT.class)
 public class TopicGroupControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired
@@ -62,7 +72,7 @@ public class TopicGroupControllerTest extends ControllerWebIntegrationTest {
         TopicGroup aEntity = new TopicGroup();
         aEntity.setName("Posted entity");
 
-        mvc.perform(post("/topicgroup/create").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/topicgroup/create/00000008-0004-0004-0004-000000000012").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))

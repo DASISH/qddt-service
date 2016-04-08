@@ -65,6 +65,11 @@ public class StudyControllerTest extends ControllerWebIntegrationTest {
 
     @Test
     public void testGet() throws Exception {
+
+        study = new Study();
+        study.setName("A Get test entity");
+        study = studyService.save(study);
+
         mvc.perform(get("/surveyprogram/"+study.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
     }

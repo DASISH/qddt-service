@@ -78,7 +78,6 @@ public class ConceptController {
         parent.addChildren(concept);
         parent = conceptService.save(parent);
 
-        System.out.println("returning");
         return parent.getChildren().stream()
                 .filter(c -> c.getName() == concept.getName()).findFirst()
                 .orElseThrow( ()-> new ResourceNotFoundException(0, Concept.class));
@@ -91,8 +90,6 @@ public class ConceptController {
         concept.setTopicGroup(topicGroupService.findOne(topicId));
         return conceptService.save(concept);
     }
-
-
 
 
     @ResponseStatus(value = HttpStatus.OK)

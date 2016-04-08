@@ -4,6 +4,8 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
@@ -28,6 +30,9 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
     @Autowired
     private TopicGroupService topicGroupService;
 
+    @Autowired
+    private QuestionService questionService;
+
     private Concept entity;
     private TopicGroup topicGroup;
 
@@ -39,10 +44,6 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
         entity = new Concept();
         entity.setName("A test entity");
         entity = entityService.save(entity);
-
-        topicGroup = new TopicGroup();
-        topicGroup.setName("a module");
-        topicGroup =  topicGroupService.save(topicGroup);
 
         super.getBeforeSecurityContext().destroySecurityContext();
 
@@ -69,6 +70,10 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
 
     @Test
     public void testCreate() throws Exception {
+        TopicGroup topicGroup = new TopicGroup();
+        topicGroup.setName("a module");
+        topicGroup =  topicGroupService.save(topicGroup);
+
         Concept aEntity = new Concept();
         aEntity.setName("Posted entity");
 
@@ -89,17 +94,24 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
         assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));
     }
 
+
+
     @Test
-    public void testHierarchy() throws Exception {
+    public void testAddQuestion() throws Exception {
+
+        Question question = new Question();
+        question.setName("my precious");
+        question = questionService.save(question);
+
         Concept concept = new Concept();
         concept.setName("FIRST");
+        concept = entityService.save(concept);
 
-        mvc.perform(post("/concept/create/by-parent/"+ entity.getId()).header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/concept/add-question/"+ question.getId()).header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(concept)));
 //                .andExpect(jsonPath("$."))
         concept =  entityService.findOne(entity.getId());
-        assertThat("Should be three", concept.getChildren().size(), is(1));
+        assertThat("Should be one", concept.getChildren().size(), is(1));
     }
-
 }

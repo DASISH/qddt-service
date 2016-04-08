@@ -103,8 +103,8 @@ public class CategoryServiceTest extends AbstractServiceTest {
         assertEquals("Should be equal", parent.hashCode(),category.hashCode());
         assertEquals("Should return 4",  4L,categoryService.count());
 
-        categoryRepository.delete(category);
-        assertEquals("Should return 3", 3L, categoryService.count());
+        categoryRepository.delete(category);        // no deletions, have children ( CascadeType.PERSIST)
+        assertEquals("Should return 4", 4L, categoryService.count());
 
     }
 

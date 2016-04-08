@@ -114,8 +114,8 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         if (!this.questions.contains(question)){
             this.questions.add(question);
             this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+//            question.addConcept(this);
         }
-        question.addConcept(this);
     }
 
 
@@ -197,7 +197,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 //        if (parent != null ? !parent.equals(concept.parent) : concept.parent != null) return false;
         if (children != null ? !children.equals(concept.children) : concept.children != null) return false;
         if (topicGroup != null ? !topicGroup.equals(concept.topicGroup) : concept.topicGroup != null) return false;
-        if (questions != null ? !questions.equals(concept.questions) : concept.questions != null) return false;
+//        if (questions != null ? !questions.equals(concept.questions) : concept.questions != null) return false;
         if (label != null ? !label.equals(concept.label) : concept.label != null) return false;
         if (description != null ? !description.equals(concept.description) : concept.description != null) return false;
         return !(comments != null ? !comments.equals(concept.comments) : concept.comments != null);
@@ -207,9 +207,8 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     public int hashCode() {
         int result = super.hashCode();
 //        result = 31 * result + (parent != null ? parent.hashCode() : 0);
-        result = 31 * result + (children != null ? children.hashCode() : 0);
+        result = 31 * result + (children != null ? children.size() : 0);
         result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
-        result = 31 * result + (questions != null ? questions.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
