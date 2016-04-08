@@ -34,10 +34,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         UPDATED_HIERARCY_RELATION,
         IN_DEVELOPMENT,
         TYPO,
-        NEW_MINOR,
-        NEW_MAJOR,
+        CONCEPTUAL,
+        EXTERNAL,
+        OTHER,
         NEW_COPY_OF
     }
+
 
     /**
      * I am the beginning of the end, and the end of time and space.

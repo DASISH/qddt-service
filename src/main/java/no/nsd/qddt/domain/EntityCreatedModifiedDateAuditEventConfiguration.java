@@ -67,14 +67,15 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                         ver = new Version();
                         ver.incMajor();
                         break;
-                    case NEW_MAJOR:
+                    case CONCEPTUAL:
+                    case EXTERNAL:
+                    case OTHER:
                         ver.incMajor();
                         break;
-                    case NEW_MINOR:
                     case TYPO:
                         ver.incMinor();
                         break;
-                    default:
+                    default:        //CREATED / UPDATED_PARENT / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
                         System.out.println("PREUPDATE -> [" + change+ "] (no change in version)");
                         break;
                 }
