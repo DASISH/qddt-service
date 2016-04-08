@@ -67,7 +67,7 @@ class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<Question> getHierarchy(Pageable pageable) {
-        return  questionRepository.getRootElements(pageable);
+        return  questionRepository.findAll(pageable);
     }
 
     @Override

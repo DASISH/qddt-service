@@ -27,9 +27,9 @@ import java.util.UUID;
 
 @Audited
 @Entity
-@FetchProfile(name = "question-with-sub-questions", fetchOverrides = {
-        @FetchProfile.FetchOverride(entity = Question.class, association = "children", mode = FetchMode.JOIN)
-})
+//@FetchProfile(name = "question-with-sub-questions", fetchOverrides = {
+//        @FetchProfile.FetchOverride(entity = Question.class, association = "children", mode = FetchMode.JOIN)
+//})
 @Table(name = "QUESTION")
 public class Question extends AbstractEntityAudit implements Commentable {
 
@@ -38,14 +38,14 @@ public class Question extends AbstractEntityAudit implements Commentable {
     private ResponseDomain responseDomain;
 
 
-    @JoinColumn(name = "parent_id")
-    @ManyToOne()
-    private Question parent;
+//    @JoinColumn(name = "parent_id")
+//    @ManyToOne()
+//    private Question parent;
 
 
     @OrderColumn(name = "children_index")
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="parent_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_id")
     private Set<Question> children = new HashSet<>();
 
 
@@ -81,13 +81,13 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
     }
 
-    public Question getParent() {
-        return parent;
-    }
-
-    public void setParent(Question parent) {
-        this.parent = parent;
-    }
+//    public Question getParent() {
+//        return parent;
+//    }
+//
+//    public void setParent(Question parent) {
+//        this.parent = parent;
+//    }
 
     public Set<Question> getChildren() {
         return children;
@@ -100,6 +100,15 @@ public class Question extends AbstractEntityAudit implements Commentable {
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
+
+    public void addConcept(Concept concept){
+        if (!this.concepts.contains(concept)){
+            this.concepts.add(concept);
+            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+        }
+        concept.addQuestion(this);
+    }
+
 
     public Set<InstrumentQuestion> getInstrumentQuestions() {
         return instrumentQuestions;

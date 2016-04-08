@@ -19,8 +19,8 @@ interface QuestionRepository extends BaseRepository<Question,UUID> {
 //    @Query("select n from Question n  left join fetch  n.children")
 //    Page<Question> getHierarchy(Pageable pageable);
 
-    @Query("select n from Question n  where n.parent is null")
-    Page<Question> getRootElements(Pageable pageable);
+//    @Query("select n from Question n  where n.parent_id is null")
+//    Page<Question> getRootElements(Pageable pageable);
 
 
 

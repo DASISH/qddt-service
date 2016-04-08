@@ -47,6 +47,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 //    private Concept parent;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OrderColumn(name = "children_index")
     @JoinColumn(name = "parent_id")
     private Set<Concept> children = new HashSet<>();
 
@@ -110,11 +111,11 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
 
     public void addQuestion(Question question) {
-        Set<Concept> concepts = question.getConcepts();
-        concepts.add(this);
-        question.setConcepts(concepts);
-        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-        this.questions.add(question);
+        if (!this.questions.contains(question)){
+            this.questions.add(question);
+            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+        }
+        question.addConcept(this);
     }
 
 
