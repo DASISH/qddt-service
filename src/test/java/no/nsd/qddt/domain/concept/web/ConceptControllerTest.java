@@ -111,7 +111,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
                 .contentType(rest.getContentType())
                 .content(rest.json(concept)));
 //                .andExpect(jsonPath("$."))
-        concept =  entityService.findOne(entity.getId());
-        assertThat("Should be one", concept.getChildren().size(), is(1));
+        concept =  entityService.findOne(concept.getId());
+        assertThat("Should be one", concept.getQuestions().size(), is(1));
     }
 }
