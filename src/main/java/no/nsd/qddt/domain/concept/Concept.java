@@ -69,7 +69,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @Column(name = "label")
     private String label;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 2000)
     private String description;
 
     @Transient

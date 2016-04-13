@@ -22,6 +22,7 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name = "instrumentquestion_id")
     private InstrumentQuestion instrumentQuestion;
 
+    @Column(name = "description", length = 2000)
     private String description;
 
     @Transient

@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.responsedomaincode;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -22,10 +23,11 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     private ResponseDomain responseDomain;
 
     @ManyToOne
+    @OrderColumn(name="category_index")
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "category_idx")
+    @Column(name = "category_index")
     private int categoryIndex;
 
     @Column(name = "code_value")
@@ -35,7 +37,7 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     }
 
-    public ResponseDomainCode(int categoryIndex, ResponseDomain responseDomain, Category category) {
+    public ResponseDomainCode( ResponseDomain responseDomain, Category category) {
         this.categoryIndex = categoryIndex;
         this.responseDomain = responseDomain;
         this.category = category;

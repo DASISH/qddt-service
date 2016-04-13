@@ -45,7 +45,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
-    @Column(length = 1500)
+    @Column(length = 2000)
     private String description;
 
 
