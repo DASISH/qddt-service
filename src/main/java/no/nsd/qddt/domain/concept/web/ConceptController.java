@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Stig Norland
@@ -52,11 +53,12 @@ public class ConceptController {
         return conceptService.save(concept);
     }
 
-
+//?concept={conceptId}&question={questionId}
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "add-question/{uuid}", method = RequestMethod.POST)
-    public Concept addQuestion(@RequestBody Concept concept,@PathVariable("uuid") UUID questionId) {
+    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "question"})
+    public Concept addQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
 
+        Concept concept  = conceptService.findOne(conceptId);
         Question question = questionService.findOne(questionId);
         concept.addQuestion(question);
         return conceptService.save(concept);
@@ -87,6 +89,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
     public Concept createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
+
         concept.setTopicGroup(topicGroupService.findOne(topicId));
         return conceptService.save(concept);
     }

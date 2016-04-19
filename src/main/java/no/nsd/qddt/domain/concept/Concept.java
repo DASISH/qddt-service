@@ -111,6 +111,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
 
     public void addQuestion(Question question) {
+
         if (!this.questions.contains(question)){
             this.questions.add(question);
             this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
