@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -22,6 +25,9 @@ public class ConceptServiceTest  extends AbstractServiceTest {
 
     @Autowired
     private ConceptRepository conceptRepository;
+
+    @Autowired
+    private QuestionService questionService;
 
     @Before
     public void setup() {
@@ -127,4 +133,24 @@ public class ConceptServiceTest  extends AbstractServiceTest {
         agencyList.forEach(a -> assertNull("Should return null", conceptService.findOne(a.getId())));
 
     }
+
+    @Test
+    public void testAddQuestion() throws Exception {
+        Question question = new Question();
+        question.setName("my precious");
+        question = questionService.save(question);
+
+        Concept concept = new Concept();
+        concept.setName("FIRST");
+        concept = conceptService.save(concept);
+
+
+        concept.addQuestion(question);
+
+        Concept savedConcept = conceptService.save(concept);
+
+        assertEquals("they are equal" ,savedConcept.getQuestions(),concept.getQuestions());
+
+    }
+
 }

@@ -11,6 +11,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
 import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -107,10 +108,10 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
         concept.setName("FIRST");
         concept = entityService.save(concept);
 
-        mvc.perform(post("/concept/add-question/"+ question.getId()).header("Authorization", "Bearer " + accessToken)
+        mvc.perform(get("/concept/combine?concept=" +concept.getId()+ "&question="+ question.getId() ).header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
-                .content(rest.json(concept)));
-//                .andExpect(jsonPath("$."))
+                .content(rest.json(concept))).andReturn();
+
         concept =  entityService.findOne(concept.getId());
         assertThat("Should be one", concept.getQuestions().size(), is(1));
     }
