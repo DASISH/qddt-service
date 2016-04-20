@@ -89,7 +89,7 @@ public class CategoryController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "level", "name", "category"})
     public HttpEntity<PagedResources<Category>>  getBy(@RequestParam("level") String level,
                                                        @RequestParam(value = "category",required = false) String category,
-                                                       @RequestParam(value = "name",defaultValue = "%", required = false) String name,
+                                                       @RequestParam(value = "name",defaultValue = "%") String name,
                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Category> categories = null;
