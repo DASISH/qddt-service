@@ -65,12 +65,6 @@ public class ConceptController {
     }
 
 
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/create", method = RequestMethod.POST)
-//    public Concept create(@RequestBody Concept concept) {
-//        return conceptService.save(concept);
-//    }
-
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)

@@ -21,10 +21,10 @@ interface CategoryRepository extends BaseRepository<Category,UUID> {
 
     Page<Category> findByNameIgnoreCaseLike(String name, Pageable pageable);
 
-    Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable);
+    Page<Category> findByCategoryTypeAndNameIgnoreCaseLike(CategoryType categoryType, String name, Pageable pageable);
 
-    Page<Category> findByHierarchyLevelAndNameLike(HierarchyLevel hierarchyLevel, String name, Pageable pageable);
+    Page<Category> findByHierarchyLevelAndNameIgnoreCaseLike(HierarchyLevel hierarchyLevel, String name, Pageable pageable);
 
-    Page<Category> findByHierarchyLevelAndCategoryTypeAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable);
+    Page<Category> findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable);
 
 }

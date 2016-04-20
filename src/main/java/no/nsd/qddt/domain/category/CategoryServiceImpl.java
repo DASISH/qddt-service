@@ -37,23 +37,6 @@ class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findByNameIgnoreCaseLike(name, pageable);
     }
 
-    /*
-    This call will give you all Category (trees) that are defined as complete, and that can be attached to a responsedomain
-     Name support whildcard searches
-     */
-    @Override
-    public Page<Category> findRootLevelByName(String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndNameLike(HierarchyLevel.ROOT_ENTITY, name, pageable);
-    }
-
-    /*
-    This call will give you all Category (trees) that are defined as a group, and can be grouped into other groups or roots
-     Name support whildcard searches
-     */
-    @Override
-    public Page<Category> findGroupByName(String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
-    }
 
     /*
     This call will give you all Category with HierarchyLevel,CategoryType and
@@ -61,7 +44,7 @@ class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Page<Category> findByHierarchyAndCategoryAndName(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameLike(hierarchyLevel,categoryType,name,pageable);
+        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,pageable);
     }
 
     /*
@@ -70,10 +53,13 @@ class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByCategoryTypeAndNameLike(categoryType, name, pageable);
+        return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name, pageable);
     }
 
-
+    @Override
+    public Page<Category> findByHierarchyAndNameLike(HierarchyLevel level, String name, Pageable pageable) {
+        return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name, pageable);
+    }
 
 
     @Override

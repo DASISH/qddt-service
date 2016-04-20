@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.category.web;
 
+import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
+import no.nsd.qddt.domain.category.CategoryType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,11 +56,34 @@ public class CategoryController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/by-name/{name}", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Category>> get(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+    @RequestMapping(value = "/page/by-root/{name}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Category>> getByRoot(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Category> comments = categoryService.findByNamePageable(name, pageable);
-        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+        if (name.isEmpty() || name.length() == 0)
+            name = "%";
+        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.ROOT_ENTITY, name, pageable);
+        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/by-group/{name}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Category>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+
+        if (name.isEmpty() || name.length() == 0)
+            name = "%";
+        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
+        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/by-leaf/{name}", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Category>> getByLeaf(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+
+        if (name.isEmpty() || name.length() == 0)
+            name = "%";
+        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.ENTITY, name, pageable);
+        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
+    }
+
 
 }

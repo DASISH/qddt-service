@@ -19,11 +19,12 @@ public interface CategoryService extends BaseService<Category, UUID> {
 
     Page<Category>findByCategoryTypeAndNameLike(CategoryType categoryType,String name,Pageable pageable );
 
-    Page<Category>findRootLevelByName(String name,Pageable pageable );
+//    Page<Category>findGroupByName(String name,Pageable pageable );
 
-    Page<Category>findGroupByName(String name,Pageable pageable );
+    Page<Category> findByHierarchyAndNameLike(HierarchyLevel entity, String name, Pageable pageable);
 
     Page<Category>findByHierarchyAndCategoryAndName(HierarchyLevel hierarchyLevel, CategoryType categoryType,String name,Pageable pageable);
+
 
 //    public List<String> findAllCategoies();
 //

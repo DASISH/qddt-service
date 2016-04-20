@@ -197,7 +197,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setLabel("Transperson").createCategory());
         categoryService.save(rootCategory);
 
-        Page<Category> rootList= categoryService.findGroupByName("%", new PageRequest(0, 20));
+        Page<Category> rootList= categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, "%", new PageRequest(0, 20));
         assertEquals("Skal bare være et element i listen",  1L,rootList.getTotalElements());
     }
 
@@ -234,7 +234,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
         root.addChild(group);
         categoryService.save(root);
 
-        Page<Category> rootList= categoryService.findRootLevelByName( "%", new PageRequest(0, 20));
+        Page<Category> rootList= categoryService.findByHierarchyAndNameLike(HierarchyLevel.ROOT_ENTITY, "%", new PageRequest(0, 20));
         assertEquals("Should be 1 element in list",  1L,rootList.getTotalElements());
         assertEquals("Should be 5 Grandchildren elements", 5L, rootList.getContent().get(0).getAllChildrenFlatten().size());
 
