@@ -85,5 +85,22 @@ public class CategoryController {
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "level", "name", "category"})
+    public HttpEntity<PagedResources<Category>>  getBy(@RequestParam("level") String level,
+                                                       @RequestParam(value = "category",required = false) String category,
+                                                       @RequestParam(value = "name",defaultValue = "%", required = false) String name,
+                                                       Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Category> categories = null;
+
+        if (category.isEmpty()) {
+            categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable);
+        } else {
+            categories = categoryService.findByHierarchyAndCategoryAndName(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable);
+        }
+
+        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
+    }
 
 }
