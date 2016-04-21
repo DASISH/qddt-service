@@ -147,8 +147,8 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
 
         MvcResult result;
 
-        result =mvc.perform(get("/category/page/search?level=ENTITY&name=ENTITY1&category=").header("Authorization", "Bearer " + accessToken)).andReturn();
-        result.getResponse().getContentAsString().
+        result =mvc.perform(get("/category/page/search?level=ENTITY").header("Authorization", "Bearer " + accessToken)).andReturn();
+//        result.getResponse().getContentAsString().
         assertFalse("OK", result.getResolvedException() != null);
 
         result =mvc.perform(get("/category/page/search?level=ROOT_ENTITY&name=&category=").header("Authorization", "Bearer " + accessToken)).andReturn();

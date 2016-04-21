@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.version.Version;
 import no.nsd.qddt.utils.SecurityContext;
@@ -37,6 +39,13 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                 Version version = new Version();
                 version.incMinor();
                 ((AbstractEntityAudit) entity).setVersion(version);
+            }
+            if (entity instanceof Category) {
+                if (((Category)entity).getCategoryType() == null)
+                    ((Category)entity).setCategoryType(CategoryType.CODE);
+                if (((Category)entity).getHierarchyLevel() == null)
+                    ((Category)entity).setHierarchyLevel(HierarchyLevel.ENTITY);
+
             }
         } catch (Exception e){
             System.out.println(e.getMessage());

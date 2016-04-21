@@ -86,7 +86,7 @@ public class CategoryController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "level", "name", "category"})
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>>  getBy(@RequestParam("level") String level,
                                                        @RequestParam(value = "category",required = false) String category,
                                                        @RequestParam(value = "name",defaultValue = "%") String name,
@@ -94,7 +94,7 @@ public class CategoryController {
 
         Page<Category> categories = null;
 
-        if (category.isEmpty()) {
+        if (category == null) {
             categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable);
         } else {
             categories = categoryService.findByHierarchyAndCategoryAndName(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable);
