@@ -83,11 +83,11 @@ public class Category extends AbstractEntityAudit {
     @Type(type="pg-uuid")
     private UUID conceptReference;
 
-    @Column(name = "Hierarchy_level")
+    @Column(name = "Hierarchy_level",nullable = false,columnDefinition = "ENTITY")
     @Enumerated(EnumType.STRING)
     private HierarchyLevel hierarchyLevel;
 
-    @Column(name = "category_kind")
+    @Column(name = "category_kind", nullable = false, columnDefinition = "CODE" )
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
 
