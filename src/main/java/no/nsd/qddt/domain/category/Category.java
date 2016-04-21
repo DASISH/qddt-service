@@ -217,9 +217,11 @@ public class Category extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "Category{" +
-                " name='" + super.getName() + '\'' +
                 ", label='" + label + '\'' +
-                ", categorySchemaType=" + hierarchyLevel +
-                "} "; //+ super.toString();
+                ", description='" + description + '\'' +
+//                ", conceptReference=" + conceptReference +
+                ", hierarchyLevel=" + hierarchyLevel +
+                ", categoryType=" + categoryType +
+                "} " + super.toString();
     }
 }
