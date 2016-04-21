@@ -11,6 +11,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,8 +60,6 @@ public class CategoryController {
     @RequestMapping(value = "/page/by-root/{name}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> getByRoot(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        if (name.isEmpty() || name.length() == 0)
-            name = "%";
         Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.ROOT_ENTITY, name, pageable);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
@@ -69,8 +68,6 @@ public class CategoryController {
     @RequestMapping(value = "/page/by-group/{name}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        if (name.isEmpty() || name.length() == 0)
-            name = "%";
         Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
@@ -79,14 +76,12 @@ public class CategoryController {
     @RequestMapping(value = "/page/by-leaf/{name}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> getByLeaf(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        if (name.isEmpty() || name.length() == 0)
-            name = "%";
         Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.ENTITY, name, pageable);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Category>>  getBy(@RequestParam("level") String level,
                                                        @RequestParam(value = "category",required = false) String category,
                                                        @RequestParam(value = "name",defaultValue = "%") String name,
