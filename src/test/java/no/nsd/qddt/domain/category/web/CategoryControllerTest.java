@@ -141,4 +141,28 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
         assertFalse("OK", result.getResolvedException() != null);
     }
 
+
+    @Test
+    public void getSearch() throws Exception {
+
+        MvcResult result;
+
+        result =mvc.perform(get("/category/page/search?level=ENTITY&name=ENTITY1&category=").header("Authorization", "Bearer " + accessToken)).andReturn();
+        result.getResponse().getContentAsString().
+        assertFalse("OK", result.getResolvedException() != null);
+
+        result =mvc.perform(get("/category/page/search?level=ROOT_ENTITY&name=&category=").header("Authorization", "Bearer " + accessToken)).andReturn();
+        assertFalse("OK", result.getResolvedException() != null);
+
+        result =mvc.perform(get("/category/page/search?level=ENTITY&name=&category=").header("Authorization", "Bearer " + accessToken)).andReturn();
+        assertFalse("OK", result.getResolvedException() != null);
+
+
+        result =mvc.perform(get("/category/page/search?level=ROOT_ENTITY&category=MIXED&name=").header("Authorization", "Bearer " + accessToken)).andReturn();
+        assertFalse("OK", result.getResolvedException() != null);
+
+    }
+
+
+
 }
