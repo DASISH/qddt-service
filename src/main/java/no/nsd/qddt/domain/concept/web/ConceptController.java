@@ -64,6 +64,17 @@ public class ConceptController {
         return conceptService.save(concept);
     }
 
+    //?concept={conceptId}&question={questionId}
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "question"})
+    public Concept removeQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
+
+        Concept concept  = conceptService.findOne(conceptId);
+        Question question = questionService.findOne(questionId);
+        concept.removeQuestion(question);
+        return conceptService.save(concept);
+    }
+
 
 
     @ResponseStatus(value = HttpStatus.CREATED)

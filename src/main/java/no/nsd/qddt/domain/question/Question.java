@@ -53,7 +53,7 @@ public class Question extends AbstractEntityAudit implements Commentable {
 //    @OrderColumn
 //    private int parent_ORDER;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questions")
+    @ManyToMany(fetch = FetchType.LAZY) //, mappedBy = "questions")
     private Set<Concept> concepts = new HashSet<>();
 
     @OneToMany(mappedBy = "question")
@@ -105,7 +105,7 @@ public class Question extends AbstractEntityAudit implements Commentable {
         if (!this.concepts.contains(concept)){
             this.concepts.add(concept);
             this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-            concept.addQuestion(this);
+//            concept.addQuestion(this);
         }
     }
 

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.author;
 
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -111,10 +112,6 @@ public class Author extends AbstractEntity {
         this.surveyPrograms = surveyPrograms;
     }
 
-    public void addSurvey(SurveyProgram surveyProgram){
-        surveyPrograms.add(surveyProgram);
-    }
-
     public Set<Study> getStudies() {
         return studies;
     }
@@ -123,9 +120,53 @@ public class Author extends AbstractEntity {
         this.studies = studies;
     }
 
-    public void addStudy(Study study){
-        this.studies.add(study);
+    public void addSurvey(SurveyProgram surveyProgram){
+        if (!surveyPrograms.contains(surveyProgram)) {
+            surveyPrograms.add(surveyProgram);
+        }
     }
+
+    public void addStudy(Study study){
+        if (!studies.contains(study)) {
+            this.studies.add(study);
+        }
+    }
+
+    public void addTopic(TopicGroup topicGroup){
+        if (!topicGroups.contains(topicGroup)) {
+            this.topicGroups.add(topicGroup);
+        }
+    }
+
+    public void addConcept(Concept concept){
+        if (!concepts.contains(concept)) {
+            this.concepts.add(concept);
+        }
+    }
+
+    public void removeSurvey(SurveyProgram surveyProgram){
+        if (surveyPrograms.contains(surveyProgram))
+            surveyPrograms.remove(surveyProgram);
+    }
+
+    public void removeStudy(Study study){
+        if (studies.contains(study)) {
+            this.studies.remove(study);
+        }
+    }
+
+    public void removeTopic(TopicGroup topicGroup){
+        if (topicGroups.contains(topicGroup)) {
+            this.topicGroups.remove(topicGroup);
+        }
+    }
+
+    public void removeConcept(Concept concept){
+        if (concepts.contains(concept)) {
+            this.concepts.remove(concept);
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {
