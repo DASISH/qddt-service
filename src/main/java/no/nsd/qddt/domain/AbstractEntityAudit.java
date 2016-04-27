@@ -37,6 +37,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         CONCEPTUAL,
         EXTERNAL,
         OTHER,
+        MILESTONE,
         NEW_COPY_OF
     }
 

@@ -76,6 +76,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                         ver = new Version();
                         ver.incMajor();
                         break;
+                    case MILESTONE:
                     case CONCEPTUAL:
                     case EXTERNAL:
                     case OTHER:
