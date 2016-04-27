@@ -72,7 +72,7 @@ public class Agency extends AbstractEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
-    
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<User> users = new HashSet<>();
 
