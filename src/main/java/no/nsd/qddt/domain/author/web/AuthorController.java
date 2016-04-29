@@ -14,6 +14,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,7 +72,7 @@ public class AuthorController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/", method = RequestMethod.GET)
+    @RequestMapping(value = "/page/", method = RequestMethod.GET ,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Author>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Author> authors = authorService.findAllPageable(pageable);
