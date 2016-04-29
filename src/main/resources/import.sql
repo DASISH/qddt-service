@@ -66,8 +66,8 @@ INSERT INTO category_category (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-f
 INSERT INTO category_category (id, parent_id) VALUES ('37894f32-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
 
 
-INSERT INTO responsedomain(id,updated,CHANGE_KIND,name,response_kind,category_id, user_id,agency_id) VALUES('d5dbaebb-65d0-11e5-9d70-feff819cdc9f','01-01-2015','MODIFIED','Responsdomain Range','Scale','378955ce-65d0-11e5-9d70-feff819cdc9f','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
-INSERT INTO responsedomain(id,updated,CHANGE_KIND,name,response_kind,category_id, user_id,agency_id) VALUES('d5dbb12a-65d0-11e5-9d70-feff819cdc9f','01-01-2015','MODIFIED','TestDomianCategory','Category',,'83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
+INSERT INTO responsedomain(id,updated,CHANGE_KIND,name,response_kind,category_id, user_id,agency_id) VALUES('d5dbaebb-65d0-11e5-9d70-feff819cdc9f','01-01-2015','CREATED','Responsdomain Range','Scale','378955ce-65d0-11e5-9d70-feff819cdc9f','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
+INSERT INTO responsedomain(id,updated,CHANGE_KIND,name,response_kind,category_id, user_id,agency_id) VALUES('d5dbb12a-65d0-11e5-9d70-feff819cdc9f','01-01-2015','CREATED','TestDomianCategory','Category',,'83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
 
 INSERT INTO responsedomain_code (id, updated,  change_kind, name,   code_value,  category_id, responsedomain_id, user_id,agency_id) VALUES ('05f9a484-65d1-11e5-9d70-feff819cdc9f', '01-01-2015','CREATED', 'name', '1', '378949ec-65d0-11e5-9d70-feff819cdc9f', 'd5dbaebb-65d0-11e5-9d70-feff819cdc9f','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
 INSERT INTO responsedomain_code (id, updated,  change_kind, name,   code_value,  category_id, responsedomain_id, user_id,agency_id) VALUES ('05f9a89e-65d1-11e5-9d70-feff819cdc9f', '01-01-2015','CREATED', 'name', '9', '37894d7a-65d0-11e5-9d70-feff819cdc9f', 'd5dbaebb-65d0-11e5-9d70-feff819cdc9f','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
@@ -75,7 +75,7 @@ INSERT INTO responsedomain_code (id, updated,  change_kind, name,   code_value, 
 INSERT INTO responsedomain_code (id, updated,  change_kind, name,   code_value,  category_id, responsedomain_id, user_id,agency_id) VALUES ('05f9abd2-65d1-11e5-9d70-feff819cdc9f', '01-01-2015','CREATED', 'name', '67', '378955cc-65d0-11e5-9d70-feff819cdc9f','d5dbaebb-65d0-11e5-9d70-feff819cdc9f','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
 
 
-INSERT INTO responsedomain_code(id,updated,CHANGE_KIND, responsedomain_id, category_id,  code_value, user_id,agency_id) VALUES('05f9ad12-65d1-11e5-9d70-feff819cdc9f','01-01-2015','MODIFIED', 'd5dbaebe-65d0-11e5-9d70-feff819cdc9f','378955cc-65d0-11e5-9d70-feff819cdc9f', '15','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
+INSERT INTO responsedomain_code(id,updated,CHANGE_KIND, responsedomain_id, category_id,  code_value, user_id,agency_id) VALUES('05f9ad12-65d1-11e5-9d70-feff819cdc9f','01-01-2015','CREATED', 'd5dbaebe-65d0-11e5-9d70-feff819cdc9f','378955cc-65d0-11e5-9d70-feff819cdc9f', '15','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
 
 
 -- INSERT INTO SURVEY_PROGRAM(id,name,CREATED,CHANGE_KIND,USER_ID) VALUES('a9fe6c00-51af-1ced-8151-af0dd96a0000','MORE SURVEY','01-12-2015 07:00:01','CREATED','83d4c034-4ff9-11e5-885d-feff819cdc9f');
