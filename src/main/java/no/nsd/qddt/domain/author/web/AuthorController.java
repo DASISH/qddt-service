@@ -72,7 +72,7 @@ public class AuthorController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Author>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<Author>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Author> authors = authorService.findAllPageable(pageable);
         return new ResponseEntity<>(assembler.toResource(authors), HttpStatus.OK);
