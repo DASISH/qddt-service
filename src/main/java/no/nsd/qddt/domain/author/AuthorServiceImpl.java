@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.author;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,5 +55,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(List<Author> instances) {
         authorRepository.delete(instances);
+    }
+
+    @Override
+    public Page<Author> findAllPageable(Pageable pageable) {
+        return authorRepository.findAll(pageable);
     }
 }

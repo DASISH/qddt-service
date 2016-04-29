@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.author.web;
 
+import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.AuthorService;
 import no.nsd.qddt.domain.concept.ConceptService;
@@ -7,7 +8,13 @@ import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -63,6 +70,13 @@ public class AuthorController {
         authorService.delete(id);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Author>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Author> authors = authorService.findAllPageable(pageable);
+        return new ResponseEntity<>(assembler.toResource(authors), HttpStatus.OK);
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "authorId" })
