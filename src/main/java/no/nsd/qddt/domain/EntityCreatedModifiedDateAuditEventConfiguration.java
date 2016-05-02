@@ -71,6 +71,9 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                     change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
                     ((AbstractEntityAudit) entity).setChangeKind(change);
                 }
+                if (change != AbstractEntityAudit.ChangeKind.MILESTONE){
+                    ver.setVersionLabel("");
+                }
                 switch (change) {
                     case NEW_COPY_OF:
                         ver = new Version();
