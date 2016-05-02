@@ -54,22 +54,22 @@ public class ResponseDomainCodeHierarchyTest {
         this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
         this.beforeSecurityContext.createSecurityContext();
         //Create a categorySchema
-        rootCategory = new CategoryBuilder().setName("KJØNN")
+        rootCategory = new CategoryBuilder().setName("SEX")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MULTIPLE_SINGLE)
-                .setLabel("Kjønn").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
-                .setLabel("Kvinne").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MANN")
-                .setLabel("Mann").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setLabel("Transperson").createCategory());
+                .setLabel("Sex").createCategory();
+        rootCategory.addChild(new CategoryBuilder().setName("FEMALE")
+                .setLabel("Female").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("MAN")
+                .setLabel("Man").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("TRANSGENDER")
+                .setLabel("Transgender").createCategory());
         categoryService.save(rootCategory);
 
 
         // Create a responsdomain with a categoryschema.
         responseDomain = new ResponseDomain();
-        responseDomain.setName("Kjønn obligatorisk svar");
+        responseDomain.setName("Sex mandatory answer");
         responseDomain.setResponseKind(ResponseKind.Code);
         responseDomain.setCategory(rootCategory);
         responseDomain = responseDomainService.save(responseDomain);
