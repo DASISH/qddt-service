@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,4 +64,18 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     public void delete(List<ResponseDomain> instances) {
         responseDomainRepository.delete(instances);
     }
+
+    @Override
+    public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, Pageable pageable) {
+        return responseDomainRepository.findByResponseKindAndNameLikeOrDescriptionLike(responseKind,name,description,pageable);
+    }
+
+    @Override
+    public Page<ResponseDomain> findByQuestion(ResponseKind responseKind, String name, String question, Pageable pageable) {
+        return  null;
+    }
+
+
+
+
 }

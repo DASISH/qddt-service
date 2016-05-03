@@ -58,12 +58,12 @@ class ResponseDomainCodeServiceImpl implements ResponseDomainCodeService {
     }
 
     @Override
-    public List<ResponseDomainCode> findByResponseDomainId(UUID responseDomainId) {
-        return responseDomainCodeRepository.findByResponseDomainIdOrderByCategoryIndexAsc(responseDomainId);
+    public List<ResponseDomainCode> findByQuestionId(UUID questionId) {
+        return responseDomainCodeRepository.findByQuestionIdOrderByCategoryIndexAsc(questionId);
     }
 
     @Override
     public List<ResponseDomainCode> findByCategoryId(UUID codeId) {
-        return responseDomainCodeRepository.findByCategoryIdOrderByResponseDomainIdAsc(codeId);
+        return responseDomainCodeRepository.findByCategoryIdOrderByCategoryIndexAsc(codeId);
     }
 }

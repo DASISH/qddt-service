@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 interface ResponseDomainCodeRepository extends BaseRepository<ResponseDomainCode, UUID> {
 
-    List<ResponseDomainCode> findByResponseDomainIdOrderByCategoryIndexAsc(UUID responseDomainId);
+    List<ResponseDomainCode> findByQuestionIdOrderByCategoryIndexAsc(UUID questionId);
 
-    List<ResponseDomainCode> findByCategoryIdOrderByResponseDomainIdAsc(UUID codeId);
+    List<ResponseDomainCode> findByCategoryIdOrderByCategoryIndexAsc(UUID codeId);
 }

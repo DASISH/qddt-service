@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.responsedomaincode;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.envers.Audited;
 
@@ -17,9 +18,13 @@ import javax.persistence.*;
 @Table(name = "RESPONSEDOMAIN_CODE")
 public class ResponseDomainCode extends AbstractEntityAudit {
 
+//    @ManyToOne
+//    @JoinColumn(name = "responsedomain_id")
+//    private ResponseDomain responseDomain;
+
     @ManyToOne
-    @JoinColumn(name = "responsedomain_id")
-    private ResponseDomain responseDomain;
+    @JoinColumn(name="question_id")
+    private Question question;
 
     @ManyToOne
     @OrderColumn(name="category_index")
@@ -36,14 +41,14 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     }
 
-    public ResponseDomainCode( ResponseDomain responseDomain, Category category){
-        this.responseDomain = responseDomain;
+    public ResponseDomainCode( Question question, Category category){
+
         this.category = category;
     }
 
-    public ResponseDomainCode(int categoryIndex, ResponseDomain responseDomain, Category category) {
+    public ResponseDomainCode(int categoryIndex, Question question, Category category) {
         this.categoryIndex = categoryIndex;
-        this.responseDomain = responseDomain;
+
         this.category = category;
     }
 
@@ -63,12 +68,12 @@ public class ResponseDomainCode extends AbstractEntityAudit {
         this.codeValue = codeValue;
     }
 
-    public ResponseDomain getResponseDomain() {
-        return responseDomain;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setResponseDomain(ResponseDomain responseDomain) {
-        this.responseDomain = responseDomain;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     public Category getCategory() {
@@ -88,7 +93,7 @@ public class ResponseDomainCode extends AbstractEntityAudit {
         ResponseDomainCode that = (ResponseDomainCode) o;
 
         if (categoryIndex != that.categoryIndex) return false;
-        if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
+        if (question != null ? !question.equals(that.question) : that.question != null)
             return false;
         if (category != null ? !category.equals(that.category) : that.category != null) return false;
         return !(codeValue != null ? !codeValue.equals(that.codeValue) : that.codeValue != null);
@@ -98,7 +103,7 @@ public class ResponseDomainCode extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
+        result = 31 * result + (question != null ? question.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
         result = 31 * result + categoryIndex;
         result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
@@ -111,7 +116,7 @@ public class ResponseDomainCode extends AbstractEntityAudit {
                 ", category=" + category +
                 ", categoryIndex=" + categoryIndex +
                 ", codeValue='" + codeValue + '\'' +
-                responseDomain +
+                question +
                 "} " + super.toString();
     }
 }

@@ -59,9 +59,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -109,13 +108,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.responseKind = responseKind;
     }
 
-    public Set<ResponseDomainCode> getResponseDomainCodes() {
-        return responseDomainCodes;
-    }
-
-    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
-        this.responseDomainCodes = responseDomainCodes;
-    }
 
     public Category getCategory() {
         return category;

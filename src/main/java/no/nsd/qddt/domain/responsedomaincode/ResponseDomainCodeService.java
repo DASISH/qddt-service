@@ -16,11 +16,11 @@ import java.util.UUID;
 public interface ResponseDomainCodeService extends BaseService<ResponseDomainCode, UUID> {
 
     /**
-     * Find ResponseDomainCode by responseDomain
-     * @param responseDomainId
+     * Find ResponseDomainCode by question
+     * @param questionId
      * @return
      */
-    List<ResponseDomainCode> findByResponseDomainId(UUID responseDomainId);
+    List<ResponseDomainCode> findByQuestionId(UUID questionId);
 
     /**
      * Find ResponseDomainCode by category

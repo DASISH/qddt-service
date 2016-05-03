@@ -1,9 +1,19 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
+import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -48,6 +58,32 @@ public class ResponseDomainController {
         responseDomainService.delete(id);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "ResponseKind" }, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<ResponseDomain>> getBy(@RequestParam("ResponseKind") String respons,
+                                                            @RequestParam(value = "Description",defaultValue = "%") String description,
+                                                            @RequestParam(value = "Question",required = false) String question,
+                                                            @RequestParam(value = "Name",defaultValue = "%") String name,
+                                                            Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<ResponseDomain> responseDomains = null;
+
+        if (question == null || question.isEmpty()) {
+            responseDomains = responseDomainService.findBy(ResponseKind.valueOf(respons), Likeify(name), Likeify(description), pageable);
+        } else {
+            responseDomains = responseDomainService.findByQuestion(ResponseKind.valueOf(respons),  Likeify(name), Likeify(question), pageable);
+        }
+
+        return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
+    }
+
+    private String Likeify(String value){
+        if (!value.startsWith("%"))
+            value = "%"+value;
+        if (!value.endsWith("%"))
+            value = value + "%";
+        return value;
+    }
 
 
 }

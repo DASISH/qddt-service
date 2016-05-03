@@ -53,7 +53,7 @@ public class Question extends AbstractEntityAudit implements Commentable {
 //    @OrderColumn
 //    private int parent_ORDER;
 
-    @ManyToMany(fetch = FetchType.LAZY) //, mappedBy = "questions")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questions")
     private Set<Concept> concepts = new HashSet<>();
 
     @OneToMany(mappedBy = "question")

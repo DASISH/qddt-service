@@ -52,9 +52,9 @@ public class ResponseDomainCodeController  {
     }
 
     //    MetaController
-    @RequestMapping(value = "/list/by-responsDomain/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<ResponseDomainCode> getByFirst(@PathVariable("uuid") UUID firstId) {
-        return responseDomainCodeService.findByResponseDomainId(firstId);
+        return responseDomainCodeService.findByQuestionId(firstId);
     }
 
     //    MetaController
