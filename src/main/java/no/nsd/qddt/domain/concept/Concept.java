@@ -57,10 +57,10 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @JoinColumn(name="topicgroup_id", updatable= false)
     private TopicGroup topicGroup;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "CONCEPT_QUESTION",
-            joinColumns = {@JoinColumn(name ="concept_id", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "question_id", nullable = false,updatable = false)})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "questions")
+//    @JoinTable(name = "CONCEPT_QUESTION",
+//            joinColumns = {@JoinColumn(name ="concept_id", nullable = false, updatable = false)},
+//            inverseJoinColumns = {@JoinColumn(name = "question_id", nullable = false,updatable = false)})
     private Set<Question> questions = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = CascadeType.ALL)
@@ -78,17 +78,6 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     public Concept(){
 
     }
-
-//    public Concept getParent() {
-//        return parent;
-//    }
-//
-//
-//    public void setParent(Concept parent) {
-//        this.parent = parent;
-//        parent.addChildren(this);
-//    }
-
 
     public TopicGroup getTopicGroup() {
         return topicGroup;

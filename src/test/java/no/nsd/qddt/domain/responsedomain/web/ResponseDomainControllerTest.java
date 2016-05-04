@@ -3,8 +3,13 @@ package no.nsd.qddt.domain.responsedomain.web;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
+import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.utils.builders.CategoryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +36,9 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
     @Autowired
     private ResponseDomainService entityService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     private ResponseDomain entity;
 
     @Override
@@ -39,9 +47,43 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
 
         super.getBeforeSecurityContext().createSecurityContext();
 
-        entity = new ResponseDomain();
-        entity.setName("A test entity");
-        entity = entityService.save(entity);
+        Category rootCategory = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
+                .setType(CategoryType.MIXED)
+                .setLabel("Scale 1-5 with labels").createCategory();
+        Category group = new CategoryBuilder().setName("SCALE1-5")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.RANGE)
+                .setLabel("Scale 1-5 with labels").createCategory();
+        group.addChild(new CategoryBuilder().setName("BEGIN")
+                .setType(CategoryType.CODE)
+                .setLabel("Very Happy").createCategory());
+        group.addChild(new CategoryBuilder().setName("END")
+                .setLabel("Very Unhappy").createCategory());
+        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+                .setLabel("Happy").createCategory());
+        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+                .setLabel("Inbetween").createCategory());
+        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+                .setLabel("UnHappy").createCategory());
+
+        rootCategory.addChild(group);
+
+        group = new CategoryBuilder().setName("NO-ANSWER")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.MULTIPLE_SINGLE)
+                .createCategory();
+        group.addChild(new CategoryBuilder().setName("NA")
+                .setType(CategoryType.CODE)
+                .setLabel("N/A").createCategory());
+        group.addChild(new CategoryBuilder().setName("DONT_KNOW")
+                .setType(CategoryType.CODE)
+                .setLabel("Don't know").createCategory());
+        group.addChild(new CategoryBuilder().setName("CANNOT")
+                .setType(CategoryType.CODE)
+                .setLabel("Don't want to").createCategory());
+        rootCategory.addChild(group);
+        categoryService.save(rootCategory);
 
         super.getBeforeSecurityContext().destroySecurityContext();
 

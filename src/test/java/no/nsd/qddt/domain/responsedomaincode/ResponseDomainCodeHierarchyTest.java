@@ -5,6 +5,8 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
@@ -38,9 +40,14 @@ public class ResponseDomainCodeHierarchyTest {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private QuestionService questionService;
+
     private ResponseDomain responseDomain;
 
     private Category rootCategory;
+
+    private Question question;
 
     private BeforeSecurityContext beforeSecurityContext;
 
@@ -53,11 +60,16 @@ public class ResponseDomainCodeHierarchyTest {
 
         this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
         this.beforeSecurityContext.createSecurityContext();
-        //Create a categorySchema
-        rootCategory = new CategoryBuilder().setName("SEX")
+
+        question = new Question();
+        question.setName("what is your gender");
+        question = questionService.save(question);
+
+                //Create a categorySchema
+        rootCategory = new CategoryBuilder().setName("GENDER")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MULTIPLE_SINGLE)
-                .setLabel("Sex").createCategory();
+                .setLabel("Gender").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("FEMALE")
                 .setLabel("Female").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("MAN")
@@ -77,12 +89,12 @@ public class ResponseDomainCodeHierarchyTest {
 
         // add codevalues to the responsdomain/categoryschema instanse
         Integer i = 0;
-        for(Category cat:rootCategory.getChildren()){
+        for(Category cat:rootCategory.getAllChildrenFlatten()){
             ResponseDomainCode responseDomainCode = new ResponseDomainCode();
             responseDomainCode.setCategory(cat);
             responseDomainCode.setCategoryIndex(i++);
             responseDomainCode.setCodeValue(i.toString());
-            responseDomainCode.setResponseDomain(responseDomain);
+            responseDomainCode.setQuestion(question);
             responseDomainCodeService.save(responseDomainCode);
         }
 
@@ -91,7 +103,7 @@ public class ResponseDomainCodeHierarchyTest {
     @Test
     public void findByResponseDomainAndCategoryTest() throws Exception {
 
-        List<ResponseDomainCode> responseDomainCodeList = responseDomainCodeService.findByResponseDomainId(responseDomain.getId());
+        List<ResponseDomainCode> responseDomainCodeList = responseDomainCodeService.findByQuestionId(question.getId());
         assertEquals(3, responseDomainCodeList.size());
         assertThat("responsDomainCode should not contain any items.", responseDomainCodeService.findByCategoryId(rootCategory.getId()).size(), is(0));
 

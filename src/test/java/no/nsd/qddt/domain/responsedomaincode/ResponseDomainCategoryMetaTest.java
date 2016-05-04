@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.responsedomaincode;
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import org.junit.Before;
@@ -24,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 public class ResponseDomainCategoryMetaTest {
 
     @Autowired
-    private ResponseDomainService responseDomainService;
+    private QuestionService questionService;
 
     @Autowired
     private CategoryService categoryService;
@@ -32,14 +34,14 @@ public class ResponseDomainCategoryMetaTest {
     @Autowired
     private ResponseDomainCodeService responseDomainCodeService;
 
-    private ResponseDomain r1,r2;
+    private Question r1,r2;
     private Category c1,c2;
 
     @Before
     public void setUp() {
 
-        r1 = responseDomainService.save(new ResponseDomain());
-        r2 = responseDomainService.save(new ResponseDomain());
+        r1 = questionService.save(new Question());
+        r2 = questionService.save(new Question());
 
         c1 = categoryService.save(new Category());
         c2 = categoryService.save(new Category());
@@ -61,7 +63,7 @@ public class ResponseDomainCategoryMetaTest {
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<ResponseDomainCode> rdcs = responseDomainCodeService.findByResponseDomainId(r1.getId());
+        List<ResponseDomainCode> rdcs = responseDomainCodeService.findByQuestionId(r1.getId());
         assertEquals("Expected two elements!", rdcs.size(), 2);
     }
 }

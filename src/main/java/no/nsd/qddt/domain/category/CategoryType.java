@@ -58,7 +58,7 @@ public enum CategoryType {
      */
     MULTIPLE_MULTIPLE,
     /*
-    ONLY for CategoryRoot -> a collection of different responsdomains
+    ONLY for CategoryRoot -> a collection of different responsedomains
      */
     MIXED
 

@@ -91,14 +91,33 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
 
     @Test
     public void testCreate() throws Exception {
-        Category aCategory = new Category();
-        aCategory.setName("Posted category");
+        Category rootCategory = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
+                .setType(CategoryType.MIXED)
+                .setLabel("Scale 1-5 with labels").createCategory();
+        Category group = new CategoryBuilder().setName("SCALE1-5")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.RANGE)
+                .setLabel("Scale 1-5 with labels").createCategory();
+        group.addChild(new CategoryBuilder().setName("BEGIN")
+                .setType(CategoryType.CODE)
+                .setLabel("Very Happy").createCategory());
+        group.addChild(new CategoryBuilder().setName("END")
+                .setLabel("Very Unhappy").createCategory());
+        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+                .setLabel("Happy").createCategory());
+        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+                .setLabel("Inbetween").createCategory());
+        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+                .setLabel("UnHappy").createCategory());
+
+        rootCategory.addChild(group);
 
         mvc.perform(post("/category/create").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
-                .content(rest.json(aCategory)))
+                .content(rest.json(rootCategory)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(aCategory.getName())))
+                .andExpect(jsonPath("$.name", is(rootCategory.getName())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }

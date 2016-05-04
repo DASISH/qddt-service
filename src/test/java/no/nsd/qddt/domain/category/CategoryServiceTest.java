@@ -244,34 +244,36 @@ public class CategoryServiceTest extends AbstractServiceTest {
     @Test
     public void testHierarchAndCategory(){
 
-        Category rootCategory = new CategoryBuilder().setName("ROOT")
-                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
-                .setType(CategoryType.MIXED)
-                .setLabel("Root").createCategory();
-        Category group = new CategoryBuilder().setName("GROUP1")
+        Category rootCategory = new CategoryBuilder().setName("KJØNN")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setLabel("Gruppe1").createCategory();
-        group.addChild(new CategoryBuilder().setName("ENTITY1")
-                .setLabel("ent1").createCategory());
-        group.addChild(new CategoryBuilder().setName("ENTITY2")
-                .setLabel("ent2").createCategory());
-        rootCategory.addChild(group);
+                .setType(CategoryType.MULTIPLE_SINGLE)
+                .setLabel("Kjønn").createCategory();
+        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kvinne").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Mann").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Transperson").createCategory());
+        rootCategory = categoryService.save(rootCategory);
 
-        group = new CategoryBuilder().setName("GROUP2")
+        Category group = new CategoryBuilder().setName("IKKE SVAR")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("Grupp2").createCategory();
-        group.addChild(new CategoryBuilder().setName("ENTITY3")
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("1").createCategory());
-        group.addChild(new CategoryBuilder().setName("ENTITY4")
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("2").createCategory());
-        group.addChild(new CategoryBuilder().setName("ENTITY5")
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("3").createCategory());
-        rootCategory.addChild(group);
-        categoryService.save(rootCategory);
+                .setType(CategoryType.MULTIPLE_SINGLE)
+                .setLabel("NA Svar").createCategory();
+        group.addChild(new CategoryBuilder().setName("VET IKKE")
+                .setLabel("Vet ikke").createCategory());
+        group.addChild(new CategoryBuilder().setName("VIL IKKE SVARE")
+                .setLabel("Vil ikke svare").createCategory());
+        group = categoryService.save(group);
+
+        Category root = new CategoryBuilder().setName("SVAR SETT KJØNN")
+                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
+                .setType(CategoryType.MULTIPLE_SINGLE)
+                .setLabel("Kjønn").createCategory();
+        root.addChild(rootCategory);
+        root.addChild(group);
+        categoryService.save(root);
+
 
         Page<Category> page =categoryService.findByHierarchyAndCategoryAndName(
                 HierarchyLevel.ENTITY,
@@ -283,7 +285,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
         page =categoryService.findByHierarchyAndCategoryAndName(
                 HierarchyLevel.GROUP_ENTITY,
-                CategoryType.MULTIPLE_MULTIPLE,
+                CategoryType.RANGE,
                 "%", new PageRequest(0, 20));
 
         assertEquals("Should be 1 element in list",  1L,page.getTotalElements());
