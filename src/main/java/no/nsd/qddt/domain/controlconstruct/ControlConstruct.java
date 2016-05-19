@@ -1,9 +1,10 @@
-package no.nsd.qddt.domain.instrumentquestion;
+package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -20,16 +21,16 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "INSTRUMENT_QUESTION")
-public class InstrumentQuestion extends AbstractEntityAudit {
+@Table(name = "INSTRUMENT_QUESTION_ITEM")
+public class ControlConstruct extends AbstractEntityAudit {
 
     @ManyToOne
     @JoinColumn(name = "instrument_id")
     private Instrument instrument;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @JoinColumn(name = "questionitem_id")
+    private QuestionItem questionItem;
 
     @OneToMany(mappedBy="instrumentQuestion", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
@@ -45,7 +46,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     private String instruction;
 
 
-    public InstrumentQuestion() {
+    public ControlConstruct() {
     }
 
     public String getInstruction() {
@@ -64,12 +65,12 @@ public class InstrumentQuestion extends AbstractEntityAudit {
         this.instrument = instrument;
     }
 
-    public Question getQuestion() {
-        return question;
+    public QuestionItem getQuestionItem() {
+        return questionItem;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestionItem(QuestionItem question) {
+        this.questionItem = question;
     }
 
     public Set<Instruction> getInstructions() {
@@ -107,14 +108,14 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InstrumentQuestion)) return false;
+        if (!(o instanceof ControlConstruct)) return false;
         if (!super.equals(o)) return false;
 
-        InstrumentQuestion that = (InstrumentQuestion) o;
+        ControlConstruct that = (ControlConstruct) o;
 
         if (getInstrument() != null ? !getInstrument().equals(that.getInstrument()) : that.getInstrument() != null)
             return false;
-        if (getQuestion() != null ? !getQuestion().equals(that.getQuestion()) : that.getQuestion() != null)
+        if (getQuestionItem() != null ? !getQuestionItem().equals(that.getQuestionItem()) : that.getQuestionItem() != null)
             return false;
         if (getInstrumentIndex() != null ? !getInstrumentIndex().equals(that.getInstrumentIndex()) : that.getInstrumentIndex() != null)
             return false;
@@ -128,7 +129,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
-        result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
+        result = 31 * result + (getQuestionItem() != null ? getQuestionItem().hashCode() : 0);
         result = 31 * result + (getInstrumentIndex() != null ? getInstrumentIndex().hashCode() : 0);
         result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
         result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
@@ -140,7 +141,7 @@ public class InstrumentQuestion extends AbstractEntityAudit {
     public String toString() {
         return "InstrumentQuestion{" +
                 "instrument=" + instrument +
-                ", question=" + question +
+                ", question=" + questionItem +
                 ", instrumentIndex=" + instrumentIndex +
                 ", indexRationale='" + indexRationale + '\'' +
                 ", logic='" + logic + '\'' +

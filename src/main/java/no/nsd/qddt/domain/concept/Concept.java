@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 
@@ -34,23 +35,11 @@ import java.util.Set;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements Commentable, Authorable {
 
-//    @ManyToOne
-//    @JoinColumn(name="parent_id")
-//    private Concept parent;
-//
-//    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-//    private Set<Concept> children = new HashSet<>();
-
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name="parent_id",updatable= false)
-//    private Concept parent;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OrderColumn(name = "children_index")
+    @OrderColumn()
     @JoinColumn(name = "parent_id")
     private Set<Concept> children = new HashSet<>();
-
 
     @JsonIgnore
     @ManyToOne
@@ -58,10 +47,10 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     private TopicGroup topicGroup;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "CONCEPT_QUESTION",
+    @JoinTable(name = "CONCEPT_QUESTION_ITEM",
             joinColumns = {@JoinColumn(name ="concept_id", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "question_id", nullable = false,updatable = false)})
-    private Set<Question> questions = new HashSet<>();
+            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", nullable = false,updatable = false)})
+    private Set<QuestionItem> questionItems = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = CascadeType.ALL)
     private Set<Author> authors = new HashSet<>();
@@ -89,34 +78,46 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     }
 
 
-    public Set<Question> getQuestions() {
-        return questions;
+    public Set<QuestionItem> getQuestionItems() {
+        return questionItems ;
     }
 
 
-    public void setQuestions(Set<Question> questions) {
-        this.questions = questions;
+    public void setQuestionItems(Set<QuestionItem> questions) {
+        this.questionItems = questions;
     }
 
 
     public void addQuestion(Question question) {
 
-        if (!this.questions.contains(question)){
-            this.questions.add(question);
-            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-        }
+        QuestionItem qi = new QuestionItem();
+        qi.setQuestion(question);
+        this.questionItems.add(qi);
+        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
     }
 
     public void removeQuestion(Question question) {
+        this.questionItems.removeIf(questionItem ->
+            questionItem.getQuestion().equals(question));
+        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
 
-        if (this.questions.contains(question)){
-            this.questions.remove(question);
+    }
+
+    public void addQuestionItem(QuestionItem questionItem) {
+
+        if (!this.questionItems.contains(questionItem)){
+            this.questionItems.add(questionItem);
             this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
         }
     }
 
+    public void removeQuestionItem(QuestionItem questionItem) {
 
-
+        if (this.questionItems.contains(questionItem)){
+            this.questionItems.remove(questionItem);
+            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+        }
+    }
 
     public Set<Concept> getChildren() {
         return children;

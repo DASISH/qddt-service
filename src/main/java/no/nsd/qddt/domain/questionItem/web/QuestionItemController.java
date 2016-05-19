@@ -1,7 +1,7 @@
-package no.nsd.qddt.domain.question.web;
+package no.nsd.qddt.domain.questionItem.web;
 
-import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.question.QuestionService;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,45 +19,45 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @RestController
-@RequestMapping("/question")
-public class QuestionController {
+@RequestMapping("/questionItem")
+public class QuestionItemController {
 
-    private QuestionService questionService;
+    private QuestionItemService questionItemService;
 
     @Autowired
-    public QuestionController(QuestionService questionService){
-        this.questionService = questionService;
+    public QuestionItemController(QuestionItemService questionItemService){
+        this.questionItemService = questionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Question get(@PathVariable("id") UUID id) {
-        return questionService.findOne(id);
+    public QuestionItem get(@PathVariable("id") UUID id) {
+        return questionItemService.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Question update(@RequestBody Question instance) {
-        return questionService.save(instance);
+    public QuestionItem update(@RequestBody QuestionItem instance) {
+        return questionItemService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Question create(@RequestBody Question instance) {
-        return questionService.save(instance);
+    public QuestionItem create(@RequestBody QuestionItem instance) {
+        return questionItemService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        questionService.delete(id);
+        questionItemService.delete(id);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Question>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<QuestionItem>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Question> questions = questionService.findAllPageable(pageable);
+        Page<QuestionItem> questions = questionItemService.findAllPageable(pageable);
         return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
     }
 

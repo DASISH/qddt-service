@@ -1,9 +1,7 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.urn.Urn;
-import no.nsd.qddt.domain.version.*;
-import no.nsd.qddt.domain.version.Version;
+import no.nsd.qddt.domain.embedded.Version;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 

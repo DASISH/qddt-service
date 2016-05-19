@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.authority.Authority;
 import no.nsd.qddt.domain.category.Category;
@@ -9,7 +8,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -78,7 +77,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
-    private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
+    private Set<ControlConstruct> controlConstructs = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
@@ -191,12 +190,12 @@ public class User {
         this.instrument = instrument;
     }
 
-    public Set<InstrumentQuestion> getInstrumentQuestions() {
-        return instrumentQuestions;
+    public Set<ControlConstruct> getControlConstructs() {
+        return controlConstructs;
     }
 
-    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
-        this.instrumentQuestions = instrumentQuestions;
+    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
+        this.controlConstructs = controlConstructs;
     }
 
     public Set<Instruction> getInstructions() {

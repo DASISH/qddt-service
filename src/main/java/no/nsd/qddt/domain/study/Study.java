@@ -61,6 +61,7 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     private Set<Instrument> instruments = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "study", fetch = FetchType.EAGER, orphanRemoval = false)
+    @OrderBy(value = "modified ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "studies", cascade = CascadeType.ALL)

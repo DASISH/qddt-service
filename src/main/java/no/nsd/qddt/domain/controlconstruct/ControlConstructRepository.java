@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrumentquestion;
+package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.stereotype.Repository;
@@ -11,21 +11,21 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface InstrumentQuestionRepository extends BaseRepository<InstrumentQuestion,UUID> {
+interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUID> {
 
     /**
      *
      * @param instrumentId
      * @return
      */
-    List<InstrumentQuestion> findByInstrumentId(UUID instrumentId);
+    List<ControlConstruct> findByInstrumentId(UUID instrumentId);
 
     /**
      *
      * @param questionId
      * @return
      */
-    List<InstrumentQuestion> findByQuestionId(UUID questionId);
+    List<ControlConstruct> findByQuestionId(UUID questionId);
 
 
 

@@ -2,9 +2,10 @@ package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.embedded.Urn;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
-import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -13,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  *
@@ -47,16 +47,11 @@ public class Category extends AbstractEntityAudit {
     @OneToMany(mappedBy="category", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<ResponseDomain> responseDomain = new HashSet<>();
 
-
-
-//    @ManyToOne
-//    @JoinColumn(name="parent_id")
-//    private Category parent;
-
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST} )
     @JoinTable(name = "CATEGORY_CATEGORY",
             joinColumns = {@JoinColumn(name ="id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "parent_id", nullable = false, unique = false)})
+    @OrderColumn(name = "category_idx")
     private Set<Category> children = new HashSet<>();
 
 
@@ -79,9 +74,26 @@ public class Category extends AbstractEntityAudit {
     @Column(name = "description", length = 2000)
     private String description;
 
+    /**
+     * This field is only used for categories that facilitates user input.
+     * like numeric range / text length /
+     */
+    @Column(name = "input_limit", nullable = true)
+    @Embedded
+    private ResponseCardinality inputLimit;
+
+
+    @Column(name = "classification_level", nullable = true)
+    @Enumerated(EnumType.STRING)
+    private CategoryRelationCodeType classificationLevel;
+
+
+    /**
+     * concept reference to a versioned concept within the system.
+     */
     @Column(name = "concept_reference", nullable = true)
-    @Type(type="pg-uuid")
-    private UUID conceptReference;
+    @Embedded
+    private Urn conceptReference;
 
     @Column(name = "Hierarchy_level",nullable = false)
     @Enumerated(EnumType.STRING)
@@ -91,6 +103,12 @@ public class Category extends AbstractEntityAudit {
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
 
+    /*
+    different kind of categories have different metatags that are used in other tools,
+    We'll store them in a textfield and let the gui do the magic.
+     i.e.  datetime format
+     */
+    private String categoryJsonDDI;
 
     public Category() {
 
@@ -138,11 +156,11 @@ public class Category extends AbstractEntityAudit {
         this.description = description;
     }
 
-    public UUID getConceptReference() {
+    public Urn getConceptReference() {
         return conceptReference;
     }
 
-    public void setConceptReference(UUID conceptReference) {
+    public void setConceptReference(Urn conceptReference) {
         this.conceptReference = conceptReference;
     }
 
@@ -186,6 +204,33 @@ public class Category extends AbstractEntityAudit {
         return grandchildren;
     }
 
+    public ResponseCardinality getInputLimit() {
+        return inputLimit;
+    }
+
+    public void setInputLimit(ResponseCardinality inputLimit) {
+        this.inputLimit = inputLimit;
+    }
+
+    public void setInputLimit(String minimum, String maximum) {
+        this.inputLimit = new ResponseCardinality(minimum,maximum) ;
+    }
+
+    public CategoryRelationCodeType getClassificationLevel() {
+        return classificationLevel;
+    }
+
+    public void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
+        this.classificationLevel = classificationLevel;
+    }
+
+    public String getCategoryJsonDDI() {
+        return categoryJsonDDI;
+    }
+
+    public void setCategoryJsonDDI(String categoryJsonDDI) {
+        this.categoryJsonDDI = categoryJsonDDI;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -219,7 +264,6 @@ public class Category extends AbstractEntityAudit {
         return "Category{" +
                 ", label='" + label + '\'' +
                 ", description='" + description + '\'' +
-//                ", conceptReference=" + conceptReference +
                 ", hierarchyLevel=" + hierarchyLevel +
                 ", categoryType=" + categoryType +
                 "} " + super.toString();

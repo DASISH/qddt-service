@@ -6,57 +6,38 @@ package no.nsd.qddt.domain.category;
  */
 public enum CategoryType {
     /*
-    Time: single USER INPUT Category, input: time of day
-     */
-    TIME,
-    /*
-    Date: single USER INPUT Category, input: date without time specified
-     */
-    DATE,
-    /*
-    DateTime: single USER INPUT Category, input date and time
+    DateTime: single USER INPUT Category, input date and time   ,NOT_IMPLEMENTED:blankIsMissingValue |regExp
      */
     DATETIME,
     /*
-    Text: single USER INPUT Category, input one line of text
+    Text: single USER INPUT Category, input one line of text    ,NOT_IMPLEMENTED: blankIsMissingValue |maxLength |minLength |regExp
      */
     TEXT,
     /*
-    TextMulti: single USER INPUT Category, input several lines of text
-     */
-    TEXT_MULTI,
-    /*
-    Numeric: single USER INPUT Category, input is a number
+    Numeric: single USER INPUT Category, input is a number      ,NOT_IMPLEMENTED: blankIsMissingValue |format |scale |decimalPositions |interval
      */
     NUMERIC,
     /*
-    Code: single Category, input is CODE/VALUE (with a number representation)
+    Code: single Category, input is CODE/VALUE                  ,NOT_IMPLEMENTED: blankIsMissingValue
      */
     CODE,
+
     /*
-    List: single Category ??? CodeList maybe??? TODO if codelist remove
+    Label: single Category, NO INPUT, REMOVED -> is basically a CODE and its value is where on a scale it is.
+     */
+
+    /*
+    Missing values: CategoryList/CodeList that are used as missingvalues.
+     */
+    MISSING_GROUP,
+    /*
+    List: CategoryList/CodeList                                 ,NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue
      */
     LIST,
     /*
-    Label: single Category, NO INPUT, (usefull for scaledomains)
-     */
-    LABEL,
-    /*
-    Xml Element: NO INPUT, information that is needed for DDI, but not used by QDDT directly
-     */
-    XML_ELEMENT,
-    /*
-    CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs
+    CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs,NOT_IMPLEMENTED: blankIsMissingValue
      */
     RANGE,
-    /*
-    CategoryGroup/root -> a list of codes (codelist)
-     */
-    MULTIPLE_SINGLE,
-    /*
-    CategoryGroup/root -> a collection of  MULTIPLE_SINGLE/ RANGE
-     */
-    MULTIPLE_MULTIPLE,
     /*
     ONLY for CategoryRoot -> a collection of different responsedomains
      */

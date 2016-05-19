@@ -48,6 +48,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     private Study study;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = CascadeType.ALL)
+    @OrderBy(value = "modified desc")
     private Set<Concept> concepts = new HashSet<>();
 
 

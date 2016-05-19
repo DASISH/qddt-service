@@ -4,7 +4,8 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
 import org.hibernate.envers.Audited;
 
@@ -57,10 +58,10 @@ import java.util.Set;
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
-    private Set<Question> questions = new HashSet<>();
+    private Set<QuestionItem> questionItems = new HashSet<>();
 
-//    @OneToMany(cascade = CascadeType.ALL)
-//    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -72,12 +73,19 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
      */
     private Category category;
 
-
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
+
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
+
+    /**
+     * Allows the designation of the minimum and maximum number of responses allowed for this response domain.
+     */
+    @Embedded
+    private ResponseCardinality responseCardinality;
+
 
 
     public ResponseDomain(){
@@ -92,12 +100,12 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.description = description;
     }
 
-    public Set<Question> getQuestions() {
-        return questions;
+    public Set<QuestionItem> getQuestions() {
+        return questionItems;
     }
 
-    public void setQuestions(Set<Question> questions) {
-        this.questions = questions;
+    public void setQuestions(Set<QuestionItem> questionItems) {
+        this.questionItems = questionItems;
     }
 
     public ResponseKind getResponseKind() {
@@ -106,6 +114,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     public void setResponseKind(ResponseKind responseKind) {
         this.responseKind = responseKind;
+    }
+
+    public ResponseCardinality getResponseCardinality() {
+        return responseCardinality;
+    }
+
+    public void setResponseCardinality(ResponseCardinality responseCardinality) {
+        this.responseCardinality = responseCardinality;
     }
 
 

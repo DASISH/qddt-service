@@ -18,21 +18,14 @@ import javax.persistence.*;
 @Table(name = "RESPONSEDOMAIN_CODE")
 public class ResponseDomainCode extends AbstractEntityAudit {
 
-//    @ManyToOne
-//    @JoinColumn(name = "responsedomain_id")
-//    private ResponseDomain responseDomain;
-
     @ManyToOne
-    @JoinColumn(name="question_id")
-    private Question question;
+    @JoinColumn(name = "responsedomain_id")
+    private ResponseDomain responseDomain;
 
-    @ManyToOne
-    @OrderColumn(name="category_index")
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "category_index")
-    private int categoryIndex;
 
     @Column(name = "code_value")
     private String codeValue;
@@ -41,24 +34,12 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     }
 
-    public ResponseDomainCode( Question question, Category category){
-
-        this.category = category;
+    public ResponseDomainCode( ResponseDomain responseDomain, Category category, String codeValue){
+        this.setCodeValue(codeValue);
+        this.setCategory(category);
+        this.setResponseDomain(responseDomain);
     }
 
-    public ResponseDomainCode(int categoryIndex, Question question, Category category) {
-        this.categoryIndex = categoryIndex;
-
-        this.category = category;
-    }
-
-    public int getCategoryIndex() {
-        return categoryIndex;
-    }
-
-    public void setCategoryIndex(int categoryIndex) {
-        this.categoryIndex = categoryIndex;
-    }
 
     public String getCodeValue() {
         return codeValue;
@@ -66,14 +47,6 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
     public void setCodeValue(String codeValue) {
         this.codeValue = codeValue;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
     }
 
     public Category getCategory() {
@@ -84,6 +57,14 @@ public class ResponseDomainCode extends AbstractEntityAudit {
         this.category = category;
     }
 
+    public ResponseDomain getResponseDomain() {
+        return responseDomain;
+    }
+
+    public void setResponseDomain(ResponseDomain responseDomain) {
+        this.responseDomain = responseDomain;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -92,31 +73,27 @@ public class ResponseDomainCode extends AbstractEntityAudit {
 
         ResponseDomainCode that = (ResponseDomainCode) o;
 
-        if (categoryIndex != that.categoryIndex) return false;
-        if (question != null ? !question.equals(that.question) : that.question != null)
+        if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
             return false;
         if (category != null ? !category.equals(that.category) : that.category != null) return false;
-        return !(codeValue != null ? !codeValue.equals(that.codeValue) : that.codeValue != null);
+        return codeValue != null ? codeValue.equals(that.codeValue) : that.codeValue == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (question != null ? question.hashCode() : 0);
+        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
-        result = 31 * result + categoryIndex;
         result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "ResponseDomainCode{" +
-                ", category=" + category +
-                ", categoryIndex=" + categoryIndex +
-                ", codeValue='" + codeValue + '\'' +
-                question +
-                "} " + super.toString();
+        return "ResponseCode{" +
+                ", category=" + category.getName() +
+                ", code='" + codeValue + '\'' +
+                "} ";
     }
 }

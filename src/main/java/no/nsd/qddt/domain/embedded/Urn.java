@@ -1,9 +1,7 @@
-package no.nsd.qddt.domain.urn;
+package no.nsd.qddt.domain.embedded;
 
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.version.*;
-import no.nsd.qddt.domain.version.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 

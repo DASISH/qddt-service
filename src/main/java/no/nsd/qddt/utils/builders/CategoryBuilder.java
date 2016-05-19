@@ -12,7 +12,7 @@ public class CategoryBuilder {
     private String name;
     private String label;
     private HierarchyLevel hierarchyLevel = HierarchyLevel.ENTITY;
-    private CategoryType categoryType = CategoryType.TEXT;
+    private CategoryType categoryType = CategoryType.CODE;
 
     public CategoryBuilder setName(String name) {
         this.name = name;

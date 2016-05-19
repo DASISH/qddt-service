@@ -9,7 +9,6 @@ public class QuestionBuilder {
 
     private String changeComment;
     private String name;
-    private String instructions;
 
     public QuestionBuilder setChangeComment(String changeComment) {
         this.changeComment = changeComment;
@@ -21,12 +20,8 @@ public class QuestionBuilder {
         return this;
     }
 
-    public QuestionBuilder setInstructions(String instructions) {
-        this.instructions = instructions;
-        return this;
-    }
 
-    public Question createInstrument() {
+    public Question createQuestion() {
         Question question = new Question();
         question.setName(this.name);
         question.setChangeComment(this.changeComment);

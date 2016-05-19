@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.version;
+package no.nsd.qddt.domain.embedded;
 
 import javax.persistence.Embeddable;
 

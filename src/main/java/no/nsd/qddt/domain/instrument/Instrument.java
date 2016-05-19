@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.instrument;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
@@ -36,7 +36,7 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
 
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
-    private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
+    private Set<ControlConstruct> controlConstructs = new HashSet<>();
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
@@ -52,12 +52,12 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
         this.study = study;
     }
 
-    public Set<InstrumentQuestion> getInstrumentQuestions() {
-        return instrumentQuestions;
+    public Set<ControlConstruct> getControlConstructs() {
+        return controlConstructs;
     }
 
-    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
-        this.instrumentQuestions = instrumentQuestions;
+    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
+        this.controlConstructs = controlConstructs;
     }
 
     public Instrument getParent() {

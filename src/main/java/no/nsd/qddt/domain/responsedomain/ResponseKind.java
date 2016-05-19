@@ -12,6 +12,8 @@ package no.nsd.qddt.domain.responsedomain;
  *      <dt>Numeric</dt><dd>A numeric response (the intent is to analyze the response as a number) for a question item.</dd>
  *      <dt>Scale</dt><dd>A scale response which describes a 1..n dimensional scale of various display types for a question.</dd>
  *      <dt>Text</dt><dd>A textual response.</dd>
+ *      <dt>Mixed</dt><dd>A response with two or more different subtypes.</dd>
+ *
  * </dl>
 
  * @author Stig Norland
@@ -20,11 +22,13 @@ package no.nsd.qddt.domain.responsedomain;
 
 
 public enum ResponseKind {
-    Category,
-    Code,
-    Numeric,
+//    Category,
+//    Code,
+//    Numeric,
+    List,
     Scale,
-    Text
+//    Text,
+    Mixed
 }
 
 

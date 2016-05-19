@@ -3,7 +3,7 @@ package no.nsd.qddt.domain;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.version.Version;
+import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
 

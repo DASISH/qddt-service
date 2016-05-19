@@ -1,7 +1,7 @@
-package no.nsd.qddt.domain.instrumentquestion.web;
+package no.nsd.qddt.domain.questionItem.web;
 
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
-import no.nsd.qddt.domain.instrumentquestion.audit.InstrumentQuestionAuditService;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,32 +23,32 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @RestController
-@RequestMapping(value = "/audit/instrumentquestion/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class IntrumentQuestionAuditController {
+@RequestMapping(value = "/audit/questionitem/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class QuestionItemAuditController {
 
-    private InstrumentQuestionAuditService auditService;
+    private QuestionItemAuditService auditService;
 
     @Autowired
-    public IntrumentQuestionAuditController(InstrumentQuestionAuditService service) {
+    public QuestionItemAuditController(QuestionItemAuditService service) {
         this.auditService = service;
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Revision<Integer, InstrumentQuestion> getLastRevision(@PathVariable("id") UUID id) {
+    public Revision<Integer, QuestionItem> getLastRevision(@PathVariable("id") UUID id) {
         return auditService.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Integer, InstrumentQuestion> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
+    public Revision<Integer, QuestionItem> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, InstrumentQuestion>>> allProjects(
+    public HttpEntity<PagedResources<Revision<Integer, QuestionItem>>> allProjects(
             @PathVariable("id") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Revision<Integer, InstrumentQuestion>> entities = auditService.findRevisions(id, pageable);
+        Page<Revision<Integer, QuestionItem>> entities = auditService.findRevisions(id, pageable);
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
 }

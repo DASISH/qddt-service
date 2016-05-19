@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.instruction;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -20,7 +20,7 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
 
     @ManyToOne
     @JoinColumn(name = "instrumentquestion_id")
-    private InstrumentQuestion instrumentQuestion;
+    private ControlConstruct controlConstruct;
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -32,12 +32,12 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     public Instruction() {
     }
 
-    public InstrumentQuestion getInstrumentQuestion() {
-        return instrumentQuestion;
+    public ControlConstruct getControlConstruct() {
+        return controlConstruct;
     }
 
-    public void setInstrumentQuestion(InstrumentQuestion instrumentQuestion) {
-        this.instrumentQuestion = instrumentQuestion;
+    public void setControlConstruct(ControlConstruct controlConstruct) {
+        this.controlConstruct = controlConstruct;
     }
 
     public String getDescription() {

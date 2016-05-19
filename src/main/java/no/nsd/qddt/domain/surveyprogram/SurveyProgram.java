@@ -43,6 +43,7 @@ import java.util.Set;
 public class SurveyProgram extends AbstractEntityAudit implements Commentable,Authorable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
+    @OrderBy(value = "modified ASC")
     private Set<Study> studies = new HashSet<>();
 
     @Column(length = 2000)
@@ -50,6 +51,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
 
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "surveyPrograms", cascade = CascadeType.ALL)
+    @OrderBy(value = "name ASC")
     private Set<Author> authors = new HashSet<>();
 
     @Transient

@@ -3,11 +3,6 @@ package no.nsd.qddt.domain.question;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.FetchProfile;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -33,31 +28,12 @@ import java.util.UUID;
 @Table(name = "QUESTION")
 public class Question extends AbstractEntityAudit implements Commentable {
 
-    @ManyToOne
-    @JoinColumn(name = "responsedomain_id")
-    private ResponseDomain responseDomain;
-
-
-//    @JoinColumn(name = "parent_id")
-//    @ManyToOne()
-//    private Question parent;
-
 
     @OrderColumn(name = "children_index")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
     private Set<Question> children = new HashSet<>();
 
-
-//    /// Only used for Questions with a Question parent
-//    @OrderColumn
-//    private int parent_ORDER;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questions")
-    private Set<Concept> concepts = new HashSet<>();
-
-    @OneToMany(mappedBy = "question")
-    private Set<InstrumentQuestion> instrumentQuestions = new HashSet<>();
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
@@ -81,58 +57,11 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
     }
 
-//    public Question getParent() {
-//        return parent;
-//    }
-//
-//    public void setParent(Question parent) {
-//        this.parent = parent;
-//    }
 
     public Set<Question> getChildren() {
         return children;
     }
 
-    public Set<Concept> getConcepts() {
-        return concepts;
-    }
-
-    public void setConcepts(Set<Concept> concepts) {
-        this.concepts = concepts;
-    }
-
-    public void addConcept(Concept concept){
-        if (!this.concepts.contains(concept)){
-            this.concepts.add(concept);
-            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-//            concept.addQuestion(this);
-        }
-    }
-
-
-    public Set<InstrumentQuestion> getInstrumentQuestions() {
-        return instrumentQuestions;
-    }
-
-    public void setInstrumentQuestions(Set<InstrumentQuestion> instrumentQuestions) {
-        this.instrumentQuestions = instrumentQuestions;
-    }
-
-    public ResponseDomain getResponseDomain() {
-        return responseDomain;
-    }
-
-    public void setResponseDomain(ResponseDomain responseDomain) {
-        this.responseDomain = responseDomain;
-    }
-
-//    public int getParent_ORDER() {
-//        return parent_ORDER;
-//    }
-//
-//    public void setParent_ORDER(int parent_ORDER) {
-//        this.parent_ORDER = parent_ORDER;
-//    }
 
     public String getGridIdxRationale() {
         return gridIdxRationale;
@@ -200,9 +129,6 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
         Question question1 = (Question) o;
 
-        if (responseDomain != null ? !responseDomain.equals(question1.responseDomain) : question1.responseDomain != null)
-            return false;
-//        if (concepts != null ? !concepts.equals(question1.concepts) : question1.concepts != null) return false;
         if (comments != null ? !comments.equals(question1.comments) : question1.comments != null) return false;
         if (gridIdxRationale != null ? !gridIdxRationale.equals(question1.gridIdxRationale) : question1.gridIdxRationale != null)
             return false;
@@ -214,7 +140,6 @@ public class Question extends AbstractEntityAudit implements Commentable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
         result = 31 * result + (children != null ? children.size() : 0);
         result = 31 * result + (comments != null ? comments.size() : 0);
         result = 31 * result + (gridIdxRationale != null ? gridIdxRationale.hashCode() : 0);
@@ -226,7 +151,6 @@ public class Question extends AbstractEntityAudit implements Commentable {
     @Override
     public String toString() {
         return "Question{" +
-//                "parent_ORDER=" + parent_ORDER +
                 ", gridIdxRationale='" + gridIdxRationale + '\'' +
                 ", intent='" + intent + '\'' +
                 ", question='" + question + '\'' +
