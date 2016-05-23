@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.responsedomaincode;
+package no.nsd.qddt.domain.code;
 
 import no.nsd.qddt.domain.BaseService;
 
@@ -13,20 +13,20 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-public interface ResponseDomainCodeService extends BaseService<ResponseDomainCode, UUID> {
+public interface CodeService extends BaseService<Code, UUID> {
 
     /**
      * Find ResponseDomainCode by question
-     * @param questionId
+     * @param responseDomainId
      * @return
      */
-    List<ResponseDomainCode> findByQuestionId(UUID questionId);
+    List<Code> findByResponseDomainId(UUID responseDomainId);
 
     /**
      * Find ResponseDomainCode by category
      * @param codeId
      * @return
      */
-    List<ResponseDomainCode> findByCategoryId(UUID codeId);
+    List<Code> findByCategoryId(UUID codeId);
 
 }

@@ -19,7 +19,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @RestController
-@RequestMapping("/questionItem")
+@RequestMapping("/questionitem")
 public class QuestionItemController {
 
     private QuestionItemService questionItemService;

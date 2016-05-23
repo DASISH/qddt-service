@@ -3,17 +3,14 @@ package no.nsd.qddt.domain.category;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
-import no.nsd.qddt.domain.embedded.Urn;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
+import no.nsd.qddt.domain.code.Code;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -41,17 +38,14 @@ import java.util.Set;
 @Table(name = "CATEGORY")
 public class Category extends AbstractEntityAudit {
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+    @OneToOne(mappedBy="category", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private Code code;
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private Set<ResponseDomain> responseDomain = new HashSet<>();
+//    @OneToMany(mappedBy="category", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+//    private Set<ResponseDomain> responseDomain = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST} )
-    @JoinTable(name = "CATEGORY_CATEGORY",
-            joinColumns = {@JoinColumn(name ="id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "parent_id", nullable = false, unique = false)})
-    @OrderColumn(name = "category_idx")
+    @OneToMany()
+    @OrderColumn(name="category_idx")
     private Set<Category> children = new HashSet<>();
 
 
@@ -92,8 +86,7 @@ public class Category extends AbstractEntityAudit {
      * concept reference to a versioned concept within the system.
      */
     @Column(name = "concept_reference", nullable = true)
-    @Embedded
-    private Urn conceptReference;
+    private UUID conceptReference;
 
     @Column(name = "Hierarchy_level",nullable = false)
     @Enumerated(EnumType.STRING)
@@ -156,29 +149,29 @@ public class Category extends AbstractEntityAudit {
         this.description = description;
     }
 
-    public Urn getConceptReference() {
+    public UUID getConceptReference() {
         return conceptReference;
     }
 
-    public void setConceptReference(Urn conceptReference) {
+    public void setConceptReference(UUID conceptReference) {
         this.conceptReference = conceptReference;
     }
 
-    public Set<ResponseDomainCode> getResponseDomainCodes() {
-        return responseDomainCodes;
+    public Code getCode() {
+        return code;
     }
 
-    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
-        this.responseDomainCodes = responseDomainCodes;
+    public void setCode(Code code) {
+        this.code = code;
     }
 
-    public Set<ResponseDomain> getResponseDomain() {
-        return responseDomain;
-    }
-
-    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
-        this.responseDomain = responseDomain;
-    }
+//    public Set<ResponseDomain> getResponseDomain() {
+//        return responseDomain;
+//    }
+//
+//    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
+//        this.responseDomain = responseDomain;
+//    }
 
     public Set<Category> getChildren() {
         return children;

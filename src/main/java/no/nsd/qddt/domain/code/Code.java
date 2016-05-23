@@ -1,8 +1,7 @@
-package no.nsd.qddt.domain.responsedomaincode;
+package no.nsd.qddt.domain.code;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.envers.Audited;
 
@@ -12,29 +11,29 @@ import javax.persistence.*;
 /**
  *
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Audited
 @Entity
-@Table(name = "RESPONSEDOMAIN_CODE")
-public class ResponseDomainCode extends AbstractEntityAudit {
+@Table(name = "CODE")
+public class Code  extends AbstractEntity {
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "responsedomain_id")
     private ResponseDomain responseDomain;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-
 
     @Column(name = "code_value")
     private String codeValue;
 
-    public ResponseDomainCode() {
+    public Code() {
 
     }
 
-    public ResponseDomainCode( ResponseDomain responseDomain, Category category, String codeValue){
+    public Code(ResponseDomain responseDomain, Category category, String codeValue){
         this.setCodeValue(codeValue);
         this.setCategory(category);
         this.setResponseDomain(responseDomain);
@@ -65,13 +64,15 @@ public class ResponseDomainCode extends AbstractEntityAudit {
         this.responseDomain = responseDomain;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ResponseDomainCode)) return false;
+        if (!(o instanceof Code)) return false;
         if (!super.equals(o)) return false;
 
-        ResponseDomainCode that = (ResponseDomainCode) o;
+        Code that = (Code) o;
 
         if (responseDomain != null ? !responseDomain.equals(that.responseDomain) : that.responseDomain != null)
             return false;

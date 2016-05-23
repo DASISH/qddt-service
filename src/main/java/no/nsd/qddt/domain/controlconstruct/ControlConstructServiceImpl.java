@@ -68,8 +68,8 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ControlConstruct> findByQuestionId(UUID questionId) {
-        return controlConstructRepository.findByQuestionId(questionId);
+    public List<ControlConstruct> findByQuestionItemId(UUID questionItemId) {
+        return controlConstructRepository.findByQuestionItemId(questionItemId);
     }
+
 }

@@ -60,6 +60,6 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getBySecond(@PathVariable("uuid") UUID secondId) {
-        return controlConstructService.findByQuestionId(secondId);
+        return controlConstructService.findByQuestionItemId(secondId);
     }
 }

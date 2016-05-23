@@ -30,27 +30,25 @@ public class QuestionItem extends AbstractEntityAudit  {
     @JoinColumn(name = "responsedomain_id")
     private ResponseDomain responseDomain;
 
-
+//    @Embedded
     private long responseDomainRevision;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
+
+//    @Embedded
     private long questionRevivsion;
 
-
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questions")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
     @OneToMany(mappedBy = "questionItem")
     private Set<ControlConstruct> controlConstructs = new HashSet<>();
 
-
     public QuestionItem() {
 
     }
-
 
     public Set<Concept> getConcepts() {
         return concepts;
@@ -67,20 +65,20 @@ public class QuestionItem extends AbstractEntityAudit  {
        }
     }
 
-    public long getResponseDomainRevision() {
-        return responseDomainRevision;
-    }
-
-    public void setResponseDomainRevision(long responseDomainRevision) {
-        this.responseDomainRevision = responseDomainRevision;
-    }
-
     public long getQuestionRevivsion() {
         return questionRevivsion;
     }
 
     public void setQuestionRevivsion(long questionRevivsion) {
         this.questionRevivsion = questionRevivsion;
+    }
+
+    public long getResponseDomainRevision() {
+        return responseDomainRevision;
+    }
+
+    public void setResponseDomainRevision(long responseDomainRevision) {
+        this.responseDomainRevision = responseDomainRevision;
     }
 
     public Set<ControlConstruct> getControlConstructs() {

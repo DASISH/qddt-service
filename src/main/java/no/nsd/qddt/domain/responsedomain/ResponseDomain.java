@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
+import no.nsd.qddt.domain.code.Code;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -61,7 +61,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     private Set<QuestionItem> questionItems = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+    private Set<Code> codes = new HashSet<>();
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -69,7 +69,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @ManyToOne
     @JoinColumn(name="category_id")
     /*
-        a link to a category root (template)
+        a link to a category root/group (template)
      */
     private Category category;
 
@@ -124,6 +124,21 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.responseCardinality = responseCardinality;
     }
 
+    public Set<QuestionItem> getQuestionItems() {
+        return questionItems;
+    }
+
+    public void setQuestionItems(Set<QuestionItem> questionItems) {
+        this.questionItems = questionItems;
+    }
+
+    public Set<Code> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(Set<Code> codes) {
+        this.codes = codes;
+    }
 
     public Category getCategory() {
         return category;

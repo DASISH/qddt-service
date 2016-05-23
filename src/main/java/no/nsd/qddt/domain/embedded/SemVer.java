@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.version;
+package no.nsd.qddt.domain.embedded;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 

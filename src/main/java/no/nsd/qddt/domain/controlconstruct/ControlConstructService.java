@@ -20,9 +20,9 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
 
     /**
      *
-     * @param questionId
+     * @param questionItemId
      * @return
      */
-    public List<ControlConstruct> findByQuestionId(UUID questionId);
+    public List<ControlConstruct> findByQuestionItemId(UUID questionItemId);
 
 }

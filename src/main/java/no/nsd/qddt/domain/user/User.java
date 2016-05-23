@@ -12,7 +12,7 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
+import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -105,7 +105,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
-    private Set<ResponseDomainCode> responseDomainCodes = new HashSet<>();
+    private Set<Code> codes = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.ALL)
@@ -246,12 +246,12 @@ public class User {
         this.responseDomains = responseDomains;
     }
 
-    public Set<ResponseDomainCode> getResponseDomainCodes() {
-        return responseDomainCodes;
+    public Set<Code> getCodes() {
+        return codes;
     }
 
-    public void setResponseDomainCodes(Set<ResponseDomainCode> responseDomainCodes) {
-        this.responseDomainCodes = responseDomainCodes;
+    public void setCodes(Set<Code> codes) {
+        this.codes = codes;
     }
 
     public Set<Category> getCategories() {

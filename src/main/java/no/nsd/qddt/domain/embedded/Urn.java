@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.embedded;
 
-
 import no.nsd.qddt.domain.agency.Agency;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -28,6 +27,8 @@ public class Urn {
             @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
     private UUID id;
     private Agency agency;
+
+    @Embedded
     private Version version;
 
     public Urn(){}

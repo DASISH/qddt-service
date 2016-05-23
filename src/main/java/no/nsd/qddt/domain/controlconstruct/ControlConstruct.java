@@ -32,7 +32,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JoinColumn(name = "questionitem_id")
     private QuestionItem questionItem;
 
-    @OneToMany(mappedBy="instrumentQuestion", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="controlConstruct", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
     private Long instrumentIndex;
