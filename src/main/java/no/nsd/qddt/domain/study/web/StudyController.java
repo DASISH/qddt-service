@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.study.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -21,11 +25,14 @@ public class StudyController {
 
     private StudyService studyService;
     private SurveyProgramService surveyProgramService;
+    private InstrumentService instrumentService;
 
     @Autowired
-    public StudyController(StudyService studyService, SurveyProgramService surveyProgramService) {
+    public StudyController(StudyService studyService, SurveyProgramService surveyProgramService,
+                            InstrumentService instrumentService) {
         this.studyService = studyService;
         this.surveyProgramService = surveyProgramService;
+        this.instrumentService = instrumentService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -46,8 +53,15 @@ public class StudyController {
             instance.setSurveyProgram(original.getSurveyProgram());
             System.out.println("UPS, this code shouldn't have been triggered... (fetching Survey ID)");
         }
+
+        if (instance.getInstruments().size() == 0){
+            instance.setInstruments(new HashSet<Instrument>(){{add(new Instrument());}});
+        }
+        else {
+            instance.getInstruments().forEach(c -> c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+        }
+
         instance.setModifiedBy(SecurityContext.getUserDetails().getUser());
-        instance.getInstruments().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
         instance.getTopicGroups().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
 
         return studyService.save(instance);
