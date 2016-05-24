@@ -18,20 +18,24 @@ import java.util.Set;
 /**
  *
  * <ul class="inheritance">
- *         <li>A Module will have one or more Concepts.
+ *     <li>A Topic Group (Module) will have one or more Concepts.
  *         <ul class="inheritance">
- *             <li>A Concept consist of one or more Questions.</li>
- *             <ul class="inheritance">
- *                 <li>Every Question will have a ResponseDomain.</li>
- *             </ul>
+ *             <li>A Concept consist of one or more QuestionItems.
+ *                 <ul class="inheritance">
+ *                     <li>Every QuestionItem will have a Question.</li>
+ *                 </ul>
+ *                 <ul class="inheritance">
+ *                     <li>Every QuestionItem will have a ResponseDomain.</li>
+ *                 </ul>
+ *             </li>
  *          </ul>
  *      </li>
  * </ul>
- * </br>
- * A Module should be a collection of Questions and Concepts that has a theme that is broader than a Concept.
- * All Questions that doesn't belong to a specific Concept, will be collected in a default Concept that
+ * <br>
+ * A Topic Group (Module) should be a collection of QuestionItems and Concepts that has a theme that is broader than a Concept.
+ * All QuestionItems that doesn't belong to a specific Concept, will be collected in a default Concept that
  * every Module should have. This default Concept should not be visualized as a Concept, but as a
- * "Virtual Module". The reason for this is a simplified data model.
+ * "Virtual Topic Group (Module)". The reason for this is a simplified data model.
  *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
@@ -55,7 +59,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @ManyToMany(fetch = FetchType.EAGER,  mappedBy = "topicGroups" , cascade = CascadeType.ALL)
     private Set<Author> authors = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade =CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,  cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     @Column(name = "description", length = 2000)

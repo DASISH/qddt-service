@@ -38,7 +38,7 @@ import java.util.Set;
  * <dt>Text</dt><dd>A textual response.</dd>
  *      <dd>Implemented as: Code = NULL; (no category is needed)</dd>
  *
- * <dt>These to be implemented later -></dt>
+ * <dt>These to be implemented later </dt>
  *      <dd>-DateTime;    A date or time response for a question item.</dd>
  *      <dd>-Distribution;A distribution response for a question, may only be included in-line.</dd>
  *      <dd>-Geographic;  A geographic coordinate reading as a response for a question item.</dd>

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * This controller relates to a meta storage, which has a rank,logic & Rankrationale property, and thus need control
+ * This controller relates to a meta storage, which has a rank,logic and Rankrationale property, and thus need control
  *
  * @author Stig Norland
  */

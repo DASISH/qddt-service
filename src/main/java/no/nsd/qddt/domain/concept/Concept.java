@@ -17,13 +17,13 @@ import java.util.Set;
 
 /**
  * <ul class="inheritance">
- *     <li>A Concept consist of one or more Questions.
+ *     <li>A Concept consist of one or more QuestionItems.</li>
  *     <ul class="inheritance">
- *         <li>Every Question will have a ResponseDomain.</li>
+ *         <li>Every QuestionItem will have a Question.</li>
+ *         <li>Every QuestionItem will have a ResponseDomain.</li>
  *     </ul>
- * </li>
  * </ul>
- * </br>
+ * <br>
  * ConceptScheme: Concepts express ideas associated with objects and means of representing the concept
  *
  * @author Stig Norland

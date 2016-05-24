@@ -21,10 +21,14 @@ import java.util.Set;
  *         <ul class="inheritance">
  *             <li>A Module will have one or more Concepts.</li>
  *             <ul class="inheritance">
- *                 <li>A Concept consist of one or more Questions.</li>
- *                 <ul class="inheritance">
- *                     <li>Every Question will have a ResponseDomain.</li>
- *                 </ul>
+ *                 <li>A Concept consist of one or more QuestionItems.
+ *                     <ul class="inheritance">
+ *                         <li>Every QuestionItem will have a Question.</li>
+ *                     </ul>
+ *                     <ul class="inheritance">
+ *                         <li>Every QuestionItem will have a ResponseDomain.</li>
+ *                     </ul>
+ *                 </li>
  *              </ul>
  *          </ul>
  *      </ul>

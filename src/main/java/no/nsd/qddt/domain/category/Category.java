@@ -38,13 +38,13 @@ import java.util.UUID;
 @Table(name = "CATEGORY")
 public class Category extends AbstractEntityAudit {
 
-    @OneToOne(mappedBy="category", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Code code;
 
-//    @OneToMany(mappedBy="category", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//    private Set<ResponseDomain> responseDomain = new HashSet<>();
+    @OneToMany(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ResponseDomain> responseDomain = new HashSet<>();
 
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
     private Set<Category> children = new HashSet<>();
 
@@ -165,13 +165,13 @@ public class Category extends AbstractEntityAudit {
         this.code = code;
     }
 
-//    public Set<ResponseDomain> getResponseDomain() {
-//        return responseDomain;
-//    }
-//
-//    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
-//        this.responseDomain = responseDomain;
-//    }
+    public Set<ResponseDomain> getResponseDomain() {
+        return responseDomain;
+    }
+
+    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
+        this.responseDomain = responseDomain;
+    }
 
     public Set<Category> getChildren() {
         return children;

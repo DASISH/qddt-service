@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 
@@ -26,6 +27,11 @@ public class OtherMaterial extends AbstractEntityAudit {
     @ManyToOne
     @JoinColumn(name="topicgroup_id", insertable=false, updatable=false)
     private TopicGroup topicGroup;
+
+    @ManyToOne
+    @JoinColumn(name="controlConstruct_id", insertable=false, updatable=false)
+    private ControlConstruct controlConstruct;
+
 
     private String path;
 
@@ -64,13 +70,13 @@ public class OtherMaterial extends AbstractEntityAudit {
         this.size = size;
     }
 
-    public TopicGroup getTopicGroup() {
-        return topicGroup;
-    }
-
-    public void setTopicGroup(TopicGroup topicGroup) {
-        this.topicGroup = topicGroup;
-    }
+//    public TopicGroup getTopicGroup() {
+//        return topicGroup;
+//    }
+//
+//    public void setTopicGroup(TopicGroup topicGroup) {
+//        this.topicGroup = topicGroup;
+//    }
 
     public String getPath() {
         return path;
@@ -105,7 +111,7 @@ public class OtherMaterial extends AbstractEntityAudit {
         OtherMaterial that = (OtherMaterial) o;
 
         if (size != that.size) return false;
-        if (topicGroup != null ? !topicGroup.equals(that.topicGroup) : that.topicGroup != null) return false;
+//        if (topicGroup != null ? !topicGroup.equals(that.topicGroup) : that.topicGroup != null) return false;
         if (path != null ? !path.equals(that.path) : that.path != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (fileType != null ? !fileType.equals(that.fileType) : that.fileType != null) return false;
@@ -116,7 +122,7 @@ public class OtherMaterial extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "OtherMaterial{" +
-                "topicGroup=" + topicGroup +
+//                "topicGroup=" + topicGroup +
                 ", path='" + path + '\'' +
                 ", description='" + description + '\'' +
                 ", fileType='" + fileType + '\'' +
@@ -128,7 +134,7 @@ public class OtherMaterial extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
+//        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
         result = 31 * result + (path != null ? path.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (fileType != null ? fileType.hashCode() : 0);

@@ -20,17 +20,22 @@ import java.util.Set;
  * <ul class="inheritance">
  *     <li>A Study will have of one or more TopicGroups.
  *     <ul class="inheritance">
- *         <li>A TopicGroup will have one or more Concepts.</li>
+ *         <li>A TopicGroup will have one or more Concepts.
  *         <ul class="inheritance">
- *             <li>A Concept consist of one or more Questions.</li>
- *             <ul class="inheritance">
- *                 <li>Every Question will have a ResponseDomain.</li>
- *             </ul>
+ *             <li>A Concept consist of one or more QuestionItems.
+ *                 <ul class="inheritance">
+ *                     <li>Every QuestionItem will have a Question.</li>
+ *                 </ul>
+ *                 <ul class="inheritance">
+ *                     <li>Every QuestionItem will have a ResponseDomain.</li>
+ *                 </ul>
+ *             </li>
  *          </ul>
+ *          </li>
  *      </ul>
  *      </li>
  * </ul>
- * </br>
+ * <br>
  * A publication structure for a specific study. Structures identification information, full
  * bibliographic and discovery information, administrative information, all of the reusable
  * delineations used for response domains and variable representations, and TopicGroups covering
@@ -57,10 +62,10 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany( cascade = CascadeType.ALL,mappedBy ="study")
+    @OneToMany( cascade = CascadeType.ALL)
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "study", fetch = FetchType.EAGER, orphanRemoval = false)
+    @OneToMany(cascade = CascadeType.ALL,  fetch = FetchType.EAGER, orphanRemoval = false)
     @OrderBy(value = "modified ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 

@@ -13,10 +13,10 @@ import java.util.UUID;
 /**
  * Current demand for comments is just for Survey. If we want to extend this to other entities we must change
  * the relationship and hold the entry comment at each entity that wants a comment tree. Today we hold this in comments themselves.
- * Today this relationship is like this ( Survey <- comment <- comment child )
+ * Today this relationship is like this ( Survey &#8592;  comment &#8592;  comment child )
  *
  * If we need to change this, we'll have to add a empty root comment for every survey and replace survey_id with this root element,
- * and add a reference for this root element to the corresponding survey , the relationship will be like this ( entity(survey) -> comment root <- comments)
+ * and add a reference for this root element to the corresponding survey , the relationship will be like this ( entity(survey) &#8594;  comment root &#8592;  comments)
  *
  * @author Dag Østgulen Heradstveit
  */

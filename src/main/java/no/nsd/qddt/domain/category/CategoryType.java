@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.category;
 
 /**
  * @author Stig Norland
- * @link
+ * @link Category
  */
 public enum CategoryType {
     /*

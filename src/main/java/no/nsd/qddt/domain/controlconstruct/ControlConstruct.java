@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.controlconstruct;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
@@ -32,6 +33,10 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JoinColumn(name = "questionitem_id")
     private QuestionItem questionItem;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    private Set<OtherMaterial> otherMaterials = new HashSet<>();
+
+
     @OneToMany(mappedBy="controlConstruct", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
 
@@ -47,6 +52,14 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     public ControlConstruct() {
+    }
+
+    public Set<OtherMaterial> getOtherMaterials() {
+        return otherMaterials;
+    }
+
+    public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
+        this.otherMaterials = otherMaterials;
     }
 
     public String getInstruction() {
