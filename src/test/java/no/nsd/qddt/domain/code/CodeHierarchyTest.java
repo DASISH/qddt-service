@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.responsedomaincode;
+package no.nsd.qddt.domain.code;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.category.Category;
@@ -29,10 +29,10 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
-public class ResponseDomainCodeHierarchyTest {
+public class CodeHierarchyTest {
 
     @Autowired
-    private ResponseDomainCodeService responseDomainCodeService;
+    private CodeService codeService;
 
     @Autowired
     private ResponseDomainService responseDomainService;
@@ -68,7 +68,7 @@ public class ResponseDomainCodeHierarchyTest {
                 //Create a categorySchema
         rootCategory = new CategoryBuilder().setName("GENDER")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setType(CategoryType.MULTIPLE_SINGLE)
+                .setType(CategoryType.LIST)
                 .setLabel("Gender").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("FEMALE")
                 .setLabel("Female").createCategory());
@@ -82,30 +82,28 @@ public class ResponseDomainCodeHierarchyTest {
         // Create a responsdomain with a categoryschema.
         responseDomain = new ResponseDomain();
         responseDomain.setName("Sex mandatory answer");
-        responseDomain.setResponseKind(ResponseKind.Code);
+        responseDomain.setResponseKind(ResponseKind.List);
         responseDomain.setCategory(rootCategory);
         responseDomain = responseDomainService.save(responseDomain);
 
 
         // add codevalues to the responsdomain/categoryschema instanse
         Integer i = 0;
-        for(Category cat:rootCategory.getAllChildrenFlatten()){
-            ResponseDomainCode responseDomainCode = new ResponseDomainCode();
-            responseDomainCode.setCategory(cat);
-            responseDomainCode.setCategoryIndex(i++);
-            responseDomainCode.setCodeValue(i.toString());
-            responseDomainCode.setQuestion(question);
-            responseDomainCodeService.save(responseDomainCode);
-        }
+//        for(Category cat:rootCategory.getAllChildrenFlatten()){
+//            Code code = new Code();
+//            code.setCategory(cat);
+//            code.setCodeValue(i.toString());
+//            codeService.save(code);
+//        }
 
     }
 
     @Test
     public void findByResponseDomainAndCategoryTest() throws Exception {
 
-        List<ResponseDomainCode> responseDomainCodeList = responseDomainCodeService.findByQuestionId(question.getId());
-        assertEquals(3, responseDomainCodeList.size());
-        assertThat("responsDomainCode should not contain any items.", responseDomainCodeService.findByCategoryId(rootCategory.getId()).size(), is(0));
+        List<Code> codeList = codeService.findByResponseDomainId(question.getId());
+        assertEquals(3, codeList.size());
+        assertThat("responsDomainCode should not contain any items.", codeService.findByCategoryId(rootCategory.getId()).size(), is(0));
 
     }
 

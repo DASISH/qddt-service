@@ -5,6 +5,5 @@ package no.nsd.qddt.domain;
  */
 public enum HierarchyLevel {
     ENTITY,
-    GROUP_ENTITY,
-    ROOT_ENTITY
+    GROUP_ENTITY
 }

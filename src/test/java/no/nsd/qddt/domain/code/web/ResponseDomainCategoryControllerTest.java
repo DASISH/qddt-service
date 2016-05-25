@@ -1,9 +1,9 @@
-package no.nsd.qddt.domain.instrumentquestion.web;
+package no.nsd.qddt.domain.code.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
+import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.code.CodeService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,12 +16,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Stig Norland
  */
-public class InstrumentQuestionControllerTest extends ControllerWebIntegrationTest {
+public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired
-    private InstrumentQuestionService entityService;
+    private CodeService entityService;
 
-    private InstrumentQuestion entity;
+    private Code entity;
 
     @Override
     public void setup() {
@@ -29,8 +29,8 @@ public class InstrumentQuestionControllerTest extends ControllerWebIntegrationTe
 
         super.getBeforeSecurityContext().createSecurityContext();
 
-        entity = new InstrumentQuestion();
-        entity.setName("A test entity");
+        entity = new Code();
+        entity.setCodeValue("1");
         entity = entityService.save(entity);
 
         super.getBeforeSecurityContext().destroySecurityContext();
@@ -39,40 +39,40 @@ public class InstrumentQuestionControllerTest extends ControllerWebIntegrationTe
 
     @Test
     public void testGet() throws Exception {
-        mvc.perform(get("/instrumentquestion/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(get("/code/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        entity.setName(entity.getName() + " edited");
+        entity.setCodeValue(entity.getCodeValue() + " edited");
 
-        mvc.perform(post("/instrumentquestion").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/code").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(entity)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(entity.getName())))
+                .andExpect(jsonPath("$.codeValue", is(entity.getCodeValue())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testCreate() throws Exception {
-        InstrumentQuestion aEntity = new InstrumentQuestion();
-        aEntity.setName("Posted entity");
+        Code aEntity = new Code();
+        aEntity.setCodeValue("Posted entity");
 
-        mvc.perform(post("/instrumentquestion/create").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/responsedomaincode/create").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(aEntity.getName())))
+                .andExpect(jsonPath("$.codeValue", is(aEntity.getCodeValue())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
 
     @Test
     public void testDelete() throws Exception {
-        mvc.perform(post("/instrumentquestion/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(post("/responsedomaincode/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
 
         assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));

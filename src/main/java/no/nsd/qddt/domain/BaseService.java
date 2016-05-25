@@ -32,7 +32,7 @@ public interface BaseService<T,ID> {
      * @param instance object T
      * @return saved instanse T (may have fields updated by backstore)
      */
-    T save(T instance);
+    <S extends T> S save(S instance);
 
     /**
      * Store collection og objects Ts to backstore.

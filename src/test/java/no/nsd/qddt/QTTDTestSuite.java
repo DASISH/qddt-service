@@ -21,9 +21,9 @@ import no.nsd.qddt.domain.instruction.web.InstructionControllerTest;
 import no.nsd.qddt.domain.instrument.InstrumentServiceTest;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditServiceTest;
 import no.nsd.qddt.domain.instrument.web.InstrumentControllerTest;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionServiceTest;
-import no.nsd.qddt.domain.instrumentquestion.audit.InstrumentQuestionAuditServiceTest;
-import no.nsd.qddt.domain.instrumentquestion.web.InstrumentQuestionControllerTest;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructServiceTest;
+import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditServiceTest;
+import no.nsd.qddt.domain.controlconstruct.web.ControlConstructControllerTest;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialServiceTest;
 import no.nsd.qddt.domain.othermaterial.web.OtherMaterialControllerTest;
 import no.nsd.qddt.domain.question.QuestionServiceTest;
@@ -32,10 +32,10 @@ import no.nsd.qddt.domain.question.web.QuestionControllerTest;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainServiceTest;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditServiceTest;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainControllerTest;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeHierarchyTest;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCategoryServiceTest;
-import no.nsd.qddt.domain.responsedomaincode.audit.ResponseDomainCategoryAuditServiceTest;
-import no.nsd.qddt.domain.responsedomaincode.web.ResponseDomainCategoryControllerTest;
+import no.nsd.qddt.domain.code.CodeHierarchyTest;
+import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
+import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
+import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
 import no.nsd.qddt.domain.study.StudyServiceTest;
 import no.nsd.qddt.domain.study.audit.StudyAuditServiceTest;
 import no.nsd.qddt.domain.study.web.StudyControllerTest;
@@ -92,9 +92,9 @@ import org.springframework.test.context.ActiveProfiles;
         InstrumentControllerTest.class,
 
         // ====== InstrumentQuestion ======
-        InstrumentQuestionServiceTest.class,
-        InstrumentQuestionAuditServiceTest.class,
-        InstrumentQuestionControllerTest.class,
+        ControlConstructServiceTest.class,
+        ControlConstructAuditServiceTest.class,
+        ControlConstructControllerTest.class,
 
         // ====== OtherMaterial ======
         OtherMaterialServiceTest.class,
@@ -115,7 +115,7 @@ import org.springframework.test.context.ActiveProfiles;
         ResponseDomainCategoryServiceTest.class,
         ResponseDomainCategoryAuditServiceTest.class,
         ResponseDomainCategoryControllerTest.class,
-        ResponseDomainCodeHierarchyTest.class,
+        CodeHierarchyTest.class,
 
         // ====== Study ======
         StudyServiceTest.class,

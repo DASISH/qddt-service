@@ -5,6 +5,8 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,20 +78,23 @@ public class ResponseDomainServiceTest  extends AbstractServiceTest {
     @Test
     @Override
     public void testSaveAll() throws Exception {
-        List<ResponseDomain> agencyList = new ArrayList<>();
+        List<ResponseDomain> aList = new ArrayList<>();
         ResponseDomain responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain One");
-        agencyList.add(responseDomain);
+        responseDomain.setResponseKind(ResponseKind.List);
+        aList.add(responseDomain);
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain Two");
-        agencyList.add(responseDomain);
+        responseDomain.setResponseKind(ResponseKind.Scale);
+        aList.add(responseDomain);
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain Three");
-        agencyList.add(responseDomain);
+        responseDomain.setResponseKind(ResponseKind.Mixed);
+        aList.add(responseDomain);
 
-        responseDomainService.save(agencyList);
+        responseDomainService.save(aList);
 
         assertEquals("Should return 3", responseDomainService.count(), 3L);
     }
@@ -126,5 +131,30 @@ public class ResponseDomainServiceTest  extends AbstractServiceTest {
 
         agencyList.forEach(a -> assertNull("Should return null", responseDomainService.findOne(a.getId())));
 
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+
+    public void testfindby() throws Exception {
+        List<ResponseDomain> agencyList = new ArrayList<>();
+        ResponseDomain responseDomain = new ResponseDomain();
+        responseDomain.setName("Test ResponseDomain One");
+        responseDomain.setResponseKind(ResponseKind.List);
+        agencyList.add(responseDomain);
+
+        responseDomain = new ResponseDomain();
+        responseDomain.setName("Test ResponseDomain Two");
+        responseDomain.setResponseKind(ResponseKind.Scale);
+        agencyList.add(responseDomain);
+
+        responseDomain = new ResponseDomain();
+        responseDomain.setName("Test ResponseDomain Three");
+        responseDomain.setResponseKind(ResponseKind.Mixed);
+        agencyList.add(responseDomain);
+
+        responseDomainService.save(agencyList);
+
+        Page<ResponseDomain> result = responseDomainService.findBy(ResponseKind.List,"%","",new PageRequest(0, 20));
+        result.forEach(a -> System.out.println(a));
     }
 }

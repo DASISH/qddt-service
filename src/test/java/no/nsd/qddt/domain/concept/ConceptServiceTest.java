@@ -149,7 +149,7 @@ public class ConceptServiceTest  extends AbstractServiceTest {
 
         Concept savedConcept = conceptService.save(concept);
 
-        assertEquals("they are equal" ,savedConcept.getQuestions(),concept.getQuestions());
+        assertEquals("they are equal" ,savedConcept.getQuestionItems(),concept.getQuestionItems());
 
     }
 

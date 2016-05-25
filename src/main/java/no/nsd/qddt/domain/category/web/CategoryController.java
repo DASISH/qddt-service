@@ -60,7 +60,7 @@ public class CategoryController {
     @RequestMapping(value = "/page/by-root/{name}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> getByRoot(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.ROOT_ENTITY, name, pageable);
+        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 

@@ -2,13 +2,19 @@ package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.hibernate.PersistentObjectException;
+import org.hibernate.annotations.Persister;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.AccessType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -61,7 +67,6 @@ class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name, pageable);
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public long count() {
@@ -86,8 +91,30 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = false)
     public Category save(Category instance) {
-        return categoryRepository.save(instance);
+        // Category Save fails when there is a mix of new and existing children attached to a new element.
+        // This code fixes that.
+        Category retval = null;
+        try {
+            Set<Category> tmplist = new HashSet<>();
+            instance.getChildren().forEach(child -> tmplist.add(save(child)));
+            instance.setChildren(tmplist);
+            if (instance.getId() != null){
+                Category fromRepository = findOne(instance.getId());
+                if (!instance.fieldCompare(fromRepository))
+                    retval= categoryRepository.save(instance);
+                else
+                    retval = fromRepository;
+            }
+            else
+                retval= categoryRepository.save(instance);
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return retval;
     }
+
+
 
     @Override
     @Transactional(readOnly = false)

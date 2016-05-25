@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.utils.builders.CategoryBuilder;
@@ -48,30 +49,30 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         super.getBeforeSecurityContext().createSecurityContext();
 
         Category rootCategory = new CategoryBuilder()
-                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MIXED)
                 .setLabel("Scale 1-5 with labels").createCategory();
         Category group = new CategoryBuilder().setName("SCALE1-5")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.RANGE)
                 .setLabel("Scale 1-5 with labels").createCategory();
-        group.addChild(new CategoryBuilder().setName("BEGIN")
-                .setType(CategoryType.CODE)
+                group.setInputLimit("1","5");
+        group.addChild(new CategoryBuilder()
                 .setLabel("Very Happy").createCategory());
-        group.addChild(new CategoryBuilder().setName("END")
+        group.addChild(new CategoryBuilder()
                 .setLabel("Very Unhappy").createCategory());
-        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+        group.addChild(new CategoryBuilder()
                 .setLabel("Happy").createCategory());
-        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+        group.addChild(new CategoryBuilder()
                 .setLabel("Inbetween").createCategory());
-        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
+        group.addChild(new CategoryBuilder()
                 .setLabel("UnHappy").createCategory());
 
         rootCategory.addChild(group);
 
         group = new CategoryBuilder().setName("NO-ANSWER")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setType(CategoryType.MULTIPLE_SINGLE)
+                .setType(CategoryType.MISSING_GROUP)
                 .createCategory();
         group.addChild(new CategoryBuilder().setName("NA")
                 .setType(CategoryType.CODE)
@@ -130,4 +131,12 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
 
         assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));
     }
+
+    @Test
+    public void testFind() throws Exception {
+        mvc.perform(get("/responsedomain/page/search?ResponseKind=Code").header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+
+    }
+
 }

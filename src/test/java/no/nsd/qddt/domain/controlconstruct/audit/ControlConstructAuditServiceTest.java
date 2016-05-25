@@ -1,15 +1,11 @@
-package no.nsd.qddt.domain.instrumentquestion.audit;
+package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.history.Revision;
-import org.springframework.data.history.Revisions;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -18,21 +14,21 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Stig Norland
  */
-public class InstrumentQuestionAuditServiceTest  extends AbstractAuditServiceTest {
+public class ControlConstructAuditServiceTest extends AbstractAuditServiceTest {
 
     @Autowired
-    private InstrumentQuestionService instrumentQuestionservice;
+    private ControlConstructService instrumentQuestionservice;
 
     @Autowired
-    private InstrumentQuestionAuditService instrumentQuestionAuditService;
+    private ControlConstructAuditService controlConstructAuditService;
 
-    private InstrumentQuestion entity;
+    private ControlConstruct entity;
 
     @Before
     public void setUp() {
 
 
-        entity = instrumentQuestionservice.save(new InstrumentQuestion());
+        entity = instrumentQuestionservice.save(new ControlConstruct());
 
         entity.setName("First");
         entity = instrumentQuestionservice.save(entity);

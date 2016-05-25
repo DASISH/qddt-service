@@ -9,8 +9,11 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.utils.builders.CategoryBuilder;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -32,40 +35,43 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
         super.getBeforeSecurityContext().createSecurityContext();
-        category = new Category();
-        category.setLabel("Test category");
-        category.setName("A test category");
-        category = categoryService.save(category);
-
-
-        Category rootCategory = new CategoryBuilder().setName("ROOT")
-                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
-                .setType(CategoryType.MIXED)
-                .setLabel("Root").createCategory();
-        Category group = new CategoryBuilder().setName("GROUP1")
-                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setLabel("Gruppe1").createCategory();
-        group.addChild(new CategoryBuilder().setName("ENTITY1")
-                .setLabel("ent1").createCategory());
-        group.addChild(new CategoryBuilder().setName("ENTITY2")
-                .setLabel("ent2").createCategory());
-        rootCategory.addChild(group);
-
-        group = new CategoryBuilder().setName("GROUP2")
-                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("Grupp2").createCategory();
-        group.addChild(new CategoryBuilder().setName("ENTITY3")
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("1").createCategory());
-        group.addChild(new CategoryBuilder().setName("ENTITY4")
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("2").createCategory());
-        group.addChild(new CategoryBuilder().setName("ENTITY5")
-                .setType(CategoryType.MULTIPLE_MULTIPLE)
-                .setLabel("3").createCategory());
-        rootCategory.addChild(group);
-        categoryService.save(rootCategory);
+//        category = new Category();
+//        category.setLabel("Test category");
+//        category.setName("A test category");
+//        category = categoryService.save(category);
+//
+//
+//        Category rootCategory = new CategoryBuilder().setName("ROOT")
+//                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
+//                .setType(CategoryType.MIXED)
+//                .setLabel("Root").createCategory();
+//        Category group = new CategoryBuilder().setName("GROUP1")
+//                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+//                .setType(CategoryType.LIST)
+//                .setLabel("Gruppe1").createCategory();
+//        group.addChild(new CategoryBuilder().setName("ENTITY1")
+//                .setType(CategoryType.CODE)
+//                .setLabel("ent1").createCategory());
+//        group.addChild(new CategoryBuilder().setName("ENTITY2")
+//                .setType(CategoryType.CODE)
+//                .setLabel("ent2").createCategory());
+//        rootCategory.addChild(group);
+//
+//        group = new CategoryBuilder().setName("GROUP2")
+//                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+//                .setType(CategoryType.LIST)
+//                .setLabel("Grupp2").createCategory();
+//        group.addChild(new CategoryBuilder().setName("ENTITY3")
+//                .setType(CategoryType.LIST)
+//                .setLabel("1").createCategory());
+//        group.addChild(new CategoryBuilder().setName("ENTITY4")
+//                .setType(CategoryType.LIST)
+//                .setLabel("2").createCategory());
+//        group.addChild(new CategoryBuilder().setName("ENTITY5")
+//                .setType(CategoryType.LIST)
+//                .setLabel("3").createCategory());
+//        rootCategory.addChild(group);
+//        categoryService.save(rootCategory);
 
         super.getBeforeSecurityContext().destroySecurityContext();
     }
@@ -91,35 +97,28 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
 
     @Test
     public void testCreate() throws Exception {
-        Category rootCategory = new CategoryBuilder()
-                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
-                .setType(CategoryType.MIXED)
-                .setLabel("Scale 1-5 with labels").createCategory();
+
         Category group = new CategoryBuilder().setName("SCALE1-5")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.RANGE)
                 .setLabel("Scale 1-5 with labels").createCategory();
-        group.addChild(new CategoryBuilder().setName("BEGIN")
-                .setType(CategoryType.CODE)
+                group.setInputLimit("1","5");
+        group.addChild(new CategoryBuilder()
+                .setName("1")
                 .setLabel("Very Happy").createCategory());
-        group.addChild(new CategoryBuilder().setName("END")
+        group.addChild(categoryService.findOne(UUID.fromString("37894d7a-65d0-11e5-9d70-feff819cdc9f")));
+        group.addChild(new CategoryBuilder()
+                .setName("5")
                 .setLabel("Very Unhappy").createCategory());
-        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
-                .setLabel("Happy").createCategory());
-        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
-                .setLabel("Inbetween").createCategory());
-        group.addChild(new CategoryBuilder().setType(CategoryType.LABEL)
-                .setLabel("UnHappy").createCategory());
 
-        rootCategory.addChild(group);
-
-        mvc.perform(post("/category/create").header("Authorization", "Bearer " + accessToken)
+        ResultActions action = mvc.perform(post("/category/create").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
-                .content(rest.json(rootCategory)))
+                .content(rest.json(group)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(rootCategory.getName())))
+                .andExpect(jsonPath("$.name", is(group.getName())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
+//        action.andReturn().
     }
 
     @Test

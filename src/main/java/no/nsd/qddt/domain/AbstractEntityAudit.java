@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 /**
@@ -128,6 +129,23 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     public void setChangeComment(String changeComment) {
         this.changeComment = changeComment;
+    }
+
+    /**
+     * None null field compare, (ignores null value when comparing)
+     * @param o
+     * @return
+     */
+    public boolean fieldCompare(AbstractEntityAudit o){
+
+        if (agency != null && !agency.equals(o.agency)) return false;
+        if (name != null && !name.equals(o.name)) return false;
+        if (basedOnObject != null && !basedOnObject.equals(o.basedOnObject)) return false;
+        if (version != null && !version.equals(o.version)) return false;
+        if (changeKind != null && !changeKind.equals(o.changeKind)) return false;
+        if (changeComment != null && !changeComment.equals(o.changeComment)) return false;
+
+        return super.fieldCompare(o);
     }
 
     @Override

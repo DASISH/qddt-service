@@ -41,16 +41,33 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                 ((AbstractEntityAudit) entity).setVersion(version);
             }
             if (entity instanceof Category) {
-                if (((Category)entity).getCategoryType() == null)
-                    ((Category)entity).setCategoryType(CategoryType.CODE);
-                if (((Category)entity).getHierarchyLevel() == null)
-                    ((Category)entity).setHierarchyLevel(HierarchyLevel.ENTITY);
-
+                entity = FixAndValidate((Category)entity);
             }
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
+
+    private Category FixAndValidate(Category input){
+        if (input.getCategoryType() == null)
+            input.setCategoryType(CategoryType.CODE);
+        switch (input.getCategoryType()) {
+            case DATETIME:
+            case TEXT:
+            case NUMERIC:
+            case CODE:
+                input.setHierarchyLevel(HierarchyLevel.ENTITY);
+                break;
+            case MISSING_GROUP:
+            case LIST:
+            case RANGE:
+            case MIXED:
+                input.setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
+                break;
+        }
+        return input;
+    }
+
 
     /**
      * Runs before updating an existing entity.
@@ -89,7 +106,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                         ver.incMinor();
                         break;
                     default:        //CREATED / UPDATED_PARENT / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
-                        System.out.println("PREUPDATE -> [" + change+ "] (no change in version)");
                         break;
                 }
                 ((AbstractEntityAudit) entity).setVersion(ver);

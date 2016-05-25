@@ -1,10 +1,8 @@
-package no.nsd.qddt.domain.responsedomaincode;
+package no.nsd.qddt.domain.code;
 
 import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
-import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import org.junit.Before;
@@ -26,34 +24,34 @@ import static org.junit.Assert.assertEquals;
 public class ResponseDomainCategoryMetaTest {
 
     @Autowired
-    private QuestionService questionService;
+    private ResponseDomainService responseDomainService;
 
     @Autowired
     private CategoryService categoryService;
 
     @Autowired
-    private ResponseDomainCodeService responseDomainCodeService;
+    private CodeService codeService;
 
-    private Question r1,r2;
+    private ResponseDomain r1,r2;
     private Category c1,c2;
 
     @Before
     public void setUp() {
 
-        r1 = questionService.save(new Question());
-        r2 = questionService.save(new Question());
+        r1 = responseDomainService.save(new ResponseDomain());
+        r2 = responseDomainService.save(new ResponseDomain());
 
         c1 = categoryService.save(new Category());
         c2 = categoryService.save(new Category());
 
-        responseDomainCodeService.save(new ResponseDomainCode(0, r1, c1));
-        responseDomainCodeService.save(new ResponseDomainCode(0, r2, c2));
-        responseDomainCodeService.save(new ResponseDomainCode(0, r1, c2));
+        codeService.save(new Code(r1, c1,"1"));
+        codeService.save(new Code( r2, c2,"2"));
+        codeService.save(new Code( r1, c2,"3"));
     }
 
     @Test
     public void findByInstrumentTest() throws Exception {
-        List<ResponseDomainCode> rdcs = responseDomainCodeService.findByCategoryId(c1.getId());
+        List<Code> rdcs = codeService.findByCategoryId(c1.getId());
         assertEquals("Expected one element!", rdcs.size(), 1);
     }
 
@@ -63,7 +61,7 @@ public class ResponseDomainCategoryMetaTest {
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<ResponseDomainCode> rdcs = responseDomainCodeService.findByQuestionId(r1.getId());
+        List<Code> rdcs = codeService.findByResponseDomainId(r1.getId());
         assertEquals("Expected two elements!", rdcs.size(), 2);
     }
 }

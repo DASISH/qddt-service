@@ -38,14 +38,14 @@ import java.util.UUID;
 @Table(name = "CATEGORY")
 public class Category extends AbstractEntityAudit {
 
-    @OneToOne(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy="category", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Code code;
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="category", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Set<ResponseDomain> responseDomain = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @OrderColumn(name="category_idx")
+    @OneToMany(cascade = { CascadeType.ALL}, fetch = FetchType.EAGER)
+//    @OrderColumn(name="category_idx")
     private Set<Category> children = new HashSet<>();
 
 
@@ -261,4 +261,21 @@ public class Category extends AbstractEntityAudit {
                 ", categoryType=" + categoryType +
                 "} " + super.toString();
     }
+
+    public boolean fieldCompare(Category o) {
+
+        if (code != null && !code.equals(o.code)) return false;
+        if (responseDomain != null && !responseDomain.equals(o.responseDomain)) return false;
+        if (children != null && !children.equals(o.children)) return false;
+        if (label != null && !label.equals(o.label)) return false;
+        if (description != null && !description.equals(o.description)) return false;
+        if (hierarchyLevel != null && !hierarchyLevel.equals(o.hierarchyLevel)) return false;
+        if (categoryType != null && !categoryType.equals(o.categoryType)) return false;
+        if (categoryJsonDDI != null && !categoryJsonDDI.equals(o.categoryJsonDDI)) return false;
+
+        return super.fieldCompare(o);
+
+    }
+
+
 }

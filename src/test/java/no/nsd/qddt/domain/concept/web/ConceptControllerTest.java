@@ -113,6 +113,6 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(concept))).andReturn();
 
         concept =  entityService.findOne(concept.getId());
-        assertThat("Should be one", concept.getQuestions().size(), is(1));
+        assertThat("Should be one", concept.getQuestionItems().size(), is(1));
     }
 }

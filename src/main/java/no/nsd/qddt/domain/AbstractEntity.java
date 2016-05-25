@@ -96,4 +96,20 @@ public abstract class AbstractEntity {
                 ", modifiedBy=" + modifiedBy +
                 '}';
     }
+
+    /**
+     * None null field compare, (ignores null value when comparing)
+     * @param o
+     * @return
+     */
+    public boolean fieldCompare(AbstractEntity o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        if (id != null && !id.equals(o.id)) return false;
+        if (modified != null && !modified.equals(o.modified)) return false;
+        if (modifiedBy.getId() != null && !modifiedBy.getId().equals(o.modifiedBy.getId())) return false;
+
+        return true;
+    }
 }

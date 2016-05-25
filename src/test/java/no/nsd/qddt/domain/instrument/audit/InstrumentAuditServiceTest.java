@@ -3,9 +3,7 @@ package no.nsd.qddt.domain.instrument.audit;
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestion;
-import no.nsd.qddt.domain.instrumentquestion.InstrumentQuestionService;
-import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.question.QuestionService;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +32,7 @@ public class InstrumentAuditServiceTest extends AbstractAuditServiceTest {
     private QuestionService questionService;
 
     @Autowired
-    private InstrumentQuestionService instrumentQuestionService;
+    private ControlConstructService controlConstructService;
 
 
 

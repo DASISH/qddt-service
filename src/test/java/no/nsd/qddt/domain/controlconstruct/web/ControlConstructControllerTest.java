@@ -1,9 +1,9 @@
-package no.nsd.qddt.domain.responsedomaincode.web;
+package no.nsd.qddt.domain.controlconstruct.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,12 +16,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Stig Norland
  */
-public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrationTest {
+public class ControlConstructControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired
-    private ResponseDomainCodeService entityService;
+    private ControlConstructService entityService;
 
-    private ResponseDomainCode entity;
+    private ControlConstruct entity;
 
     @Override
     public void setup() {
@@ -29,7 +29,7 @@ public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrati
 
         super.getBeforeSecurityContext().createSecurityContext();
 
-        entity = new ResponseDomainCode();
+        entity = new ControlConstruct();
         entity.setName("A test entity");
         entity = entityService.save(entity);
 
@@ -39,7 +39,7 @@ public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrati
 
     @Test
     public void testGet() throws Exception {
-        mvc.perform(get("/responsedomaincode/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(get("/instrumentquestion/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
     }
 
@@ -47,7 +47,7 @@ public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrati
     public void testUpdate() throws Exception {
         entity.setName(entity.getName() + " edited");
 
-        mvc.perform(post("/responsedomaincode").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/instrumentquestion").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(entity)))
                 .andExpect(content().contentType(rest.getContentType()))
@@ -58,10 +58,10 @@ public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrati
 
     @Test
     public void testCreate() throws Exception {
-        ResponseDomainCode aEntity = new ResponseDomainCode();
+        ControlConstruct aEntity = new ControlConstruct();
         aEntity.setName("Posted entity");
 
-        mvc.perform(post("/responsedomaincode/create").header("Authorization", "Bearer " + accessToken)
+        mvc.perform(post("/instrumentquestion/create").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
@@ -72,7 +72,7 @@ public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrati
 
     @Test
     public void testDelete() throws Exception {
-        mvc.perform(post("/responsedomaincode/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(post("/instrumentquestion/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
 
         assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));

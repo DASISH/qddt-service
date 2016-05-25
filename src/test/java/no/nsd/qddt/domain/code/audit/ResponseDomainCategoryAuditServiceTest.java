@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.responsedomaincode.audit;
+package no.nsd.qddt.domain.code.audit;
 
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCode;
-import no.nsd.qddt.domain.responsedomaincode.ResponseDomainCodeService;
+import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.code.CodeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,39 +21,39 @@ import static org.junit.Assert.assertThat;
 public class ResponseDomainCategoryAuditServiceTest extends AbstractAuditServiceTest {
 
     @Autowired
-    private ResponseDomainCodeService responseDomainCodeService;
+    private CodeService codeService;
 
     @Autowired
-    private ResponseDomainCodeAuditService responseDomainCodeAuditService;
+    private CodeAuditService codeAuditService;
 
-    private ResponseDomainCode entity;
+    private Code entity;
 
     @Before
     public void setUp() {
 
 
-        entity = responseDomainCodeService.save(new ResponseDomainCode());
+        entity = codeService.save(new Code());
 
-        entity.setName("First");
-        entity = responseDomainCodeService.save(entity);
-        entity.setName("Second");
-        entity = responseDomainCodeService.save(entity);
-        entity.setName("Third");
-        entity = responseDomainCodeService.save(entity);
+        entity.setCodeValue("1");
+        entity = codeService.save(entity);
+        entity.setCodeValue("2");
+        entity = codeService.save(entity);
+        entity.setCodeValue("3");
+        entity = codeService.save(entity);
     }
 
     @Test
     public void testSaveSurveyWithAudit() throws Exception {
-        entity = responseDomainCodeService.findOne(entity.getId());
+        entity = codeService.findOne(entity.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeAuditService.findLastChange(entity.getId());
+        Revision<Integer, Code> revision = codeAuditService.findLastChange(entity.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, ResponseDomainCode>> revisions = responseDomainCodeAuditService.findRevisions(
+        Page<Revision<Integer, Code>> revisions = codeAuditService.findRevisions(
                 entity.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, ResponseDomainCode> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, Code> wrapper = new Revisions<>(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), entity.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));
@@ -61,8 +61,8 @@ public class ResponseDomainCategoryAuditServiceTest extends AbstractAuditService
 
     @Test
     public void getAllRevisionsTest() throws Exception {
-        Page<Revision<Integer, ResponseDomainCode>> revisions =
-                responseDomainCodeAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
+        Page<Revision<Integer, Code>> revisions =
+                codeAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
 
         assertEquals("Excepted four revisions.",
                 revisions.getNumberOfElements(), 4);
@@ -70,11 +70,11 @@ public class ResponseDomainCategoryAuditServiceTest extends AbstractAuditService
 
     @Test
     public void getLastRevisionTest() throws Exception {
-        Revision<Integer, ResponseDomainCode> revision = responseDomainCodeAuditService.findLastChange(entity.getId());
+        Revision<Integer, Code> revision = codeAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity().hashCode(), entity.hashCode());
-        assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
+        assertEquals("Expected Name to be 'Third'", revision.getEntity().getCodeValue(), "3");
     }
 }
 

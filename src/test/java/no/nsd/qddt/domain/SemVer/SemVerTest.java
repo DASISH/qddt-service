@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.SemVer;
 
-import no.nsd.qddt.domain.version.SemVer;
+import no.nsd.qddt.domain.embedded.SemVer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

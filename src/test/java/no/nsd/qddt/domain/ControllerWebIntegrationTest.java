@@ -31,7 +31,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
  *
  * Example on simple controller test
  *
- *  @Test
+ *
  *  public void simpleTest() throws Exception {
  *      mvc.perform(get(RESOURCE-PATH).header("Authorization", "Bearer " + accessToken))
  *      .andExpect(status().isOk());

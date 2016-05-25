@@ -27,4 +27,6 @@ interface CategoryRepository extends BaseRepository<Category,UUID> {
 
     Page<Category> findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable);
 
+
+
 }
