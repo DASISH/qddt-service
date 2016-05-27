@@ -47,7 +47,7 @@ import java.util.Set;
 public class TopicGroup extends AbstractEntityAudit implements Commentable,Authorable {
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 

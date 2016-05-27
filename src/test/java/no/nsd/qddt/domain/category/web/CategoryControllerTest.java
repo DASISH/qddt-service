@@ -118,7 +118,7 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
                 .andExpect(jsonPath("$.name", is(group.getName())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
-//        action.andReturn().
+
     }
 
     @Test
