@@ -56,13 +56,6 @@ public class CategoryController {
         categoryService.delete(id);
     }
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/by-root/{name}", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Category>> getByRoot(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
-        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
-    }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-group/{name}", method = RequestMethod.GET)
@@ -82,17 +75,29 @@ public class CategoryController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Category>>  getBy(@RequestParam("level") String level,
+    public HttpEntity<PagedResources<Category>>  getBy(@RequestParam(value = "level", required = false) String level,
                                                        @RequestParam(value = "category",required = false) String category,
                                                        @RequestParam(value = "name",defaultValue = "%") String name,
                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Category> categories = null;
 
-        if (category == null || category.isEmpty()) {
-            categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable);
-        } else {
-            categories = categoryService.findByHierarchyAndCategoryAndName(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable);
+        if (level == null || level.isEmpty()) {
+            if (category == null || category.isEmpty()) {
+
+                categories = categoryService.findByNameLike(name, pageable);
+            } else {
+
+                categories = categoryService.findByCategoryTypeAndNameLike(CategoryType.valueOf(category), name, pageable);
+            }
+        }else {
+            if (category == null || category.isEmpty()) {
+
+                categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable);
+            } else {
+
+                categories = categoryService.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable);
+            }
         }
 
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);

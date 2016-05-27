@@ -2,13 +2,9 @@ package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import org.hibernate.PersistentObjectException;
-import org.hibernate.annotations.Persister;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,30 +29,23 @@ class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Category> findByNameLike(String name) {
-        return categoryRepository.findByNameIgnoreCaseLike(name);
+    public Page<Category> findByNameLike(String name, Pageable pageable) {
+        return categoryRepository.findByNameIgnoreCaseLike(name,pageable);
     }
-
-    @Override
-    public Page<Category> findByNamePageable(String name, Pageable pageable) {
-        return categoryRepository.findByNameIgnoreCaseLike(name, pageable);
-    }
-
 
     /*
     This call will give you all Category with HierarchyLevel,CategoryType and
      Name (support whildcard searches)
      */
     @Override
-    public Page<Category> findByHierarchyAndCategoryAndName(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
+    public Page<Category> findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
         return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,pageable);
     }
 
     /*
-    This call will give you all Category with CategoryType and Name (support whildcard searches)
-    regardless of HierarchyLevel.
-     */
+        This call will give you all Category with CategoryType and Name (support whildcard searches)
+        regardless of HierarchyLevel.
+         */
     @Override
     public Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable) {
         return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name, pageable);
@@ -115,17 +104,18 @@ class CategoryServiceImpl implements CategoryService {
     }
 
 
-
     @Override
     @Transactional(readOnly = false)
     public List<Category> save(List<Category> instances) {
         return categoryRepository.save(instances);
     }
 
+
     @Override
     public void delete(UUID uuid) {
         categoryRepository.delete(uuid);
     }
+
 
     @Override
     public void delete(List<Category> instances) {

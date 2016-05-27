@@ -13,19 +13,18 @@ import java.util.UUID;
  */
 public interface CategoryService extends BaseService<Category, UUID> {
 
-    List<Category>findByNameLike(String name);
 
-    Page<Category>findByNamePageable(String name, Pageable pageable);
+    Page<Category>findByNameLike(String name, Pageable pageable);
 
     Page<Category>findByCategoryTypeAndNameLike(CategoryType categoryType,String name,Pageable pageable );
 
+    Page<Category>findByHierarchyAndNameLike(HierarchyLevel entity, String name, Pageable pageable);
+
+    Page<Category>findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType,String name,Pageable pageable);
+
+
 //    Page<Category>findGroupByName(String name,Pageable pageable );
-
-    Page<Category> findByHierarchyAndNameLike(HierarchyLevel entity, String name, Pageable pageable);
-
-    Page<Category>findByHierarchyAndCategoryAndName(HierarchyLevel hierarchyLevel, CategoryType categoryType,String name,Pageable pageable);
-
-
+//
 //    public List<String> findAllCategoies();
 //
 //    public Page<String> findAllCategoies(Pageable pageable);
