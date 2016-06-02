@@ -16,13 +16,7 @@ import java.util.UUID;
 public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
 
-    /**
-     *
-     * @param guid
-     * @param pageable
-     * @return
-     */
-    Page<OtherMaterial> findAllByTopicGroup(UUID  guid, Pageable pageable);
+
 
     File saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
 

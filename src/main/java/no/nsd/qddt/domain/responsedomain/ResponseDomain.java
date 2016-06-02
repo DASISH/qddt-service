@@ -60,8 +60,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Code> codes = new HashSet<>();
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Set<Code> codes = new HashSet<>();
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -132,13 +132,13 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.questionItems = questionItems;
     }
 
-    public Set<Code> getCodes() {
-        return codes;
-    }
-
-    public void setCodes(Set<Code> codes) {
-        this.codes = codes;
-    }
+//    public Set<Code> getCodes() {
+//        return codes;
+//    }
+//
+//    public void setCodes(Set<Code> codes) {
+//        this.codes = codes;
+//    }
 
     public Category getCategory() {
         return category;

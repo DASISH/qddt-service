@@ -40,14 +40,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         this.otherMaterialRepository = otherMaterialRepository;
     }
 
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<OtherMaterial> findAllByTopicGroup(UUID guid, Pageable pageable) {
-        return otherMaterialRepository.findAllByTopicGroupId(guid, pageable);
-    }
-
-
     @Override
     public long count() {
         return otherMaterialRepository.count();
@@ -68,8 +60,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Override
     @Transactional(readOnly = false)
     public OtherMaterial save(OtherMaterial instance) {
-
-//        instance.setCreated(LocalDateTime.now());
         return otherMaterialRepository.save(instance);
     }
 

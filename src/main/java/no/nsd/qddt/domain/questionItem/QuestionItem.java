@@ -12,17 +12,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
- * QuestionScheme : Contains Question Items
+ * Question Item is a container for Question (text) and responsedomain
+ * This entity introduce a breaking change into the model. it supports early binding of
+ * of the containing entities, by also supplying a reference to their revision number.
+ * This binding is outside the model which is defined here and used by the framework.
+ * This means that when fetching its content it will need to query the revision part of this
+ * system, when a revision number is specified.
  *
  * @author Stig Norland
  */
 
 @Audited
 @Entity
-//@FetchProfile(name = "question-with-sub-questions", fetchOverrides = {
-//        @FetchProfile.FetchOverride(entity = Question.class, association = "children", mode = FetchMode.JOIN)
-//})
+
 @Table(name = "QUESTION_ITEM")
 public class QuestionItem extends AbstractEntityAudit  {
 
@@ -30,14 +32,14 @@ public class QuestionItem extends AbstractEntityAudit  {
     @JoinColumn(name = "responsedomain_id")
     private ResponseDomain responseDomain;
 
-//    @Embedded
+    @Column(name = "responsedomain_revision")
     private long responseDomainRevision;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
 
-//    @Embedded
+    @Column(name = "question_revision")
     private long questionRevivsion;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questionItems")

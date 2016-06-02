@@ -36,12 +36,12 @@ interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, En
 //    @NamedNativeQuery(value = FIND_BY_MODULE_BY_UUID_QUERY, countQuery = COUNT_BY_MODULE_BY_UUID_QUERY)
 //    Page<Attachment> findAllByModuleGuid(@Param("guid") String guid, Pageable pageable);
 //
-    /**
-     * @param id Is an topicGroupid.
-     * @param pageable Pageable object
-     * @return All attachments that belongs to the module with moduleId.
-     */
-    Page<OtherMaterial> findAllByTopicGroupId(UUID id, Pageable pageable);
+//    /**
+//     * @param id Is an topicGroupid.
+//     * @param pageable Pageable object
+//     * @return All attachments that belongs to the module with moduleId.
+//     */
+//    Page<OtherMaterial> findAllByTopicGroupId(UUID id, Pageable pageable);
 
 
 }
