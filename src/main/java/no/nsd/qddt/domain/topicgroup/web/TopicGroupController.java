@@ -48,10 +48,10 @@ public class TopicGroupController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroup create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
-//
-//        if(instance.getStudy() == null ){
-//            instance.setStudy(studyService.findOne(studyId));
-//        }
+
+        if(instance.getStudy() == null ){
+            instance.setStudy(studyService.findOne(studyId));
+        }
 
         if(instance.getConcepts().isEmpty()){
             instance.addConcept(new Concept());
