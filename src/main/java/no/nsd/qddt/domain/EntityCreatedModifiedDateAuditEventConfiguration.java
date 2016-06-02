@@ -50,17 +50,17 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
 
     private Category FixAndValidate(Category input){
         if (input.getCategoryType() == null)
-            input.setCategoryType(CategoryType.CODE);
+            input.setCategoryType(CategoryType.CATEGORY);
         switch (input.getCategoryType()) {
             case DATETIME:
             case TEXT:
             case NUMERIC:
-            case CODE:
+            case CATEGORY:
                 input.setHierarchyLevel(HierarchyLevel.ENTITY);
                 break;
             case MISSING_GROUP:
             case LIST:
-            case RANGE:
+            case SCALE:
             case MIXED:
                 input.setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
                 break;

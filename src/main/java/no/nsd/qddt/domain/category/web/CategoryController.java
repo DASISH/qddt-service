@@ -90,7 +90,7 @@ public class CategoryController {
 
                 categories = categoryService.findByCategoryTypeAndNameLike(CategoryType.valueOf(category), name, pageable);
             }
-        }else {
+        } else {
             if (category == null || category.isEmpty()) {
 
                 categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable);

@@ -20,12 +20,7 @@ public enum CategoryType {
     /*
     Code: single Category, input is CODE/VALUE                  ,NOT_IMPLEMENTED: blankIsMissingValue
      */
-    CODE,
-
-    /*
-    Label: single Category, NO INPUT, REMOVED -> is basically a CODE and its value is where on a scale it is.
-     */
-
+    CATEGORY,
     /*
     Missing values: CategoryList/CodeList that are used as missingvalues.
      */
@@ -37,7 +32,7 @@ public enum CategoryType {
     /*
     CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs,NOT_IMPLEMENTED: blankIsMissingValue
      */
-    RANGE,
+    SCALE,
     /*
     ONLY for CategoryRoot -> a collection of different responsedomains
      */

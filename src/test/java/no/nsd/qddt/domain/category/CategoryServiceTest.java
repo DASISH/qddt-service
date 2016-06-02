@@ -47,13 +47,13 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.LIST)
                 .setLabel("Kjønn").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Kvinne").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("MANN")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Mann").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
         categoryService.save(rootCategory);
         assertThat("Should be four", categoryService.count(), is(4L));
@@ -93,13 +93,13 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.LIST)
                 .setLabel("Kjønn").createCategory();
         parent.addChild(new CategoryBuilder().setName("KVINNE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Kvinne").createCategory());
         parent.addChild(new CategoryBuilder().setName("MANN")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Mann").createCategory());
         parent.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
 
         parent = categoryService.save(parent);
@@ -157,13 +157,13 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.LIST)
                 .setLabel("Kjønn").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Kvinne").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("MANN")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Mann").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
         categoryService.save(rootCategory);
 
@@ -180,18 +180,18 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.LIST)
                 .setLabel("Kjønn").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Kvinne").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("MANN")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Mann").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
         categoryService.save(rootCategory);
 
-        List<Category> list = categoryService.findByNameLike("%nne%");
-        assertEquals("Skal ha to elementer", 2L, list.size());
+        Page<Category> list = categoryService.findByNameLike("%nne%", new PageRequest(0, 20));
+        assertEquals("Skal ha to elementer", 2L, list.getTotalElements());
 
     }
 
@@ -202,13 +202,13 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.LIST)
                 .setLabel("Kjønn").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Kvinne").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("MANN")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Mann").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
         categoryService.save(rootCategory);
 
@@ -224,13 +224,13 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.LIST)
                 .setLabel("Kjønn").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Kvinne").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("MANN")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Mann").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
         rootCategory = categoryService.save(rootCategory);
 
@@ -239,10 +239,10 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.MISSING_GROUP)
                 .setLabel("NA Svar").createCategory();
         group.addChild(new CategoryBuilder().setName("VET IKKE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Vet ikke").createCategory());
         group.addChild(new CategoryBuilder().setName("VIL IKKE SVARE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Vil ikke svare").createCategory());
         group = categoryService.save(group);
 
@@ -270,13 +270,13 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.LIST)
                 .setLabel("Kjønn").createCategory();
         rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Kvinne").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("MANN")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Mann").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
         rootCategory = categoryService.save(rootCategory);
 
@@ -285,10 +285,10 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setType(CategoryType.MISSING_GROUP)
                 .setLabel("NA Svar").createCategory();
         group.addChild(new CategoryBuilder().setName("VET IKKE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Vet ikke").createCategory());
         group.addChild(new CategoryBuilder().setName("VIL IKKE SVARE")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Vil ikke svare").createCategory());
         group = categoryService.save(group);
 
@@ -301,17 +301,17 @@ public class CategoryServiceTest extends AbstractServiceTest {
         categoryService.save(root);
 
 
-        Page<Category> page =categoryService.findByHierarchyAndCategoryAndName(
+        Page<Category> page =categoryService.findByHierarchyAndCategoryAndNameLike(
                 HierarchyLevel.ENTITY,
-                CategoryType.CODE,
+                CategoryType.CATEGORY,
                 "%", new PageRequest(0, 20));
 
         assertEquals("Should be 2 element in list",  2L,page.getTotalElements());
 //        assertEquals("Should be 0 Grandchildren elements", 0L, page.getContent().get(0).getAllChildrenFlatten().size());
 
-        page =categoryService.findByHierarchyAndCategoryAndName(
+        page =categoryService.findByHierarchyAndCategoryAndNameLike(
                 HierarchyLevel.GROUP_ENTITY,
-                CategoryType.RANGE,
+                CategoryType.SCALE,
                 "%", new PageRequest(0, 20));
 
         assertEquals("Should be 1 element in list",  1L,page.getTotalElements());
