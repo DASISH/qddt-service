@@ -123,6 +123,23 @@ public class Category extends AbstractEntityAudit {
 
     public void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
+        if (classificationLevel == null) {
+            switch (categoryType) {
+                case MISSING_GROUP:
+                case LIST:
+                    setClassificationLevel(CategoryRelationCodeType.Ordinal);
+                    break;
+                case SCALE:
+                    setClassificationLevel(CategoryRelationCodeType.Interval);
+                    break;
+                case MIXED:
+                    setClassificationLevel(CategoryRelationCodeType.Continuous);
+                    break;
+                default:
+//                setClassificationLevel(CategoryRelationCodeType.Nominal);
+                    break;
+            }
+        }
     }
 
     public HierarchyLevel getHierarchyLevel() {
