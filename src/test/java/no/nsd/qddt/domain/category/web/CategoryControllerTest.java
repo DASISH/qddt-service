@@ -100,7 +100,7 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
 
         Category group = new CategoryBuilder().setName("SCALE1-5")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setType(CategoryType.RANGE)
+                .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory();
                 group.setInputLimit("1","5");
         group.addChild(new CategoryBuilder()
