@@ -54,7 +54,7 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .setLabel("Scale 1-5 with labels").createCategory();
         Category group = new CategoryBuilder().setName("SCALE1-5")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-                .setType(CategoryType.RANGE)
+                .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory();
                 group.setInputLimit("1","5");
         group.addChild(new CategoryBuilder()
@@ -75,13 +75,13 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .setType(CategoryType.MISSING_GROUP)
                 .createCategory();
         group.addChild(new CategoryBuilder().setName("NA")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("N/A").createCategory());
         group.addChild(new CategoryBuilder().setName("DONT_KNOW")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Don't know").createCategory());
         group.addChild(new CategoryBuilder().setName("CANNOT")
-                .setType(CategoryType.CODE)
+                .setType(CategoryType.CATEGORY)
                 .setLabel("Don't want to").createCategory());
         rootCategory.addChild(group);
         categoryService.save(rootCategory);
