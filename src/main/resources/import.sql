@@ -48,22 +48,21 @@ INSERT INTO question (id, updated,  change_kind, name, major, minor,   intent, q
 
 
 --POPULATE THE RESPONSE PACKAGE WITH DATA.
-INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378949ec-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Start','START',0,1,'ENTITY','CATEGORY','CREATED');
-INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('37894d7a-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Slutt','SLUTT',0,1,'ENTITY','CATEGORY','CREATED');
+INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378949ec-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Very bad','VERY_BAD',0,1,'ENTITY','CATEGORY','CREATED');
+INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('37894d7a-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Very good','VERY_GOOD',0,1,'ENTITY','CATEGORY','CREATED');
 INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('37894f32-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Range','RANGE-START-SLUTT',0,1,'GROUP_ENTITY','SCALE','CREATED');
 INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378953c4-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'NA','NA svar',0,1,'ENTITY','CATEGORY','CREATED');
 INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378955cc-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Vet ikke','NA svar',0,1,'ENTITY','CATEGORY','CREATED');
 INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378955cd-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Ikke svar','NA',0,1,'GROUP_ENTITY','MISSING_GROUP','CREATED');
-INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378955ce-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Responsdomain Range','NA',0,1,'GROUP_ENTITY','MIXED','CREATED');
+INSERT INTO category(id,user_id, agency_id, updated,label,name,major, minor,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378955ce-65d0-11e5-9d70-feff819cdc9f','83d4c034-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f','01-01-2015 12:00:01.000', 'Scale 1-5 NA','NA',0,1,'GROUP_ENTITY','MIXED','CREATED');
 
-ALTER TABLE category_category drop CONSTRAINT uk_qef5u1tm9s8i1hhpoqeg0dq9e;
 
-INSERT INTO category_category (id, parent_id) VALUES ('378949ec-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
-INSERT INTO category_category (id, parent_id) VALUES ('37894d7a-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
-INSERT INTO category_category (id, parent_id) VALUES ('378953c4-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
-INSERT INTO category_category (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
-INSERT INTO category_category (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
-INSERT INTO category_category (id, parent_id) VALUES ('37894f32-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
+INSERT INTO category_children (id, parent_id) VALUES ('378949ec-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
+INSERT INTO category_children (id, parent_id) VALUES ('37894d7a-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
+INSERT INTO category_children (id, parent_id) VALUES ('378953c4-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
+INSERT INTO category_children (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
+INSERT INTO category_children (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
+INSERT INTO category_children (id, parent_id) VALUES ('37894f32-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
 
 
 INSERT INTO responsedomain(id,updated,CHANGE_KIND,name,response_kind,category_id, user_id,agency_id) VALUES('d5dbaebb-65d0-11e5-9d70-feff819cdc9f','01-01-2015','CREATED','Responsdomain Range','Scale','378955ce-65d0-11e5-9d70-feff819cdc9f','83d4c39a-4ff9-11e5-885d-feff819cdc9f','1359dede-9f18-11e5-8994-feff819cdc9f');
@@ -102,14 +101,14 @@ INSERT INTO code(id,updated,CHANGE_KIND, responsedomain_id, category_id,  code_v
 -- INSERT INTO category(id,created,label,name,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378955cd-65d0-11e5-9d70-feff819cdc9f','01-01-2015 12:00:01.000', 'Ikke svar','NA','GROUP_ENTITY','MULTIPLE_SINGLE','CREATED');
 -- INSERT INTO category(id,created,label,name,hierarchy_level, category_kind,CHANGE_KIND) VALUES('378955ce-65d0-11e5-9d70-feff819cdc9f','01-01-2015 12:00:01.000', 'Responsdomain Range','NA','ROOT_ENTITY','MIXED','CREATED');
 --
--- ALTER TABLE category_category drop CONSTRAINT uk_qef5u1tm9s8i1hhpoqeg0dq9e;
+-- ALTER TABLE category_children drop CONSTRAINT uk_qef5u1tm9s8i1hhpoqeg0dq9e;
 --
--- INSERT INTO category_category (id, parent_id) VALUES ('378949ec-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
--- INSERT INTO category_category (id, parent_id) VALUES ('37894d7a-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
--- INSERT INTO category_category (id, parent_id) VALUES ('378953c4-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
--- INSERT INTO category_category (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
--- INSERT INTO category_category (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
--- INSERT INTO category_category (id, parent_id) VALUES ('37894f32-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
+-- INSERT INTO category_children (id, parent_id) VALUES ('378949ec-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
+-- INSERT INTO category_children (id, parent_id) VALUES ('37894d7a-65d0-11e5-9d70-feff819cdc9f', '37894f32-65d0-11e5-9d70-feff819cdc9f');
+-- INSERT INTO category_children (id, parent_id) VALUES ('378953c4-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
+-- INSERT INTO category_children (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955cd-65d0-11e5-9d70-feff819cdc9f');
+-- INSERT INTO category_children (id, parent_id) VALUES ('378955cc-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
+-- INSERT INTO category_children (id, parent_id) VALUES ('37894f32-65d0-11e5-9d70-feff819cdc9f', '378955ce-65d0-11e5-9d70-feff819cdc9f');
 --
 --
 -- INSERT INTO responsedomain(id,created,CHANGE_KIND,name,response_kind,category_id) VALUES('d5dbaebb-65d0-11e5-9d70-feff819cdc9f','01-01-2015','CREATED','Responsdomain Range','Scale','378955ce-65d0-11e5-9d70-feff819cdc9f');
