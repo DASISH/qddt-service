@@ -81,17 +81,17 @@ public class ResponseDomainServiceTest  extends AbstractServiceTest {
         List<ResponseDomain> aList = new ArrayList<>();
         ResponseDomain responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain One");
-        responseDomain.setResponseKind(ResponseKind.List);
+        responseDomain.setResponseKind(ResponseKind.LIST);
         aList.add(responseDomain);
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain Two");
-        responseDomain.setResponseKind(ResponseKind.Scale);
+        responseDomain.setResponseKind(ResponseKind.SCALE);
         aList.add(responseDomain);
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain Three");
-        responseDomain.setResponseKind(ResponseKind.Mixed);
+        responseDomain.setResponseKind(ResponseKind.MIXED);
         aList.add(responseDomain);
 
         responseDomainService.save(aList);
@@ -139,22 +139,22 @@ public class ResponseDomainServiceTest  extends AbstractServiceTest {
         List<ResponseDomain> agencyList = new ArrayList<>();
         ResponseDomain responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain One");
-        responseDomain.setResponseKind(ResponseKind.List);
+        responseDomain.setResponseKind(ResponseKind.LIST);
         agencyList.add(responseDomain);
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain Two");
-        responseDomain.setResponseKind(ResponseKind.Scale);
+        responseDomain.setResponseKind(ResponseKind.SCALE);
         agencyList.add(responseDomain);
 
         responseDomain = new ResponseDomain();
         responseDomain.setName("Test ResponseDomain Three");
-        responseDomain.setResponseKind(ResponseKind.Mixed);
+        responseDomain.setResponseKind(ResponseKind.MIXED);
         agencyList.add(responseDomain);
 
         responseDomainService.save(agencyList);
 
-        Page<ResponseDomain> result = responseDomainService.findBy(ResponseKind.List,"%","",new PageRequest(0, 20));
+        Page<ResponseDomain> result = responseDomainService.findBy(ResponseKind.LIST,"%","",new PageRequest(0, 20));
         result.forEach(a -> System.out.println(a));
     }
 }

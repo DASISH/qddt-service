@@ -21,11 +21,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
@@ -40,14 +39,11 @@ public class CodeHierarchyTest {
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    private QuestionService questionService;
 
     private ResponseDomain responseDomain;
 
     private Category rootCategory;
 
-    private Question question;
 
     private BeforeSecurityContext beforeSecurityContext;
 
@@ -61,10 +57,6 @@ public class CodeHierarchyTest {
         this.beforeSecurityContext = new BeforeSecurityContext(authenticationManager);
         this.beforeSecurityContext.createSecurityContext();
 
-        question = new Question();
-        question.setName("what is your gender");
-        question = questionService.save(question);
-
                 //Create a categorySchema
         rootCategory = new CategoryBuilder().setName("GENDER")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
@@ -76,34 +68,37 @@ public class CodeHierarchyTest {
                 .setLabel("Man").createCategory());
         rootCategory.addChild(new CategoryBuilder().setName("TRANSGENDER")
                 .setLabel("Transgender").createCategory());
-        categoryService.save(rootCategory);
+        rootCategory = categoryService.save(rootCategory);
 
 
         // Create a responsdomain with a categoryschema.
         responseDomain = new ResponseDomain();
         responseDomain.setName("Sex mandatory answer");
-        responseDomain.setResponseKind(ResponseKind.List);
-        responseDomain.setCategory(rootCategory);
+        responseDomain.setResponseKind(ResponseKind.LIST);
+        responseDomain.setManagedRepresentation(rootCategory);
         responseDomain = responseDomainService.save(responseDomain);
 
 
         // add codevalues to the responsdomain/categoryschema instanse
         Integer i = 0;
-//        for(Category cat:rootCategory.getAllChildrenFlatten()){
-//            Code code = new Code();
-//            code.setCategory(cat);
-//            code.setCodeValue(i.toString());
-//            codeService.save(code);
-//        }
+        for(Category cat:rootCategory.getAllChildrenFlatten()){
+            Code code = new Code();
+            code.setCodeValue(i.toString());
+            code.setResponseDomain(responseDomain);
+            cat.setCode(code);
+            i++;
+        }
+        rootCategory = categoryService.save(rootCategory);
 
     }
 
     @Test
     public void findByResponseDomainAndCategoryTest() throws Exception {
 
-        List<Code> codeList = codeService.findByResponseDomainId(question.getId());
-        assertEquals(3, codeList.size());
-        assertThat("responsDomainCode should not contain any items.", codeService.findByCategoryId(rootCategory.getId()).size(), is(0));
+        ResponseDomain rd = responseDomainService.findOne(responseDomain.getId());
+        for(Category cat:rd.getManagedRepresentation().getAllChildrenFlatten()) {
+            assertNotNull(cat.getCode());
+        }
 
     }
 

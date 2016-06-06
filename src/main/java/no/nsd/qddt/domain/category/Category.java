@@ -41,8 +41,8 @@ public class Category extends AbstractEntityAudit {
     @OneToOne(mappedBy="category", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Code code;
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    private Set<ResponseDomain> responseDomain = new HashSet<>();
+//    @OneToMany(mappedBy="managedRepresentation", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    private Set<ResponseDomain> responseDomain = new HashSet<>();
 
     @OneToMany(cascade = { CascadeType.ALL}, fetch = FetchType.EAGER)
 //    @OrderColumn(name="category_idx")
@@ -179,40 +179,20 @@ public class Category extends AbstractEntityAudit {
     }
 
     public void setCode(Code code) {
+        code.setCategory(this);
+
         this.code = code;
+
     }
 
-    public Set<ResponseDomain> getResponseDomain() {
-        return responseDomain;
-    }
+//    public Set<ResponseDomain> getResponseDomain() {
+//        return responseDomain;
+//    }
+//
+//    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
+//        this.responseDomain = responseDomain;
+//    }
 
-    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
-        this.responseDomain = responseDomain;
-    }
-
-    public Set<Category> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<Category> children) {
-        this.children = children;
-    }
-
-    public void addChild(Category children) {
-        this.children.add(children);
-    }
-
-    public Set<Category> getAllChildrenFlatten(){
-        Set<Category> grandchildren = new HashSet<>();
-
-        for(Category c:this.getChildren()){
-            if (c.getHierarchyLevel() == HierarchyLevel.ENTITY)
-                grandchildren.add(c);
-            else
-                grandchildren.addAll(c.getAllChildrenFlatten());
-        }
-        return grandchildren;
-    }
 
     public ResponseCardinality getInputLimit() {
         return inputLimit;
@@ -241,6 +221,32 @@ public class Category extends AbstractEntityAudit {
     public void setCategoryJsonDDI(String categoryJsonDDI) {
         this.categoryJsonDDI = categoryJsonDDI;
     }
+
+    public Set<Category> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Category> children) {
+        this.children = children;
+    }
+
+    public void addChild(Category children) {
+        this.children.add(children);
+    }
+
+    public Set<Category> getAllChildrenFlatten(){
+        Set<Category> grandchildren = new HashSet<>();
+
+        for(Category c:this.getChildren()){
+            if (c.getHierarchyLevel() == HierarchyLevel.ENTITY)
+                grandchildren.add(c);
+            else
+                grandchildren.addAll(c.getAllChildrenFlatten());
+        }
+        return grandchildren;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -282,7 +288,7 @@ public class Category extends AbstractEntityAudit {
     public boolean fieldCompare(Category o) {
 
         if (code != null && !code.equals(o.code)) return false;
-        if (responseDomain != null && !responseDomain.equals(o.responseDomain)) return false;
+//        if (responseDomain != null && !responseDomain.equals(o.responseDomain)) return false;
         if (children != null && !children.equals(o.children)) return false;
         if (label != null && !label.equals(o.label)) return false;
         if (description != null && !description.equals(o.description)) return false;

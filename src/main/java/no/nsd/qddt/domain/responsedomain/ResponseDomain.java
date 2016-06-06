@@ -71,7 +71,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     /*
         a link to a category root/group (template)
      */
-    private Category category;
+    private Category managedRepresentation;
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
@@ -132,20 +132,12 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.questionItems = questionItems;
     }
 
-//    public Set<Code> getCodes() {
-//        return codes;
-//    }
-//
-//    public void setCodes(Set<Code> codes) {
-//        this.codes = codes;
-//    }
-
-    public Category getCategory() {
-        return category;
+    public Category getManagedRepresentation() {
+        return managedRepresentation;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setManagedRepresentation(Category managedRepresentation) {
+        this.managedRepresentation = managedRepresentation;
     }
 
     @Override
@@ -192,7 +184,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
                 " name='" + super.getName() + '\'' +
                 " id='" + super.getId() + '\'' +
                 " modified='" + super.getModified() + '\'' +
-                " category = " + category + '\'' +
+                " managedRepresentation = " + managedRepresentation + '\'' +
                 "}";
     }
 }

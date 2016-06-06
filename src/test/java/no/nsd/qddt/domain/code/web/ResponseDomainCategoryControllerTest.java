@@ -2,14 +2,19 @@ package no.nsd.qddt.domain.code.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
+import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.code.Code;
-import no.nsd.qddt.domain.code.CodeService;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
+import no.nsd.qddt.utils.builders.CategoryBuilder;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -19,9 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired
-    private CodeService entityService;
+    private CategoryService categoryService;
 
-    private Code entity;
+    @Autowired
+    private ResponseDomainService responseDomainService;
+
+    private ResponseDomain responseDomain;
 
     @Override
     public void setup() {
@@ -29,31 +37,42 @@ public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrati
 
         super.getBeforeSecurityContext().createSecurityContext();
 
-        entity = new Code();
-        entity.setCodeValue("1");
-        entity = entityService.save(entity);
+        Category rootCategory = new CategoryBuilder().setName("GENDER")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("Gender").createCategory();
+        rootCategory.addChild(new CategoryBuilder().setName("FEMALE")
+                .setLabel("Female").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("MAN")
+                .setLabel("Man").createCategory());
+        rootCategory.addChild(new CategoryBuilder().setName("TRANSGENDER")
+                .setLabel("Transgender").createCategory());
+        rootCategory = categoryService.save(rootCategory);
+
+
+        // Create a responsdomain with a categoryschema.
+        responseDomain = new ResponseDomain();
+        responseDomain.setName("Sex mandatory answer");
+        responseDomain.setResponseKind(ResponseKind.LIST);
+        responseDomain.setManagedRepresentation(rootCategory);
+        responseDomain = responseDomainService.save(responseDomain);
 
         super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 
-    @Test
-    public void testGet() throws Exception {
-        mvc.perform(get("/code/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isOk());
-    }
 
     @Test
     public void testUpdate() throws Exception {
-        entity.setCodeValue(entity.getCodeValue() + " edited");
-
-        mvc.perform(post("/code").header("Authorization", "Bearer " + accessToken)
-                .contentType(rest.getContentType())
-                .content(rest.json(entity)))
-                .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.codeValue", is(entity.getCodeValue())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
-                .andExpect(status().isOk());
+//        entity.setCodeValue(entity.getCodeValue() + " edited");
+//
+//        mvc.perform(post("/code").header("Authorization", "Bearer " + accessToken)
+//                .contentType(rest.getContentType())
+//                .content(rest.json(entity)))
+//                .andExpect(content().contentType(rest.getContentType()))
+//                .andExpect(jsonPath("$.codeValue", is(entity.getCodeValue())))
+//                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+//                .andExpect(status().isOk());
     }
 
     @Test
@@ -70,11 +89,5 @@ public class ResponseDomainCategoryControllerTest extends ControllerWebIntegrati
                 .andExpect(status().isCreated());
     }
 
-    @Test
-    public void testDelete() throws Exception {
-        mvc.perform(post("/responsedomaincode/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isOk());
 
-        assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));
-    }
 }
