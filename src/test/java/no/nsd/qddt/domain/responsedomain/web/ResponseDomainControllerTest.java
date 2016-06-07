@@ -7,9 +7,11 @@ import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.utils.builders.CategoryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +42,11 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
     @Autowired
     private CategoryService categoryService;
 
-    private ResponseDomain entity;
+    private ResponseDomain rd;
+
+    private String rootId;
+
+    private Category saved;
 
     @Override
     public void setup() {
@@ -84,31 +90,39 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .setType(CategoryType.CATEGORY)
                 .setLabel("Don't want to").createCategory());
         rootCategory.addChild(group);
-        categoryService.save(rootCategory);
+        saved = categoryService.save(rootCategory);
 
+        rootId = rootCategory.getId().toString();
         super.getBeforeSecurityContext().destroySecurityContext();
 
     }
 
     @Test
     public void testGet() throws Exception {
-        mvc.perform(get("/responsedomain/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(get("/responsedomain/"+rd.getId()).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
     }
 
     // FIXME: 11.04.2016
-//    @Test
-//    public void testUpdate() throws Exception {
-//        entity.setName(entity.getName() + " edited");
-//
-//        mvc.perform(post("/responsedomain").header("Authorization", "Bearer " + accessToken)
-//                .contentType(rest.getContentType())
-//                .content(rest.json(entity)))
-//                .andExpect(content().contentType(rest.getContentType()))
-//                .andExpect(jsonPath("$.name", is(entity.getName())))
-//                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    public void testUpdate() throws Exception {
+
+        String retval = mvc.perform(get("/category/"+ rootId).header("Authorization", "Bearer " + accessToken)).andReturn().getResponse().getContentAsString();
+
+        rd = new ResponseDomain();
+        rd.setManagedRepresentation(saved);
+        rd.setResponseKind(ResponseKind.MIXED);
+        rd.getManagedRepresentation().getAllChildrenFlatten().forEach( category -> category.setCode(new Code(rd,category,"test")));
+
+
+        mvc.perform(post("/responsedomain").header("Authorization", "Bearer " + accessToken)
+                .contentType(rest.getContentType())
+                .content(rest.json(rd)))
+                .andExpect(content().contentType(rest.getContentType()))
+                .andExpect(jsonPath("$.name", is(rd.getName())))
+                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+                .andExpect(status().isOk());
+    }
 
     @Test
     public void testCreate() throws Exception {

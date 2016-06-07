@@ -30,7 +30,9 @@ public class ResponseCardinality {
         this.maximum = maximum;
     }
 
-    public ResponseCardinality(){}
+    public ResponseCardinality(){
+        this("1","1");
+    }
 
     public ResponseCardinality(String minimum, String maximum) {
         this.setMinimum(minimum);

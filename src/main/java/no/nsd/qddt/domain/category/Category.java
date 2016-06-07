@@ -8,9 +8,7 @@ import no.nsd.qddt.domain.code.Code;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -38,15 +36,17 @@ import java.util.UUID;
 @Table(name = "CATEGORY")
 public class Category extends AbstractEntityAudit {
 
-    @OneToOne(mappedBy="category", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Code code;
 
 //    @OneToMany(mappedBy="managedRepresentation", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 //    private Set<ResponseDomain> responseDomain = new HashSet<>();
 
-    @OneToMany(cascade = { CascadeType.ALL}, fetch = FetchType.EAGER)
-//    @OrderColumn(name="category_idx")
-    private Set<Category> children = new HashSet<>();
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OrderColumn(name="category_idx")
+    private List<Category> children = new ArrayList<>();
+
+
 
 
     //name -> A description of a particular category or response.
@@ -179,19 +179,11 @@ public class Category extends AbstractEntityAudit {
     }
 
     public void setCode(Code code) {
-        code.setCategory(this);
-
-        this.code = code;
-
+        if (code != null) {
+            code.setCategory(this);
+            this.code = code;
+        }
     }
-
-//    public Set<ResponseDomain> getResponseDomain() {
-//        return responseDomain;
-//    }
-//
-//    public void setResponseDomain(Set<ResponseDomain> responseDomain) {
-//        this.responseDomain = responseDomain;
-//    }
 
 
     public ResponseCardinality getInputLimit() {
@@ -222,11 +214,11 @@ public class Category extends AbstractEntityAudit {
         this.categoryJsonDDI = categoryJsonDDI;
     }
 
-    public Set<Category> getChildren() {
+    public List<Category> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<Category> children) {
+    public void setChildren(List<Category> children) {
         this.children = children;
     }
 
@@ -234,17 +226,17 @@ public class Category extends AbstractEntityAudit {
         this.children.add(children);
     }
 
-    public Set<Category> getAllChildrenFlatten(){
-        Set<Category> grandchildren = new HashSet<>();
-
-        for(Category c:this.getChildren()){
-            if (c.getHierarchyLevel() == HierarchyLevel.ENTITY)
-                grandchildren.add(c);
-            else
-                grandchildren.addAll(c.getAllChildrenFlatten());
-        }
-        return grandchildren;
-    }
+//    public Set<Category> getAllChildrenFlatten(){
+//        Set<Category> grandchildren = new HashSet<>();
+//
+//        for(Category c:this.getChildren()){
+//            if (c.getHierarchyLevel() == HierarchyLevel.ENTITY)
+//                grandchildren.add(c);
+//            else
+//                grandchildren.addAll(c.getAllChildrenFlatten());
+//        }
+//        return grandchildren;
+//    }
 
 
 

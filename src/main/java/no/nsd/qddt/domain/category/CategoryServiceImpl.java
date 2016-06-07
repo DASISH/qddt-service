@@ -8,10 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/FieldLevelDocumentation/schemas/logicalproduct_xsd/elements/Category.html
@@ -84,7 +81,8 @@ class CategoryServiceImpl implements CategoryService {
         // This code fixes that.
         Category retval = null;
         try {
-            Set<Category> tmplist = new HashSet<>();
+            List<Category> tmplist = new ArrayList<>();
+            instance.getChildren().removeIf(child -> child.getName().isEmpty() || child.getLabel().isEmpty());
             instance.getChildren().forEach(child -> tmplist.add(save(child)));
             instance.setChildren(tmplist);
             if (instance.getId() != null){
