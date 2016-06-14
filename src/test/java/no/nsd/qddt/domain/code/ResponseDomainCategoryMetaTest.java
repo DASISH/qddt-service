@@ -12,7 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,17 +40,25 @@ public class ResponseDomainCategoryMetaTest {
     private Category c1,c2;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
 
-        r1 = responseDomainService.save(new ResponseDomain());
-        r2 = responseDomainService.save(new ResponseDomain());
-
+        r1 = new ResponseDomain();
         c1 = categoryService.save(new Category());
-        c2 = categoryService.save(new Category());
+        r1.setManagedRepresentation(c1);
+        r1 =responseDomainService.save(r1);
+        codeService.save(new Code(c1,r1,"1"));
 
-        codeService.save(new Code(r1, c1,"1"));
-        codeService.save(new Code( r2, c2,"2"));
-        codeService.save(new Code( r1, c2,"3"));
+
+        r2 = new ResponseDomain();
+        c2 = new Category();
+        c2.setChildren(Arrays.asList(new Category("child","Child")));
+        c2 = categoryService.save(c2);
+
+        r2.setManagedRepresentation(c2);
+        r2 = responseDomainService.save(r2);
+        codeService.save(new Code(c1,r2,"2"));
+        codeService.save(new Code(c2.getChildren().get(0),r1,"3"));
+
     }
 
     @Test
@@ -61,7 +73,8 @@ public class ResponseDomainCategoryMetaTest {
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<Code> rdcs = codeService.findByResponseDomainId(r1.getId());
-        assertEquals("Expected two elements!", rdcs.size(), 2);
+        Category root = responseDomainService.findOne(r1.getId()).getManagedRepresentation();
+
+        assertEquals("Expected 1 elements!", root.getCode().getCodeValue(), "1");
     }
 }

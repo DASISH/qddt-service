@@ -56,7 +56,7 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     @JoinColumn(name="survey_id",updatable = false)
     private SurveyProgram surveyProgram;
 
-    @Column(length = 2000)
+    @Column(length = 10000)
     private String description;
 
     @Transient

@@ -62,7 +62,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @OneToMany(fetch = FetchType.EAGER,  cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-    @Column(name = "description", length = 2000)
+    @Column(name = "description", length = 10000)
     private String abstractDescription;
 
     @Override

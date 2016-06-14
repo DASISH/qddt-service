@@ -50,7 +50,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
     @OrderBy(value = "modified ASC")
     private Set<Study> studies = new HashSet<>();
 
-    @Column(length = 2000)
+    @Column(length = 10000)
     private String description;
 
 

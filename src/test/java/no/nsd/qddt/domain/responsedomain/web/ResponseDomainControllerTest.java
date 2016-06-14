@@ -21,6 +21,8 @@ import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -112,7 +114,7 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         rd = new ResponseDomain();
         rd.setManagedRepresentation(saved);
         rd.setResponseKind(ResponseKind.MIXED);
-        rd.getManagedRepresentation().getAllChildrenFlatten().forEach( category -> category.setCode(new Code(rd,category,"test")));
+//        rd.getManagedRepresentation().getAllChildrenFlatten().forEach( category -> category.setCode(new Code(rd,category,"test")));
 
 
         mvc.perform(post("/responsedomain").header("Authorization", "Bearer " + accessToken)
@@ -140,10 +142,10 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
 
     @Test
     public void testDelete() throws Exception {
-        mvc.perform(post("/responsedomain/delete/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(post("/responsedomain/delete/"+rootId).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
 
-        assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));
+        assertFalse("Instruction should no longer exist", entityService.exists(UUID.fromString(rootId)));
     }
 
     @Test

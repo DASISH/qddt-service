@@ -58,7 +58,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @Column(name = "label")
     private String label;
 
-    @Column(name = "description", length = 2000)
+    @Column(name = "description", length = 10000)
     private String description;
 
     @Transient
@@ -96,12 +96,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
     }
 
+
     public void removeQuestion(Question question) {
         this.questionItems.removeIf(questionItem ->
             questionItem.getQuestion().equals(question));
         this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
 
     }
+
 
     public void addQuestionItem(QuestionItem questionItem) {
 
@@ -111,6 +113,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         }
     }
 
+
     public void removeQuestionItem(QuestionItem questionItem) {
 
         if (this.questionItems.contains(questionItem)){
@@ -118,6 +121,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
             this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
         }
     }
+
 
     public Set<Concept> getChildren() {
         return children;
