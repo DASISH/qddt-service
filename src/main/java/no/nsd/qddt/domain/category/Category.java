@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.code.Code;
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.Persistent;
 
 import javax.persistence.*;
 import java.util.*;
@@ -36,18 +37,12 @@ import java.util.*;
 @Table(name = "CATEGORY")
 public class Category extends AbstractEntityAudit {
 
-    @OneToOne(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Transient
     private Code code;
-
-//    @OneToMany(mappedBy="managedRepresentation", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-//    private Set<ResponseDomain> responseDomain = new HashSet<>();
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
     private List<Category> children = new ArrayList<>();
-
-
-
 
     //name -> A description of a particular category or response.
 
@@ -101,10 +96,11 @@ public class Category extends AbstractEntityAudit {
     We'll store them in a textfield and let the gui do the magic.
      i.e.  datetime format
      */
-    private String categoryJsonDDI;
+//    private String categoryJsonDDI;
 
     public Category() {
-
+        hierarchyLevel = HierarchyLevel.ENTITY;
+        setCategoryType(CategoryType.CATEGORY);
     }
 
     /***
@@ -113,6 +109,7 @@ public class Category extends AbstractEntityAudit {
      * @param label Shorter version of name if applicable
      */
     public Category(String name, String label){
+        this();
         setName(name);
         setLabel(label);
     }
@@ -128,15 +125,18 @@ public class Category extends AbstractEntityAudit {
                 case MISSING_GROUP:
                 case LIST:
                     setClassificationLevel(CategoryRelationCodeType.Ordinal);
+                    setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
                     break;
                 case SCALE:
                     setClassificationLevel(CategoryRelationCodeType.Interval);
+                    setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
                     break;
                 case MIXED:
                     setClassificationLevel(CategoryRelationCodeType.Continuous);
+                    setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
                     break;
                 default:
-//                setClassificationLevel(CategoryRelationCodeType.Nominal);
+                    setHierarchyLevel(HierarchyLevel.ENTITY);
                     break;
             }
         }
@@ -179,10 +179,7 @@ public class Category extends AbstractEntityAudit {
     }
 
     public void setCode(Code code) {
-        if (code != null) {
-            code.setCategory(this);
             this.code = code;
-        }
     }
 
 
@@ -206,13 +203,33 @@ public class Category extends AbstractEntityAudit {
         this.classificationLevel = classificationLevel;
     }
 
-    public String getCategoryJsonDDI() {
-        return categoryJsonDDI;
-    }
-
-    public void setCategoryJsonDDI(String categoryJsonDDI) {
-        this.categoryJsonDDI = categoryJsonDDI;
-    }
+//    public Map<String,String> getCategoryJsonDDI() {
+//        if (categoryJsonDDI.isEmpty())
+//        switch (this.getCategoryType()) {
+//                case DATETIME:
+//                    break;
+//                case TEXT:
+//                    break;
+//                case NUMERIC:
+//                    break;
+//                case CATEGORY:
+//                    break;
+//                case MISSING_GROUP:
+//                case LIST:
+//                    break;
+//                case SCALE:
+//                    categoryJsonDDI.put("DegreeSlopeFromHorizontal","0");       //A horizontal line is described as a 0 (zero) slope. Expressed as the number of degrees positive (right end angle above the horizontal line) or degrees positive (right end descending below the horizontal line).
+//                    categoryJsonDDI.put("DimensionNumber","1");                 //A number used to identify this dimension when describing its intersect point with one or more dimensions in the same scale representation. The dimension is denoted with a 1-based indexing. Dimension in the scale are numbered (1,2,n).
+//                    categoryJsonDDI.put("ValueIncrement","1");                  //Identifies the frequency for increment markers (with or without value attachments).
+//                    break;
+//            }
+//        return categoryJsonDDI;
+//
+//    }
+//
+//    public void setCategoryJsonDDI(Map<String, String> categoryJsonDDI) {
+//        this.categoryJsonDDI = categoryJsonDDI;
+//    }
 
     public List<Category> getChildren() {
         return children;
@@ -286,7 +303,7 @@ public class Category extends AbstractEntityAudit {
         if (description != null && !description.equals(o.description)) return false;
         if (hierarchyLevel != null && !hierarchyLevel.equals(o.hierarchyLevel)) return false;
         if (categoryType != null && !categoryType.equals(o.categoryType)) return false;
-        if (categoryJsonDDI != null && !categoryJsonDDI.equals(o.categoryJsonDDI)) return false;
+//        if (categoryJsonDDI != null && !categoryJsonDDI.equals(o.categoryJsonDDI)) return false;
 
         return super.fieldCompare(o);
 

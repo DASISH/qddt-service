@@ -13,6 +13,4 @@ import java.util.UUID;
 interface CodeRepository extends BaseRepository<Code, UUID> {
 
     List<Code> findByResponseDomainId(UUID responseDomainId);
-
-    List<Code> findByCategoryId(UUID codeId);
 }

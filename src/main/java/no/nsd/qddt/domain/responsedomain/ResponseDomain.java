@@ -1,16 +1,20 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.code.Code;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -60,8 +64,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Set<Code> codes = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = CascadeType.ALL)
+    @OrderColumn(name="code_idx")
+    @JsonIgnore
+    private List<Code> codes = new ArrayList<>();
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -132,12 +138,56 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.questionItems = questionItems;
     }
 
+    /*
+    this is useful for populating codes before saving to DB
+     */
+    public void populateCodes() {
+        this.codes.clear();
+        harvestCatCodes(managedRepresentation);
+    }
+
+    private void harvestCatCodes(Category current){
+        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
+            this.codes.add(current.getCode());
+        }
+
+        current.getChildren().forEach(this::harvestCatCodes);
+    }
+
+    @Transient
+    private int _Index;    // /used to keep track of current item in the recursive call populateCatCodes
+    /*
+     this function is useful for populating managedRepresentation after loading from DB
+      */
+    private void populateCatCodes(Category current){
+        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
+            Code code = codes.get(_Index);
+            current.setCode(code);
+            _Index++;
+        }
+
+        current.getChildren().forEach(this::populateCatCodes);
+    }
+
+
     public Category getManagedRepresentation() {
+        _Index = 0;
+        populateCatCodes(managedRepresentation);
         return managedRepresentation;
     }
 
     public void setManagedRepresentation(Category managedRepresentation) {
+        this.codes.clear();
+        harvestCatCodes(managedRepresentation);
         this.managedRepresentation = managedRepresentation;
+    }
+
+    public List<Code> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(List<Code> codes) {
+        this.codes = codes;
     }
 
     @Override
@@ -169,7 +219,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     }
 
-
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -184,7 +233,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
                 " name='" + super.getName() + '\'' +
                 " id='" + super.getId() + '\'' +
                 " modified='" + super.getModified() + '\'' +
-                " managedRepresentation = " + managedRepresentation + '\'' +
+                " managedRepresentation = " + managedRepresentation.getCategoryType() + '\'' +
                 "}";
     }
 }

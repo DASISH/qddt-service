@@ -58,13 +58,14 @@ class CodeServiceImpl implements CodeService {
     }
 
 
+//    @Override
+//    public List<Code> findByResponseDomainId(UUID responseDomainId) {
+//        return codeRepository.findByResponseDomainId(responseDomainId);
+//    }
+
     @Override
     public List<Code> findByResponseDomainId(UUID responseDomainId) {
         return codeRepository.findByResponseDomainId(responseDomainId);
     }
 
-    @Override
-    public List<Code> findByCategoryId(UUID codeId) {
-        return codeRepository.findByCategoryId(codeId);
-    }
 }

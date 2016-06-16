@@ -17,8 +17,6 @@ import java.util.UUID;
 interface CategoryRepository extends BaseRepository<Category,UUID> {
 //    @NamedNativeQuery(name = "findUniqueCategoryInOrder", query= "select distinct category as name from Code  order by category", resultClass= Category.class)
 
-    List<Category> findByNameIgnoreCaseLike(String name);
-
     Page<Category> findByNameIgnoreCaseLike(String name, Pageable pageable);
 
     Page<Category> findByCategoryTypeAndNameIgnoreCaseLike(CategoryType categoryType, String name, Pageable pageable);

@@ -57,9 +57,5 @@ public class CodeController {
         return codeService.findByResponseDomainId(firstId);
     }
 
-    //    MetaController
-    @RequestMapping(value = "/list/by-code/{uuid}", method = RequestMethod.GET)
-    public List<Code> getBySecond(@PathVariable("uuid") UUID secondId) {
-        return codeService.findByCategoryId(secondId);
-    }
+
 }

@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
 public class Version {
 
     private static final String versionFormat = "%1$s.%2$s %3$s";
-    private Integer major=0;
+    private Integer major=1;
     private Integer minor=0;
     private String versionLabel="";
 

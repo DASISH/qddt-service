@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/FieldLevelDocumentation/schemas/logicalproduct_xsd/elements/Category.html
@@ -82,7 +84,10 @@ class CategoryServiceImpl implements CategoryService {
         Category retval = null;
         try {
             List<Category> tmplist = new ArrayList<>();
+            int size = instance.getChildren().size();
             instance.getChildren().removeIf(child -> child.getName().isEmpty() || child.getLabel().isEmpty());
+            if (size != instance.getChildren().size())
+                System.out.println("removed empty children ->" + (instance.getChildren().size()- size) );
             instance.getChildren().forEach(child -> tmplist.add(save(child)));
             instance.setChildren(tmplist);
             if (instance.getId() != null){

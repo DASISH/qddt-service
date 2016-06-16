@@ -22,11 +22,5 @@ public interface CodeService extends BaseService<Code, UUID> {
      */
     List<Code> findByResponseDomainId(UUID responseDomainId);
 
-    /**
-     * Find ResponseDomainCode by category
-     * @param codeId
-     * @return
-     */
-    List<Code> findByCategoryId(UUID codeId);
 
 }

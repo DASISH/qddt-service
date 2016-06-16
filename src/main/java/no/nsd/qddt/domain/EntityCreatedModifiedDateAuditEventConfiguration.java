@@ -36,19 +36,17 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             if (entity instanceof AbstractEntityAudit) {
                 ((AbstractEntityAudit) entity).setAgency(user.getAgency());
                 ((AbstractEntityAudit) entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
-                Version version = new Version();
-                version.incMinor();
-                ((AbstractEntityAudit) entity).setVersion(version);
+                ((AbstractEntityAudit) entity).setVersion(new Version());
             }
             if (entity instanceof Category) {
-                entity = FixAndValidate((Category)entity);
+                entity = FixAndValidateCategoryType((Category)entity);
             }
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
 
-    private Category FixAndValidate(Category input){
+    private Category FixAndValidateCategoryType(Category input){
         if (input.getCategoryType() == null)
             input.setCategoryType(CategoryType.CATEGORY);
         switch (input.getCategoryType()) {
@@ -94,7 +92,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                 switch (change) {
                     case NEW_COPY_OF:
                         ver = new Version();
-                        ver.incMajor();
+//                        ver.incMajor();
                         break;
                     case MILESTONE:
                     case CONCEPTUAL:
