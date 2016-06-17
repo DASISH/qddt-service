@@ -123,6 +123,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     }
 
     public ResponseCardinality getResponseCardinality() {
+        if (responseCardinality == null)
+            return new ResponseCardinality();
         return responseCardinality;
     }
 
