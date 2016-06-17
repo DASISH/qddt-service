@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.category;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
@@ -38,6 +40,8 @@ import java.util.*;
 public class Category extends AbstractEntityAudit {
 
     @Transient
+    @JsonSerialize
+    @JsonDeserialize
     private Code code;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -99,6 +103,7 @@ public class Category extends AbstractEntityAudit {
 //    private String categoryJsonDDI;
 
     public Category() {
+        code = new Code();
         hierarchyLevel = HierarchyLevel.ENTITY;
         setCategoryType(CategoryType.CATEGORY);
     }

@@ -1,9 +1,5 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.HierarchyLevel;
-import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.code.Code;
-import no.nsd.qddt.domain.code.CodeService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,10 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.PrimitiveIterator;
 import java.util.UUID;
 
 /**
@@ -72,7 +65,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, Pageable pageable) {
-        return responseDomainRepository.findByResponseKindAndNameLikeOrDescriptionLike(responseKind,name,description,pageable);
+        Page<ResponseDomain> pages = responseDomainRepository.findByResponseKindAndNameLikeOrDescriptionLike(responseKind,name,description,pageable);
+        return pages;
     }
 
     @Override

@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Stig Norland
  */
-@Transactional
+
 @WebIntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QDDT.class)
@@ -68,13 +68,13 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         group.addChild(new CategoryBuilder()
                 .setLabel("Very Happy").createCategory());
         group.addChild(new CategoryBuilder()
-                .setLabel("Very Unhappy").createCategory());
-        group.addChild(new CategoryBuilder()
                 .setLabel("Happy").createCategory());
         group.addChild(new CategoryBuilder()
                 .setLabel("Inbetween").createCategory());
         group.addChild(new CategoryBuilder()
                 .setLabel("UnHappy").createCategory());
+        group.addChild(new CategoryBuilder()
+                .setLabel("Very Unhappy").createCategory());
 
         rootCategory.addChild(group);
 
@@ -83,18 +83,15 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .setType(CategoryType.MISSING_GROUP)
                 .createCategory();
         group.addChild(new CategoryBuilder().setName("NA")
-                .setType(CategoryType.CATEGORY)
                 .setLabel("N/A").createCategory());
         group.addChild(new CategoryBuilder().setName("DONT_KNOW")
-                .setType(CategoryType.CATEGORY)
                 .setLabel("Don't know").createCategory());
         group.addChild(new CategoryBuilder().setName("CANNOT")
-                .setType(CategoryType.CATEGORY)
                 .setLabel("Don't want to").createCategory());
         rootCategory.addChild(group);
         saved = categoryService.save(rootCategory);
 
-        rootId = rootCategory.getId().toString();
+        rootId = saved.getId().toString();
         super.getBeforeSecurityContext().destroySecurityContext();
 
     }
@@ -112,19 +109,31 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         String retval = mvc.perform(get("/category/"+ rootId).header("Authorization", "Bearer " + accessToken)).andReturn().getResponse().getContentAsString();
 
         rd = new ResponseDomain();
+        rd.setName("YEAH");
+        PopulateCatCodes(rd,saved);
         rd.setManagedRepresentation(saved);
         rd.setResponseKind(ResponseKind.MIXED);
-//        rd.getManagedRepresentation().getAllChildrenFlatten().forEach( category -> category.setCode(new Code(rd,category,"test")));
 
-
-        mvc.perform(post("/responsedomain").header("Authorization", "Bearer " + accessToken)
+        retval = mvc.perform(post("/responsedomain").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(rd)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(rd.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
     }
+
+    private int i=0;
+    private void PopulateCatCodes(ResponseDomain rd, Category current){
+        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY){
+            current.setCode(new Code(rd,Integer.toString(i++)));
+        }
+
+        for (Category cat :current.getChildren()) {
+            PopulateCatCodes(rd,cat);
+        }
+
+    }
+
+
 
     @Test
     public void testCreate() throws Exception {

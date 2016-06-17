@@ -144,11 +144,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     public void populateCodes() {
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
+        System.out.println("populateCodes");
     }
 
     private void harvestCatCodes(Category current){
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
-            this.codes.add(current.getCode());
+            Code code = current.getCode();
+            code.setResponseDomain(this);
+            this.codes.add(code);
         }
 
         current.getChildren().forEach(this::harvestCatCodes);
@@ -171,12 +174,15 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
 
     public Category getManagedRepresentation() {
+        System.out.println("getManagedRepresentation");
         _Index = 0;
         populateCatCodes(managedRepresentation);
         return managedRepresentation;
     }
 
     public void setManagedRepresentation(Category managedRepresentation) {
+        System.out.println("setManagedRepresentation");
+
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
         this.managedRepresentation = managedRepresentation;
