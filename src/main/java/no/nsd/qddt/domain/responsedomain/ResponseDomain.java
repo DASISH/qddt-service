@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.code.Code;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

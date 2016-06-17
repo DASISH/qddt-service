@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -50,12 +49,5 @@ public class CodeController {
     public void delete(@PathVariable("id") UUID id) {
         codeService.delete(id);
     }
-
-    //    MetaController
-    @RequestMapping(value = "/list/by-responsedomain/{uuid}", method = RequestMethod.GET)
-    public List<Code> getByFirst(@PathVariable("uuid") UUID firstId) {
-        return codeService.findByResponseDomainId(firstId);
-    }
-
 
 }

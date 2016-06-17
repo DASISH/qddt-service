@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.agency;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;

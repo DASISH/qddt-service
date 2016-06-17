@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.code;
 
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -20,14 +20,13 @@ public class Code  extends AbstractEntity {
 
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "responsedomain_id")
-    @JsonIgnore
     private ResponseDomain responseDomain;
 
     @Column(name = "code_value")
     private String codeValue;
 
     public Code() {
-
+        codeValue = "";
     }
 
 
@@ -47,6 +46,7 @@ public class Code  extends AbstractEntity {
     }
 
 
+    @JsonIgnore
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }

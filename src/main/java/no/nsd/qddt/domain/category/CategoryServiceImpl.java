@@ -85,7 +85,7 @@ class CategoryServiceImpl implements CategoryService {
         try {
             List<Category> tmplist = new ArrayList<>();
             int size = instance.getChildren().size();
-            instance.getChildren().removeIf(child -> child.getName().isEmpty() || child.getLabel().isEmpty());
+            instance.getChildren().removeIf(child -> child.getName() == null  && child.getLabel() == null);
             if (size != instance.getChildren().size())
                 System.out.println("removed empty children ->" + (instance.getChildren().size()- size) );
             instance.getChildren().forEach(child -> tmplist.add(save(child)));
