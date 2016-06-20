@@ -166,9 +166,13 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
       */
     private void populateCatCodes(Category current){
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
-            Code code = codes.get(_Index);
-            current.setCode(code);
-            _Index++;
+            try {
+                Code code = codes.get(_Index);
+                current.setCode(code);
+                _Index++;
+            } catch(Exception e) {
+                current.setCode(new Code());
+            }
         }
 
         current.getChildren().forEach(this::populateCatCodes);

@@ -67,14 +67,11 @@ public class ResponseDomainController {
         Page<ResponseDomain> responseDomains = null;
 
         if (question == null || question.isEmpty()) {
-            System.out.println("findBy(" + respons + ")");
             responseDomains = responseDomainService.findBy(ResponseKind.valueOf(respons), Likeify(name), Likeify(description), pageable);
         } else {
-            System.out.println("findByQuestion(" + respons + ")");
             responseDomains = responseDomainService.findByQuestion(ResponseKind.valueOf(respons),  Likeify(name), Likeify(question), pageable);
         }
 
-        System.out.println("RD returned ->" + responseDomains.getTotalElements());
         return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
     }
 
