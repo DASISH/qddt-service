@@ -189,6 +189,8 @@ public class Category extends AbstractEntityAudit {
 
 
     public ResponseCardinality getInputLimit() {
+        if (inputLimit == null)
+            setInputLimit("1","1");
         return inputLimit;
     }
 

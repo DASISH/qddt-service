@@ -106,14 +106,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.description = description;
     }
 
-    public Set<QuestionItem> getQuestions() {
-        return questionItems;
-    }
-
-    public void setQuestions(Set<QuestionItem> questionItems) {
-        this.questionItems = questionItems;
-    }
-
     public ResponseKind getResponseKind() {
         return responseKind;
     }
@@ -180,18 +172,17 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
 
     public Category getManagedRepresentation() {
-        System.out.println("getManagedRepresentation");
         _Index = 0;
         populateCatCodes(managedRepresentation);
         return managedRepresentation;
     }
 
     public void setManagedRepresentation(Category managedRepresentation) {
-        System.out.println("setManagedRepresentation");
-
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
         this.managedRepresentation = managedRepresentation;
+        if (responseCardinality == null)
+            setResponseCardinality(managedRepresentation.getInputLimit());
     }
 
     public List<Code> getCodes() {
