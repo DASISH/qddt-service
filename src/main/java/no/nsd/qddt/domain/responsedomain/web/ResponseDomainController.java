@@ -72,7 +72,6 @@ public class ResponseDomainController {
             responseDomains = responseDomainService.findByQuestion(ResponseKind.valueOf(respons),  Likeify(name), Likeify(question), pageable);
         }
 
-        System.out.println("response: " + respons + " responsedomains: " + responseDomains.getTotalElements());
         return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
     }
 
