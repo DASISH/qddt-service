@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.questionItem;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
@@ -30,6 +31,7 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     @ManyToOne
     @JoinColumn(name = "responsedomain_id")
+    @JsonManagedReference
     private ResponseDomain responseDomain;
 
     @Column(name = "responsedomain_revision")
@@ -58,13 +60,6 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
-    }
-
-    public void addConcept(Concept concept){
-        if (!this.concepts.contains(concept)){
-            this.concepts.add(concept);
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-       }
     }
 
     public long getQuestionRevivsion() {
@@ -133,7 +128,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     public String toString() {
         return "QuestionItem{" +
                 ", question='" + question.getQuestion() + '\'' +
-                ", responseDomain=" + responseDomain.getName()  + '\'' +
+                ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
                 "} " + super.toString();
     }
 }

@@ -89,11 +89,11 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
 
     public void addQuestion(Question question) {
-
         QuestionItem qi = new QuestionItem();
         qi.setQuestion(question);
-        this.questionItems.add(qi);
-        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+        qi.getConcepts().add(this);
+        questionItems.add(qi);
+        setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
     }
 
 
@@ -101,26 +101,25 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         this.questionItems.removeIf(questionItem ->
             questionItem.getQuestion().equals(question));
         this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-
     }
 
 
-    public void addQuestionItem(QuestionItem questionItem) {
+//    public void addQuestionItem(QuestionItem questionItem) {
+//        if (!this.questionItems.contains(questionItem)){
+//            questionItem.getConcepts().add(this);
+//            this.questionItems.add(questionItem);
+//            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+//        }
+//    }
 
-        if (!this.questionItems.contains(questionItem)){
-            this.questionItems.add(questionItem);
-            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-        }
-    }
 
-
-    public void removeQuestionItem(QuestionItem questionItem) {
-
-        if (this.questionItems.contains(questionItem)){
-            this.questionItems.remove(questionItem);
-            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-        }
-    }
+//    public void removeQuestionItem(QuestionItem questionItem) {
+//
+//        if (this.questionItems.contains(questionItem)){
+//            this.questionItems.remove(questionItem);
+//            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+//        }
+//    }
 
 
     public Set<Concept> getChildren() {
