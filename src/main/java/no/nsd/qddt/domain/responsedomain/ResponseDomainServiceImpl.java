@@ -65,13 +65,15 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, Pageable pageable) {
-        Page<ResponseDomain> pages = responseDomainRepository.findByResponseKindAndNameLikeOrDescriptionLike(responseKind,name,description,pageable);
+        Page<ResponseDomain> pages = responseDomainRepository.findByResponseKindAndNameLikeAndDescriptionLike(responseKind,name,description,pageable);
         return pages;
     }
 
     @Override
     public Page<ResponseDomain> findByQuestion(ResponseKind responseKind, String name, String question, Pageable pageable) {
         return  null;
+//        Page<ResponseDomain> pages = responseDomainRepository.findByResponseKindAndNameLikeOrQuestionItemQuestionQuestionLike(responseKind,name,question,pageable);
+//        return pages;
     }
 
 

@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.code.Code;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -61,6 +62,7 @@ import java.util.Set;
 @Table(name = "RESPONSEDOMAIN")
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
+    @JsonBackReference
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 
