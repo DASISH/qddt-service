@@ -31,7 +31,7 @@ public class ResponseCardinality {
     }
 
     public ResponseCardinality(){
-        this("1","1");
+        this("0","1");
     }
 
     public ResponseCardinality(String minimum, String maximum) {

@@ -120,6 +120,8 @@ public class Category extends AbstractEntityAudit {
     }
 
     public CategoryType getCategoryType() {
+        if (categoryType == null)
+            setCategoryType(CategoryType.CATEGORY);
         return categoryType;
     }
 
