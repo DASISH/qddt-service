@@ -27,6 +27,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -159,9 +160,54 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
 
     @Test
     public void testFind() throws Exception {
-        mvc.perform(get("/responsedomain/page/search?ResponseKind=Code").header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isOk());
 
+        ResponseDomain rd = new ResponseDomain();
+        rd.setResponseKind(ResponseKind.LIST);
+        rd.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("SCALE1-5")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.SCALE)
+                .setLabel("Scale 1-5 with labels").createCategory()));
+        rd.setName("test1");
+        entityService.save(rd);
+        ResponseDomain rd2 = new ResponseDomain();
+        rd2.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("list-5")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("list").createCategory()));
+        rd2.setName("test2");
+        rd2.setResponseKind(ResponseKind.SCALE);
+        entityService.save(rd2);
+
+        ResponseDomain rd3 = new ResponseDomain();
+        rd3.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("mixed-5")
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.MIXED)
+                .setLabel("mixed").createCategory()));
+        rd3.setName("test3");
+        rd3.setResponseKind(ResponseKind.MIXED);
+        entityService.save(rd3);
+
+        ResponseDomain rd4 = new ResponseDomain();
+        rd4.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("numeric")
+                .setHierarchy(HierarchyLevel.ENTITY)
+                .setType(CategoryType.NUMERIC)
+                .setLabel("numeric labels").createCategory()));
+        rd4.setName("test4");
+        rd4.setResponseKind(ResponseKind.NUMERIC);
+        entityService.save(rd4);
+
+
+        mvc.perform(get("/responsedomain/page/search?ResponseKind=LIST").header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        mvc.perform(get("/responsedomain/page/search?ResponseKind=SCALE").header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        mvc.perform(get("/responsedomain/page/search?ResponseKind=MIXED").header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
 }

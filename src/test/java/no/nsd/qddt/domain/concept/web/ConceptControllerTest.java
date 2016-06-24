@@ -108,6 +108,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
         concept.setName("FIRST");
         concept = entityService.save(concept);
 
+
         mvc.perform(get("/concept/combine?concept=" +concept.getId()+ "&question="+ question.getId() ).header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(concept))).andReturn();
