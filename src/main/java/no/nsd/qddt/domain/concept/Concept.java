@@ -104,13 +104,13 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     }
 
 
-//    public void addQuestionItem(QuestionItem questionItem) {
-//        if (!this.questionItems.contains(questionItem)){
-//            questionItem.getConcepts().add(this);
-//            this.questionItems.add(questionItem);
-//            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-//        }
-//    }
+    public void addQuestionItem(QuestionItem questionItem) {
+        if (!this.questionItems.contains(questionItem)){
+            questionItem.getConcepts().add(this);
+            this.questionItems.add(questionItem);
+            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+        }
+    }
 
 
 //    public void removeQuestionItem(QuestionItem questionItem) {

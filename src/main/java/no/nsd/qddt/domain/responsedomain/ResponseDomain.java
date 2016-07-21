@@ -62,7 +62,7 @@ import java.util.Set;
 @Table(name = "RESPONSEDOMAIN")
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
-    @JsonBackReference
+//    @JsonBackReference
     @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 

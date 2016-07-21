@@ -31,7 +31,7 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     @ManyToOne
     @JoinColumn(name = "responsedomain_id")
-    @JsonManagedReference
+//    @JsonManagedReference
     private ResponseDomain responseDomain;
 
     @Column(name = "responsedomain_revision")
@@ -54,20 +54,12 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     }
 
-    public Set<Concept> getConcepts() {
-        return concepts;
+    public ResponseDomain getResponseDomain() {
+        return responseDomain;
     }
 
-    public void setConcepts(Set<Concept> concepts) {
-        this.concepts = concepts;
-    }
-
-    public long getQuestionRevivsion() {
-        return questionRevivsion;
-    }
-
-    public void setQuestionRevivsion(long questionRevivsion) {
-        this.questionRevivsion = questionRevivsion;
+    public void setResponseDomain(ResponseDomain responseDomain) {
+        this.responseDomain = responseDomain;
     }
 
     public long getResponseDomainRevision() {
@@ -78,28 +70,36 @@ public class QuestionItem extends AbstractEntityAudit  {
         this.responseDomainRevision = responseDomainRevision;
     }
 
-    public Set<ControlConstruct> getControlConstructs() {
-        return controlConstructs;
-    }
-
-    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
-        this.controlConstructs = controlConstructs;
-    }
-
-    public ResponseDomain getResponseDomain() {
-        return responseDomain;
-    }
-
-    public void setResponseDomain(ResponseDomain responseDomain) {
-        this.responseDomain = responseDomain;
-    }
-
     public Question getQuestion() {
         return question;
     }
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public long getQuestionRevivsion() {
+        return questionRevivsion;
+    }
+
+    public void setQuestionRevivsion(long questionRevivsion) {
+        this.questionRevivsion = questionRevivsion;
+    }
+
+    public Set<Concept> getConcepts() {
+        return concepts;
+    }
+
+    public void setConcepts(Set<Concept> concepts) {
+        this.concepts = concepts;
+    }
+
+    public Set<ControlConstruct> getControlConstructs() {
+        return controlConstructs;
+    }
+
+    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
+        this.controlConstructs = controlConstructs;
     }
 
     @Override
