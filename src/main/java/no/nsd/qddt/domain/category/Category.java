@@ -212,34 +212,6 @@ public class Category extends AbstractEntityAudit {
         this.classificationLevel = classificationLevel;
     }
 
-//    public Map<String,String> getCategoryJsonDDI() {
-//        if (categoryJsonDDI.isEmpty())
-//        switch (this.getCategoryType()) {
-//                case DATETIME:
-//                    break;
-//                case TEXT:
-//                    break;
-//                case NUMERIC:
-//                    break;
-//                case CATEGORY:
-//                    break;
-//                case MISSING_GROUP:
-//                case LIST:
-//                    break;
-//                case SCALE:
-//                    categoryJsonDDI.put("DegreeSlopeFromHorizontal","0");       //A horizontal line is described as a 0 (zero) slope. Expressed as the number of degrees positive (right end angle above the horizontal line) or degrees positive (right end descending below the horizontal line).
-//                    categoryJsonDDI.put("DimensionNumber","1");                 //A number used to identify this dimension when describing its intersect point with one or more dimensions in the same scale representation. The dimension is denoted with a 1-based indexing. Dimension in the scale are numbered (1,2,n).
-//                    categoryJsonDDI.put("ValueIncrement","1");                  //Identifies the frequency for increment markers (with or without value attachments).
-//                    break;
-//            }
-//        return categoryJsonDDI;
-//
-//    }
-//
-//    public void setCategoryJsonDDI(Map<String, String> categoryJsonDDI) {
-//        this.categoryJsonDDI = categoryJsonDDI;
-//    }
-
     public List<Category> getChildren() {
         return children;
     }
@@ -252,17 +224,15 @@ public class Category extends AbstractEntityAudit {
         this.children.add(children);
     }
 
-//    public Set<Category> getAllChildrenFlatten(){
-//        Set<Category> grandchildren = new HashSet<>();
-//
-//        for(Category c:this.getChildren()){
-//            if (c.getHierarchyLevel() == HierarchyLevel.ENTITY)
-//                grandchildren.add(c);
-//            else
-//                grandchildren.addAll(c.getAllChildrenFlatten());
-//        }
-//        return grandchildren;
-//    }
+    @Override public String getName(){
+        if (super.getName() == null || super.getName().isEmpty())
+            return this.getLabel().toUpperCase();
+        else
+            return super.getName();
+    }
+
+
+
 
 
 
