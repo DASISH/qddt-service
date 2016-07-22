@@ -60,6 +60,7 @@ public class CategoryController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-group/{name}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+        name = name.replace("*","%");
 
         Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
@@ -68,6 +69,7 @@ public class CategoryController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-leaf/{name}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> getByLeaf(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
+        name = name.replace("*","%");
 
         Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.ENTITY, name, pageable);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
@@ -81,7 +83,7 @@ public class CategoryController {
                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Category> categories = null;
-
+        name = name.replace("*","%");
         if (level == null || level.isEmpty()) {
             if (category == null || category.isEmpty()) {
 
