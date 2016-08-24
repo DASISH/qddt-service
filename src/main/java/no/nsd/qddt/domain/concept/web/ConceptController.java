@@ -17,8 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Stig Norland
@@ -123,5 +123,14 @@ public class ConceptController {
         Page<Concept> concepts = conceptService.findByTopicGroupPageable(id,pageable);
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
+
+
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<Concept> getbyQuestionItemId(@PathVariable("qiId") UUID id) {
+        return conceptService.findByQuestionItem(id);
+    }
+
 
 }

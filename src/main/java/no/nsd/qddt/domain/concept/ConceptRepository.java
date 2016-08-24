@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,4 +17,6 @@ interface ConceptRepository extends BaseRepository<Concept,UUID> {
     Page<Concept> findAll(Pageable pageable);
 
     Page<Concept> findByTopicGroupId(UUID id, Pageable pageable);
+
+    List<Concept> findByQuestionItemsId(UUID questionItemId);
 }

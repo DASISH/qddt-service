@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,5 +74,11 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional(readOnly = true)
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         return conceptRepository.findByTopicGroupId(id,pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Concept> findByQuestionItem(UUID questionItemId) {
+        return conceptRepository.findByQuestionItemsId(questionItemId);
     }
 }
