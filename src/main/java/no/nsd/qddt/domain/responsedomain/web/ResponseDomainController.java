@@ -66,6 +66,7 @@ public class ResponseDomainController {
 
         Page<ResponseDomain> responseDomains = null;
         name = name.replace("*","%");
+        description = description.replace("*","%");
 
         if (question == null || question.isEmpty()) {
             responseDomains = responseDomainService.findBy(ResponseKind.valueOf(respons), Likeify(name), Likeify(description), pageable);

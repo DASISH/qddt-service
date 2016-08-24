@@ -71,7 +71,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @JsonIgnore
     private List<Code> codes = new ArrayList<>();
 
-    @Column(name = "description", length = 2000)
+    @Column(name = "description", length = 2000, nullable = false)
     private String description;
 
     @ManyToOne
@@ -97,10 +97,12 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
 
     public ResponseDomain(){
-
+        description = "";
     }
 
     public String getDescription() {
+        if (description == null)
+            description= "";
         return description;
     }
 
@@ -144,6 +146,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     }
 
     private void harvestCatCodes(Category current){
+        if (current == null) return;
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
             Code code = current.getCode();
             code.setResponseDomain(this);
