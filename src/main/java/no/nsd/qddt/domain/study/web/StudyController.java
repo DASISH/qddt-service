@@ -74,6 +74,7 @@ public class StudyController {
 
         instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
         instance.setModifiedBy(SecurityContext.getUserDetails().getUser());
+        instance.SetDefaultInstrument();
         return studyService.save(instance);
 
     }
