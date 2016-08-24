@@ -4,11 +4,12 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,12 +24,12 @@ import java.util.Set;
 @Table(name = "INSTRUMENT")
 public class Instrument extends AbstractEntityAudit implements Commentable {
 
-    @ManyToOne
-    @JoinColumn(name="parent_id")
-    private Instrument parent;
-
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-    private Set<Instrument> children = new HashSet<>();
+//    @ManyToOne
+//    @JoinColumn(name="parent_id")
+//    private Instrument parent;
+//
+//    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+//    private Set<Instrument> children = new HashSet<>();
 
 //    @ManyToOne
 //    @JoinColumn(name="study_id")
@@ -36,7 +37,8 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
 
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
-    private Set<ControlConstruct> controlConstructs = new HashSet<>();
+    @OrderColumn(name="controlConstruct_idx")
+    private List<ControlConstruct> controlConstructs =new ArrayList<>();
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
@@ -52,29 +54,30 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 //        this.study = study;
 //    }
 
-    public Set<ControlConstruct> getControlConstructs() {
+    public List<ControlConstruct> getControlConstructs() {
         return controlConstructs;
     }
 
-    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
+    public void setControlConstructs(List<ControlConstruct> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
 
-    public Instrument getParent() {
-        return parent;
-    }
 
-    public void setParent(Instrument parent) {
-        this.parent = parent;
-    }
-
-    public Set<Instrument> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<Instrument> children) {
-        this.children = children;
-    }
+//    public Instrument getParent() {
+//        return parent;
+//    }
+//
+//    public void setParent(Instrument parent) {
+//        this.parent = parent;
+//    }
+//
+//    public Set<Instrument> getChildren() {
+//        return children;
+//    }
+//
+//    public void setChildren(Set<Instrument> children) {
+//        this.children = children;
+//    }
 
     @Override
     public Set<Comment> getComments() {

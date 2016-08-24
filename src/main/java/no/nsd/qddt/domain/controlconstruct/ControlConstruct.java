@@ -25,6 +25,7 @@ import java.util.Set;
 @Table(name = "INSTRUMENT_QUESTION_ITEM")
 public class ControlConstruct extends AbstractEntityAudit {
 
+    @OrderColumn(name = "children_index")
     @ManyToOne
     @JoinColumn(name = "instrument_id")
     private Instrument instrument;
