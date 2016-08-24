@@ -130,6 +130,14 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
         this.instruments = instruments;
     }
 
+    public void SetDefaultInstrument() {
+        if (getInstruments().size() ==0){
+            Instrument instr = new Instrument();
+            instr.setName("<Default>");
+            this.instruments.add(instr);
+        }
+    }
+
     public Set<TopicGroup> getTopicGroups() {
         return topicGroups;
     }
