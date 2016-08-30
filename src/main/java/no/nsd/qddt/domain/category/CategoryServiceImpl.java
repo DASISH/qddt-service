@@ -41,6 +41,7 @@ class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,pageable);
     }
 
+
     /*
         This call will give you all Category with CategoryType and Name (support whildcard searches)
         regardless of HierarchyLevel.
@@ -83,19 +84,23 @@ class CategoryServiceImpl implements CategoryService {
         // This code fixes that.
         Category retval = null;
         try {
+            System.out.println("Category saving...");
             List<Category> tmplist = new ArrayList<>();
             int size = instance.getChildren().size();
             instance.getChildren().removeIf(child -> child.getName() == null  && child.getLabel() == null);
             if (size != instance.getChildren().size())
                 System.out.println("removed empty children ->" + (instance.getChildren().size()- size) );
-            instance.getChildren().forEach(child -> tmplist.add(save(child)));
+            instance.getChildren().forEach(child -> {tmplist.add(save(child));
+                System.out.println(child.getName() + " saved ");});
             instance.setChildren(tmplist);
             if (instance.getId() != null){
                 Category fromRepository = findOne(instance.getId());
                 if (!instance.fieldCompare(fromRepository))
                     retval= categoryRepository.save(instance);
-                else
+                else {
+                    System.out.println("from repository....");
                     retval = fromRepository;
+                }
             }
             else
                 retval= categoryRepository.save(instance);

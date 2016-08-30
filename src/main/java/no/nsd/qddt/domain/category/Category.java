@@ -4,14 +4,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
-import no.nsd.qddt.domain.embedded.ResponseCardinality;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.code.Code;
+import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.Persistent;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -44,9 +44,10 @@ public class Category extends AbstractEntityAudit {
     @JsonDeserialize
     private Code code;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.ALL}, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
     private List<Category> children = new ArrayList<>();
+
 
     //name -> A description of a particular category or response.
 
@@ -56,7 +57,7 @@ public class Category extends AbstractEntityAudit {
     Repeat for labels with different content, for example,
     labels with differing length limitations or of different types or applications.
      */
-    @Column(name = "label")
+    @Column(name = "label",unique = true)
     private String label;
 
     /*
@@ -189,7 +190,6 @@ public class Category extends AbstractEntityAudit {
             this.code = code;
     }
 
-
     public ResponseCardinality getInputLimit() {
         if (inputLimit == null)
             setInputLimit("0","1");
@@ -230,10 +230,6 @@ public class Category extends AbstractEntityAudit {
         else
             return super.getName();
     }
-
-
-
-
 
 
     @Override

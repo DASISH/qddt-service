@@ -74,7 +74,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Column(name = "description", length = 2000, nullable = false)
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="category_id")
     /*
         a link to a category root/group (template)
@@ -141,8 +141,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
      */
     public void populateCodes() {
         this.codes.clear();
+        System.out.println("harvestCatCodes -> ");
         harvestCatCodes(managedRepresentation);
-        System.out.println("populateCodes");
     }
 
     private void harvestCatCodes(Category current){
@@ -151,6 +151,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
             Code code = current.getCode();
             code.setResponseDomain(this);
             this.codes.add(code);
+            System.out.println("Code added -> " + code.getCodeValue() + " ID:"+ code.getId());
         }
 
         current.getChildren().forEach(this::harvestCatCodes);

@@ -40,4 +40,9 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
     public Page<Revision<Integer, Category>> findRevisions(UUID uuid, Pageable pageable) {
         return categoryAuditRepository.findRevisions(uuid,pageable);
     }
+
+    @Override
+    public Revision<Integer, Category> findVersion(UUID id, String version) {
+        return categoryAuditRepository.findVersion(id, Integer.valueOf(version.split(".")[0]),Integer.valueOf(version.split(".")[1])  );
+    }
 }

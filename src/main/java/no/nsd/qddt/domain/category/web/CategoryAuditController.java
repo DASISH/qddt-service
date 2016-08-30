@@ -51,4 +51,10 @@ public class CategoryAuditController {
         Page<Revision<Integer, Category>> entities = auditService.findRevisions(id, pageable);
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/version/{id}/{version}", method = RequestMethod.GET)
+    public Revision<Integer, Category> getByVersion(@PathVariable("id") UUID id, @PathVariable("version") String version) {
+        return auditService.findVersion(id, version);
+    }
+
 }
