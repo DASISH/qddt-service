@@ -46,13 +46,13 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @JoinColumn(name="topicgroup_id", updatable= false)
     private TopicGroup topicGroup;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "CONCEPT_QUESTION_ITEM",
-            joinColumns = {@JoinColumn(name ="concept_id", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", nullable = false,updatable = false)})
+            joinColumns = {@JoinColumn(name ="concept_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", nullable = false)})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<Author> authors = new HashSet<>();
 
     @Column(name = "label")
@@ -91,9 +91,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     public void addQuestion(Question question) {
         QuestionItem qi = new QuestionItem();
         qi.setQuestion(question);
-        qi.getConcepts().add(this);
-        questionItems.add(qi);
-        setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+        this.addQuestionItem(qi);
     }
 
 
@@ -111,16 +109,6 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
             this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
         }
     }
-
-
-//    public void removeQuestionItem(QuestionItem questionItem) {
-//
-//        if (this.questionItems.contains(questionItem)){
-//            this.questionItems.remove(questionItem);
-//            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-//        }
-//    }
-
 
     public Set<Concept> getChildren() {
         return children;
