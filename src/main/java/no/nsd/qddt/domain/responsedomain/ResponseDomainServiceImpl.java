@@ -43,7 +43,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
-        System.out.println("Save ResponseDomain ->" + instance.getName());
+//        System.out.println("Save ResponseDomain ->" + instance.getName());
         instance.populateCodes();
         return responseDomainRepository.save(instance);
     }

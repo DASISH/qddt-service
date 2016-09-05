@@ -62,8 +62,8 @@ import java.util.Set;
 @Table(name = "RESPONSEDOMAIN")
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
-//    @JsonBackReference
-    @OneToMany(mappedBy = "responseDomain", cascade = CascadeType.ALL)
+    @JsonBackReference(value = "QuestionItemRef")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = CascadeType.ALL)
@@ -74,11 +74,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Column(name = "description", length = 2000, nullable = false)
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="category_id")
     /*
         a link to a category root/group (template)
      */
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
     @Transient
@@ -141,7 +141,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
      */
     public void populateCodes() {
         this.codes.clear();
-        System.out.println("harvestCatCodes -> ");
+//        System.out.println("harvestCatCodes -> ");
         harvestCatCodes(managedRepresentation);
     }
 
@@ -151,7 +151,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
             Code code = current.getCode();
             code.setResponseDomain(this);
             this.codes.add(code);
-            System.out.println("Code added -> " + code.getCodeValue() + " ID:"+ code.getId());
+//            System.out.println("Code added -> " + code.getCodeValue() + " ID:"+ code.getId());
         }
 
         current.getChildren().forEach(this::harvestCatCodes);

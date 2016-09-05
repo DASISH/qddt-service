@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.questionItem;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
@@ -25,25 +26,31 @@ import java.util.Set;
 
 @Audited
 @Entity
-
 @Table(name = "QUESTION_ITEM")
 public class QuestionItem extends AbstractEntityAudit  {
 
+
     @ManyToOne
     @JoinColumn(name = "responsedomain_id")
-//    @JsonManagedReference
+//    @JsonManagedReference(value = "QuestionItemRef")
     private ResponseDomain responseDomain;
 
     @Column(name = "responsedomain_revision")
     private long responseDomainRevision;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id")
     private Question question;
 
     @Column(name = "question_revision")
     private long questionRevivsion;
 
+
+//    /// QuestionIntent: what the question is supposed to gather information about.
+//    @Column(name = "intent", length = 2000)
+//    private String intent;
+
+    @JsonBackReference(value = "conceptRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
@@ -53,6 +60,14 @@ public class QuestionItem extends AbstractEntityAudit  {
     public QuestionItem() {
 
     }
+
+//    public String getIntent() {
+//        return intent;
+//    }
+//
+//    public void setIntent(String intent) {
+//        this.intent = intent;
+//    }
 
     public ResponseDomain getResponseDomain() {
         return responseDomain;
@@ -79,6 +94,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     }
 
     public long getQuestionRevivsion() {
+        
         return questionRevivsion;
     }
 

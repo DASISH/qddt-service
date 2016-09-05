@@ -39,7 +39,7 @@ public class StudyController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Study get(@PathVariable("id") UUID id) {
 
-        System.out.println("FINDONE STUDY->" +id);
+//        System.out.println("FINDONE STUDY->" +id);
         return studyService.findOne(id);
     }
 

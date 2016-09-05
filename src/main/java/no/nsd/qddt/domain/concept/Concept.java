@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -14,6 +15,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * <ul class="inheritance">
@@ -36,7 +38,7 @@ import java.util.Set;
 public class Concept extends AbstractEntityAudit implements Commentable, Authorable {
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,orphanRemoval = true)
     @OrderColumn()
     @JoinColumn(name = "parent_id")
     private Set<Concept> children = new HashSet<>();
@@ -46,13 +48,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @JoinColumn(name="topicgroup_id", updatable= false)
     private TopicGroup topicGroup;
 
+//    @JsonManagedReference(value = "conceptRef")
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "CONCEPT_QUESTION_ITEM",
-            joinColumns = {@JoinColumn(name ="concept_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", nullable = false)})
+            joinColumns = {@JoinColumn(name ="concept_id")},
+            inverseJoinColumns = {@JoinColumn(name = "questionItem_id")})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts" , cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<Author> authors = new HashSet<>();
 
     @Column(name = "label")
@@ -67,6 +70,12 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     public Concept(){
 
     }
+
+    @Override
+    public UUID getId(){
+        return super.getId();
+    }
+
 
     public TopicGroup getTopicGroup() {
         return topicGroup;

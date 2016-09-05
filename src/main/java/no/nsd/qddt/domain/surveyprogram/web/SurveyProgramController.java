@@ -1,18 +1,13 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.comment.CommentService;
-import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
-import no.nsd.qddt.domain.user.QDDTUserDetails;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +38,7 @@ public class SurveyProgramController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     public SurveyProgram update(@RequestBody SurveyProgram instance) {
 
         instance.getStudies().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
@@ -51,7 +46,7 @@ public class SurveyProgramController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     public SurveyProgram create(@RequestBody SurveyProgram instance) {
         return surveyProgramService.save(instance);
     }

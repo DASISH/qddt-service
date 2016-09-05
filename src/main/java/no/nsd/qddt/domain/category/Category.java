@@ -225,10 +225,15 @@ public class Category extends AbstractEntityAudit {
     }
 
     @Override public String getName(){
-        if (super.getName() == null || super.getName().isEmpty())
-            return this.getLabel().toUpperCase();
-        else
-            return super.getName();
+        try {
+            if (super.getName() == null || super.getName().length() == 0)
+                return this.getLabel().toUpperCase();
+            else
+                return super.getName();
+        } catch (Exception ex) {
+            System.out.println("Getname failed " + this.getId() + " " + ex.getMessage());
+        }
+        return "?";
     }
 
 

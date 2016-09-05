@@ -84,7 +84,6 @@ class CategoryServiceImpl implements CategoryService {
         // This code fixes that.
         Category retval = null;
         try {
-            System.out.println("Category saving...");
             List<Category> tmplist = new ArrayList<>();
             int size = instance.getChildren().size();
             instance.getChildren().removeIf(child -> child.getName() == null  && child.getLabel() == null);

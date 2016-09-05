@@ -1,14 +1,16 @@
 package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.downloadtoken.DownloadToken;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+//import no.nsd.qddt.domain.downloadtoken.DownloadToken;
 
 /**
  * This class is just a placeholder for functionality not implemented.
@@ -47,10 +49,11 @@ public class OtherMaterial extends AbstractEntityAudit {
 
     }
 
-    public OtherMaterial(String name, String fileType, long size) {
+    public OtherMaterial(String name, String fileType, String path, long size) {
         setName(name);
-        this.fileType = fileType;
-        this.size = size;
+        setFileType(fileType);
+        setPath(path);
+        setSize(size);
     }
 
 
@@ -70,14 +73,6 @@ public class OtherMaterial extends AbstractEntityAudit {
         this.size = size;
     }
 
-//    public TopicGroup getTopicGroup() {
-//        return topicGroup;
-//    }
-//
-//    public void setTopicGroup(TopicGroup topicGroup) {
-//        this.topicGroup = topicGroup;
-//    }
-
     public String getPath() {
         return path;
     }
@@ -93,6 +88,12 @@ public class OtherMaterial extends AbstractEntityAudit {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @JsonIgnore
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToMany(mappedBy = "otherMaterial", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private Set<DownloadToken> downloadTokens = new HashSet<>();
+
 
     public String getOriginalName() {
         return originalName;
@@ -111,7 +112,6 @@ public class OtherMaterial extends AbstractEntityAudit {
         OtherMaterial that = (OtherMaterial) o;
 
         if (size != that.size) return false;
-//        if (topicGroup != null ? !topicGroup.equals(that.topicGroup) : that.topicGroup != null) return false;
         if (path != null ? !path.equals(that.path) : that.path != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (fileType != null ? !fileType.equals(that.fileType) : that.fileType != null) return false;
@@ -122,7 +122,6 @@ public class OtherMaterial extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "OtherMaterial{" +
-//                "topicGroup=" + topicGroup +
                 ", path='" + path + '\'' +
                 ", description='" + description + '\'' +
                 ", fileType='" + fileType + '\'' +
@@ -134,7 +133,6 @@ public class OtherMaterial extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-//        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
         result = 31 * result + (path != null ? path.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (fileType != null ? fileType.hashCode() : 0);
