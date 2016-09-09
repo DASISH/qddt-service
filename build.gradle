@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         maven { url "http://repo.spring.io/libs-release" }
+        maven { url "https://plugins.gradle.org/m2/" }
         mavenLocal()
         mavenCentral()
         jcenter()
@@ -8,6 +9,7 @@ buildscript {
     dependencies {
         classpath(
                 "org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE",
+                "com.bmuschko:gradle-docker-plugin:3.0.3",
         )
     }
 }
@@ -18,6 +20,10 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+import com.bmuschko.gradle.docker.tasks.container.*
+
 
 idea {
     project {
@@ -73,21 +79,63 @@ dependencies {
     )
 }
 
+docker {
+    if(org.gradle.internal.os.OperatingSystem.current().windows) {
+        url = 'http://localhost:2375'
+    }
+    else if(org.gradle.internal.os.OperatingSystem.current().linux){
+        url = 'unix:///var/run/docker.sock'
+    }
+}
 
+task createDBContainer(type: DockerCreateContainer) {
+    imageId = 'postgres'
+    containerName = "qddt_local"
+    portBindings = ['5400:5432']
+    env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
+}
+
+task startDBContainer(type: DockerStartContainer) {
+    dependsOn createDBContainer
+    targetContainerId { createDBContainer.getContainerId() }
+}
+
+task stopDBContainer(type: DockerStopContainer) {
+    targetContainerId { createDBContainer.getContainerId() }
+}
+
+task destroyContainer(type: DockerRemoveContainer) {
+    dependsOn stopDBContainer
+    targetContainerId { createDBContainer.getContainerId() }
+}
 
 ext {
     snippetsDir = file('build/generated-snippets')
 }
 
-//This exclude the test suite, which we use for IDE test support.
+bootRun {
+    addResources = true
+    mustRunAfter startDBContainer
+    systemProperties['spring.profiles.active'] = 'local'
+    dependsOn startDBContainer
+    finalizedBy stopDBContainer
+}
+
 test {
     exclude 'no/nsd/qddt/QTTDTestSuite.class'
-    outputs.dir snippetsDir
-
+//    outputs.dir snippetsDir
     testLogging {
-        // Show that tests are run in the command-line output
-        events 'started', 'passed'
+        events 'started', 'passed', 'skipped', 'failed'
+        showExceptions true
+        exceptionFormat 'full'
+        showCauses true
+        showStackTraces true
+
     }
+    systemProperties['spring.profiles.active'] = 'test'
+    dependsOn startDBContainer
+    finalizedBy(destroyContainer)
+    destroyContainer.mustRunAfter(test)
 }
 
 asciidoctor {
@@ -96,8 +144,6 @@ asciidoctor {
     dependsOn test
 }
 
-
-
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2.1'
+    gradleVersion = '2.13'
 }
