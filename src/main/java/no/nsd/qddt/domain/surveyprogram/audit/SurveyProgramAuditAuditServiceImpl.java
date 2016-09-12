@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram.audit;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -40,4 +42,10 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
     public Page<Revision<Integer, SurveyProgram>> findRevisions(UUID uuid, Pageable pageable) {
         return surveyProgramAuditRepository.findRevisions(uuid,pageable);
     }
+
+    @Override
+    public Page<Revision<Integer, SurveyProgram>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        return surveyProgramAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
+    }
+
 }

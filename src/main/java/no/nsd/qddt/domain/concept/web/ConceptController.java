@@ -4,6 +4,8 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +32,13 @@ public class ConceptController {
 
     private ConceptService conceptService;
     private TopicGroupService topicGroupService;
-    private QuestionService questionService;
+    private QuestionItemService questionItemService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService, QuestionService questionService) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService, QuestionItemService questionItemService) {
         this.conceptService = conceptService;
         this.topicGroupService = topicGroupService;
-        this.questionService = questionService;
+        this.questionItemService = questionItemService;
     }
 
 
@@ -53,27 +55,48 @@ public class ConceptController {
         return conceptService.save(concept);
     }
 
-//?concept={conceptId}&question={questionId}
+////?concept={conceptId}&question={questionId}
+//    @ResponseStatus(value = HttpStatus.OK)
+//    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "question"})
+//    public Concept addQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
+//
+//        Concept concept  = conceptService.findOne(conceptId);
+//        Question question = questionService.findOne(questionId);
+//        concept.addQuestion(question);
+//        return conceptService.save(concept);
+//    }
+
+//    //?concept={conceptId}&question={questionId}
+//    @ResponseStatus(value = HttpStatus.OK)
+//    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "question"})
+//    public Concept removeQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
+//
+//        Concept concept  = conceptService.findOne(conceptId);
+//        question.get
+//        return conceptService.save(concept);
+//    }
+
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "question"})
-    public Concept addQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
+    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "questionitem"})
+    public Concept addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
 
         Concept concept  = conceptService.findOne(conceptId);
-        Question question = questionService.findOne(questionId);
-        concept.addQuestion(question);
+        QuestionItem questionItem = questionItemService.findOne(questionItemId);
+        concept.addQuestionItem(questionItem);
         return conceptService.save(concept);
     }
 
     //?concept={conceptId}&question={questionId}
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "question"})
-    public Concept removeQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
+    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
+    public Concept removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
 
         Concept concept  = conceptService.findOne(conceptId);
-        Question question = questionService.findOne(questionId);
-        concept.removeQuestion(question);
+        QuestionItem questionItem =  questionItemService.findOne(questionItemId);
+        questionItem.removeFromConcept(concept);
         return conceptService.save(concept);
     }
+
 
 
 

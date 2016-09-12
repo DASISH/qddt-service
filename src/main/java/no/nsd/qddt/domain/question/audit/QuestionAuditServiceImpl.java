@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.question.audit;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.question.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.UUID;
 
 
@@ -36,5 +38,10 @@ class QuestionAuditServiceImpl implements QuestionAuditService {
     @Override
     public Page<Revision<Integer, Question>> findRevisions(UUID uuid, Pageable pageable) {
         return questionAuditRepository.findRevisions(uuid,pageable);
+    }
+
+    @Override
+    public Page<Revision<Integer, Question>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        return questionAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
     }
 }

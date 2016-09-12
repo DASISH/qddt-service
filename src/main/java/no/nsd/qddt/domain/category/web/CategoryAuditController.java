@@ -52,9 +52,9 @@ public class CategoryAuditController {
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/version/{id}/{version}", method = RequestMethod.GET)
-    public Revision<Integer, Category> getByVersion(@PathVariable("id") UUID id, @PathVariable("version") String version) {
-        return auditService.findVersion(id, version);
-    }
+//    @RequestMapping(value = "/version/{id}/{version}", method = RequestMethod.GET)
+//    public Revision<Integer, Category> getByVersion(@PathVariable("id") UUID id, @PathVariable("version") String version) {
+//        return auditService.findVersion(id, version);
+//    }
 
 }

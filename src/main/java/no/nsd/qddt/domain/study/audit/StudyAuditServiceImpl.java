@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.study.audit;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.study.Study;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -40,5 +42,10 @@ class StudyAuditServiceImpl implements StudyAuditService {
     @Transactional(readOnly = true)
     public Page<Revision<Integer, Study>> findRevisions(UUID uuid, Pageable pageable) {
         return studyAuditRepository.findRevisions(uuid,pageable);
+    }
+
+    @Override
+    public Page<Revision<Integer, Study>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        return studyAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
     }
 }

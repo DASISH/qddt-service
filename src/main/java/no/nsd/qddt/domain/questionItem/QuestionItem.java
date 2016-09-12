@@ -12,6 +12,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Question Item is a container for Question (text) and responsedomain
@@ -61,13 +62,36 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     }
 
-//    public String getIntent() {
-//        return intent;
-//    }
-//
-//    public void setIntent(String intent) {
-//        this.intent = intent;
-//    }
+    @PreRemove
+    private void removeReferencesFromQi(){
+        getConcepts().forEach( C-> removeFromConcept(C));
+        getControlConstructs().forEach(CC-> removeFromControlConstruct(CC));
+        setResponseDomain(null);
+    }
+
+    private void removeFromControlConstruct(ControlConstruct controlConstruct) {
+        controlConstruct.getInstrument().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        controlConstruct.getInstrument().getControlConstructs().removeIf(CC->CC.equals(controlConstruct));
+        controlConstruct.setInstrument(null);
+    }
+
+    public void removeFromConcept(UUID id) {
+        concepts.forEach(C->{
+            if (C.getId().equals(id)) {
+                removeFromConcept(C);
+            }
+        });
+    }
+
+    public void removeFromConcept(Concept concept) {
+        concept.getTopicGroup().getStudy().getInstruments().forEach(I->{
+            I.getControlConstructs().removeIf(C->C.getQuestionItem().equals(this));
+        });
+        concepts.remove(concept);
+        concept.getQuestionItems().removeIf(Qi->Qi.equals(this));
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+    }
+
 
     public ResponseDomain getResponseDomain() {
         return responseDomain;
@@ -147,6 +171,7 @@ public class QuestionItem extends AbstractEntityAudit  {
                 ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
                 "} " + super.toString();
     }
+
 }
 
 

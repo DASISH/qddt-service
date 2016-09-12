@@ -38,24 +38,24 @@ import java.util.UUID;
 public class Concept extends AbstractEntityAudit implements Commentable, Authorable {
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderColumn()
     @JoinColumn(name = "parent_id")
     private Set<Concept> children = new HashSet<>();
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="topicgroup_id", updatable= false)
+    @JoinColumn(name = "topicgroup_id", updatable = false)
     private TopicGroup topicGroup;
 
-//    @JsonManagedReference(value = "conceptRef")
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    //    @JsonManagedReference(value = "conceptRef")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "CONCEPT_QUESTION_ITEM",
-            joinColumns = {@JoinColumn(name ="concept_id")},
+            joinColumns = {@JoinColumn(name = "concept_id")},
             inverseJoinColumns = {@JoinColumn(name = "questionItem_id")})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts" , cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<Author> authors = new HashSet<>();
 
     @Column(name = "label")
@@ -67,12 +67,23 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
-    public Concept(){
+    public Concept() {
+
+    }
+
+
+    @PreRemove
+    private void removeReferencesFromConcept(){
+        getChildren().forEach(C->C.setTopicGroup(this.getTopicGroup()));
+        getChildren().clear();
+        getAuthors().forEach( A->A.removeConcept(this));
+        getQuestionItems().forEach(QI->QI.removeFromConcept(this));
+        getTopicGroup().removeConcept(this);
 
     }
 
     @Override
-    public UUID getId(){
+    public UUID getId() {
         return super.getId();
     }
 
@@ -88,7 +99,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
 
     public Set<QuestionItem> getQuestionItems() {
-        return questionItems ;
+        return questionItems;
     }
 
 
@@ -104,20 +115,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     }
 
 
-    public void removeQuestion(Question question) {
-        this.questionItems.removeIf(questionItem ->
-            questionItem.getQuestion().equals(question));
-        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-    }
-
-
     public void addQuestionItem(QuestionItem questionItem) {
-        if (!this.questionItems.contains(questionItem)){
+        if (!this.questionItems.contains(questionItem)) {
             questionItem.getConcepts().add(this);
             this.questionItems.add(questionItem);
-            this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+            questionItem.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
         }
     }
+
 
     public Set<Concept> getChildren() {
         return children;
@@ -222,6 +227,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
                 ", description='" + description + '\'' +
                 "} " + super.toString();
     }
+
 
 }
 

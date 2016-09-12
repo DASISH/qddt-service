@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 
+import java.util.Collection;
+
 /**
  * Interface for all service classes dealing with entity classes
  * annotated by {@link org.hibernate.envers.Audited}
@@ -35,5 +37,15 @@ public interface BaseServiceAudit<T,ID, N extends Number & Comparable<N>> {
      * @return {@link org.springframework.data.domain.Page} of the entity
      */
     Page<Revision<N, T>> findRevisions(ID id, Pageable pageable);
+
+    /**
+     * Find all revisions and return in a pageable view
+     * @param id of the entity
+     * @param changeKinds
+     * @param pageable from controller method
+     * @return {@link org.springframework.data.domain.Page} of the entity
+     */
+    Page<Revision<N,T>> findRevisionsByChangeKindNotIn(ID id, Collection<AbstractEntityAudit.ChangeKind>changeKinds, Pageable pageable);
+
 
 }

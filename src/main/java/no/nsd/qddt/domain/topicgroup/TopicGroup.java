@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
@@ -120,6 +121,10 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
         concepts.add(concept);
     }
 
+    public void removeConcept(Concept concept){
+        concepts.remove(concept);
+        concept.setTopicGroup(null);
+    }
 
     public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;

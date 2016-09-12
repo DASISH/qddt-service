@@ -12,4 +12,5 @@ import java.util.UUID;
 @Repository
 interface CommentAuditRepository extends EnversRevisionRepository<Comment, UUID, Integer> {
 
+
 }

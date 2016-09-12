@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.code.audit;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.code.Code;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -35,5 +37,10 @@ class CodeAuditServiceImpl implements CodeAuditService {
     @Override
     public Page<Revision<Integer, Code>> findRevisions(UUID uuid, Pageable pageable) {
         return codeAuditRepository.findRevisions(uuid, pageable);
+    }
+
+    @Override
+    public Page<Revision<Integer, Code>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        return null;
     }
 }

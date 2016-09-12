@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.group.audit;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.group.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -35,6 +37,11 @@ class GroupAuditServiceImpl implements GroupAuditService {
     @Override
     public Page<Revision<Integer, Group>> findRevisions(UUID uuid, Pageable pageable) {
         return repository.findRevisions(uuid, pageable);
+    }
+
+    @Override
+    public Page<Revision<Integer, Group>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        return repository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
     }
 
 }

@@ -11,5 +11,5 @@ import java.util.UUID;
  */
 public interface CategoryAuditService extends BaseServiceAudit<Category, UUID, Integer > {
 
-    Revision<Integer,Category> findVersion(UUID id, String version);
+//    Revision<Integer,Category> findVersion(UUID id, String version);
 }
