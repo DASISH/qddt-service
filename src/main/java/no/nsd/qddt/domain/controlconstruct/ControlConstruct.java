@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
@@ -22,13 +23,22 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "INSTRUMENT_QUESTION_ITEM")
+@Table(name = "CONTROL_CONSTRUCT")
 public class ControlConstruct extends AbstractEntityAudit {
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH}, orphanRemoval = true)
     @OrderColumn(name = "children_index")
+    @JoinColumn(name = "parent_id")
+    private Set<ControlConstruct> children = new HashSet<>();
+
+    @JsonIgnore
+    @OrderColumn(name = "instrument_index")
     @ManyToOne
     @JoinColumn(name = "instrument_id")
     private Instrument instrument;
+
+    @Column(length = 300)
+    private String indexRationale;
 
     @ManyToOne
     @JoinColumn(name = "questionitem_id")
@@ -39,16 +49,17 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     @OneToMany(mappedBy="controlConstruct", cascade = CascadeType.ALL)
-    private Set<Instruction> instructions = new HashSet<>();
+    private Set<Instruction> preInstructions = new HashSet<>();
 
-    private Long instrumentIndex;
+    @OneToMany(mappedBy="controlConstruct", cascade = CascadeType.ALL)
+    private Set<Instruction> postInstructions = new HashSet<>();
 
-    @Column(length = 300)
-    private String indexRationale;
+
 
     private String logic;
 
     @Column(length = 3000)
+    // TODO remove this?
     private String instruction;
 
 
@@ -87,20 +98,28 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.questionItem = question;
     }
 
-    public Set<Instruction> getInstructions() {
-        return instructions;
+    public Set<ControlConstruct> getChildren() {
+        return children;
     }
 
-    public void setInstructions(Set<Instruction> instructions) {
-        this.instructions = instructions;
+    public void setChildren(Set<ControlConstruct> children) {
+        this.children = children;
     }
 
-    public Long getInstrumentIndex() {
-        return instrumentIndex;
+    public Set<Instruction> getPreInstructions() {
+        return preInstructions;
     }
 
-    public void setInstrumentIndex(Long instrumentIndex) {
-        this.instrumentIndex = instrumentIndex;
+    public void setPreInstructions(Set<Instruction> preInstructions) {
+        this.preInstructions = preInstructions;
+    }
+
+    public Set<Instruction> getPostInstructions() {
+        return postInstructions;
+    }
+
+    public void setPostInstructions(Set<Instruction> postInstructions) {
+        this.postInstructions = postInstructions;
     }
 
     public String getIndexRationale() {
@@ -131,8 +150,6 @@ public class ControlConstruct extends AbstractEntityAudit {
             return false;
         if (getQuestionItem() != null ? !getQuestionItem().equals(that.getQuestionItem()) : that.getQuestionItem() != null)
             return false;
-        if (getInstrumentIndex() != null ? !getInstrumentIndex().equals(that.getInstrumentIndex()) : that.getInstrumentIndex() != null)
-            return false;
         if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
             return false;
         return !(getLogic() != null ? !getLogic().equals(that.getLogic()) : that.getLogic() != null);
@@ -144,7 +161,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         int result = super.hashCode();
         result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
         result = 31 * result + (getQuestionItem() != null ? getQuestionItem().hashCode() : 0);
-        result = 31 * result + (getInstrumentIndex() != null ? getInstrumentIndex().hashCode() : 0);
         result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
         result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
         return result;
@@ -156,7 +172,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         return "InstrumentQuestion{" +
                 "instrument=" + instrument +
                 ", question=" + questionItem +
-                ", instrumentIndex=" + instrumentIndex +
                 ", indexRationale='" + indexRationale + '\'' +
                 ", logic='" + logic + '\'' +
                 '}';
