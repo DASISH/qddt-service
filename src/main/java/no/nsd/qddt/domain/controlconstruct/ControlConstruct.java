@@ -5,12 +5,14 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.parameter.CCParameter;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,6 +42,12 @@ public class ControlConstruct extends AbstractEntityAudit {
     @Column(length = 300)
     private String indexRationale;
 
+    private String label;
+
+    @Column(length = 3000)
+    private String description;
+
+
     @ManyToOne
     @JoinColumn(name = "questionitem_id")
     private QuestionItem questionItem;
@@ -54,14 +62,11 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OneToMany(mappedBy="controlConstruct", cascade = CascadeType.ALL)
     private Set<Instruction> postInstructions = new HashSet<>();
 
-
-
     private String logic;
 
-    @Column(length = 3000)
-    // TODO remove this?
-    private String instruction;
+    private List<CCParameter> inParameter;
 
+    private List<CCParameter> outParameter;
 
     public ControlConstruct() {
     }
@@ -74,12 +79,20 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.otherMaterials = otherMaterials;
     }
 
-    public String getInstruction() {
-        return instruction;
+    public String getLabel() {
+        return label;
     }
 
-    public void setInstruction(String instruction) {
-        this.instruction = instruction;
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Instrument getInstrument() {
@@ -136,6 +149,22 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     public void setLogic(String logic) {
         this.logic = logic;
+    }
+
+    public List<CCParameter> getInParameter() {
+        return inParameter;
+    }
+
+    public void setInParameter(List<CCParameter> in) {
+        this.inParameter = in;
+    }
+
+    public List<CCParameter> getOutParameter() {
+        return outParameter;
+    }
+
+    public void setOutParameter(List<CCParameter> out) {
+        this.outParameter = out;
     }
 
     @Override
