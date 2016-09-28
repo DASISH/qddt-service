@@ -11,6 +11,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,9 +49,13 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String description;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questionitem_id")
     private QuestionItem questionItem;
+
+    @Column(name = "questionitem_revision")
+    private Long questionItemRevision;
+
 
     @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
@@ -64,11 +69,21 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     private String logic;
 
-    private List<CCParameter> inParameter;
+    @OneToMany
+    private List<CCParameter> inParameter = new ArrayList<>();
 
-    private List<CCParameter> outParameter;
+    @OneToMany
+    private List<CCParameter> outParameter = new ArrayList<>();
 
     public ControlConstruct() {
+    }
+
+    public Long getQuestionItemRevision() {
+        return questionItemRevision;
+    }
+
+    public void setQuestionItemRevision(Long questionItemRevision) {
+        this.questionItemRevision = questionItemRevision;
     }
 
     public Set<OtherMaterial> getOtherMaterials() {
