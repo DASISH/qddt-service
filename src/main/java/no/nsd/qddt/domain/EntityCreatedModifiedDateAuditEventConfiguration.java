@@ -29,8 +29,8 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         try {
-            LocalDateTime now = LocalDateTime.now();
-            entity.setModified(now);
+//            LocalDateTime now = LocalDateTime.now();
+//            entity.setModified(now);
             User user = SecurityContext.getUserDetails().getUser();
             entity.setModifiedBy(user);
             if (entity instanceof AbstractEntityAudit) {
@@ -75,7 +75,8 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void update(AbstractEntity entity) {
         try {
-            entity.setModified(LocalDateTime.now());
+            System.out.println("entity is stamped by update->" +entity.getModified());
+//            entity.setModified(LocalDateTime.now());
             User user = SecurityContext.getUserDetails().getUser();
             entity.setModifiedBy(user);
 
@@ -87,24 +88,24 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                     change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
                     ((AbstractEntityAudit) entity).setChangeKind(change);
                 }
-                if (change != AbstractEntityAudit.ChangeKind.MILESTONE){
-                    ver.setVersionLabel("");
-                }
+//                if (change != AbstractEntityAudit.ChangeKind.MILESTONE){
+//                    ver.setVersionLabel("");
+//                }
                 switch (change) {
-                    case NEW_COPY_OF:
+                    case BASED_ON:
+                    case TRANSLATED:
                         ver = new Version();
-//                        ver.incMajor();
                         break;
-                    case MILESTONE:
                     case CONCEPTUAL:
                     case EXTERNAL:
                     case OTHER:
+                    case ADDED_CONTENT:
                         ver.incMajor();
                         break;
                     case TYPO:
                         ver.incMinor();
                         break;
-                    default:        //CREATED / UPDATED_PARENT / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
+                    default:        //CREATED / UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
                         break;
                 }
                 ((AbstractEntityAudit) entity).setVersion(ver);
