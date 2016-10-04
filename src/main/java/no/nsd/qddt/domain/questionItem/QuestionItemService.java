@@ -22,7 +22,7 @@ public interface QuestionItemService extends BaseService<QuestionItem, UUID> {
 
     Page<QuestionItem> findAllPageable(Pageable pageable);
 
-    Page<QuestionItem> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable);
+    Page<QuestionItem> findByNameLikeAndQuestionLike(String name, String question, Pageable pageable);
 
 
 //    Page<Question> findQuestionConceptPageable(Long id, Pageable pageable);

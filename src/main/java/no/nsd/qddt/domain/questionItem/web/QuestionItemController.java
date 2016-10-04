@@ -75,7 +75,7 @@ public class QuestionItemController {
         name = name.replace("*","%");
         question = question.replace("*","%");
 
-        questionitems = questionItemService.findByNameLikeOrQuestionLike(name,question, pageable);
+        questionitems = questionItemService.findByNameLikeAndQuestionLike(name,question, pageable);
 
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
