@@ -29,8 +29,8 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         try {
-//            LocalDateTime now = LocalDateTime.now();
-//            entity.setModified(now);
+            LocalDateTime now = LocalDateTime.now();
+            entity.setModified(now);
             User user = SecurityContext.getUserDetails().getUser();
             entity.setModifiedBy(user);
             if (entity instanceof AbstractEntityAudit) {
@@ -76,7 +76,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     public void update(AbstractEntity entity) {
         try {
             System.out.println("entity is stamped by update->" +entity.getModified());
-//            entity.setModified(LocalDateTime.now());
+            entity.setModified(LocalDateTime.now());
             User user = SecurityContext.getUserDetails().getUser();
             entity.setModifiedBy(user);
 
