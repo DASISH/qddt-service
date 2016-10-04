@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.instruction;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,5 +64,10 @@ class InstructionServiceImpl implements InstructionService {
     @Transactional(readOnly = false)
     public void delete(List<Instruction> instructions) {
         instructionRepository.delete(instructions);
+    }
+
+    @Override
+    public Page<Instruction> findByDescriptionLike(String description, Pageable pageable) {
+        return instructionRepository.findByDescriptionLike(description,pageable);
     }
 }

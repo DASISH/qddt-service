@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.instruction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -19,6 +20,7 @@ import java.util.Set;
 public class Instruction extends AbstractEntityAudit implements Commentable {
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "instrumentquestion_id")
     private ControlConstruct controlConstruct;
 
@@ -45,6 +47,9 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     }
 
     public void setDescription(String description) {
+        if (getName().isEmpty())
+            this.setName(description.toUpperCase().substring(0,25));
+
         this.description = description;
     }
 

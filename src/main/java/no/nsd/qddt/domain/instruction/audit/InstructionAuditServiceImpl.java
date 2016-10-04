@@ -39,8 +39,10 @@ class InstructionAuditServiceImpl implements InstructionAuditService {
         return instructionAuditRepository.findRevisions(uuid, pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, Instruction>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return instructionAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, Instruction>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return instructionAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
+//    }
+
+
 }
