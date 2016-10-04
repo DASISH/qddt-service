@@ -43,13 +43,10 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
         return categoryAuditRepository.findRevisions(uuid,pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, Category>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return categoryAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
-
 //    @Override
-//    public Revision<Integer, Category> findVersion(UUID id, String version) {
-//        return categoryAuditRepository.findByMajorAndMinor(id, Integer.valueOf(version.split(".")[0]),Integer.valueOf(version.split(".")[1])  );
+//    public Page<Revision<Integer, Category>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return null;
 //    }
+
+
 }

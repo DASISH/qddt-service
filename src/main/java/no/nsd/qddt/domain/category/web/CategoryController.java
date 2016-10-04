@@ -53,6 +53,7 @@ public class CategoryController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
+        System.out.println("delete -> " + id);
         categoryService.delete(id);
     }
 
@@ -60,9 +61,10 @@ public class CategoryController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-group/{name}", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Category>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
-        name = name.replace("*","%");
 
+        name = name.replace("*","%");
         Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
+
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 

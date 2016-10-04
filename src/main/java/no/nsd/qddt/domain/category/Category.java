@@ -36,7 +36,7 @@ import java.util.UUID;
  */
 @Audited
 @Entity
-@Table(name = "CATEGORY")
+@Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind","based_on_object"},name = "UNQ_CATEGORY_NAME_KIND")})
 public class Category extends AbstractEntityAudit {
 
     @Transient
@@ -57,7 +57,7 @@ public class Category extends AbstractEntityAudit {
     Repeat for labels with different content, for example,
     labels with differing length limitations or of different types or applications.
      */
-    @Column(name = "label",unique = true)
+    @Column(name = "label")
     private String label;
 
     /*
@@ -72,20 +72,24 @@ public class Category extends AbstractEntityAudit {
      * This field is only used for categories that facilitates user input.
      * like numeric range / text length /
      */
-    @Column(name = "input_limit", nullable = true)
+    @Column(name = "input_limit")
     @Embedded
     private ResponseCardinality inputLimit;
 
 
-    @Column(name = "classification_level", nullable = true)
+    @Column(name = "classification_level")
     @Enumerated(EnumType.STRING)
     private CategoryRelationCodeType classificationLevel;
 
+    /**
+     * format is used by datetime, and other kinds if needed.
+     */
+    private String format;
 
     /**
      * concept reference to a versioned concept within the system.
      */
-    @Column(name = "concept_reference", nullable = true)
+    @Column(name = "concept_reference")
     private UUID conceptReference;
 
     @Column(name = "Hierarchy_level",nullable = false)
@@ -95,6 +99,7 @@ public class Category extends AbstractEntityAudit {
     @Column(name = "category_kind", nullable = false)
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
+
 
     /*
     different kind of categories have different metatags that are used in other tools,
@@ -164,6 +169,8 @@ public class Category extends AbstractEntityAudit {
 
     public void setLabel(String label) {
         this.label = label;
+        if (getName().isEmpty())
+            setName(label.toUpperCase());
     }
 
     public String getDescription() {
@@ -212,6 +219,14 @@ public class Category extends AbstractEntityAudit {
         this.classificationLevel = classificationLevel;
     }
 
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
     public List<Category> getChildren() {
         return children;
     }
@@ -224,7 +239,7 @@ public class Category extends AbstractEntityAudit {
         this.children.add(children);
     }
 
-    @Override public String getName(){
+     @Override public String getName(){
         try {
             if (super.getName() == null || super.getName().length() == 0)
                 return this.getLabel().toUpperCase();

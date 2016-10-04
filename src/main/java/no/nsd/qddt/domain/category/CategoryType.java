@@ -18,6 +18,14 @@ public enum CategoryType {
      */
     NUMERIC,
     /*
+    Boolean, True or false. Can be represented by 1 and 0 correspondingly.
+     */
+    BOOLEAN,
+    /*
+    A Uniform Resource Identifier such as ftp, http or mailto, e.g., http://www.w3.org/TR/xmlschema-2.
+     */
+    URI,
+    /*
     Code: single Category, input is CODE/VALUE                  ,NOT_IMPLEMENTED: blankIsMissingValue
      */
     CATEGORY,
