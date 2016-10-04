@@ -90,11 +90,17 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
     public Concept removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
-
-        Concept concept  = conceptService.findOne(conceptId);
-        QuestionItem questionItem =  questionItemService.findOne(questionItemId);
-        questionItem.removeFromConcept(concept);
-        return conceptService.save(concept);
+        try{
+            Concept concept  = conceptService.findOne(conceptId);
+            QuestionItem questionItem =  questionItemService.findOne(questionItemId);
+            questionItem.removeFromConcept(concept);
+            return conceptService.save(concept);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            System.out.println(conceptId.toString());
+            System.out.println(questionItemId.toString());
+            return null;
+        }
     }
 
 

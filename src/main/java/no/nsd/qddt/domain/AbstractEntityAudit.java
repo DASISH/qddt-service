@@ -60,7 +60,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      * What am I?
      */
 
-    @ManyToOne(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.DETACH})
+    @ManyToOne
     @JoinColumn(name = "agency_id")
     private Agency agency;
 

@@ -39,8 +39,8 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
         return topicGroupAuditRepository.findRevisions(uuid, pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, TopicGroup>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return null;
-    }
+//    @Override
+//    public Page<Revision<Integer, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return topicGroupAuditRepository.findRevisionsByIdAndChangeKindNotIn(uuid,changeKinds,pageable);
+//    }
 }

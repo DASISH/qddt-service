@@ -101,6 +101,11 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         }
     }
 
+    @Override
+    public void deleteFile(UUID id) {
+
+    }
+
     private String createFolder(String uuid) {
 
         File directory= new File(fileRoot + uuid.substring(1, 3));

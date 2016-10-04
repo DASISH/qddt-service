@@ -62,11 +62,6 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     }
 
-//    @Override
-//    public void setChangeKind(ChangeKind changeKind) {
-//        super.setChangeKind(changeKind);
-//        getQuestion().setChangeKind(changeKind);
-//    }
 
     @PreRemove
     private void removeReferencesFromQi(){
@@ -126,6 +121,12 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     public void setQuestion(Question question) {
         this.question = question;
+        if (getName()== null || getName().isEmpty()){
+            if (getModifiedBy() != null)
+                setName("Made by " +getModifiedBy().getUsername());
+            else
+                setName("Made by UNKNOWN");
+        }
     }
 
     public long getQuestionRevivsion() {
@@ -152,6 +153,15 @@ public class QuestionItem extends AbstractEntityAudit  {
     public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
+
+    @Override
+    public void setName(String name){
+        super.setName(name);
+        if (getQuestion() != null){
+            getQuestion().setName(name);
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {

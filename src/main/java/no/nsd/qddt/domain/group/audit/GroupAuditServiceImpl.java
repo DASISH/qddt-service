@@ -39,9 +39,9 @@ class GroupAuditServiceImpl implements GroupAuditService {
         return repository.findRevisions(uuid, pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, Group>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return repository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, Group>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return null;
+//    }
 
 }

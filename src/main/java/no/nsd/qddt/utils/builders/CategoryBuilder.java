@@ -16,10 +16,10 @@ public class CategoryBuilder {
     private HierarchyLevel hierarchyLevel = HierarchyLevel.ENTITY;
     private CategoryType categoryType = CategoryType.CATEGORY;
 
-    public CategoryBuilder setName(String name) {
-        this.name = name;
-        return this;
-    }
+//    public CategoryBuilder setName(String name) {
+//        this.name = name;
+//        return this;
+//    }
 
     public CategoryBuilder setLabel(String label) {
         this.label = label;

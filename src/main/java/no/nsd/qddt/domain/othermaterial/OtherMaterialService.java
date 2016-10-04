@@ -23,4 +23,6 @@ public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
     static ResponseEntity<Resource> getFileAsResponseEntity(OtherMaterial otherMaterial) {
         return null;
     }
+
+    void deleteFile(UUID id);
 }

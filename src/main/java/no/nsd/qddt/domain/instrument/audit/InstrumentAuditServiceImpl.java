@@ -39,8 +39,9 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
         return instrumentAuditRepository.findRevisions(uuid, pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, Instrument>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return instrumentAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return instrumentAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
+//    }
+
 }

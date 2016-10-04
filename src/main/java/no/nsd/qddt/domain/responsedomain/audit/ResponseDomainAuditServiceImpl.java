@@ -39,8 +39,10 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
         return responseDomainAuditRepository.findRevisions(uuid,pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, ResponseDomain>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return responseDomainAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return responseDomainAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
+//    }
+
+
 }

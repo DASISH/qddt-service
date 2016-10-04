@@ -39,8 +39,9 @@ class CodeAuditServiceImpl implements CodeAuditService {
         return codeAuditRepository.findRevisions(uuid, pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, Code>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return null;
-    }
+//    @Override
+//    public Page<Revision<Integer, Code>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return null;
+//    }
+
 }

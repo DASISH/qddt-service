@@ -122,6 +122,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     }
 
     public void removeConcept(Concept concept){
+        System.out.println("TopicGroup->" + getName());
         concepts.remove(concept);
         concept.setTopicGroup(null);
     }

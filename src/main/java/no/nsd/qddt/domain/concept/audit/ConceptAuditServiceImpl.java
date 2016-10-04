@@ -39,8 +39,9 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         return conceptAuditRepository.findRevisions(uuid, pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, Concept>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return conceptAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, Concept>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return conceptAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
+//    }
+
 }

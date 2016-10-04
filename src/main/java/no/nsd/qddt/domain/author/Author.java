@@ -162,6 +162,7 @@ public class Author extends AbstractEntity {
     }
 
     public void removeConcept(Concept concept){
+        System.out.println("Author->" + getName());
         if (concepts.contains(concept)) {
             this.concepts.remove(concept);
         }

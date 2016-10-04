@@ -38,7 +38,7 @@ import java.util.UUID;
 public class Concept extends AbstractEntityAudit implements Commentable, Authorable {
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH}, orphanRemoval = true)
     @OrderColumn()
     @JoinColumn(name = "parent_id")
     private Set<Concept> children = new HashSet<>();
@@ -74,12 +74,15 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
     @PreRemove
     private void removeReferencesFromConcept(){
-        getChildren().forEach(C->C.setTopicGroup(this.getTopicGroup()));
+        System.out.println("Pre remove->" + this.getId() + " " + this.getName());
+        getChildren().forEach(C-> this.getTopicGroup().addConcept(C));
         getChildren().clear();
         getAuthors().forEach( A->A.removeConcept(this));
         getQuestionItems().forEach(QI->QI.removeFromConcept(this));
+        getComments().forEach(C -> C.removeChildren());
         getTopicGroup().removeConcept(this);
-
+        setComments(null);
+        System.out.println("Pre remove done");
     }
 
     @Override

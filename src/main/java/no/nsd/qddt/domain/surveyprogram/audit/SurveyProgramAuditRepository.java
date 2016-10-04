@@ -9,6 +9,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,5 +19,7 @@ import java.util.UUID;
 interface SurveyProgramAuditRepository extends EnversRevisionRepository<SurveyProgram, UUID, Integer> {
 
 
-    Page<Revision<Integer,SurveyProgram>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer,SurveyProgram>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+
+//    Page<Revision<Integer,SurveyProgram>> findChangeKindNotInRevision(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }

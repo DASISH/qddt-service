@@ -44,8 +44,10 @@ class StudyAuditServiceImpl implements StudyAuditService {
         return studyAuditRepository.findRevisions(uuid,pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, Study>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return studyAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, Study>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return studyAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
+//    }
+
+
 }

@@ -59,7 +59,7 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "RESPONSEDOMAIN")
+@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"},name = "UNQ_RESPONSEDOMAIN_NAME")})
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @JsonBackReference(value = "QuestionItemRef")
@@ -77,7 +77,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     /*
         a link to a category root/group (template)
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 

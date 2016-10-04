@@ -9,6 +9,8 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -40,12 +42,14 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
     @Override
     @Transactional(readOnly = true)
     public Page<Revision<Integer, SurveyProgram>> findRevisions(UUID uuid, Pageable pageable) {
+//        return surveyProgramAuditRepository.findRevisionsByIdAndChangeKindNotIn(uuid,
+//                Arrays.asList(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT),pageable);
         return surveyProgramAuditRepository.findRevisions(uuid,pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, SurveyProgram>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return surveyProgramAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, SurveyProgram>> findRevisionByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return surveyProgramAuditRepository.findRevisionsByIdAndChangeKindNotIn(uuid, changeKinds,pageable);
+//    }
 
 }

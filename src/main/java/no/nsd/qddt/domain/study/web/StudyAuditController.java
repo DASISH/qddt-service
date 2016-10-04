@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.study.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -26,29 +29,36 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/study/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudyAuditController {
 
-    private StudyAuditService studyAuditService;
+    private StudyAuditService service;
 
     @Autowired
-    public StudyAuditController(StudyAuditService studyAuditService) {
-        this.studyAuditService = studyAuditService;
+    public StudyAuditController(StudyAuditService service) {
+        this.service = service;
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, Study> getLastRevision(@PathVariable("id") UUID id) {
-        return studyAuditService.findLastChange(id);
+        return service.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, Study> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
-        return studyAuditService.findRevision(id, revision);
+        return service.findRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
             @PathVariable("id") UUID id,Pageable pageable, PagedResourcesAssembler assembler){
 
-        Page<Revision<Integer, Study>> studies = studyAuditService.findRevisions(id, pageable);
+
+        Collection<AbstractEntityAudit.ChangeKind> changeKinds = new ArrayList<>();
+        changeKinds.add(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
+
+//        Page<Revision<Integer, Study>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changeKinds , pageable);
+//        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
+
+        Page<Revision<Integer, Study>> studies = service.findRevisions(id, pageable);
         return new ResponseEntity<>(assembler.toResource(studies), HttpStatus.OK);
     }
 

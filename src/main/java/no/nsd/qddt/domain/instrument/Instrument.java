@@ -24,17 +24,6 @@ import java.util.Set;
 @Table(name = "INSTRUMENT")
 public class Instrument extends AbstractEntityAudit implements Commentable {
 
-//    @ManyToOne
-//    @JoinColumn(name="parent_id")
-//    private Instrument parent;
-//
-//    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-//    private Set<Instrument> children = new HashSet<>();
-
-//    @ManyToOne
-//    @JoinColumn(name="study_id")
-//    private Study study;
-
 
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
     @OrderColumn(name="controlConstruct_idx")
@@ -46,13 +35,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public Instrument() {
     }
 
-//    public Study getStudy() {
-//        return study;
-//    }
-//
-//    public void setStudy(Study study) {
-//        this.study = study;
-//    }
 
     public List<ControlConstruct> getControlConstructs() {
         return controlConstructs;
@@ -62,22 +44,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
         this.controlConstructs = controlConstructs;
     }
 
-
-//    public Instrument getParent() {
-//        return parent;
-//    }
-//
-//    public void setParent(Instrument parent) {
-//        this.parent = parent;
-//    }
-//
-//    public Set<Instrument> getChildren() {
-//        return children;
-//    }
-//
-//    public void setChildren(Set<Instrument> children) {
-//        this.children = children;
-//    }
 
     @Override
     public Set<Comment> getComments() {
@@ -103,7 +69,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
         Instrument that = (Instrument) o;
 
-//        if (study != null ? !study.equals(that.study) : that.study != null) return false;
         return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
 
     }
@@ -111,7 +76,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-//        result = 31 * result + (study != null ? study.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }

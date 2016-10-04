@@ -17,5 +17,5 @@ import java.util.UUID;
 @Repository
 interface ControlConstructAuditRepository extends EnversRevisionRepository<ControlConstruct, UUID, Integer> {
 
-    Page<Revision<Integer,ControlConstruct>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer,ControlConstruct>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }

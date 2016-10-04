@@ -26,14 +26,6 @@ import java.util.Set;
 @Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntityAudit {
 
-//    @ManyToOne
-//    @JoinColumn(name="topicgroup_id")
-//    private TopicGroup topicGroup;
-//
-//    @ManyToOne
-//    @JoinColumn(name="controlConstruct_id", insertable=false, updatable=false)
-//    private ControlConstruct controlConstruct;
-
 
     private String path;
 

@@ -43,9 +43,10 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
         return controlConstructAuditRepository.findRevisions(id,pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, ControlConstruct>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return controlConstructAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, ControlConstruct>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return controlConstructAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
+//    }
+
 
 }

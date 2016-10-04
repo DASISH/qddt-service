@@ -57,6 +57,11 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
     }
 
+    public Question(String questionText, String name){
+        setQuestion(questionText);
+        setName(name);
+    }
+
 
     public Set<Question> getChildren() {
         return children;
