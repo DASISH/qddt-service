@@ -39,7 +39,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     @Column(name = "responsedomain_revision")
     private long responseDomainRevision;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "question_id")
     private Question question;
 
@@ -62,6 +62,12 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     }
 
+//    @Override
+//    public void setChangeKind(ChangeKind changeKind) {
+//        super.setChangeKind(changeKind);
+//        getQuestion().setChangeKind(changeKind);
+//    }
+
     @PreRemove
     private void removeReferencesFromQi(){
         getConcepts().forEach( C-> removeFromConcept(C));
@@ -75,23 +81,28 @@ public class QuestionItem extends AbstractEntityAudit  {
         controlConstruct.setInstrument(null);
     }
 
-    public void removeFromConcept(UUID id) {
+    public void removeFromConcept(UUID conceptId) {
         concepts.forEach(C->{
-            if (C.getId().equals(id)) {
+            if (C.getId().equals(conceptId)) {
                 removeFromConcept(C);
             }
         });
     }
 
     public void removeFromConcept(Concept concept) {
-        concept.getTopicGroup().getStudy().getInstruments().forEach(I->{
-            I.getControlConstructs().removeIf(C->C.getQuestionItem().equals(this));
-        });
-        concepts.remove(concept);
+        System.out.println("QuestionItem->" + getName());
+
+        try {
+            concept.getTopicGroup().getStudy().getInstruments().forEach(I -> {
+                I.getControlConstructs().removeIf(C -> C.getQuestionItem().equals(this));
+            });
+        } catch (Exception ex) {
+            System.out.println("removeFromConcept (ControlConstructs)->" + ex.getMessage());
+        }
         concept.getQuestionItems().removeIf(Qi->Qi.equals(this));
+        concepts.remove(concept);
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
     }
-
 
     public ResponseDomain getResponseDomain() {
         return responseDomain;

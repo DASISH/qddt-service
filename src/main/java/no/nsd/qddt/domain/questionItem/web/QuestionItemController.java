@@ -1,5 +1,8 @@
 package no.nsd.qddt.domain.questionItem.web;
 
+import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +65,19 @@ public class QuestionItemController {
         return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<QuestionItem>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                           @RequestParam(value = "question",defaultValue = "%") String question,
+                                                       Pageable pageable, PagedResourcesAssembler assembler) {
 
-	
-	
+        Page<QuestionItem> questionitems = null;
+        name = name.replace("*","%");
+        question = question.replace("*","%");
+
+        questionitems = questionItemService.findByNameLikeOrQuestionLike(name,question, pageable);
+
+        return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
+    }
+
 }

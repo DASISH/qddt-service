@@ -40,8 +40,9 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
         return questionItemAuditRepository.findRevisions(uuid,pageable);
     }
 
-    @Override
-    public Page<Revision<Integer, QuestionItem>> findRevisionsByChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        return questionItemAuditRepository.findRevisionsByChangeKindNotIn(uuid, changeKinds,pageable);
-    }
+//    @Override
+//    public Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+//        return questionItemAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
+//    }
+
 }

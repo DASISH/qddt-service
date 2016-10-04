@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.questionItem;
 
 import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.category.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -11,9 +12,12 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-interface QuestionItemRepository extends BaseRepository<QuestionItem,UUID> {
+public interface QuestionItemRepository extends BaseRepository<QuestionItem,UUID> {
 
     Page<QuestionItem> findAll(Pageable pageable);
+
+    Page<QuestionItem> findByNameLikeOrQuestionItemQuestionquestionLikePageable(String name, String question, Pageable pageable);
+
 
 //    @Query("select n from Question n  left join fetch  n.children")
 //    Page<Question> getHierarchy(Pageable pageable);

@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.questionItem;
 
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -74,5 +75,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public Page<QuestionItem> findAllPageable(Pageable pageable){
         return questionItemRepository.findAll(pageable);
     }
-	
+
+    @Override
+    public Page<QuestionItem> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable) {
+        return questionItemRepository.findByNameLikeOrQuestionItemQuestionquestionLikePageable(name,question,pageable);
+    }
+
 }
