@@ -20,24 +20,37 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
      * First entry will always be CREATED.
-     * NEW_REVISION used for taging a version as a release.
      * TYPO, can be used modify without breaking a release.
-     * NEW_COPY_OF, used when someone reuses an existing Responsedomain, but want to modify it.
      * Every other version is a IN_DEVELOPMENT change.
      *
      * @author Stig Norland
      */
     public enum ChangeKind {
+        //New element status
         CREATED,
+        //ChildSaved as part of parent save
         UPDATED_PARENT,
+        //ParentSaved as part of child save
+        UPDATED_CHILD,
+        //Element added to a collection, no changes to element itself
         UPDATED_HIERARCY_RELATION,
+        //UnfinishedWork
         IN_DEVELOPMENT,
+        //TypoOrNoMeaningChange
         TYPO,
+        //ConceptualImprovement
         CONCEPTUAL,
+        //RealLifeChange
         EXTERNAL,
+        //OtherPurpose
         OTHER,
-        MILESTONE,
-        NEW_COPY_OF
+        //AddContentElement. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
+        ADDED_CONTENT,
+//        milestone status, this version is published.
+//        This was removed as publication is no longer part of the model, now uses list of published elements for each publication.
+//        MILESTONE,
+        BASED_ON,
+        TRANSLATED
     }
 
 
@@ -47,7 +60,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      * What am I?
      */
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.DETACH})
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
