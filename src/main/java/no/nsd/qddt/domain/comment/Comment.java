@@ -37,12 +37,14 @@ public class Comment extends AbstractEntity implements Commentable {
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Comment> children = new HashSet<>();
 
+    private boolean isHidden;
 
     @Column(name = "comment")
     public String comment;
 
 
     public Comment() {
+        isHidden = false;
     }
 
     public Comment(String comment) {
@@ -99,6 +101,14 @@ public class Comment extends AbstractEntity implements Commentable {
         this.comment = comment;
     }
 
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
+
     public int treeSize(){
         return getChildren() == null ? 1 : getChildren().stream().mapToInt(Comment::treeSize).sum() + 1;
     }
@@ -132,5 +142,12 @@ public class Comment extends AbstractEntity implements Commentable {
                 "ownerId=" + ownerId +
                 ", comment='" + comment + '\'' +
                 "} " + super.toString();
+    }
+
+    public void removeChildren() {
+        getChildren().forEach(C ->{
+            C.removeChildren();
+            C.setChildren(null);
+        });
     }
 }

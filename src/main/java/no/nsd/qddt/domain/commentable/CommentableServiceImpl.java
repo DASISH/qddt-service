@@ -33,8 +33,8 @@ public class CommentableServiceImpl implements CommentableService {
     @Override
     public List<Comment> populate(Commentable commentable) {
         if(commentable instanceof AbstractEntity)
-            return commentableRepository.findByOwnerId(
-                    ((AbstractEntity)commentable).getId());
+            return commentableRepository.findbyOwnerIdAndisHidden(
+                    ((AbstractEntity)commentable).getId(),false);
 
         else return Collections.emptyList();
     }

@@ -14,4 +14,7 @@ import java.util.UUID;
 interface CommentableRepository extends BaseRepository<Comment, UUID> {
 
     List<Comment> findByOwnerId(UUID ownerId);
+
+    List<Comment> findbyOwnerIdAndisHidden(UUID ownerId, boolean isHidden);
+
 }
