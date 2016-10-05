@@ -81,6 +81,9 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
+    private String displayLayout;
+
+
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
@@ -136,9 +139,21 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.questionItems = questionItems;
     }
 
-    /*
-    this is useful for populating codes before saving to DB
+    /**
+     * Vocabulary for Display layout  would suffice with 'Horizontal' (default) vs. Vertical'.
+     * @return
      */
+    public String getDisplayLayout() {
+        return displayLayout;
+    }
+
+    public void setDisplayLayout(String displayLayout) {
+        this.displayLayout = displayLayout;
+    }
+
+    /*
+        this is useful for populating codes before saving to DB
+         */
     public void populateCodes() {
         this.codes.clear();
 //        System.out.println("harvestCatCodes -> ");
