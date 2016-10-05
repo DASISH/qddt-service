@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.instrument;
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -11,5 +12,6 @@ import java.util.UUID;
 @Repository
 interface InstrumentRepository extends BaseRepository<Instrument,UUID> {
 
+    List<Instrument> findByStudiesId(UUID studyId);
 }
 

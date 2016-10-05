@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,5 +60,10 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     public void delete(List<Instrument> instances) {
         instrumentRepository.delete(instances);
+    }
+
+    @Override
+    public List<Instrument> findByStudy(UUID studyId) {
+        return instrumentRepository.findByStudiesId(studyId);
     }
 }

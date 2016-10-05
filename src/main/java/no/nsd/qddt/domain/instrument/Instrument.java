@@ -1,9 +1,12 @@
 package no.nsd.qddt.domain.instrument;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -25,6 +28,11 @@ import java.util.Set;
 public class Instrument extends AbstractEntityAudit implements Commentable {
 
 
+    @JsonBackReference(value = "studyRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "instruments")
+    private Set<Study> studies = new HashSet<>();
+
+
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
     @OrderColumn(name="controlConstruct_idx")
     private List<ControlConstruct> controlConstructs =new ArrayList<>();
@@ -35,6 +43,13 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public Instrument() {
     }
 
+    public Set<Study> getStudies() {
+        return studies;
+    }
+
+    public void setStudies(Set<Study> studies) {
+        this.studies = studies;
+    }
 
     public List<ControlConstruct> getControlConstructs() {
         return controlConstructs;
@@ -43,7 +58,6 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public void setControlConstructs(List<ControlConstruct> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
-
 
     @Override
     public Set<Comment> getComments() {

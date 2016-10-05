@@ -53,7 +53,7 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="survey_id",updatable = false)
+    @JoinColumn(name="survey_id")
     private SurveyProgram surveyProgram;
 
     @Column(length = 10000)
@@ -62,7 +62,10 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany( cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "STUDY_INSTRUMENTS",
+            joinColumns = {@JoinColumn(name = "study_id")},
+            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "study", fetch = FetchType.LAZY, orphanRemoval = false)
@@ -88,6 +91,7 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     public void addAuthor(Author user) {
         //user.addStudy(this); would this work?
         authors.add(user);
+        user.addStudy(this);
     }
 
     public Set<Author> getAuthors() {
@@ -123,6 +127,8 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     }
 
     public Set<Instrument> getInstruments() {
+        if (instruments == null)
+            instruments = new HashSet<>();
         return instruments;
     }
 
@@ -131,10 +137,13 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     }
 
     public void SetDefaultInstrument() {
+        if (instruments == null){
+            instruments = new HashSet<>();
+        }
         if (getInstruments().size() ==0){
             Instrument instr = new Instrument();
             instr.setName("<Default>");
-            this.instruments.add(instr);
+            instruments.add(instr);
         }
     }
 
