@@ -75,13 +75,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @PreRemove
     private void removeReferencesFromConcept(){
         System.out.println("Pre remove->" + this.getId() + " " + this.getName());
-        getChildren().forEach(C-> this.getTopicGroup().addConcept(C));
-        getChildren().clear();
-        getAuthors().forEach( A->A.removeConcept(this));
-        getQuestionItems().forEach(QI->QI.removeFromConcept(this));
-        getComments().forEach(C -> C.removeChildren());
-        getTopicGroup().removeConcept(this);
-        setComments(null);
+//        getChildren().forEach(C-> this.getTopicGroup().addConcept(C));
+//        getChildren().clear();
+//        getAuthors().forEach( A->A.removeConcept(this));
+//        getQuestionItems().forEach(QI->QI.removeFromConcept(this));
+//        getComments().forEach(C -> C.removeChildren());
+        if (getTopicGroup() != null)
+            getTopicGroup().removeConcept(this);
+//        setComments(null);
         System.out.println("Pre remove done");
     }
 
