@@ -76,7 +76,6 @@ public class StudyController {
 
         if (instance.getSurveyProgram() == null){
             instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
-            System.out.println("setting survey...");
         }
 
         if (instance.getId() != null) {
@@ -88,13 +87,10 @@ public class StudyController {
 
 
         if (instance.getTopicGroups() != null) {
-            System.out.println("updating topicgroups");
             instance.getTopicGroups().forEach(c -> c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
         }
 
-        System.out.println("saving study instance");
         return studyService.save(instance);
-
     }
 
     @ResponseStatus(value = HttpStatus.OK)
