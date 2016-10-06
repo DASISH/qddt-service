@@ -74,16 +74,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
     @PreRemove
     private void removeReferencesFromConcept(){
-        System.out.println("Pre remove->" + this.getId() + " " + this.getName());
 //        getChildren().forEach(C-> this.getTopicGroup().addConcept(C));
-//        getChildren().clear();
 //        getAuthors().forEach( A->A.removeConcept(this));
 //        getQuestionItems().forEach(QI->QI.removeFromConcept(this));
 //        getComments().forEach(C -> C.removeChildren());
         if (getTopicGroup() != null)
             getTopicGroup().removeConcept(this);
-//        setComments(null);
-        System.out.println("Pre remove done");
+        getComments().clear();
+        getChildren().clear();
     }
 
     @Override
@@ -123,7 +121,8 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         if (!this.questionItems.contains(questionItem)) {
             questionItem.getConcepts().add(this);
             this.questionItems.add(questionItem);
-            questionItem.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            questionItem.setChangeComment("");
         }
     }
 
@@ -139,7 +138,8 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
 
     public void addChildren(Concept concept){
-        this.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        setChangeComment("");
         this.children.add(concept);
     }
 

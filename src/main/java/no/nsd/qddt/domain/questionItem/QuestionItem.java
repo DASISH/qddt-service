@@ -55,6 +55,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
+    @JsonBackReference(value = "controlConstructRef")
     @OneToMany(mappedBy = "questionItem")
     private Set<ControlConstruct> controlConstructs = new HashSet<>();
 
@@ -72,8 +73,13 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     private void removeFromControlConstruct(ControlConstruct controlConstruct) {
         controlConstruct.getInstrument().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        controlConstruct.getInstrument().setChangeComment("QuestionContruct removed");
         controlConstruct.getInstrument().getControlConstructs().removeIf(CC->CC.equals(controlConstruct));
         controlConstruct.setInstrument(null);
+        controlConstruct.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        controlConstruct.setChangeComment("Removed from instrument");
+        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        setChangeComment("Removed from QuestionContruct");
     }
 
     public void removeFromConcept(UUID conceptId) {
@@ -97,6 +103,7 @@ public class QuestionItem extends AbstractEntityAudit  {
         concept.getQuestionItems().removeIf(Qi->Qi.equals(this));
         concepts.remove(concept);
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        this.setChangeComment("");
     }
 
     public ResponseDomain getResponseDomain() {
@@ -152,14 +159,6 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
         this.controlConstructs = controlConstructs;
-    }
-
-    @Override
-    public void setName(String name){
-        super.setName(name);
-        if (getQuestion() != null){
-            getQuestion().setName(name);
-        }
     }
 
 

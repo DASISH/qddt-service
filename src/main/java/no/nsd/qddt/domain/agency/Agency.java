@@ -7,7 +7,7 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -61,7 +61,7 @@ public class Agency extends AbstractEntity {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    private Set<Question> questions = new HashSet<>();
+    private Set<QuestionItem> questions = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
@@ -138,11 +138,11 @@ public class Agency extends AbstractEntity {
         this.concepts = concepts;
     }
 
-    public Set<Question> getQuestions() {
+    public Set<QuestionItem> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(Set<Question> questions) {
+    public void setQuestions(Set<QuestionItem> questions) {
         this.questions = questions;
     }
 

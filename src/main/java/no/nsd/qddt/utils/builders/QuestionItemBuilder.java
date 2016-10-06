@@ -33,7 +33,6 @@ public class QuestionItemBuilder {
         QuestionItem questionItem = new QuestionItem();
         questionItem.setQuestion(question);
         questionItem.setResponseDomain(responseDomain);
-        question.setName(this.name);
         return questionItem;
     }
 }

@@ -23,9 +23,6 @@ public class QuestionBuilder {
 
     public Question createQuestion() {
         Question question = new Question();
-        question.setName(this.name);
-        question.setChangeComment(this.changeComment);
-
         return question;
     }
 }

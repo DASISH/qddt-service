@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.question;
 
+import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -26,7 +27,7 @@ import java.util.UUID;
 //        @FetchProfile.FetchOverride(entity = Question.class, association = "children", mode = FetchMode.JOIN)
 //})
 @Table(name = "QUESTION")
-public class Question extends AbstractEntityAudit implements Commentable {
+public class Question extends AbstractEntity {
 
 
     @OrderColumn(name = "children_index")
@@ -57,9 +58,8 @@ public class Question extends AbstractEntityAudit implements Commentable {
 
     }
 
-    public Question(String questionText, String name){
+    public Question(String questionText){
         setQuestion(questionText);
-        setName(name);
     }
 
 
@@ -109,22 +109,6 @@ public class Question extends AbstractEntityAudit implements Commentable {
     }
 
     public void setChildren(Set<Question> children) {this.children = children;}
-
-    @Override
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    @Override
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    @Override
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
 
     @Override
     public boolean equals(Object o) {

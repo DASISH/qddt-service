@@ -13,6 +13,9 @@ public class Version {
     private Integer minor=0;
     private String versionLabel="";
 
+//    @org.springframework.data.annotation.Version
+//    private Long build;
+
     public Integer getMajor() {
         return major;
     }
@@ -37,6 +40,14 @@ public class Version {
     public void setVersionLabel(String versionLabel) {
         this.versionLabel = versionLabel;
     }
+
+//    public Long getBuild() {
+//        return build;
+//    }
+//
+//    public void setBuild(Long build) {
+//        this.build = build;
+//    }
 
     @Override
     public boolean equals(Object o) {

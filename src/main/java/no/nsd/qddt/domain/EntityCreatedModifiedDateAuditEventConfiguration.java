@@ -75,7 +75,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void update(AbstractEntity entity) {
         try {
-            System.out.println("entity is stamped by update->" +entity.getModified());
             entity.setModified(LocalDateTime.now());
             User user = SecurityContext.getUserDetails().getUser();
             entity.setModifiedBy(user);
@@ -88,9 +87,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                     change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
                     ((AbstractEntityAudit) entity).setChangeKind(change);
                 }
-//                if (change != AbstractEntityAudit.ChangeKind.MILESTONE){
-//                    ver.setVersionLabel("");
-//                }
                 switch (change) {
                     case BASED_ON:
                     case TRANSLATED:

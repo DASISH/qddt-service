@@ -44,6 +44,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         EXTERNAL,
         //OtherPurpose
         OTHER,
+        /* deprecated */
+        MILESTONE,
         //AddContentElement. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
         ADDED_CONTENT,
 //        milestone status, this version is published.
