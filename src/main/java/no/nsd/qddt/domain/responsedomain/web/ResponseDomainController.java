@@ -71,6 +71,7 @@ public class ResponseDomainController {
         ResponseDomain mixedRd = new ResponseDomain();
         mixedRd.setManagedRepresentation(mixedCa);
         mixedRd.setName(old.getName() + "-" + missing.getName());
+        mixedRd.setDescription(old.getDescription() + System.lineSeparator() + missing.getDescription());
         mixedRd.setResponseKind(ResponseKind.MIXED);
         mixedRd.setCodes(old.getCodes());
 
