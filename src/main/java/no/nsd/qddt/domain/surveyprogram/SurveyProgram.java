@@ -54,15 +54,24 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
     private String description;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "surveyPrograms", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy(value = "name ASC")
+    @JoinTable(name = "SURVEY_AUTHORS",
+            joinColumns = {@JoinColumn(name ="survey_id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
+
 
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {
 
+    }
+
+    @PreUpdate
+    private void checkAuthor(){
+        authors.forEach(a->a.addSurvey(this));
     }
 
     public String getDescription() {

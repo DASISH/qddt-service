@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -48,15 +49,19 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     @JoinColumn(name = "topicgroup_id", updatable = false)
     private TopicGroup topicGroup;
 
-    //    @JsonManagedReference(value = "conceptRef")
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
     @JoinTable(name = "CONCEPT_QUESTION_ITEM",
             joinColumns = {@JoinColumn(name = "concept_id")},
             inverseJoinColumns = {@JoinColumn(name = "questionItem_id")})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "concepts", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
+    @JoinTable(name = "CONCEPT_AUTHORS",
+            joinColumns = {@JoinColumn(name ="concept_id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
+
 
     @Column(name = "label")
     private String label;
@@ -71,6 +76,11 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
     }
 
+    @PreUpdate
+    private void checkAuthor(){
+        authors.forEach(a->a.addConcept(this));
+
+    }
 
     @PreRemove
     private void removeReferencesFromConcept(){
@@ -118,14 +128,14 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
 
     public void addQuestionItem(QuestionItem questionItem) {
+        System.out.println("addQuestionItem...");
         if (!this.questionItems.contains(questionItem)) {
             questionItem.getConcepts().add(this);
             this.questionItems.add(questionItem);
             questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            questionItem.setChangeComment("");
+            questionItem.setChangeComment("Added to Concept");
         }
     }
-
 
     public Set<Concept> getChildren() {
         return children;
@@ -139,7 +149,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
     public void addChildren(Concept concept){
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        setChangeComment("");
+        setChangeComment("Concept added");
         this.children.add(concept);
     }
 
@@ -205,7 +215,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
 //        if (parent != null ? !parent.equals(concept.parent) : concept.parent != null) return false;
         if (children != null ? !children.equals(concept.children) : concept.children != null) return false;
-        if (topicGroup != null ? !topicGroup.equals(concept.topicGroup) : concept.topicGroup != null) return false;
+//        if (topicGroup != null ? !topicGroup.equals(concept.topicGroup) : concept.topicGroup != null) return false;
 //        if (questions != null ? !questions.equals(concept.questions) : concept.questions != null) return false;
         if (label != null ? !label.equals(concept.label) : concept.label != null) return false;
         if (description != null ? !description.equals(concept.description) : concept.description != null) return false;
@@ -217,7 +227,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
         int result = super.hashCode();
 //        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + (children != null ? children.size() : 0);
-        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
+//        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);

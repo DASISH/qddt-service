@@ -33,23 +33,17 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     @ManyToOne
     @JoinColumn(name = "responsedomain_id")
-//    @JsonManagedReference(value = "QuestionItemRef")
     private ResponseDomain responseDomain;
 
     @Column(name = "responsedomain_revision")
     private long responseDomainRevision;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "question_id")
     private Question question;
 
     @Column(name = "question_revision")
     private long questionRevivsion;
-
-
-//    /// QuestionIntent: what the question is supposed to gather information about.
-//    @Column(name = "intent", length = 2000)
-//    private String intent;
 
     @JsonBackReference(value = "conceptRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questionItems")
@@ -69,6 +63,7 @@ public class QuestionItem extends AbstractEntityAudit  {
         getConcepts().forEach( C-> removeFromConcept(C));
         getControlConstructs().forEach(CC-> removeFromControlConstruct(CC));
         setResponseDomain(null);
+
     }
 
     private void removeFromControlConstruct(ControlConstruct controlConstruct) {
@@ -91,19 +86,23 @@ public class QuestionItem extends AbstractEntityAudit  {
     }
 
     public void removeFromConcept(Concept concept) {
-        System.out.println("QuestionItem->" + getName());
-
         try {
             concept.getTopicGroup().getStudy().getInstruments().forEach(I -> {
                 I.getControlConstructs().removeIf(C -> C.getQuestionItem().equals(this));
             });
         } catch (Exception ex) {
-            System.out.println("removeFromConcept (ControlConstructs)->" + ex.getMessage());
+            System.out.println("removeFromConcept (CC)->" + ex.getMessage());
         }
-        concept.getQuestionItems().removeIf(Qi->Qi.equals(this));
-        concepts.remove(concept);
+        try {
+            concept.getQuestionItems().removeIf(Qi -> Qi.equals(this));
+            concepts.remove(concept);
+        }catch (Exception ex){
+            System.out.println("removeFromConcept (QI)->" + ex.getMessage());
+        }
+        concept.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        concept.setChangeComment("QuestionItem reference removed");
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        this.setChangeComment("");
+        this.setChangeComment("Concept reference removed");
     }
 
     public ResponseDomain getResponseDomain() {
@@ -128,12 +127,6 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     public void setQuestion(Question question) {
         this.question = question;
-        if (getName()== null || getName().isEmpty()){
-            if (getModifiedBy() != null)
-                setName("Made by " +getModifiedBy().getUsername());
-            else
-                setName("Made by UNKNOWN");
-        }
     }
 
     public long getQuestionRevivsion() {

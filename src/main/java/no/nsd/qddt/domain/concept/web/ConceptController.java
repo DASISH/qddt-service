@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.hibernate.internal.util.xml.ErrorLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,38 +56,21 @@ public class ConceptController {
         return conceptService.save(concept);
     }
 
-////?concept={conceptId}&question={questionId}
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "question"})
-//    public Concept addQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
-//
-//        Concept concept  = conceptService.findOne(conceptId);
-//        Question question = questionService.findOne(questionId);
-//        concept.addQuestion(question);
-//        return conceptService.save(concept);
-//    }
-
-//    //?concept={conceptId}&question={questionId}
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "question"})
-//    public Concept removeQuestion(@RequestParam("concept") UUID conceptId, @RequestParam("question") UUID questionId) {
-//
-//        Concept concept  = conceptService.findOne(conceptId);
-//        question.get
-//        return conceptService.save(concept);
-//    }
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "questionitem"})
     public Concept addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
-
-        Concept concept  = conceptService.findOne(conceptId);
-        QuestionItem questionItem = questionItemService.findOne(questionItemId);
-        concept.addQuestionItem(questionItem);
-        return conceptService.save(concept);
+        try {
+            Concept concept = conceptService.findOne(conceptId);
+            QuestionItem questionItem = questionItemService.findOne(questionItemId);
+            concept.addQuestionItem(questionItem);
+            return conceptService.save(concept);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+            return null;
+        }
     }
 
-    //?concept={conceptId}&question={questionId}
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
     public Concept removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
@@ -96,9 +80,8 @@ public class ConceptController {
             questionItem.removeFromConcept(concept);
             return conceptService.save(concept);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            System.out.println(conceptId.toString());
-            System.out.println(questionItemId.toString());
+            ex.printStackTrace();
+            System.out.println( ex.getMessage());
             return null;
         }
     }

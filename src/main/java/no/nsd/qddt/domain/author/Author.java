@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.author;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
@@ -38,30 +39,21 @@ public class Author extends AbstractEntity {
     private String authorsAffiliation;
 
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "AUTHOR_SURVEY",
-            joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "survey_id", nullable = false,referencedColumnName = "id")})
+    @JsonBackReference(value = "surveyRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "AUTHOR_STUDY",
-            joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "study_id", nullable = false,referencedColumnName = "id")})
+    @JsonBackReference(value = "studyRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
     private Set<Study> studies = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "AUTHOR_TOPIC",
-            joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "topic_id", nullable = false,referencedColumnName = "id")})
+    @JsonBackReference(value = "topicRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "AUTHOR_CONCEPTS",
-            joinColumns = {@JoinColumn(name ="author_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "concept_id", nullable = false,referencedColumnName = "id")})
+    @JsonBackReference(value = "conceptRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
     private Set<Concept> concepts = new HashSet<>();
-
 
 
     public String getName() {

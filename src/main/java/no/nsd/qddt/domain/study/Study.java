@@ -72,11 +72,19 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     @OrderBy(value = "modified ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "studies", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "STUDY_AUTHORS",
+            joinColumns = {@JoinColumn(name ="study_id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
     public Study() {
 
+    }
+
+    @PreUpdate
+    private void checkAuthor(){
+        authors.forEach(a->a.addStudy(this));
     }
 
     public String getDescription() {

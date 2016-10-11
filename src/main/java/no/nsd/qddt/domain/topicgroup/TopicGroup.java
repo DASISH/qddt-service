@@ -7,7 +7,6 @@ import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
@@ -57,7 +56,10 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     private Set<Concept> concepts = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.EAGER,  mappedBy = "topicGroups" , cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
+    @JoinTable(name = "TOPIC_AUTHORS",
+            joinColumns = {@JoinColumn(name ="topic_id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER,  cascade =CascadeType.ALL)
@@ -65,6 +67,11 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
 
     @Column(name = "description", length = 10000)
     private String abstractDescription;
+
+    @PreUpdate
+    private void checkAuthor(){
+        authors.forEach(a->a.addTopic(this));
+    }
 
     @Override
     public void addAuthor(Author user) {
