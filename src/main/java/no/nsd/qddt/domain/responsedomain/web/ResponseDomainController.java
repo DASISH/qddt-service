@@ -56,8 +56,8 @@ public class ResponseDomainController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/createmixed{rdId}/{missingId}", method = RequestMethod.GET)
-    public ResponseDomain create(@PathVariable("rdId") UUID rdId,@PathVariable("missingId") UUID missingId) {
+    @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseDomain createMixed(@RequestParam("responseDomaindId") UUID rdId,@RequestParam("missingId") UUID missingId) {
 
         ResponseDomain old = responseDomainService.findOne(rdId);
         Category missing = categoryService.findOne(missingId);
