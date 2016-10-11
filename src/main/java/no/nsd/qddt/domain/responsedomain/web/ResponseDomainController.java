@@ -1,5 +1,8 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryService;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
@@ -26,10 +29,12 @@ import java.util.UUID;
 public class ResponseDomainController {
 
     private ResponseDomainService responseDomainService;
+    private CategoryService categoryService;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService responseDomainService){
+    public ResponseDomainController(ResponseDomainService responseDomainService, CategoryService categoryService){
         this.responseDomainService = responseDomainService;
+        this.categoryService = categoryService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -49,6 +54,24 @@ public class ResponseDomainController {
     public ResponseDomain create(@RequestBody ResponseDomain responseDomain) {
         return responseDomainService.save(responseDomain);
     }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/createmixed{rdId}/{missingId}", method = RequestMethod.GET)
+    public ResponseDomain create(@PathVariable("rdId") UUID rdId,@PathVariable("missingId") UUID missingId) {
+        ResponseDomain old = responseDomainService.findOne(rdId);
+        Category missing = categoryService.findOne(missingId);
+        ResponseDomain mixedRd = new ResponseDomain();
+
+        mixedRd.setName(old.getName() + "-" + missing.getName());
+        mixedRd.setResponseKind(ResponseKind.MIXED);
+        mixedRd.setManagedRepresentation(old.getManagedRepresentation());
+        mixedRd.getManagedRepresentation().getChildren().add(missing);
+        mixedRd.getManagedRepresentation().setCategoryType(CategoryType.MISSING_GROUP);
+        mixedRd.getManagedRepresentation().setName(old.getManagedRepresentation().getName() +"-" + missing.getName());
+        mixedRd.setCodes(old.getCodes());
+        return responseDomainService.save(mixedRd);
+    }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
