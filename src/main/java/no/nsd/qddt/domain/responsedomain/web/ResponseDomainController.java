@@ -58,17 +58,22 @@ public class ResponseDomainController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createmixed{rdId}/{missingId}", method = RequestMethod.GET)
     public ResponseDomain create(@PathVariable("rdId") UUID rdId,@PathVariable("missingId") UUID missingId) {
+
         ResponseDomain old = responseDomainService.findOne(rdId);
         Category missing = categoryService.findOne(missingId);
-        ResponseDomain mixedRd = new ResponseDomain();
+        Category mixedCa = new Category();
 
+        mixedCa.setName(old.getManagedRepresentation().getName() +"-" + missing.getName());
+        mixedCa.setCategoryType(CategoryType.MIXED);
+        mixedCa.addChild(old.getManagedRepresentation());
+        mixedCa.addChild(missing);
+
+        ResponseDomain mixedRd = new ResponseDomain();
+        mixedRd.setManagedRepresentation(mixedCa);
         mixedRd.setName(old.getName() + "-" + missing.getName());
         mixedRd.setResponseKind(ResponseKind.MIXED);
-        mixedRd.setManagedRepresentation(old.getManagedRepresentation());
-        mixedRd.getManagedRepresentation().getChildren().add(missing);
-        mixedRd.getManagedRepresentation().setCategoryType(CategoryType.MISSING_GROUP);
-        mixedRd.getManagedRepresentation().setName(old.getManagedRepresentation().getName() +"-" + missing.getName());
         mixedRd.setCodes(old.getCodes());
+
         return responseDomainService.save(mixedRd);
     }
 
