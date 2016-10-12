@@ -36,31 +36,31 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements Commentable, Authorable {
+public class Concept extends AbstractEntityAudit implements Commentable {
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
     @OrderColumn()
     @JoinColumn(name = "parent_id")
     private Set<Concept> children = new HashSet<>();
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "topicgroup_id", updatable = false)
+    @JsonBackReference(value = "TopicGroupRef")
+    @ManyToOne()
+    @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @JoinTable(name = "CONCEPT_QUESTION_ITEM",
-            joinColumns = {@JoinColumn(name = "concept_id")},
-            inverseJoinColumns = {@JoinColumn(name = "questionItem_id")})
+            joinColumns = {@JoinColumn(name = "concept_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", referencedColumnName = "id")})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
-    @JoinTable(name = "CONCEPT_AUTHORS",
-            joinColumns = {@JoinColumn(name ="concept_id")},
-            inverseJoinColumns = {@JoinColumn(name = "author_id")})
-    private Set<Author> authors = new HashSet<>();
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
+//    @JoinTable(name = "CONCEPT_AUTHORS",
+//            joinColumns = {@JoinColumn(name ="concept_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "author_id")})
+//    private Set<Author> authors = new HashSet<>();
 
 
     @Column(name = "label")
@@ -76,22 +76,21 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
     }
 
-    @PreUpdate
-    private void checkAuthor(){
-        authors.forEach(a->a.addConcept(this));
-
-    }
+//    @PreUpdate
+//    private void checkAuthor(){
+//        System.out.println("Concept Preupdate...");
+//        authors.forEach(a->a.addConcept(this));
+//
+//    }
 
     @PreRemove
     private void removeReferencesFromConcept(){
-//        getChildren().forEach(C-> this.getTopicGroup().addConcept(C));
-//        getAuthors().forEach( A->A.removeConcept(this));
-//        getQuestionItems().forEach(QI->QI.removeFromConcept(this));
-//        getComments().forEach(C -> C.removeChildren());
+        System.out.println("Concept PreRemove");
+        getQuestionItems().forEach(qi->qi.updateStatusQI(this));
+        getQuestionItems().clear();
         if (getTopicGroup() != null)
             getTopicGroup().removeConcept(this);
-        getComments().clear();
-        getChildren().clear();
+
     }
 
     @Override
@@ -133,7 +132,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
             questionItem.getConcepts().add(this);
             this.questionItems.add(questionItem);
             questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            questionItem.setChangeComment("Added to Concept");
+            questionItem.setChangeComment("QuestionItem Added");
         }
     }
 
@@ -149,7 +148,7 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
     public void addChildren(Concept concept){
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        setChangeComment("Concept added");
+        setChangeComment("SubConcept added");
         this.children.add(concept);
     }
 
@@ -190,20 +189,20 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
     }
 
 
-    @Override
-    public void addAuthor(Author user) {
-        authors.add(user);
-    }
-
-    @Override
-    public Set<Author> getAuthors() {
-        return authors;
-    }
-
-    @Override
-    public void setAuthors(Set<Author> authors) {
-        this.authors = authors;
-    }
+//    @Override
+//    public void addAuthor(Author user) {
+//        authors.add(user);
+//    }
+//
+//    @Override
+//    public Set<Author> getAuthors() {
+//        return authors;
+//    }
+//
+//    @Override
+//    public void setAuthors(Set<Author> authors) {
+//        this.authors = authors;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -213,35 +212,30 @@ public class Concept extends AbstractEntityAudit implements Commentable, Authora
 
         Concept concept = (Concept) o;
 
-//        if (parent != null ? !parent.equals(concept.parent) : concept.parent != null) return false;
-        if (children != null ? !children.equals(concept.children) : concept.children != null) return false;
-//        if (topicGroup != null ? !topicGroup.equals(concept.topicGroup) : concept.topicGroup != null) return false;
-//        if (questions != null ? !questions.equals(concept.questions) : concept.questions != null) return false;
         if (label != null ? !label.equals(concept.label) : concept.label != null) return false;
-        if (description != null ? !description.equals(concept.description) : concept.description != null) return false;
-        return !(comments != null ? !comments.equals(concept.comments) : concept.comments != null);
+        return !(description != null ? !description.equals(concept.description) : concept.description != null);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-//        result = 31 * result + (parent != null ? parent.hashCode() : 0);
-        result = 31 * result + (children != null ? children.size() : 0);
-//        result = 31 * result + (topicGroup != null ? topicGroup.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Concept{" +
-                "label='" + label + '\'' +
+                " children=" + (children!= null ?  children.size() : "0") +
+                ", topicGroup=" + (topicGroup!=null ? topicGroup.getName() :"null") +
+                ", questionItems=" + (questionItems !=null ? questionItems.size() :"0") +
+                ", comments=" + (comments != null ? comments.size() :"0") +
+                ", label='" + label + '\'' +
                 ", description='" + description + '\'' +
-                "} " + super.toString();
+                ", name='" + super.getName() + '\'' +
+                ", id ='" + super.getId() + '\'' +
+                "} ";
     }
-
-
 }
 

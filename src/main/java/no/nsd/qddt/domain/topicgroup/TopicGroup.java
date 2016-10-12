@@ -10,10 +10,13 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
+import org.hibernate.mapping.Collection;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -51,8 +54,8 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = CascadeType.ALL)
-    @OrderBy(value = "modified desc")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    @OrderBy(value = "modified asc")
     private Set<Concept> concepts = new HashSet<>();
 
 
@@ -116,7 +119,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     }
 
     public Set<Concept> getConcepts() {
-        return concepts;
+        return Collections.unmodifiableSet(concepts);
     }
 
     public void setConcepts(Set<Concept> concepts) {
@@ -126,13 +129,21 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     public void addConcept(Concept concept){
         concept.setTopicGroup(this);
         concepts.add(concept);
+        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        setChangeComment("Concept ["+ concept.getName() +"] added");
     }
 
     public void removeConcept(Concept concept){
-        concepts.remove(concept);
-        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        setChangeComment("Concept ["+ concept.getName() +"] removed");
-        concept.setTopicGroup(null);
+        try {
+
+            concepts = concepts.stream().filter(c->c.equals(concept)== false).collect(Collectors.toSet());
+            concept.setTopicGroup(null);
+            setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            setChangeComment("Concept [" + concept.getName() + "] removed");
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     public Set<OtherMaterial> getOtherMaterials() {
@@ -172,25 +183,22 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @Override
     public int hashCode() {
         int result = super.hashCode();
-//        result = 31 * result + (study != null ? study.hashCode() : 0);
-//        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
-        result = 31 * result + (authors != null ? authors.hashCode() : 0);
-        result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
         result = 31 * result + (abstractDescription != null ? abstractDescription.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "TopicGroup{" +
-                "study=" + study +
-                ", concepts=" + concepts +
-                ", authors=" + authors +
-                ", otherMaterials=" + otherMaterials +
+                "studyName =" + (study !=null ? study.getName() :"null") +
+                ", concepts=" + (concepts !=null ? concepts.size() :"0") +
+                ", authors=" + (authors !=null ? authors.size() :"0") +
+                ", otherMaterials=" + (otherMaterials !=null ? otherMaterials.size() :"0") +
+                ", comments=" + (comments !=null ? comments.size() :"0") +
                 ", abstractDescription='" + abstractDescription + '\'' +
-                ", comments=" + comments +
-                "} " + super.toString();
+                ", name='" + super.getName() + '\'' +
+                ", id ='" + super.getId() + '\'' +
+                "} ";
     }
 
 

@@ -61,6 +61,7 @@ public class ConceptController {
     public Concept addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         try {
             Concept concept = conceptService.findOne(conceptId);
+            System.out.println(concept);
             QuestionItem questionItem = questionItemService.findOne(questionItemId);
             concept.addQuestionItem(questionItem);
             return conceptService.save(concept);
@@ -77,7 +78,8 @@ public class ConceptController {
         try{
             Concept concept  = conceptService.findOne(conceptId);
             QuestionItem questionItem =  questionItemService.findOne(questionItemId);
-            questionItem.removeFromConcept(concept);
+            questionItem.updateStatusQI(concept);
+            concept.getQuestionItems().removeIf(qi ->qi.equals(questionItem));
             return conceptService.save(concept);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -118,6 +120,7 @@ public class ConceptController {
         try {
             conceptService.delete(id);
         } catch (Exception ex) {
+            ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
 

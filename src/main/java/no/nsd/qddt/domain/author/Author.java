@@ -40,20 +40,20 @@ public class Author extends AbstractEntity {
 
 
     @JsonBackReference(value = "surveyRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @JsonBackReference(value = "studyRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
 
     @JsonBackReference(value = "topicRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
-
-    @JsonBackReference(value = "conceptRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
-    private Set<Concept> concepts = new HashSet<>();
+//
+//    @JsonBackReference(value = "conceptRef")
+//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
+//    private Set<Concept> concepts = new HashSet<>();
 
 
     public String getName() {
@@ -130,11 +130,11 @@ public class Author extends AbstractEntity {
         }
     }
 
-    public void addConcept(Concept concept){
-        if (!concepts.contains(concept)) {
-            this.concepts.add(concept);
-        }
-    }
+//    public void addConcept(Concept concept){
+//        if (!concepts.contains(concept)) {
+//            this.concepts.add(concept);
+//        }
+//    }
 
     public void removeSurvey(SurveyProgram surveyProgram){
         if (surveyPrograms.contains(surveyProgram))
@@ -153,12 +153,12 @@ public class Author extends AbstractEntity {
         }
     }
 
-    public void removeConcept(Concept concept){
-        System.out.println("Author->" + getName());
-        if (concepts.contains(concept)) {
-            this.concepts.remove(concept);
-        }
-    }
+//    public void removeConcept(Concept concept){
+//        System.out.println("Author->" + getName());
+//        if (concepts.contains(concept)) {
+//            this.concepts.remove(concept);
+//        }
+//    }
 
 
     @Override

@@ -6,10 +6,13 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,9 +23,10 @@ import java.util.Set;
 @Table(name = "INSTRUCTION")
 public class Instruction extends AbstractEntityAudit implements Commentable {
 
-    @JsonBackReference(value = "controlConstructRef")
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<ControlConstruct> controlConstructs = new HashSet<>();
+    @JsonBackReference(value = "controlConstructInstructionRef")
+    @OneToMany(mappedBy = "instruction")
+    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
+
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -34,12 +38,13 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     public Instruction() {
     }
 
-    public Set<ControlConstruct> getControlConstructs() {
-        return controlConstructs;
+
+    public List<ControlConstructInstruction> getControlConstructInstructions() {
+        return controlConstructInstructions;
     }
 
-    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
-        this.controlConstructs = controlConstructs;
+    public void setControlConstructInstructions(List<ControlConstructInstruction> controlConstructInstructions) {
+        this.controlConstructInstructions = controlConstructInstructions;
     }
 
     public String getDescription() {

@@ -34,7 +34,7 @@ public class Comment extends AbstractEntity implements Commentable {
     @JoinColumn(name="parent_id")
     private Comment parent;
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private Set<Comment> children = new HashSet<>();
 
     private boolean isHidden;
@@ -77,10 +77,16 @@ public class Comment extends AbstractEntity implements Commentable {
 
     @Override
     public void addComment(Comment comment) {
+        this.children.add(comment);
         comment.setOwnerId(this.getOwnerId());
         comment.setParent(this);
-        this.children.add(comment);
     }
+
+    public void removeComment(Comment comment){
+        comment.setParent(null);
+        this.getComments().remove(comment);
+    }
+
 
     @Override
     public Set<Comment> getComments() {

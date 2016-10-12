@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.controlconstruct;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction;
+import no.nsd.qddt.domain.controlconstructinstruction.InstructionRank;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Instrument is the significant relation.
@@ -35,8 +38,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     private Set<ControlConstruct> children = new HashSet<>();
 
     @JsonIgnore
-    @OrderColumn(name = "instrument_index")
     @ManyToOne
+    @OrderColumn(name = "instrument_index")
     @JoinColumn(name = "instrument_id")
     private Instrument instrument;
 
@@ -60,28 +63,15 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
-    @JoinTable(name = "CC_PRE_INSTRUCTION",
-            joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "instruction_id", referencedColumnName = "id")})
-    @OrderColumn(name="preInstructions_idx")
-    private List<Instruction> preInstructions =new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
-    @JoinTable(name = "CC_POST_INSTRUCTION",
-            joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "instruction_id", referencedColumnName = "id")})
-    @OrderColumn(name="posInstructions_idx")
-    private List<Instruction> postInstructions =new ArrayList<>();
+    @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @OrderColumn(name="instructions_idx")
+    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
 
     private String logic;
 
     @OneToMany
-    private List<CCParameter> inParameter = new ArrayList<>();
-
-    @OneToMany
-    private List<CCParameter> outParameter = new ArrayList<>();
+    private List<CCParameter> parameters = new ArrayList<>();
 
     public ControlConstruct() {
     }
@@ -142,20 +132,44 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.children = children;
     }
 
-    public List<Instruction> getPreInstructions() {
-        return preInstructions;
+    @JsonIgnore
+    public List<ControlConstructInstruction> getControlConstructInstructions() {
+        return controlConstructInstructions;
     }
 
-    public void setPreInstructions(List<Instruction> preInstructions) {
-        this.preInstructions = preInstructions;
+    public void setControlConstructInstructions(List<ControlConstructInstruction> controlConstructInstructions) {
+        this.controlConstructInstructions = controlConstructInstructions;
+    }
+
+        public List<Instruction> getPreInstructions() {
+        return controlConstructInstructions.stream()
+                .filter(i->i.getInstructionRank().equals(InstructionRank.PRE))
+                .map(ControlConstructInstruction::getInstruction)
+                .collect(Collectors.toList());
+    }
+
+
+    public void addPreInstructions(Instruction preInstruction) {
+        ControlConstructInstruction cci = new ControlConstructInstruction();
+        cci.setInstruction(preInstruction);
+        cci.setInstructionRank(InstructionRank.PRE);
+        cci.setControlConstruct(this);
+        this.controlConstructInstructions.add(cci);
     }
 
     public List<Instruction> getPostInstructions() {
-        return postInstructions;
+        return controlConstructInstructions.stream()
+                .filter(i->i.getInstructionRank().equals(InstructionRank.POST))
+                .map(ControlConstructInstruction::getInstruction)
+                .collect(Collectors.toList());
     }
 
-    public void setPostInstructions(List<Instruction> postInstructions) {
-        this.postInstructions = postInstructions;
+    public void setPostInstructions(Instruction postInstruction) {
+        ControlConstructInstruction cci = new ControlConstructInstruction();
+        cci.setInstruction(postInstruction);
+        cci.setInstructionRank(InstructionRank.POST);
+        cci.setControlConstruct(this);
+        this.controlConstructInstructions.add(cci);
     }
 
     public String getIndexRationale() {
@@ -174,21 +188,14 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.logic = logic;
     }
 
-    public List<CCParameter> getInParameter() {
-        return inParameter;
+    public List<CCParameter> getParameters() {
+        return parameters;
     }
 
-    public void setInParameter(List<CCParameter> in) {
-        this.inParameter = in;
+    public void setParameters(List<CCParameter> parameters) {
+        this.parameters = parameters;
     }
 
-    public List<CCParameter> getOutParameter() {
-        return outParameter;
-    }
-
-    public void setOutParameter(List<CCParameter> out) {
-        this.outParameter = out;
-    }
 
     @Override
     public boolean equals(Object o) {

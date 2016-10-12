@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
@@ -46,7 +45,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     private long questionRevivsion;
 
     @JsonBackReference(value = "conceptRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "questionItems")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Concept> concepts = new HashSet<>();
 
     @JsonBackReference(value = "controlConstructRef")
@@ -58,49 +57,39 @@ public class QuestionItem extends AbstractEntityAudit  {
     }
 
 
+
     @PreRemove
     private void removeReferencesFromQi(){
-        getConcepts().forEach( C-> removeFromConcept(C));
-        getControlConstructs().forEach(CC-> removeFromControlConstruct(CC));
+        getConcepts().forEach( C-> updateStatusQI(C));
+        getConcepts().clear();
+        getControlConstructs().forEach(CC-> updateStatusControlConstruct(CC));
+        getControlConstructs().clear();
         setResponseDomain(null);
-
     }
 
-    private void removeFromControlConstruct(ControlConstruct controlConstruct) {
-        controlConstruct.getInstrument().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        controlConstruct.getInstrument().setChangeComment("QuestionContruct removed");
-        controlConstruct.getInstrument().getControlConstructs().removeIf(CC->CC.equals(controlConstruct));
-        controlConstruct.setInstrument(null);
-        controlConstruct.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        controlConstruct.setChangeComment("Removed from instrument");
-        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        setChangeComment("Removed from QuestionContruct");
+    private void updateStatusControlConstruct(ControlConstruct controlConstruct) {
+        if (controlConstruct.getQuestionItem().equals(this)) {
+            controlConstruct.getInstrument().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            controlConstruct.getInstrument().setChangeComment("QuestionContruct removed");
+            controlConstruct.getInstrument().getControlConstructs().removeIf(CC -> CC.equals(controlConstruct));
+            controlConstruct.setInstrument(null);
+            controlConstruct.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            controlConstruct.setChangeComment("Removed from instrument");
+//            controlConstruct.setQuestionItem(null);
+            setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            setChangeComment("Removed from QuestionContruct");
+        }
     }
 
-    public void removeFromConcept(UUID conceptId) {
+    public void updateStatusQI(UUID conceptId) {
         concepts.forEach(C->{
             if (C.getId().equals(conceptId)) {
-                removeFromConcept(C);
+                updateStatusQI(C);
             }
         });
     }
 
-    public void removeFromConcept(Concept concept) {
-        try {
-            concept.getTopicGroup().getStudy().getInstruments().forEach(I -> {
-                I.getControlConstructs().removeIf(C -> C.getQuestionItem().equals(this));
-            });
-        } catch (Exception ex) {
-            System.out.println("removeFromConcept (CC)->" + ex.getMessage());
-        }
-        try {
-            concept.getQuestionItems().removeIf(Qi -> Qi.equals(this));
-            concepts.remove(concept);
-        }catch (Exception ex){
-            System.out.println("removeFromConcept (QI)->" + ex.getMessage());
-        }
-        concept.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        concept.setChangeComment("QuestionItem reference removed");
+    public void updateStatusQI(Concept concept) {
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
         this.setChangeComment("Concept reference removed");
     }
@@ -182,7 +171,9 @@ public class QuestionItem extends AbstractEntityAudit  {
         return "QuestionItem{" +
                 ", question='" + question.getQuestion() + '\'' +
                 ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
-                "} " + super.toString();
+                ", name='" + super.getName() + '\'' +
+                ", id ='" + super.getId() + '\'' +
+                "} " + System.lineSeparator();
     }
 
 }

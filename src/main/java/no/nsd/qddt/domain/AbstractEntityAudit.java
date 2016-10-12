@@ -6,7 +6,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 /**
@@ -44,13 +43,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         EXTERNAL,
         //OtherPurpose
         OTHER,
-        /* deprecated */
-        MILESTONE,
         //AddContentElement. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
         ADDED_CONTENT,
+        /* deprecated */
 //        milestone status, this version is published.
 //        This was removed as publication is no longer part of the model, now uses list of published elements for each publication.
-//        MILESTONE,
+        MILESTONE,
         BASED_ON,
         TRANSLATED
     }

@@ -94,8 +94,8 @@ public class AuthorController {
             author.addStudy(studyService.findOne(studyId));
         else if (topicId != null)
             author.addTopic(topicService.findOne(topicId));
-        else if (conceptId != null)
-            author.addConcept(conceptService.findOne(conceptId));
+//        else if (conceptId != null)
+//            author.addConcept(conceptService.findOne(conceptId));
 
         return authorService.save(author);
     }
@@ -117,8 +117,8 @@ public class AuthorController {
             author.removeStudy(studyService.findOne(studyId));
         else if (topicId != null)
             author.removeTopic(topicService.findOne(topicId));
-        else if (conceptId != null)
-            author.removeConcept(conceptService.findOne(conceptId));
+//        else if (conceptId != null)
+//            author.removeConcept(conceptService.findOne(conceptId));
 //        else
 //            throw new Exception("Missing parameter");
         return authorService.save(author);
