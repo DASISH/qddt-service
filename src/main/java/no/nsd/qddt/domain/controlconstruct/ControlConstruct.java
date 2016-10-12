@@ -49,7 +49,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String description;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "questionitem_id")
     private QuestionItem questionItem;
 
@@ -60,12 +60,20 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @JoinTable(name = "CC_PRE_INSTRUCTION",
+            joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "instruction_id", referencedColumnName = "id")})
+    @OrderColumn(name="preInstructions_idx")
+    private List<Instruction> preInstructions =new ArrayList<>();
 
-    @OneToMany(mappedBy="controlConstruct", cascade = CascadeType.ALL)
-    private Set<Instruction> preInstructions = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @JoinTable(name = "CC_POST_INSTRUCTION",
+            joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "instruction_id", referencedColumnName = "id")})
+    @OrderColumn(name="posInstructions_idx")
+    private List<Instruction> postInstructions =new ArrayList<>();
 
-    @OneToMany(mappedBy="controlConstruct", cascade = CascadeType.ALL)
-    private Set<Instruction> postInstructions = new HashSet<>();
 
     private String logic;
 
@@ -134,19 +142,19 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.children = children;
     }
 
-    public Set<Instruction> getPreInstructions() {
+    public List<Instruction> getPreInstructions() {
         return preInstructions;
     }
 
-    public void setPreInstructions(Set<Instruction> preInstructions) {
+    public void setPreInstructions(List<Instruction> preInstructions) {
         this.preInstructions = preInstructions;
     }
 
-    public Set<Instruction> getPostInstructions() {
+    public List<Instruction> getPostInstructions() {
         return postInstructions;
     }
 
-    public void setPostInstructions(Set<Instruction> postInstructions) {
+    public void setPostInstructions(List<Instruction> postInstructions) {
         this.postInstructions = postInstructions;
     }
 

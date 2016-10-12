@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.instruction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
@@ -19,10 +20,9 @@ import java.util.Set;
 @Table(name = "INSTRUCTION")
 public class Instruction extends AbstractEntityAudit implements Commentable {
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "instrumentquestion_id")
-    private ControlConstruct controlConstruct;
+    @JsonBackReference(value = "controlConstructRef")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<ControlConstruct> controlConstructs = new HashSet<>();
 
     @Column(name = "description", length = 2000)
     private String description;
@@ -34,12 +34,12 @@ public class Instruction extends AbstractEntityAudit implements Commentable {
     public Instruction() {
     }
 
-    public ControlConstruct getControlConstruct() {
-        return controlConstruct;
+    public Set<ControlConstruct> getControlConstructs() {
+        return controlConstructs;
     }
 
-    public void setControlConstruct(ControlConstruct controlConstruct) {
-        this.controlConstruct = controlConstruct;
+    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
+        this.controlConstructs = controlConstructs;
     }
 
     public String getDescription() {
