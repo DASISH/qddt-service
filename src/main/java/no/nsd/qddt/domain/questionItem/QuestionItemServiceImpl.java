@@ -78,7 +78,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public Page<QuestionItem> findByNameLikeAndQuestionLike(String name, String question, Pageable pageable) {
-        return questionItemRepository.findByNameLikeAndQuestionQuestionLike(name,question,pageable);
+        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,pageable);
     }
 
 }

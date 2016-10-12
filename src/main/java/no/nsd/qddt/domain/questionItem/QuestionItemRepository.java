@@ -16,7 +16,7 @@ public interface QuestionItemRepository extends BaseRepository<QuestionItem,UUID
 
     Page<QuestionItem> findAll(Pageable pageable);
 
-    Page<QuestionItem> findByNameLikeAndQuestionQuestionLike(String name, String question, Pageable pageable);
+    Page<QuestionItem> findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(String name, String question, Pageable pageable);
 
 
 //    @Query("select n from Question n  left join fetch  n.children")
