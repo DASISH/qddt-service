@@ -45,7 +45,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     private long questionRevivsion;
 
     @JsonBackReference(value = "conceptRef")
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
     @JsonBackReference(value = "controlConstructRef")
