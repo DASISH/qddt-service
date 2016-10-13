@@ -26,17 +26,25 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
 
     @Override
     public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
-        return responseDomainAuditRepository.findLastChangeRevision(uuid);
+        Revision<Integer, ResponseDomain> retval = responseDomainAuditRepository.findLastChangeRevision(uuid);
+        System.out.println(retval.getEntity().getManagedRepresentation());
+        return retval;
     }
 
     @Override
     public Revision<Integer, ResponseDomain> findRevision(UUID uuid, Integer revision) {
-        return responseDomainAuditRepository.findRevision(uuid, revision);
+        Revision<Integer, ResponseDomain> retval = responseDomainAuditRepository.findRevision(uuid, revision);
+        System.out.println(retval.getEntity().getManagedRepresentation());
+        return retval;
     }
 
     @Override
     public Page<Revision<Integer, ResponseDomain>> findRevisions(UUID uuid, Pageable pageable) {
-        return responseDomainAuditRepository.findRevisions(uuid,pageable);
+        Page<Revision<Integer, ResponseDomain>> retvals =responseDomainAuditRepository.findRevisions(uuid,pageable);
+
+        retvals.forEach(c->c.getEntity().getManagedRepresentation());
+
+        return retvals;
     }
 
 //    @Override

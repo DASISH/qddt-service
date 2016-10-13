@@ -37,7 +37,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     @Column(name = "responsedomain_revision")
     private long responseDomainRevision;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne(cascade =  {CascadeType.MERGE,CascadeType.DETACH},optional = false)
     @JoinColumn(name = "question_id")
     private Question question;
 

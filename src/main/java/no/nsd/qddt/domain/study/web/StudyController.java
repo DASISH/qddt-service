@@ -27,6 +27,7 @@ public class StudyController {
     private SurveyProgramService surveyProgramService;
     private InstrumentService instrumentService;
 
+
     @Autowired
     public StudyController(StudyService studyService, SurveyProgramService surveyProgramService,
                             InstrumentService instrumentService) {
@@ -43,32 +44,32 @@ public class StudyController {
         return studyService.findOne(id);
     }
 
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(value = "", method = RequestMethod.POST)
-//    public Study update(@RequestBody Study instance) {
-//        System.out.println("study update");
-//        //Surveyprogram has JsonIgnore, needs to fetch Survey from the DB
-//        if (instance.getSurveyProgram() == null){
-//            Study original =  studyService.findOne(instance.getId());
-//            instance.setSurveyProgram(original.getSurveyProgram());
-//            System.out.println("UPS, this code shouldn't have been triggered... (fetching Survey ID)");
-//        }
-//
-//        if (instance.getInstruments().size() == 0){
-//            if (instance.getId() != null)
-//                instance.setInstruments(instrumentService.findByStudy(instance.getId()).);
-//            else
-//            instance.SetDefaultInstrument();
-//        }
-//        else {
-//            instance.getInstruments().forEach(c -> c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
-//        }
-//
-//        instance.getTopicGroups().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
-//
-//        return studyService.save(instance);
-//
-//    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Study update(@RequestBody Study instance) {
+        System.out.println("study update");
+        //Surveyprogram has JsonIgnore, needs to fetch Survey from the DB
+        if (instance.getSurveyProgram() == null){
+            Study original =  studyService.findOne(instance.getId());
+            instance.setSurveyProgram(original.getSurveyProgram());
+            System.out.println("UPS, this code shouldn't have been triggered... (fetching Survey ID)");
+        }
+
+        if (instance.getInstruments() == null ||instance.getInstruments().size() == 0){
+            if (instance.getId() == null)
+                instance.SetDefaultInstrument();
+            else
+                instance.setInstruments( new HashSet<>(instrumentService.findByStudy(instance.getId())));
+        }
+        else {
+            instance.getInstruments().forEach(c -> c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+        }
+        if (instance.getTopicGroups() != null)
+            instance.getTopicGroups().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+
+        return studyService.save(instance);
+
+    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{surveyId}", method = RequestMethod.POST)

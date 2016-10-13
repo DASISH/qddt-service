@@ -61,7 +61,6 @@ public class ConceptController {
     public Concept addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         try {
             Concept concept = conceptService.findOne(conceptId);
-            System.out.println(concept);
             QuestionItem questionItem = questionItemService.findOne(questionItemId);
             concept.addQuestionItem(questionItem);
             return conceptService.save(concept);
@@ -108,8 +107,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
     public Concept createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
-
-        concept.setTopicGroup(topicGroupService.findOne(topicId));
+        topicGroupService.findOne(topicId).addConcept(concept);
         return conceptService.save(concept);
     }
 

@@ -13,10 +13,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -141,15 +138,34 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.controlConstructInstructions = controlConstructInstructions;
     }
 
-        public List<Instruction> getPreInstructions() {
+    public List<Instruction> getPreInstructions() {
+        if (controlConstructInstructions == null)
+            return new ArrayList<>();
         return controlConstructInstructions.stream()
                 .filter(i->i.getInstructionRank().equals(InstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList());
     }
 
+    public void setPreInstructions(List<Instruction> preInstructions) {
+        if (controlConstructInstructions == null)
+            controlConstructInstructions = new ArrayList<>();
+
+        this.controlConstructInstructions.removeIf(c->c.getInstructionRank().equals(InstructionRank.PRE));
+        for (int i = 0; i < preInstructions.size(); i++) {
+            ControlConstructInstruction cci = new ControlConstructInstruction();
+            cci.setInstruction(preInstructions.get(i));
+            cci.setInstructionRank(InstructionRank.POST);
+            cci.setControlConstruct(this);
+            this.controlConstructInstructions.add(i,cci);
+        }
+    }
+
 
     public void addPreInstructions(Instruction preInstruction) {
+        if (controlConstructInstructions == null)
+            controlConstructInstructions = new ArrayList<>();
+
         ControlConstructInstruction cci = new ControlConstructInstruction();
         cci.setInstruction(preInstruction);
         cci.setInstructionRank(InstructionRank.PRE);
@@ -158,18 +174,27 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     public List<Instruction> getPostInstructions() {
+        if (controlConstructInstructions == null)
+            return new ArrayList<>();
+
         return controlConstructInstructions.stream()
                 .filter(i->i.getInstructionRank().equals(InstructionRank.POST))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList());
     }
 
-    public void setPostInstructions(Instruction postInstruction) {
-        ControlConstructInstruction cci = new ControlConstructInstruction();
-        cci.setInstruction(postInstruction);
-        cci.setInstructionRank(InstructionRank.POST);
-        cci.setControlConstruct(this);
-        this.controlConstructInstructions.add(cci);
+    public void setPostInstructions(List<Instruction> postInstructions) {
+        if (controlConstructInstructions == null)
+            controlConstructInstructions = new ArrayList<>();
+
+        this.controlConstructInstructions.removeIf(c->c.getInstructionRank().equals(InstructionRank.POST));
+        for (Instruction instruction:postInstructions) {
+            ControlConstructInstruction cci = new ControlConstructInstruction();
+            cci.setInstruction(instruction);
+            cci.setInstructionRank(InstructionRank.POST);
+            cci.setControlConstruct(this);
+            this.controlConstructInstructions.add(cci);
+        }
     }
 
     public String getIndexRationale() {

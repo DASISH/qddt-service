@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.questionItem.web;
 
-import no.nsd.qddt.domain.HierarchyLevel;
-import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +24,12 @@ import java.util.UUID;
 public class QuestionItemController {
 
     private QuestionItemService questionItemService;
+    private QuestionService questionService;
 
     @Autowired
-    public QuestionItemController(QuestionItemService questionItemService){
+    public QuestionItemController(QuestionItemService questionItemService,QuestionService questionService){
         this.questionItemService = questionItemService;
+        this.questionService = questionService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -47,7 +47,7 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public QuestionItem create(@RequestBody QuestionItem instance) {
-
+        instance.setQuestion(questionService.save(instance.getQuestion()));
         return questionItemService.save(instance);
     }
 

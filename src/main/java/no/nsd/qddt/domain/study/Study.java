@@ -52,8 +52,8 @@ import java.util.Set;
 public class Study extends AbstractEntityAudit implements Commentable,Authorable {
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="survey_id")
+    @ManyToOne()
+    @JoinColumn(name="survey_id",updatable = false)
     private SurveyProgram surveyProgram;
 
     @Column(length = 10000)
