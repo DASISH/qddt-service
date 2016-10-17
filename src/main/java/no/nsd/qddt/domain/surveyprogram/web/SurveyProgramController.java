@@ -41,7 +41,10 @@ public class SurveyProgramController {
     @RequestMapping(value = "", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     public SurveyProgram update(@RequestBody SurveyProgram instance) {
 
-        instance.getStudies().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+        instance.getStudies().forEach(c->{
+            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+            c.setChangeComment("");
+        });
         return surveyProgramService.save(instance);
     }
 

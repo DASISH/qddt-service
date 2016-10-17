@@ -39,8 +39,14 @@ public class TopicGroupController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public TopicGroup update(@RequestBody TopicGroup instance) {
 
-        instance.getConcepts().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
-        instance.getOtherMaterials().forEach(c->c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT));
+        instance.getConcepts().forEach(c->{
+            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+            c.setChangeComment("");
+        });
+        instance.getOtherMaterials().forEach(c->{
+            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+            c.setChangeComment("");
+        });
         return topicGroupService.save(instance);
     }
 
