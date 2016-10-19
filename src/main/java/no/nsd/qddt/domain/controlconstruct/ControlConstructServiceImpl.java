@@ -43,11 +43,14 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional(readOnly = false)
     public ControlConstruct save(ControlConstruct instance) {
+//        System.out.println("Save->populate CC");
+//        instance.populateControlConstructs();
         return controlConstructRepository.save(instance);
     }
 
     @Override
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
+//        instances.forEach(i->i.populateControlConstructs());
         return controlConstructRepository.save(instances);
     }
 

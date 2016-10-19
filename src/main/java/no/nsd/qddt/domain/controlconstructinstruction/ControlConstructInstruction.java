@@ -17,11 +17,11 @@ import javax.persistence.*;
 @Table(name = "CONTROL_CONSTRUCT_INSTRUCTION")
 public class ControlConstructInstruction extends AbstractEntity {
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST})
     @JoinColumn(name = "controlConstruct_id")
     private ControlConstruct controlConstruct;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST})
     @JoinColumn(name = "instruction_id")
     private Instruction instruction;
 

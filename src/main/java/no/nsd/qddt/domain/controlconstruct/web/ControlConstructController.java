@@ -30,18 +30,25 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ControlConstruct get(@PathVariable("id") UUID id) {
-        return controlConstructService.findOne(id);
+
+        ControlConstruct cc= controlConstructService.findOne(id);
+        cc.populateInstructions();
+        return cc;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ControlConstruct update(@RequestBody ControlConstruct instance) {
+
+        instance.populateControlConstructs();
         return controlConstructService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ControlConstruct create(@RequestBody ControlConstruct instance) {
+
+        instance.populateControlConstructs();
         return controlConstructService.save(instance);
     }
 
@@ -54,12 +61,18 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-instrument/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getByFirst(@PathVariable("uuid") UUID firstId) {
-        return controlConstructService.findByInstrumentId(firstId);
+
+        List<ControlConstruct> ccs =controlConstructService.findByInstrumentId(firstId);
+        ccs.forEach(cc->cc.populateInstructions());
+        return ccs;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getBySecond(@PathVariable("uuid") UUID secondId) {
-        return controlConstructService.findByQuestionItemId(secondId);
+
+        List<ControlConstruct> ccs =controlConstructService.findByQuestionItemId(secondId);
+        ccs.forEach(cc->cc.populateInstructions());
+        return ccs;
     }
 }

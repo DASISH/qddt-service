@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction;
 import no.nsd.qddt.domain.controlconstructinstruction.InstructionRank;
@@ -13,7 +15,10 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +59,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     private QuestionItem questionItem;
 
     @Column(name = "questionitem_revision")
-    private Long questionItemRevision;
+    private Long revisionNumber;
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
@@ -62,6 +67,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @OrderColumn(name="instructions_idx")
+    @JsonIgnore
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
 
@@ -70,15 +76,37 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OneToMany
     private List<CCParameter> parameters = new ArrayList<>();
 
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    @OneToMany
+    private List<Instruction> preInstructions =new ArrayList<>();
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    @OneToMany
+    private List<Instruction> postInstructions =new ArrayList<>();
+
+
     public ControlConstruct() {
     }
 
-    public Long getQuestionItemRevision() {
-        return questionItemRevision;
+    public Long getRevisionNumber() {
+        return revisionNumber;
     }
 
-    public void setQuestionItemRevision(Long questionItemRevision) {
-        this.questionItemRevision = questionItemRevision;
+    public void setRevisionNumber(Long revisionNumber) {
+        this.revisionNumber = revisionNumber;
+    }
+
+    public QuestionItem getQuestionItem() {
+        return questionItem;
+    }
+
+    public void setQuestionItem(QuestionItem question) {
+        this.questionItem = question;
     }
 
     public Set<OtherMaterial> getOtherMaterials() {
@@ -113,14 +141,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.instrument = instrument;
     }
 
-    public QuestionItem getQuestionItem() {
-        return questionItem;
-    }
-
-    public void setQuestionItem(QuestionItem question) {
-        this.questionItem = question;
-    }
-
     public Set<ControlConstruct> getChildren() {
         return children;
     }
@@ -129,72 +149,83 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.children = children;
     }
 
-    @JsonIgnore
     public List<ControlConstructInstruction> getControlConstructInstructions() {
-        return controlConstructInstructions;
+         return controlConstructInstructions;
     }
 
     public void setControlConstructInstructions(List<ControlConstructInstruction> controlConstructInstructions) {
         this.controlConstructInstructions = controlConstructInstructions;
     }
 
-    public List<Instruction> getPreInstructions() {
-        if (controlConstructInstructions == null)
-            return new ArrayList<>();
-        return controlConstructInstructions.stream()
-                .filter(i->i.getInstructionRank().equals(InstructionRank.PRE))
-                .map(ControlConstructInstruction::getInstruction)
-                .collect(Collectors.toList());
-    }
 
-    public void setPreInstructions(List<Instruction> preInstructions) {
+    /*
+    fetches pre and post instructions and add them to ControlConstructInstruction
+     */
+    public void populateControlConstructs() {
+        System.out.println("populateControlConstructs");
         if (controlConstructInstructions == null)
             controlConstructInstructions = new ArrayList<>();
+        else
+            controlConstructInstructions.clear();
 
-        this.controlConstructInstructions.removeIf(c->c.getInstructionRank().equals(InstructionRank.PRE));
-        for (int i = 0; i < preInstructions.size(); i++) {
-            ControlConstructInstruction cci = new ControlConstructInstruction();
-            cci.setInstruction(preInstructions.get(i));
-            cci.setInstructionRank(InstructionRank.POST);
-            cci.setControlConstruct(this);
-            this.controlConstructInstructions.add(i,cci);
-        }
+        harvestPreInstructions(getPreInstructions());
+        harvestPostInstructions(getPostInstructions());
     }
 
-
-    public void addPreInstructions(Instruction preInstruction) {
-        if (controlConstructInstructions == null)
-            controlConstructInstructions = new ArrayList<>();
-
-        ControlConstructInstruction cci = new ControlConstructInstruction();
-        cci.setInstruction(preInstruction);
-        cci.setInstructionRank(InstructionRank.PRE);
-        cci.setControlConstruct(this);
-        this.controlConstructInstructions.add(cci);
-    }
-
-    public List<Instruction> getPostInstructions() {
-        if (controlConstructInstructions == null)
-            return new ArrayList<>();
-
-        return controlConstructInstructions.stream()
-                .filter(i->i.getInstructionRank().equals(InstructionRank.POST))
-                .map(ControlConstructInstruction::getInstruction)
-                .collect(Collectors.toList());
-    }
-
-    public void setPostInstructions(List<Instruction> postInstructions) {
-        if (controlConstructInstructions == null)
-            controlConstructInstructions = new ArrayList<>();
-
-        this.controlConstructInstructions.removeIf(c->c.getInstructionRank().equals(InstructionRank.POST));
-        for (Instruction instruction:postInstructions) {
+    private void harvestPostInstructions(List<Instruction> instructions) {
+        for (Instruction instruction : instructions) {
             ControlConstructInstruction cci = new ControlConstructInstruction();
             cci.setInstruction(instruction);
             cci.setInstructionRank(InstructionRank.POST);
             cci.setControlConstruct(this);
-            this.controlConstructInstructions.add(cci);
+            this.getControlConstructInstructions().add(cci);
         }
+    }
+
+    private void harvestPreInstructions(List<Instruction> instructions){
+        for (int i = 0; i < instructions.size(); i++) {
+            ControlConstructInstruction cci = new ControlConstructInstruction();
+            cci.setInstruction(preInstructions.get(i));
+            cci.setInstructionRank(InstructionRank.PRE);
+            cci.setControlConstruct(this);
+            this.controlConstructInstructions.add(i, cci);
+        }
+    }
+
+
+    /*
+     this function is useful for populating ControlConstructInstructions after loading from DB
+      */
+    public void populateInstructions(){
+        System.out.println("populateInstructions");
+        setPreInstructions(getControlConstructInstructions().stream()
+                .filter(i->i.getInstructionRank().equals(InstructionRank.PRE))
+                .map(ControlConstructInstruction::getInstruction)
+                .collect(Collectors.toList()));
+
+        setPostInstructions(getControlConstructInstructions().stream()
+                .filter(i->i.getInstructionRank().equals(InstructionRank.POST))
+                .map(ControlConstructInstruction::getInstruction)
+                .collect(Collectors.toList()));
+    }
+
+
+
+    public List<Instruction> getPreInstructions() {
+        return preInstructions;
+    }
+
+    public void setPreInstructions(List<Instruction> preInstructions) {
+        this.preInstructions = preInstructions;
+    }
+
+
+    public List<Instruction> getPostInstructions() {
+         return postInstructions;
+    }
+
+    public void setPostInstructions(List<Instruction> postInstructions) {
+        this.postInstructions = postInstructions;
     }
 
     public String getIndexRationale() {
@@ -253,11 +284,13 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Override
     public String toString() {
-        return "InstrumentQuestion{" +
+        return "ControlConstruct{" +
                 "instrument=" + instrument +
                 ", question=" + questionItem +
                 ", indexRationale='" + indexRationale + '\'' +
                 ", logic='" + logic + '\'' +
+                ", pre#=" + getPreInstructions().size() + '\'' +
+                ", post#=" + getPostInstructions().size() + '\'' +
                 '}';
     }
 }
