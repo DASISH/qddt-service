@@ -66,7 +66,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @OrderColumn(name="code_idx")
     @JsonIgnore
     private List<Code> codes = new ArrayList<>();
@@ -162,9 +162,18 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     private void harvestCatCodes(Category current){
         if (current == null) return;
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
-            Code code = current.getCode();
-            code.setResponseDomain(this);
-            this.codes.add(code);
+
+            if (getId()== null && getResponseKind() == ResponseKind.MIXED) {
+
+                Code code = new Code(this,current.getCode().getCodeValue());
+                code.setResponseDomain(this);
+                this.codes.add(code);
+            } else {
+
+                Code code = current.getCode();
+                code.setResponseDomain(this);
+                this.codes.add(code);
+            }
         }
         current.getChildren().forEach(this::harvestCatCodes);
     }

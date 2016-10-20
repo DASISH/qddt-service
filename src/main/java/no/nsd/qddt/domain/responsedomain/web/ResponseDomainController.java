@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.responsedomain.web;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.code.CodeService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
@@ -30,11 +31,13 @@ public class ResponseDomainController {
 
     private ResponseDomainService responseDomainService;
     private CategoryService categoryService;
+    private CodeService codeService;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService responseDomainService, CategoryService categoryService){
+    public ResponseDomainController(ResponseDomainService responseDomainService, CategoryService categoryService, CodeService codeService){
         this.responseDomainService = responseDomainService;
         this.categoryService = categoryService;
+        this.codeService = codeService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -73,6 +76,7 @@ public class ResponseDomainController {
         mixedRd.setName(old.getName() + "-" + missing.getName());
         mixedRd.setDescription(old.getDescription() + System.lineSeparator() + missing.getDescription());
         mixedRd.setResponseKind(ResponseKind.MIXED);
+        mixedRd.setDisplayLayout(old.getDisplayLayout());
         mixedRd.setCodes(old.getCodes());
 
         return responseDomainService.save(mixedRd);
