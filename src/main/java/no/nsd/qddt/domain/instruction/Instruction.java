@@ -5,10 +5,7 @@ import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstructio
 import org.codehaus.jackson.annotate.JsonBackReference;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Audited
-@Table(name = "INSTRUCTION")
+@Table(name = "INSTRUCTION", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_INSTRUCTION_NAME")})
 public class Instruction extends AbstractEntityAudit {
 
     @JsonBackReference(value = "controlConstructInstructionRef")
