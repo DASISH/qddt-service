@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.questionItem.web.QuestionItemAuditController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,12 @@ import java.util.UUID;
 public class ControlConstructController {
 
     private ControlConstructService controlConstructService;
+    private QuestionItemAuditController questionItemAuditController;
 
     @Autowired
-    public ControlConstructController(ControlConstructService controlConstructService){
+    public ControlConstructController(ControlConstructService controlConstructService,QuestionItemAuditController questionItemAuditController){
         this.controlConstructService = controlConstructService;
+        this.questionItemAuditController = questionItemAuditController;
     }
 
 
@@ -33,6 +36,7 @@ public class ControlConstructController {
 
         ControlConstruct cc= controlConstructService.findOne(id);
         cc.populateInstructions();
+        cc.setQuestionItem(questionItemAuditController.getByRevision(cc.getQuestionItemUUID(),cc.getRevisionNumber()).getEntity());
         return cc;
     }
 
@@ -41,15 +45,24 @@ public class ControlConstructController {
     public ControlConstruct update(@RequestBody ControlConstruct instance) {
 
         instance.populateControlConstructs();
-        return controlConstructService.save(instance);
+        instance = controlConstructService.save(instance);
+        instance.setQuestionItem(questionItemAuditController.getByRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
+        return instance;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ControlConstruct create(@RequestBody ControlConstruct instance) {
-
-        instance.populateControlConstructs();
-        return controlConstructService.save(instance);
+        try {
+            instance.populateControlConstructs();
+            instance = controlConstructService.save(instance);
+            instance.setQuestionItem(questionItemAuditController.getByRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
+            return instance;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+            return null;
+        }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -63,7 +76,10 @@ public class ControlConstructController {
     public List<ControlConstruct> getByFirst(@PathVariable("uuid") UUID firstId) {
 
         List<ControlConstruct> ccs =controlConstructService.findByInstrumentId(firstId);
-        ccs.forEach(cc->cc.populateInstructions());
+        ccs.forEach(cc->{
+            cc.populateInstructions();
+            cc.setQuestionItem(questionItemAuditController.getByRevision(cc.getQuestionItemUUID(),cc.getRevisionNumber()).getEntity());
+        });
         return ccs;
     }
 
@@ -72,7 +88,10 @@ public class ControlConstructController {
     public List<ControlConstruct> getBySecond(@PathVariable("uuid") UUID secondId) {
 
         List<ControlConstruct> ccs =controlConstructService.findByQuestionItemId(secondId);
-        ccs.forEach(cc->cc.populateInstructions());
+        ccs.forEach(cc->{
+            cc.populateInstructions();
+            cc.setQuestionItem(questionItemAuditController.getByRevision(cc.getQuestionItemUUID(),cc.getRevisionNumber()).getEntity());
+        });
         return ccs;
     }
 }

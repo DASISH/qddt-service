@@ -12,13 +12,11 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,13 +51,16 @@ public class ControlConstruct extends AbstractEntityAudit {
     @Column(length = 3000)
     private String description;
 
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "questionitem_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "questionitem_id",updatable = false)
     private QuestionItem questionItem;
 
+    @Column(name="questionitem_UUID")
+    @Type(type="pg-uuid")
+    private UUID questionItemUUID;
+
     @Column(name = "questionitem_revision")
-    private Long revisionNumber;
+    private Integer revisionNumber;
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
@@ -93,11 +94,11 @@ public class ControlConstruct extends AbstractEntityAudit {
     public ControlConstruct() {
     }
 
-    public Long getRevisionNumber() {
+    public Integer getRevisionNumber() {
         return revisionNumber;
     }
 
-    public void setRevisionNumber(Long revisionNumber) {
+    public void setRevisionNumber(Integer revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
 
@@ -107,6 +108,18 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     public void setQuestionItem(QuestionItem question) {
         this.questionItem = question;
+        setQuestionItemUUID(question.getId());
+    }
+
+    public UUID getQuestionItemUUID() {
+        if (questionItemUUID == null) {
+            questionItemUUID = getQuestionItem().getId();
+        }
+        return questionItemUUID;
+    }
+
+    public void setQuestionItemUUID(UUID questionItem) {
+        questionItemUUID = questionItem;
     }
 
     public Set<OtherMaterial> getOtherMaterials() {
