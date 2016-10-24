@@ -53,16 +53,11 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ControlConstruct create(@RequestBody ControlConstruct instance) {
-        try {
-            instance.populateControlConstructs();
-            instance = controlConstructService.save(instance);
-            instance.setQuestionItem(questionItemAuditController.getByRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
-            return instance;
-        }catch (Exception ex){
-            ex.printStackTrace();
-            System.out.println(ex.getMessage());
-            return null;
-        }
+
+        instance.populateControlConstructs();
+        instance = controlConstructService.save(instance);
+        instance.setQuestionItem(questionItemAuditController.getByRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
+        return instance;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
