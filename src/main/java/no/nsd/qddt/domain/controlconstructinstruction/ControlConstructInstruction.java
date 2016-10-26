@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstructinstruction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.instruction.Instruction;
@@ -17,11 +18,12 @@ import javax.persistence.*;
 @Table(name = "CONTROL_CONSTRUCT_INSTRUCTION")
 public class ControlConstructInstruction extends AbstractEntity {
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST})
+    @JsonBackReference
+    @ManyToOne()
     @JoinColumn(name = "controlConstruct_id")
     private ControlConstruct controlConstruct;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "instruction_id")
     private Instruction instruction;
 

@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstructionService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,12 @@ import java.util.UUID;
 class ControlConstructServiceImpl implements ControlConstructService {
 
     private ControlConstructRepository controlConstructRepository;
+    private ControlConstructInstructionService cciService;
 
     @Autowired
-    public ControlConstructServiceImpl(ControlConstructRepository controlConstructRepository) {
+    public ControlConstructServiceImpl(ControlConstructRepository controlConstructRepository,ControlConstructInstructionService cciService) {
         this.controlConstructRepository = controlConstructRepository;
+        this.cciService = cciService;
     }
 
     @Override
@@ -43,8 +46,8 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional(readOnly = false)
     public ControlConstruct save(ControlConstruct instance) {
-//        System.out.println("Save->populate CC");
-//        instance.populateControlConstructs();
+        instance.populateControlConstructs();
+        cciService.save(instance.getControlConstructInstructions());
         return controlConstructRepository.save(instance);
     }
 

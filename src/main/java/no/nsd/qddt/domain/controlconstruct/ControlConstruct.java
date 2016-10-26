@@ -66,14 +66,15 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-    @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    //TODO ArrayList dosn't work with Enver
+    @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH})
     @OrderColumn(name="instructions_idx")
     @JsonIgnore
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
-
     private String logic;
 
+    //TODO ArrayList dosn't work with Enver
     @OneToMany
     private List<CCParameter> parameters = new ArrayList<>();
 
@@ -83,6 +84,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JsonDeserialize
     @OneToMany
     private List<Instruction> preInstructions =new ArrayList<>();
+
 
     @Transient
     @JsonSerialize
@@ -112,9 +114,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     public UUID getQuestionItemUUID() {
-        if (questionItemUUID == null) {
-            questionItemUUID = getQuestionItem().getId();
-        }
+        if (questionItemUUID == null) questionItemUUID = getQuestionItem().getId();
         return questionItemUUID;
     }
 

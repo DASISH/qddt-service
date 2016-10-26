@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstructinstruction;
 
+import no.nsd.qddt.domain.instruction.InstructionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ public class ControlConstructInstructionServiceImpl implements ControlConstructI
 
 
     private ControlConstructInstructionRepository repository;
+    private InstructionService instructionService;
 
     @Autowired
-    public ControlConstructInstructionServiceImpl(ControlConstructInstructionRepository controlConstructInstructionRepository) {
+    public ControlConstructInstructionServiceImpl(ControlConstructInstructionRepository controlConstructInstructionRepository,InstructionService instructionService) {
         this.repository = controlConstructInstructionRepository;
+        this.instructionService = instructionService;
     }
 
     @Override
@@ -38,11 +41,15 @@ public class ControlConstructInstructionServiceImpl implements ControlConstructI
 
     @Override
     public ControlConstructInstruction save(ControlConstructInstruction instance) {
+
+        if (instance.getInstruction().getId() == null)
+            instance.setInstruction(instructionService.save(instance.getInstruction()));
         return repository.save(instance);
     }
 
     @Override
     public List<ControlConstructInstruction> save(List<ControlConstructInstruction> instances) {
+        instances.forEach( i-> i.setInstruction(instructionService.save(i.getInstruction())));
         return repository.save(instances);
     }
 

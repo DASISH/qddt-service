@@ -18,6 +18,7 @@ import java.util.List;
 @Table(name = "INSTRUCTION", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_INSTRUCTION_NAME")})
 public class Instruction extends AbstractEntityAudit {
 
+    //TODO ArrayList dosn't work with Enver
     @JsonBackReference(value = "controlConstructInstructionRef")
     @OneToMany(mappedBy = "instruction")
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
