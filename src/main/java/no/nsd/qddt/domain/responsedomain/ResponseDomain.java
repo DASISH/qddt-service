@@ -1,15 +1,15 @@
 package no.nsd.qddt.domain.responsedomain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.code.Code;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -59,17 +59,23 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"},name = "UNQ_RESPONSEDOMAIN_NAME")})
+@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name,category_id"},name = "UNQ_RESPONSEDOMAIN_NAME")})
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
-
+/*
+    Can't have two responsedomain with the same template and the same name
+ */
     @JsonBackReference(value = "QuestionItemRef")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 
+
+    //TODO ArrayList dosn't work with Enver
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @OrderColumn(name="code_idx")
+    @OrderBy("code_idx ASC")
     @JsonIgnore
     private List<Code> codes = new ArrayList<>();
+//    private Map<Integer,Code> codes = new TreeMap<>();
 
     @Column(name = "description", length = 2000, nullable = false)
     private String description;
@@ -97,11 +103,19 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Embedded
     private ResponseCardinality responseCardinality;
 
-
-
     public ResponseDomain(){
         description = "";
     }
+
+    @Override
+    public  String getName(){
+        if (getId() == null && responseKind == ResponseKind.MIXED) {
+            return "Mixed {" + managedRepresentation.getChildren().get(0).getName() + " - " + managedRepresentation.getChildren().get(1).getName() +  "}";
+        }
+        else return super.getName();
+    }
+
+
 
     public String getDescription() {
         if (description == null)
@@ -194,6 +208,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
             }
         }
 
+//        current.getChildren().forEach;
         current.getChildren().forEach(this::populateCatCodes);
     }
 
@@ -213,6 +228,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     }
 
     public List<Code> getCodes() {
+        System.out.println("getCodes");
+        System.out.println(codes.toString());
         return codes;
     }
 
