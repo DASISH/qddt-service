@@ -107,15 +107,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         description = "";
     }
 
-    @Override
-    public  String getName(){
-        if (getId() == null && responseKind == ResponseKind.MIXED) {
-            return "Mixed {" + managedRepresentation.getChildren().get(0).getName() + " - " + managedRepresentation.getChildren().get(1).getName() +  "}";
-        }
-        else return super.getName();
-    }
-
-
 
     public String getDescription() {
         if (description == null)
