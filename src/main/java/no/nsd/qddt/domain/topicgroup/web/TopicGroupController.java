@@ -43,10 +43,10 @@ public class TopicGroupController {
             c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
             c.setChangeComment("");
         });
-        instance.getOtherMaterials().forEach(c->{
-            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-            c.setChangeComment("");
-        });
+//        instance.getOtherMaterials().forEach(c->{
+//            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+//            c.setChangeComment("");
+//        });
         return topicGroupService.save(instance);
     }
 

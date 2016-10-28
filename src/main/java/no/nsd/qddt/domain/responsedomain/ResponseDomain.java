@@ -11,12 +11,16 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
+import org.hibernate.mapping.Collection;
 
 import javax.persistence.*;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 /**
@@ -59,7 +63,7 @@ import java.util.Set;
  */
 @Audited
 @Entity
-@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name,category_id"},name = "UNQ_RESPONSEDOMAIN_NAME")})
+@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id"},name = "UNQ_RESPONSEDOMAIN_NAME")})
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 /*
     Can't have two responsedomain with the same template and the same name
@@ -267,11 +271,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @Override
     public String toString() {
-        return "ResponseDomain{" +
-                " name='" + super.getName() + '\'' +
-                " id='" + super.getId() + '\'' +
-                " modified='" + super.getModified() + '\'' +
-                " managedRepresentation = " + managedRepresentation.getCategoryType() + '\'' +
-                "}";
+        return MessageFormat.format("ResponseDomain'{' name=''{0}'' id=''{1}'' modified=''{2}'' codes={3}  managedRepresentation = ''{4}''} " ,
+                super.getName(),
+                super.getId(),
+                super.getModified(),
+                (codes == null) ? "NULL": "NOT NULL???",
+                managedRepresentation.getChildren().stream().map(c->c.getName()).collect(Collectors.joining(", ")).toString());
     }
 }

@@ -1,25 +1,19 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +26,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Value("${fileroot}")
     private String fileRoot;
-
     private OtherMaterialRepository otherMaterialRepository;
 
     @Autowired
@@ -57,44 +50,72 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         );
     }
 
+
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public OtherMaterial save(OtherMaterial instance) {
         return otherMaterialRepository.save(instance);
     }
 
     @Override
     public List<OtherMaterial> save(List<OtherMaterial> instances) {
+
         return otherMaterialRepository.save(instances);
+
     }
 
     @Override
+    @Transactional()
     public void delete(UUID uuid) {
+
+        deleteFile(findOne(uuid));
         otherMaterialRepository.delete(uuid);
+
     }
 
     @Override
+    @Transactional()
     public void delete(List<OtherMaterial> instances) {
+
+        instances.forEach(om->deleteFile(om));
         otherMaterialRepository.delete(instances);
+
     }
 
     @Override
-    public File saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException {
+    public OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException {
 
-        String directory = createFolder(uuid.toString());
-        String filepath = Paths.get(directory, multipartFile.getName()).toString();
+        String name = owner + " [" + filename + "]";
+        return otherMaterialRepository.findBy(owner,filename).orElseThrow(
+                () -> new ResourceNotFoundException(name , OtherMaterial.class)
+        );
 
-        OtherMaterial om = findOne(uuid);
-        om.setSize(multipartFile.getSize());
-        om.setFileType(multipartFile.getContentType());
-        om.setPath(filepath);
-        om.setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
-        om.setOriginalName(multipartFile.getOriginalFilename());
-        om.setName(multipartFile.getName());
-        save(om);
+    }
+
+    @Override
+    public File getFile(OtherMaterial om){
+        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
+        return new File(filepath);
+    }
+
+    @Override
+    @Transactional()
+    public File saveFile(MultipartFile multipartFile, UUID ownerId) throws FileUploadException {
+
+        String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getName()).toString();
+        OtherMaterial om;
+        try{
+            om = findBy(ownerId,multipartFile.getName());
+            om.setSize(multipartFile.getSize());
+            om.setFileType(multipartFile.getContentType());
+            om.setOriginalName(multipartFile.getOriginalFilename());
+        } catch (ResourceNotFoundException re){
+            om = new OtherMaterial(ownerId,multipartFile, null);
+        }
 
         try {
             Files.copy(multipartFile.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);
+            save(om);
             return new File(filepath);
         } catch (IOException e) {
             throw new FileUploadException(multipartFile.getName());
@@ -102,17 +123,26 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
     @Override
-    public void deleteFile(UUID id) {
+    public void deleteFile(OtherMaterial om) {
+
+        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
+        new File(filepath).delete();
 
     }
 
-    private String createFolder(String uuid) {
+    /*
+    return absolute path to save folder, creates folder if not exists
+     */
+    @Transactional()
+    private String getFolder(String ownerId) {
 
-        File directory= new File(fileRoot + uuid.substring(1, 3));
+        File directory= new File(fileRoot + ownerId.substring(1, 3));
 
         if(!directory.exists()) {
             directory.mkdir();
         }
         return directory.getAbsolutePath();
     }
+
+
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -13,6 +14,8 @@ import java.util.UUID;
  */
 @Repository
 interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, EnversRevisionRepository<OtherMaterial, UUID, Integer> {
+
+    Optional<OtherMaterial> findBy(UUID owner, String name);
 
 
     // Tar denne med for å teste funksjonaliteten, den er strengt tatt unødvendig å ha med, da findAllByModule gir deg det du trenger.

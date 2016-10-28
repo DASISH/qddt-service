@@ -1,14 +1,14 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.downloadtoken.DownloadToken;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import no.nsd.qddt.domain.AbstractEntity;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.UUID;
 
 //import no.nsd.qddt.domain.downloadtoken.DownloadToken;
 
@@ -21,13 +21,15 @@ import java.util.Set;
  * @author Stig Norland
  */
 
-@Audited
 @Entity
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Table(name = "OTHER_MATERIAL")
-public class OtherMaterial extends AbstractEntityAudit {
+public class OtherMaterial extends AbstractEntity {
 
+    @Type(type="pg-uuid")
+    private UUID owner;
 
-    private String path;
+    private String fileName;
 
     private String description;
 
@@ -41,13 +43,37 @@ public class OtherMaterial extends AbstractEntityAudit {
 
     }
 
-    public OtherMaterial(String name, String fileType, String path, long size) {
-        setName(name);
-        setFileType(fileType);
-        setPath(path);
-        setSize(size);
+    public OtherMaterial(UUID owner,MultipartFile file, String description){
+        setOwner(owner);
+        setFileName(file.getName());
+        setOriginalName(file.getOriginalFilename());
+        setSize(file.getSize());
+        setDescription(description);
     }
 
+    public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
+        setOwner(owner);
+        setFileName(name);
+        setFileType(fileType);
+        setSize(size);
+        setDescription(description);
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
 
     public String getFileType() {
         return fileType;
@@ -65,14 +91,6 @@ public class OtherMaterial extends AbstractEntityAudit {
         this.size = size;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -80,12 +98,6 @@ public class OtherMaterial extends AbstractEntityAudit {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    @JsonIgnore
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToMany(mappedBy = "otherMaterial", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    private Set<DownloadToken> downloadTokens = new HashSet<>();
-
 
     public String getOriginalName() {
         return originalName;
@@ -104,7 +116,6 @@ public class OtherMaterial extends AbstractEntityAudit {
         OtherMaterial that = (OtherMaterial) o;
 
         if (size != that.size) return false;
-        if (path != null ? !path.equals(that.path) : that.path != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (fileType != null ? !fileType.equals(that.fileType) : that.fileType != null) return false;
         return originalName != null ? originalName.equals(that.originalName) : that.originalName == null;
@@ -114,7 +125,6 @@ public class OtherMaterial extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "OtherMaterial{" +
-                ", path='" + path + '\'' +
                 ", description='" + description + '\'' +
                 ", fileType='" + fileType + '\'' +
                 ", originalName='" + originalName + '\'' +
@@ -122,16 +132,17 @@ public class OtherMaterial extends AbstractEntityAudit {
                 "} " + super.toString();
     }
 
+
     @Override
     public int hashCode() {
+
         int result = super.hashCode();
-        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (fileType != null ? fileType.hashCode() : 0);
         result = 31 * result + (originalName != null ? originalName.hashCode() : 0);
         result = 31 * result + (int) (size ^ (size >>> 32));
         return result;
     }
-
-
 }

@@ -54,7 +54,6 @@ public class OtherMaterialController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        otherMaterialService.deleteFile(id);
         otherMaterialService.delete(id);
     }
 
@@ -64,11 +63,11 @@ public class OtherMaterialController {
     }
 
     @RequestMapping(value="/upload", method=RequestMethod.POST)
-    public @ResponseBody String handleFileUpload(@RequestParam("id") UUID id,
+    public @ResponseBody String handleFileUpload(@RequestParam("ownerId") UUID ownerId,
                                                  @RequestParam("file") MultipartFile file){
         if (!file.isEmpty()) {
             try {
-                otherMaterialService.saveFile(file,id);
+                otherMaterialService.saveFile(file,ownerId);
                 return "You successfully uploaded " + file.getName() + "!";
             } catch (Exception e) {
                 return "You failed to upload file => " + e.getMessage();
@@ -78,13 +77,12 @@ public class OtherMaterialController {
         }
     }
 
-    @RequestMapping(value="/files/{id}", method=RequestMethod.GET)
+    @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> handleFileDownload(@PathVariable("id") UUID id) {
+    ResponseEntity<InputStreamResource> handleFileDownload(@PathVariable("fileId") UUID fileId) {
         try {
-            OtherMaterial om = otherMaterialService.findOne(id);
-            Path path = Paths.get(om.getPath());
-            File file= path.toFile();
+            OtherMaterial om = otherMaterialService.findOne(fileId);
+            File file= otherMaterialService.getFile(om);
             return ResponseEntity
                     .ok()
 //                    .headers(headers)

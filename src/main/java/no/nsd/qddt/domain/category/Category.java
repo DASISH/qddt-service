@@ -9,9 +9,7 @@ import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -37,15 +35,16 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind","based_on_object"},name = "UNQ_CATEGORY_NAME_KIND")})
-public class Category extends AbstractEntityAudit {
+public class Category extends AbstractEntityAudit  implements Comparable<Category>{
 
     @Transient
     @JsonSerialize
     @JsonDeserialize
     private Code code;
 
-    @ManyToMany(cascade = { CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
+//    @OrderBy("category_idx ASC")
     private List<Category> children = new ArrayList<>();
 
 
@@ -291,18 +290,51 @@ public class Category extends AbstractEntityAudit {
 
     public boolean fieldCompare(Category o) {
 
-        if (code != null && !code.equals(o.code)) return false;
-//        if (responseDomain != null && !responseDomain.equals(o.responseDomain)) return false;
         if (children != null && !children.equals(o.children)) return false;
         if (label != null && !label.equals(o.label)) return false;
         if (description != null && !description.equals(o.description)) return false;
         if (hierarchyLevel != null && !hierarchyLevel.equals(o.hierarchyLevel)) return false;
         if (categoryType != null && !categoryType.equals(o.categoryType)) return false;
-//        if (categoryJsonDDI != null && !categoryJsonDDI.equals(o.categoryJsonDDI)) return false;
 
         return super.fieldCompare(o);
 
     }
 
+    /*
+    preRec for valid Categories
+     */
+    protected  boolean isValid(){
+        if (hierarchyLevel== HierarchyLevel.ENTITY)
+            switch (categoryType) {
+                case DATETIME:
+                case TEXT:
+                case NUMERIC:
+                case BOOLEAN:
+                case URI:
+                    return (children.size() == 0 && inputLimit.isValid());
+                case CATEGORY:
+                    return (children.size() == 0
+                            && label != null && !label.trim().isEmpty()
+                            && getName() != null && !getName().trim().isEmpty());
+                default:
+                    return false;
+            }
+        else // hierarchyLevel== HierarchyLevel.GROUP_ENTITY)
+            switch (categoryType) {
+                case MISSING_GROUP:
+                case LIST:
+                    return (children.size() > 0 && inputLimit.isValid() && classificationLevel != null);
+                case SCALE:
+                    return (children.size() >= 2  && inputLimit.isValid() && classificationLevel != null);
+                case MIXED:
+                    return (children.size() >= 2  && classificationLevel != null);
+                default:
+                    return false;
+            }
+    }
 
+    @Override
+    public int compareTo(Category o) {
+        return 0;
+    }
 }

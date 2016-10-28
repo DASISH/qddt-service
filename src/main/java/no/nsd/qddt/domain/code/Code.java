@@ -77,7 +77,7 @@ public class Code  extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "ResponseCode{ "  + "Name " + responseDomain.getName() + " Code "  + codeValue + " } ";
+        return "ResponseCode{ "  + "Name " + responseDomain==null?"NULL":responseDomain.getName() + " Code "  + codeValue==null?"NULL":codeValue + " } ";
     }
 
 }

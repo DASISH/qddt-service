@@ -13,9 +13,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.mapping.Collection;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,10 +52,10 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
-    @OrderBy(value = "modified asc")
-    private Set<Concept> concepts = new HashSet<>();
-
+    @OrderBy(value = "name asc")
+    private Set<Concept> concepts = new LinkedHashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
     @JoinTable(name = "TOPIC_AUTHORS",
@@ -161,6 +159,15 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
 
     public void setAbstractDescription(String abstractDescription) {
         this.abstractDescription = abstractDescription;
+    }
+
+    public Concept getTopicQuestions(){
+        return concepts.stream().filter(p->p.getName()== null).findFirst().orElse(new Concept());
+    }
+
+    public void setTopicQuestions(Concept concept){
+        concepts.removeIf(c->c.getId() == concept.getId());
+        concepts.add(concept);
     }
 
     @Override

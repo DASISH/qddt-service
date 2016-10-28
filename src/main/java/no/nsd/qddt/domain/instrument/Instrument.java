@@ -32,7 +32,7 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "instruments")
     private Set<Study> studies = new HashSet<>();
 
-
+    //TODO ArrayList dosn't work with Enver
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
     @OrderColumn(name="controlConstruct_idx")
     private List<ControlConstruct> controlConstructs =new ArrayList<>();

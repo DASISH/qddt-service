@@ -1,15 +1,14 @@
 package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,12 +16,15 @@ import java.util.UUID;
  */
 public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
-    File saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
-
+    OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException;
 
     static ResponseEntity<Resource> getFileAsResponseEntity(OtherMaterial otherMaterial) {
         return null;
     }
 
-    void deleteFile(UUID id);
+    File getFile(OtherMaterial om);
+
+    File saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
+
+    void deleteFile(OtherMaterial om);
 }

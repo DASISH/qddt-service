@@ -24,4 +24,12 @@ public class ResourceNotFoundException extends RuntimeException {
         super("Could not find " + clazz.getSimpleName() + " with id " + id.toString());
         logger.error("Could not find " + clazz.getSimpleName() + " with id " + id.toString());
     }
+
+    public ResourceNotFoundException(String name, Class<?> clazz) {
+        super("Could not find " + clazz.getSimpleName() + " with name " + name);
+        logger.error("Could not find " + clazz.getSimpleName() + " with name " + name);
+    }
+
+
+
 }

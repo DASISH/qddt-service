@@ -61,6 +61,10 @@ public class ResponseCardinality {
 
     @Override
     public String toString() {
-        return "valid response{ minimum=" + minimum + ", maximum=" + maximum +'}';
+        return "{ minimum=" + minimum + ", maximum=" + maximum +'}';
+    }
+
+    public boolean isValid() {
+        return  (minimum != null && maximum != null &&  Long.valueOf(minimum) <= Long.valueOf(maximum));
     }
 }
