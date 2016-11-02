@@ -33,6 +33,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             entity.setModified(now);
             User user = SecurityContext.getUserDetails().getUser();
             entity.setModifiedBy(user);
+
             if (entity instanceof AbstractEntityAudit) {
                 ((AbstractEntityAudit) entity).setAgency(user.getAgency());
                 ((AbstractEntityAudit) entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
@@ -82,6 +83,8 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             if (entity instanceof AbstractEntityAudit) {
                 Version ver = ((AbstractEntityAudit) entity).getVersion();
                 AbstractEntityAudit.ChangeKind change = ((AbstractEntityAudit) entity).getChangeKind();
+                if (entity.getId() == null && ((AbstractEntityAudit) entity).getBasedOnObject() != null)
+                    change = AbstractEntityAudit.ChangeKind.BASED_ON;
 
                 if (change == AbstractEntityAudit.ChangeKind.CREATED) {
                     change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
