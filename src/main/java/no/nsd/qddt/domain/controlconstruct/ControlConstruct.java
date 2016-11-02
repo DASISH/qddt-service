@@ -134,6 +134,11 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.otherMaterials = otherMaterials;
     }
 
+
+    public void addOtherMaterials(OtherMaterial otherMaterial) {
+        getOtherMaterials().add(otherMaterial);
+    }
+
     public String getLabel() {
         return label;
     }
@@ -310,6 +315,7 @@ public class ControlConstruct extends AbstractEntityAudit {
                 ", post#=" + getPostInstructions().size() + '\'' +
                 '}';
     }
+
 }
 
 

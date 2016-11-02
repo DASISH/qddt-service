@@ -2,9 +2,13 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,10 +24,12 @@ import java.util.UUID;
 public class ControlConstructController {
 
     private ControlConstructService controlConstructService;
+    private OtherMaterialService omService;
 
     @Autowired
-    public ControlConstructController(ControlConstructService ccService){
+    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService){
         this.controlConstructService = ccService;
+        this.omService = otherMaterialService;
     }
 
 
@@ -45,6 +51,21 @@ public class ControlConstructController {
         return controlConstructService.save(instance);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ControlConstruct updateWithFile(@RequestBody ControlConstruct instance, @RequestBody MultipartFile multipartFile) throws FileUploadException {
+        instance = controlConstructService.save(instance);
+        instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
+        return instance;
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public ControlConstruct createWithFile(@RequestBody ControlConstruct instance,@RequestBody MultipartFile multipartFile) throws FileUploadException {
+        instance = controlConstructService.save(instance);
+        instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
+        return instance;
+    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {

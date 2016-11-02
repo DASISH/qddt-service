@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstructionService;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,15 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     private ControlConstructRepository controlConstructRepository;
     private ControlConstructInstructionService cciService;
-    private ControlConstructAuditService ccAuditService;
+    private QuestionItemAuditService qAuditService;
 
     @Autowired
-    public ControlConstructServiceImpl(ControlConstructRepository controlConstructRepository,ControlConstructInstructionService cciService, ControlConstructAuditService ccaService) {
+    public ControlConstructServiceImpl(ControlConstructRepository controlConstructRepository,
+                                       ControlConstructInstructionService cciService,
+                                       QuestionItemAuditService questionAuditService) {
         this.controlConstructRepository = controlConstructRepository;
         this.cciService = cciService;
-        this.ccAuditService = ccaService;
+        this.qAuditService = questionAuditService;
     }
 
     @Override
@@ -56,7 +58,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         cciService.save(instance.getControlConstructInstructions());
         instance = controlConstructRepository.save(instance);
         // before returning fetch correct version of QI...
-        instance.setQuestionItem(ccAuditService.findRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber());
+        instance.setQuestionItem(qAuditService.findRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
         return instance;
     }
 
@@ -108,7 +110,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         // instructions has to unpacked into pre and post instructions
         instance.populateInstructions();
         // before returning fetch correct version of QI...
-        instance.setQuestionItem(ccAuditService.findRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber());
+        instance.setQuestionItem(qAuditService.findRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
         return instance;
     }
 
