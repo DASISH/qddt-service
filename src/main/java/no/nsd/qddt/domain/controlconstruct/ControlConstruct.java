@@ -51,15 +51,19 @@ public class ControlConstruct extends AbstractEntityAudit {
     @Column(length = 3000)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*
+    This field should never be saved to db, QuestionItem needs to be handled manually. in the servicelayer.
+     */
+    @ManyToOne()
     @JoinColumn(name = "questionitem_id",updatable = false)
+    @Transient
     private QuestionItem questionItem;
 
     @Column(name="questionitem_UUID")
     @Type(type="pg-uuid")
     private UUID questionItemUUID;
 
-    @Column(name = "questionitem_revision")
+    @Column(name = "questionitem_revision",nullable = false)
     private Integer revisionNumber;
 
 
