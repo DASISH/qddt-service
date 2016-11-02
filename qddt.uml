@@ -3,27 +3,45 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="200.10416666666663" y="167.0">no.nsd.qddt.domain.othermaterial.OtherMaterial</node>
-    <node x="357.5" y="461.0">no.nsd.qddt.domain.responsedomain.ResponseDomain</node>
-    <node x="228.41666666666663" y="331.0">no.nsd.qddt.domain.questionItem.QuestionItem</node>
-    <node x="147.5" y="450.0">no.nsd.qddt.domain.question.Question</node>
-    <node x="297.0" y="589.0">no.nsd.qddt.domain.category.Category</node>
-    <node x="385.41666666666663" y="186.0">no.nsd.qddt.domain.controlconstruct.ControlConstruct</node>
-    <node x="478.0" y="587.0">no.nsd.qddt.domain.code.Code</node>
-    <node x="555.0" y="289.0">no.nsd.qddt.domain.instruction.Instruction</node>
-    <node x="172.41666666666663" y="-74.0">no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
-    <node x="322.41666666666663" y="102.0">no.nsd.qddt.domain.instrument.Instrument</node>
-    <node x="194.16666666666663" y="-1.0">no.nsd.qddt.domain.study.Study</node>
-    <node x="89.41666666666663" y="241.0">no.nsd.qddt.domain.concept.Concept</node>
-    <node x="83.60416666666663" y="100.0">no.nsd.qddt.domain.topicgroup.TopicGroup</node>
+    <node x="411.3029768008723" y="306.40636250723014">no.nsd.qddt.domain.othermaterial.OtherMaterial</node>
+    <node x="309.3131636072334" y="573.5781065321687">no.nsd.qddt.domain.responsedomain.ResponseDomain</node>
+    <node x="438.62879153578706" y="483.9382176026237">no.nsd.qddt.domain.questionItem.QuestionItem</node>
+    <node x="566.097148973704" y="558.6170320179285">no.nsd.qddt.domain.question.Question</node>
+    <node x="209.0" y="665.5332473524942">no.nsd.qddt.domain.category.Category</node>
+    <node x="596.5370440729864" y="356.11672217304607">no.nsd.qddt.domain.controlconstruct.ControlConstruct</node>
+    <node x="423.19977082301875" y="668.8316869213008">no.nsd.qddt.domain.code.Code</node>
+    <node x="891.3379783133825" y="359.56397660903826">no.nsd.qddt.domain.instruction.Instruction</node>
+    <node x="391.4329161667368" y="31.0">no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
+    <node x="226.0" y="116.0">no.nsd.qddt.domain.author.Author</node>
+    <node x="717.2693257074342" y="252.72056096394806">no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction</node>
+    <node x="815.0" y="69.0">no.nsd.qddt.domain.selectable.Selectable</node>
+    <node x="885.0" y="143.0">no.nsd.qddt.domain.selectable.SelectableType</node>
+    <node x="511.3281533519854" y="238.29185505454575">no.nsd.qddt.domain.instrument.Instrument</node>
+    <node x="274.26092936115396" y="371.81771449368466">no.nsd.qddt.domain.concept.Concept</node>
+    <node x="414.628791535787" y="142.39529091470575">no.nsd.qddt.domain.study.Study</node>
+    <node x="887.2489989403977" y="430.07146944714714">no.nsd.qddt.domain.parameter.CCParameter</node>
+    <node x="257.1157529238279" y="236.36802534757072">no.nsd.qddt.domain.topicgroup.TopicGroup</node>
+    <node x="707.0" y="144.0">no.nsd.qddt.domain.selectable.UuidReference</node>
   </nodes>
   <notes />
   <edges>
+    <edge source="no.nsd.qddt.domain.author.Author" target="no.nsd.qddt.domain.study.Study">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
     <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.othermaterial.OtherMaterial">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
     <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.topicgroup.TopicGroup">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.author.Author" target="no.nsd.qddt.domain.surveyprogram.SurveyProgram">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.author.Author">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
@@ -48,6 +66,14 @@
       <point x="0.0" y="0.0" />
     </edge>
     <edge source="no.nsd.qddt.domain.category.Category" target="no.nsd.qddt.domain.code.Code">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.selectable.Selectable" target="no.nsd.qddt.domain.selectable.SelectableType">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.surveyprogram.SurveyProgram" target="no.nsd.qddt.domain.author.Author">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
@@ -83,6 +109,18 @@
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
+    <edge source="no.nsd.qddt.domain.selectable.Selectable" target="no.nsd.qddt.domain.selectable.UuidReference">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.controlconstruct.ControlConstruct" target="no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.author.Author" target="no.nsd.qddt.domain.topicgroup.TopicGroup">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
     <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.surveyprogram.SurveyProgram">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
@@ -91,7 +129,15 @@
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
+    <edge source="no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction" target="no.nsd.qddt.domain.instruction.Instruction">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
     <edge source="no.nsd.qddt.domain.questionItem.QuestionItem" target="no.nsd.qddt.domain.concept.Concept">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction" target="no.nsd.qddt.domain.controlconstruct.ControlConstruct">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
@@ -103,7 +149,19 @@
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
-    <edge source="no.nsd.qddt.domain.instruction.Instruction" target="no.nsd.qddt.domain.controlconstruct.ControlConstruct">
+    <edge source="no.nsd.qddt.domain.instrument.Instrument" target="no.nsd.qddt.domain.study.Study">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.author.Author">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.controlconstruct.ControlConstruct" target="no.nsd.qddt.domain.parameter.CCParameter">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.instruction.Instruction" target="no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
@@ -116,12 +174,10 @@
       <point x="0.0" y="0.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="734.5" y="530.0" />
-  <SelectedNodes>
-    <node>no.nsd.qddt.domain.othermaterial.OtherMaterial</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Group" zoom="1.0" x="767.0" y="369.0" />
+  <SelectedNodes />
   <Categories />
   <SCOPE>All</SCOPE>
-  <VISIBILITY>private</VISIBILITY>
+  <VISIBILITY>public</VISIBILITY>
 </Diagram>
 
