@@ -187,7 +187,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         return "AbstractEntityAudit{" +
                  agency +
                 ", name='" + name + '\'' +
-//                ", Urn='" + getUrn() + '\'' +
                 ", basedOnObject=" + basedOnObject +
                 ", version='" + version + '\'' +
                 ", changeKind=" + changeKind +
