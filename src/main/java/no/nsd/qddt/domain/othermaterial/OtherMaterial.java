@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.UUID;
 
 //import no.nsd.qddt.domain.downloadtoken.DownloadToken;
@@ -38,6 +39,9 @@ public class OtherMaterial extends AbstractEntity {
     private String originalName;
 
     private long size;
+
+//    @Transient
+//    private String downloadURL;
 
     public OtherMaterial(){
 
@@ -106,6 +110,14 @@ public class OtherMaterial extends AbstractEntity {
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
     }
+
+//    public String getDownloadURL() {
+//        return downloadURL;
+//    }
+//
+//    public void setDownloadURL(String downloadURL) {
+//        this.downloadURL = downloadURL;
+//    }
 
     @Override
     public boolean equals(Object o) {

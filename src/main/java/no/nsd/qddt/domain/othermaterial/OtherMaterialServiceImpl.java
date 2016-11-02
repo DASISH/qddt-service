@@ -100,7 +100,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
-    public File saveFile(MultipartFile multipartFile, UUID ownerId) throws FileUploadException {
+    public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId) throws FileUploadException {
 
         String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getName()).toString();
         OtherMaterial om;
@@ -115,8 +115,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
         try {
             Files.copy(multipartFile.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);
-            save(om);
-            return new File(filepath);
+            return save(om);
         } catch (IOException e) {
             throw new FileUploadException(multipartFile.getName());
         }

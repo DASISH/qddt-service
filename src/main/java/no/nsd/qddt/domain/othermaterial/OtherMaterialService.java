@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -24,7 +23,7 @@ public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
     File getFile(OtherMaterial om);
 
-    File saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
+    OtherMaterial saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
 
     void deleteFile(OtherMaterial om);
 }
