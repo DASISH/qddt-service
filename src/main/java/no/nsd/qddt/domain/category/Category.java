@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.utils.builders.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -57,6 +58,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     labels with differing length limitations or of different types or applications.
      */
     @Column(name = "label")
+    @OrderBy()
     private String label;
 
     /*
@@ -168,12 +170,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public void setLabel(String label) {
         this.label = label;
-        if (getName().isEmpty())
+        if (StringTool.IsNullOrTrimEmpty(getName()))
             setName(label.toUpperCase());
     }
 
     public String getDescription() {
-        return description;
+        return StringTool.CapString(description);
     }
 
     public void setDescription(String description) {
@@ -239,15 +241,10 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
      @Override public String getName(){
-        try {
-            if (super.getName() == null || super.getName().length() == 0)
-                return this.getLabel().toUpperCase();
-            else
-                return super.getName();
-        } catch (Exception ex) {
-            System.out.println("Getname failed " + this.getId() + " " + ex.getMessage());
-        }
-        return "?";
+        if (StringTool.IsNullOrTrimEmpty(super.getName()))
+            return this.getLabel().toUpperCase();
+        else
+            return super.getName();
     }
 
 
@@ -281,8 +278,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Override
     public String toString() {
         return "Category{" +
-                ", label='" + label + '\'' +
-                ", description='" + description + '\'' +
+                ", label='" + getLabel() + '\'' +
+                ", description='" + getDescription() + '\'' +
                 ", hierarchyLevel=" + hierarchyLevel +
                 ", categoryType=" + categoryType +
                 "} " + super.toString();
@@ -335,6 +332,30 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @Override
     public int compareTo(Category o) {
-        return 0;
+
+        int i;
+        i = this.getAgency().compareTo(o.getAgency());
+        if (i!=0) return i;
+
+        i = this.getHierarchyLevel().compareTo(o.getHierarchyLevel());
+        if (i!=0) return i;
+
+        i = this.getCategoryType().compareTo(o.getCategoryType());
+        if (i!=0) return i;
+
+        i = this.getName().compareTo(o.getName());
+        if (i!=0) return i;
+
+        i = this.getLabel().compareTo(o.getLabel());
+        if (i!=0) return i;
+
+        i = this.getDescription().compareTo(o.getDescription());
+        if (i!=0) return i;
+
+        i= this.getId().compareTo(o.getId());
+        if (i!=0) return i;
+
+        return super.getModified().compareTo(o.getModified());
+
     }
 }

@@ -98,16 +98,23 @@ public class ResponseDomainController {
                                                             Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ResponseDomain> responseDomains = null;
-        name = name.replace("*","%");
-        description = description.replace("*","%");
+        try {
+            name = name.replace("*", "%");
+            description = description.replace("*", "%");
 
-        if (question == null || question.isEmpty()) {
-            responseDomains = responseDomainService.findBy(ResponseKind.valueOf(respons), Likeify(name), Likeify(description), pageable);
-        } else {
-            responseDomains = responseDomainService.findByQuestion(ResponseKind.valueOf(respons),  Likeify(name), Likeify(question), pageable);
+            if (question == null || question.isEmpty()) {
+                responseDomains = responseDomainService.findBy(ResponseKind.valueOf(respons), Likeify(name), Likeify(description), pageable);
+            } else {
+                responseDomains = responseDomainService.findByQuestion(ResponseKind.valueOf(respons), Likeify(name), Likeify(question), pageable);
+            }
+            return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
+
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
         }
 
-        return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
+        return new ResponseEntity<>(assembler.toResource(null), HttpStatus.OK);
     }
 
     private String Likeify(String value){

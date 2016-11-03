@@ -31,19 +31,16 @@ public class AuthorController {
     private SurveyProgramService surveyService;
     private StudyService studyService;
     private TopicGroupService topicService;
-    private ConceptService conceptService;
 
     @Autowired
     public AuthorController(AuthorService authorService,
                             SurveyProgramService surveyService,
                             StudyService studyService,
-                            TopicGroupService topicService,
-                            ConceptService conceptService) {
+                            TopicGroupService topicService) {
         this.authorService = authorService;
         this.surveyService = surveyService;
         this.studyService = studyService;
         this.topicService = topicService;
-        this.conceptService = conceptService;
     }
 
 
@@ -84,8 +81,7 @@ public class AuthorController {
     public Author addAuthor(@RequestParam("authorId") UUID authorId
                         ,@RequestParam("surveyId") UUID surveyId
                         ,@RequestParam("studyId") UUID studyId
-                        ,@RequestParam("topicId") UUID topicId
-                        ,@RequestParam("conceptId") UUID conceptId ){
+                        ,@RequestParam("topicId") UUID topicId ){
         Author author = authorService.findOne(authorId);
 
         if (surveyId != null)

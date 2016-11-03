@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @RestController
-@RequestMapping(value = "/audit/surveyprogram/")
+@RequestMapping(value = "/audit/surveyprogram")
 public class SurveyProgramAuditController {
 
     private SurveyProgramAuditService service;

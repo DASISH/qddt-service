@@ -1,5 +1,9 @@
 package no.nsd.qddt.domain.selectable;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Type;
 
@@ -7,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -23,6 +28,12 @@ public class UuidReference {
     private UUID id;
 
     private String name;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    @Column(name = "updated")
+    private LocalDateTime modified;
 
     private String tableName;
 
@@ -43,6 +54,14 @@ public class UuidReference {
         this.name = name;
     }
 
+    public LocalDateTime getModified() {
+        return modified;
+    }
+
+    public void setModified(LocalDateTime modified) {
+        this.modified = modified;
+    }
+
     public String getTableName() {
         return tableName;
     }
@@ -60,6 +79,7 @@ public class UuidReference {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (modified != null ? !modified.equals(that.modified) : that.modified != null) return false;
         return tableName != null ? tableName.equals(that.tableName) : that.tableName == null;
 
     }
@@ -68,6 +88,7 @@ public class UuidReference {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (modified != null ? modified.hashCode() : 0);
         result = 31 * result + (tableName != null ? tableName.hashCode() : 0);
         return result;
     }
@@ -77,6 +98,7 @@ public class UuidReference {
         return "UuidReference{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", modified=" + modified +
                 ", tableName='" + tableName + '\'' +
                 '}';
     }

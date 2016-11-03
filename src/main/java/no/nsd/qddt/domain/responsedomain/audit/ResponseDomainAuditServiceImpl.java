@@ -26,7 +26,6 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
     public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
         Revision<Integer, ResponseDomain> retval = responseDomainAuditRepository.findLastChangeRevision(uuid);
         retval.getEntity().getManagedRepresentation();
-//        System.out.println(retval.getEntity());
         return retval;
     }
 
@@ -34,7 +33,6 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
     public Revision<Integer, ResponseDomain> findRevision(UUID uuid, Integer revision) {
         Revision<Integer, ResponseDomain> retval = responseDomainAuditRepository.findRevision(uuid, revision);
         retval.getEntity().getManagedRepresentation();
-//        System.out.println(retval.getEntity());
         return retval;
     }
 

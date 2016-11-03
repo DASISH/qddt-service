@@ -23,7 +23,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @RestController
-@RequestMapping(value = "/audit/responsedomain/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/audit/responsedomain", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ResponseDomainAuditController {
 
     private ResponseDomainAuditService auditService;

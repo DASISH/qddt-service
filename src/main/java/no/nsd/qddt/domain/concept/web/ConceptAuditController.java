@@ -25,7 +25,7 @@ import java.util.UUID;
  */
 
 @RestController
-@RequestMapping(value = "/audit/concept/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/audit/concept", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ConceptAuditController {
 
     private ConceptAuditService auditService;

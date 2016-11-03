@@ -24,7 +24,7 @@ import java.util.UUID;
  */
 
 @RestController
-@RequestMapping(value = "/audit/instrument/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/audit/instrument", produces = MediaType.APPLICATION_JSON_VALUE)
 public class InstrumentAuditController {
 
     private InstrumentAuditService auditService;

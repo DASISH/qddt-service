@@ -26,7 +26,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @RestController
-@RequestMapping(value = "/audit/study/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/audit/study", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudyAuditController {
 
     private StudyAuditService service;

@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
  * @author Stig Norland
  */
 @Embeddable
-public class Version {
+public class Version implements Comparable<Version> {
 
     private static final String versionFormat = "%1$s.%2$s %3$s";
     private Integer major=1;
@@ -74,5 +74,12 @@ public class Version {
     public String
     toString() {
         return  String.format(versionFormat, major, minor, versionLabel);
+    }
+
+    @Override
+    public int compareTo(Version o) {
+
+        return this.getMajor().compareTo(o.getMajor()) + this.getMinor().compareTo(o.getMinor());
+
     }
 }

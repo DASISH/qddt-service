@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.question;
 
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
+import no.nsd.qddt.utils.builders.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -77,7 +76,10 @@ public class Question extends AbstractEntity {
     }
 
     public String getIntent() {
-        return intent;
+        if (StringTool.IsNullOrEmpty(intent))
+            return "";
+        else
+            return intent;
     }
 
     public void setIntent(String intent) {
@@ -85,7 +87,10 @@ public class Question extends AbstractEntity {
     }
 
     public String getQuestion() {
-        return question;
+        if (StringTool.IsNullOrEmpty(question))
+            return  "";
+        else
+            return question;
     }
 
     public void setQuestion(String question) {

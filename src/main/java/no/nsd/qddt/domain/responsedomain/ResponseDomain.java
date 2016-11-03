@@ -10,8 +10,8 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.utils.builders.StringTool;
 import org.hibernate.envers.Audited;
-import org.hibernate.mapping.Collection;
 
 import javax.persistence.*;
 import java.text.MessageFormat;
@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 
 /**
@@ -107,13 +105,21 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Embedded
     private ResponseCardinality responseCardinality;
 
+
+
     public ResponseDomain(){
         description = "";
     }
 
+    @Override
+    public String getName() {
+        return StringTool.CapString(super.getName());
+    }
+
+
 
     public String getDescription() {
-        if (description == null)
+        if (StringTool.IsNullOrEmpty(description))
             description= "";
         return description;
     }
@@ -271,11 +277,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @Override
     public String toString() {
-        return MessageFormat.format("ResponseDomain'{' name=''{0}'' id=''{1}'' modified=''{2}'' codes={3}  managedRepresentation = ''{4}''} " ,
+        return MessageFormat.format("ResponseDomain'{' name=''{0}'' id=''{1}'' modified=''{2}''} ", // codes={3}  managedRepresentation = ''{4}''} " ,
                 super.getName(),
                 super.getId(),
-                super.getModified(),
-                (codes == null) ? "NULL": "NOT NULL???",
-                managedRepresentation.getChildren().stream().map(c->c.getName()).collect(Collectors.joining(", ")).toString());
+                super.getModified());
+//                (codes == null) ? "NULL": "NOT NULL???",
+//                managedRepresentation.getChildren().stream().map(c->c.getName()).collect(Collectors.joining(", ")).toString());
     }
 }
