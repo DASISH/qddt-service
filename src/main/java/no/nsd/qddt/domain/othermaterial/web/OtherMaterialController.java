@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.othermaterial.web;
 
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,30 +59,24 @@ public class OtherMaterialController {
         otherMaterialService.delete(id);
     }
 
+    @ResponseStatus(value = HttpStatus.I_AM_A_TEAPOT)
     @RequestMapping(value="/upload", method=RequestMethod.GET)
     public @ResponseBody String provideUploadInfo() {
         return "You can upload a file by posting to this URL.";
     }
 
-    @RequestMapping(value="/upload", method=RequestMethod.POST)
-    public @ResponseBody String handleFileUpload(@RequestParam("ownerId") UUID ownerId,
-                                                 @RequestParam("file") MultipartFile file){
-        if (!file.isEmpty()) {
-            try {
-                otherMaterialService.saveFile(file,ownerId);
-                return "You successfully uploaded " + file.getName() + "!";
-            } catch (Exception e) {
-                return "You failed to upload file => " + e.getMessage();
-            }
-        } else {
-            return "You failed to upload, because the file was empty.";
-        }
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value="/upload/{ownerid}", method=RequestMethod.POST , headers = "content-type=multipart/form-data" )
+    public @ResponseBody OtherMaterial handleFileUpload(@PathVariable("ownerid") UUID ownerId,
+                                                 @RequestParam("file") MultipartFile file) throws FileUploadException {
+        return otherMaterialService.saveFile(file,ownerId);
     }
 
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
     @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> handleFileDownload(@PathVariable("fileId") UUID fileId) {
-        try {
+    ResponseEntity<InputStreamResource> handleFileDownload(@PathVariable("fileId") UUID fileId) throws FileNotFoundException {
+//        try {
             OtherMaterial om = otherMaterialService.findOne(fileId);
             File file= otherMaterialService.getFile(om);
             return ResponseEntity
@@ -89,10 +85,10 @@ public class OtherMaterialController {
                     .contentLength(file.length())
                     .contentType(MediaType.parseMediaType(om.getFileType()))
                     .body(new InputStreamResource(new FileInputStream(file)));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return  null;
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return  null;
+//        }
     }
 
 

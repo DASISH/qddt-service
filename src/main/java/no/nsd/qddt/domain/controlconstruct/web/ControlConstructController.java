@@ -39,31 +39,37 @@ public class ControlConstructController {
         return controlConstructService.findOne(id);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ControlConstruct update(@RequestBody ControlConstruct instance) {
-        return controlConstructService.save(instance);
-    }
+//    @ResponseStatus(value = HttpStatus.OK)
+//    @RequestMapping(value = "", method = RequestMethod.POST)
+//    public ControlConstruct update(@RequestBody ControlConstruct instance) {
+//        return controlConstructService.save(instance);
+//    }
+//
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @RequestMapping(value = "/create", method = RequestMethod.POST)
+//    public ControlConstruct create(@RequestBody ControlConstruct instance) {
+//        return controlConstructService.save(instance);
+//    }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ControlConstruct create(@RequestBody ControlConstruct instance) {
-        return controlConstructService.save(instance);
-    }
-
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ControlConstruct updateWithFile(@RequestBody ControlConstruct instance, @RequestBody MultipartFile multipartFile) throws FileUploadException {
+    @RequestMapping(value = "", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public ControlConstruct updateWithFile(@RequestParam("controlconstruct") ControlConstruct instance, @RequestParam("files") MultipartFile[] files) throws FileUploadException {
         instance = controlConstructService.save(instance);
-        instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
+        if (files != null && files.length > 0)
+            for (MultipartFile multipartFile:files) {
+                instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
+            }
         return instance;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ControlConstruct createWithFile(@RequestBody ControlConstruct instance,@RequestBody MultipartFile multipartFile) throws FileUploadException {
+    @RequestMapping(value = "/create", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public ControlConstruct createWithFile(@RequestParam("controlconstruct") ControlConstruct instance,@RequestParam("files") MultipartFile[] files) throws FileUploadException {
         instance = controlConstructService.save(instance);
-        instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
+        if (files != null && files.length > 0)
+            for (MultipartFile multipartFile:files) {
+                instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
+            }
         return instance;
     }
     @ResponseStatus(value = HttpStatus.OK)

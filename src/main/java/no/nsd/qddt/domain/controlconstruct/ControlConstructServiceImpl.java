@@ -103,7 +103,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional(readOnly = true)
     public List<ControlConstruct> findByQuestionItemId(UUID questionItemId) {
-        return postGet(controlConstructRepository.findByQuestionItemId(questionItemId));
+        return postGet(controlConstructRepository.findByquestionItemUUID(questionItemId));
     }
 
     private  ControlConstruct postGet(ControlConstruct instance){

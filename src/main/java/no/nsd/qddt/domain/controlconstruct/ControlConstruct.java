@@ -54,8 +54,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     /*
     This field should never be saved to db, QuestionItem needs to be handled manually. in the servicelayer.
      */
-    @ManyToOne()
-    @JoinColumn(name = "questionitem_id",updatable = false)
+//    @ManyToOne()
+//    @JoinColumn(name = "questionitem_id",updatable = false)
     @Transient
     private QuestionItem questionItem;
 
