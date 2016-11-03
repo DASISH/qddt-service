@@ -45,8 +45,6 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Override
     @Transactional(readOnly = false)
     public QuestionItem save(QuestionItem instance) {
-
-//        instance.setModified(LocalDateTime.now());
         return questionItemRepository.save(instance);
     }
 

@@ -48,9 +48,9 @@ public class QuestionItem extends AbstractEntityAudit  {
     @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
-    @JsonBackReference(value = "controlConstructRef")
-    @OneToMany(mappedBy = "questionItem")
-    private Set<ControlConstruct> controlConstructs = new HashSet<>();
+//    @JsonBackReference(value = "controlConstructRef")
+//    @OneToMany(mappedBy = "questionItem")
+//    private Set<ControlConstruct> controlConstructs = new HashSet<>();
 
     public QuestionItem() {
 
@@ -62,24 +62,9 @@ public class QuestionItem extends AbstractEntityAudit  {
     private void removeReferencesFromQi(){
         getConcepts().forEach( C-> updateStatusQI(C));
         getConcepts().clear();
-        getControlConstructs().forEach(CC-> updateStatusControlConstruct(CC));
-        getControlConstructs().clear();
         setResponseDomain(null);
     }
 
-    private void updateStatusControlConstruct(ControlConstruct controlConstruct) {
-        if (controlConstruct.getQuestionItem().equals(this)) {
-            controlConstruct.getInstrument().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            controlConstruct.getInstrument().setChangeComment("QuestionContruct removed");
-            controlConstruct.getInstrument().getControlConstructs().removeIf(CC -> CC.equals(controlConstruct));
-            controlConstruct.setInstrument(null);
-            controlConstruct.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            controlConstruct.setChangeComment("Removed from instrument");
-//            controlConstruct.setQuestionItem(null);
-            setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            setChangeComment("Removed from QuestionContruct");
-        }
-    }
 
     public void updateStatusQI(UUID conceptId) {
         concepts.forEach(C->{
@@ -135,13 +120,13 @@ public class QuestionItem extends AbstractEntityAudit  {
         this.concepts = concepts;
     }
 
-    public Set<ControlConstruct> getControlConstructs() {
-        return controlConstructs;
-    }
-
-    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
-        this.controlConstructs = controlConstructs;
-    }
+//    public Set<ControlConstruct> getControlConstructs() {
+//        return controlConstructs;
+//    }
+//
+//    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
+//        this.controlConstructs = controlConstructs;
+//    }
 
 
     @Override
