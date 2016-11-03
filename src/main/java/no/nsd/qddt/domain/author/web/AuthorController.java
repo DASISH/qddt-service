@@ -57,8 +57,8 @@ public class AuthorController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create/{ownerId}", method = RequestMethod.POST)
-    public Author create(@RequestBody Author author, @PathVariable("ownerId") UUID ownerId) {
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public Author create(@RequestBody Author author) {
         return authorService.save(author);
     }
 
