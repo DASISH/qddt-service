@@ -14,6 +14,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
+import java.util.SortedSet;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,7 +54,7 @@ public class ResponseDomainCategoryMetaTest {
         c2 = new Category("PARENT","parent");
         c2.setCategoryType(CategoryType.LIST);
         r2.setManagedRepresentation(c2);
-        c2.setChildren(Arrays.asList(new Category("child1","Child1"),new Category("child2","Child2"),new Category("child3","Child3")));
+        c2.getChildren().addAll(Arrays.asList(new Category("child1","Child1"),new Category("child2","Child2"),new Category("child3","Child3")));
         c2 = categoryService.save(c2);
         c2.getChildren().forEach(c-> c.setCode(new Code(r2,c.getName().substring(5))));
 
@@ -71,6 +72,6 @@ public class ResponseDomainCategoryMetaTest {
         Category root = R2.getManagedRepresentation();
 
 
-        assertEquals("Expected 1 elements!", root.getChildren().get(1).getCode().getCodeValue(), "2");
+        assertEquals("Expected 1 elements!", root.getChildren().get(0).getCode().getCodeValue(), "2");
     }
 }

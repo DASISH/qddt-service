@@ -101,7 +101,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
     public void testAddQuestion() throws Exception {
 
         Question question = new Question();
-        question.setName("my precious");
+        question.setQuestion("my precious");
         question = questionService.save(question);
 
         Concept concept = new Concept();

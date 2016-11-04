@@ -98,17 +98,16 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
     @Test
     public void testCreate() throws Exception {
 
-        Category group = new CategoryBuilder().setName("SCALE1-5")
+        Category group = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory();
                 group.setInputLimit("1","5");
         group.addChild(new CategoryBuilder()
-                .setName("1")
+
                 .setLabel("Very Happy").createCategory());
         group.addChild(categoryService.findOne(UUID.fromString("37894d7a-65d0-11e5-9d70-feff819cdc9f")));
         group.addChild(new CategoryBuilder()
-                .setName("5")
                 .setLabel("Very Unhappy").createCategory());
 
         ResultActions action = mvc.perform(post("/category/create").header("Authorization", "Bearer " + accessToken)

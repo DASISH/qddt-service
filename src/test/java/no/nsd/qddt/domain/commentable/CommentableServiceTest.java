@@ -80,7 +80,7 @@ public class CommentableServiceTest  {
                     Comment child = new Comment();
                     child.setComment("This is child " + k + " form parent " + j);
                     child.setOwnerId(owner.getId());
-                    child.setParent(parent);
+//                    child.setParent(parent);
                     commentService.save(child);
                 }
             }

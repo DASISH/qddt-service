@@ -30,7 +30,7 @@ public class QuestionControllerTest  extends ControllerWebIntegrationTest {
         super.getBeforeSecurityContext().createSecurityContext();
 
         entity = new Question();
-        entity.setName("A test entity");
+        entity.setQuestion("A test entity");
         entity = entityService.save(entity);
 
         super.getBeforeSecurityContext().destroySecurityContext();
@@ -45,13 +45,13 @@ public class QuestionControllerTest  extends ControllerWebIntegrationTest {
 
     @Test
     public void testUpdate() throws Exception {
-        entity.setName(entity.getName() + " edited");
+        entity.setQuestion(entity.getQuestion() + " edited");
 
         mvc.perform(post("/question").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(entity)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(entity.getName())))
+                .andExpect(jsonPath("$.name", is(entity.getQuestion())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
@@ -59,13 +59,13 @@ public class QuestionControllerTest  extends ControllerWebIntegrationTest {
     @Test
     public void testCreate() throws Exception {
         Question aEntity = new Question();
-        aEntity.setName("Posted entity");
+        aEntity.setQuestion("Posted entity");
 
         mvc.perform(post("/question/create").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(aEntity.getName())))
+                .andExpect(jsonPath("$.name", is(aEntity.getQuestion())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }

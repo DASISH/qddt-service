@@ -5,6 +5,10 @@ import no.nsd.qddt.domain.agency.web.AgencyControllerTest;
 import no.nsd.qddt.domain.category.CategoryServiceTest;
 import no.nsd.qddt.domain.category.audit.CategoryAuditServiceTest;
 import no.nsd.qddt.domain.category.web.CategoryControllerTest;
+import no.nsd.qddt.domain.code.CodeHierarchyTest;
+import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
+import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
+import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
 import no.nsd.qddt.domain.comment.CommentServiceTest;
 import no.nsd.qddt.domain.comment.audit.CommentAuditServiceTest;
 import no.nsd.qddt.domain.comment.web.CommentControllerTest;
@@ -12,18 +16,15 @@ import no.nsd.qddt.domain.commentable.CommentableServiceTest;
 import no.nsd.qddt.domain.concept.ConceptServiceTest;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditServiceTest;
 import no.nsd.qddt.domain.concept.web.ConceptControllerTest;
-import no.nsd.qddt.domain.group.GroupServiceTest;
-import no.nsd.qddt.domain.group.audit.GroupAuditServiceTest;
-import no.nsd.qddt.domain.group.web.GroupControllerTest;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructServiceTest;
+import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditServiceTest;
+import no.nsd.qddt.domain.controlconstruct.web.ControlConstructControllerTest;
 import no.nsd.qddt.domain.instruction.InstructionServiceTest;
 import no.nsd.qddt.domain.instruction.audit.InstructionAuditServiceTest;
 import no.nsd.qddt.domain.instruction.web.InstructionControllerTest;
 import no.nsd.qddt.domain.instrument.InstrumentServiceTest;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditServiceTest;
 import no.nsd.qddt.domain.instrument.web.InstrumentControllerTest;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructServiceTest;
-import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditServiceTest;
-import no.nsd.qddt.domain.controlconstruct.web.ControlConstructControllerTest;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialServiceTest;
 import no.nsd.qddt.domain.othermaterial.web.OtherMaterialControllerTest;
 import no.nsd.qddt.domain.question.QuestionServiceTest;
@@ -32,10 +33,6 @@ import no.nsd.qddt.domain.question.web.QuestionControllerTest;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainServiceTest;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditServiceTest;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainControllerTest;
-import no.nsd.qddt.domain.code.CodeHierarchyTest;
-import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
-import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
-import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
 import no.nsd.qddt.domain.study.StudyServiceTest;
 import no.nsd.qddt.domain.study.audit.StudyAuditServiceTest;
 import no.nsd.qddt.domain.study.web.StudyControllerTest;
@@ -77,9 +74,9 @@ import org.springframework.test.context.ActiveProfiles;
         ConceptControllerTest.class,
 
         // ====== Group ======
-        GroupServiceTest.class,
-        GroupAuditServiceTest.class,
-        GroupControllerTest.class,
+//        GroupServiceTest.class,
+//        GroupAuditServiceTest.class,
+//        GroupControllerTest.class,
 
         // ====== Instruction ======
         InstructionServiceTest.class,

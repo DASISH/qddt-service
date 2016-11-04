@@ -49,6 +49,11 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
 
     private String rootId;
 
+    private String missingId;
+
+    private String groupId;
+
+
     private Category saved;
 
     @Override
@@ -60,8 +65,8 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         Category rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MIXED)
-                .setLabel("Scale 1-5 with labels").createCategory();
-        Category group = new CategoryBuilder().setName("SCALE1-5")
+                .setLabel("Scale 1-5 with labels & missing").createCategory();
+        Category group = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory();
@@ -77,18 +82,24 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         group.addChild(new CategoryBuilder()
                 .setLabel("Very Unhappy").createCategory());
 
+        group = categoryService.save(group);
+        groupId = group.getId().toString();
+
         rootCategory.addChild(group);
 
-        group = new CategoryBuilder().setName("NO-ANSWER")
+        group = new CategoryBuilder().setLabel("NO-ANSWER")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MISSING_GROUP)
                 .createCategory();
-        group.addChild(new CategoryBuilder().setName("NA")
+        group.addChild(new CategoryBuilder()
                 .setLabel("N/A").createCategory());
-        group.addChild(new CategoryBuilder().setName("DONT_KNOW")
+        group.addChild(new CategoryBuilder()
                 .setLabel("Don't know").createCategory());
-        group.addChild(new CategoryBuilder().setName("CANNOT")
+        group.addChild(new CategoryBuilder()
                 .setLabel("Don't want to").createCategory());
+        group= categoryService.save(group);
+        missingId = group.getId().toString();
+
         rootCategory.addChild(group);
         saved = categoryService.save(rootCategory);
 
@@ -151,6 +162,22 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
     }
 
     @Test
+    public void testMixedCreate() throws Exception {
+        ResponseDomain aEntity = new ResponseDomain();
+        aEntity.setName("base");
+        aEntity.setResponseKind(ResponseKind.SCALE);
+        aEntity.setManagedRepresentation(categoryService.findOne(UUID.fromString(groupId)));
+        aEntity =entityService.save(aEntity);
+
+        mvc.perform(get("/responsedomain/createmixed?responseDomaindId="+aEntity.getId()+"&missingId="+missingId).header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isCreated())
+                .andDo(print());
+
+    }
+
+
+
+    @Test
     public void testDelete() throws Exception {
         mvc.perform(post("/responsedomain/delete/"+rootId).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
@@ -163,32 +190,32 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
 
         ResponseDomain rd = new ResponseDomain();
         rd.setResponseKind(ResponseKind.LIST);
-        rd.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("SCALE1-5")
+        rd.setManagedRepresentation(categoryService.save(new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory()));
         rd.setName("test1");
         entityService.save(rd);
         ResponseDomain rd2 = new ResponseDomain();
-        rd2.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("list-5")
+        rd2.setManagedRepresentation(categoryService.save(new CategoryBuilder().setLabel("list-5")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("list").createCategory()));
+                .createCategory()));
         rd2.setName("test2");
         rd2.setResponseKind(ResponseKind.SCALE);
         entityService.save(rd2);
 
         ResponseDomain rd3 = new ResponseDomain();
-        rd3.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("mixed-5")
+        rd3.setManagedRepresentation(categoryService.save(new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MIXED)
-                .setLabel("mixed").createCategory()));
+                .setLabel("mixed5").createCategory()));
         rd3.setName("test3");
         rd3.setResponseKind(ResponseKind.MIXED);
         entityService.save(rd3);
 
         ResponseDomain rd4 = new ResponseDomain();
-        rd4.setManagedRepresentation(categoryService.save(new CategoryBuilder().setName("numeric")
+        rd4.setManagedRepresentation(categoryService.save(new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.ENTITY)
                 .setType(CategoryType.NUMERIC)
                 .setLabel("numeric labels").createCategory()));

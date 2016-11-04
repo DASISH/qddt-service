@@ -33,15 +33,15 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
     @Override
     public void testCount() throws Exception {
         OtherMaterial otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial One");
+        otherMaterial.setFileName("Test OtherMaterial One");
         otherMaterialService.save(otherMaterial);
 
         otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial Two");
+        otherMaterial.setFileName("Test OtherMaterial Two");
         otherMaterialService.save(otherMaterial);
 
         otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial Three");
+        otherMaterial.setFileName("Test OtherMaterial Three");
         otherMaterialService.save(otherMaterial);
 
         assertThat("Should be three", otherMaterialService.count(), is(3L));
@@ -51,7 +51,7 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
     @Override
     public void testExists() throws Exception {
         OtherMaterial otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Existing otherMaterial");
+        otherMaterial.setFileName("Existing otherMaterial");
         otherMaterial = otherMaterialService.save(otherMaterial);
         assertTrue("OtherMaterial should exist", otherMaterialService.exists(otherMaterial.getId()));
     }
@@ -60,7 +60,7 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
     @Override
     public void testFindOne() throws Exception {
         OtherMaterial otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Existing otherMaterial");
+        otherMaterial.setFileName("Existing otherMaterial");
         otherMaterial = otherMaterialService.save(otherMaterial);
         assertNotNull("OtherMaterial should not be null", otherMaterialService.findOne(otherMaterial.getId()));
     }
@@ -69,7 +69,7 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
     @Override
     public void testSave() throws Exception {
         OtherMaterial otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Existing otherMaterial");
+        otherMaterial.setFileName("Existing otherMaterial");
         assertNotNull("OtherMaterial should be saved", otherMaterialService.save(otherMaterial));
     }
 
@@ -78,15 +78,15 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
     public void testSaveAll() throws Exception {
         List<OtherMaterial> agencyList = new ArrayList<>();
         OtherMaterial otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial One");
+        otherMaterial.setFileName("Test OtherMaterial One");
         agencyList.add(otherMaterial);
 
         otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial Two");
+        otherMaterial.setFileName("Test OtherMaterial Two");
         agencyList.add(otherMaterial);
 
         otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial Three");
+        otherMaterial.setFileName("Test OtherMaterial Three");
         agencyList.add(otherMaterial);
 
         otherMaterialService.save(agencyList);
@@ -98,7 +98,7 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
     @Override
     public void testDelete() throws Exception {
         OtherMaterial otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Existing otherMaterial");
+        otherMaterial.setFileName("Existing otherMaterial");
         otherMaterial = otherMaterialService.save(otherMaterial);
         otherMaterialService.delete(otherMaterial.getId());
 
@@ -110,15 +110,15 @@ public class OtherMaterialServiceTest  extends AbstractServiceTest {
     public void testDeleteAll() throws Exception {
         List<OtherMaterial> agencyList = new ArrayList<>();
         OtherMaterial otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial One");
+        otherMaterial.setFileName("Test OtherMaterial One");
         agencyList.add(otherMaterial);
 
         otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial Two");
+        otherMaterial.setFileName("Test OtherMaterial Two");
         agencyList.add(otherMaterial);
 
         otherMaterial = new OtherMaterial();
-        otherMaterial.setName("Test OtherMaterial Three");
+        otherMaterial.setFileName("Test OtherMaterial Three");
         agencyList.add(otherMaterial);
 
         agencyList = otherMaterialService.save(agencyList);

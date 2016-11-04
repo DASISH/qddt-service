@@ -34,11 +34,11 @@ public class QuestionAuditServiceTest extends AbstractAuditServiceTest {
 
         question = questionService.save(new Question());
 
-        question.setName("First");
+        question.setQuestion("First");
         question = questionService.save(question);
-        question.setName("Second");
+        question.setQuestion("Second");
         question = questionService.save(question);
-        question.setName("Third");
+        question.setQuestion("Third");
         question = questionService.save(question);
     }
 
@@ -74,6 +74,6 @@ public class QuestionAuditServiceTest extends AbstractAuditServiceTest {
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity().hashCode(), question.hashCode());
-        assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
+        assertEquals("Expected Name to be 'Third'", revision.getEntity().getQuestion(), "Third");
     }
 }

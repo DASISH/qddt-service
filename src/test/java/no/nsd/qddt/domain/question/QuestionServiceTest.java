@@ -33,15 +33,15 @@ public class QuestionServiceTest  extends AbstractServiceTest {
     @Override
     public void testCount() throws Exception {
         Question question = new Question();
-        question.setName("Test Question One");
+        question.setQuestion("Test Question One");
         questionService.save(question);
 
         question = new Question();
-        question.setName("Test Question Two");
+        question.setQuestion("Test Question Two");
         questionService.save(question);
 
         question = new Question();
-        question.setName("Test Question Three");
+        question.setQuestion("Test Question Three");
         questionService.save(question);
 
         //TODO // FIXME: 11.04.2016 4 ->3
@@ -53,7 +53,7 @@ public class QuestionServiceTest  extends AbstractServiceTest {
     @Override
     public void testExists() throws Exception {
         Question question = new Question();
-        question.setName("Existing question");
+        question.setQuestion("Existing question");
         question = questionService.save(question);
         assertTrue("Question should exist", questionService.exists(question.getId()));
     }
@@ -62,7 +62,7 @@ public class QuestionServiceTest  extends AbstractServiceTest {
     @Override
     public void testFindOne() throws Exception {
         Question question = new Question();
-        question.setName("Existing question");
+        question.setQuestion("Existing question");
         question = questionService.save(question);
         assertNotNull("Question should not be null", questionService.findOne(question.getId()));
     }
@@ -71,7 +71,7 @@ public class QuestionServiceTest  extends AbstractServiceTest {
     @Override
     public void testSave() throws Exception {
         Question question = new Question();
-        question.setName("Existing question");
+        question.setQuestion("Existing question");
         assertNotNull("Question should be saved", questionService.save(question));
     }
 
@@ -80,15 +80,15 @@ public class QuestionServiceTest  extends AbstractServiceTest {
     public void testSaveAll() throws Exception {
         List<Question> agencyList = new ArrayList<>();
         Question question = new Question();
-        question.setName("Test Question One");
+        question.setQuestion("Test Question One");
         agencyList.add(question);
 
         question = new Question();
-        question.setName("Test Question Two");
+        question.setQuestion("Test Question Two");
         agencyList.add(question);
 
         question = new Question();
-        question.setName("Test Question Three");
+        question.setQuestion("Test Question Three");
         agencyList.add(question);
 
         questionService.save(agencyList);
@@ -102,7 +102,7 @@ public class QuestionServiceTest  extends AbstractServiceTest {
     @Override
     public void testDelete() throws Exception {
         Question question = new Question();
-        question.setName("Existing question");
+        question.setQuestion("Existing question");
         question = questionService.save(question);
         questionService.delete(question.getId());
 
@@ -114,15 +114,15 @@ public class QuestionServiceTest  extends AbstractServiceTest {
     public void testDeleteAll() throws Exception {
         List<Question> agencyList = new ArrayList<>();
         Question question = new Question();
-        question.setName("Test Question One");
+        question.setQuestion("Test Question One");
         agencyList.add(question);
 
         question = new Question();
-        question.setName("Test Question Two");
+        question.setQuestion("Test Question Two");
         agencyList.add(question);
 
         question = new Question();
-        question.setName("Test Question Three");
+        question.setQuestion("Test Question Three");
         agencyList.add(question);
 
         agencyList = questionService.save(agencyList);

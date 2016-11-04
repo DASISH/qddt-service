@@ -42,17 +42,17 @@ public class CategoryServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testCount() throws Exception {
-        Category rootCategory = new CategoryBuilder().setName("KJØNN")
+        Category rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kjønn1").createCategory();
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Kvinne").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Kvinne1").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Mann").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Mann1").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
                 .setLabel("Transperson").createCategory());
         categoryService.save(rootCategory);
@@ -88,19 +88,19 @@ public class CategoryServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testSaveAll() throws Exception {
-        Category parent = new CategoryBuilder().setName("KJØNN")
+        Category parent = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
-        parent.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kjønn2").createCategory();
+        parent.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Kvinne").createCategory());
-        parent.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Kvinne2").createCategory());
+        parent.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Mann").createCategory());
-        parent.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Mann2").createCategory());
+        parent.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Transperson").createCategory());
+                .setLabel("Transperson2").createCategory());
 
         parent = categoryService.save(parent);
 
@@ -152,19 +152,19 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
     @Test
     public void testFindByCategoryType(){
-        Category rootCategory = new CategoryBuilder().setName("KJØNN")
+        Category rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kjønn3").createCategory();
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Kvinne").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Kvinne3").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Mann").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Mann3").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Transperson").createCategory());
+                .setLabel("Transperson3").createCategory());
         categoryService.save(rootCategory);
 
 
@@ -175,19 +175,19 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
     @Test
     public void testfindByName(){
-        Category rootCategory = new CategoryBuilder().setName("KJØNN")
+        Category rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kjønn4").createCategory();
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Kvinne").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Kvinne4").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Mann").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Mann4").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Transperson").createCategory());
+                .setLabel("Transperson4").createCategory());
         categoryService.save(rootCategory);
 
         Page<Category> list = categoryService.findByNameLike("%nne%", new PageRequest(0, 20));
@@ -197,19 +197,19 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
     @Test
     public void testfindGroupByName(){
-        Category rootCategory = new CategoryBuilder().setName("KJØNN")
+        Category rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kjønn5").createCategory();
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Kvinne").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Kvinne5").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Mann").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Mann5").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Transperson").createCategory());
+                .setLabel("Transperson5").createCategory());
         categoryService.save(rootCategory);
 
         Page<Category> rootList= categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, "%", new PageRequest(0, 20));
@@ -219,43 +219,43 @@ public class CategoryServiceTest extends AbstractServiceTest {
     @Transactional
     @Test
     public void testfindRootLevelByName(){
-        Category rootCategory = new CategoryBuilder().setName("KJØNN")
+        Category rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kjønn6").createCategory();
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Kvinne").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Kvinne6").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Mann").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Mann6").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Transperson").createCategory());
+                .setLabel("Transperson6").createCategory());
         rootCategory = categoryService.save(rootCategory);
 
-        Category group = new CategoryBuilder().setName("IKKE SVAR")
+        Category group = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MISSING_GROUP)
                 .setLabel("NA Svar").createCategory();
-        group.addChild(new CategoryBuilder().setName("VET IKKE")
+        group.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
                 .setLabel("Vet ikke").createCategory());
-        group.addChild(new CategoryBuilder().setName("VIL IKKE SVARE")
+        group.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
                 .setLabel("Vil ikke svare").createCategory());
         group = categoryService.save(group);
 
-        Category root = new CategoryBuilder().setName("SVAR SETT KJØNN")
+        Category root = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
+                .setLabel("Kjønn-liste2").createCategory();
 
         root.addChild(rootCategory);
         root.addChild(group);
-        categoryService.save(root);
+        root = categoryService.save(root);
 
-        Page<Category> rootList= categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, "%", new PageRequest(0, 20));
+        Page<Category> rootList= categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, "Kjønn%", new PageRequest(0, 20));
         assertEquals("Should be 1 element in list",  1L,rootList.getTotalElements());
 //        assertEquals("Should be 5 Grandchildren elements", 5L, rootList.getContent().get(0).getAllChildrenFlatten().size());
 
@@ -265,37 +265,37 @@ public class CategoryServiceTest extends AbstractServiceTest {
     @Test
     public void testHierarchAndCategory(){
 
-        Category rootCategory = new CategoryBuilder().setName("KJØNN")
+        Category rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("KVINNE")
+                .setLabel("Kjønn7").createCategory();
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Kvinne").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MANN")
+                .setLabel("Kvinne7").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Mann").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TVEKJØNNET")
+                .setLabel("Mann7").createCategory());
+        rootCategory.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
-                .setLabel("Transperson").createCategory());
+                .setLabel("Transperson7").createCategory());
         rootCategory = categoryService.save(rootCategory);
 
-        Category group = new CategoryBuilder().setName("IKKE SVAR")
+        Category group = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MISSING_GROUP)
                 .setLabel("NA Svar").createCategory();
-        group.addChild(new CategoryBuilder().setName("VET IKKE")
+        group.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
                 .setLabel("Vet ikke").createCategory());
-        group.addChild(new CategoryBuilder().setName("VIL IKKE SVARE")
+        group.addChild(new CategoryBuilder()
                 .setType(CategoryType.CATEGORY)
                 .setLabel("Vil ikke svare").createCategory());
         group = categoryService.save(group);
 
-        Category root = new CategoryBuilder().setName("SVAR SETT KJØNN")
+        Category root = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
-                .setLabel("Kjønn").createCategory();
+                .setLabel("Kjønns Svar").createCategory();
         root.addChild(rootCategory);
         root.addChild(group);
         categoryService.save(root);

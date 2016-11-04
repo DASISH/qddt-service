@@ -58,15 +58,15 @@ public class CodeHierarchyTest {
         this.beforeSecurityContext.createSecurityContext();
 
                 //Create a categorySchema
-        rootCategory = new CategoryBuilder().setName("GENDER")
+        rootCategory = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.LIST)
                 .setLabel("Gender").createCategory();
-        rootCategory.addChild(new CategoryBuilder().setName("FEMALE")
+        rootCategory.addChild(new CategoryBuilder()
                 .setLabel("Female").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("MAN")
+        rootCategory.addChild(new CategoryBuilder()
                 .setLabel("Man").createCategory());
-        rootCategory.addChild(new CategoryBuilder().setName("TRANSGENDER")
+        rootCategory.addChild(new CategoryBuilder()
                 .setLabel("Transgender").createCategory());
         rootCategory = categoryService.save(rootCategory);
 

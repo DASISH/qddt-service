@@ -30,7 +30,7 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
         super.getBeforeSecurityContext().createSecurityContext();
 
         entity = new OtherMaterial();
-        entity.setName("A test entity");
+        entity.setFileName("A test entity");
         entity = entityService.save(entity);
 
         super.getBeforeSecurityContext().destroySecurityContext();
@@ -45,13 +45,13 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
 
     @Test
     public void testUpdate() throws Exception {
-        entity.setName(entity.getName() + " edited");
+        entity.setFileName(entity.getFileName() + " edited");
 
         mvc.perform(post("/othermaterial").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(entity)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(entity.getName())))
+                .andExpect(jsonPath("$.name", is(entity.getFileName())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
@@ -59,13 +59,13 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
     @Test
     public void testCreate() throws Exception {
         OtherMaterial aEntity = new OtherMaterial();
-        aEntity.setName("Posted entity");
+        aEntity.setFileName("Posted entity");
 
         mvc.perform(post("/othermaterial/create").header("Authorization", "Bearer " + accessToken)
                 .contentType(rest.getContentType())
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
-                .andExpect(jsonPath("$.name", is(aEntity.getName())))
+                .andExpect(jsonPath("$.name", is(aEntity.getFileName())))
                 .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
