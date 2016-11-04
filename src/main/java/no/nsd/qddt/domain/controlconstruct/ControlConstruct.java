@@ -56,6 +56,8 @@ public class ControlConstruct extends AbstractEntityAudit {
      */
 //    @ManyToOne()
 //    @JoinColumn(name = "questionitem_id",updatable = false)
+    @JsonSerialize
+    @JsonDeserialize
     @Transient
     private QuestionItem questionItem;
 
@@ -118,7 +120,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     public UUID getQuestionItemUUID() {
-        if (questionItemUUID == null) questionItemUUID = getQuestionItem().getId();
         return questionItemUUID;
     }
 
@@ -192,6 +193,8 @@ public class ControlConstruct extends AbstractEntityAudit {
 
         harvestPreInstructions(getPreInstructions());
         harvestPostInstructions(getPostInstructions());
+        if (this.getQuestionItem() != null)
+            setQuestionItemUUID(this.getQuestionItem().getId());
     }
 
     private void harvestPostInstructions(List<Instruction> instructions) {
