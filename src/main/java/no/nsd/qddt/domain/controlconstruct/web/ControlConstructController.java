@@ -4,12 +4,16 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
+import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -88,7 +92,14 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getBySecond(@PathVariable("uuid") UUID secondId) {
-
-        return controlConstructService.findByQuestionItemId(secondId);
+        return controlConstructService.findByQuestionItemUUIDs(Arrays.asList(new UUID[]{secondId}));
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/list/by-questiontext/{question}", method = RequestMethod.GET)
+    public List<ControlConstruct> getTop25ByQuestionText(@PathVariable("question") String questionText) {
+        return controlConstructService.findTop25ByQuestionItemQuestion(questionText);
+    }
+
+
 }

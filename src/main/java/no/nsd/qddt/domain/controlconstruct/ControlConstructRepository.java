@@ -28,5 +28,6 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
     List<ControlConstruct> findByquestionItemUUID(UUID questionId);
 
 
+    List<ControlConstruct> findByquestionItemUUIDIn(List<UUID> questionItemIds);
 
 }

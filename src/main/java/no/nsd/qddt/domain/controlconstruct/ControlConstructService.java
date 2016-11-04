@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.BaseService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,13 +17,16 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
      * @param instrumentId
      * @return
      */
-    public List<ControlConstruct> findByInstrumentId(UUID instrumentId);
+    List<ControlConstruct> findByInstrumentId(UUID instrumentId);
 
     /**
      *
-     * @param questionItemId
+     * @param questionItemIds
      * @return
      */
-    public List<ControlConstruct> findByQuestionItemId(UUID questionItemId);
+    List<ControlConstruct> findByQuestionItemUUIDs(List<UUID> questionItemIds);
 
+
+    @Transactional(readOnly = true)
+    List<ControlConstruct> findTop25ByQuestionItemQuestion(String question);
 }

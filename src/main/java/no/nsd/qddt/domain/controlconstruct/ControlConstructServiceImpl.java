@@ -1,9 +1,12 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstructionService;
+import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +24,18 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private ControlConstructRepository controlConstructRepository;
     private ControlConstructInstructionService cciService;
     private QuestionItemAuditService qAuditService;
+    private QuestionItemService  qiService;
+
 
     @Autowired
     public ControlConstructServiceImpl(ControlConstructRepository controlConstructRepository,
                                        ControlConstructInstructionService cciService,
-                                       QuestionItemAuditService questionAuditService) {
+                                       QuestionItemAuditService questionAuditService,
+                                       QuestionItemService questionItemService) {
         this.controlConstructRepository = controlConstructRepository;
         this.cciService = cciService;
         this.qAuditService = questionAuditService;
+        this.qiService = questionItemService;
     }
 
     @Override
@@ -44,6 +51,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional(readOnly = true)
     public ControlConstruct findOne(UUID id) {
+
         ControlConstruct instance = controlConstructRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(id, ControlConstruct.class));
 
@@ -69,18 +77,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
         return  instances.stream().map(this::save).collect(Collectors.toList());
 
-//        instances.forEach(i->{
-//            i.populateControlConstructs();
-//            cciService.save(i.getControlConstructInstructions());
-//        });
-//
-//        instances = controlConstructRepository.save(instances);
-//
-//        // before returning fetch correct version of QI...
-//        instances.forEach(i->{
-//            i.setQuestionItem(ccAuditService.findRevision(i.getQuestionItemUUID(),i.getRevisionNumber());
-//        });
-//        return instances;
     }
 
     @Override
@@ -102,11 +98,25 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ControlConstruct> findByQuestionItemId(UUID questionItemId) {
-        return postGet(controlConstructRepository.findByquestionItemUUID(questionItemId));
+    public List<ControlConstruct> findByQuestionItemUUIDs(List<UUID> questionItemIds) {
+        return postGet(controlConstructRepository.findByquestionItemUUIDIn(questionItemIds));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ControlConstruct> findTop25ByQuestionItemQuestion(String question) {
+
+        List<UUID> uuidList = qiService.findByNameLikeAndQuestionLike(question,null,new PageRequest(0,25)).getContent()
+                            .stream().map(f->f.getId()).collect(Collectors.toList());
+
+        return findByQuestionItemUUIDs(uuidList);
+    }
+
+
+    /*
+    post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
+    thus we need to populate some elements ourselves.
+     */
     private  ControlConstruct postGet(ControlConstruct instance){
         // instructions has to unpacked into pre and post instructions
         instance.populateInstructions();

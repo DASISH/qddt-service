@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,6 +18,8 @@ public interface QuestionItemRepository extends BaseRepository<QuestionItem,UUID
     Page<QuestionItem> findAll(Pageable pageable);
 
     Page<QuestionItem> findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(String name, String question, Pageable pageable);
+
+    Page<QuestionItem> findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(String searchString, String searchString1, Pageable pageable);
 
 
 //    @Query("select n from Question n  left join fetch  n.children")
