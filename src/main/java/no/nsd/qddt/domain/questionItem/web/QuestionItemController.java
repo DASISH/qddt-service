@@ -72,10 +72,10 @@ public class QuestionItemController {
                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<QuestionItem> questionitems = null;
-        name = name.replace("*","%");
+//        name = name.replace("*","%");
         question = question.replace("*","%");
 
-        questionitems = questionItemService.findByNameLikeAndQuestionLike(name,question, pageable);
+        questionitems = questionItemService.findByNameLikeOrQuestionLike(question, pageable);
 
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
