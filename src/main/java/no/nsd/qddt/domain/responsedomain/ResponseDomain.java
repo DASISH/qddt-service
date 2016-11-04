@@ -5,20 +5,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.utils.builders.StringTool;
+import org.eclipse.jetty.util.StringUtil;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -112,6 +112,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     }
 
     @Override
+    @Column(nullable = false)
     public String getName() {
         return StringTool.CapString(super.getName());
     }
@@ -226,6 +227,16 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.managedRepresentation = managedRepresentation;
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
+        if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
+            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(f -> f.getName()).collect(Collectors.joining(" - "))));
+        }
+        managedRepresentation.setName(getName());
+            managedRepresentation.setDescription(String.format("[%s] group - %s",
+                    StringTool.CapString(managedRepresentation.getCategoryType().name().toLowerCase()),
+                    getDescription()));
+        managedRepresentation.setChangeComment("");
+        managedRepresentation.setChangeKind(getChangeKind());
+        managedRepresentation.setVersion(getVersion());
     }
 
     public List<Code> getCodes() {

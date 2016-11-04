@@ -240,7 +240,9 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.children.add(children);
     }
 
-     @Override public String getName(){
+     @Override
+     @Column(nullable = false)
+     public String getName(){
         if (StringTool.IsNullOrTrimEmpty(super.getName()))
             return this.getLabel().toUpperCase();
         else
