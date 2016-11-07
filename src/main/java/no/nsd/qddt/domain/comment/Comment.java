@@ -107,11 +107,11 @@ public class Comment extends AbstractEntity implements Commentable {
         this.comment = comment;
     }
 
-    public boolean isHidden() {
+    public boolean getIsHidden() {
         return isHidden;
     }
 
-    public void setHidden(boolean hidden) {
+    public void setIsHidden(boolean hidden) {
         isHidden = hidden;
     }
 
