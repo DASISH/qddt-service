@@ -16,7 +16,9 @@ interface ConceptRepository extends BaseRepository<Concept,UUID> {
 
     Page<Concept> findAll(Pageable pageable);
 
-    Page<Concept> findByTopicGroupId(UUID id, Pageable pageable);
+    Page<Concept> findByTopicGroupIdAndNameIsNotNull(UUID id, Pageable pageable);
+
+    Page<Concept> findByTopicGroupIdAndNameIsNull(UUID id, Pageable pageable);
 
     List<Concept> findByQuestionItemsId(UUID questionItemId);
 }

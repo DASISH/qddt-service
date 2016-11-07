@@ -1,10 +1,12 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.envers.Audited;
 
@@ -12,6 +14,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Question Item is a container for Question (text) and responsedomain
@@ -48,15 +51,14 @@ public class QuestionItem extends AbstractEntityAudit  {
     @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
-//    @JsonBackReference(value = "controlConstructRef")
-//    @OneToMany(mappedBy = "questionItem")
-//    private Set<ControlConstruct> controlConstructs = new HashSet<>();
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private Set<ConceptRef> conceptRefs = new HashSet<>();
 
     public QuestionItem() {
 
     }
-
-
 
     @PreRemove
     private void removeReferencesFromQi(){
@@ -103,15 +105,6 @@ public class QuestionItem extends AbstractEntityAudit  {
         this.question = question;
     }
 
-    public long getQuestionRevivsion() {
-        
-        return questionRevivsion;
-    }
-
-    public void setQuestionRevivsion(long questionRevivsion) {
-        this.questionRevivsion = questionRevivsion;
-    }
-
     public Set<Concept> getConcepts() {
         return concepts;
     }
@@ -120,14 +113,9 @@ public class QuestionItem extends AbstractEntityAudit  {
         this.concepts = concepts;
     }
 
-//    public Set<ControlConstruct> getControlConstructs() {
-//        return controlConstructs;
-//    }
-//
-//    public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
-//        this.controlConstructs = controlConstructs;
-//    }
-
+    public Set<ConceptRef> getConceptRefs(){
+        return concepts.stream().map(c-> new ConceptRef(c)).collect(Collectors.toSet());
+    }
 
     @Override
     public boolean equals(Object o) {

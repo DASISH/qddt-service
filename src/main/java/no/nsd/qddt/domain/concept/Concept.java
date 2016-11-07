@@ -1,15 +1,14 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.author.Author;
-import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 
@@ -56,13 +55,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     private Set<QuestionItem> questionItems = new HashSet<>();
 
 
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
-//    @JoinTable(name = "CONCEPT_AUTHORS",
-//            joinColumns = {@JoinColumn(name ="concept_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "author_id")})
-//    private Set<Author> authors = new HashSet<>();
-
-
     @Column(name = "label")
     private String label;
 
@@ -70,18 +62,20 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     private String description;
 
     @Transient
+    @JsonSerialize
+    @JsonDeserialize
     private Set<Comment> comments = new HashSet<>();
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private TopicRef parentRef;
+
 
     public Concept() {
 
     }
 
-//    @PreUpdate
-//    private void checkAuthor(){
-//        System.out.println("Concept Preupdate...");
-//        authors.forEach(a->a.addConcept(this));
-//
-//    }
 
     @PreRemove
     private void removeReferencesFromConcept(){
@@ -189,21 +183,11 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
+    public TopicRef getParentRef() {
+        return new TopicRef(getTopicGroup());
+    }
 
-//    @Override
-//    public void addAuthor(Author user) {
-//        authors.add(user);
-//    }
-//
-//    @Override
-//    public Set<Author> getAuthors() {
-//        return authors;
-//    }
-//
-//    @Override
-//    public void setAuthors(Set<Author> authors) {
-//        this.authors = authors;
-//    }
+
 
     @Override
     public boolean equals(Object o) {
