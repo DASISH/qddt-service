@@ -66,8 +66,12 @@ class ControlConstructServiceImpl implements ControlConstructService {
         cciService.save(instance.getControlConstructInstructions());
         instance = controlConstructRepository.save(instance);
         // before returning fetch correct version of QI...
-        if (instance.getQuestionItemUUID() != null)
-            instance.setQuestionItem(qAuditService.findRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
+        if (instance.getQuestionItemUUID() != null) {
+            if (instance.getRevisionNumber() == null || instance.getRevisionNumber() <=0)   // presume current version is selected
+                instance.setRevisionNumber(qAuditService.findLastChange(instance.getQuestionItemUUID()).getRevisionNumber());
+
+            instance.setQuestionItem(qAuditService.findRevision(instance.getQuestionItemUUID(), instance.getRevisionNumber()).getEntity());
+        }
         return instance;
     }
 
