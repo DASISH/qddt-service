@@ -32,6 +32,7 @@ public class Refs {
         setId(entity.getId());
     }
 
+    Refs(){}
 
     @Override
     public boolean equals(Object o) {

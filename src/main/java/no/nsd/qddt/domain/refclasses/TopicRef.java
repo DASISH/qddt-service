@@ -11,6 +11,11 @@ public class TopicRef extends Refs{
 
     StudyRef studyRef;
 
+    public TopicRef(){
+        super();
+    }
+
+
     public TopicRef(TopicGroup topicGroup) {
         super(topicGroup);
         studyRef = new StudyRef(topicGroup.getStudy());

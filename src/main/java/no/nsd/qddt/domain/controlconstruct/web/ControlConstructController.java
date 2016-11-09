@@ -68,7 +68,7 @@ public class ControlConstructController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-    public ControlConstruct createWithFile(@RequestParam("controlconstruct") ControlConstruct instance,@RequestParam("files") MultipartFile[] files) throws FileUploadException {
+    public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") ControlConstruct instance) throws FileUploadException {
         instance = controlConstructService.save(instance);
         if (files != null && files.length > 0)
             for (MultipartFile multipartFile:files) {

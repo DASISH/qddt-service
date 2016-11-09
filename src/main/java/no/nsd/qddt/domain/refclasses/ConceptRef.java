@@ -9,10 +9,13 @@ public class ConceptRef extends Refs {
 
     private TopicRef topicRef;
 
+    public ConceptRef() {
+        super();
+    }
+
     public ConceptRef(Concept concept){
         super(concept);
         topicRef = new TopicRef(concept.getTopicGroup());
-
     }
 
     public TopicRef getTopicRef() {

@@ -69,7 +69,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @Transient
     @JsonSerialize
     @JsonDeserialize
-    private TopicRef parentRef;
+    private TopicRef topicRef;
 
 
     public Concept() {
@@ -183,8 +183,14 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
-    public TopicRef getParentRef() {
+    public TopicRef getTopicRef() {
+        try{
         return new TopicRef(getTopicGroup());
+        } catch (Exception ex ) {
+            System.out.println("getTopicRef-> " + ex.getMessage());
+            return null;
+        }
+
     }
 
 

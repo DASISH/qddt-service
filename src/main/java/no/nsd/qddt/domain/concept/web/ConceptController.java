@@ -42,7 +42,6 @@ public class ConceptController {
         this.questionItemService = questionItemService;
     }
 
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Concept get(@PathVariable("id") UUID id) {
@@ -115,13 +114,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        try {
-            conceptService.delete(id);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println(ex.getMessage());
-        }
-
+        conceptService.delete(id);
     }
 
 

@@ -198,22 +198,32 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     private void harvestPostInstructions(List<Instruction> instructions) {
-        for (Instruction instruction : instructions) {
-            ControlConstructInstruction cci = new ControlConstructInstruction();
-            cci.setInstruction(instruction);
-            cci.setInstructionRank(InstructionRank.POST);
-            cci.setControlConstruct(this);
-            this.getControlConstructInstructions().add(cci);
+        try {
+            for (Instruction instruction : instructions) {
+                ControlConstructInstruction cci = new ControlConstructInstruction();
+                cci.setInstruction(instruction);
+                cci.setInstructionRank(InstructionRank.POST);
+                cci.setControlConstruct(this);
+                this.getControlConstructInstructions().add(cci);
+            }
+        }catch (Exception ex){
+            System.out.println("harvestPostInstructions exception " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
     private void harvestPreInstructions(List<Instruction> instructions){
-        for (int i = 0; i < instructions.size(); i++) {
-            ControlConstructInstruction cci = new ControlConstructInstruction();
-            cci.setInstruction(preInstructions.get(i));
-            cci.setInstructionRank(InstructionRank.PRE);
-            cci.setControlConstruct(this);
-            this.controlConstructInstructions.add(i, cci);
+        try {
+            for (int i = 0; i < instructions.size(); i++) {
+                ControlConstructInstruction cci = new ControlConstructInstruction();
+                cci.setInstruction(preInstructions.get(i));
+                cci.setInstructionRank(InstructionRank.PRE);
+                cci.setControlConstruct(this);
+                this.controlConstructInstructions.add(i, cci);
+            }
+        }catch (Exception ex) {
+            System.out.println("harvestPreInstructions exception " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

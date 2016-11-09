@@ -11,9 +11,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,8 +42,6 @@ public class QuestionItem extends AbstractEntityAudit  {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @Column(name = "question_revision")
-    private long questionRevivsion;
 
     @JsonBackReference(value = "conceptRef")
     @ManyToMany(mappedBy="questionItems")
@@ -55,6 +51,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     @JsonSerialize
     @JsonDeserialize
     private Set<ConceptRef> conceptRefs = new HashSet<>();
+//    private Map<UUID,ConceptRef> conceptRefs = new HashMap<>();
 
     public QuestionItem() {
 
@@ -114,7 +111,13 @@ public class QuestionItem extends AbstractEntityAudit  {
     }
 
     public Set<ConceptRef> getConceptRefs(){
-        return concepts.stream().map(c-> new ConceptRef(c)).collect(Collectors.toSet());
+        try {
+//        return concepts.stream().collect(Collectors.toMap(p-> p.getId(), c-> new ConceptRef(c)));
+            return concepts.stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
+        } catch (Exception ex){
+            System.out.println("getConceptRefs->" +  ex.getMessage());
+            return new HashSet<>(0);
+        }
     }
 
     @Override

@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.responsedomain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
@@ -11,6 +13,8 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
+import no.nsd.qddt.domain.refclasses.QuestionRef;
 import no.nsd.qddt.utils.builders.StringTool;
 import org.eclipse.jetty.util.StringUtil;
 import org.hibernate.envers.Audited;
@@ -18,6 +22,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -105,6 +110,12 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Embedded
     private ResponseCardinality responseCardinality;
 
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private Set<QuestionRef> questionRefs = new HashSet<>();
+//    private Map<UUID,QuestionRef> questionRefs = new HashMap<>();
 
 
     public ResponseDomain(){
@@ -264,6 +275,18 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         comment.setOwnerId(this.getId());
         comments.add(comment);
     }
+
+    public Set<QuestionRef> getQuestionRefs(){
+        try {
+//        return questionItems.stream().collect(Collectors.toMap(p-> p.getId(), c-> new QuestionRef(c)));
+            return questionItems.stream().map(qi -> new QuestionRef(qi)).collect(Collectors.toSet());
+        } catch (Exception ex){
+            System.out.println("getQuestionRefs->" + ex.getMessage());
+            return  new HashSet<>();
+        }
+
+    }
+
 
     @Override
     public boolean equals(Object o) {

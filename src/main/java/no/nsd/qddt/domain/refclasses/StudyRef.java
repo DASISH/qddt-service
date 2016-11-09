@@ -9,6 +9,11 @@ public class StudyRef extends Refs {
 
     private SurveyRef surveyRef;
 
+    public StudyRef(){
+        super();
+    }
+
+
     public StudyRef(Study study) {
         super(study);
         surveyRef = new SurveyRef(study.getSurveyProgram());
