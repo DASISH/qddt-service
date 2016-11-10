@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.study.web;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,17 +47,13 @@ public class StudyAuditController {
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
-            @PathVariable("id") UUID id,Pageable pageable, PagedResourcesAssembler assembler){
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+                    Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            Pageable pageable, PagedResourcesAssembler assembler) {
 
-
-        Collection<AbstractEntityAudit.ChangeKind> changeKinds = new ArrayList<>();
-        changeKinds.add(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
-
-//        Page<Revision<Integer, Study>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changeKinds , pageable);
-//        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
-
-        Page<Revision<Integer, Study>> studies = service.findRevisions(id, pageable);
-        return new ResponseEntity<>(assembler.toResource(studies), HttpStatus.OK);
+        Page<Revision<Integer, Study>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
+        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 
 }

@@ -115,7 +115,6 @@ public class QuestionItem extends AbstractEntityAudit  {
 //        return concepts.stream().collect(Collectors.toMap(p-> p.getId(), c-> new ConceptRef(c)));
             return concepts.stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
         } catch (Exception ex){
-            System.out.println("getConceptRefs->" +  ex.getMessage());
             return new HashSet<>(0);
         }
     }

@@ -66,10 +66,10 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @JsonDeserialize
     private Set<Comment> comments = new HashSet<>();
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private TopicRef topicRef;
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+//    private TopicRef topicRef;
 
 
     public Concept() {
@@ -103,7 +103,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     }
 
 
-
     public Set<QuestionItem> getQuestionItems() {
         return questionItems;
     }
@@ -130,6 +129,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
             questionItem.setChangeComment("QuestionItem Added");
         }
     }
+
 
     public Set<Concept> getChildren() {
         return children;
@@ -185,15 +185,11 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
     public TopicRef getTopicRef() {
         try{
-        return new TopicRef(getTopicGroup());
+            return new TopicRef(getTopicGroup());
         } catch (Exception ex ) {
-            System.out.println("getTopicRef-> " + ex.getMessage());
             return null;
         }
-
     }
-
-
 
     @Override
     public boolean equals(Object o) {

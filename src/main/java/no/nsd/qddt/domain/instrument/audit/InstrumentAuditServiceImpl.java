@@ -4,12 +4,14 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instrument.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -39,9 +41,17 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
         return instrumentAuditRepository.findRevisions(uuid, pageable);
     }
 
-//    @Override
-//    public Page<Revision<Integer, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-//        return instrumentAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
-//    }
+    @Override
+    public Page<Revision<Integer, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        int skip = pageable.getOffset();
+        int limit = pageable.getPageSize();
+        return new PageImpl<>(
+                instrumentAuditRepository.findRevisions(id).getContent().stream()
+                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
+                        .skip(skip)
+                        .limit(limit)
+                        .collect(Collectors.toList())
+        );
+    }
 
 }

@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.instruction.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instruction.audit.InstructionAuditService;
+import no.nsd.qddt.domain.instrument.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,11 +14,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -46,9 +46,12 @@ public class InstructionAuditController {
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Instruction>>> allProjects(
-            @PathVariable("id") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+                    Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Revision<Integer, Instruction>> entities = auditService.findRevisions(id, pageable);
+        Page<Revision<Integer, Instruction>> entities = auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
 }

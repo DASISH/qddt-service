@@ -4,12 +4,14 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 /**
@@ -40,9 +42,17 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
         return questionItemAuditRepository.findRevisions(uuid,pageable);
     }
 
-//    @Override
-//    public Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-//        return questionItemAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
-//    }
+    @Override
+    public Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        int skip = pageable.getOffset();
+        int limit = pageable.getPageSize();
+        return new PageImpl<>(
+                questionItemAuditRepository.findRevisions(id).getContent().stream()
+                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
+                        .skip(skip)
+                        .limit(limit)
+                        .collect(Collectors.toList())
+        );
+    }
 
 }

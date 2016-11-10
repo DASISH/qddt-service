@@ -13,12 +13,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -48,13 +44,12 @@ public class TopicGroupAuditController {
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, TopicGroup>>> allProjects(
-            @PathVariable("id") UUID id,Pageable pageable, PagedResourcesAssembler assembler){
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+                    Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Collection<AbstractEntityAudit.ChangeKind> changeKinds = new ArrayList<>();
-        changeKinds.add(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT);
-
-        Page<Revision<Integer, TopicGroup>> revisions = service.findRevisions(id, pageable);
-
+            Page<Revision<Integer, TopicGroup>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 
