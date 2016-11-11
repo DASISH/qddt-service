@@ -91,7 +91,7 @@ docker {
 task createDBContainer(type: DockerCreateContainer) {
     imageId = 'postgres'
     containerName = "qddt_local"
-    portBindings = ['5400:5432']
+    portBindings = ['127.0.0.16:5400:5432']
     env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
 }
 
