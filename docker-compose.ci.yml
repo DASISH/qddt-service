@@ -1,0 +1,20 @@
+version: '2'
+services:
+  qddt_service:
+    image: dasish/qddt-service:latest
+    container_name: qddt_service
+    ports:
+      - "8080:8080"
+    links:
+      - postgres
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    container_name: qddt_postgres
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_DB: qddt
+      POSTGRES_USER: qddt
+      POSTGRES_PASSWORD: qddt
