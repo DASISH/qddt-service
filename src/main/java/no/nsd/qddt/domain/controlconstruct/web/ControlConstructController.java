@@ -43,12 +43,12 @@ public class ControlConstructController {
         return controlConstructService.findOne(id);
     }
 
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(value = "", method = RequestMethod.POST)
-//    public ControlConstruct update(@RequestBody ControlConstruct instance) {
-//        return controlConstructService.save(instance);
-//    }
-//
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ControlConstruct update(@RequestBody ControlConstruct instance) {
+        return controlConstructService.save(instance);
+    }
+
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ControlConstruct create(@RequestBody ControlConstruct instance) {
