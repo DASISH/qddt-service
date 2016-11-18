@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath(
-                "org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE",
+                "org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE",
                 "com.bmuschko:gradle-docker-plugin:3.0.3",
         )
     }
@@ -20,9 +20,9 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-apply plugin: 'com.bmuschko.docker-remote-api'
+//apply plugin: 'com.bmuschko.docker-remote-api'
 
-import com.bmuschko.gradle.docker.tasks.container.*
+//import com.bmuschko.gradle.docker.tasks.container.*
 
 
 idea {
@@ -50,7 +50,7 @@ repositories {
 
 dependencies {
 
-    compile files('libs/spring-data-envers-0.3.0.BUILD-SNAPSHOT.jar')
+//    compile files('libs/spring-data-envers-0.3.0.BUILD-SNAPSHOT.jar')
 
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
@@ -60,18 +60,21 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile("org.springframework.hateoas:spring-hateoas")
     compile("org.springframework.boot:spring-boot-starter-security")
-    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
+    compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.10.RELEASE'
+    compile 'org.springframework.security:spring-security-jwt'
+    compile 'org.springframework.hateoas:spring-hateoas'
     compile("org.springframework.cloud:spring-cloud-security:1.0.2.RELEASE")
-    compile("org.jadira.usertype:usertype.extended:3.2.0.GA")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.0")
-    compile("org.hibernate:hibernate-validator")
-    compile("org.hibernate:hibernate-envers:4.3.11.Final")
+    compile 'org.jadira.usertype:usertype.extended:5.0.0.GA'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.2'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.2'
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
-    compile("postgresql:postgresql:9.1-901-1.jdbc4")
+    compile 'org.postgresql:postgresql:9.4.1208'
+    compile 'org.hibernate:hibernate-validator'
+    compile("org.hibernate:hibernate-envers:5.2.3.Final")
     compile("joda-time:joda-time:2.9.1")
     compile("javax.json:javax.json-api:1.0")
     compile("org.glassfish:javax.json:1.0.4")
+    compile 'org.springframework.data:spring-data-envers:1.0.4.RELEASE'
 
     testCompile(
             "junit:junit",
@@ -82,63 +85,79 @@ dependencies {
     )
 }
 
-docker {
-    if(org.gradle.internal.os.OperatingSystem.current().windows) {
-        url = 'http://localhost:2375'
-    }
-    else if(org.gradle.internal.os.OperatingSystem.current().linux){
-        url = 'unix:///var/run/docker.sock'
-    }
-}
+//docker {
+//    if(org.gradle.internal.os.OperatingSystem.current().windows) {
+//        url = 'http://localhost:2375'
+//    }
+//    else if(org.gradle.internal.os.OperatingSystem.current().linux){
+//        url = 'unix:///var/run/docker.sock'
+//    }
+//}
+//
+//task createDBContainer(type: DockerCreateContainer) {
+//    imageId = 'postgres'
+//    containerName = "qddt_local"
+//    portBindings = ['127.0.0.16:5400:5432']
+//    env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
+//}
+//
+//task startDBContainer(type: DockerStartContainer) {
+//    dependsOn createDBContainer
+//    targetContainerId { createDBContainer.getContainerId() }
+//}
+//
+//task stopDBContainer(type: DockerStopContainer) {
+//    targetContainerId { createDBContainer.getContainerId() }
+//}
+//
+//task destroyContainer(type: DockerRemoveContainer) {
+//    dependsOn stopDBContainer
+//    targetContainerId { createDBContainer.getContainerId() }
+//}
+//
+//ext {
+//    snippetsDir = file('build/generated-snippets')
+//}
+//
+//bootRun {
+//    addResources = true
+//    mustRunAfter startDBContainer
+//    systemProperties['spring.profiles.active'] = 'local'
+//    dependsOn startDBContainer
+//    finalizedBy stopDBContainer
+//}
+//
+//test {
+//    exclude 'no/nsd/qddt/QTTDTestSuite.class'
+////    outputs.dir snippetsDir
+//    testLogging {
+//        events 'started', 'passed', 'skipped', 'failed'
+//        showExceptions true
+//        exceptionFormat 'full'
+//        showCauses true
+//        showStackTraces true
+//
+//    }
+//    systemProperties['spring.profiles.active'] = 'test'
+//    dependsOn startDBContainer
+//    finalizedBy(destroyContainer)
+//    destroyContainer.mustRunAfter(test)
+//}
 
-task createDBContainer(type: DockerCreateContainer) {
-    imageId = 'postgres'
-    containerName = "qddt_local"
-    portBindings = ['127.0.0.16:5400:5432']
-    env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
-}
-
-task startDBContainer(type: DockerStartContainer) {
-    dependsOn createDBContainer
-    targetContainerId { createDBContainer.getContainerId() }
-}
-
-task stopDBContainer(type: DockerStopContainer) {
-    targetContainerId { createDBContainer.getContainerId() }
-}
-
-task destroyContainer(type: DockerRemoveContainer) {
-    dependsOn stopDBContainer
-    targetContainerId { createDBContainer.getContainerId() }
-}
 
 ext {
     snippetsDir = file('build/generated-snippets')
 }
 
-bootRun {
-    addResources = true
-    mustRunAfter startDBContainer
-    systemProperties['spring.profiles.active'] = 'local'
-    dependsOn startDBContainer
-    finalizedBy stopDBContainer
-}
-
+//This exclude the test suite, which we use for IDE test support.
 test {
     exclude 'no/nsd/qddt/QTTDTestSuite.class'
-//    outputs.dir snippetsDir
-    testLogging {
-        events 'started', 'passed', 'skipped', 'failed'
-        showExceptions true
-        exceptionFormat 'full'
-        showCauses true
-        showStackTraces true
+    outputs.dir snippetsDir
 
+    testLogging {
+        // Show that tests are run in the command-line output
+        events 'started', 'passed'
     }
-    systemProperties['spring.profiles.active'] = 'test'
-    dependsOn startDBContainer
-    finalizedBy(destroyContainer)
-    destroyContainer.mustRunAfter(test)
 }
 
 asciidoctor {
@@ -146,6 +165,8 @@ asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
 }
+
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
