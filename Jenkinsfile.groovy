@@ -19,14 +19,18 @@ node('docker-slave') {
     stage 'Test image'
         docker.image('jenkins.nsd.lan:5000/docker-compose').inside('-v /var/run/docker.sock:/var/run/docker.sock') {
             def project = 'qddtservice'
-            sh "docker-compose -f docker-compose.ci.yml --project-name ${project} down"
-            sh "docker-compose -f docker-compose.ci.yml --project-name ${project} up -d"
-            def ip = "\$(docker inspect --format '{{ .NetworkSettings.Networks.${project}_default.Gateway }}' ${containerName})"
+            sh "docker-compose --project-name ${project} down"
             def success = false;
-            retry(5) {
-                sleep 5
-                sh "curl -s -k http://${ip}:8080/management/info"
-                success = true
+            try {
+                sh "docker-compose -f docker-compose.ci.yml --project-name ${project} up -d"
+                def ip = "\$(docker inspect --format '{{ .NetworkSettings.Networks.${project}_default.Gateway }}' ${containerName})"
+                retry(5) {
+                    sleep 5
+                    sh "curl -s -k http://${ip}:8080/management/info"
+                    success = true
+                }
+            } finally {
+                sh "docker-compose --project-name ${project} down"
             }
             if (!success)
                 error 'the application did not respond well when starting up'
