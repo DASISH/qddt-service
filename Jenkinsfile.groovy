@@ -52,6 +52,7 @@ node('docker-slave') {
             sh "ssh ${targetHost} sudo docker pull ${dockerRegistry}/${imageName}"
             sh "ssh ${targetHost} sudo docker stop ${containerName} || true"
             sh "ssh ${targetHost} sudo docker run -d -p 8081:5001 --name ${containerName} " +
+                    "-v /home/deploy/deployment/test/uploads-to-qddt/:/home/deploy/deployment/test/uploads-to-qddt/ " +
                     "-e PROFILE=dev -e DB_HOST=TODO ${dockerRegistry}/${imageName}"
         }
 }
@@ -68,6 +69,7 @@ node('docker-slave') {
         sh "ssh ${targetHost} sudo docker pull ${dockerRegistry}/${imageName}"
         sh "ssh ${targetHost} sudo docker stop ${containerName} || true"
         sh "ssh ${targetHost} sudo docker run -d -p 8082:5002 --name ${containerName} " +
+                "-v /home/deploy/deployment/prod/uploads-to-qddt/:/home/deploy/deployment/prod/uploads-to-qddt/ " +
                 "-e PROFILE=production -e DB_HOST=TODO ${dockerRegistry}/${imageName}"
     }
 }
