@@ -85,88 +85,71 @@ dependencies {
     )
 }
 
-//docker {
-//    if(org.gradle.internal.os.OperatingSystem.current().windows) {
-//        url = 'http://localhost:2375'
-//    }
-//    else if(org.gradle.internal.os.OperatingSystem.current().linux){
-//        url = 'unix:///var/run/docker.sock'
-//    }
-//}
-//
-//task createDBContainer(type: DockerCreateContainer) {
-//    imageId = 'postgres'
-//    containerName = "qddt_local"
-//    portBindings = ['127.0.0.16:5400:5432']
-//    env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
-//}
-//
-//task startDBContainer(type: DockerStartContainer) {
-//    dependsOn createDBContainer
-//    targetContainerId { createDBContainer.getContainerId() }
-//}
-//
-//task stopDBContainer(type: DockerStopContainer) {
-//    targetContainerId { createDBContainer.getContainerId() }
-//}
-//
-//task destroyContainer(type: DockerRemoveContainer) {
-//    dependsOn stopDBContainer
-//    targetContainerId { createDBContainer.getContainerId() }
-//}
-//
-//ext {
-//    snippetsDir = file('build/generated-snippets')
-//}
-//
-//bootRun {
-//    addResources = true
-//    mustRunAfter startDBContainer
-//    systemProperties['spring.profiles.active'] = 'local'
-//    dependsOn startDBContainer
-//    finalizedBy stopDBContainer
-//}
-//
-//test {
-//    exclude 'no/nsd/qddt/QTTDTestSuite.class'
-////    outputs.dir snippetsDir
-//    testLogging {
-//        events 'started', 'passed', 'skipped', 'failed'
-//        showExceptions true
-//        exceptionFormat 'full'
-//        showCauses true
-//        showStackTraces true
-//
-//    }
-//    systemProperties['spring.profiles.active'] = 'test'
-//    dependsOn startDBContainer
-//    finalizedBy(destroyContainer)
-//    destroyContainer.mustRunAfter(test)
-//}
+if(!org.gradle.internal.os.OperatingSystem.current().windows) {
 
+    docker {
+        if (org.gradle.internal.os.OperatingSystem.current().windows) {
+            url = 'http://localhost:2375'
+        } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
+            url = 'unix:///var/run/docker.sock'
+        }
+    }
 
-ext {
-    snippetsDir = file('build/generated-snippets')
-}
+    task createDBContainer(type: DockerCreateContainer) {
+        imageId = 'postgres'
+        containerName = "qddt_local"
+        portBindings = ['127.0.0.16:5400:5432']
+        env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
+    }
 
-//This exclude the test suite, which we use for IDE test support.
-test {
-    exclude 'no/nsd/qddt/QTTDTestSuite.class'
-    outputs.dir snippetsDir
+    task startDBContainer(type: DockerStartContainer) {
+        dependsOn createDBContainer
+        targetContainerId { createDBContainer.getContainerId() }
+    }
 
-    testLogging {
-        // Show that tests are run in the command-line output
-        events 'started', 'passed'
+    task stopDBContainer(type: DockerStopContainer) {
+        targetContainerId { createDBContainer.getContainerId() }
+    }
+
+    task destroyContainer(type: DockerRemoveContainer) {
+        dependsOn stopDBContainer
+        targetContainerId { createDBContainer.getContainerId() }
+    }
+
+    ext {
+        snippetsDir = file('build/generated-snippets')
+    }
+
+    bootRun {
+        addResources = true
+        mustRunAfter startDBContainer
+        systemProperties['spring.profiles.active'] = 'local'
+        dependsOn startDBContainer
+        finalizedBy stopDBContainer
+    }
+
+    test {
+        exclude 'no/nsd/qddt/QTTDTestSuite.class'
+//    outputs.dir snippetsDir
+        testLogging {
+            events 'started', 'passed', 'skipped', 'failed'
+            showExceptions true
+            exceptionFormat 'full'
+            showCauses true
+            showStackTraces true
+
+        }
+        systemProperties['spring.profiles.active'] = 'test'
+        dependsOn startDBContainer
+        finalizedBy(destroyContainer)
+        destroyContainer.mustRunAfter(test)
+    }
+    asciidoctor {
+        attributes 'snippets': snippetsDir
+        inputs.dir snippetsDir
+        dependsOn test
     }
 }
-
-asciidoctor {
-    attributes 'snippets': snippetsDir
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
