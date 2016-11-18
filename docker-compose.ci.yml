@@ -1,10 +1,10 @@
 version: '2'
 services:
   qddt_service:
-    image: dasish/qddt-service:latest
+    image: qddt/qddt-service:latest
     container_name: qddt_service
     ports:
-      - "8080:8080"
+      - "8080:5002"
     links:
       - postgres
     depends_on:
