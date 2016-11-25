@@ -28,7 +28,7 @@ public class CORSConfiguration {
                 HttpServletResponse response = (HttpServletResponse) res;
                 String method = request.getMethod();
 
-                response.setHeader("Access-Control-Allow-Origin", origin);
+                response.setHeader("Access-Control-Allow-Origin", "*");
                 response.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
                 response.setHeader("Access-Control-Max-Age", Long.toString(60 * 60));
                 response.setHeader("Access-Control-Allow-Credentials", "true");

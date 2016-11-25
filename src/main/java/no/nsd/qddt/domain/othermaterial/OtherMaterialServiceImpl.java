@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,10 +87,16 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     public OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException {
 
         String name = owner + " [" + filename + "]";
-        return otherMaterialRepository.findBy(owner,filename).orElseThrow(
+        return otherMaterialRepository.findByOwnerAndOriginalName(owner,filename).orElseThrow(
                 () -> new ResourceNotFoundException(name , OtherMaterial.class)
         );
 
+    }
+
+    @Override
+    public List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException {
+        return (List<OtherMaterial>) otherMaterialRepository.findByOwner(owner).orElseThrow(
+                () -> new ResourceNotFoundException(owner , ArrayList.class));
     }
 
     @Override
@@ -102,22 +109,29 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Transactional()
     public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId) throws FileUploadException {
 
-        String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getName()).toString();
+        String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getOriginalFilename()).toString();
+
         OtherMaterial om;
         try{
-            om = findBy(ownerId,multipartFile.getName());
+            om = findBy(ownerId,multipartFile.getOriginalFilename());
             om.setSize(multipartFile.getSize());
             om.setFileType(multipartFile.getContentType());
             om.setOriginalName(multipartFile.getOriginalFilename());
-        } catch (ResourceNotFoundException re){
+            om.setFileName(multipartFile.getName());
+//            om.setDescription();
+        } catch (Exception re){
             om = new OtherMaterial(ownerId,multipartFile, null);
         }
+
 
         try {
             Files.copy(multipartFile.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);
             return save(om);
         } catch (IOException e) {
-            throw new FileUploadException(multipartFile.getName());
+            String message = String.format("Failed to save file [%s]. \n\r%s"
+                    ,multipartFile.getOriginalFilename(),
+                    e.getMessage());
+            throw new FileUploadException(message);
         }
     }
 
@@ -135,12 +149,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Transactional()
     private String getFolder(String ownerId) {
 
-        File directory= new File(fileRoot + ownerId.substring(1, 3));
+        File directory= new File(fileRoot + ownerId.toLowerCase());
 
         if(!directory.exists()) {
-            directory.mkdir();
+            directory.mkdirs();
         }
         return directory.getAbsolutePath();
+
     }
 
 

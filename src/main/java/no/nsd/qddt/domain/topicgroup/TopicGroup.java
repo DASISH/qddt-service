@@ -63,7 +63,7 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER,  cascade =CascadeType.ALL)
+    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     @Column(name = "description", length = 10000)

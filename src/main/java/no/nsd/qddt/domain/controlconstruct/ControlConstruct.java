@@ -14,6 +14,7 @@ import no.nsd.qddt.domain.parameter.CCParameter;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -33,6 +34,8 @@ import java.util.stream.Collectors;
 @Table(name = "CONTROL_CONSTRUCT")
 public class ControlConstruct extends AbstractEntityAudit {
 
+    //------------- Begin QuestionItem revision early bind "hack" ---------------
+
     /**
      * This field is to keep a reference from QI to RD
      * in order to backtrace usage with the help of Hibernate
@@ -43,7 +46,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JoinColumn(name = "questionitem_id",insertable = false,updatable = false)
     private QuestionItem questionItemReferenceOnly;
 
-
     /**
      * This field will be populated with the correct version of a QI,
      * but should never be persisted.
@@ -52,7 +54,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JsonDeserialize
     @Transient
     private QuestionItem questionItem;
-
 
     /**
      * This field must be available "raw" in order to set and query
@@ -63,23 +64,50 @@ public class ControlConstruct extends AbstractEntityAudit {
     @Column(name="questionitem_id")
     private UUID questionItemUUID;
 
-
+    // TODO remove this element after frontend updated
     @Column(name = "questionitem_revision")
     private Integer revisionNumber;
 
     @Column(name = "questionitem_revision", insertable = false,updatable = false)
     private Integer questionItemRevision;
 
+    //------------- End QuestionItem revision early bind "hack"------------------
+
+
+
+    //------------- Begin Child elements with "enver hack" ----------------------
+
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH}, orphanRemoval = true)
-    @OrderColumn(name = "children_index")
     @JoinColumn(name = "parent_id")
+    @OrderColumn(name = "parent_idx")
+    // Ordered arrayList doesn't work with Enver FIX
+    @AuditMappedBy(mappedBy = "parent", positionMappedBy = "parent_idx")
     private Set<ControlConstruct> children = new HashSet<>();
+
+    // Ordered arrayList doesn't work with Enver FIX
+    @Type(type="pg-uuid")
+    @Column(name= "parent_id", insertable = false,updatable = false)
+    private UUID parent;
+
+    // Ordered arrayList doesn't work with Enver FIX
+    @Column(insertable = false,updatable = false)
+    private Integer parent_idx;
+
+    //------------- End Child elements with "enver hack"  -----------------------
+
+
+    //------------- Begin Instrument with "enver hack" --------------------------
 
     @JsonIgnore
     @ManyToOne
-    @OrderColumn(name = "instrument_index")
     @JoinColumn(name = "instrument_id")
     private Instrument instrument;
+
+    // Ordered arrayList doesn't work with Enver FIX
+    @Column(insertable = false,updatable = false)
+    private Integer instrument_idx;
+
+    //------------- End Instrument with "enver hack" ----------------------------
 
     @Column(length = 300)
     private String indexRationale;
@@ -90,13 +118,12 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String description;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-    //TODO ArrayList dosn't work with Enver
+    @JsonIgnore
     @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH})
     @OrderColumn(name="instructions_idx")
-    @JsonIgnore
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
     private String logic;

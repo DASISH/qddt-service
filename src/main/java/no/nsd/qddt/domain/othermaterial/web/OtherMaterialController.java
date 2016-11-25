@@ -69,6 +69,9 @@ public class OtherMaterialController {
     @RequestMapping(value="/upload/{ownerid}", method=RequestMethod.POST , headers = "content-type=multipart/form-data" )
     public @ResponseBody OtherMaterial handleFileUpload(@PathVariable("ownerid") UUID ownerId,
                                                  @RequestParam("file") MultipartFile file) throws FileUploadException {
+        if (file.isEmpty())
+            throw  new FileUploadException("File is empty");
+
         return otherMaterialService.saveFile(file,ownerId);
     }
 

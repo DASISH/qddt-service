@@ -40,8 +40,6 @@ public class OtherMaterial extends AbstractEntity {
 
     private long size;
 
-//    @Transient
-//    private String downloadURL;
 
     public OtherMaterial(){
 
@@ -51,6 +49,7 @@ public class OtherMaterial extends AbstractEntity {
         setOwner(owner);
         setFileName(file.getName());
         setOriginalName(file.getOriginalFilename());
+        setFileType(file.getContentType());
         setSize(file.getSize());
         setDescription(description);
     }
@@ -58,6 +57,7 @@ public class OtherMaterial extends AbstractEntity {
     public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
         setOwner(owner);
         setFileName(name);
+        setOriginalName(name);
         setFileType(fileType);
         setSize(size);
         setDescription(description);
@@ -110,14 +110,6 @@ public class OtherMaterial extends AbstractEntity {
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
     }
-
-//    public String getDownloadURL() {
-//        return downloadURL;
-//    }
-//
-//    public void setDownloadURL(String downloadURL) {
-//        this.downloadURL = downloadURL;
-//    }
 
     @Override
     public boolean equals(Object o) {

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,6 +17,8 @@ import java.util.UUID;
 public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
     OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException;
+
+    List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException;
 
     static ResponseEntity<Resource> getFileAsResponseEntity(OtherMaterial otherMaterial) {
         return null;
