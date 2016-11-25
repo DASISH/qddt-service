@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-//apply plugin: 'com.bmuschko.docker-remote-api'
+apply plugin: 'com.bmuschko.docker-remote-api'
 
 import com.bmuschko.gradle.docker.tasks.container.*
 
