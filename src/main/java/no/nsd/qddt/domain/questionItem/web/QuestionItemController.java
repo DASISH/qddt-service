@@ -47,7 +47,11 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public QuestionItem create(@RequestBody QuestionItem instance) {
-        instance.setQuestion(questionService.save(instance.getQuestion()));
+
+        instance.setQuestion(
+                questionService.save(
+                        instance.getQuestion()));
+
         return questionItemService.save(instance);
     }
 
@@ -61,8 +65,10 @@ public class QuestionItemController {
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<QuestionItem>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<QuestionItem> questions = questionItemService.findAllPageable(pageable);
-        return new ResponseEntity<>(assembler.toResource(questions), HttpStatus.OK);
+        Page<QuestionItem> questionitems =
+                questionItemService.findAllPageable(pageable);
+
+        return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
@@ -70,12 +76,10 @@ public class QuestionItemController {
     public HttpEntity<PagedResources<QuestionItem>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                            @RequestParam(value = "question",defaultValue = "%") String question,
                                                        Pageable pageable, PagedResourcesAssembler assembler) {
+        // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
 
-        Page<QuestionItem> questionitems = null;
-//        name = name.replace("*","%");
-        question = question.replace("*","%");
-
-        questionitems = questionItemService.findByNameLikeOrQuestionLike(question, pageable);
+        Page<QuestionItem> questionitems =
+                questionItemService.findByNameLikeOrQuestionLike(question, pageable);
 
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }

@@ -125,8 +125,8 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         if (!this.questionItems.contains(questionItem)) {
             questionItem.getConcepts().add(this);
             this.questionItems.add(questionItem);
-            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            questionItem.setChangeComment("QuestionItem Added");
+            questionItem.setChangeKind(ChangeKind.ADDED_CONTENT);
+            questionItem.setChangeComment("Concept Added");
         }
     }
 

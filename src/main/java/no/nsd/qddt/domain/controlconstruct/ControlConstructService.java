@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.BaseService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,4 +31,6 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
 
     @Transactional(readOnly = true)
     List<ControlConstruct> findTop25ByQuestionItemQuestion(String question);
+
+    Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable);
 }

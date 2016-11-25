@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath(
-                "org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE",
+                "org.springframework.boot:spring-boot-gradle-plugin:1.2.8.RELEASE",
                 "com.bmuschko:gradle-docker-plugin:3.0.3",
         )
     }
@@ -22,7 +22,7 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 //apply plugin: 'com.bmuschko.docker-remote-api'
 
-//import com.bmuschko.gradle.docker.tasks.container.*
+import com.bmuschko.gradle.docker.tasks.container.*
 
 
 idea {
@@ -57,24 +57,21 @@ dependencies {
     }
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile('org.springframework.boot:spring-boot-starter-actuator')
     compile("org.springframework.hateoas:spring-hateoas")
     compile("org.springframework.boot:spring-boot-starter-security")
-    compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.10.RELEASE'
-    compile 'org.springframework.security:spring-security-jwt'
-    compile 'org.springframework.hateoas:spring-hateoas'
+    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
     compile("org.springframework.cloud:spring-cloud-security:1.0.2.RELEASE")
-    compile 'org.jadira.usertype:usertype.extended:5.0.0.GA'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.2'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.2'
+    compile("org.jadira.usertype:usertype.extended:3.2.0.GA")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.0")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
-    compile 'org.postgresql:postgresql:9.4.1208'
-    compile 'org.hibernate:hibernate-validator'
-    compile("org.hibernate:hibernate-envers:5.2.3.Final")
-    compile("joda-time:joda-time:2.9.1")
+    compile("postgresql:postgresql:9.1-901-1.jdbc4")
+    compile 'org.springframework.data:spring-data-envers:1.0.5.RELEASE'
+    compile("org.hibernate:hibernate-validator")
+    compile("org.hibernate:hibernate-envers")
+    compile("joda-time:joda-time")
     compile("javax.json:javax.json-api:1.0")
     compile("org.glassfish:javax.json:1.0.4")
-    compile 'org.springframework.data:spring-data-envers:1.0.4.RELEASE'
 
     testCompile(
             "junit:junit",
@@ -84,8 +81,8 @@ dependencies {
             "org.springframework.restdocs:spring-restdocs-mockmvc:1.0.0.RELEASE"
     )
 }
-
 if(!org.gradle.internal.os.OperatingSystem.current().windows) {
+
 
     docker {
         if (org.gradle.internal.os.OperatingSystem.current().windows) {
@@ -98,7 +95,7 @@ if(!org.gradle.internal.os.OperatingSystem.current().windows) {
     task createDBContainer(type: DockerCreateContainer) {
         imageId = 'postgres'
         containerName = "qddt_local"
-        portBindings = ['127.0.0.16:5400:5432']
+        portBindings = ['5400:5432']
         env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
     }
 
@@ -144,13 +141,13 @@ if(!org.gradle.internal.os.OperatingSystem.current().windows) {
         finalizedBy(destroyContainer)
         destroyContainer.mustRunAfter(test)
     }
+
     asciidoctor {
         attributes 'snippets': snippetsDir
         inputs.dir snippetsDir
         dependsOn test
     }
 }
-
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
 }

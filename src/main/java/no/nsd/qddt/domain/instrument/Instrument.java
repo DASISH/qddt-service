@@ -37,10 +37,31 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     @OrderColumn(name="controlConstruct_idx")
     private List<ControlConstruct> controlConstructs =new ArrayList<>();
 
+    private String description;
+
+    private String instrumentKind;
+
+
     @Transient
     private Set<Comment> comments = new HashSet<>();
 
     public Instrument() {
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getInstrumentKind() {
+        return instrumentKind;
+    }
+
+    public void setInstrumentKind(String instrumentKind) {
+        this.instrumentKind = instrumentKind;
     }
 
     public Set<Study> getStudies() {
@@ -83,21 +104,24 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
         Instrument that = (Instrument) o;
 
-        return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        return instrumentKind != null ? instrumentKind.equals(that.instrumentKind) : that.instrumentKind == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (instrumentKind != null ? instrumentKind.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Instrument{" +
-//                "study=" + study +
+                "description='" + description + '\'' +
+                ", instrumentKind='" + instrumentKind + '\'' +
                 "} " + super.toString();
     }
 }

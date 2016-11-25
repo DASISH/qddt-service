@@ -13,16 +13,14 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
-import no.nsd.qddt.domain.refclasses.QuestionRef;
+import no.nsd.qddt.domain.refclasses.QuestionItemRef;
 import no.nsd.qddt.utils.builders.StringTool;
-import org.eclipse.jetty.util.StringUtil;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -68,11 +66,11 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id"},name = "UNQ_RESPONSEDOMAIN_NAME")})
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
-/*
-    Can't have two responsedomain with the same template and the same name
- */
-    @JsonBackReference(value = "QuestionItemRef")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain", cascade = CascadeType.ALL)
+    /**
+    *   Can't have two responsedomain with the same template and the same name
+    */
+    @JsonBackReference(value = "questionRef")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomainReferenceOnly", cascade = CascadeType.ALL)
     private Set<QuestionItem> questionItems = new HashSet<>();
 
 
@@ -80,6 +78,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @OrderColumn(name="code_idx")
     @OrderBy("code_idx ASC")
+    @AuditMappedBy(mappedBy = "responseDomain", positionMappedBy = "code_idx")
     @JsonIgnore
     private List<Code> codes = new ArrayList<>();
 //    private Map<Integer,Code> codes = new TreeMap<>();
@@ -87,8 +86,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Column(name = "description", length = 2000, nullable = false)
     private String description;
 
-    /*
-        a link to a category root/group (template)
+    /**
+     *   a link to a category root/group (template)
      */
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="category_id")
@@ -96,10 +95,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     private String displayLayout;
 
-
     @Transient
     private Set<Comment> comments = new HashSet<>();
-
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
@@ -110,12 +107,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Embedded
     private ResponseCardinality responseCardinality;
 
-
     @Transient
     @JsonSerialize
     @JsonDeserialize
-    private Set<QuestionRef> questionRefs = new HashSet<>();
-//    private Map<UUID,QuestionRef> questionRefs = new HashMap<>();
+    private Set<QuestionItemRef> questionItemRefs = new HashSet<>();
 
 
     public ResponseDomain(){
@@ -127,8 +122,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     public String getName() {
         return StringTool.CapString(super.getName());
     }
-
-
 
     public String getDescription() {
         if (StringTool.IsNullOrEmpty(description))
@@ -158,6 +151,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.responseCardinality = responseCardinality;
     }
 
+
     public Set<QuestionItem> getQuestionItems() {
         return questionItems;
     }
@@ -178,9 +172,9 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.displayLayout = displayLayout;
     }
 
-    /*
-        this is useful for populating codes before saving to DB
-         */
+    /**
+    *    this is useful for populating codes before saving to DB
+    */
     public void populateCodes() {
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
@@ -207,9 +201,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @Transient
     private int _Index;    // /used to keep track of current item in the recursive call populateCatCodes
-    /*
-     this function is useful for populating managedRepresentation after loading from DB
-      */
+
+    /**
+     * this function is useful for populating managedRepresentation after loading from DB
+     */
     private void populateCatCodes(Category current){
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
             try {
@@ -224,7 +219,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 //        current.getChildren().forEach;
         current.getChildren().forEach(this::populateCatCodes);
     }
-
 
     public Category getManagedRepresentation() {
         _Index = 0;
@@ -242,9 +236,9 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
             setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(f -> f.getName()).collect(Collectors.joining(" - "))));
         }
         managedRepresentation.setName(getName());
-            managedRepresentation.setDescription(String.format("[%s] group - %s",
-                    StringTool.CapString(managedRepresentation.getCategoryType().name().toLowerCase()),
-                    getDescription()));
+        managedRepresentation.setDescription(String.format("[%s] group - %s",
+                StringTool.CapString(managedRepresentation.getCategoryType().name().toLowerCase()),
+                getDescription()));
         managedRepresentation.setChangeComment("");
         managedRepresentation.setChangeKind(getChangeKind());
         managedRepresentation.setVersion(getVersion());
@@ -252,7 +246,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     public List<Code> getCodes() {
         System.out.println("getCodes");
-        System.out.println(codes.toString());
+
         return codes;
     }
 
@@ -276,17 +270,15 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
-    public Set<QuestionRef> getQuestionRefs(){
+    public Set<QuestionItemRef> getQuestionRefs(){
         try {
 //        return questionItems.stream().collect(Collectors.toMap(p-> p.getId(), c-> new QuestionRef(c)));
-            return questionItems.stream().map(qi -> new QuestionRef(qi)).collect(Collectors.toSet());
+            return questionItems.stream().map(qi -> new QuestionItemRef(qi)).collect(Collectors.toSet());
         } catch (Exception ex){
             System.out.println("getQuestionRefs->" + ex.getMessage());
             return  new HashSet<>();
         }
-
     }
-
 
     @Override
     public boolean equals(Object o) {

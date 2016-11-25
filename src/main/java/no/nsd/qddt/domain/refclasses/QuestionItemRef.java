@@ -7,22 +7,24 @@ import java.util.*;
 /**
  * @author Stig Norland
  */
-public class QuestionRef extends Refs {
+public class QuestionItemRef extends Refs {
 
 //    private Map<UUID,ConceptRef> conceptRefs;
 
     private Set<ConceptRef> conceptRefs;
 
-    public QuestionRef(){
+    public QuestionItemRef(){
         super();
         conceptRefs = new HashSet<>(0);
     }
 
-    public QuestionRef(QuestionItem entity) {
+    public QuestionItemRef(QuestionItem entity) {
         super(entity);
         conceptRefs = new HashSet<>(entity.getConceptRefs());
 //        conceptRefs.putAll(entity.getConceptRefs());
     }
+
+
 
     public Set<ConceptRef> getConceptRefs() {
         return conceptRefs;
@@ -43,10 +45,10 @@ public class QuestionRef extends Refs {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof QuestionRef)) return false;
+        if (!(o instanceof QuestionItemRef)) return false;
         if (!super.equals(o)) return false;
 
-        QuestionRef that = (QuestionRef) o;
+        QuestionItemRef that = (QuestionItemRef) o;
 
         return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
 

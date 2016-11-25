@@ -7,7 +7,14 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -101,5 +108,17 @@ public class ControlConstructController {
         return controlConstructService.findTop25ByQuestionItemQuestion(questionText);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<ControlConstruct>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                              @RequestParam(value = "questiontext",defaultValue = "%") String question,
+                                                              Pageable pageable, PagedResourcesAssembler assembler) {
+        // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
+
+        Page<ControlConstruct> questionitems =
+                controlConstructService.findByNameLikeOrQuestionLike(name, question, pageable);
+
+        return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
+    }
 
 }

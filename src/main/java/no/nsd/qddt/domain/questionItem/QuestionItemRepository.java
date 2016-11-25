@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.questionItem;
 
 import no.nsd.qddt.domain.BaseRepository;
-import no.nsd.qddt.domain.category.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 /**

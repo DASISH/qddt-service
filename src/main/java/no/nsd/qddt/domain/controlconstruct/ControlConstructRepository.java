@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.BaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +32,5 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
 
     List<ControlConstruct> findByquestionItemUUIDIn(List<UUID> questionItemIds);
 
+    Page<ControlConstruct> findByNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(String name, String question, Pageable pageable);
 }

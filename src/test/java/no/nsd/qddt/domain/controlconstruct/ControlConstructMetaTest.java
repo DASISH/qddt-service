@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -86,7 +87,7 @@ public class ControlConstructMetaTest {
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<ControlConstruct> iqs = controlConstructService.findByQuestionItemId(q1.getId());
+        List<ControlConstruct> iqs = controlConstructService.findByQuestionItemUUIDs(Arrays.asList(q1.getId()));
         assertEquals("Expected two elements!", iqs.size(), 2);
     }
 }

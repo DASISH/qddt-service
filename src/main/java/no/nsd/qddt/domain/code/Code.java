@@ -22,8 +22,12 @@ public class Code  extends AbstractEntity {
     @JoinColumn(name = "responsedomain_id")
     private ResponseDomain responseDomain;
 
+    @Column(name ="code_idx", insertable = false,updatable = false)
+    private Integer code_idx;
+
     @Column(name = "code_value")
     private String codeValue;
+
 
     public Code() {
         codeValue = "";

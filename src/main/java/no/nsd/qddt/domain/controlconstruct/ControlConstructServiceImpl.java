@@ -1,12 +1,15 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstructionService;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,18 +26,18 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     private ControlConstructRepository controlConstructRepository;
     private ControlConstructInstructionService cciService;
-    private QuestionItemAuditService qAuditService;
+    private QuestionItemAuditService qiAuditService;
     private QuestionItemService  qiService;
 
 
     @Autowired
-    public ControlConstructServiceImpl(ControlConstructRepository controlConstructRepository,
+    public ControlConstructServiceImpl(ControlConstructRepository ccRepository,
                                        ControlConstructInstructionService cciService,
                                        QuestionItemAuditService questionAuditService,
                                        QuestionItemService questionItemService) {
-        this.controlConstructRepository = controlConstructRepository;
+        this.controlConstructRepository = ccRepository;
         this.cciService = cciService;
-        this.qAuditService = questionAuditService;
+        this.qiAuditService = questionAuditService;
         this.qiService = questionItemService;
     }
 
@@ -55,24 +58,17 @@ class ControlConstructServiceImpl implements ControlConstructService {
         ControlConstruct instance = controlConstructRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(id, ControlConstruct.class));
 
-        return postGet(instance);
+        return setInstructionAndRevisionedQI(instance);
 
     }
 
     @Override
     @Transactional()
     public ControlConstruct save(ControlConstruct instance) {
-        instance.populateControlConstructs();
+        instance.populateControlConstructInstructions();
         cciService.save(instance.getControlConstructInstructions());
-        instance = controlConstructRepository.save(instance);
-        // before returning fetch correct version of QI...
-        if (instance.getQuestionItemUUID() != null) {
-            if (instance.getRevisionNumber() == null || instance.getRevisionNumber() <=0)   // presume current version is selected
-                instance.setRevisionNumber(qAuditService.findLastChange(instance.getQuestionItemUUID()).getRevisionNumber());
-
-            instance.setQuestionItem(qAuditService.findRevision(instance.getQuestionItemUUID(), instance.getRevisionNumber()).getEntity());
-        }
-        return instance;
+        return setInstructionAndRevisionedQI(
+                controlConstructRepository.save(instance));
     }
 
     @Override
@@ -98,12 +94,12 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional(readOnly = true)
     public List<ControlConstruct> findByInstrumentId(UUID instrumentId) {
-        return postGet(controlConstructRepository.findByInstrumentId(instrumentId));
+        return setInstructionAndRevisionedQI(controlConstructRepository.findByInstrumentId(instrumentId));
     }
 
     @Override
     public List<ControlConstruct> findByQuestionItemUUIDs(List<UUID> questionItemIds) {
-        return postGet(controlConstructRepository.findByquestionItemUUIDIn(questionItemIds));
+        return setInstructionAndRevisionedQI(controlConstructRepository.findByquestionItemUUIDIn(questionItemIds));
     }
 
     @Override
@@ -116,20 +112,47 @@ class ControlConstructServiceImpl implements ControlConstructService {
         return findByQuestionItemUUIDs(uuidList);
     }
 
+    @Override
+    public Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable) {
+        name = name.replace("*","%");
+        question = question.replace("*","%");
+
+        return controlConstructRepository.findByNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,pageable)
+                .map(qi-> setInstructionAndRevisionedQI(qi));
+    }
+
 
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
      */
-    private  ControlConstruct postGet(ControlConstruct instance){
-        // instructions has to unpacked into pre and post instructions
-        instance.populateInstructions();
-        // before returning fetch correct version of QI...
-        instance.setQuestionItem(qAuditService.findRevision(instance.getQuestionItemUUID(),instance.getRevisionNumber()).getEntity());
+    private  ControlConstruct setInstructionAndRevisionedQI(ControlConstruct instance){
+        try{
+            // instructions has to unpacked into pre and post instructions
+            instance.populateInstructions();
+
+            // before returning fetch correct version of QI...
+            if(instance.getQuestionItemUUID() != null) {
+                if (instance.getRevisionNumber() == null || instance.getRevisionNumber() <= 0) {
+                    Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
+                    instance.setRevisionNumber(rev.getRevisionNumber());
+                    instance.setQuestionItem(rev.getEntity());
+                } else {
+                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getRevisionNumber()).getEntity();
+                    instance.setQuestionItem(qi);
+                }
+            }
+            else
+                instance.setRevisionNumber(0);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+        }
+
         return instance;
     }
 
-    private  List<ControlConstruct> postGet(List<ControlConstruct>instances) {
-        return instances.stream().map(p->postGet(p)).collect(Collectors.toList());
+    private  List<ControlConstruct> setInstructionAndRevisionedQI(List<ControlConstruct>instances) {
+        return instances.stream().map(p-> setInstructionAndRevisionedQI(p)).collect(Collectors.toList());
     }
 }

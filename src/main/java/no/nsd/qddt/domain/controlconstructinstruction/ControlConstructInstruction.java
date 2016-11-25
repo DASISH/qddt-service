@@ -14,7 +14,6 @@ import javax.persistence.*;
 
 @Audited
 @Entity
-//@IdClass(CCIKey.class)
 @Table(name = "CONTROL_CONSTRUCT_INSTRUCTION")
 public class ControlConstructInstruction extends AbstractEntity {
 

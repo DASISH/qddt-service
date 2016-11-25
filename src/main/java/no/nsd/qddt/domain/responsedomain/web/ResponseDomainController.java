@@ -1,9 +1,5 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.CategoryService;
-import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.code.CodeService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
@@ -30,14 +26,11 @@ import java.util.UUID;
 public class ResponseDomainController {
 
     private ResponseDomainService responseDomainService;
-    private CategoryService categoryService;
-    private CodeService codeService;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService responseDomainService, CategoryService categoryService, CodeService codeService){
+    public ResponseDomainController(ResponseDomainService responseDomainService){
         this.responseDomainService = responseDomainService;
-        this.categoryService = categoryService;
-        this.codeService = codeService;
+
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -62,24 +55,7 @@ public class ResponseDomainController {
     @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseDomain createMixed(@RequestParam("responseDomaindId") UUID rdId,@RequestParam("missingId") UUID missingId) {
 
-        ResponseDomain old = responseDomainService.findOne(rdId);
-        Category missing = categoryService.findOne(missingId);
-        Category mixedCa = new Category();
-
-        mixedCa.setName(old.getManagedRepresentation().getName() +"-" + missing.getName());
-        mixedCa.setCategoryType(CategoryType.MIXED);
-        mixedCa.addChild(old.getManagedRepresentation());
-        mixedCa.addChild(missing);
-
-        ResponseDomain mixedRd = new ResponseDomain();
-        mixedRd.setManagedRepresentation(mixedCa);
-        mixedRd.setName(old.getName() + "-" + missing.getName());
-        mixedRd.setDescription(old.getDescription() + System.lineSeparator() + missing.getDescription());
-        mixedRd.setResponseKind(ResponseKind.MIXED);
-        mixedRd.setDisplayLayout(old.getDisplayLayout());
-        mixedRd.setCodes(old.getCodes());
-
-        return responseDomainService.save(mixedRd);
+        return responseDomainService.createMixed(rdId,missingId);
     }
 
 
@@ -91,7 +67,7 @@ public class ResponseDomainController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "ResponseKind" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ResponseDomain>> getBy(@RequestParam("ResponseKind") String respons,
+    public HttpEntity<PagedResources<ResponseDomain>> getBy(@RequestParam("ResponseKind") ResponseKind response,
                                                             @RequestParam(value = "Description",defaultValue = "%") String description,
                                                             @RequestParam(value = "Question",required = false) String question,
                                                             @RequestParam(value = "Name",defaultValue = "%") String name,
@@ -99,31 +75,20 @@ public class ResponseDomainController {
 
         Page<ResponseDomain> responseDomains = null;
         try {
-            name = name.replace("*", "%");
-            description = description.replace("*", "%");
-
             if (question == null || question.isEmpty()) {
-                responseDomains = responseDomainService.findBy(ResponseKind.valueOf(respons), Likeify(name), Likeify(description), pageable);
+                responseDomains = responseDomainService.findBy(response, name, description, pageable);
             } else {
-                responseDomains = responseDomainService.findByQuestion(ResponseKind.valueOf(respons), Likeify(name), Likeify(question), pageable);
+                responseDomains = responseDomainService.findByQuestion(response, name, question, pageable);
             }
-            return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
 
         } catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
 
-        return new ResponseEntity<>(assembler.toResource(null), HttpStatus.OK);
+        return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
     }
 
-    private String Likeify(String value){
-        if (!value.startsWith("%"))
-            value = "%"+value;
-        if (!value.endsWith("%"))
-            value = value + "%";
-        return value;
-    }
 
 
 }

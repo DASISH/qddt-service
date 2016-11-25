@@ -1,15 +1,19 @@
 package no.nsd.qddt.domain.questionItem;
 
-import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -19,10 +23,12 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
 
     private QuestionItemRepository questionItemRepository;
+    private ResponseDomainAuditService rdAuditService;
 
     @Autowired
-    public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository) {
+    public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,ResponseDomainAuditService responseDomainAuditService) {
         this.questionItemRepository = questionItemRepository;
+        this.rdAuditService = responseDomainAuditService;
     }
 
     @Override
@@ -37,20 +43,29 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public QuestionItem findOne(UUID uuid) {
-        return questionItemRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, QuestionItem.class)
+        return  setRevisionedResponsedomain(questionItemRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, QuestionItem.class))
+
         );
     }
 
     @Override
     @Transactional(readOnly = false)
     public QuestionItem save(QuestionItem instance) {
-        return questionItemRepository.save(instance);
+        try {
+            return setRevisionedResponsedomain(
+                    questionItemRepository.save(
+                            setDefaultRevision(instance)));
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 
     @Override
     public List<QuestionItem> save(List<QuestionItem> instances) {
-        return questionItemRepository.save(instances);
+        return instances.stream().map(this::save).collect(Collectors.toList());
     }
 
     @Override
@@ -65,23 +80,78 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public Page<QuestionItem> getHierarchy(Pageable pageable) {
-        return  questionItemRepository.findAll(pageable);
+        return  questionItemRepository.findAll(pageable)
+                .map(qi-> setRevisionedResponsedomain(qi));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<QuestionItem> findAllPageable(Pageable pageable){
-        return questionItemRepository.findAll(pageable);
+        try {
+            return questionItemRepository.findAll(pageable)
+                    .map(qi -> setRevisionedResponsedomain(qi));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return  new PageImpl<QuestionItem>(null);
+
+        }
     }
 
     @Override
     public Page<QuestionItem> findByNameLikeAndQuestionLike(String name, String question, Pageable pageable) {
-        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,pageable);
+        question = question.replace("*","%");
+        name = name.replace("*","%");
+        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,pageable)
+                .map(qi-> setRevisionedResponsedomain(qi));
     }
 
     @Override
     public Page<QuestionItem> findByNameLikeOrQuestionLike(String searchString, Pageable pageable) {
-        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,pageable);
+        searchString = searchString.replace("*","%");
+        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,pageable)
+                .map(qi-> setRevisionedResponsedomain(qi));
+    }
+
+    /*
+    post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
+    thus we need to populate some elements ourselves.
+    */
+    private QuestionItem setRevisionedResponsedomain(QuestionItem instance){
+        try{
+            if(instance.getResponseDomainUUID() != null) {
+                if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
+                    Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
+                    instance.setResponseDomainRevision(rev.getRevisionNumber());
+                    instance.setResponseDomain(rev.getEntity());
+                } else {
+                    ResponseDomain rd  =rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
+                    instance.setResponseDomain(rd);
+                }
+            }
+            else
+                instance.setResponseDomainRevision(0);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+        }
+        return instance;
+    }
+
+    protected  List<QuestionItem> setRevisionedResponsedomain(List<QuestionItem>instances) {
+        return instances.stream().map(p-> setRevisionedResponsedomain(p)).collect(Collectors.toList());
+    }
+
+    protected QuestionItem setDefaultRevision(QuestionItem instance){
+        if (instance.getResponseDomain() != null) {
+            if (instance.getResponseDomainUUID() == null) {
+                System.out.println("setDefaultRevision UUID is null");
+                instance.setResponseDomainUUID(instance.getResponseDomain().getId());
+            }
+
+            if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0)   // presume current version is selected
+                instance.setResponseDomainRevision(rdAuditService.findLastChange(instance.getResponseDomainUUID()).getRevisionNumber());
+        }
+        return instance;
     }
 
 }

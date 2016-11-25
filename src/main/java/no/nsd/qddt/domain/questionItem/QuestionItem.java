@@ -1,6 +1,9 @@
 package no.nsd.qddt.domain.questionItem;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -8,6 +11,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -31,12 +35,39 @@ import java.util.stream.Collectors;
 public class QuestionItem extends AbstractEntityAudit  {
 
 
+    /**
+     * This field is to keep a reference from RD to QI
+     * in order to backtrace usage with the help of Hibernate
+     * but due to revision override cannot be used otherwise
+     */
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "responsedomain_id")
+    @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
+    private ResponseDomain responseDomainReferenceOnly;
+
+
+    /**
+     * This field will be populated with the correct version of a RD,
+     * but should never be persisted.
+     */
+    @JsonSerialize
+    @JsonDeserialize
+    @Transient
     private ResponseDomain responseDomain;
 
+
+    /**
+     * This field must be available "raw" in order to set and query
+     * responsedomain by ID
+     */
+    @JsonIgnore
+    @Type(type="pg-uuid")
+    @Column(name="responsedomain_id")
+    private UUID responseDomainUUID;
+
+
     @Column(name = "responsedomain_revision")
-    private long responseDomainRevision;
+    private Integer responseDomainRevision;
 
     @ManyToOne(cascade =  {CascadeType.MERGE,CascadeType.DETACH},optional = false)
     @JoinColumn(name = "question_id")
@@ -51,11 +82,13 @@ public class QuestionItem extends AbstractEntityAudit  {
     @JsonSerialize
     @JsonDeserialize
     private Set<ConceptRef> conceptRefs = new HashSet<>();
-//    private Map<UUID,ConceptRef> conceptRefs = new HashMap<>();
+
 
     public QuestionItem() {
 
     }
+
+    // Start pre remove ----------------------------------------------
 
     @PreRemove
     private void removeReferencesFromQi(){
@@ -63,7 +96,6 @@ public class QuestionItem extends AbstractEntityAudit  {
         getConcepts().clear();
         setResponseDomain(null);
     }
-
 
     public void updateStatusQI(UUID conceptId) {
         concepts.forEach(C->{
@@ -78,20 +110,39 @@ public class QuestionItem extends AbstractEntityAudit  {
         this.setChangeComment("Concept reference removed");
     }
 
+    // End pre remove ----------------------------------------------
+
+    public ResponseDomain getResponseDomainReferenceOnly() {
+        return responseDomainReferenceOnly;
+    }
+
+    public void setResponseDomainReferenceOnly(ResponseDomain responseDomainReferenceOnly) {
+        this.responseDomainReferenceOnly = responseDomainReferenceOnly;
+    }
+
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }
 
+    @JsonAnySetter
     public void setResponseDomain(ResponseDomain responseDomain) {
         this.responseDomain = responseDomain;
     }
 
-    public long getResponseDomainRevision() {
+    public Integer getResponseDomainRevision() {
         return responseDomainRevision;
     }
 
-    public void setResponseDomainRevision(long responseDomainRevision) {
+    public void setResponseDomainRevision(Integer responseDomainRevision) {
         this.responseDomainRevision = responseDomainRevision;
+    }
+
+    public UUID getResponseDomainUUID() {
+        return responseDomainUUID;
+    }
+
+    public void setResponseDomainUUID(UUID responseDomainUUID) {
+        this.responseDomainUUID = responseDomainUUID;
     }
 
     public Question getQuestion() {
@@ -146,6 +197,8 @@ public class QuestionItem extends AbstractEntityAudit  {
         return "QuestionItem{" +
                 ", question='" + question.getQuestion() + '\'' +
                 ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
+                ", responseUUID=" + responseDomainUUID + '\'' +
+                ", responseRev" + responseDomainRevision  + '\'' +
                 ", name='" + super.getName() + '\'' +
                 ", id ='" + super.getId() + '\'' +
                 "} " + System.lineSeparator();

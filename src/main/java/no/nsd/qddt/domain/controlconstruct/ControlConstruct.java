@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -32,6 +33,43 @@ import java.util.stream.Collectors;
 @Table(name = "CONTROL_CONSTRUCT")
 public class ControlConstruct extends AbstractEntityAudit {
 
+    /**
+     * This field is to keep a reference from QI to RD
+     * in order to backtrace usage with the help of Hibernate
+     * but due to revision override cannot be used otherwise
+     */
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "questionitem_id",insertable = false,updatable = false)
+    private QuestionItem questionItemReferenceOnly;
+
+
+    /**
+     * This field will be populated with the correct version of a QI,
+     * but should never be persisted.
+     */
+    @JsonSerialize
+    @JsonDeserialize
+    @Transient
+    private QuestionItem questionItem;
+
+
+    /**
+     * This field must be available "raw" in order to set and query
+     * questionItem by ID
+     */
+    @JsonIgnore
+    @Type(type="pg-uuid")
+    @Column(name="questionitem_id")
+    private UUID questionItemUUID;
+
+
+    @Column(name = "questionitem_revision")
+    private Integer revisionNumber;
+
+    @Column(name = "questionitem_revision", insertable = false,updatable = false)
+    private Integer questionItemRevision;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH}, orphanRemoval = true)
     @OrderColumn(name = "children_index")
     @JoinColumn(name = "parent_id")
@@ -50,23 +88,6 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Column(length = 3000)
     private String description;
-
-    /*
-    This field should never be saved to db, QuestionItem needs to be handled manually. in the servicelayer.
-     */
-//    @ManyToOne()
-//    @JoinColumn(name = "questionitem_id",updatable = false)
-    @JsonSerialize
-    @JsonDeserialize
-    @Transient
-    private QuestionItem questionItem;
-
-    @Column(name="questionitem_UUID")
-    @Type(type="pg-uuid")
-    private UUID questionItemUUID;
-
-    @Column(name = "questionitem_revision",nullable = false)
-    private Integer revisionNumber;
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
@@ -102,6 +123,23 @@ public class ControlConstruct extends AbstractEntityAudit {
     public ControlConstruct() {
     }
 
+    public QuestionItem getQuestionItem() {
+        return questionItem;
+    }
+
+    @JsonAnySetter
+    public void setQuestionItem(QuestionItem question) {
+        this.questionItem = question;
+    }
+
+    public Integer getQuestionItemRevision() {
+        return questionItemRevision;
+    }
+
+    public void setQuestionItemRevision(Integer questionItemRevision) {
+        this.questionItemRevision = questionItemRevision;
+    }
+
     public Integer getRevisionNumber() {
         return revisionNumber;
     }
@@ -110,14 +148,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.revisionNumber = revisionNumber;
     }
 
-    public QuestionItem getQuestionItem() {
-        return questionItem;
-    }
-
-    public void setQuestionItem(QuestionItem question) {
-        this.questionItem = question;
-        setQuestionItemUUID(question.getId());
-    }
 
     public UUID getQuestionItemUUID() {
         return questionItemUUID;
@@ -134,7 +164,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
-
 
     public void addOtherMaterials(OtherMaterial otherMaterial) {
         getOtherMaterials().add(otherMaterial);
@@ -184,8 +213,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     /*
     fetches pre and post instructions and add them to ControlConstructInstruction
      */
-    public void populateControlConstructs() {
-        System.out.println("populateControlConstructs");
+    public void populateControlConstructInstructions() {
+        System.out.println("populateControlConstructInstructions");
         if (controlConstructInstructions == null)
             controlConstructInstructions = new ArrayList<>();
         else
@@ -227,7 +256,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         }
     }
 
-
     /*
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
@@ -245,7 +273,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
 
-
     public List<Instruction> getPreInstructions() {
         return preInstructions;
     }
@@ -253,7 +280,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public void setPreInstructions(List<Instruction> preInstructions) {
         this.preInstructions = preInstructions;
     }
-
 
     public List<Instruction> getPostInstructions() {
          return postInstructions;
@@ -315,7 +341,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
         return result;
     }
-
 
     @Override
     public String toString() {

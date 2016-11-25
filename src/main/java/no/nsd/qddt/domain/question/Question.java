@@ -50,8 +50,8 @@ public class Question extends AbstractEntity {
     @Column(name = "question", length = 1500)
     private String question;
 
-    @Column(name = "concept_reference", nullable = true)
-    private UUID conceptReference;
+//    @Column(name = "concept_reference", nullable = true)
+//    private UUID conceptReference;
 
     public Question() {
 
@@ -97,13 +97,13 @@ public class Question extends AbstractEntity {
         this.question = question;
     }
 
-    public UUID getConceptReference() {
-        return conceptReference;
-    }
-
-    public void setConceptReference(UUID conceptReference) {
-        this.conceptReference = conceptReference;
-    }
+//    public UUID getConceptReference() {
+//        return conceptReference;
+//    }
+//
+//    public void setConceptReference(UUID conceptReference) {
+//        this.conceptReference = conceptReference;
+//    }
 
     /**
      * Add a new comment to the set.

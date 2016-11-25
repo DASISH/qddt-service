@@ -7,6 +7,8 @@ import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.utils.builders.StringTool;
+import org.hibernate.annotations.Type;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -91,6 +93,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
      * concept reference to a versioned concept within the system.
      */
     @Column(name = "concept_reference")
+    @Type(type="pg-uuid")
     private UUID conceptReference;
 
     @Column(name = "Hierarchy_level",nullable = false)
@@ -113,6 +116,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         code = new Code();
         hierarchyLevel = HierarchyLevel.ENTITY;
         setCategoryType(CategoryType.CATEGORY);
+        setInputLimit("0","1");
     }
 
     /***
