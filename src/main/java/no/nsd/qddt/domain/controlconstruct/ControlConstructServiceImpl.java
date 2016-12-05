@@ -98,8 +98,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    public List<ControlConstruct> findByQuestionItemUUIDs(List<UUID> questionItemIds) {
-        return setInstructionAndRevisionedQI(controlConstructRepository.findByquestionItemUUIDIn(questionItemIds));
+    public List<ControlConstruct> findByQuestionItems(List<UUID> questionItemIds) {
+        assert (questionItemIds.size() > 0);
+        questionItemIds.forEach(System.out::println);
+        return setInstructionAndRevisionedQI(controlConstructRepository.findByquestionItemUUID(questionItemIds.get(0)));
     }
 
     @Override
@@ -109,7 +111,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         List<UUID> uuidList = qiService.findByNameLikeAndQuestionLike(question,null,new PageRequest(0,25)).getContent()
                             .stream().map(f->f.getId()).collect(Collectors.toList());
 
-        return findByQuestionItemUUIDs(uuidList);
+        return findByQuestionItems(uuidList);
     }
 
     @Override
@@ -117,7 +119,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         name = name.replace("*","%");
         question = question.replace("*","%");
 
-        return controlConstructRepository.findByNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,pageable)
+        return controlConstructRepository.findByInstrumentIsNullAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,pageable)
                 .map(qi-> setInstructionAndRevisionedQI(qi));
     }
 
@@ -127,6 +129,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     thus we need to populate some elements ourselves.
      */
     private  ControlConstruct setInstructionAndRevisionedQI(ControlConstruct instance){
+        assert  (instance != null);
         try{
             // instructions has to unpacked into pre and post instructions
             instance.populateInstructions();
@@ -153,6 +156,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     private  List<ControlConstruct> setInstructionAndRevisionedQI(List<ControlConstruct>instances) {
+        System.out.println("setInstructionAndRevisionedQI " + instances.size());
         return instances.stream().map(p-> setInstructionAndRevisionedQI(p)).collect(Collectors.toList());
     }
 }

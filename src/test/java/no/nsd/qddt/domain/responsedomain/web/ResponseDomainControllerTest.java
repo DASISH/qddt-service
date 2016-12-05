@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryJson;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.code.Code;
@@ -139,8 +140,8 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
             current.setCode(new Code(rd,Integer.toString(i++)));
         }
 
-        for (Category cat :current.getChildren()) {
-            PopulateCatCodes(rd,cat);
+        for (Category cat : current.getChildren()) {
+            PopulateCatCodes(rd,(Category) cat);
         }
 
     }

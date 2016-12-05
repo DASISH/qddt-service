@@ -7,9 +7,9 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
  */
 
 
-public class TopicRef extends Refs{
+public class TopicRef extends BaseRef{
 
-    StudyRef studyRef;
+    StudyRef parent;
 
     public TopicRef(){
         super();
@@ -18,16 +18,13 @@ public class TopicRef extends Refs{
 
     public TopicRef(TopicGroup topicGroup) {
         super(topicGroup);
-        studyRef = new StudyRef(topicGroup.getStudy());
+        parent = new StudyRef(topicGroup.getStudy());
     }
 
     public StudyRef getStudyRef() {
-        return studyRef;
+        return parent;
     }
 
-    public void setStudyRef(StudyRef studyRef) {
-        this.studyRef = studyRef;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -37,21 +34,21 @@ public class TopicRef extends Refs{
 
         TopicRef topicRef = (TopicRef) o;
 
-        return studyRef != null ? studyRef.equals(topicRef.studyRef) : topicRef.studyRef == null;
+        return parent != null ? parent.equals(topicRef.parent) : topicRef.parent == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (studyRef != null ? studyRef.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "TopicRef{" +
-                "studyRef=" + studyRef +
+                "studyRef=" + parent +
                 "} " + super.toString();
     }
 }

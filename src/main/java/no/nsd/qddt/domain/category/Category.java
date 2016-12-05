@@ -233,7 +233,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     public List<Category> getChildren() {
-        return children;
+        return  children;
     }
 
     public void setChildren(List<Category> children) {

@@ -99,7 +99,13 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getBySecond(@PathVariable("uuid") UUID secondId) {
-        return controlConstructService.findByQuestionItemUUIDs(Arrays.asList(new UUID[]{secondId}));
+        try {
+            return controlConstructService.findByQuestionItems(Arrays.asList(new UUID[]{secondId}));
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+            return  new ArrayList<>();
+        }
     }
 
     @ResponseStatus(value = HttpStatus.OK)

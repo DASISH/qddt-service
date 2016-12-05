@@ -77,10 +77,12 @@ public class QuestionItemController {
                                                            @RequestParam(value = "question",defaultValue = "%") String question,
                                                        Pageable pageable, PagedResourcesAssembler assembler) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
-
-        Page<QuestionItem> questionitems =
-                questionItemService.findByNameLikeOrQuestionLike(question, pageable);
-
+        Page<QuestionItem> questionitems = null;
+        try {
+            questionitems = questionItemService.findByNameLikeOrQuestionLike(question, pageable);
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 

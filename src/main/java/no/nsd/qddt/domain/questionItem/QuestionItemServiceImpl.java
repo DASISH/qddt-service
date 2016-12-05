@@ -137,21 +137,26 @@ class QuestionItemServiceImpl implements QuestionItemService {
         return instance;
     }
 
-    protected  List<QuestionItem> setRevisionedResponsedomain(List<QuestionItem>instances) {
+    public List<QuestionItem> setRevisionedResponsedomain(List<QuestionItem>instances) {
         return instances.stream().map(p-> setRevisionedResponsedomain(p)).collect(Collectors.toList());
     }
 
     protected QuestionItem setDefaultRevision(QuestionItem instance){
         if (instance.getResponseDomain() != null) {
             if (instance.getResponseDomainUUID() == null) {
-                System.out.println("setDefaultRevision UUID is null");
                 instance.setResponseDomainUUID(instance.getResponseDomain().getId());
             }
-
-            if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0)   // presume current version is selected
-                instance.setResponseDomainRevision(rdAuditService.findLastChange(instance.getResponseDomainUUID()).getRevisionNumber());
+            if (instance.getResponseDomainRevision() <= 0) {
+                try {
+                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
+                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
+                } catch (Exception ex) {
+                    System.out.println("Set default RevisionNumber failed");
+                    System.out.println(ex.getMessage());
+                }
+            }
         }
-        return instance;
+         return instance;
     }
 
 }

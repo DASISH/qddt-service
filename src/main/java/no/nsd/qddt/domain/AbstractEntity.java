@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OptimisticLock;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -32,12 +33,13 @@ public abstract class AbstractEntity {
             @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
     private UUID id;
 
-
+//    @Version
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated")
     private LocalDateTime modified;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -58,6 +60,7 @@ public abstract class AbstractEntity {
     public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
+
 
     public User getModifiedBy() {
         return modifiedBy;

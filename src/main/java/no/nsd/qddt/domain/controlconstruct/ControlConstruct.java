@@ -154,7 +154,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         return questionItem;
     }
 
-    @JsonAnySetter
     public void setQuestionItem(QuestionItem question) {
         this.questionItem = question;
     }
@@ -174,7 +173,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public void setRevisionNumber(Integer revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
-
 
     public UUID getQuestionItemUUID() {
         return questionItemUUID;

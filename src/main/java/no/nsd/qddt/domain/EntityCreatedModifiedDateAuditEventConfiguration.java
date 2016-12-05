@@ -82,6 +82,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
 
             if (entity instanceof AbstractEntityAudit) {
                 Version ver = ((AbstractEntityAudit) entity).getVersion();
+//                System.out.println("Update-> " + ver + " " + ((AbstractEntityAudit) entity).getName());
                 AbstractEntityAudit.ChangeKind change = ((AbstractEntityAudit) entity).getChangeKind();
                 if (entity.getId() == null && ((AbstractEntityAudit) entity).getBasedOnObject() != null)
                     change = AbstractEntityAudit.ChangeKind.BASED_ON;

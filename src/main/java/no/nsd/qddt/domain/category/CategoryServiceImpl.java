@@ -90,7 +90,7 @@ class CategoryServiceImpl implements CategoryService {
             for (Category cat:instance.getChildren()) {
                 System.out.println(cat.getName());
 //                instance.getChildren().
-                  tmplist.add(save(cat));
+                  tmplist.add(save((Category)cat));
             }
             instance.getChildren().clear();
             instance.getChildren().addAll(tmplist);

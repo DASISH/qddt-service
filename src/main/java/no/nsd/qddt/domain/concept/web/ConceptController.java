@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,9 +76,7 @@ public class ConceptController {
     public Concept removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         try{
             Concept concept  = conceptService.findOne(conceptId);
-            QuestionItem questionItem =  questionItemService.findOne(questionItemId);
-            questionItem.updateStatusQI(concept);
-            concept.getQuestionItems().removeIf(qi ->qi.equals(questionItem));
+            concept.removeQuestionItem(questionItemId);
             return conceptService.save(concept);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -85,8 +84,6 @@ public class ConceptController {
             return null;
         }
     }
-
-
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -140,7 +137,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Concept> getbyQuestionItemId(@PathVariable("qiId") UUID id) {
-        return conceptService.findByQuestionItem(id);
+        return  new ArrayList<>(); // conceptService.findByQuestionItem(id);
     }
 
 

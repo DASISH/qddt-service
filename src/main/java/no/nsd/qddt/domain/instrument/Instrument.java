@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * You change your meaning by emphasizing different words in your sentence. ex: "I never said she stole my money" has 7 meanings.
@@ -32,10 +34,12 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "instruments")
     private Set<Study> studies = new HashSet<>();
 
-    //TODO ArrayList dosn't work with Enver
     @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
-    @OrderColumn(name="controlConstruct_idx")
-    private List<ControlConstruct> controlConstructs =new ArrayList<>();
+    @OrderColumn(name="instrument_idx")
+    @OrderBy("instrument_idx ASC")
+    // Ordered arrayList doesn't work with Enver FIX
+    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "instrument_idx")
+    private List<ControlConstruct> controlConstructs = new ArrayList<>();
 
     private String description;
 
@@ -79,6 +83,16 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public void setControlConstructs(List<ControlConstruct> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
+
+    @Transient
+    public Set<StudyRef> getStudyRefs() {
+        try{
+            return  studies.stream().map(s-> new StudyRef(s)).collect(Collectors.toSet());
+        } catch (Exception ex ) {
+            return null;
+        }
+    }
+
 
     @Override
     public Set<Comment> getComments() {

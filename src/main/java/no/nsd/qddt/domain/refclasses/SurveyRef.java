@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.refclasses;
 
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 
-public class SurveyRef extends Refs{
+public class SurveyRef extends BaseRef{
 
 
     public SurveyRef(){

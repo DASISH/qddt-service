@@ -29,7 +29,12 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
     @Override
     public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
         Revision<Integer, ResponseDomain> retval = responseDomainAuditRepository.findLastChangeRevision(uuid);
-        retval.getEntity().getManagedRepresentation();
+        if (retval == null)
+            System.out.println("findLastChange is empty");
+        else if (retval.getEntity() == null)
+            System.out.println("findLastChange entity is empty");
+        else
+            retval.getEntity().getManagedRepresentation();
         return retval;
     }
 

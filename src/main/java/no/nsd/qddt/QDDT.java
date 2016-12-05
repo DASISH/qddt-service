@@ -1,7 +1,7 @@
 package no.nsd.qddt;
 
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -38,8 +38,8 @@ public class QDDT extends SpringBootServletInitializer {
         messageConverter.setPrefixJson(false);
 
         // Add JSON support for JDK.1.8 time API.
-        messageConverter.getObjectMapper().registerModule(new JSR310Module());
-        messageConverter.getObjectMapper().registerModule(new Hibernate4Module());
+        messageConverter.getObjectMapper().registerModule(new JavaTimeModule());
+        messageConverter.getObjectMapper().registerModule(new Hibernate5Module());
 
         return messageConverter;
     }

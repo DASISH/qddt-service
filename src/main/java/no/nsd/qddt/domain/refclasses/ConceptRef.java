@@ -5,9 +5,9 @@ import no.nsd.qddt.domain.concept.Concept;
 /**
  * @author Stig Norland
  */
-public class ConceptRef extends Refs {
+public class ConceptRef extends BaseRef {
 
-    private TopicRef topicRef;
+    private TopicRef parent;
 
     public ConceptRef() {
         super();
@@ -15,16 +15,14 @@ public class ConceptRef extends Refs {
 
     public ConceptRef(Concept concept){
         super(concept);
-        topicRef = new TopicRef(concept.getTopicGroup());
+
+        parent = concept.getTopicRef();
     }
 
     public TopicRef getTopicRef() {
-        return topicRef;
+        return parent;
     }
 
-    public void setTopicRef(TopicRef topicRef) {
-        this.topicRef = topicRef;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -34,21 +32,21 @@ public class ConceptRef extends Refs {
 
         ConceptRef that = (ConceptRef) o;
 
-        return topicRef != null ? topicRef.equals(that.topicRef) : that.topicRef == null;
+        return parent != null ? parent.equals(that.parent) : that.parent == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (topicRef != null ? topicRef.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "ConceptRef{" +
-                "topicRef=" + topicRef +
+                "topicRef=" + parent +
                 "} " + super.toString();
     }
 }

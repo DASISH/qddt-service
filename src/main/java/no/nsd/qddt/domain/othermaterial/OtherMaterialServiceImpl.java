@@ -4,10 +4,15 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +33,12 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Value("${fileroot}")
     private String fileRoot;
     private OtherMaterialRepository otherMaterialRepository;
+    private ApplicationContext applicationContext;
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository){
+    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository,ApplicationContext applicationContext){
         this.otherMaterialRepository = otherMaterialRepository;
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -43,6 +50,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     public boolean exists(UUID uuid) {
         return otherMaterialRepository.exists(uuid);
     }
+
+
+//    public boolean exists(UUID owner, String filename) {
+//
+//        return otherMaterialRepository.findByOwnerAndOriginalName(owner,filename).isPresent();
+//
+//    }
 
     @Override
     public OtherMaterial findOne(UUID uuid) {
@@ -93,6 +107,8 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     }
 
+
+
     @Override
     public List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException {
         return (List<OtherMaterial>) otherMaterialRepository.findByOwner(owner).orElseThrow(
@@ -101,9 +117,26 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     public File getFile(OtherMaterial om){
-        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
+        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getOriginalName()).toString();
         return new File(filepath);
     }
+
+    @Override
+    public ResponseEntity<Resource> getFileAsResponseEntity(UUID fileId) throws IOException {
+        OtherMaterial om = findOne(fileId);
+        File file = getFile(om);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.valueOf(om.getFileType()));
+        httpHeaders.setContentLength(om.getSize());
+        httpHeaders.setContentDispositionFormData("attachment", om.getOriginalName());
+        System.out.println(file.getAbsolutePath());
+        Resource fileSystemResource = applicationContext.getResource("file:" + file.getAbsolutePath());
+        return ResponseEntity
+                .ok()
+                .headers(httpHeaders)
+                .body(fileSystemResource);
+    }
+
 
     @Override
     @Transactional()
@@ -118,7 +151,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setFileType(multipartFile.getContentType());
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
-//            om.setDescription();
         } catch (Exception re){
             om = new OtherMaterial(ownerId,multipartFile, null);
         }

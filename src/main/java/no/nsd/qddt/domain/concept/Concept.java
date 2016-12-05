@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -10,10 +11,13 @@ import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import org.hibernate.annotations.Type;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.NavigableMap;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,9 +43,22 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
-    @OrderColumn()
+    @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
+    // Ordered arrayList doesn't work with Enver FIX
+    @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private Set<Concept> children = new HashSet<>();
+
+    @JsonBackReference(value = "parentRef")
+    @ManyToOne()
+    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    private Concept parentReferenceOnly;
+
+//    @JsonIgnore
+//    @Type(type="pg-uuid")
+//
+//    private UUID parent_id;
+
 
     @JsonBackReference(value = "TopicGroupRef")
     @ManyToOne()
@@ -66,26 +83,37 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @JsonDeserialize
     private Set<Comment> comments = new HashSet<>();
 
-//    @Transient
-//    @JsonSerialize
-//    @JsonDeserialize
-//    private TopicRef topicRef;
-
-
     public Concept() {
 
     }
 
-
     @PreRemove
     private void removeReferencesFromConcept(){
-        System.out.println("Concept PreRemove");
+        System.out.println("removeReferencesFromConcept");
         getQuestionItems().forEach(qi->qi.updateStatusQI(this));
         getQuestionItems().clear();
         if (getTopicGroup() != null)
             getTopicGroup().removeConcept(this);
-
+//        if (parentReferenceOnly != null){
+//            parentReferenceOnly.getChildren().removeIf(c->c.equals(this));
+//            parentUUID = null;
+//        }
     }
+
+    @PrePersist
+    @PreUpdate
+    private void checkAddedQuestions() {
+        System.out.println("INSERT/UPDATE " + getName());
+        getQuestionItems()
+                .forEach(qi -> {
+                    if (!qi.getConcepts().contains(this)) {
+                        qi.getConcepts().add(this);
+                        setChangeKind(AbstractEntityAudit.ChangeKind.ADDED_CONTENT);
+                        setChangeComment("added question" + qi.getName());
+                    }
+                });
+    }
+
 
     @Override
     public UUID getId() {
@@ -121,13 +149,33 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     public void addQuestionItem(QuestionItem questionItem) {
-        System.out.println("addQuestionItem...");
         if (!this.questionItems.contains(questionItem)) {
             questionItem.getConcepts().add(this);
             this.questionItems.add(questionItem);
             questionItem.setChangeKind(ChangeKind.ADDED_CONTENT);
-            questionItem.setChangeComment("Concept Added");
+            questionItem.setChangeComment("Concept assosiation added");
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeComment("QuestionItem assosiation added");
         }
+    }
+
+    public  void removeQuestionItem(UUID qiId){
+        getQuestionItems().stream()
+            .filter(p->p.getId() != qiId)
+            .findFirst().ifPresent(qi -> {
+                System.out.println("removing qi");
+                qi.getConcepts().remove(this);
+                qi.setChangeKind(ChangeKind.UPDATED_PARENT);
+                qi.setChangeComment("Concept assosiation removed");
+                this.questionItems.remove(qi);
+                this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                this.setChangeComment("QuestionItem assosiation removed");
+            });
+        this.getQuestionItems().forEach(questionItem -> System.out.println(questionItem));
+    }
+
+    public  void removeQuestionItem(QuestionItem questionItem){
+        removeQuestionItem(questionItem.getId());
     }
 
 
@@ -140,13 +188,17 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         this.children = children;
     }
 
-
     public void addChildren(Concept concept){
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
         setChangeComment("SubConcept added");
         this.children.add(concept);
+
     }
 
+//    @JsonIgnore
+//    public Concept getParent(){
+//        return parentReferenceOnly;
+//    }
 
     public String getLabel() {
         return label;
@@ -183,10 +235,21 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
+    // Concept childs doesn't have a Topicgroup as parent,
+    // recurse to Topicgroup through parents
+    private TopicGroup findTopicgroup(Concept concept){
+        if (concept == null) return null;
+        if (concept.parentReferenceOnly == null)
+            return  concept.getTopicGroup();
+        else
+            return findTopicgroup(parentReferenceOnly);
+    }
+
     public TopicRef getTopicRef() {
         try{
-            return new TopicRef(getTopicGroup());
+            return new TopicRef(findTopicgroup(this));
         } catch (Exception ex ) {
+//            System.out.println("getTopicRef IsNull -> [" + (getTopicGroup() == null) + "] - " + this.getName());
             return null;
         }
     }

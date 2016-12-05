@@ -26,7 +26,7 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
      * @param questionItemIds
      * @return
      */
-    List<ControlConstruct> findByQuestionItemUUIDs(List<UUID> questionItemIds);
+    List<ControlConstruct> findByQuestionItems(List<UUID> questionItemIds);
 
 
     @Transactional(readOnly = true)

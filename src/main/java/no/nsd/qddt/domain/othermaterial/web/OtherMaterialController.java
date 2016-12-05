@@ -4,19 +4,13 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 
@@ -77,23 +71,10 @@ public class OtherMaterialController {
 
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<InputStreamResource> handleFileDownload(@PathVariable("fileId") UUID fileId) throws FileNotFoundException {
-//        try {
-            OtherMaterial om = otherMaterialService.findOne(fileId);
-            File file= otherMaterialService.getFile(om);
-            return ResponseEntity
-                    .ok()
-//                    .headers(headers)
-                    .contentLength(file.length())
-                    .contentType(MediaType.parseMediaType(om.getFileType()))
-                    .body(new InputStreamResource(new FileInputStream(file)));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return  null;
-//        }
+    public ResponseEntity<Resource> handleFileDownload(@PathVariable("fileId") UUID fileId) throws IOException {
+        System.out.println("file download...");
+        return otherMaterialService.getFileAsResponseEntity(fileId);
     }
-
 
 
 }

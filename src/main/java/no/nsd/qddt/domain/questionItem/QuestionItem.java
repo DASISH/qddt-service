@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.questionItem;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -15,7 +14,9 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +43,7 @@ public class QuestionItem extends AbstractEntityAudit  {
      */
     @JsonIgnore
     @ManyToOne
+    @JsonManagedReference(value = "questionRef")
     @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     private ResponseDomain responseDomainReferenceOnly;
 
@@ -78,11 +80,6 @@ public class QuestionItem extends AbstractEntityAudit  {
     @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private Set<ConceptRef> conceptRefs = new HashSet<>();
-
 
     public QuestionItem() {
 
@@ -97,6 +94,11 @@ public class QuestionItem extends AbstractEntityAudit  {
         setResponseDomain(null);
     }
 
+    public void updateStatusQI(Concept concept) {
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        this.setChangeComment("Concept reference removed");
+    }
+
     public void updateStatusQI(UUID conceptId) {
         concepts.forEach(C->{
             if (C.getId().equals(conceptId)) {
@@ -105,32 +107,27 @@ public class QuestionItem extends AbstractEntityAudit  {
         });
     }
 
-    public void updateStatusQI(Concept concept) {
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        this.setChangeComment("Concept reference removed");
-    }
-
     // End pre remove ----------------------------------------------
 
-    public ResponseDomain getResponseDomainReferenceOnly() {
-        return responseDomainReferenceOnly;
-    }
-
-    public void setResponseDomainReferenceOnly(ResponseDomain responseDomainReferenceOnly) {
-        this.responseDomainReferenceOnly = responseDomainReferenceOnly;
+    @PreUpdate
+    @PrePersist
+    private void updateRef(){
+        if (responseDomainReferenceOnly != null) {
+            System.out.println("setting response domain UUID");
+            responseDomainUUID = responseDomainReferenceOnly.getId();
+        }
     }
 
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }
 
-    @JsonAnySetter
     public void setResponseDomain(ResponseDomain responseDomain) {
         this.responseDomain = responseDomain;
     }
 
     public Integer getResponseDomainRevision() {
-        return responseDomainRevision;
+        return responseDomainRevision == null? 0:responseDomainRevision;
     }
 
     public void setResponseDomainRevision(Integer responseDomainRevision) {
@@ -161,6 +158,11 @@ public class QuestionItem extends AbstractEntityAudit  {
         this.concepts = concepts;
     }
 
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private Set<ConceptRef> conceptRefs = new HashSet<>();
+
     public Set<ConceptRef> getConceptRefs(){
         try {
 //        return concepts.stream().collect(Collectors.toMap(p-> p.getId(), c-> new ConceptRef(c)));
@@ -169,6 +171,7 @@ public class QuestionItem extends AbstractEntityAudit  {
             return new HashSet<>(0);
         }
     }
+
 
     @Override
     public boolean equals(Object o) {

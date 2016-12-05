@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,8 @@ class ConceptServiceImpl implements ConceptService {
         return conceptRepository.save(instance);
     }
 
+
+
     @Override
     public List<Concept> save(List<Concept> instances) {
         return conceptRepository.save(instances);
@@ -62,6 +65,12 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public void delete(UUID uuid) {
         conceptRepository.delete(uuid);
+//        try {
+//            Concept parent = findOne(uuid).getParent();
+//            conceptRepository.delete(uuid);
+//            save(parent);
+//        } catch (Exception ex) {
+//        }
     }
 
     @Override
@@ -81,7 +90,7 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional(readOnly = true)
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,pageable);
-//        populateComments(pages);
+        populateComments(pages);
 //        pages.forEach(c-> System.out.println("number of comments:"+ c.getComments().size()));
         return pages;
     }
@@ -97,5 +106,7 @@ class ConceptServiceImpl implements ConceptService {
             concept.setComments(new HashSet<>(commentService.findAllByOwnerIdPageable(concept.getId(),new PageRequest(0,25)).getContent()));
         }
     }
+
+
 
 }

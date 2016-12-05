@@ -64,10 +64,10 @@ import java.util.stream.Collectors;
  */
 @Audited
 @Entity
-@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id"},name = "UNQ_RESPONSEDOMAIN_NAME")})
+@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     /**
-    *   Can't have two responsedomain with the same template and the same name
+    *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
     @JsonBackReference(value = "questionRef")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomainReferenceOnly", cascade = CascadeType.ALL)
@@ -78,7 +78,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @OrderColumn(name="code_idx")
     @OrderBy("code_idx ASC")
-    @AuditMappedBy(mappedBy = "responseDomain", positionMappedBy = "code_idx")
+    @AuditMappedBy(mappedBy = "responseDomain", positionMappedBy = "responsedomain_idx")
     @JsonIgnore
     private List<Code> codes = new ArrayList<>();
 //    private Map<Integer,Code> codes = new TreeMap<>();
@@ -106,11 +106,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
      */
     @Embedded
     private ResponseCardinality responseCardinality;
-
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private Set<QuestionItemRef> questionItemRefs = new HashSet<>();
 
 
     public ResponseDomain(){
@@ -206,12 +201,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
      * this function is useful for populating managedRepresentation after loading from DB
      */
     private void populateCatCodes(Category current){
+        assert current != null;
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
             try {
                 Code code = codes.get(_Index);
                 current.setCode(code);
                 _Index++;
             } catch(Exception e) {
+                System.out.println("populateCatCodes catch & continue");
                 current.setCode(new Code());
             }
         }
@@ -233,7 +230,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
-            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(f -> f.getName()).collect(Collectors.joining(" - "))));
+            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(f -> f.getName()).collect(Collectors.joining(" + "))));
         }
         managedRepresentation.setName(getName());
         managedRepresentation.setDescription(String.format("[%s] group - %s",
@@ -245,8 +242,8 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     }
 
     public List<Code> getCodes() {
-        System.out.println("getCodes");
-
+        if (codes == null)
+            codes = new ArrayList<>();
         return codes;
     }
 
@@ -270,6 +267,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
+//    private Set<QuestionItemRef> questionItemRefs = new HashSet<>();
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
     public Set<QuestionItemRef> getQuestionRefs(){
         try {
 //        return questionItems.stream().collect(Collectors.toMap(p-> p.getId(), c-> new QuestionRef(c)));
@@ -307,7 +309,5 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
                 super.getName(),
                 super.getId(),
                 super.getModified());
-//                (codes == null) ? "NULL": "NOT NULL???",
-//                managedRepresentation.getChildren().stream().map(c->c.getName()).collect(Collectors.joining(", ")).toString());
     }
 }

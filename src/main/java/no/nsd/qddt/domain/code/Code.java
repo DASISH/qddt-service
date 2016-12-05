@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.code;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,14 +17,16 @@ import javax.persistence.*;
 @Audited
 @Entity
 @Table(name = "CODE")
-public class Code  extends AbstractEntity {
+public class Code  extends AbstractEntity implements CodeJson {
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonBackReference
+    @ManyToOne(optional = false, cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "responsedomain_id")
     private ResponseDomain responseDomain;
 
-    @Column(name ="code_idx", insertable = false,updatable = false)
-    private Integer code_idx;
+    // Ordered arrayList doesn't work with Enver FIX
+    @Column(insertable = false,updatable = false)
+    private int responsedomain_idx;
 
     @Column(name = "code_value")
     private String codeValue;
@@ -39,7 +42,14 @@ public class Code  extends AbstractEntity {
         this.setResponseDomain(responseDomain);
     }
 
+    @JsonIgnore
+    public int getResponsedomain_idx() {
+        return responsedomain_idx;
+    }
 
+    public void setResponsedomain_idx(int responsedomain_idx) {
+        this.responsedomain_idx = responsedomain_idx;
+    }
 
     public String getCodeValue() {
         return codeValue;
@@ -81,7 +91,6 @@ public class Code  extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "ResponseCode{ "  + "Name " + responseDomain==null?"NULL":responseDomain.getName() + " Code "  + codeValue==null?"NULL":codeValue + " } ";
+        return String.format("Code { responsedomain_idx = %d, codeValue = %s }" ,responsedomain_idx,getCodeValue());
     }
-
 }

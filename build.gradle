@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-apply plugin: 'com.bmuschko.docker-remote-api'
+//apply plugin: 'com.bmuschko.docker-remote-api'
 
 import com.bmuschko.gradle.docker.tasks.container.*
 
@@ -50,8 +50,6 @@ repositories {
 
 dependencies {
 
-//    compile files('libs/spring-data-envers-0.3.0.BUILD-SNAPSHOT.jar')
-
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
@@ -62,8 +60,8 @@ dependencies {
     compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
     compile("org.springframework.cloud:spring-cloud-security:1.0.2.RELEASE")
     compile("org.jadira.usertype:usertype.extended:3.2.0.GA")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.0")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.5")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.5")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
     compile("postgresql:postgresql:9.1-901-1.jdbc4")
     compile 'org.springframework.data:spring-data-envers:1.0.5.RELEASE'

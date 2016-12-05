@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,11 +21,13 @@ public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
     List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException;
 
-    static ResponseEntity<Resource> getFileAsResponseEntity(OtherMaterial otherMaterial) {
-        return null;
-    }
+//    static ResponseEntity<Resource> getFileAsResponseEntity(OtherMaterial otherMaterial) {
+//        return null;
+//    }
 
     File getFile(OtherMaterial om);
+
+    ResponseEntity<Resource> getFileAsResponseEntity(UUID fileId) throws IOException;
 
     OtherMaterial saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
 

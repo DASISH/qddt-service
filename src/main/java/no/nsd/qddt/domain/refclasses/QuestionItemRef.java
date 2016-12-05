@@ -7,40 +7,29 @@ import java.util.*;
 /**
  * @author Stig Norland
  */
-public class QuestionItemRef extends Refs {
+public class QuestionItemRef extends BaseRef {
 
-//    private Map<UUID,ConceptRef> conceptRefs;
-
-    private Set<ConceptRef> conceptRefs;
+    private Set<ConceptRef> parents;
 
     public QuestionItemRef(){
         super();
-        conceptRefs = new HashSet<>(0);
+
     }
 
     public QuestionItemRef(QuestionItem entity) {
         super(entity);
-        conceptRefs = new HashSet<>(entity.getConceptRefs());
-//        conceptRefs.putAll(entity.getConceptRefs());
+        parents = new HashSet<>(entity.getConceptRefs());
     }
-
 
 
     public Set<ConceptRef> getConceptRefs() {
-        return conceptRefs;
+        return parents;
     }
 
     public void setConceptRefs(Set<ConceptRef> conceptRefs) {
-        this.conceptRefs = conceptRefs;
+        this.parents = conceptRefs;
     }
 
-//    public Map<UUID, ConceptRef> getConceptRefs() {
-//        return conceptRefs;
-//    }
-//
-//    public void setConceptRefs(Map<UUID, ConceptRef> conceptRefs) {
-//        this.conceptRefs = conceptRefs;
-//    }
 
     @Override
     public boolean equals(Object o) {
@@ -50,21 +39,21 @@ public class QuestionItemRef extends Refs {
 
         QuestionItemRef that = (QuestionItemRef) o;
 
-        return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
+        return parents != null ? parents.equals(that.parents) : that.parents == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (conceptRefs != null ? conceptRefs.hashCode() : 0);
+        result = 31 * result + (parents != null ? parents.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "QuestionRef{" +
-                "conceptRefs=" + conceptRefs +
+                "conceptRefs=" + parents +
                 "} " + super.toString();
     }
 }

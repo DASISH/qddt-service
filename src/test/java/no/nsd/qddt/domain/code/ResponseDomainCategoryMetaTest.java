@@ -56,7 +56,7 @@ public class ResponseDomainCategoryMetaTest {
         r2.setManagedRepresentation(c2);
         c2.getChildren().addAll(Arrays.asList(new Category("child1","Child1"),new Category("child2","Child2"),new Category("child3","Child3")));
         c2 = categoryService.save(c2);
-        c2.getChildren().forEach(c-> c.setCode(new Code(r2,c.getName().substring(5))));
+        c2.getChildren().forEach(c-> ((Category)c).setCode(new Code(r2,c.getName().substring(5))));
 
         r2 = responseDomainService.save(r2);
 
@@ -69,7 +69,7 @@ public class ResponseDomainCategoryMetaTest {
     @Test
     public void findByQuestionTest() throws Exception {
         ResponseDomain R2 = responseDomainService.findOne(r2.getId());
-        Category root = R2.getManagedRepresentation();
+        Category root = (Category)R2.getManagedRepresentation();
 
 
         assertEquals("Expected 1 elements!", root.getChildren().get(0).getCode().getCodeValue(), "2");

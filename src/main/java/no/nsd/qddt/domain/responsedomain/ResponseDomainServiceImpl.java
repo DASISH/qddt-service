@@ -94,7 +94,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
         mixedCa.setName(old.getManagedRepresentation().getName() +" + " + missing.getName());
         mixedCa.setCategoryType(CategoryType.MIXED);
-        mixedCa.addChild(old.getManagedRepresentation());
+        mixedCa.addChild((Category)old.getManagedRepresentation());
         mixedCa.addChild(missing);
 
         ResponseDomain mixedRd = new ResponseDomain();
