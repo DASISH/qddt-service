@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -306,6 +307,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     /*
     preRec for valid Categories
      */
+    @JsonIgnore
     protected  boolean isValid(){
         if (hierarchyLevel== HierarchyLevel.ENTITY)
             switch (categoryType) {

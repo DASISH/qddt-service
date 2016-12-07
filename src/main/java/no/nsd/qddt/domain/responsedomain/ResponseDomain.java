@@ -69,19 +69,18 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     /**
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
-    @JsonBackReference(value = "questionRef")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomainReferenceOnly", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
 
     //TODO ArrayList dosn't work with Enver
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderColumn(name="code_idx")
-    @OrderBy("code_idx ASC")
+    @OrderColumn(name="responsedomain_idx")
+    @OrderBy("responsedomain_idx ASC")
     @AuditMappedBy(mappedBy = "responseDomain", positionMappedBy = "responsedomain_idx")
     @JsonIgnore
     private List<Code> codes = new ArrayList<>();
-//    private Map<Integer,Code> codes = new TreeMap<>();
 
     @Column(name = "description", length = 2000, nullable = false)
     private String description;
@@ -273,13 +272,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @JsonSerialize
     @JsonDeserialize
     public Set<QuestionItemRef> getQuestionRefs(){
-        try {
-//        return questionItems.stream().collect(Collectors.toMap(p-> p.getId(), c-> new QuestionRef(c)));
-            return questionItems.stream().map(qi -> new QuestionItemRef(qi)).collect(Collectors.toSet());
-        } catch (Exception ex){
-            System.out.println("getQuestionRefs->" + ex.getMessage());
-            return  new HashSet<>();
-        }
+        return  new HashSet<>();
+//        try {
+////        return questionItems.stream().collect(Collectors.toMap(p-> p.getId(), c-> new QuestionRef(c)));
+//            return questionItems.stream().map(qi -> new QuestionItemRef(qi)).collect(Collectors.toSet());
+//        } catch (Exception ex){
+//            System.out.println("getQuestionRefs->" + ex.getMessage());
+//            return  new HashSet<>();
+//        }
     }
 
     @Override

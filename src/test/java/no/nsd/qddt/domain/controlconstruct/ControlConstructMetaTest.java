@@ -87,7 +87,7 @@ public class ControlConstructMetaTest {
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<ControlConstruct> iqs = controlConstructService.findByQuestionItemUUIDs(Arrays.asList(q1.getId()));
+        List<ControlConstruct> iqs = controlConstructService.findByQuestionItems(Arrays.asList(q1.getId()));
         assertEquals("Expected two elements!", iqs.size(), 2);
     }
 }

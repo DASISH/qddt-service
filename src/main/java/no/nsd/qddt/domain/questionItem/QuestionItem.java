@@ -41,20 +41,19 @@ public class QuestionItem extends AbstractEntityAudit  {
      * in order to backtrace usage with the help of Hibernate
      * but due to revision override cannot be used otherwise
      */
-    @JsonIgnore
-    @ManyToOne
-    @JsonManagedReference(value = "questionRef")
-    @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
-    private ResponseDomain responseDomainReferenceOnly;
+//    @JsonIgnore
+//    private ResponseDomain responseDomainReferenceOnly;
 
 
     /**
      * This field will be populated with the correct version of a RD,
      * but should never be persisted.
      */
-    @JsonSerialize
-    @JsonDeserialize
-    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+//    @Transient
+    @ManyToOne
+    @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     private ResponseDomain responseDomain;
 
 
@@ -112,10 +111,13 @@ public class QuestionItem extends AbstractEntityAudit  {
     @PreUpdate
     @PrePersist
     private void updateRef(){
-        if (responseDomainReferenceOnly != null) {
+        if ( responseDomainUUID == null )
+        if (  responseDomain != null) {
             System.out.println("setting response domain UUID");
-            responseDomainUUID = responseDomainReferenceOnly.getId();
+            responseDomainUUID = responseDomain.getId();
         }
+        else
+            System.out.println("dette fungerte ikke");
     }
 
     public ResponseDomain getResponseDomain() {

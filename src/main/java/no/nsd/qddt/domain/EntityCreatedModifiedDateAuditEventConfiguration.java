@@ -118,4 +118,20 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
 
+    boolean isBasedOnCopy(AbstractEntityAudit rootEntity){
+        return (rootEntity.getId() == null &&
+                rootEntity.getBasedOnObject() != null &&
+                rootEntity.getChangeKind() == AbstractEntityAudit.ChangeKind.BASED_ON);
+    }
+
+    AbstractEntityAudit makeBasedOnCopy(AbstractEntityAudit rootEntity){
+        rootEntity.setBasedOnObject(rootEntity.getId());
+        rootEntity.setId(null);
+        rootEntity.setChangeKind(AbstractEntityAudit.ChangeKind.BASED_ON);
+        return rootEntity;
+    }
+
+    
+
+
 }
