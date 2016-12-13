@@ -33,4 +33,7 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
     List<ControlConstruct> findTop25ByQuestionItemQuestion(String question);
 
     Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable);
+
+    Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructionKind kind, Pageable pageable);
+
 }

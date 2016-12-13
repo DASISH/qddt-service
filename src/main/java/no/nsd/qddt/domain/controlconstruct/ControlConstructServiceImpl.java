@@ -123,6 +123,13 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 .map(qi-> setInstructionAndRevisionedQI(qi));
     }
 
+    @Override
+    public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructionKind kind, Pageable pageable) {
+        name = name.replace("*","%");
+        return controlConstructRepository.findByNameLikeIgnoreCaseAndControlConstructKind(name,kind,pageable)
+                .map(qi-> setInstructionAndRevisionedQI(qi));
+    }
+
 
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)

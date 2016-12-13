@@ -82,7 +82,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OrderColumn(name = "parent_idx")
     // Ordered arrayList doesn't work with Enver FIX
     @AuditMappedBy(mappedBy = "parent", positionMappedBy = "parent_idx")
-    private Set<ControlConstruct> children = new HashSet<>();
+    private List<ControlConstruct> children = new ArrayList<>();
 
     // Ordered arrayList doesn't work with Enver FIX
     @Type(type="pg-uuid")
@@ -145,6 +145,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JsonDeserialize
     @OneToMany
     private List<Instruction> postInstructions =new ArrayList<>();
+
+    private ControlConstructionKind controlConstructionKind;
 
 
     public ControlConstruct() {
@@ -218,11 +220,11 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.instrument = instrument;
     }
 
-    public Set<ControlConstruct> getChildren() {
+    public List<ControlConstruct> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<ControlConstruct> children) {
+    public void setChildren(List<ControlConstruct> children) {
         this.children = children;
     }
 
@@ -338,6 +340,13 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.parameters = parameters;
     }
 
+    public ControlConstructionKind getControlConstructionKind() {
+        return controlConstructionKind;
+    }
+
+    public void setControlConstructionKind(ControlConstructionKind controlConstructionKind) {
+        this.controlConstructionKind = controlConstructionKind;
+    }
 
     @Override
     public boolean equals(Object o) {

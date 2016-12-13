@@ -33,4 +33,6 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
     List<ControlConstruct> findByquestionItemReferenceOnlyIdIn(List<UUID> questionItemIds);
 
     Page<ControlConstruct> findByInstrumentIsNullAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(String name, String question, Pageable pageable);
+
+    Page<ControlConstruct> findByNameLikeIgnoreCaseAndControlConstructKind(String name, ControlConstructionKind kind,Pageable pageable);
 }

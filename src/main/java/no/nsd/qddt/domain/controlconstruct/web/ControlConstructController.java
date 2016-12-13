@@ -2,9 +2,8 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructionKind;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
-import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -118,13 +116,18 @@ public class ControlConstructController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ControlConstruct>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                               @RequestParam(value = "questiontext",defaultValue = "%") String question,
+                                                              @RequestParam(value = "constructkind",defaultValue = "QuestionConstruct") ControlConstructionKind kind,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<ControlConstruct> controlConstructs = null;
+
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
+        // Change in frontEnd usage made it neccessary to distingwish
+        if (kind == ControlConstructionKind.QuestionConstruct)
+            controlConstructs= controlConstructService.findByNameLikeOrQuestionLike(name, question, pageable);
+        else
+            controlConstructs = controlConstructService.findByNameLikeAndControlConstructKind(name,kind,pageable);
 
-        Page<ControlConstruct> questionitems =
-                controlConstructService.findByNameLikeOrQuestionLike(name, question, pageable);
-
-        return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
+        return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }
 
 }
