@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
@@ -49,7 +50,10 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
         instance.populateCodes();
-        return responseDomainRepository.save(instance);
+        instance = responseDomainRepository.save(instance);
+//        if (instance.getChangeKind() == AbstractEntityAudit.ChangeKind.CREATED)     // hack to save the correct index in the envers sub-system
+//            instance = responseDomainRepository.save(instance);
+        return instance;
     }
 
     @Override

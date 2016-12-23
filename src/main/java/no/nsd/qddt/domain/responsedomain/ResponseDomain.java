@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -8,19 +7,20 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
 import no.nsd.qddt.utils.builders.StringTool;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
  */
 @Audited
 @Entity
-@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
+@Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id","based_on_object"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
 public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     /**
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
@@ -74,12 +74,12 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     private Set<QuestionItem> questionItems = new HashSet<>();
 
 
-    //TODO ArrayList dosn't work with Enver
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnore
     @OrderColumn(name="responsedomain_idx")
     @OrderBy("responsedomain_idx ASC")
-    @AuditMappedBy(mappedBy = "responseDomain", positionMappedBy = "responsedomain_idx")
-    @JsonIgnore
+    @ElementCollection
+    @CollectionTable(name = "CODE",
+    joinColumns = @JoinColumn(name="responsedomain_id"))
     private List<Code> codes = new ArrayList<>();
 
     @Column(name = "description", length = 2000, nullable = false)
@@ -94,7 +94,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     private String displayLayout;
 
+    @JsonSerialize
+    @JsonDeserialize
     @Transient
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
@@ -180,13 +183,13 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
             if (getId()== null && getResponseKind() == ResponseKind.MIXED) {
 
-                Code code = new Code(this,current.getCode().getCodeValue());
-                code.setResponseDomain(this);
+                Code code = new Code(current.getCode().getCodeValue());
+//                code.setResponseDomain(this);
                 this.codes.add(code);
             } else {
 
                 Code code = current.getCode();
-                code.setResponseDomain(this);
+//                code.setResponseDomain(this);
                 this.codes.add(code);
             }
         }
