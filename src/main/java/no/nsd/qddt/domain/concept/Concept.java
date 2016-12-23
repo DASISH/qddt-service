@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -18,7 +17,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.NavigableMap;
 import java.util.Set;
 import java.util.UUID;
 
@@ -43,22 +41,22 @@ import java.util.UUID;
 public class Concept extends AbstractEntityAudit implements Commentable {
 
 
-    @OneToMany( fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
     // Ordered arrayList doesn't work with Enver FIX
-    @AuditMappedBy(mappedBy = "parent")
+    @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private Set<Concept> children = new HashSet<>();
+
+    @JsonBackReference(value = "parentRef")
+    @ManyToOne()
+    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    private Concept parentReferenceOnly;
 
 //    @JsonIgnore
 //    @Type(type="pg-uuid")
-//    @Column(name = "parent_id", updatable = false,insertable = false)
-//    private Concept parentReferenceOnly;
-
-
-    @Type(type="pg-uuid")
-    @Column(name="parent_id")
-    private UUID parent;
+//
+//    private UUID parent_id;
 
 
     @JsonBackReference(value = "TopicGroupRef")
@@ -102,9 +100,9 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     }
 
     @PrePersist
-    @PreUpdate
+//    @PreUpdate
     private void checkAddedQuestions() {
-        System.out.println("INSERT/UPDATE " + getName());
+        System.out.println("PrePersist-checkAddedQuestions-> " + getName() );
         getQuestionItems()
                 .forEach(qi -> {
                     if (!qi.getConcepts().contains(this)) {
@@ -204,6 +202,15 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 //        return parentReferenceOnly;
 //    }
 
+
+//    public Concept getParentReferenceOnly() {
+//        return parentReferenceOnly;
+//    }
+//
+//    public void setParentReferenceOnly(Concept parentReferenceOnly) {
+//        this.parentReferenceOnly = parentReferenceOnly;
+//    }
+
     public String getLabel() {
         return label;
     }
@@ -244,10 +251,10 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     private TopicGroup findTopicgroup(Concept concept){
         if( concept == null) throw new NullPointerException("concept is null in findTopicgroup");
 
-        if (concept.parent == null)
+        if (concept.parentReferenceOnly == null)
             return  concept.getTopicGroup();
         else
-            return null;
+            return findTopicgroup(parentReferenceOnly);
     }
 
     public TopicRef getTopicRef() {
