@@ -96,7 +96,7 @@ public abstract class AbstractEntity {
         return "AbstractEntity{" +
                 "id=" + id +
                 ", modified=" + modified +
-                ", modifiedBy=" + modifiedBy +
+                ", modifiedBy=" + modifiedBy.getUsername() +
                 '}';
     }
 
