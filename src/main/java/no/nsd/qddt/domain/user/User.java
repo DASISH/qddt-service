@@ -6,13 +6,12 @@ import no.nsd.qddt.domain.authority.Authority;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -104,9 +103,9 @@ public class User {
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<ResponseDomain> responseDomains = new HashSet<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
-    private Set<Code> codes = new HashSet<>();
+//    @JsonIgnore
+//    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+//    private Set<Code> codes = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
@@ -247,13 +246,6 @@ public class User {
         this.responseDomains = responseDomains;
     }
 
-    public Set<Code> getCodes() {
-        return codes;
-    }
-
-    public void setCodes(Set<Code> codes) {
-        this.codes = codes;
-    }
 
     public Set<Category> getCategories() {
         return categories;
@@ -297,9 +289,9 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + (password != null ? "[NOT NULL]":"[NULL]") + '\'' +
-                ", email='" + email + '\'' +
+                ", name='" + username + '\'' +
+                ", pwd='" + (password != null ? "[Present]":"[Hidden]") + '\'' +
+//                ", email='" + email + '\'' +
 //                ", agency='"  + (agency != null ? agency.getName(): "[NULL]") + '\'' +
                 '}';
     }
