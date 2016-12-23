@@ -5,15 +5,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
-import no.nsd.qddt.domain.code.Code;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.utils.builders.StringTool;
 import org.hibernate.annotations.Type;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  *

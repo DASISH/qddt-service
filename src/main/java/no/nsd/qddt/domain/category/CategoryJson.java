@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.category;
 
-import no.nsd.qddt.domain.code.CodeJson;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +12,6 @@ public interface CategoryJson {
     UUID getId();
     String getLabel();
     String getName();
-    CodeJson getCode();
+//    CodeJson getCode();
     List<CategoryJson> getChildren();
 }
