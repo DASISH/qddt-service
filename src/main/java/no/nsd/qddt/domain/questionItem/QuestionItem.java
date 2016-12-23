@@ -2,10 +2,11 @@ package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit  {
+public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
 
     /**
@@ -79,6 +80,11 @@ public class QuestionItem extends AbstractEntityAudit  {
     @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
 
     public QuestionItem() {
 
@@ -108,17 +114,19 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     // End pre remove ----------------------------------------------
 
-    @PreUpdate
-    @PrePersist
-    private void updateRef(){
-        if ( responseDomainUUID == null )
-        if (  responseDomain != null) {
-            System.out.println("setting response domain UUID");
-            responseDomainUUID = responseDomain.getId();
-        }
-        else
-            System.out.println("dette fungerte ikke");
-    }
+//    @PreUpdate
+//    @PrePersist
+//    private void updateRef(){
+//        System.out.println("PreUpdate-> " + getName() );
+//
+//        if ( responseDomainUUID == null )
+//        if (  responseDomain != null) {
+//            System.out.println("setting response domain UUID");
+//            responseDomainUUID = responseDomain.getId();
+//        }
+//        else
+//            System.out.println("dette fungerte ikke");
+//    }
 
     public ResponseDomain getResponseDomain() {
         return responseDomain;
@@ -174,6 +182,21 @@ public class QuestionItem extends AbstractEntityAudit  {
         }
     }
 
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+
+    public void addComment(Comment comment) {
+        comment.setOwnerId(this.getId());
+        comments.add(comment);
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -208,6 +231,7 @@ public class QuestionItem extends AbstractEntityAudit  {
                 ", id ='" + super.getId() + '\'' +
                 "} " + System.lineSeparator();
     }
+
 
 }
 
