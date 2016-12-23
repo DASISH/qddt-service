@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -43,10 +45,14 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
     private String description;
 
-    private String instrumentKind;
+    @Column(name="instrument_kind")
+    private String instrumentType;
 
 
     @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
     public Instrument() {
@@ -60,12 +66,12 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
         this.description = description;
     }
 
-    public String getInstrumentKind() {
-        return instrumentKind;
+    public String getInstrumentType() {
+        return instrumentType;
     }
 
-    public void setInstrumentKind(String instrumentKind) {
-        this.instrumentKind = instrumentKind;
+    public void setInstrumentType(String instrumentType) {
+        this.instrumentType = instrumentType;
     }
 
     public Set<Study> getStudies() {
@@ -119,7 +125,7 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
         Instrument that = (Instrument) o;
 
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        return instrumentKind != null ? instrumentKind.equals(that.instrumentKind) : that.instrumentKind == null;
+        return instrumentType != null ? instrumentType.equals(that.instrumentType) : that.instrumentType == null;
 
     }
 
@@ -127,7 +133,7 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (instrumentKind != null ? instrumentKind.hashCode() : 0);
+        result = 31 * result + (instrumentType != null ? instrumentType.hashCode() : 0);
         return result;
     }
 
@@ -135,7 +141,7 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     public String toString() {
         return "Instrument{" +
                 "description='" + description + '\'' +
-                ", instrumentKind='" + instrumentKind + '\'' +
+                ", instrumentType='" + instrumentType + '\'' +
                 "} " + super.toString();
     }
 }
