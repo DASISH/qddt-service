@@ -1,10 +1,11 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction;
 import no.nsd.qddt.domain.controlconstructinstruction.InstructionRank;
 import no.nsd.qddt.domain.instruction.Instruction;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * Instrument is the significant relation.
  * Instrument will be asked for all {@link Question} instances it has and the
- * metadata in this class will be used as visual logic for each {@link Question}.
+ * metadata in this class will be used as visual condition for each {@link Question}.
  *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONTROL_CONSTRUCT")
-public class ControlConstruct extends AbstractEntityAudit {
+public class ControlConstruct extends AbstractEntityAudit  implements Commentable{
 
     //------------- Begin QuestionItem revision early bind "hack" ---------------
 
@@ -126,7 +127,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OrderColumn(name="instructions_idx")
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
-    private String logic;
+    private String condition;
 
     //TODO ArrayList dosn't work with Enver
     @OneToMany
@@ -146,10 +147,24 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OneToMany
     private List<Instruction> postInstructions =new ArrayList<>();
 
-    private ControlConstructionKind controlConstructionKind;
+    @Column(name = "controlconstruction_kind")
+    @Enumerated(EnumType.STRING)
+    private ControlConstructKind controlConstructKind;
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
 
 
     public ControlConstruct() {
+    }
+
+    @PrePersist
+    private void setDefaults(){
+        if (controlConstructKind==null)
+            controlConstructKind = ControlConstructKind.QUESTION_CONSTRUCT;
     }
 
     public QuestionItem getQuestionItem() {
@@ -324,12 +339,12 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.indexRationale = indexRationale;
     }
 
-    public String getLogic() {
-        return logic;
+    public String getCondition() {
+        return condition;
     }
 
-    public void setLogic(String logic) {
-        this.logic = logic;
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     public List<CCParameter> getParameters() {
@@ -340,12 +355,27 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.parameters = parameters;
     }
 
-    public ControlConstructionKind getControlConstructionKind() {
-        return controlConstructionKind;
+    public ControlConstructKind getControlConstructKind() {
+        return controlConstructKind;
     }
 
-    public void setControlConstructionKind(ControlConstructionKind controlConstructionKind) {
-        this.controlConstructionKind = controlConstructionKind;
+    public void setControlConstructKind(ControlConstructKind controlConstructKind) {
+        this.controlConstructKind = controlConstructKind;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+
+    public void addComment(Comment comment) {
+        comment.setOwnerId(this.getId());
+        comments.add(comment);
     }
 
     @Override
@@ -356,37 +386,39 @@ public class ControlConstruct extends AbstractEntityAudit {
 
         ControlConstruct that = (ControlConstruct) o;
 
+        if (!getControlConstructKind().equals(that.getControlConstructKind()))
+            return false;
         if (getInstrument() != null ? !getInstrument().equals(that.getInstrument()) : that.getInstrument() != null)
             return false;
         if (getQuestionItem() != null ? !getQuestionItem().equals(that.getQuestionItem()) : that.getQuestionItem() != null)
             return false;
         if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
             return false;
-        return !(getLogic() != null ? !getLogic().equals(that.getLogic()) : that.getLogic() != null);
+        return !(getCondition() != null ? !getCondition().equals(that.getCondition()) : that.getCondition() != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getInstrument() != null ? getInstrument().hashCode() : 0);
         result = 31 * result + (getQuestionItem() != null ? getQuestionItem().hashCode() : 0);
         result = 31 * result + (getIndexRationale() != null ? getIndexRationale().hashCode() : 0);
-        result = 31 * result + (getLogic() != null ? getLogic().hashCode() : 0);
+        result = 31 * result + (getCondition() != null ? getCondition().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "ControlConstruct{" +
-                "instrument=" + instrument +
-                ", question=" + questionItem +
+                "Kind=" + getControlConstructKind() +'\'' +
+                ", question=" + questionItem +'\'' +
                 ", indexRationale='" + indexRationale + '\'' +
-                ", logic='" + logic + '\'' +
+                ", condition='" + condition + '\'' +
                 ", pre#=" + getPreInstructions().size() + '\'' +
                 ", post#=" + getPostInstructions().size() + '\'' +
                 '}';
     }
+
 
 }
 

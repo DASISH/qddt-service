@@ -34,6 +34,6 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
 
     Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable);
 
-    Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructionKind kind, Pageable pageable);
+    Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
 
 }

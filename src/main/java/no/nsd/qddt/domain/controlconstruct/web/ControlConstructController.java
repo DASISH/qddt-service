@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructionKind;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,16 +60,6 @@ public class ControlConstructController {
         return controlConstructService.save(instance);
     }
 
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(value = "", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-//    public ControlConstruct updateWithFile(@RequestParam("controlconstruct") ControlConstruct instance, @RequestParam("files") MultipartFile[] files) throws FileUploadException {
-//        instance = controlConstructService.save(instance);
-//        if (files != null && files.length > 0)
-//            for (MultipartFile multipartFile:files) {
-//                instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
-//            }
-//        return instance;
-//    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
@@ -116,13 +106,13 @@ public class ControlConstructController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ControlConstruct>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                               @RequestParam(value = "questiontext",defaultValue = "%") String question,
-                                                              @RequestParam(value = "constructkind",defaultValue = "QuestionConstruct") ControlConstructionKind kind,
+                                                              @RequestParam(value = "constructkind",defaultValue = "QuestionConstruct") ControlConstructKind kind,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
         Page<ControlConstruct> controlConstructs = null;
 
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it neccessary to distingwish
-        if (kind == ControlConstructionKind.QuestionConstruct)
+        if (kind == ControlConstructKind.QUESTION_CONSTRUCT)
             controlConstructs= controlConstructService.findByNameLikeOrQuestionLike(name, question, pageable);
         else
             controlConstructs = controlConstructService.findByNameLikeAndControlConstructKind(name,kind,pageable);

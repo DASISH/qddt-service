@@ -124,7 +124,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructionKind kind, Pageable pageable) {
+    public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
         name = name.replace("*","%");
         return controlConstructRepository.findByNameLikeIgnoreCaseAndControlConstructKind(name,kind,pageable)
                 .map(qi-> setInstructionAndRevisionedQI(qi));
