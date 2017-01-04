@@ -51,8 +51,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     public ResponseDomain save(ResponseDomain instance) {
         instance.populateCodes();
         instance = responseDomainRepository.save(instance);
-//        if (instance.getChangeKind() == AbstractEntityAudit.ChangeKind.CREATED)     // hack to save the correct index in the envers sub-system
-//            instance = responseDomainRepository.save(instance);
         return instance;
     }
 
