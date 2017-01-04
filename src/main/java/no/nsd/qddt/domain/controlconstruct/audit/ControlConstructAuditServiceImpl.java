@@ -47,6 +47,13 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
     }
 
     @Override
+    public Revision<Integer, ControlConstruct> findFirstChange(UUID uuid) {
+        return controlConstructAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, ControlConstruct>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

@@ -51,6 +51,13 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
     }
 
     @Override
+    public Revision<Integer, QuestionItem> findFirstChange(UUID uuid) {
+        return questionItemAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

@@ -42,6 +42,13 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     }
 
     @Override
+    public Revision<Integer, TopicGroup> findFirstChange(UUID uuid) {
+        return topicGroupAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

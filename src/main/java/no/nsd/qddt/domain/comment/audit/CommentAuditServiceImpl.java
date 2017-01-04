@@ -39,6 +39,13 @@ class CommentAuditServiceImpl implements CommentAuditService {
         return commentAuditRepository.findRevisions(uuid, pageable);
     }
 
+    @Override
+    public Revision<Integer, Comment> findFirstChange(UUID uuid) {
+        return commentAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
 //    @Override
 //    public Page<Revision<Integer, Comment>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
 //        return null;

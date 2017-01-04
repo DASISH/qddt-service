@@ -42,6 +42,13 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
     }
 
     @Override
+    public Revision<Integer, Concept> findFirstChange(UUID uuid) {
+        return conceptAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

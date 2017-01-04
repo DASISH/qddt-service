@@ -42,6 +42,13 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
     }
 
     @Override
+    public Revision<Integer, Instrument> findFirstChange(UUID uuid) {
+        return instrumentAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

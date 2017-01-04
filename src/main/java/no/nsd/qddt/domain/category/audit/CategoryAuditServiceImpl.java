@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.category.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,7 +8,6 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -41,6 +39,13 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
     @Transactional(readOnly = true)
     public Page<Revision<Integer, Category>> findRevisions(UUID uuid, Pageable pageable) {
         return categoryAuditRepository.findRevisions(uuid,pageable);
+    }
+
+    @Override
+    public Revision<Integer, Category> findFirstChange(UUID uuid) {
+        return categoryAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
     }
 
 //    @Override

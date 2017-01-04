@@ -50,6 +50,13 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
     }
 
     @Override
+    public Revision<Integer, SurveyProgram> findFirstChange(UUID uuid) {
+        return surveyProgramAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, SurveyProgram>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

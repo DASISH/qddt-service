@@ -42,6 +42,13 @@ class InstructionAuditServiceImpl implements InstructionAuditService {
     }
 
     @Override
+    public Revision<Integer, Instruction> findFirstChange(UUID uuid) {
+        return instructionAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, Instruction>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

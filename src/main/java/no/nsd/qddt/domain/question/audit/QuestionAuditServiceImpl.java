@@ -38,6 +38,13 @@ class QuestionAuditServiceImpl implements QuestionAuditService {
         return questionAuditRepository.findRevisions(uuid,pageable);
     }
 
+    @Override
+    public Revision<Integer, Question> findFirstChange(UUID uuid) {
+        return questionAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
 //    @Override
 //    public Page<Revision<Integer, Question>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
 //        return questionAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);

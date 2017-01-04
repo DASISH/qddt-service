@@ -47,6 +47,13 @@ class StudyAuditServiceImpl implements StudyAuditService {
     }
 
     @Override
+    public Revision<Integer, Study> findFirstChange(UUID uuid) {
+        return studyAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i, o) -> i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, Study>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();

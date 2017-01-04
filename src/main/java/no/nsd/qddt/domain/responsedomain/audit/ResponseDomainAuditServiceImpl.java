@@ -59,6 +59,13 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
     }
 
     @Override
+    public Revision<Integer, ResponseDomain> findFirstChange(UUID uuid) {
+        return responseDomainAuditRepository.findRevisions(uuid).
+                getContent().stream().
+                min((i,o)->i.getRevisionNumber()).get();
+    }
+
+    @Override
     public Page<Revision<Integer, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
