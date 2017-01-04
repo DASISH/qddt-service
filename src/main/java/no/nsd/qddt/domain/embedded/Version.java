@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.embedded;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 /**
  * @author Stig Norland
@@ -12,6 +13,9 @@ public class Version implements Comparable<Version> {
     private Integer major=1;
     private Integer minor=0;
     private String versionLabel="";
+    @Transient
+    private boolean isModified = false;
+
 
 //    @org.springframework.data.annotation.Version
 //    private Long build;
@@ -21,8 +25,11 @@ public class Version implements Comparable<Version> {
     }
 
     public void incMajor() {
-        this.major++;
-        this.minor =0;
+        if (! isModified) {
+            this.major++;
+            this.minor = 0;
+            isModified = true;
+        }
     }
 
     public Integer getMinor() {
@@ -30,7 +37,10 @@ public class Version implements Comparable<Version> {
     }
 
     public void incMinor() {
-        this.minor++;
+        if (!isModified) {
+            this.minor++;
+            isModified = true;
+        }
     }
 
     public String getVersionLabel() {
@@ -41,13 +51,6 @@ public class Version implements Comparable<Version> {
         this.versionLabel = versionLabel;
     }
 
-//    public Long getBuild() {
-//        return build;
-//    }
-//
-//    public void setBuild(Long build) {
-//        this.build = build;
-//    }
 
     @Override
     public boolean equals(Object o) {
