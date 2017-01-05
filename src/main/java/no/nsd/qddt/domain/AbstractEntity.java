@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OptimisticLock;
 import org.hibernate.annotations.Parameter;
@@ -69,6 +70,7 @@ public abstract class AbstractEntity {
     public void setModifiedBy(User modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
+
 
     @Override
     public boolean equals(Object o) {

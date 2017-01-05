@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -78,17 +79,24 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
 
     //------------- Begin Child elements with "enver hack" ----------------------
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @JoinColumn(name = "parent_id")
     @OrderColumn(name = "parent_idx")
     // Ordered arrayList doesn't work with Enver FIX
-    @AuditMappedBy(mappedBy = "parent", positionMappedBy = "parent_idx")
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "parent_idx")
     private List<ControlConstruct> children = new ArrayList<>();
 
-    // Ordered arrayList doesn't work with Enver FIX
-    @Type(type="pg-uuid")
-    @Column(name= "parent_id", insertable = false,updatable = false)
-    private UUID parent;
+//    // Ordered arrayList doesn't work with Enver FIX
+//    @Type(type="pg-uuid")
+//    @Column(name= "parent_id", insertable = false,updatable = false)
+//    private UUID parent;
+
+
+    @JsonBackReference(value = "parentRef")
+    @ManyToOne()
+    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    private ControlConstruct parentReferenceOnly;
+
 
     // Ordered arrayList doesn't work with Enver FIX
     @Column(insertable = false,updatable = false)
@@ -147,7 +155,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @OneToMany
     private List<Instruction> postInstructions =new ArrayList<>();
 
-    @Column(name = "controlconstruction_kind")
     @Enumerated(EnumType.STRING)
     private ControlConstructKind controlConstructKind;
 
@@ -162,9 +169,11 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     }
 
     @PrePersist
+    @PreUpdate
     private void setDefaults(){
         if (controlConstructKind==null)
             controlConstructKind = ControlConstructKind.QUESTION_CONSTRUCT;
+//        System.out.println("setDefaults -> " + controlConstructKind);
     }
 
     public QuestionItem getQuestionItem() {

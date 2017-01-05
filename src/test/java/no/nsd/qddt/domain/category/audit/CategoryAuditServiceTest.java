@@ -70,11 +70,18 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void getLastRevisionTest() throws Exception {
+    public void getfirstAndLastRevisionTest() throws Exception {
         Revision<Integer, Category> revision = categoryAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity().hashCode(), entity.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
+
+        revision = categoryAuditService.findFirstChange(entity.getId());
+
+        assertEquals("Excepted initial ResponseDomain Object.",
+                revision.getEntity().hashCode(), entity.hashCode());
+        assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "First");
+
     }
 }

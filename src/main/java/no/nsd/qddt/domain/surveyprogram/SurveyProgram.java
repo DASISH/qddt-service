@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -61,18 +63,21 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-
+    @JsonSerialize
+    @JsonDeserialize
     @Transient
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {
 
     }
 
-    @PreUpdate
-    private void checkAuthor(){
-        authors.forEach(a->a.addSurvey(this));
-    }
+//    @PreUpdate
+//    private void checkAuthor(){
+//        System.out.println("PreUpdate-checkAuthor-> " + getName() );
+//        authors.forEach(a->a.addSurvey(this));
+//    }
 
     public String getDescription() {
         return description;

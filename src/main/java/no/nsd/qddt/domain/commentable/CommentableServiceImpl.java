@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.commentable;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.comment.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class CommentableServiceImpl implements CommentableService {
 
     @Override
     @Transactional(readOnly = false)
+    @PreAuthorize("permitAll")
     public Comment saveComment(Commentable commentable, Comment comment) {
         if(commentable instanceof AbstractEntity)
             comment.setOwnerId(((AbstractEntity) commentable).getId());

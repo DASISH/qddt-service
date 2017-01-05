@@ -5,11 +5,9 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.CategoryJson;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.code.Code;
-import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -137,7 +134,7 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
     private int i=0;
     private void PopulateCatCodes(ResponseDomain rd, Category current){
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY){
-            current.setCode(new Code(rd,Integer.toString(i++)));
+            current.setCode(new Code(Integer.toString(i++)));
         }
 
         for (Category cat : current.getChildren()) {

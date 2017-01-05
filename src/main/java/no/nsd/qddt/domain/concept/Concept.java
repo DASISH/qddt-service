@@ -53,12 +53,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name = "parent_id",updatable = false,insertable = false)
     private Concept parentReferenceOnly;
 
-//    @JsonIgnore
-//    @Type(type="pg-uuid")
-//
-//    private UUID parent_id;
-
-
     @JsonBackReference(value = "TopicGroupRef")
     @ManyToOne()
     @JoinColumn(name = "topicgroup_id",updatable = false)
@@ -99,19 +93,19 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 //        }
     }
 
-    @PrePersist
-//    @PreUpdate
-    private void checkAddedQuestions() {
-        System.out.println("PrePersist-checkAddedQuestions-> " + getName() );
-        getQuestionItems()
-                .forEach(qi -> {
-                    if (!qi.getConcepts().contains(this)) {
-                        qi.getConcepts().add(this);
-                        setChangeKind(AbstractEntityAudit.ChangeKind.ADDED_CONTENT);
-                        setChangeComment("added question" + qi.getName());
-                    }
-                });
-    }
+//    @PrePersist
+////    @PreUpdate
+//    private void checkAddedQuestions() {
+//        System.out.println("PrePersist-checkAddedQuestions-> " + getName() );
+//        getQuestionItems()
+//                .forEach(qi -> {
+//                    if (!qi.getConcepts().contains(this)) {
+//                        qi.getConcepts().add(this);
+//                        setChangeKind(AbstractEntityAudit.ChangeKind.ADDED_CONTENT);
+//                        setChangeComment("added question" + qi.getName());
+//                    }
+//                });
+//    }
 
 
     @Override
@@ -197,19 +191,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
     }
 
-//    @JsonIgnore
-//    public Concept getParent(){
-//        return parentReferenceOnly;
-//    }
-
-
-//    public Concept getParentReferenceOnly() {
-//        return parentReferenceOnly;
-//    }
-//
-//    public void setParentReferenceOnly(Concept parentReferenceOnly) {
-//        this.parentReferenceOnly = parentReferenceOnly;
-//    }
 
     public String getLabel() {
         return label;

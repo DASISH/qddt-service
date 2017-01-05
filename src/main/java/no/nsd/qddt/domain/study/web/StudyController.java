@@ -40,7 +40,6 @@ public class StudyController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Study get(@PathVariable("id") UUID id) {
 
-//        System.out.println("FINDONE STUDY->" +id);
         return studyService.findOne(id);
     }
 
@@ -48,25 +47,7 @@ public class StudyController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Study update(@RequestBody Study instance) {
         System.out.println("study update");
-        //Surveyprogram has JsonIgnore & updatable=false, DON'T need to fetch Survey from the DB
-//        if (instance.getSurveyProgram() == null){
-//            Study original =  studyService.findOne(instance.getId());
-//            instance.setSurveyProgram(original.getSurveyProgram());
-//            System.out.println("UPS, this code shouldn't have been triggered... (fetching Survey ID)");
-//        }
 
-        if (instance.getInstruments() == null ||instance.getInstruments().size() == 0){
-            if (instance.getId() == null)
-                instance.SetDefaultInstrument();
-            else
-                instance.setInstruments( new HashSet<>(instrumentService.findByStudy(instance.getId())));
-        }
-        else {
-            instance.getInstruments().forEach(c->{
-                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-                c.setChangeComment("");
-            });
-        }
         if (instance.getTopicGroups() != null)
             instance.getTopicGroups().forEach(c->{
                 c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
@@ -85,15 +66,15 @@ public class StudyController {
             instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
         }
 
-        if (instance.getId() != null) {
-            instance.getInstruments().addAll(instrumentService.findByStudy(instance.getId()));
-            instance.getInstruments().forEach(c->{
-                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-                c.setChangeComment("");
-            });
-        }
-        else
-            instance.SetDefaultInstrument();
+//        if (instance.getId() != null) {
+//            instance.getInstruments().addAll(instrumentService.findByStudy(instance.getId()));
+//            instance.getInstruments().forEach(c->{
+//                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+//                c.setChangeComment("");
+//            });
+//        }
+//        else
+//            instance.SetDefaultInstrument();
 
 
         if (instance.getTopicGroups() != null) {

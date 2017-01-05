@@ -4,7 +4,6 @@ package no.nsd.qddt.utils.builders;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.code.Code;
 
 /**
  * @author Stig Norland

@@ -121,6 +121,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         return new File(filepath);
     }
 
+
     @Override
     public ResponseEntity<Resource> getFileAsResponseEntity(UUID fileId) throws IOException {
         OtherMaterial om = findOne(fileId);
@@ -129,7 +130,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         httpHeaders.setContentType(MediaType.valueOf(om.getFileType()));
         httpHeaders.setContentLength(om.getSize());
         httpHeaders.setContentDispositionFormData("attachment", om.getOriginalName());
-        System.out.println(file.getAbsolutePath());
+        System.out.println(httpHeaders);
         Resource fileSystemResource = applicationContext.getResource("file:" + file.getAbsolutePath());
         return ResponseEntity
                 .ok()

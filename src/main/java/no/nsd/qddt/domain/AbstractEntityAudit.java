@@ -2,10 +2,13 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -71,9 +74,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-//    @Embedded
-//    private Urn urn;
-
     @Embedded
     private Version version;
 
@@ -86,14 +86,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     protected AbstractEntityAudit() {
 
     }
-//
-//    public Urn getUrn() {
-//        return urn;
-//    }
-//
-//    public void setUrn(Urn urn) {
-//        this.urn = urn;
-//    }
 
 
     public Agency getAgency() {
@@ -143,6 +135,48 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public void setChangeComment(String changeComment) {
         this.changeComment = changeComment;
     }
+
+    @PrePersist
+    private void onInsert(){
+        User user = SecurityContext.getUserDetails().getUser();
+        agency = user.getAgency();
+        changeKind = AbstractEntityAudit.ChangeKind.CREATED;
+        version = new Version();
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+
+        Version ver = version;
+        AbstractEntityAudit.ChangeKind change = changeKind;
+        if (getId() == null && getBasedOnObject() != null)
+                change = AbstractEntityAudit.ChangeKind.BASED_ON;
+
+        if (change == AbstractEntityAudit.ChangeKind.CREATED) {
+            change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+            changeKind = change;
+        }
+        switch (change) {
+            case BASED_ON:
+            case TRANSLATED:
+                ver = new Version();
+                break;
+            case CONCEPTUAL:
+            case EXTERNAL:
+            case OTHER:
+            case ADDED_CONTENT:
+                ver.incMajor();
+                break;
+            case TYPO:
+                ver.incMinor();
+                break;
+            default:        //CREATED / UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
+                break;
+        }
+        version =  ver;
+    }
+
+
 
     /**
      * None null field compare, (ignores null value when comparing)

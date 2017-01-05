@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -69,10 +71,11 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
     @Column(name = "description", length = 10000)
     private String abstractDescription;
 
-    @PreUpdate
-    private void checkAuthor(){
-        authors.forEach(a->a.addTopic(this));
-    }
+//    @PreUpdate
+//    private void checkAuthor(){
+//        System.out.println("PreUpdate-> checkAuthor :" + getName() );
+//        authors.forEach(a->a.addTopic(this));
+//    }
 
     @Override
     public void addAuthor(Author user) {
@@ -89,7 +92,10 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
         this.authors = authors;
     }
 
+    @JsonSerialize
+//    @JsonDeserialize
     @Transient
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
     @Override

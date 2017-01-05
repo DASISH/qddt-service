@@ -2,7 +2,13 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -29,26 +35,70 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         try {
-            LocalDateTime now = LocalDateTime.now();
-            entity.setModified(now);
-            User user = SecurityContext.getUserDetails().getUser();
-            entity.setModifiedBy(user);
+            System.out.println("create");
+            entity.setModified(LocalDateTime.now());
+            entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
-            if (entity instanceof AbstractEntityAudit) {
-                ((AbstractEntityAudit) entity).setAgency(user.getAgency());
-                ((AbstractEntityAudit) entity).setChangeKind(AbstractEntityAudit.ChangeKind.CREATED);
-                ((AbstractEntityAudit) entity).setVersion(new Version());
-            }
             if (entity instanceof Category) {
-                entity = FixAndValidateCategoryType((Category)entity);
+                entity = fixAndValidateCategoryType((Category)entity);
             }
+
 
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
 
-    private Category FixAndValidateCategoryType(Category input){
+    /**
+     * Runs before updating an existing entity.
+     * @param entity target for persistence
+     */
+    @PreUpdate
+    public void update(AbstractEntity entity) {
+        try {
+            System.out.println("update");
+            entity.setModified(LocalDateTime.now());
+            entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
+
+            if (entity instanceof SurveyProgram){
+                checkAuthor((SurveyProgram)entity);
+            }
+            if (entity instanceof Study){
+                checkAuthor((Study)entity);
+            }
+            if (entity instanceof TopicGroup){
+                checkAuthor((TopicGroup)entity);
+            }
+            if (entity instanceof Concept) {
+                checkAddedQuestions((Concept) entity);
+            }
+
+
+        } catch (Exception e) {
+            System.out.println("ERROR -> " + e.getClass().toString() + " - " +  e.getMessage());
+            System.out.println(entity);
+        }
+    }
+
+
+    private boolean isBasedOnCopy(AbstractEntityAudit rootEntity){
+        return (rootEntity.getId() == null &&
+                rootEntity.getBasedOnObject() != null &&
+                rootEntity.getChangeKind() == AbstractEntityAudit.ChangeKind.BASED_ON);
+    }
+
+    private AbstractEntityAudit makeBasedOnCopy(AbstractEntityAudit rootEntity){
+        rootEntity.setBasedOnObject(rootEntity.getId());
+        rootEntity.setId(null);
+        rootEntity.setChangeKind(AbstractEntityAudit.ChangeKind.BASED_ON);
+        return rootEntity;
+    }
+
+    private boolean isAnOwner(AbstractEntityAudit entity, User user){
+        return entity.getAgency().equals(user.getAgency());
+    }
+
+    private Category fixAndValidateCategoryType(Category input){
         if (input.getCategoryType() == null)
             input.setCategoryType(CategoryType.CATEGORY);
         switch (input.getCategoryType()) {
@@ -69,69 +119,69 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
 
-    /**
-     * Runs before updating an existing entity.
-     * @param entity target for persistence
-     */
-    @PreUpdate
-    public void update(AbstractEntity entity) {
-        try {
-            entity.setModified(LocalDateTime.now());
-            User user = SecurityContext.getUserDetails().getUser();
-            entity.setModifiedBy(user);
+    private SurveyProgram checkAuthor(SurveyProgram entity){
+        entity.getAuthors().forEach(a->a.addSurvey(entity));
+        return entity;
+    }
 
-            if (entity instanceof AbstractEntityAudit) {
-                Version ver = ((AbstractEntityAudit) entity).getVersion();
-//                System.out.println("Update-> " + ver + " " + ((AbstractEntityAudit) entity).getName());
-                AbstractEntityAudit.ChangeKind change = ((AbstractEntityAudit) entity).getChangeKind();
-                if (entity.getId() == null && ((AbstractEntityAudit) entity).getBasedOnObject() != null)
-                    change = AbstractEntityAudit.ChangeKind.BASED_ON;
+    private Study checkAuthor(Study entity){
+        entity.getAuthors().forEach(a->a.addStudy(entity));
+        return entity;
+    }
 
-                if (change == AbstractEntityAudit.ChangeKind.CREATED) {
-                    change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
-                    ((AbstractEntityAudit) entity).setChangeKind(change);
-                }
-                switch (change) {
-                    case BASED_ON:
-                    case TRANSLATED:
-                        ver = new Version();
-                        break;
-                    case CONCEPTUAL:
-                    case EXTERNAL:
-                    case OTHER:
-                    case ADDED_CONTENT:
-                        ver.incMajor();
-                        break;
-                    case TYPO:
-                        ver.incMinor();
-                        break;
-                    default:        //CREATED / UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
-                        break;
-                }
-                ((AbstractEntityAudit) entity).setVersion(ver);
-            }
+    private TopicGroup checkAuthor(TopicGroup entity){
+        entity.getAuthors().forEach(a->a.addTopic(entity));
+        return entity;
+    }
 
-        } catch (Exception e) {
-            System.out.println("ERROR -> " + e.getClass().toString() + " - " +  e.getMessage());
-            System.out.println(entity);
-        }
+    private Concept checkAddedQuestions(Concept entity) {
+        entity.getQuestionItems()
+                .forEach(qi -> {
+                    if (!qi.getConcepts().contains(entity)) {
+                        qi.getConcepts().add(entity);
+                        entity.setChangeKind(AbstractEntityAudit.ChangeKind.ADDED_CONTENT);
+                        entity.setChangeComment("added question" + qi.getName());
+                    }
+                });
+        return entity;
     }
 
 
-    boolean isBasedOnCopy(AbstractEntityAudit rootEntity){
-        return (rootEntity.getId() == null &&
-                rootEntity.getBasedOnObject() != null &&
-                rootEntity.getChangeKind() == AbstractEntityAudit.ChangeKind.BASED_ON);
-    }
-
-    AbstractEntityAudit makeBasedOnCopy(AbstractEntityAudit rootEntity){
-        rootEntity.setBasedOnObject(rootEntity.getId());
-        rootEntity.setId(null);
-        rootEntity.setChangeKind(AbstractEntityAudit.ChangeKind.BASED_ON);
-        return rootEntity;
-    }
-
-    
-
-
+//    void incVersion(AbstractEntityAudit entity){
+////            if (!isAnOwner(this,user)){
+////                System.out.println("set agency...");
+////                setAgency(user.getAgency());
+////                aEntity = makeBasedOnCopy(aEntity);
+////            }
+//
+//        Version ver = entity.getVersion();
+//        System.out.println("incVersion-> " + ver + " " + entity.getName());
+//        AbstractEntityAudit.ChangeKind change = entity.getChangeKind();
+//        if (entity.getId() == null && entity.getBasedOnObject() != null)
+//            change = AbstractEntityAudit.ChangeKind.BASED_ON;
+//
+//        if (change == AbstractEntityAudit.ChangeKind.CREATED) {
+//            change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+//            entity.setChangeKind(change);
+//        }
+//        switch (change) {
+//            case BASED_ON:
+//            case TRANSLATED:
+//                ver = new Version();
+//                break;
+//            case CONCEPTUAL:
+//            case EXTERNAL:
+//            case OTHER:
+//            case ADDED_CONTENT:
+//                ver.incMajor();
+//                break;
+//            case TYPO:
+//                ver.incMinor();
+//                break;
+//            default:        //CREATED / UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
+//                break;
+//        }
+//        entity.setVersion(ver);
+//
+//    }
 }

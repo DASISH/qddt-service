@@ -2,13 +2,10 @@ package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
-import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import org.hibernate.internal.util.xml.ErrorLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -134,7 +131,7 @@ public class ConceptController {
 
 
 
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
     @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Concept> getbyQuestionItemId(@PathVariable("qiId") UUID id) {
         return  new ArrayList<>(); // conceptService.findByQuestionItem(id);

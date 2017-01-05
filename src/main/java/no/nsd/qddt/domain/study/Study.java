@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -49,7 +51,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements Commentable,Authorable {
+public class Study extends AbstractEntityAudit implements Authorable ,Commentable{
 
     @JsonIgnore
     @ManyToOne()
@@ -59,7 +61,10 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
     @Column(length = 10000)
     private String description;
 
+    @JsonSerialize
+    @JsonDeserialize
     @Transient
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
@@ -82,10 +87,11 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
 
     }
 
-    @PreUpdate
-    private void checkAuthor(){
-        authors.forEach(a->a.addStudy(this));
-    }
+//    @PreUpdate
+//    private void checkAuthor(){
+//        System.out.println("PreUpdate-> " + getName() );
+//        authors.forEach(a->a.addStudy(this));
+//    }
 
     public String getDescription() {
         return description;
@@ -118,17 +124,17 @@ public class Study extends AbstractEntityAudit implements Commentable,Authorable
         this.surveyProgram = surveyProgram;
     }
 
-    @Override
+
     public Set<Comment> getComments() {
         return comments;
     }
 
-    @Override
+
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    @Override
+
     public void addComment(Comment comment) {
         comment.setOwnerId(this.getId());
         comments.add(comment);

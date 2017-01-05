@@ -5,10 +5,10 @@ import no.nsd.qddt.domain.agency.web.AgencyControllerTest;
 import no.nsd.qddt.domain.category.CategoryServiceTest;
 import no.nsd.qddt.domain.category.audit.CategoryAuditServiceTest;
 import no.nsd.qddt.domain.category.web.CategoryControllerTest;
-import no.nsd.qddt.domain.code.CodeHierarchyTest;
-import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
-import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
-import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
+//import no.nsd.qddt.domain.code.CodeHierarchyTest;
+//import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
+//import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
+//import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
 import no.nsd.qddt.domain.comment.CommentServiceTest;
 import no.nsd.qddt.domain.comment.audit.CommentAuditServiceTest;
 import no.nsd.qddt.domain.comment.web.CommentControllerTest;
@@ -109,10 +109,10 @@ import org.springframework.test.context.ActiveProfiles;
         ResponseDomainControllerTest.class,
 
         // ====== ResponseDomainCode ======
-        ResponseDomainCategoryServiceTest.class,
-        ResponseDomainCategoryAuditServiceTest.class,
-        ResponseDomainCategoryControllerTest.class,
-        CodeHierarchyTest.class,
+//        ResponseDomainCategoryServiceTest.class,
+//        ResponseDomainCategoryAuditServiceTest.class,
+//        ResponseDomainCategoryControllerTest.class,
+//        CodeHierarchyTest.class,
 
         // ====== Study ======
         StudyServiceTest.class,
