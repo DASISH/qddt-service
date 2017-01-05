@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.embedded;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 /**
  * Indicates the minimum and maximum number of occurrences of a response within the given parameters.
@@ -64,6 +65,7 @@ public class ResponseCardinality {
         return "{ minimum=" + minimum + ", maximum=" + maximum +'}';
     }
 
+    @Transient
     public boolean isValid() {
         return  (minimum != null && maximum != null &&  Long.valueOf(minimum) <= Long.valueOf(maximum));
     }
