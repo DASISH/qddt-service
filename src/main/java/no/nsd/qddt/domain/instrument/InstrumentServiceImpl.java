@@ -66,4 +66,9 @@ class InstrumentServiceImpl implements InstrumentService {
     public List<Instrument> findByStudy(UUID studyId) {
         return instrumentRepository.findByStudiesId(studyId);
     }
+
+    @Override
+    public Page<Instrument> findAllPageable(Pageable pageable) {
+        return instrumentRepository.findAll(pageable);
+    }
 }

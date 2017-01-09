@@ -36,14 +36,20 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "instruments")
     private Set<Study> studies = new HashSet<>();
 
-    @OneToMany(mappedBy="instrument", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @JoinTable(name = "INSTRUMENT_CONTROL_CONSTRUCT",
+            joinColumns = {@JoinColumn(name = "instrument_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
+    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "instrument_idx")
     @OrderColumn(name="instrument_idx")
     @OrderBy("instrument_idx ASC")
-    // Ordered arrayList doesn't work with Enver FIX
-    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "instrument_idx")
     private List<ControlConstruct> controlConstructs = new ArrayList<>();
 
     private String description;
+
+    private String label;
+
+    private String externalInstrumentLocation;
 
     @Column(name="instrument_kind")
     private String instrumentType;
@@ -64,6 +70,23 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        setName(label.toUpperCase());
+        this.label = label;
+    }
+
+    public String getExternalInstrumentLocation() {
+        return externalInstrumentLocation;
+    }
+
+    public void setExternalInstrumentLocation(String externalInstrumentLocation) {
+        this.externalInstrumentLocation = externalInstrumentLocation;
     }
 
     public String getInstrumentType() {
