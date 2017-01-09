@@ -189,13 +189,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         this.questionItemRevision = questionItemRevision;
     }
 
-    public Integer getRevisionNumber() {
-        return revisionNumber;
-    }
-
-    public void setRevisionNumber(Integer revisionNumber) {
-        this.revisionNumber = revisionNumber;
-    }
 
     public UUID getQuestionItemUUID() {
         return questionItemUUID;
