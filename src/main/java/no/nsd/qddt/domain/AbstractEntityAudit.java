@@ -147,7 +147,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @PreUpdate
     private void onUpdate(){
-        System.out.println("onUpdate");
         Version ver = version;
         AbstractEntityAudit.ChangeKind change = changeKind;
         if (getId() == null && getBasedOnObject() != null)
