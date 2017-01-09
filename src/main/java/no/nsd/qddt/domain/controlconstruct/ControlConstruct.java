@@ -66,11 +66,8 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @Column(name="questionitem_id")
     private UUID questionItemUUID;
 
-    // TODO remove this element after frontend updated
-    @Column(name = "questionitem_revision")
-    private Integer revisionNumber;
 
-    @Column(name = "questionitem_revision", insertable = false,updatable = false)
+    @Column(name = "questionitem_revision")
     private Integer questionItemRevision;
 
     //------------- End QuestionItem revision early bind "hack"------------------
