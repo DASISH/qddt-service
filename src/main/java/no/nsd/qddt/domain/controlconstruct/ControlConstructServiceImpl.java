@@ -143,17 +143,17 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
             // before returning fetch correct version of QI...
             if(instance.getQuestionItemUUID() != null) {
-                if (instance.getRevisionNumber() == null || instance.getRevisionNumber() <= 0) {
+                if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
                     Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
-                    instance.setRevisionNumber(rev.getRevisionNumber());
+                    instance.setQuestionItemRevision(rev.getRevisionNumber());
                     instance.setQuestionItem(rev.getEntity());
                 } else {
-                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getRevisionNumber()).getEntity();
+                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision()).getEntity();
                     instance.setQuestionItem(qi);
                 }
             }
             else
-                instance.setRevisionNumber(0);
+                instance.setQuestionItemRevision(0);
         } catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
