@@ -38,15 +38,6 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
 
     /**
-     * This field is to keep a reference from RD to QI
-     * in order to backtrace usage with the help of Hibernate
-     * but due to revision override cannot be used otherwise
-     */
-//    @JsonIgnore
-//    private ResponseDomain responseDomainReferenceOnly;
-
-
-    /**
      * This field will be populated with the correct version of a RD,
      * but should never be persisted.
      */
@@ -76,7 +67,8 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     private Question question;
 
 
-    @JsonBackReference(value = "conceptRef")
+//    @JsonBackReference(value = "conceptRef")
+    @JsonIgnore
     @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
@@ -114,19 +106,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
     // End pre remove ----------------------------------------------
 
-//    @PreUpdate
-//    @PrePersist
-//    private void updateRef(){
-//        System.out.println("PreUpdate-> " + getName() );
-//
-//        if ( responseDomainUUID == null )
-//        if (  responseDomain != null) {
-//            System.out.println("setting response domain UUID");
-//            responseDomainUUID = responseDomain.getId();
-//        }
-//        else
-//            System.out.println("dette fungerte ikke");
-//    }
+
 
     public ResponseDomain getResponseDomain() {
         return responseDomain;
@@ -178,6 +158,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 //        return concepts.stream().collect(Collectors.toMap(p-> p.getId(), c-> new ConceptRef(c)));
             return concepts.stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
         } catch (Exception ex){
+            ex.printStackTrace();
             return new HashSet<>(0);
         }
     }

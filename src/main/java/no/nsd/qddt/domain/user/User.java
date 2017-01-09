@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.builders.StringTool.SafeString;
+
 /**
  * @author Dag Østgulen Heradstveit
  */
@@ -45,7 +47,6 @@ public class User {
     private String username;
 
     @JsonIgnore
-
     @Column(name = "password")
     private String password;
 
@@ -127,7 +128,7 @@ public class User {
     }
 
     public String getUsername() {
-        return username;
+        return SafeString(username);
     }
 
     public void setUsername(String username) {

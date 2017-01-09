@@ -56,7 +56,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void update(AbstractEntity entity) {
         try {
-            System.out.println("update");
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 

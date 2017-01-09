@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
@@ -9,10 +8,10 @@ import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
-import org.hibernate.mapping.Collection;
 
 import javax.persistence.*;
 import java.util.*;
@@ -70,12 +69,6 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
 
     @Column(name = "description", length = 10000)
     private String abstractDescription;
-
-//    @PreUpdate
-//    private void checkAuthor(){
-//        System.out.println("PreUpdate-> checkAuthor :" + getName() );
-//        authors.forEach(a->a.addTopic(this));
-//    }
 
     @Override
     public void addAuthor(Author user) {
@@ -167,8 +160,8 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
         this.abstractDescription = abstractDescription;
     }
 
-    public Concept getTopicQuestions(){
-        return concepts.stream().filter(p->p.getName()== null).findFirst().orElse(new Concept());
+    public ConceptJsonEdit getTopicQuestions(){
+        return new ConceptJsonEdit(concepts.stream().filter(p->p.getName()== null).findFirst().orElse(new Concept()));
     }
 
     public void setTopicQuestions(Concept concept){

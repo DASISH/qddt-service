@@ -73,7 +73,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
-
+    
     @JsonIgnore
     @OrderColumn(name="responsedomain_idx")
     @OrderBy("responsedomain_idx ASC")
@@ -308,9 +308,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @Override
     public String toString() {
-        return MessageFormat.format("ResponseDomain'{' name=''{0}'' id=''{1}'' modified=''{2}''} ", // codes={3}  managedRepresentation = ''{4}''} " ,
-                super.getName(),
-                super.getId(),
-                super.getModified());
+
+        return MessageFormat.format("ResponseDomain'{' {0} , {1} , {2}} " ,
+                super.toString(),
+                getCodes(),
+                getManagedRepresentation().toString());
     }
 }

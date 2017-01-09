@@ -48,10 +48,10 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private Set<Concept> children = new HashSet<>();
 
-    @JsonBackReference(value = "parentRef")
     @ManyToOne()
     @JoinColumn(name = "parent_id",updatable = false,insertable = false)
     private Concept parentReferenceOnly;
+
 
     @JsonBackReference(value = "TopicGroupRef")
     @ManyToOne()
@@ -72,9 +72,10 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     private String description;
 
     @Transient
-    @JsonSerialize
-    @JsonDeserialize
     private Set<Comment> comments = new HashSet<>();
+
+    @Transient
+    private TopicRef topicRef;
 
     public Concept() {
 
@@ -93,19 +94,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 //        }
     }
 
-//    @PrePersist
-////    @PreUpdate
-//    private void checkAddedQuestions() {
-//        System.out.println("PrePersist-checkAddedQuestions-> " + getName() );
-//        getQuestionItems()
-//                .forEach(qi -> {
-//                    if (!qi.getConcepts().contains(this)) {
-//                        qi.getConcepts().add(this);
-//                        setChangeKind(AbstractEntityAudit.ChangeKind.ADDED_CONTENT);
-//                        setChangeComment("added question" + qi.getName());
-//                    }
-//                });
-//    }
 
 
     @Override
@@ -227,24 +215,27 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         comments.add(comment);
     }
 
-    // Concept childs doesn't have a Topicgroup as parent,
-    // recurse to Topicgroup through parents
-    private TopicGroup findTopicgroup(Concept concept){
-        if( concept == null) throw new NullPointerException("concept is null in findTopicgroup");
 
-        if (concept.parentReferenceOnly == null)
-            return  concept.getTopicGroup();
-        else
-            return findTopicgroup(parentReferenceOnly);
+    private TopicGroup findTopicGroup2(){
+        Concept current = this;
+        while(current.parentReferenceOnly !=  null){
+            current = current.parentReferenceOnly;
+        }
+        return current.getTopicGroup();
     }
 
+
     public TopicRef getTopicRef() {
-        try{
-            return new TopicRef(findTopicgroup(this));
-        } catch (Exception ex ) {
-            System.out.println("getTopicRef IsNull -> [" + (getTopicGroup() == null) + "] - " + this.getName());
-            return null;
+        if (topicRef == null) {
+            TopicGroup topicGroup = findTopicGroup2();
+            if (topicGroup == null) {
+                System.out.println("getTopicRef IsNull -> " + this.getName());
+                topicRef = new TopicRef();
+            } else
+                topicRef = new TopicRef(topicGroup);
         }
+
+        return topicRef;
     }
 
     @Override

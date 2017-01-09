@@ -84,7 +84,7 @@ class CategoryServiceImpl implements CategoryService {
         // This code fixes that.
         Category retval = null;
         try {
-
+            System.out.println(instance.toString());
             List<Category> tmplist = new ArrayList<>();
 
             for (Category cat:instance.getChildren()) {
@@ -97,8 +97,10 @@ class CategoryServiceImpl implements CategoryService {
 
             if (!instance.isValid()) throw new InvalidObjectException(instance);
 
-            if (instance.getId() == null)
+            if (instance.getId() == null) {
+                System.out.println("new save");
                 retval = categoryRepository.save(instance);
+            }
             else {
                 Category fromRepository = findOne(instance.getId());
                 if (!instance.fieldCompare(fromRepository))
@@ -106,8 +108,9 @@ class CategoryServiceImpl implements CategoryService {
                 else
                     retval = instance;
             }
+            System.out.println("save finished");
         }catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
         }
         return retval;

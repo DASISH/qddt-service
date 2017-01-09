@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.questionItem.web;
 
 import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,25 +35,25 @@ public class QuestionItemController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public QuestionItem get(@PathVariable("id") UUID id) {
-        return questionItemService.findOne(id);
+    public QuestionItemJsonEdit get(@PathVariable("id") UUID id) {
+        return question2Json(questionItemService.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public QuestionItem update(@RequestBody QuestionItem instance) {
-        return questionItemService.save(instance);
+    public QuestionItemJsonEdit update(@RequestBody QuestionItem instance) {
+        return question2Json(questionItemService.save(instance));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public QuestionItem create(@RequestBody QuestionItem instance) {
+    public QuestionItemJsonEdit create(@RequestBody QuestionItem instance) {
 
         instance.setQuestion(
                 questionService.save(
                         instance.getQuestion()));
 
-        return questionItemService.save(instance);
+        return question2Json(questionItemService.save(instance));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -63,27 +64,32 @@ public class QuestionItemController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItem>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<QuestionItemJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<QuestionItem> questionitems =
-                questionItemService.findAllPageable(pageable);
+        Page<QuestionItemJsonEdit> questionitems =
+                questionItemService.findAllPageable(pageable).map(F->question2Json(F));
 
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItem>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                           @RequestParam(value = "question",defaultValue = "%") String question,
-                                                       Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<QuestionItemJsonEdit>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                                   @RequestParam(value = "question",defaultValue = "%") String question,
+                                                                   Pageable pageable, PagedResourcesAssembler assembler) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
-        Page<QuestionItem> questionitems = null;
+        Page<QuestionItemJsonEdit> questionitems = null;
         try {
-            questionitems = questionItemService.findByNameLikeOrQuestionLike(question, pageable);
+            questionitems = questionItemService.findByNameLikeOrQuestionLike(question, pageable).map(F->question2Json(F));
         } catch (Exception ex){
             ex.printStackTrace();
         }
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
+
+    private QuestionItemJsonEdit question2Json(QuestionItem questionItem){
+        return  new QuestionItemJsonEdit(questionItem);
+    }
+
 
 }

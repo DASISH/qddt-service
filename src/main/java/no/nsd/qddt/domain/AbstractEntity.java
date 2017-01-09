@@ -95,10 +95,9 @@ public abstract class AbstractEntity {
 
     @Override
     public String toString() {
-        return "AbstractEntity{" +
-                "id=" + id +
-                ", modified=" + modified +
-                ", modifiedBy=" + modifiedBy.getUsername() +
+        return "{ -- id=" + id +
+                ", modified=" + (modified!=null ? modified.toString(): "?") +
+                ", modifiedBy=" + (modifiedBy!=null ? modifiedBy.toString(): "?") +
                 '}';
     }
 

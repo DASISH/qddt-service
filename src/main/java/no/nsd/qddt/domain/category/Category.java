@@ -13,8 +13,11 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import static no.nsd.qddt.utils.builders.StringTool.SafeString;
 
 /**
  *
@@ -91,12 +94,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
      */
     private String format;
 
-    /**
-     * concept reference to a versioned concept within the system.
-     */
-    @Column(name = "concept_reference")
-    @Type(type="pg-uuid")
-    private UUID conceptReference;
+//    /**
+//     * concept reference to a versioned concept within the system.
+//     */
+//    @Column(name = "concept_reference")
+//    @Type(type="pg-uuid")
+//    private UUID conceptReference;
 
     @Column(name = "Hierarchy_level",nullable = false)
     @Enumerated(EnumType.STRING)
@@ -171,7 +174,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     public String getLabel() {
-        return label;
+        return SafeString(label);
     }
 
     public void setLabel(String label) {
@@ -188,13 +191,13 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.description = description;
     }
 
-    public UUID getConceptReference() {
-        return conceptReference;
-    }
-
-    public void setConceptReference(UUID conceptReference) {
-        this.conceptReference = conceptReference;
-    }
+//    public UUID getConceptReference() {
+//        return conceptReference;
+//    }
+//
+//    public void setConceptReference(UUID conceptReference) {
+//        this.conceptReference = conceptReference;
+//    }
 
     public Code getCode() {
         return code;
@@ -267,8 +270,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         if (getLabel() != null ? !getLabel().equals(category.getLabel()) : category.getLabel() != null) return false;
         if (getDescription() != null ? !getDescription().equals(category.getDescription()) : category.getDescription() != null)
             return false;
-        if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
-            return false;
+//        if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
+//            return false;
         return getHierarchyLevel() == category.getHierarchyLevel();
 
     }
@@ -278,19 +281,20 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         int result = super.hashCode();
         result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getConceptReference() != null ? getConceptReference().hashCode() : 0);
+//        result = 31 * result + (getConceptReference() != null ? getConceptReference().hashCode() : 0);
         result = 31 * result + (getHierarchyLevel() != null ? getHierarchyLevel().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Category{" +
+        return "Category{" + super.toString() +
                 ", label='" + getLabel() + '\'' +
                 ", description='" + getDescription() + '\'' +
-                ", hierarchyLevel=" + hierarchyLevel +
-                ", categoryType=" + categoryType +
-                "} " + super.toString();
+                ", hierarchyLevel=" + getHierarchyLevel() +'\'' +
+                ", categoryType=" + getCategoryType() +'\'' +
+                '}' + '\'' +
+                Arrays.toString(children.stream().map(F->F.toString()).toArray());
     }
 
     public boolean fieldCompare(Category o) {

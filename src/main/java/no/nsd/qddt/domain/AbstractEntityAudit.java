@@ -9,6 +9,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -64,7 +65,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      */
 
     @ManyToOne
-    @JoinColumn(name = "agency_id")
+    @JoinColumn(name = "agency_id",updatable = false)
     private Agency agency;
 
     @Column(name = "name")
@@ -146,7 +147,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @PreUpdate
     private void onUpdate(){
-
+        System.out.println("onUpdate");
         Version ver = version;
         AbstractEntityAudit.ChangeKind change = changeKind;
         if (getId() == null && getBasedOnObject() != null)
@@ -218,13 +219,16 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "AbstractEntityAudit{" +
-                 agency +
+        return "{ - " +
+                super.toString() +
+                agency +
                 ", name='" + name + '\'' +
                 ", basedOnObject=" + basedOnObject +
                 ", version='" + version + '\'' +
                 ", changeKind=" + changeKind +
                 ", changeComment='" + changeComment + '\'' +
-                "} " + super.toString();
+                "} " ;
     }
+
+
 }

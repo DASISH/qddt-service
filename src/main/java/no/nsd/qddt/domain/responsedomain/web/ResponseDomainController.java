@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
-import no.nsd.qddt.domain.responsedomain.ResponseKind;
+import no.nsd.qddt.domain.responsedomain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,27 +33,27 @@ public class ResponseDomainController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseDomain get(@PathVariable("id") UUID id) {
-        return responseDomainService.findOne(id);
+    public ResponseDomainJsonEdit get(@PathVariable("id") UUID id) {
+        return responseDomain2Json(responseDomainService.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseDomain update(@RequestBody ResponseDomain responseDomain) {
-        return responseDomainService.save(responseDomain);
+    public ResponseDomainJsonEdit update(@RequestBody ResponseDomain responseDomain) {
+        return responseDomain2Json(responseDomainService.save(responseDomain));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseDomain create(@RequestBody ResponseDomain responseDomain) {
-        return responseDomainService.save(responseDomain);
+    public ResponseDomainJsonEdit create(@RequestBody ResponseDomain responseDomain) {
+        return responseDomain2Json(responseDomainService.save(responseDomain));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseDomain createMixed(@RequestParam("responseDomaindId") UUID rdId,@RequestParam("missingId") UUID missingId) {
+    public ResponseDomainJsonEdit createMixed(@RequestParam("responseDomaindId") UUID rdId, @RequestParam("missingId") UUID missingId) {
 
-        return responseDomainService.createMixed(rdId,missingId);
+        return responseDomain2Json(responseDomainService.createMixed(rdId,missingId));
     }
 
 
@@ -67,18 +65,18 @@ public class ResponseDomainController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "ResponseKind" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ResponseDomain>> getBy(@RequestParam("ResponseKind") ResponseKind response,
-                                                            @RequestParam(value = "Description",defaultValue = "%") String description,
-                                                            @RequestParam(value = "Question",required = false) String question,
-                                                            @RequestParam(value = "Name",defaultValue = "%") String name,
-                                                            Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<ResponseDomainJsonEdit>> getBy(@RequestParam("ResponseKind") ResponseKind response,
+                                                                    @RequestParam(value = "Description",defaultValue = "%") String description,
+                                                                    @RequestParam(value = "Question",required = false) String question,
+                                                                    @RequestParam(value = "Name",defaultValue = "%") String name,
+                                                                    Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<ResponseDomain> responseDomains = null;
+        Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
             if (question == null || question.isEmpty()) {
-                responseDomains = responseDomainService.findBy(response, name, description, pageable);
+                responseDomains = responseDomainService.findBy(response, name, description, pageable).map(F->responseDomain2Json(F));
             } else {
-                responseDomains = responseDomainService.findByQuestion(response, name, question, pageable);
+                responseDomains = responseDomainService.findByQuestion(response, name, question, pageable).map(F->responseDomain2Json(F));
             }
 
         } catch (Exception ex){
@@ -89,6 +87,8 @@ public class ResponseDomainController {
         return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
     }
 
-
+    private ResponseDomainJsonEdit responseDomain2Json(ResponseDomain responseDomain){
+        return new ResponseDomainJsonEdit(responseDomain);
+    }
 
 }

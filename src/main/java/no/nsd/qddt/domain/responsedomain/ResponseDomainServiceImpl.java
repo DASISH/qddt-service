@@ -50,6 +50,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
         instance.populateCodes();
+        System.out.println(instance.toString());
         instance = responseDomainRepository.save(instance);
         return instance;
     }

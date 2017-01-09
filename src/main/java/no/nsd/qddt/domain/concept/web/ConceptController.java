@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
@@ -42,25 +43,25 @@ public class ConceptController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Concept get(@PathVariable("id") UUID id) {
-        return conceptService.findOne(id);
+    public ConceptJsonEdit get(@PathVariable("id") UUID id) {
+        return concept2Json(conceptService.findOne(id));
     }
 
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Concept update(@RequestBody Concept concept) {
-        return conceptService.save(concept);
+    public ConceptJsonEdit update(@RequestBody Concept concept) {
+        return concept2Json(conceptService.save(concept));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "questionitem"})
-    public Concept addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
+    public ConceptJsonEdit addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         try {
             Concept concept = conceptService.findOne(conceptId);
             QuestionItem questionItem = questionItemService.findOne(questionItemId);
             concept.addQuestionItem(questionItem);
-            return conceptService.save(concept);
+            return concept2Json(conceptService.save(concept));
         }catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
@@ -70,11 +71,11 @@ public class ConceptController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
-    public Concept removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
+    public ConceptJsonEdit removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         try{
             Concept concept  = conceptService.findOne(conceptId);
             concept.removeQuestionItem(questionItemId);
-            return conceptService.save(concept);
+            return concept2Json(conceptService.save(concept));
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println( ex.getMessage());
@@ -85,13 +86,13 @@ public class ConceptController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
-    public Concept createByParent(@RequestBody Concept concept,@PathVariable("uuid") UUID parentId) {
+    public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("uuid") UUID parentId) {
 
         Concept parent = conceptService.findOne(parentId);
         parent.addChildren(concept);
-        parent = conceptService.save(parent);
+        ConceptJsonEdit parentJson = concept2Json(conceptService.save(parent));
 
-        return parent.getChildren().stream()
+        return parentJson.getChildren().stream()
                 .filter(c -> c.getName() == concept.getName()).findFirst()
                 .orElseThrow( ()-> new ResourceNotFoundException(0, Concept.class));
     }
@@ -99,9 +100,9 @@ public class ConceptController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
-    public Concept createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
+    public ConceptJsonEdit createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
         topicGroupService.findOne(topicId).addConcept(concept);
-        return conceptService.save(concept);
+        return concept2Json(conceptService.save(concept));
     }
 
 
@@ -114,18 +115,18 @@ public class ConceptController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Concept>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<ConceptJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Concept> concepts = conceptService.findAllPageable(pageable);
+        Page<ConceptJsonEdit> concepts = conceptService.findAllPageable(pageable).map(F->new ConceptJsonEdit(F));
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-topicgroup/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Concept>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Concept> concepts = conceptService.findByTopicGroupPageable(id,pageable);
+        Page<ConceptJsonEdit> concepts = conceptService.findByTopicGroupPageable(id,pageable).map(F->new ConceptJsonEdit(F));
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
@@ -137,6 +138,8 @@ public class ConceptController {
         return  new ArrayList<>(); // conceptService.findByQuestionItem(id);
     }
 
-
+    private ConceptJsonEdit concept2Json(Concept concept){
+        return  new ConceptJsonEdit(concept);
+    }
 
 }

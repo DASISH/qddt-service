@@ -11,6 +11,7 @@ public class StudyRef extends BaseRef {
 
     public StudyRef(){
         super();
+        parent = new SurveyRef();
     }
 
 

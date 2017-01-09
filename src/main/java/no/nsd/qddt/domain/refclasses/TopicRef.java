@@ -13,6 +13,7 @@ public class TopicRef extends BaseRef{
 
     public TopicRef(){
         super();
+        parent = new StudyRef();
     }
 
 
