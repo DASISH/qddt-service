@@ -1,30 +1,21 @@
 package no.nsd.qddt.domain.category;
 
-import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.Code;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
  */
 public class CategoryJsonEdit extends BaseJsonEdit {
-
-    @Type(type="pg-uuid")
-    private UUID id;
-
-    private String name;
-
-    private List<CategoryJsonEdit> children = new ArrayList<>();
 
     private String label;
 
@@ -44,6 +35,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
 
     private Code code;
 
+    private List<CategoryJsonEdit> children = new ArrayList<>();
 
 
     public CategoryJsonEdit() {
@@ -51,8 +43,6 @@ public class CategoryJsonEdit extends BaseJsonEdit {
 
     public CategoryJsonEdit(Category category) {
         super(category);
-        setId(category.getId());
-        setName(category.getName());
         setChildren(category.getChildren().stream().map(F->new CategoryJsonEdit(F)).collect(Collectors.toList()));
         setLabel(category.getLabel());
         setDescription(category.getDescription());
@@ -61,32 +51,6 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<CategoryJsonEdit> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<CategoryJsonEdit> children) {
-        this.children = children;
     }
 
     public String getLabel() {
@@ -144,4 +108,13 @@ public class CategoryJsonEdit extends BaseJsonEdit {
     public void setCode(Code code) {
         this.code = code;
     }
+
+    public List<CategoryJsonEdit> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<CategoryJsonEdit> children) {
+        this.children = children;
+    }
+
 }

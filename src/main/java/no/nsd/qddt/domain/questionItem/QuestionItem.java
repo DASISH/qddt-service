@@ -43,7 +43,6 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
      */
 //    @JsonSerialize
 //    @JsonDeserialize
-//    @Transient
     @ManyToOne
     @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     private ResponseDomain responseDomain;
@@ -73,14 +72,14 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     private Set<Concept> concepts = new HashSet<>();
 
     @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "owner_uuid")
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     public QuestionItem() {
 
     }
+
 
     // Start pre remove ----------------------------------------------
 
@@ -203,13 +202,11 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
     @Override
     public String toString() {
-        return "QuestionItem{" +
+        return "QuestionItem{" + super.toString() +
                 ", question='" + question.getQuestion() + '\'' +
                 ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
                 ", responseUUID=" + responseDomainUUID + '\'' +
                 ", responseRev" + responseDomainRevision  + '\'' +
-                ", name='" + super.getName() + '\'' +
-                ", id ='" + super.getId() + '\'' +
                 "} " + System.lineSeparator();
     }
 

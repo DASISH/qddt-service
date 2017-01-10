@@ -63,10 +63,9 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-    @JsonSerialize
-    @JsonDeserialize
     @Transient
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "owner_uuid")
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {

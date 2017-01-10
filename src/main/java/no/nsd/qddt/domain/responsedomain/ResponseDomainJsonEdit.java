@@ -4,24 +4,17 @@ import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.category.CategoryJsonEdit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
 public class ResponseDomainJsonEdit  extends BaseJsonEdit {
-
-    @Type(type="pg-uuid")
-    private UUID id;
-
-    private String name;
 
     private String description;
 
@@ -43,30 +36,12 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
     public ResponseDomainJsonEdit(ResponseDomain responseDomain) {
         super(responseDomain);
         if (responseDomain == null) return;
-        setId(responseDomain.getId());
-        setName(responseDomain.getName());
         setComments(responseDomain.getComments());
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
         setManagedRepresentation(new CategoryJsonEdit(responseDomain.getManagedRepresentation()));
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {

@@ -2,6 +2,11 @@ package no.nsd.qddt.domain.commentable;
 
 import no.nsd.qddt.domain.comment.Comment;
 
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -12,6 +17,12 @@ import java.util.Set;
  * @author Dag Østgulen Heradstveit
  */
 public interface Commentable {
+
+    @Transient
+    @JoinColumn(referencedColumnName = "owner_uuid")
+    @OneToMany(fetch = FetchType.EAGER)
+    Set<Comment> comments = new HashSet<>();
+
 
     /**
      * Add a {@link Comment} to a {@link Set} of comments.

@@ -94,10 +94,9 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     private String displayLayout;
 
-    @JsonSerialize
-    @JsonDeserialize
     @Transient
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "owner_uuid")
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)

@@ -61,10 +61,9 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
     @Column(length = 10000)
     private String description;
 
-    @JsonSerialize
-    @JsonDeserialize
     @Transient
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "owner_uuid")
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})

@@ -20,6 +20,11 @@ import java.util.UUID;
  */
 public class BaseJsonEdit {
 
+    @Type(type="pg-uuid")
+    private UUID id;
+
+    private String name;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
@@ -43,12 +48,30 @@ public class BaseJsonEdit {
 
     public BaseJsonEdit(AbstractEntityAudit entity) {
         if (entity == null) return;
+        setId(entity.getId());
+        setName(entity.getName());
         setAgency(new AgencyJsonView(entity.getAgency()));
         setBasedOnObject(entity.getBasedOnObject());
         setModified(entity.getModified());
         setModifiedBy(new UserJson(entity.getModifiedBy()));
         setVersion(entity.getVersion());
         setChangeKind( entity.getChangeKind());
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDateTime getModified() {

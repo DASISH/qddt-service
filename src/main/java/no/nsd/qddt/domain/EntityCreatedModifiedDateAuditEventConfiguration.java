@@ -3,9 +3,6 @@ package no.nsd.qddt.domain;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
-import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -35,7 +32,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         try {
-            System.out.println("create");
+//            System.out.println("create");
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
@@ -55,6 +52,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
      */
     @PreUpdate
     public void update(AbstractEntity entity) {
+//        System.out.println("@PreUpdate " + entity.getClass().getName());
         try {
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());

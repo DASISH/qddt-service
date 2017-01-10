@@ -72,6 +72,8 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     private String description;
 
     @Transient
+    @JoinColumn(referencedColumnName = "owner_uuid")
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     @Transient
@@ -88,10 +90,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         getQuestionItems().clear();
         if (getTopicGroup() != null)
             getTopicGroup().removeConcept(this);
-//        if (parentReferenceOnly != null){
-//            parentReferenceOnly.getChildren().removeIf(c->c.equals(this));
-//            parentUUID = null;
-//        }
     }
 
 
@@ -145,7 +143,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         getQuestionItems().stream()
             .filter(p->p.getId() != qiId)
             .findFirst().ifPresent(qi -> {
-                System.out.println("removing qi");
+                System.out.println("removing qi from Concept->");
                 qi.getConcepts().remove(this);
                 qi.setChangeKind(ChangeKind.UPDATED_PARENT);
                 qi.setChangeComment("Concept assosiation removed");

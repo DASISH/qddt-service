@@ -156,9 +156,8 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     private ControlConstructKind controlConstructKind;
 
     @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "owner_uuid")
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
 

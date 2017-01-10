@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.comment;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.commentable.Commentable;
 import org.hibernate.annotations.Type;
@@ -26,22 +27,17 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity implements Commentable {
 
-    @Column(name = "owner_uuid")
+    @Column(name = "owner_uuid", updatable = false)
     @Type(type="pg-uuid")
     private UUID ownerId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="parent_id")
-    private Comment parent;
-
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private Set<Comment> children = new HashSet<>();
 
     private boolean isHidden;
 
     @Column(name = "comment")
     public String comment;
-
 
     public Comment() {
         isHidden = false;
@@ -59,14 +55,6 @@ public class Comment extends AbstractEntity implements Commentable {
         this.ownerId = ownerId;
     }
 
-    public Comment getParent() {
-        return parent;
-    }
-
-    public void setParent(Comment parent) {
-        this.parent = parent;
-    }
-
     public Set<Comment> getChildren() {
         return children;
     }
@@ -79,14 +67,7 @@ public class Comment extends AbstractEntity implements Commentable {
     public void addComment(Comment comment) {
         this.children.add(comment);
         comment.setOwnerId(this.getOwnerId());
-        comment.setParent(this);
     }
-
-    public void removeComment(Comment comment){
-        comment.setParent(null);
-        this.getComments().remove(comment);
-    }
-
 
     @Override
     public Set<Comment> getComments() {
@@ -97,7 +78,6 @@ public class Comment extends AbstractEntity implements Commentable {
     public void setComments(Set<Comment> comments) {
         this.children = comments;
     }
-
 
     public String getComment() {
         return comment;
@@ -115,8 +95,10 @@ public class Comment extends AbstractEntity implements Commentable {
         isHidden = hidden;
     }
 
-    public int treeSize(){
-        return getChildren() == null ? 1 : getChildren().stream().mapToInt(Comment::treeSize).sum() + 1;
+    @Transient
+    @JsonSerialize()
+    public int getTreeSize(){
+        return getChildren() == null ? 1 : getChildren().stream().mapToInt(Comment::getTreeSize).sum() + 1;
     }
 
     @Override
@@ -128,7 +110,7 @@ public class Comment extends AbstractEntity implements Commentable {
         Comment comment1 = (Comment) o;
 
         if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
-        if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
+//        if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
         return !(comment != null ? !comment.equals(comment1.comment) : comment1.comment != null);
 
     }
@@ -137,7 +119,7 @@ public class Comment extends AbstractEntity implements Commentable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
-        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+//        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }

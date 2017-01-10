@@ -56,11 +56,12 @@ public class CommentController {
     }
 
     @SuppressWarnings("unchecked")
+    @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
     @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
-        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+        return null;
+//        Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
+//        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 
 }
