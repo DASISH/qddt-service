@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.questionItem;
 
+import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -24,11 +26,15 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItemRepository questionItemRepository;
     private ResponseDomainAuditService rdAuditService;
+    private QuestionService questionService;
 
     @Autowired
-    public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,ResponseDomainAuditService responseDomainAuditService) {
+    public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
+                                   ResponseDomainAuditService responseDomainAuditService,
+                                   QuestionService questionService) {
         this.questionItemRepository = questionItemRepository;
         this.rdAuditService = responseDomainAuditService;
+        this.questionService = questionService;
     }
 
     @Override
@@ -142,7 +148,14 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     protected QuestionItem setDefaultRevision(QuestionItem instance){
-        if (instance.getResponseDomain() != null) {
+        if (instance.getId() == null && instance.getQuestion().getId() != null) {
+            // new based on entity needs new copy of question(text)
+            Question question = instance.getQuestion();
+            question.setId(null);
+            instance.setQuestion(questionService.save(question));
+        }
+
+        if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
             if (instance.getResponseDomainUUID() == null) {
                 instance.setResponseDomainUUID(instance.getResponseDomain().getId());
             }
@@ -156,6 +169,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
                 }
             }
         }
+        else
+            System.out.println("no repsonsedomain returned from web");
          return instance;
     }
 
