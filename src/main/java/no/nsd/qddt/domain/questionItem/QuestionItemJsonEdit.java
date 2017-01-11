@@ -61,7 +61,6 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         this.id = id;
     }
 
-
     public String getName() {
         return name;
     }

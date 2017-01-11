@@ -25,36 +25,36 @@ import java.util.UUID;
 @RequestMapping("/category")
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private CategoryService service;
 
     @Autowired
     public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
+        this.service = categoryService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Category get(@PathVariable("id") UUID id) {
-        return categoryService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Category update(@RequestBody Category category) {
-        return categoryService.save(category);
+        return service.save(category);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Category create(@RequestBody Category category) {
-        return categoryService.save(category);
+        return service.save(category);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
         System.out.println("delete -> " + id);
-        categoryService.delete(id);
+        service.delete(id);
     }
 
 
@@ -63,7 +63,7 @@ public class CategoryController {
     public HttpEntity<PagedResources<Category>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
         name = name.replace("*","%");
-        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
+        Page<Category> categories = service.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
 
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
@@ -73,7 +73,7 @@ public class CategoryController {
     public HttpEntity<PagedResources<Category>> getByLeaf(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
         name = name.replace("*","%");
 
-        Page<Category> categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.ENTITY, name, pageable);
+        Page<Category> categories = service.findByHierarchyAndNameLike(HierarchyLevel.ENTITY, name, pageable);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 
@@ -89,22 +89,27 @@ public class CategoryController {
         if (level == null || level.isEmpty()) {
             if (category == null || category.isEmpty()) {
 
-                categories = categoryService.findByNameLike(name, pageable);
+                categories = service.findByNameLike(name, pageable);
             } else {
 
-                categories = categoryService.findByCategoryTypeAndNameLike(CategoryType.valueOf(category), name, pageable);
+                categories = service.findByCategoryTypeAndNameLike(CategoryType.valueOf(category), name, pageable);
             }
         } else {
             if (category == null || category.isEmpty()) {
 
-                categories = categoryService.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable);
+                categories = service.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable);
             } else {
 
-                categories = categoryService.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable);
+                categories = service.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable);
             }
         }
 
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 }

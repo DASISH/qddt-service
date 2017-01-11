@@ -29,35 +29,35 @@ import java.util.UUID;
 @RequestMapping("/othermaterial")
 public class OtherMaterialController {
 
-    private OtherMaterialService otherMaterialService;
+    private OtherMaterialService service;
 
     @Autowired
-    public OtherMaterialController(OtherMaterialService otherMaterialService) {
-        this.otherMaterialService = otherMaterialService;
+    public OtherMaterialController(OtherMaterialService service) {
+        this.service = service;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public OtherMaterial get(@PathVariable("id") UUID id) {
-        return otherMaterialService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public OtherMaterial update(@RequestBody OtherMaterial instance) {
-        return otherMaterialService.save(instance);
+        return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public OtherMaterial create(@RequestBody OtherMaterial instance) {
-        return otherMaterialService.save(instance);
+        return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        otherMaterialService.delete(id);
+        service.delete(id);
     }
 
     @ResponseStatus(value = HttpStatus.I_AM_A_TEAPOT)
@@ -77,22 +77,27 @@ public class OtherMaterialController {
         if (file.isEmpty())
             throw new FileUploadException("File is empty");
 
-        return otherMaterialService.saveFile(file, ownerId);
+        return service.saveFile(file, ownerId);
     }
 
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET)
     public ResponseEntity<Resource> handleFileDownload(@PathVariable("fileId") UUID fileId) throws IOException {
-        return otherMaterialService.getFileAsResponseEntity(fileId);
+        return service.getFileAsResponseEntity(fileId);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 
 //    @ResponseStatus(value = HttpStatus.ACCEPTED)
 //    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
 //    public void handleFileDownload(HttpServletResponse response, @PathVariable("fileId") UUID fileId) throws IOException {
 //        System.out.println("file download...");
-//        OtherMaterial om = otherMaterialService.findOne(fileId);
-//        File file = otherMaterialService.getFile(om);
+//        OtherMaterial om = service.findOne(fileId);
+//        File file = service.getFile(om);
 //
 //        response.addHeader("Content-disposition", "attachment;filename=" + om.getOriginalName());
 //        response.setContentType(om.getFileType());

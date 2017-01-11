@@ -138,6 +138,15 @@ public class ConceptController {
         return  new ArrayList<>(); // conceptService.findByQuestionItem(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return conceptService.findOne(id).toDDIXml();
+    }
+
+
+
+
     private ConceptJsonEdit concept2Json(Concept concept){
         return  new ConceptJsonEdit(concept);
     }

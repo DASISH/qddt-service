@@ -24,25 +24,25 @@ import java.util.UUID;
 @RequestMapping("/questionitem")
 public class QuestionItemController {
 
-    private QuestionItemService questionItemService;
+    private QuestionItemService service;
     private QuestionService questionService;
 
     @Autowired
-    public QuestionItemController(QuestionItemService questionItemService,QuestionService questionService){
-        this.questionItemService = questionItemService;
+    public QuestionItemController(QuestionItemService service,QuestionService questionService){
+        this.service = service;
         this.questionService = questionService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public QuestionItemJsonEdit get(@PathVariable("id") UUID id) {
-        return question2Json(questionItemService.findOne(id));
+        return question2Json(service.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public QuestionItemJsonEdit update(@RequestBody QuestionItem instance) {
-        return question2Json(questionItemService.save(instance));
+        return question2Json(service.save(instance));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -53,13 +53,13 @@ public class QuestionItemController {
                 questionService.save(
                         instance.getQuestion()));
 
-        return question2Json(questionItemService.save(instance));
+        return question2Json(service.save(instance));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        questionItemService.delete(id);
+        service.delete(id);
     }
 
     @SuppressWarnings("unchecked")
@@ -67,7 +67,7 @@ public class QuestionItemController {
     public HttpEntity<PagedResources<QuestionItemJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<QuestionItemJsonEdit> questionitems =
-                questionItemService.findAllPageable(pageable).map(F->question2Json(F));
+                service.findAllPageable(pageable).map(F->question2Json(F));
 
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
@@ -80,7 +80,7 @@ public class QuestionItemController {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         Page<QuestionItemJsonEdit> questionitems = null;
         try {
-            questionitems = questionItemService.findByNameLikeOrQuestionLike(question, pageable).map(F->question2Json(F));
+            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(F->question2Json(F));
         } catch (Exception ex){
             ex.printStackTrace();
         }
@@ -91,5 +91,10 @@ public class QuestionItemController {
         return  new QuestionItemJsonEdit(questionItem);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 
 }

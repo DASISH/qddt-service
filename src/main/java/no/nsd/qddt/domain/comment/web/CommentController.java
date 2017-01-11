@@ -23,36 +23,36 @@ import java.util.UUID;
 @RequestMapping(value = "/comment")
 public class CommentController {
 
-    private CommentService commentService;
+    private CommentService service;
 
     @Autowired
-    public CommentController(CommentService commentService){
-        this.commentService = commentService;
+    public CommentController(CommentService service){
+        this.service = service;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Comment get(@PathVariable("id") UUID id) {
-        return commentService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Comment update(@RequestBody Comment comment) {
-        return commentService.save(comment);
+        return service.save(comment);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{ownerId}", method = RequestMethod.POST)
     public Comment create(@RequestBody Comment comment, @PathVariable("ownerId") UUID ownerId) {
         comment.setOwnerId(ownerId);
-        return commentService.save(comment);
+        return service.save(comment);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        commentService.delete(id);
+        service.delete(id);
     }
 
     @SuppressWarnings("unchecked")
@@ -60,8 +60,13 @@ public class CommentController {
     @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
         return null;
-//        Page<Comment> comments = commentService.findAllByOwnerIdPageable(ownerId, pageable);
+//        Page<Comment> comments = service.findAllByOwnerIdPageable(ownerId, pageable);
 //        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 }

@@ -85,4 +85,8 @@ public class Version implements Comparable<Version> {
         return this.getMajor().compareTo(o.getMajor()) + this.getMinor().compareTo(o.getMinor());
 
     }
+
+    public String toDDIXml() {
+        return "<Version>" + toString() +"</Version>";
+    }
 }

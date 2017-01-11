@@ -20,4 +20,9 @@ public class StringTool {
     public static boolean IsNullOrTrimEmpty(String input) {
         return (input == null || input.trim().isEmpty());
     }
+
+    public static String SafeString(String input){
+        return IsNullOrTrimEmpty(input)?"":input;
+    }
+
 }

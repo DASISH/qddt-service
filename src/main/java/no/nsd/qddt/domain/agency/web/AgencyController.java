@@ -16,35 +16,40 @@ import java.util.UUID;
 @RequestMapping("/agency")
 public class AgencyController {
 
-    private AgencyService agencyService;
+    private AgencyService service;
 
     @Autowired
-    public AgencyController(AgencyService agencyService) {
-        this.agencyService = agencyService;
+    public AgencyController(AgencyService service) {
+        this.service = service;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Agency get(@PathVariable("id") UUID id) {
-        return agencyService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Agency update(@RequestBody Agency agency) {
-        return agencyService.save(agency);
+        return service.save(agency);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Agency create(@RequestBody Agency agency) {
-        return agencyService.save(agency);
+        return service.save(agency);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        agencyService.delete(id);
+        service.delete(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 }

@@ -21,12 +21,12 @@ import java.util.UUID;
 @RequestMapping("/surveyprogram")
 public class SurveyProgramController {
 
-    private SurveyProgramService surveyProgramService;
+    private SurveyProgramService service;
 //    private CommentService commentService;
 
     @Autowired
-    public SurveyProgramController(SurveyProgramService surveyProgramService){ //, CommentService commentService) {
-        this.surveyProgramService = surveyProgramService;
+    public SurveyProgramController(SurveyProgramService service){ //, CommentService commentService) {
+        this.service = service;
 //        this.commentService = commentService;
     }
 
@@ -34,7 +34,7 @@ public class SurveyProgramController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     public SurveyProgram get(@PathVariable("id") UUID id) {
-        return surveyProgramService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -45,19 +45,19 @@ public class SurveyProgramController {
             c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
             c.setChangeComment("");
         });
-        return surveyProgramService.save(instance);
+        return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     public SurveyProgram create(@RequestBody SurveyProgram instance) {
-        return surveyProgramService.save(instance);
+        return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        surveyProgramService.delete(id);
+        service.delete(id);
     }
 
 
@@ -72,7 +72,7 @@ public class SurveyProgramController {
 //    public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
 //
 //        System.out.println("COMMENTS->");
-//        SurveyProgram surveyProgram = surveyProgramService.findOne(id);
+//        SurveyProgram surveyProgram = service.findOne(id);
 //        comment.setOwnerId(surveyProgram.getId());
 //        return commentService.save(comment);
 //    }
@@ -81,8 +81,13 @@ public class SurveyProgramController {
     @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)
     public List<SurveyProgram> listByUser() {
         User user = SecurityContext.getUserDetails().getUser();
-        return surveyProgramService.findByAgency(user);
+        return service.findByAgency(user);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 
 }

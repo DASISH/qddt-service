@@ -24,45 +24,49 @@ import java.util.UUID;
 @RequestMapping("/instrument")
 public class InstrumentController  {
 
-    private InstrumentService instrumentService;
+    private InstrumentService service;
 
     @Autowired
-    public InstrumentController(InstrumentService instrumentService){
-        this.instrumentService = instrumentService;
+    public InstrumentController(InstrumentService service){
+        this.service = service;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Instrument get(@PathVariable("id") UUID id) {
-        return instrumentService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Instrument update(@RequestBody Instrument instrument) {
-        return instrumentService.save(instrument);
+        return service.save(instrument);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Instrument create(@RequestBody Instrument instrument) {
-        return instrumentService.save(instrument);
+        return service.save(instrument);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        instrumentService.delete(id);
+        service.delete(id);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Instrument>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Instrument> instruments = instrumentService.findAllPageable(pageable);
+        Page<Instrument> instruments = service.findAllPageable(pageable);
         return new ResponseEntity<>(assembler.toResource(instruments), HttpStatus.OK);
     }
 
-
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 
 }

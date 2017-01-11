@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OptimisticLock;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -101,6 +99,11 @@ public abstract class AbstractEntity {
                 '}';
     }
 
+    public String toDDIXml(){
+        return "<ID type='ID'>" + getId().toString() + "</ID>";
+    }
+
+
     /**
      * None null field compare, (ignores null value when comparing)
      * @param o
@@ -116,4 +119,5 @@ public abstract class AbstractEntity {
 
         return true;
     }
+
 }

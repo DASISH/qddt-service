@@ -23,44 +23,44 @@ import java.util.UUID;
 @RequestMapping("/responsedomain")
 public class ResponseDomainController {
 
-    private ResponseDomainService responseDomainService;
+    private ResponseDomainService service;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService responseDomainService){
-        this.responseDomainService = responseDomainService;
+    public ResponseDomainController(ResponseDomainService service){
+        this.service = service;
 
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseDomainJsonEdit get(@PathVariable("id") UUID id) {
-        return responseDomain2Json(responseDomainService.findOne(id));
+        return responseDomain2Json(service.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseDomainJsonEdit update(@RequestBody ResponseDomain responseDomain) {
-        return responseDomain2Json(responseDomainService.save(responseDomain));
+        return responseDomain2Json(service.save(responseDomain));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseDomainJsonEdit create(@RequestBody ResponseDomain responseDomain) {
-        return responseDomain2Json(responseDomainService.save(responseDomain));
+        return responseDomain2Json(service.save(responseDomain));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseDomainJsonEdit createMixed(@RequestParam("responseDomaindId") UUID rdId, @RequestParam("missingId") UUID missingId) {
 
-        return responseDomain2Json(responseDomainService.createMixed(rdId,missingId));
+        return responseDomain2Json(service.createMixed(rdId,missingId));
     }
 
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        responseDomainService.delete(id);
+        service.delete(id);
     }
 
     @SuppressWarnings("unchecked")
@@ -74,9 +74,9 @@ public class ResponseDomainController {
         Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
             if (question == null || question.isEmpty()) {
-                responseDomains = responseDomainService.findBy(response, name, description, pageable).map(F->responseDomain2Json(F));
+                responseDomains = service.findBy(response, name, description, pageable).map(F->responseDomain2Json(F));
             } else {
-                responseDomains = responseDomainService.findByQuestion(response, name, question, pageable).map(F->responseDomain2Json(F));
+                responseDomains = service.findByQuestion(response, name, question, pageable).map(F->responseDomain2Json(F));
             }
 
         } catch (Exception ex){
@@ -85,6 +85,12 @@ public class ResponseDomainController {
         }
 
         return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
     }
 
     private ResponseDomainJsonEdit responseDomain2Json(ResponseDomain responseDomain){

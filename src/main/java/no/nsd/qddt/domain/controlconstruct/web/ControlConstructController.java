@@ -32,12 +32,12 @@ import java.util.UUID;
 @RequestMapping("/controlconstruct")
 public class ControlConstructController {
 
-    private ControlConstructService controlConstructService;
+    private ControlConstructService service;
     private OtherMaterialService omService;
 
     @Autowired
     public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService){
-        this.controlConstructService = ccService;
+        this.service = ccService;
         this.omService = otherMaterialService;
     }
 
@@ -45,26 +45,26 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ControlConstruct get(@PathVariable("id") UUID id) {
-        return controlConstructService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ControlConstruct update(@RequestBody ControlConstruct instance) {
-        return controlConstructService.save(instance);
+        return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ControlConstruct create(@RequestBody ControlConstruct instance) {
-        return controlConstructService.save(instance);
+        return service.save(instance);
     }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") ControlConstruct instance) throws FileUploadException {
-        instance = controlConstructService.save(instance);
+        instance = service.save(instance);
         if (files != null && files.length > 0)
             for (MultipartFile multipartFile:files) {
                 instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
@@ -74,21 +74,21 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        controlConstructService.delete(id);
+        service.delete(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-instrument/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getByFirst(@PathVariable("uuid") UUID firstId) {
 
-        return controlConstructService.findByInstrumentId(firstId);
+        return service.findByInstrumentId(firstId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getBySecond(@PathVariable("uuid") UUID secondId) {
         try {
-            return controlConstructService.findByQuestionItems(Arrays.asList(new UUID[]{secondId}));
+            return service.findByQuestionItems(Arrays.asList(new UUID[]{secondId}));
         } catch (Exception ex){
             System.out.println(ex.getMessage());
             ex.printStackTrace();
@@ -99,7 +99,7 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-questiontext/{question}", method = RequestMethod.GET)
     public List<ControlConstruct> getTop25ByQuestionText(@PathVariable("question") String questionText) {
-        return controlConstructService.findTop25ByQuestionItemQuestion(questionText);
+        return service.findTop25ByQuestionItemQuestion(questionText);
     }
 
     @SuppressWarnings("unchecked")
@@ -113,11 +113,16 @@ public class ControlConstructController {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it neccessary to distingwish
         if (kind == ControlConstructKind.QUESTION_CONSTRUCT)
-            controlConstructs= controlConstructService.findByNameLikeOrQuestionLike(name, question, pageable);
+            controlConstructs= service.findByNameLikeOrQuestionLike(name, question, pageable);
         else
-            controlConstructs = controlConstructService.findByNameLikeAndControlConstructKind(name,kind,pageable);
+            controlConstructs = service.findByNameLikeAndControlConstructKind(name,kind,pageable);
 
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 }

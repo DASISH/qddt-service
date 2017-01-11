@@ -23,15 +23,15 @@ import java.util.UUID;
 @RequestMapping("/study")
 public class StudyController {
 
-    private StudyService studyService;
+    private StudyService service;
     private SurveyProgramService surveyProgramService;
     private InstrumentService instrumentService;
 
 
     @Autowired
-    public StudyController(StudyService studyService, SurveyProgramService surveyProgramService,
+    public StudyController(StudyService service, SurveyProgramService surveyProgramService,
                             InstrumentService instrumentService) {
-        this.studyService = studyService;
+        this.service = service;
         this.surveyProgramService = surveyProgramService;
         this.instrumentService = instrumentService;
     }
@@ -40,7 +40,7 @@ public class StudyController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Study get(@PathVariable("id") UUID id) {
 
-        return studyService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -54,7 +54,7 @@ public class StudyController {
                 c.setChangeComment("");
             });
 
-        return studyService.save(instance);
+        return service.save(instance);
 
     }
 
@@ -84,13 +84,18 @@ public class StudyController {
             });
         }
 
-        return studyService.save(instance);
+        return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        studyService.delete(id);
+        service.delete(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 }

@@ -229,5 +229,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 "} " ;
     }
 
+    @Override
+    public String toDDIXml(){
+        return  super.toDDIXml() +
+                getAgency().toDDIXml() +
+                getVersion().toDDIXml() +
+                "<BasedOnObject>" +
+                "   <BasedOnReference>" + getBasedOnObject() + "</BasedOnReference>" +
+                "</BasedOnObject>";
+    }
+
 
 }

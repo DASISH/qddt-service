@@ -26,35 +26,35 @@ import java.util.UUID;
 @RequestMapping("/instruction")
 public class InstructionController {
 
-    private InstructionService instructionService;
+    private InstructionService service;
 
     @Autowired
-    public InstructionController(InstructionService instructionService) {
-        this.instructionService = instructionService;
+    public InstructionController(InstructionService service) {
+        this.service = service;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Instruction get(@PathVariable("id") UUID id) {
-        return instructionService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Instruction update(@RequestBody Instruction instruction) {
-        return instructionService.save(instruction);
+        return service.save(instruction);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Instruction create(@RequestBody Instruction instruction) {
-        return instructionService.save(instruction);
+        return service.save(instruction);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        instructionService.delete(id);
+        service.delete(id);
     }
 
 
@@ -66,8 +66,14 @@ public class InstructionController {
         Page<Instruction> instructions = null;
         description = description.replace("*","%");
 
-        instructions = instructionService.findByDescriptionLike(description, pageable);
+        instructions = service.findByDescriptionLike(description, pageable);
         return new ResponseEntity<>(assembler.toResource(instructions), HttpStatus.OK);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
     }
 }
 

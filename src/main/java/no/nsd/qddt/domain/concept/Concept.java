@@ -269,5 +269,10 @@ public class Concept extends AbstractEntityAudit implements Commentable {
                 ", id ='" + super.getId() + '\'' +
                 "} ";
     }
+
+    @Override
+    public String toDDIXml(){
+        return super.toDDIXml();
+    }
 }
 

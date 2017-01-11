@@ -20,19 +20,19 @@ import java.util.UUID;
 @RequestMapping("/topicgroup")
 public class TopicGroupController {
 
-    private TopicGroupService topicGroupService;
+    private TopicGroupService service;
     private StudyService studyService;
 
     @Autowired
-    public TopicGroupController(TopicGroupService topicGroupService, StudyService studyService) {
-        this.topicGroupService = topicGroupService;
+    public TopicGroupController(TopicGroupService service, StudyService studyService) {
+        this.service = service;
         this.studyService = studyService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public TopicGroup get(@PathVariable("id") UUID id) {
-        return topicGroupService.findOne(id);
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -47,7 +47,7 @@ public class TopicGroupController {
 //            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
 //            c.setChangeComment("");
 //        });
-        return topicGroupService.save(instance);
+        return service.save(instance);
     }
 
 
@@ -62,20 +62,25 @@ public class TopicGroupController {
         if(instance.getConcepts().isEmpty()){
             instance.addConcept(new Concept());
         }
-        return topicGroupService.save(instance);
+        return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id){
-        topicGroupService.delete(id);
+        service.delete(id);
     }
 
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
     public List<TopicGroup> findByStudy(@PathVariable("uuid") UUID studyId) {
-        return topicGroupService.findByStudyId(studyId);
+        return service.findByStudyId(studyId);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+    public String getXml(@PathVariable("id") UUID id) {
+        return service.findOne(id).toDDIXml();
+    }
 }
