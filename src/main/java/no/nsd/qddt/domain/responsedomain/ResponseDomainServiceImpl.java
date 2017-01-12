@@ -49,6 +49,12 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
         instance.populateCodes();
+        if (instance.isNewBasedOn()) {
+            instance.makeBasedOn();
+            instance.setManagedRepresentation(
+                    categoryService.save(
+                            instance.getManagedRepresentation()));
+        }
         instance = responseDomainRepository.save(instance);
         return instance;
     }

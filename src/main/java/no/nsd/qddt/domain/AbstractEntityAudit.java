@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.User;
@@ -149,7 +150,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private void onUpdate(){
         Version ver = version;
         AbstractEntityAudit.ChangeKind change = changeKind;
-        if (getId() == null && getBasedOnObject() != null)
+        if (isNewBasedOn())
                 change = AbstractEntityAudit.ChangeKind.BASED_ON;
 
         if (change == AbstractEntityAudit.ChangeKind.CREATED) {
@@ -194,6 +195,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
         return super.fieldCompare(o);
     }
+
+    @JsonIgnore
+    public boolean isNewBasedOn(){
+        return (getId() == null && getBasedOnObject() != null);
+    }
+
 
     @Override
     public boolean equals(Object o) {

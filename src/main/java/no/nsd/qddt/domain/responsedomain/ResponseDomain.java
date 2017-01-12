@@ -309,4 +309,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
                 getCodes(),
                 getManagedRepresentation().toString());
     }
+
+    @JsonIgnore
+    public void makeBasedOn() {
+        if (!isNewBasedOn()) return;
+        managedRepresentation.setBasedOnObject(managedRepresentation.getId());
+        managedRepresentation.setId(null);
+    }
 }
