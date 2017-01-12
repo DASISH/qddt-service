@@ -291,9 +291,9 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + username + '\'' +
-                ", pwd='" + (password != null ? "[Present]":"[Hidden]") + '\'' +
+//                ", pwd='" + (password != null ? "[Present]":"[Hidden]") + '\'' +
 //                ", email='" + email + '\'' +
 //                ", agency='"  + (agency != null ? agency.getName(): "[NULL]") + '\'' +
-                '}';
+                "}";
     }
 }

@@ -93,10 +93,10 @@ public abstract class AbstractEntity {
 
     @Override
     public String toString() {
-        return "{ -- id=" + id +
+        return "{ id=" + id +
                 ", modified=" + (modified!=null ? modified.toString(): "?") +
                 ", modifiedBy=" + (modifiedBy!=null ? modifiedBy.toString(): "?") +
-                '}';
+                "} ";
     }
 
     public String toDDIXml(){

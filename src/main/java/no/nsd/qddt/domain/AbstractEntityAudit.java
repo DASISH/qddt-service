@@ -218,9 +218,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "{ - " +
+        return "{ " +
                 super.toString() +
-                agency +
+                ", " + agency +
                 ", name='" + name + '\'' +
                 ", basedOnObject=" + basedOnObject +
                 ", version='" + version + '\'' +
