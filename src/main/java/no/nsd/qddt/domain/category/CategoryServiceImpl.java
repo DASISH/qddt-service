@@ -84,12 +84,9 @@ class CategoryServiceImpl implements CategoryService {
         // This code fixes that.
         Category retval = null;
         try {
-            System.out.println(instance.toString());
-            List<Category> tmplist = new ArrayList<>();
+            List<Category> tmplist = new LinkedList<>();
 
             for (Category cat:instance.getChildren()) {
-                System.out.println(cat.getName());
-//                instance.getChildren().
                   tmplist.add(save((Category)cat));
             }
             instance.getChildren().clear();
@@ -98,7 +95,6 @@ class CategoryServiceImpl implements CategoryService {
             if (!instance.isValid()) throw new InvalidObjectException(instance);
 
             if (instance.getId() == null) {
-                System.out.println("new save");
                 retval = categoryRepository.save(instance);
             }
             else {
@@ -108,7 +104,6 @@ class CategoryServiceImpl implements CategoryService {
                 else
                     retval = instance;
             }
-            System.out.println("save finished");
         }catch (Exception e) {
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;

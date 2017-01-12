@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.builders.StringTool.SafeString;
 
@@ -108,14 +109,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Column(name = "category_kind", nullable = false)
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
-
-
-    /*
-    different kind of categories have different metatags that are used in other tools,
-    We'll store them in a textfield and let the gui do the magic.
-     i.e.  datetime format
-     */
-//    private String categoryJsonDDI;
 
     public Category() {
         code = new Code();
@@ -238,7 +231,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     public List<Category> getChildren() {
-        return  children;
+        return  children.stream().filter(c->c!=null).collect(Collectors.toList());
     }
 
     public void setChildren(List<Category> children) {
@@ -289,12 +282,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Override
     public String toString() {
         return "Category{" + super.toString() +
-                ", label='" + getLabel() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", hierarchyLevel=" + getHierarchyLevel() +'\'' +
-                ", categoryType=" + getCategoryType() +'\'' +
-                '}' + '\'' +
-                Arrays.toString(children.stream().map(F->F.toString()).toArray());
+                ", label=" + getLabel() +
+                ", description=" + getDescription() +
+                ", hierarchyLevel=" + getHierarchyLevel() +
+                ", categoryType=" + getCategoryType() +
+                ", children=" + Arrays.toString(getChildren().stream().map(F->F.toString()).toArray()) +
+                "}" ;
     }
 
     public boolean fieldCompare(Category o) {
@@ -371,4 +364,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         return super.getModified().compareTo(o.getModified());
 
     }
+
+    @PrePersist
+    private void setDefaults(){
+        if (inputLimit == null)
+            setInputLimit("0","1");
+    }
+
 }
