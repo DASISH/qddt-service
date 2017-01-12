@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
@@ -50,7 +49,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
         instance.populateCodes();
-        System.out.println(instance.toString());
         instance = responseDomainRepository.save(instance);
         return instance;
     }
@@ -114,8 +112,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     private String likeify(String value){
         value = value.replace("*", "%");
-//        if (!value.startsWith("%"))
-//            value = "%"+value;
+        if (!value.startsWith("%"))
+            value = "%"+value;
         if (!value.endsWith("%"))
             value = value + "%";
         return value;
