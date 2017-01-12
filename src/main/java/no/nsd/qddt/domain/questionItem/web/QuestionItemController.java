@@ -42,6 +42,10 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public QuestionItemJsonEdit update(@RequestBody QuestionItem instance) {
+        instance.setQuestion(
+                questionService.save(
+                        instance.getQuestion()));
+
         return question2Json(service.save(instance));
     }
 

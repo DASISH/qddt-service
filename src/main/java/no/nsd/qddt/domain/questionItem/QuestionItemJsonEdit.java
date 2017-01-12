@@ -4,24 +4,17 @@ import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.question.QuestionJson;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
-import no.nsd.qddt.domain.responsedomain.ResponseDomainJsonView;
-import org.hibernate.annotations.Type;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainJsonEdit;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
 public class QuestionItemJsonEdit extends BaseJsonEdit {
 
-    @Type(type="pg-uuid")
-    private UUID id;
-
-    private String name;
-
-    private ResponseDomainJsonView responseDomain;
+    private ResponseDomainJsonEdit responseDomain;
 
     private Integer responseDomainRevision;
 
@@ -31,9 +24,6 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
 
     private Set<ConceptRef> conceptRefs;
 
-    @Type(type="pg-uuid")
-    private UUID basedOnObject;
-
     public QuestionItemJsonEdit() {
 
     }
@@ -41,39 +31,20 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
     public QuestionItemJsonEdit(QuestionItem questionItem) {
         super(questionItem);
         if (questionItem == null) return;
-        setId(questionItem.getId());
-        setName(questionItem.getName());
         setComments(questionItem.getComments());
         setQuestion(new QuestionJson(questionItem.getQuestion()));
         if (questionItem.getResponseDomain() != null)
-            setResponseDomain(new ResponseDomainJsonView(questionItem.getResponseDomain()));
+            setResponseDomain(new ResponseDomainJsonEdit(questionItem.getResponseDomain()));
         setResponseDomainRevision(questionItem.getResponseDomainRevision());
-        setBasedOnObject(questionItem.getBasedOnObject());
         setConceptRefs(questionItem.getConceptRefs());
 
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ResponseDomainJsonView getResponseDomain() {
+    public ResponseDomainJsonEdit getResponseDomain() {
         return responseDomain;
     }
 
-    public void setResponseDomain(ResponseDomainJsonView responseDomain) {
+    public void setResponseDomain(ResponseDomainJsonEdit responseDomain) {
         this.responseDomain = responseDomain;
     }
 
@@ -99,14 +70,6 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
-    }
-
-    public UUID getBasedOnObject() {
-        return basedOnObject;
-    }
-
-    public void setBasedOnObject(UUID basedOnObject) {
-        this.basedOnObject = basedOnObject;
     }
 
     public Set<ConceptRef> getConceptRefs() {

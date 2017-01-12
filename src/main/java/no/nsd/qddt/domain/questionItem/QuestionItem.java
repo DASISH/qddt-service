@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.questionItem;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -80,7 +79,6 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
     }
 
-
     // Start pre remove ----------------------------------------------
 
     @PreRemove
@@ -154,7 +152,6 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
     public Set<ConceptRef> getConceptRefs(){
         try {
-//        return concepts.stream().collect(Collectors.toMap(p-> p.getId(), c-> new ConceptRef(c)));
             return concepts.stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
         } catch (Exception ex){
             ex.printStackTrace();
