@@ -70,7 +70,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain",cascade = {CascadeType.DETACH})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
     
@@ -181,14 +181,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
 
             if (getId()== null && getResponseKind() == ResponseKind.MIXED) {
-
                 Code code = new Code(current.getCode().getCodeValue());
-//                code.setResponseDomain(this);
                 this.codes.add(code);
             } else {
-
                 Code code = current.getCode();
-//                code.setResponseDomain(this);
                 this.codes.add(code);
             }
         }
@@ -209,16 +205,16 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
                 current.setCode(code);
                 _Index++;
             } catch(Exception e) {
-                System.out.println("populateCatCodes catch & continue");
+                System.out.println("populateCatCodes catch & continue " + e.getMessage());
                 current.setCode(new Code());
             }
         }
-
-//        current.getChildren().forEach;
         current.getChildren().forEach(this::populateCatCodes);
     }
 
+
     public Category getManagedRepresentation() {
+        assert managedRepresentation != null;
         _Index = 0;
         populateCatCodes(managedRepresentation);
         return managedRepresentation;
@@ -245,7 +241,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     public List<Code> getCodes() {
         if (codes == null)
             codes = new ArrayList<>();
-        return codes;
+        return codes.stream().filter(c->c != null).collect(Collectors.toList());
     }
 
     public void setCodes(List<Code> codes) {
@@ -308,7 +304,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
     @Override
     public String toString() {
 
-        return MessageFormat.format("ResponseDomain'{' {0} , {1} , {2}} " ,
+        return MessageFormat.format("ResponseDomain { {0}, {1}, {2} } " ,
                 super.toString(),
                 getCodes(),
                 getManagedRepresentation().toString());

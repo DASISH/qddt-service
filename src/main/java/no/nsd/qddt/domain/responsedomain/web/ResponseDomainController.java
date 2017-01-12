@@ -46,6 +46,7 @@ public class ResponseDomainController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseDomainJsonEdit create(@RequestBody ResponseDomain responseDomain) {
+        assert  responseDomain != null;
         return responseDomain2Json(service.save(responseDomain));
     }
 
