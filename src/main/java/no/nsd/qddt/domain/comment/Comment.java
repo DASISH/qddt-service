@@ -36,7 +36,7 @@ public class Comment extends AbstractEntity implements Commentable {
 
     private boolean isHidden;
 
-    @Column(name = "comment")
+    @Column(name = "comment",length = 2000)
     public String comment;
 
     public Comment() {
