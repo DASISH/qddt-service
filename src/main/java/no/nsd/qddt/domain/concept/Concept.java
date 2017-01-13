@@ -58,10 +58,10 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @ManyToMany(fetch = FetchType.EAGER )
     @JoinTable(name = "CONCEPT_QUESTION_ITEM",
             joinColumns = {@JoinColumn(name = "concept_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", referencedColumnName = "id")})
+            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", referencedColumnName = "id" , updatable = false)})
     private Set<QuestionItem> questionItems = new HashSet<>();
 
 
@@ -91,8 +91,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         if (getTopicGroup() != null)
             getTopicGroup().removeConcept(this);
     }
-
-
 
     @Override
     public UUID getId() {
@@ -131,7 +129,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         if (!this.questionItems.contains(questionItem)) {
             questionItem.getConcepts().add(this);
             this.questionItems.add(questionItem);
-            questionItem.setChangeKind(ChangeKind.ADDED_CONTENT);
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
             questionItem.setChangeComment("Concept assosiation added");
             this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
@@ -140,18 +138,17 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     public  void removeQuestionItem(UUID qiId){
-        getQuestionItems().stream()
-            .filter(p->p.getId() != qiId)
-            .findFirst().ifPresent(qi -> {
-                System.out.println("removing qi from Concept->");
+        getQuestionItems().stream().filter(p->p.getId().equals(qiId)).
+                findAny().ifPresent(qi -> {
+                System.out.println("removing qi from Concept->" + qi.getId() );
                 qi.getConcepts().remove(this);
-                qi.setChangeKind(ChangeKind.UPDATED_PARENT);
+                qi.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 qi.setChangeComment("Concept assosiation removed");
                 this.questionItems.remove(qi);
                 this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 this.setChangeComment("QuestionItem assosiation removed");
             });
-        this.getQuestionItems().forEach(questionItem -> System.out.println(questionItem));
+//        this.getQuestionItems().forEach(questionItem -> System.out.println(questionItem));
     }
 
 
