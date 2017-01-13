@@ -136,49 +136,13 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
                 .forEach(qi -> {
                     if (!qi.getConcepts().contains(entity)) {
                         qi.getConcepts().add(entity);
-                        entity.setChangeKind(AbstractEntityAudit.ChangeKind.ADDED_CONTENT);
-                        entity.setChangeComment("added question" + qi.getName());
+                        entity.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+                        entity.setChangeComment("added question, " + qi.getName());
                     }
                 });
         return entity;
     }
 
 
-//    void incVersion(AbstractEntityAudit entity){
-////            if (!isAnOwner(this,user)){
-////                System.out.println("set agency...");
-////                setAgency(user.getAgency());
-////                aEntity = makeBasedOnCopy(aEntity);
-////            }
-//
-//        Version ver = entity.getVersion();
-//        System.out.println("incVersion-> " + ver + " " + entity.getName());
-//        AbstractEntityAudit.ChangeKind change = entity.getChangeKind();
-//        if (entity.getId() == null && entity.getBasedOnObject() != null)
-//            change = AbstractEntityAudit.ChangeKind.BASED_ON;
-//
-//        if (change == AbstractEntityAudit.ChangeKind.CREATED) {
-//            change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
-//            entity.setChangeKind(change);
-//        }
-//        switch (change) {
-//            case BASED_ON:
-//            case TRANSLATED:
-//                ver = new Version();
-//                break;
-//            case CONCEPTUAL:
-//            case EXTERNAL:
-//            case OTHER:
-//            case ADDED_CONTENT:
-//                ver.incMajor();
-//                break;
-//            case TYPO:
-//                ver.incMinor();
-//                break;
-//            default:        //CREATED / UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
-//                break;
-//        }
-//        entity.setVersion(ver);
-//
-//    }
+
 }
