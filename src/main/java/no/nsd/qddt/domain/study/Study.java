@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
@@ -11,7 +9,6 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -61,11 +58,6 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
     @Column(length = 10000)
     private String description;
 
-    @Transient
-    @JoinColumn(referencedColumnName = "owner_uuid")
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Comment> comments = new HashSet<>();
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "STUDY_INSTRUMENTS",
             joinColumns = {@JoinColumn(name = "study_id")},
@@ -82,15 +74,16 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+    private Set<Comment> comments = new HashSet<>();
+
+
     public Study() {
 
     }
 
-//    @PreUpdate
-//    private void checkAuthor(){
-//        System.out.println("PreUpdate-> " + getName() );
-//        authors.forEach(a->a.addStudy(this));
-//    }
+
 
     public String getDescription() {
         return description;
@@ -123,21 +116,10 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
         this.surveyProgram = surveyProgram;
     }
 
-
     public Set<Comment> getComments() {
         return comments;
     }
 
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
 
     public Set<Instrument> getInstruments() {
         if (instruments == null)

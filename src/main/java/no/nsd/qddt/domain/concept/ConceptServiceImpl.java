@@ -23,12 +23,13 @@ import java.util.UUID;
 class ConceptServiceImpl implements ConceptService {
 
     private ConceptRepository conceptRepository;
-    private CommentService commentService;
+//    private CommentService commentService;
 
     @Autowired
-    ConceptServiceImpl(ConceptRepository conceptRepository,CommentService commentService){
+//    ConceptServiceImpl(ConceptRepository conceptRepository,CommentService commentService){
+      ConceptServiceImpl(ConceptRepository conceptRepository){
         this.conceptRepository = conceptRepository;
-        this.commentService = commentService;
+//        this.commentService = commentService;
     }
 
     @Override
@@ -82,7 +83,7 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional(readOnly = true)
     public Page<Concept> findAllPageable(Pageable pageable) {
         Page<Concept> pages = conceptRepository.findAll(pageable);
-        populateComments(pages);
+//        populateComments(pages);
         return pages;
     }
 
@@ -90,7 +91,7 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional(readOnly = true)
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,pageable);
-        populateComments(pages);
+//        populateComments(pages);
 //        pages.forEach(c-> System.out.println("number of comments:"+ c.getComments().size()));
         return pages;
     }
@@ -101,11 +102,14 @@ class ConceptServiceImpl implements ConceptService {
         return conceptRepository.findByQuestionItemsId(questionItemId);
     }
 
-    private void populateComments(Page<Concept> pages){
-        for (Concept concept : pages.getContent()) {
-            concept.setComments(new HashSet<>(commentService.findAllByOwnerIdPageable(concept.getId(),new PageRequest(0,25)).getContent()));
-        }
-    }
+//    private void populateComments(Page<Concept> pages){
+//        for (Concept concept : pages.getContent()) {
+//            if (concept.getComments().size() > 0)
+//                System.out.println("ALLREADY HAVE COMMNENTS");
+//            else
+//            concept.setComments(new HashSet<>(commentService.findAllByOwnerIdPageable(concept.getId(),new PageRequest(0,25)).getContent()));
+//        }
+//    }
 
 
 

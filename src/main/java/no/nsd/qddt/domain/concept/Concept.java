@@ -71,10 +71,20 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @Column(name = "description", length = 10000)
     private String description;
 
-    @Transient
-    @JoinColumn(referencedColumnName = "owner_uuid")
-    @OneToMany(fetch = FetchType.EAGER)
+    @PostLoad
+    private void logComments(){
+        if (comments.size() > 0)
+        System.out.println(getName() + " " + comments.size() + "...");
+    }
+
+//    @Transient
+//    @JoinColumn(name = "owner_uuid", referencedColumnName = "id")
+//    @OneToMany(fetch = FetchType.EAGER)
+//    private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
+
 
     @Transient
     private TopicRef topicRef;
@@ -199,17 +209,9 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         return comments;
     }
 
-
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
-
-
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
-
 
     private TopicGroup findTopicGroup2(){
         Concept current = this;

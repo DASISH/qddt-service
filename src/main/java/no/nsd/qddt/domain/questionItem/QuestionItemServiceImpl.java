@@ -58,13 +58,15 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Override
     @Transactional(readOnly = false)
     public QuestionItem save(QuestionItem instance) {
+        System.out.println("QI save");
         try {
+            instance = setDefaultRevision(instance);
+            System.out.println(instance);
             return setRevisionedResponsedomain(
-                    questionItemRepository.save(
-                            setDefaultRevision(instance)));
+                    questionItemRepository.save(instance));
         } catch (Exception ex){
             ex.printStackTrace();
-            System.out.println(ex.getMessage());
+            System.out.println("QI save ->"  + ex.getMessage());
             throw ex;
         }
     }
@@ -126,12 +128,18 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
+                    System.out.println("Fetch latest RD");
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(rev.getRevisionNumber());
                     instance.setResponseDomain(rev.getEntity());
                 } else {
-                    ResponseDomain rd  =rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
-                    instance.setResponseDomain(rd);
+                    try {
+                        ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
+                        instance.setResponseDomain(rd);
+                    } catch (Exception ex){
+                        System.out.println(ex.getMessage());
+                        instance.setResponseDomainRevision(0);
+                    }
                 }
             }
             else
@@ -149,10 +157,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     protected QuestionItem setDefaultRevision(QuestionItem instance){
         if (instance.getId() == null && instance.getQuestion().getId() != null) {
-            // new based on entity needs new copy of question(text)
-            Question question = instance.getQuestion();
-            question.setId(null);
-            instance.setQuestion(questionService.save(question));
+            // new based on entity needs a new copy of question(text)
+            instance.setQuestion(questionService.save(instance.getQuestion().newCopyOf()));
         }
 
         if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
@@ -169,8 +175,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
                 }
             }
         }
-        else
+        else {
+            instance.setResponseDomainRevision(0);
             System.out.println("no repsonsedomain returned from web");
+        }
          return instance;
     }
 

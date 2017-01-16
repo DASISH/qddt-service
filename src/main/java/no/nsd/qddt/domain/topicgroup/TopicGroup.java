@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements Commentable,Authorable {
+public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,26 +85,18 @@ public class TopicGroup extends AbstractEntityAudit implements Commentable,Autho
         this.authors = authors;
     }
 
-    @Transient
-    @JoinColumn(referencedColumnName = "owner_uuid")
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
-    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
-    @Override
+
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    @Override
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
 
     public Study getStudy() {
         return study;

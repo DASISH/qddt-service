@@ -253,16 +253,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         return comments;
     }
 
-    @Override
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
 
-    @Override
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
 
 //    private Set<QuestionItemRef> questionItemRefs = new HashSet<>();
 

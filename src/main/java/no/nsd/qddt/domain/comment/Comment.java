@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.comment;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.commentable.Commentable;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -39,6 +41,7 @@ public class Comment extends AbstractEntity implements Commentable {
     @Column(name = "comment",length = 2000)
     public String comment;
 
+
     public Comment() {
         isHidden = false;
     }
@@ -63,7 +66,6 @@ public class Comment extends AbstractEntity implements Commentable {
         this.children = children;
     }
 
-    @Override
     public void addComment(Comment comment) {
         this.children.add(comment);
         comment.setOwnerId(this.getOwnerId());
@@ -74,7 +76,6 @@ public class Comment extends AbstractEntity implements Commentable {
         return this.children;
     }
 
-    @Override
     public void setComments(Set<Comment> comments) {
         this.children = comments;
     }

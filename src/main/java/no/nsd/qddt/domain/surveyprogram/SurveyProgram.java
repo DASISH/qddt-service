@@ -63,9 +63,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-    @Transient
-    @JoinColumn(referencedColumnName = "owner_uuid")
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {
@@ -107,21 +105,10 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
         this.studies = studies;
     }
 
-    @Override
     public Set<Comment> getComments() {
         return comments;
     }
 
-    @Override
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    @Override
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
 
     @Override
     public boolean equals(Object o) {

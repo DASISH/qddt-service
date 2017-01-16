@@ -70,9 +70,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
-    @Transient
-    @JoinColumn(referencedColumnName = "owner_uuid")
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 
     public QuestionItem() {
@@ -162,7 +160,6 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     public Set<Comment> getComments() {
         return comments;
     }
-
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;

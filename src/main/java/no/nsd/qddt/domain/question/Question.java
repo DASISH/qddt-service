@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -59,6 +60,16 @@ public class Question extends AbstractEntity {
 
     public Question(String questionText){
         setQuestion(questionText);
+    }
+
+    protected Question(Question question) {
+        setChildren(question.getChildren().stream().map(q->new Question(q)).collect(Collectors.toSet()));
+        setId(question.getId());
+        setModifiedBy(question.getModifiedBy());
+        setModified(question.getModified());
+        setGridIdxRationale(question.getGridIdxRationale());
+        setIntent(question.getIntent());
+        setQuestion(question.getQuestion());
     }
 
 
@@ -149,6 +160,12 @@ public class Question extends AbstractEntity {
                 ", intent='" + intent + '\'' +
                 ", question='" + question + '\'' +
                 "} " + super.toString();
+    }
+
+    public Question newCopyOf() {
+        Question instance = new Question(this);
+        instance.setId(null);
+        return  instance;
     }
 }
 
