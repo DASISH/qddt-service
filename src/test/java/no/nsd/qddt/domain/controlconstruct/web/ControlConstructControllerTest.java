@@ -36,7 +36,6 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
         entity = new ControlConstruct();
         QuestionItem item = new QuestionItem();
         entity.setQuestionItem(item);
-        entity.setRevisionNumber(33);
         entity.setName("A test entity");
         entity = entityService.save(entity);
 
@@ -69,7 +68,6 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
         QuestionItem item = new QuestionItem();
         aEntity.setName("Posted entity");
         aEntity.setQuestionItem(item);
-        aEntity.setRevisionNumber(33);
 
         mvc.perform(MockMvcRequestBuilders.fileUpload("/controlconstruct/create")
                 .file("file", "Test Content".getBytes())

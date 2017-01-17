@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.embedded;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
@@ -15,6 +17,10 @@ public class Version implements Comparable<Version> {
     private String versionLabel="";
     @Transient
     private boolean isModified = false;
+
+    @Transient
+    @JsonIgnore
+    private boolean isNew = false;
 
 
 //    @org.springframework.data.annotation.Version
@@ -51,6 +57,15 @@ public class Version implements Comparable<Version> {
         this.versionLabel = versionLabel;
     }
 
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public Version() {   }
+
+    public Version(boolean isNew) {
+        this.isNew = isNew;
+    }
 
     @Override
     public boolean equals(Object o) {

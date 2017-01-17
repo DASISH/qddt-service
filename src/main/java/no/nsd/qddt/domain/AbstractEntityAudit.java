@@ -9,8 +9,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -143,7 +141,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
         changeKind = AbstractEntityAudit.ChangeKind.CREATED;
-        version = new Version();
+        version = new Version(true);
     }
 
     @PreUpdate
@@ -153,7 +151,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         if (isNewBasedOn())
                 change = AbstractEntityAudit.ChangeKind.BASED_ON;
 
-        if (change == AbstractEntityAudit.ChangeKind.CREATED) {
+        if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
             change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
             changeKind = change;
         }

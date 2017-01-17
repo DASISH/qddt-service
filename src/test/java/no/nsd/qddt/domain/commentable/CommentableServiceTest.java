@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.commentable;
 
 import no.nsd.qddt.QDDT;
-import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.utils.BeforeSecurityContext;
@@ -14,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
@@ -26,8 +24,6 @@ import static org.junit.Assert.assertThat;
 @SpringApplicationConfiguration(classes = QDDT.class)
 public class CommentableServiceTest  {
 
-    @Autowired
-    private CommentableService commentableService;
 
     @Autowired
     private CommentService commentService;
@@ -57,7 +53,6 @@ public class CommentableServiceTest  {
         parent.setOwnerId(owner.getId());
         parent = commentService.save(parent);
 
-        parent = commentableService.saveComment(owner, parent);
         assertEquals("Parent owner UUID should equal owner ID", parent.getOwnerId(), owner.getId());
     }
 
@@ -86,13 +81,6 @@ public class CommentableServiceTest  {
             }
         }
 
-        Comment comment= commentService.findOne(id);
-        List<Comment> comments = commentableService.populate(comment);
-
-        comments.forEach( c -> {
-            assertEquals("OwnerId should match", comment.getId(), c.getOwnerId());
-        });
-        assertThat("Should have at least one comment", comments.size(), is(10));
 
     }
 }

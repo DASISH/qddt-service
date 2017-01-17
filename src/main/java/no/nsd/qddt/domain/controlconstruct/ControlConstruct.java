@@ -127,6 +127,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
 
 
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     @JsonIgnore
