@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.comment.web;
 
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,12 +57,11 @@ public class CommentController {
     }
 
     @SuppressWarnings("unchecked")
-    @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Comment>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
-        return null;
-//        Page<Comment> comments = service.findAllByOwnerIdPageable(ownerId, pageable);
-//        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+    public HttpEntity<PagedResources<CommentJsonEdit>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<CommentJsonEdit> comments = service.findAllByOwnerIdPageable(ownerId, pageable).map(c->new CommentJsonEdit(c));
+        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

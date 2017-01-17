@@ -1,12 +1,9 @@
 package no.nsd.qddt.domain.comment;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -22,19 +19,20 @@ import java.util.UUID;
  * and add a reference for this root element to the corresponding survey , the relationship will be like this ( entity(survey) &#8594;  comment root &#8592;  comments)
  *
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 
-@Audited
+//@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "comment")
 public class Comment extends AbstractEntity implements Commentable {
 
-    @Column(name = "owner_uuid", updatable = false)
+    @Column(name = "owner_id", updatable = false)
     @Type(type="pg-uuid")
     private UUID ownerId;
 
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
-    private Set<Comment> children = new HashSet<>();
+    private Set<Comment> comments = new HashSet<>();
 
     private boolean isHidden;
 
@@ -58,26 +56,19 @@ public class Comment extends AbstractEntity implements Commentable {
         this.ownerId = ownerId;
     }
 
-    public Set<Comment> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<Comment> children) {
-        this.children = children;
-    }
 
     public void addComment(Comment comment) {
-        this.children.add(comment);
+        this.comments.add(comment);
         comment.setOwnerId(this.getOwnerId());
     }
 
     @Override
     public Set<Comment> getComments() {
-        return this.children;
+        return this.comments;
     }
 
     public void setComments(Set<Comment> comments) {
-        this.children = comments;
+        this.comments = comments;
     }
 
     public String getComment() {
@@ -99,7 +90,7 @@ public class Comment extends AbstractEntity implements Commentable {
     @Transient
     @JsonSerialize()
     public int getTreeSize(){
-        return getChildren() == null ? 1 : getChildren().stream().mapToInt(Comment::getTreeSize).sum() + 1;
+        return comments == null ? 0 : comments.stream().mapToInt(Comment::getTreeSize).sum();
     }
 
     @Override
@@ -111,7 +102,6 @@ public class Comment extends AbstractEntity implements Commentable {
         Comment comment1 = (Comment) o;
 
         if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
-//        if (parent != null ? !parent.equals(comment1.parent) : comment1.parent != null) return false;
         return !(comment != null ? !comment.equals(comment1.comment) : comment1.comment != null);
 
     }
@@ -120,7 +110,6 @@ public class Comment extends AbstractEntity implements Commentable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
-//        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }
@@ -134,9 +123,9 @@ public class Comment extends AbstractEntity implements Commentable {
     }
 
     public void removeChildren() {
-        getChildren().forEach(C ->{
+        comments.forEach(C ->{
             C.removeChildren();
-            C.setChildren(null);
+            C.comments = null;
         });
     }
 }

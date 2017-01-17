@@ -73,7 +73,7 @@ public class SurveyProgramController {
 //
 //        System.out.println("COMMENTS->");
 //        SurveyProgram surveyProgram = service.findOne(id);
-//        comment.setOwnerId(surveyProgram.getId());
+//        comment.setOwner(surveyProgram.getId());
 //        return commentService.save(comment);
 //    }
 

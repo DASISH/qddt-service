@@ -12,6 +12,8 @@ import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.*;
@@ -86,6 +88,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     }
 
     @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
     public Set<Comment> getComments() {

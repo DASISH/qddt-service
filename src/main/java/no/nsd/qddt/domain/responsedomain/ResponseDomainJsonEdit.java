@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.responsedomain;
 import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.category.CategoryJsonEdit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 
 import javax.persistence.Embedded;
@@ -10,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -22,7 +24,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
 
     private String displayLayout;
 
-    private Set<Comment> comments = new HashSet<>();
+    private Set<CommentJsonEdit> comments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
@@ -36,7 +38,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
     public ResponseDomainJsonEdit(ResponseDomain responseDomain) {
         super(responseDomain);
         if (responseDomain == null) return;
-        setComments(responseDomain.getComments());
+        setComments(responseDomain.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
         setManagedRepresentation(new CategoryJsonEdit(responseDomain.getManagedRepresentation()));
@@ -68,11 +70,11 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         this.displayLayout = displayLayout;
     }
 
-    public Set<Comment> getComments() {
+    public Set<CommentJsonEdit> getComments() {
         return comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 

@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.questionItem.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import org.hibernate.annotations.Type;
@@ -29,7 +30,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private String description;
 
-    private Set<Comment> comments = new HashSet<>();
+    private Set<CommentJsonEdit> comments = new HashSet<>();
 
     private TopicRef topicRef;
 
@@ -41,7 +42,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         setId(concept.getId());
         setName(concept.getName());
         setChildren(concept.getChildren().stream().map(F-> new ConceptJsonEdit(F)).collect(Collectors.toSet()));
-        setComments(concept.getComments());
+        setComments(concept.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
         setDescription(concept.getDescription());
         setLabel(concept.getLabel());
         setQuestionItems(concept.getQuestionItems().stream().map(F-> new QuestionItemJsonEdit(F)).collect(Collectors.toSet()));
@@ -97,11 +98,11 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         this.description = description;
     }
 
-    public Set<Comment> getComments() {
+    public Set<CommentJsonEdit> getComments() {
         return comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 

@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -11,6 +9,8 @@ import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -55,6 +55,7 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     private String instrumentType;
 
     @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
     public Instrument() {

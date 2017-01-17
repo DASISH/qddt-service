@@ -1,9 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -11,9 +8,10 @@ import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -44,7 +42,6 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
-    // Ordered arrayList doesn't work with Enver FIX
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private Set<Concept> children = new HashSet<>();
 
@@ -71,18 +68,8 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @Column(name = "description", length = 10000)
     private String description;
 
-    @PostLoad
-    private void logComments(){
-        if (comments.size() > 0)
-        System.out.println(getName() + " " + comments.size() + "...");
-    }
-
-//    @Transient
-//    @JoinColumn(name = "owner_uuid", referencedColumnName = "id")
-//    @OneToMany(fetch = FetchType.EAGER)
-//    private Set<Comment> comments = new HashSet<>();
-
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.LAZY)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
 

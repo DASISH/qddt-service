@@ -10,6 +10,8 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -64,6 +66,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
     private Set<Author> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {

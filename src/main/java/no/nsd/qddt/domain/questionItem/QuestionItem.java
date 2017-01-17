@@ -12,6 +12,8 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -70,7 +72,8 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     @ManyToMany(mappedBy="questionItems")
     private Set<Concept> concepts = new HashSet<>();
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.LAZY)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
     public QuestionItem() {
@@ -160,17 +163,6 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     public Set<Comment> getComments() {
         return comments;
     }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
-
 
     @Override
     public boolean equals(Object o) {

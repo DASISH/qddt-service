@@ -18,6 +18,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
@@ -70,6 +71,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
     @JsonIgnore
@@ -104,9 +106,6 @@ public class User {
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<ResponseDomain> responseDomains = new HashSet<>();
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
-//    private Set<Code> codes = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
@@ -175,13 +174,13 @@ public class User {
         this.studies = studies;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
+//    public Set<Comment> getComments() {
+//        return comments;
+//    }
+//
+//    public void setComments(Set<Comment> comments) {
+//        this.comments = comments;
+//    }
 
     public Set<Instrument> getInstrument() {
         return instrument;
