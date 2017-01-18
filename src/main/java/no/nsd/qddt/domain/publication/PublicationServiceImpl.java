@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.selectable;
+package no.nsd.qddt.domain.publication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,12 +12,12 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Service("selectableService")
-public class SelectableServiceImpl implements SelectableService {
+public class PublicationServiceImpl implements PublicationService {
 
-    private SelectableRepository repository;
+    private PublicationRepository repository;
 
     @Autowired
-    public SelectableServiceImpl(SelectableRepository repository) {
+    public PublicationServiceImpl(PublicationRepository repository) {
         this.repository = repository;
     }
 
@@ -32,17 +32,17 @@ public class SelectableServiceImpl implements SelectableService {
     }
 
     @Override
-    public Selectable findOne(UUID uuid) {
+    public Publication findOne(UUID uuid) {
         return repository.findOne(uuid);
     }
 
     @Override
-    public Selectable save(Selectable instance) {
+    public Publication save(Publication instance) {
         return repository.save(instance);
     }
 
     @Override
-    public List<Selectable> save(List<Selectable> instances) {
+    public List<Publication> save(List<Publication> instances) {
         return repository.save(instances);
     }
 
@@ -52,12 +52,12 @@ public class SelectableServiceImpl implements SelectableService {
     }
 
     @Override
-    public void delete(List<Selectable> instances) {
+    public void delete(List<Publication> instances) {
         repository.delete(instances);
     }
 
     @Override
-    public Page<Selectable> findAllPageable(Pageable pageable) {
+    public Page<Publication> findAllPageable(Pageable pageable) {
         return repository.findAll(pageable);
     }
 }

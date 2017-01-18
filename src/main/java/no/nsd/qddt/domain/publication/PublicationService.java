@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.selectable;
+package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.BaseService;
 import org.springframework.data.domain.Page;
@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface SelectableService extends BaseService<Selectable, UUID> {
+public interface PublicationService extends BaseService<Publication, UUID> {
 
-    Page<Selectable> findAllPageable(Pageable pageable);
+    Page<Publication> findAllPageable(Pageable pageable);
 }
