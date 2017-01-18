@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.surveyprogram.web;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +42,7 @@ public class SurveyProgramAuditController {
         return service.findRevision(id, revision);
     }
 
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
