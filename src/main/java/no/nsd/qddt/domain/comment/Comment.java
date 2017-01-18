@@ -122,10 +122,5 @@ public class Comment extends AbstractEntity implements Commentable {
                 "} " + super.toString();
     }
 
-    public void removeChildren() {
-        comments.forEach(C ->{
-            C.removeChildren();
-            C.comments = null;
-        });
-    }
+
 }
