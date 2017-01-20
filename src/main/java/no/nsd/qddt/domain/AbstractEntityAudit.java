@@ -2,6 +2,8 @@ package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
@@ -9,6 +11,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -74,6 +77,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
+    @Column(name = "based_on_revision", nullable = true)
+    private Integer basedOnRevision;
+
     @Embedded
     private Version version;
 
@@ -102,6 +108,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     public void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
+    }
+
+    public Integer getBasedOnRevision() {
+        return basedOnRevision;
+    }
+
+    public void setBasedOnRevision(Integer basedOnRevision) {
+        this.basedOnRevision = basedOnRevision;
     }
 
     public Version getVersion() {
@@ -148,9 +162,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private void onUpdate(){
         Version ver = version;
         AbstractEntityAudit.ChangeKind change = changeKind;
-        if (isNewBasedOn())
-                change = AbstractEntityAudit.ChangeKind.BASED_ON;
-
+        if (isNewBasedOn()) {
+            makeNewCopy(true);
+        }
         if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
             change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
             changeKind = change;
@@ -175,6 +189,20 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         version =  ver;
     }
 
+    @PostLoad
+    private void customfilter(){
+        if (this instanceof Commentable){
+            // we have to filter comments manually before sending them over to clients, this will be fixed in
+            // a later version of Hibernate
+            removeComments(((Commentable)this).getComments());
+        }
+    }
+
+    private void removeComments(Set<Comment> comments){
+        comments.removeIf(c->c.getIsHidden()==true);
+        comments.stream().forEach(c->removeComments(c.getComments()));
+    }
+
 
 
     /**
@@ -196,7 +224,26 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @JsonIgnore
     public boolean isNewBasedOn(){
-        return (getId() == null && getBasedOnObject() != null);
+        return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
+    }
+
+    @JsonIgnore
+    @Transient
+    protected boolean hasRun = false;
+
+    @JsonIgnore
+    /*
+    This function should contain all copy code needed to make a complete copy of hierarchy under this element
+    (an override should propigate downward and call makeNewCopy on it's children).
+     */
+    protected void makeNewCopy(boolean isBasedOn){
+        if (hasRun) return;
+        if (isBasedOn)
+            setBasedOnObject(getId());
+
+        version.setVersionLabel("COPY OF [" + getId() + "]");
+        setId(UUID.randomUUID());
+        hasRun = true;
     }
 
 
