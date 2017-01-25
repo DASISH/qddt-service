@@ -11,7 +11,6 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -39,12 +38,14 @@ import java.util.UUID;
 public class Concept extends AbstractEntityAudit implements Commentable {
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
+    // Ordered arrayList doesn't work with Enver FIX
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private Set<Concept> children = new HashSet<>();
 
+    @JsonBackReference(value = "parentRef")
     @ManyToOne()
     @JoinColumn(name = "parent_id",updatable = false,insertable = false)
     private Concept parentReferenceOnly;
@@ -55,7 +56,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
-    @ManyToMany(fetch = FetchType.EAGER )
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @JoinTable(name = "CONCEPT_QUESTION_ITEM",
             joinColumns = {@JoinColumn(name = "concept_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "questionItem_id", referencedColumnName = "id" , updatable = false)})
@@ -68,7 +69,14 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @Column(name = "description", length = 10000)
     private String description;
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.LAZY)
+    @PostLoad
+    private void logComments(){
+        if (comments.size() > 0)
+        System.out.println(getName() + " " + comments.size() + "...");
+    }
+
+
+    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
     @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
@@ -82,11 +90,11 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
     @PreRemove
     private void removeReferencesFromConcept(){
-        System.out.println("removeReferencesFromConcept");
         getQuestionItems().forEach(qi->qi.updateStatusQI(this));
         getQuestionItems().clear();
         if (getTopicGroup() != null)
             getTopicGroup().removeConcept(this);
+
     }
 
     @Override
