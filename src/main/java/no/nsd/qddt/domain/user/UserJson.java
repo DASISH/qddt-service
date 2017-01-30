@@ -23,10 +23,12 @@ public class UserJson {
     }
 
     public UserJson(User user) {
+        if (user == null) return;
         setId(user.getId());
-        setAgency(new AgencyJsonView(user.getAgency()));
         setEmail(user.getEmail());
         setUsername(user.getUsername());
+        if (user.getAgency() != null)
+            setAgency(new AgencyJsonView(user.getAgency()));
     }
 
 
