@@ -71,7 +71,6 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     public QuestionItem getQuestionItem() {
         if (questionItem.getVersion().getRevision() == null) {
-            System.out.println("setRevision");
             questionItem.getVersion().setRevision(getQuestionItemRevision());
         }
         return questionItem;
@@ -79,7 +78,6 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     public void setQuestionItem(QuestionItem questionItem) {
         if (questionItem.getVersion().getRevision() != null) {
-            System.out.println("setQuestionItemRevision");
             setQuestionItemRevision(questionItem.getVersion().getRevision());
         }
         this.questionItem = questionItem;
