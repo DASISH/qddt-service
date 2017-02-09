@@ -39,14 +39,19 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     public ConceptJsonEdit(Concept concept) {
         super(concept);
-        setId(concept.getId());
-        setName(concept.getName());
-        setChildren(concept.getChildren().stream().map(F-> new ConceptJsonEdit(F)).collect(Collectors.toSet()));
-        setComments(concept.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
-        setDescription(concept.getDescription());
-        setLabel(concept.getLabel());
-        setQuestionItems(concept.getQuestionItems().stream().map(F-> new QuestionItemJsonEdit(F)).collect(Collectors.toSet()));
-        setTopicRef(concept.getTopicRef());
+        try{
+            setId(concept.getId());
+            setName(concept.getName());
+            setChildren(concept.getChildren().stream().map(F-> new ConceptJsonEdit(F)).collect(Collectors.toSet()));
+            setComments(concept.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
+            setDescription(concept.getDescription());
+            setLabel(concept.getLabel());
+            setQuestionItems(concept.getQuestionItems().stream().map(F-> new QuestionItemJsonEdit(F)).collect(Collectors.toSet()));
+            setTopicRef(concept.getTopicRef());
+        }catch (Exception ex){
+            System.out.println("ConceptJsonEdit Exception");
+            ex.printStackTrace();
+        }
     }
 
     public UUID getId() {

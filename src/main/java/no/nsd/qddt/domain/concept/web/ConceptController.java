@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.concept.web;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -33,12 +34,15 @@ public class ConceptController {
     private ConceptService conceptService;
     private TopicGroupService topicGroupService;
     private QuestionItemService questionItemService;
+    private ConceptQuestionItemService conceptQuestionItemService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService, QuestionItemService questionItemService) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,
+                             QuestionItemService questionItemService,ConceptQuestionItemService conceptQuestionItemService) {
         this.conceptService = conceptService;
         this.topicGroupService = topicGroupService;
         this.questionItemService = questionItemService;
+        this.conceptQuestionItemService = conceptQuestionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -75,6 +79,8 @@ public class ConceptController {
         try{
             Concept concept  = conceptService.findOne(conceptId);
             concept.removeQuestionItem(questionItemId);
+            conceptQuestionItemService.findByConceptQuestionItem(conceptId,questionItemId).forEach(c->
+                    conceptQuestionItemService.delete(c.getId()));
             return concept2Json(conceptService.save(concept));
         } catch (Exception ex) {
             ex.printStackTrace();

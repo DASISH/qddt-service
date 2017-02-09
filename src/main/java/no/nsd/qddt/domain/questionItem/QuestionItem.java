@@ -7,13 +7,13 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -42,12 +42,9 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
      * This field will be populated with the correct version of a RD,
      * but should never be persisted.
      */
-//    @JsonSerialize
-//    @JsonDeserialize
     @ManyToOne
     @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     private ResponseDomain responseDomain;
-
 
     /**
      * This field must be available "raw" in order to set and query
@@ -67,10 +64,10 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     private Question question;
 
 
-//    @JsonBackReference(value = "conceptRef")
     @JsonIgnore
-    @ManyToMany(mappedBy="questionItems")
-    private Set<Concept> concepts = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItem")
+    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
+
 
     @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.LAZY)
     @NotAudited
@@ -95,9 +92,9 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     }
 
     public void updateStatusQI(UUID conceptId) {
-        concepts.forEach(C->{
-            if (C.getId().equals(conceptId)) {
-                updateStatusQI(C);
+        conceptQuestionItems.forEach(C->{
+            if (C.getConcept().getId().equals(conceptId)) {
+                updateStatusQI(C.getConcept());
             }
         });
     }
@@ -139,12 +136,17 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     }
 
     public Set<Concept> getConcepts() {
-        return concepts;
+        return conceptQuestionItems.stream().map(cqi->cqi.getConcept()).collect(Collectors.toSet());
     }
 
-    public void setConcepts(Set<Concept> concepts) {
-        this.concepts = concepts;
+    public Set<ConceptQuestionItem> getConceptQuestionItems() {
+        return conceptQuestionItems;
     }
+
+    public void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
+        this.conceptQuestionItems = conceptQuestionItems;
+    }
+
 
     @Transient
     @JsonSerialize
@@ -153,7 +155,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
     public Set<ConceptRef> getConceptRefs(){
         try {
-            return concepts.stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
+            return getConcepts().stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
         } catch (Exception ex){
             ex.printStackTrace();
             return new HashSet<>(0);

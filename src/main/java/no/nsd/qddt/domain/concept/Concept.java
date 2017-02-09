@@ -1,9 +1,14 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
@@ -16,6 +21,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * <ul class="inheritance">
@@ -56,11 +62,16 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
-    @JoinTable(name = "CONCEPT_QUESTION_ITEM",
-            joinColumns = {@JoinColumn(name = "concept_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "questionItem_id", referencedColumnName = "id" , updatable = false)})
-    private Set<QuestionItem> questionItems = new HashSet<>();
+
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH}, mappedBy = "concept")
+    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private Set<QuestionItem> questionItems = new HashSet<>(0);
 
 
     @Column(name = "label")
@@ -82,10 +93,20 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     @Transient
+    @JsonDeserialize
+//    @JsonSerialize
     private TopicRef topicRef;
 
     public Concept() {
 
+    }
+
+    public Set<ConceptQuestionItem> getConceptQuestionItems() {
+        return conceptQuestionItems;
+    }
+
+    public void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
+        this.conceptQuestionItems = conceptQuestionItems;
     }
 
     @PreRemove
@@ -113,12 +134,23 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     }
 
 
+
     public Set<QuestionItem> getQuestionItems() {
-        return questionItems;
+        if (questionItems.size() > 0)
+            return questionItems;
+        else {
+            return conceptQuestionItems.stream().map(c -> c.getQuestionItem()).collect(Collectors.toSet());
+        }
     }
 
 
     public void setQuestionItems(Set<QuestionItem> questions) {
+//        questions.forEach(questionItem -> {
+//            if (!conceptQuestionItems.stream().anyMatch(cqi-> cqi.getQuestionItem().getId().equals(questionItem.getId()))){
+//                conceptQuestionItems.add(new ConceptQuestionItem(this,questionItem));
+//                System.out.println("setQuestionItems add new cqi");
+//            }
+//        });
         this.questionItems = questions;
     }
 
@@ -143,13 +175,12 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     public  void removeQuestionItem(UUID qiId){
-        getQuestionItems().stream().filter(p->p.getId().equals(qiId)).
+        getConceptQuestionItems().stream().filter(p->p.getQuestionItem().getId().equals(qiId)).
                 findAny().ifPresent(qi -> {
                 System.out.println("removing qi from Concept->" + qi.getId() );
-                qi.getConcepts().remove(this);
-                qi.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-                qi.setChangeComment("Concept assosiation removed");
-                this.questionItems.remove(qi);
+                qi.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                qi.getQuestionItem().setChangeComment("Concept assosiation removed");
+                this.conceptQuestionItems.remove(qi);
                 this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 this.setChangeComment("QuestionItem assosiation removed");
             });
@@ -228,6 +259,26 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         }
 
         return topicRef;
+    }
+
+    public void setTopicRef(TopicRef topicRef) {
+        this.topicRef = topicRef;
+    }
+
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getQuestionItems().forEach(q->{
+            q.getConcepts().add(this);
+            System.out.println(q.getName());
+        });
+        getChildren().forEach(c->c.makeNewCopy(revision));
+        if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
+//            topicGroupId = getTopicRef().getId();
+            System.out.println("infering topicgroup id " + getTopicRef().getId() );
+        }
+        getComments().clear();
     }
 
     @Override

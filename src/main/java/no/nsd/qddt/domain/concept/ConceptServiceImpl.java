@@ -1,16 +1,19 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,13 +26,16 @@ import java.util.UUID;
 class ConceptServiceImpl implements ConceptService {
 
     private ConceptRepository conceptRepository;
-//    private CommentService commentService;
+    private ConceptAuditService auditService;
+    private QuestionItemAuditService questionAuditService;
+    private TopicGroupService topicGroupService;
 
     @Autowired
-//    ConceptServiceImpl(ConceptRepository conceptRepository,CommentService commentService){
-      ConceptServiceImpl(ConceptRepository conceptRepository){
+      ConceptServiceImpl(ConceptRepository conceptRepository,ConceptAuditService conceptAuditService, TopicGroupService topicGroupService, QuestionItemAuditService questionAuditService){
         this.conceptRepository = conceptRepository;
-//        this.commentService = commentService;
+        this.auditService = conceptAuditService;
+        this.topicGroupService = topicGroupService;
+        this.questionAuditService = questionAuditService;
     }
 
     @Override
@@ -43,35 +49,32 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Concept findOne(UUID uuid) {
-        return conceptRepository.findById(uuid).orElseThrow(
+        return conceptRepository.findById(uuid).map(c->populateRevisionedQI(c)).orElseThrow(
+//        return conceptRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Concept.class));
 
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public Concept save(Concept instance) {
-        return conceptRepository.save(instance);
+        System.out.println("Saving: " + instance.getName());
+        instance =  conceptRepository.save(makeCopy(instance));
+//        return instance;
+        return populateRevisionedQI(instance);
     }
 
-
-
     @Override
+    @Transactional()
     public List<Concept> save(List<Concept> instances) {
-        return conceptRepository.save(instances);
+        instances.stream().forEach(c-> save(c));
+        return instances;
     }
 
     @Override
     public void delete(UUID uuid) {
         conceptRepository.delete(uuid);
-//        try {
-//            Concept parent = findOne(uuid).getParent();
-//            conceptRepository.delete(uuid);
-//            save(parent);
-//        } catch (Exception ex) {
-//        }
     }
 
     @Override
@@ -79,38 +82,111 @@ class ConceptServiceImpl implements ConceptService {
         conceptRepository.delete(instances);
     }
 
+
     @Override
-    @Transactional(readOnly = true)
     public Page<Concept> findAllPageable(Pageable pageable) {
         Page<Concept> pages = conceptRepository.findAll(pageable);
-//        populateComments(pages);
+        pages.map(c->populateRevisionedQI(c));
         return pages;
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,pageable);
-//        populateComments(pages);
-//        pages.forEach(c-> System.out.println("number of comments:"+ c.getComments().size()));
+        pages.map(c->populateRevisionedQI(c));
         return pages;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Concept> findByQuestionItem(UUID questionItemId) {
-        return conceptRepository.findByQuestionItemsId(questionItemId);
+    /*
+        this function will make a copy of source and all it's child objects.
+
+     */
+    private Concept makeCopy(Concept source){
+
+        source = harvestRevisionedQI(source);
+
+        if(source.isNewBasedOn()){
+
+            Revision<Integer, Concept> lastChange = auditService.findLastChange(source.getId());
+            Concept updated = lastChange.getEntity();
+            updated.setAgency(source.getAgency());
+            updated.setDescription(source.getDescription());
+            updated.setLabel(source.getLabel());
+            updated.setName(source.getName());
+            updated.setChangeComment(source.getChangeComment());
+            updated.setChangeKind(source.getChangeKind());
+            updated.setVersion(source.getVersion());
+            updated.setModified(source.getModified());
+            updated.setModifiedBy(source.getModifiedBy());
+
+            if (source.getTopicGroup() != null)
+              updated.setTopicGroup(source.getTopicGroup());
+
+            updated.makeNewCopy(lastChange.getRevisionNumber());
+            return updated;
+        }
+
+        if (source.getId() == null & source.getTopicRef().getId() != null) {
+            TopicGroup tg = topicGroupService.findOne(source.getTopicRef().getId());
+            source.setTopicGroup(tg);
+            source.makeNewCopy(null);
+        }
+        return source;
     }
 
-//    private void populateComments(Page<Concept> pages){
-//        for (Concept concept : pages.getContent()) {
-//            if (concept.getComments().size() > 0)
-//                System.out.println("ALLREADY HAVE COMMNENTS");
-//            else
-//            concept.setComments(new HashSet<>(commentService.findAllByOwnerIdPageable(concept.getId(),new PageRequest(0,25)).getContent()));
-//        }
-//    }
 
 
+    /*
+    post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
+    thus we need to populate some elements ourselves.
+     */
+    private Concept populateRevisionedQI(Concept instance){
+        assert  (instance != null);
+        try{
+            // this work as long as instance.getQuestionItems() hasn't been called yet for this instance
+            for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
+                if (cqi.getQuestionItem().getVersion().getRevision() != null) {
+                    cqi.setQuestionItem(questionAuditService.findRevision(
+                            cqi.getQuestionItem().getId(),
+                            cqi.getQuestionItem().getVersion().getRevision())
+                            .getEntity());
+                }
+                else
+                    cqi.getQuestionItem().getVersion().setRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+        }
+        return instance;
+    }
+
+
+    private Concept harvestRevisionedQI(Concept instance){
+        assert  (instance != null);
+        try{
+            System.out.println("harvestRevisionedQI");
+            if (instance.getConceptQuestionItems().size() == 0 &&
+                    instance.getQuestionItems().size() > 0) {
+                System.out.println("harvestRevisionedQI -> Load from DB 'questionItem'");
+                instance.setConceptQuestionItems(conceptRepository.findOne(instance.getId()).getConceptQuestionItems()); //LOAD questionitems from DB if empty list
+            }
+            else
+                System.out.println("CQI:" + instance.getConceptQuestionItems().size() + " - QI:" +instance.getQuestionItems().size() );
+
+            instance.getQuestionItems().forEach(qi-> {
+                if (!instance.getConceptQuestionItems().stream().anyMatch(cqi->cqi.getQuestionItem().getId().equals(qi.getId()))) {
+                    qi.getVersion().setRevision(questionAuditService.findLastChange(qi.getId()).getRevisionNumber());
+                    instance.getConceptQuestionItems().add(new ConceptQuestionItem(instance, qi));
+                }});
+
+            instance.getConceptQuestionItems().forEach(q-> System.out.println(q.getQuestionItem().getName() +" - " + q.getQuestionItem().getVersion().getRevision()));
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+        }
+        return instance;
+
+    }
 
 }
