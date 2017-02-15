@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
-import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction;
-import no.nsd.qddt.domain.controlconstructinstruction.InstructionRank;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
@@ -19,7 +17,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.*;
@@ -85,11 +82,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "parent_idx")
     private List<ControlConstruct> children = new ArrayList<>();
 
-//    // Ordered arrayList doesn't work with Enver FIX
-//    @Type(type="pg-uuid")
-//    @Column(name= "parent_id", insertable = false,updatable = false)
-//    private UUID parent;
-
 
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
@@ -130,10 +122,19 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE},orphanRemoval = true)
+//    @OrderColumn(name="instructions_idx")
+
     @JsonIgnore
-    @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH})
-    @OrderColumn(name="instructions_idx")
-    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
+    @OrderColumn(name="instruction_idx")
+    @OrderBy("instruction_idx ASC")
+    @ElementCollection
+    @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
+                    joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
+    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>(0);
+
+
 
     private String condition;
 
@@ -190,7 +191,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         this.questionItemRevision = questionItemRevision;
     }
 
-
     public UUID getQuestionItemUUID() {
         return questionItemUUID;
     }
@@ -243,6 +243,8 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         this.children = children;
     }
 
+
+
     public List<ControlConstructInstruction> getControlConstructInstructions() {
          return controlConstructInstructions;
     }
@@ -273,8 +275,8 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
             for (Instruction instruction : instructions) {
                 ControlConstructInstruction cci = new ControlConstructInstruction();
                 cci.setInstruction(instruction);
-                cci.setInstructionRank(InstructionRank.POST);
-                cci.setControlConstruct(this);
+                cci.setInstructionRank(ControlConstructInstructionRank.POST);
+//                cci.setControlConstruct(this);
                 this.getControlConstructInstructions().add(cci);
             }
         }catch (Exception ex){
@@ -288,8 +290,8 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
             for (int i = 0; i < instructions.size(); i++) {
                 ControlConstructInstruction cci = new ControlConstructInstruction();
                 cci.setInstruction(preInstructions.get(i));
-                cci.setInstructionRank(InstructionRank.PRE);
-                cci.setControlConstruct(this);
+                cci.setInstructionRank(ControlConstructInstructionRank.PRE);
+//                cci.setControlConstruct(this);
                 this.controlConstructInstructions.add(i, cci);
             }
         }catch (Exception ex) {
@@ -304,12 +306,12 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     public void populateInstructions(){
         System.out.println("populateInstructions");
         setPreInstructions(getControlConstructInstructions().stream()
-                .filter(i->i.getInstructionRank().equals(InstructionRank.PRE))
+                .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList()));
 
         setPostInstructions(getControlConstructInstructions().stream()
-                .filter(i->i.getInstructionRank().equals(InstructionRank.POST))
+                .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList()));
     }

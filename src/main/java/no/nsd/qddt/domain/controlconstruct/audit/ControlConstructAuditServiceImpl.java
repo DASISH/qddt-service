@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.controlconstruct.audit;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,35 +25,42 @@ import java.util.stream.Collectors;
 class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
     private ControlConstructAuditRepository controlConstructAuditRepository;
+    private QuestionItemAuditService qiAuditService;
+
 
     @Autowired
-    public ControlConstructAuditServiceImpl(ControlConstructAuditRepository controlConstructAuditRepository) {
+    public ControlConstructAuditServiceImpl(ControlConstructAuditRepository controlConstructAuditRepository,QuestionItemAuditService questionItemAuditService) {
         this.controlConstructAuditRepository = controlConstructAuditRepository;
+        this.qiAuditService = questionItemAuditService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findLastChange(UUID id) {
-        return controlConstructAuditRepository.findLastChangeRevision(id);
+        Revision<Integer, ControlConstruct> rev =  controlConstructAuditRepository.findLastChangeRevision(id);
+        return new Revision<>(rev.getMetadata(),setInstructionAndRevisionedQI(rev.getEntity()));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findRevision(UUID id, Integer revision) {
-        return controlConstructAuditRepository.findRevision(id, revision);
+        Revision<Integer, ControlConstruct> rev =  controlConstructAuditRepository.findRevision(id, revision);
+        return new Revision<>(rev.getMetadata(),setInstructionAndRevisionedQI(rev.getEntity()));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Revision<Integer, ControlConstruct>> findRevisions(UUID id, Pageable pageable) {
-        return controlConstructAuditRepository.findRevisions(id,pageable);
+        return controlConstructAuditRepository.findRevisions(id,pageable)
+                .map(c-> new Revision<>(c.getMetadata(), setInstructionAndRevisionedQI(c.getEntity())));
     }
 
     @Override
     public Revision<Integer, ControlConstruct> findFirstChange(UUID uuid) {
-        return controlConstructAuditRepository.findRevisions(uuid).
-                getContent().stream().
-                min((i,o)->i.getRevisionNumber()).get();
+        Revision<Integer, ControlConstruct> rev = controlConstructAuditRepository.findRevisions(uuid).
+                getContent().stream().min((i,o)->i.getRevisionNumber()).get();
+        setInstructionAndRevisionedQI(rev.getEntity());
+        return  new Revision<>(rev.getMetadata(),setInstructionAndRevisionedQI(rev.getEntity()));
     }
 
     @Override
@@ -62,13 +72,44 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
                         .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
+                        .map(c->new Revision<>(c.getMetadata(),setInstructionAndRevisionedQI(c.getEntity())))
                         .collect(Collectors.toList())
         );
     }
-//    @Override
-//    public Page<Revision<Integer, ControlConstruct>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-//        return controlConstructAuditRepository.findRevisionsByIdAndChangeKindNotIn(id, changeKinds,pageable);
-//    }
+
+
+    /*
+post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
+thus we need to populate some elements ourselves.
+ */
+    private  ControlConstruct setInstructionAndRevisionedQI(ControlConstruct instance){
+        assert  (instance != null);
+        try{
+            instance.populateInstructions();
+
+            if(instance.getQuestionItemUUID() != null) {
+                if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
+                    Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
+                    instance.setQuestionItemRevision(rev.getRevisionNumber());
+                    instance.setQuestionItem(rev.getEntity());
+                } else {
+                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision()).getEntity();
+                    instance.setQuestionItem(qi);
+                }
+            }
+            else
+                instance.setQuestionItemRevision(0);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+        }
+
+        return instance;
+    }
+
+    private List<ControlConstruct> setInstructionAndRevisionedQI(List<ControlConstruct>instances) {
+        return instances.stream().map(p-> setInstructionAndRevisionedQI(p)).collect(Collectors.toList());
+    }
 
 
 }

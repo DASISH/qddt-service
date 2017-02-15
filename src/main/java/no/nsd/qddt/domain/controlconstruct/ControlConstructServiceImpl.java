@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstructionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -25,18 +24,18 @@ import java.util.stream.Collectors;
 class ControlConstructServiceImpl implements ControlConstructService {
 
     private ControlConstructRepository controlConstructRepository;
-    private ControlConstructInstructionService cciService;
+//    private ControlConstructInstructionService cciService;
     private QuestionItemAuditService qiAuditService;
     private QuestionItemService  qiService;
 
 
     @Autowired
     public ControlConstructServiceImpl(ControlConstructRepository ccRepository,
-                                       ControlConstructInstructionService cciService,
+//                                       ControlConstructInstructionService cciService,
                                        QuestionItemAuditService questionAuditService,
                                        QuestionItemService questionItemService) {
         this.controlConstructRepository = ccRepository;
-        this.cciService = cciService;
+//        this.cciService = cciService;
         this.qiAuditService = questionAuditService;
         this.qiService = questionItemService;
     }
@@ -66,7 +65,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Transactional()
     public ControlConstruct save(ControlConstruct instance) {
         instance.populateControlConstructInstructions();
-        cciService.save(instance.getControlConstructInstructions());
+//        cciService.save(instance.getControlConstructInstructions());
         return setInstructionAndRevisionedQI(
                 controlConstructRepository.save(instance));
     }
