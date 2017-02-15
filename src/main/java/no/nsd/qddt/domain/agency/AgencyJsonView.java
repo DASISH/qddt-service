@@ -18,6 +18,7 @@ public class AgencyJsonView {
     }
 
     public AgencyJsonView(Agency agency) {
+        if (agency == null) return;
         setId(agency.getId());
         setName(agency.getName());
     }
