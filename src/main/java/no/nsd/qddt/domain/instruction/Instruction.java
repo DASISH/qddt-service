@@ -1,13 +1,12 @@
 package no.nsd.qddt.domain.instruction;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstructinstruction.ControlConstructInstruction;
-import org.codehaus.jackson.annotate.JsonBackReference;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * @author Stig Norland
@@ -18,10 +17,10 @@ import java.util.List;
 @Table(name = "INSTRUCTION", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_INSTRUCTION_NAME")})
 public class Instruction extends AbstractEntityAudit {
 
-    //TODO ArrayList dosn't work with Enver
-    @JsonBackReference(value = "controlConstructInstructionRef")
-    @OneToMany(mappedBy = "instruction")
-    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
+//    //TODO ArrayList dosn't work with Enver
+//    @JsonBackReference(value = "controlConstructInstructionRef")
+//    @OneToMany(mappedBy = "instruction")
+//    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
     @Column(name = "description", length = 2000,nullable = false)
     private String description;
@@ -30,13 +29,6 @@ public class Instruction extends AbstractEntityAudit {
     public Instruction() {
     }
 
-//    public List<ControlConstruct> getControlConstructsPost() {
-//        return controlConstructsPost;
-//    }
-//
-//    public void setControlConstructsPost(List<ControlConstruct> controlConstructsPost) {
-//        this.controlConstructsPost = controlConstructsPost;
-//    }
 
     public String getDescription() {
         return description;
