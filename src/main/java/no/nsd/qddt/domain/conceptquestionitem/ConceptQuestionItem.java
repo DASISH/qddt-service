@@ -3,12 +3,11 @@ package no.nsd.qddt.domain.conceptquestionitem;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.UUID;
 
 /**
@@ -16,28 +15,27 @@ import java.util.UUID;
  */
 
 @Table(name = "CONCEPT_QUESTION_ITEM",
-        uniqueConstraints= @UniqueConstraint(columnNames = {"concept_id", "question_item_id"}))
+        uniqueConstraints= @UniqueConstraint(columnNames = {"concept_id", "questionitem_id"}))
 @Audited
 @Entity
 public class ConceptQuestionItem  implements java.io.Serializable {
 
 
     @Id
-    @Column(name = "id",updatable = false,nullable = false)
     @Type(type="pg-uuid")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
-            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
 
-    @JsonBackReference
+    @JsonBackReference(value="conceptQuestionItemsRef")
     @ManyToOne()
     @JoinColumn(name = "concept_id")
     private Concept concept;
 
-    @JsonBackReference
+    @JsonBackReference(value="questionItemConceptsRef")
     @ManyToOne()
-    @JoinColumn(name = "question_item_id")
+    @JoinColumn(name = "questionitem_id",referencedColumnName = "id")
     private QuestionItem questionItem;
 
     @Column(name = "questionitem_revision")
@@ -70,9 +68,9 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     }
 
     public QuestionItem getQuestionItem() {
-        if (questionItem.getVersion().getRevision() == null) {
-            questionItem.getVersion().setRevision(getQuestionItemRevision());
-        }
+        if (questionItemRevision != questionItem.getVersion().getRevision() )
+            questionItem.getVersion().setRevision(questionItemRevision);
+
         return questionItem;
     }
 

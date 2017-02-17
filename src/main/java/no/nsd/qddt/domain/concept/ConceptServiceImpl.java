@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
  * @author Stig Norland
@@ -85,14 +88,15 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Page<Concept> findAllPageable(Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findAll(pageable);
+        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","modified DESC"));
         pages.map(c->populateRevisionedQI(c));
         return pages;
     }
 
     @Override
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,pageable);
+        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
+                defaultSort(pageable,"name","modified DESC"));
         pages.map(c->populateRevisionedQI(c));
         return pages;
     }
@@ -143,16 +147,20 @@ class ConceptServiceImpl implements ConceptService {
     private Concept populateRevisionedQI(Concept instance){
         assert  (instance != null);
         try{
+            System.out.println("populateRevisionedQI " + instance.getName());
             // this work as long as instance.getQuestionItems() hasn't been called yet for this instance
             for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
                 if (cqi.getQuestionItem().getVersion().getRevision() != null) {
+                    System.out.println("Get revision "  +cqi.getQuestionItem().getVersion().getRevision());
                     cqi.setQuestionItem(questionAuditService.findRevision(
                             cqi.getQuestionItem().getId(),
-                            cqi.getQuestionItem().getVersion().getRevision())
+                            cqi.getQuestionItemRevision())
                             .getEntity());
                 }
-                else
+                else {
                     cqi.getQuestionItem().getVersion().setRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
+                    System.out.println("sat revision " + cqi.getQuestionItem().getVersion().getRevision());
+                }
             }
         } catch (Exception ex){
             ex.printStackTrace();
@@ -165,11 +173,11 @@ class ConceptServiceImpl implements ConceptService {
     private Concept harvestRevisionedQI(Concept instance){
         assert  (instance != null);
         try{
-            System.out.println("harvestRevisionedQI");
             if (instance.getConceptQuestionItems().size() == 0 &&
                     instance.getQuestionItems().size() > 0) {
                 System.out.println("harvestRevisionedQI -> Load from DB 'questionItem'");
-                instance.setConceptQuestionItems(conceptRepository.findOne(instance.getId()).getConceptQuestionItems()); //LOAD questionitems from DB if empty list
+                Set<ConceptQuestionItem> itemSet=  conceptRepository.findOne(instance.getId()).getConceptQuestionItems();
+                instance.setConceptQuestionItems(itemSet); //LOAD questionitems from DB if empty list
             }
             else
                 System.out.println("CQI:" + instance.getConceptQuestionItems().size() + " - QI:" +instance.getQuestionItems().size() );

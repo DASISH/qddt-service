@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -49,7 +48,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name = "parent_id")
     // Ordered arrayList doesn't work with Enver FIX
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
-    private Set<Concept> children = new HashSet<>();
+    private Set<Concept> children = new HashSet<>(0);
 
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
@@ -65,6 +64,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     @JsonIgnore
+//    @JsonManagedReference(value="conceptQuestionItemsRef")
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH}, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
@@ -136,11 +136,11 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     public Set<QuestionItem> getQuestionItems() {
-        if (questionItems.size() > 0)
-            return questionItems;
-        else {
-            return conceptQuestionItems.stream().map(c -> c.getQuestionItem()).collect(Collectors.toSet());
+        if (questionItems.size() <= 0){
+            System.out.println("conceptQuestionItems.stream().map");
+            questionItems = conceptQuestionItems.stream().map(c -> c.getQuestionItem()).collect(Collectors.toSet());
         }
+        return questionItems;
     }
 
 
@@ -180,7 +180,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
                 System.out.println("removing qi from Concept->" + qi.getId() );
                 qi.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 qi.getQuestionItem().setChangeComment("Concept assosiation removed");
-                this.conceptQuestionItems.remove(qi);
+//                this.conceptQuestionItems.remove(qi);
                 this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 this.setChangeComment("QuestionItem assosiation removed");
             });

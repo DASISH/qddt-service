@@ -76,16 +76,15 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
     public ConceptJsonEdit removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
+        Concept concept=null;
         try{
-            Concept concept  = conceptService.findOne(conceptId);
-            concept.removeQuestionItem(questionItemId);
             conceptQuestionItemService.findByConceptQuestionItem(conceptId,questionItemId).forEach(c->
                     conceptQuestionItemService.delete(c.getId()));
-            return concept2Json(conceptService.save(concept));
+            return concept2Json(conceptService.findOne(conceptId));
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println( ex.getMessage());
-            return null;
+            return concept2Json(concept);
         }
     }
 
