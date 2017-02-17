@@ -137,7 +137,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
     public Set<QuestionItem> getQuestionItems() {
         if (questionItems.size() <= 0){
-            System.out.println("conceptQuestionItems.stream().map");
+//            System.out.println("conceptQuestionItems.stream().map");
             questionItems = conceptQuestionItems.stream().map(c -> c.getQuestionItem()).collect(Collectors.toSet());
         }
         return questionItems;
