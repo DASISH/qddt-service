@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.exception.InvalidObjectException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
  * http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/FieldLevelDocumentation/schemas/logicalproduct_xsd/elements/Category.html
@@ -29,7 +32,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<Category> findByNameLike(String name, Pageable pageable) {
-        return categoryRepository.findByNameIgnoreCaseLike(name,pageable);
+        return categoryRepository.findByNameIgnoreCaseLike(name,defaultSort(pageable,"name","modified"));
     }
 
     /*
@@ -38,7 +41,8 @@ class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Page<Category> findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,pageable);
+        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,
+                defaultSort(pageable,"name","modified"));
     }
 
 
@@ -48,12 +52,14 @@ class CategoryServiceImpl implements CategoryService {
          */
     @Override
     public Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name, pageable);
+        return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name,
+                defaultSort(pageable,"name","modified"));
     }
 
     @Override
     public Page<Category> findByHierarchyAndNameLike(HierarchyLevel level, String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name, pageable);
+        return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name,
+                defaultSort(pageable,"name","modified"));
     }
 
     @Override
@@ -94,6 +100,8 @@ class CategoryServiceImpl implements CategoryService {
 
             if (!instance.isValid()) throw new InvalidObjectException(instance);
 
+            Code c =  instance.getCode();
+
             if (instance.getId() == null) {
                 retval = categoryRepository.save(instance);
             }
@@ -104,6 +112,7 @@ class CategoryServiceImpl implements CategoryService {
                 else
                     retval = instance;
             }
+            retval.setCode(c);
         }catch (Exception e) {
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
