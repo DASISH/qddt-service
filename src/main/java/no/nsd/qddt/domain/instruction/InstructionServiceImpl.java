@@ -68,6 +68,6 @@ class InstructionServiceImpl implements InstructionService {
 
     @Override
     public Page<Instruction> findByDescriptionLike(String description, Pageable pageable) {
-        return instructionRepository.findByDescriptionLike(description,pageable);
+        return instructionRepository.findByDescriptionIgnoreCaseLike(description,pageable);
     }
 }
