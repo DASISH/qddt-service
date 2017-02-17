@@ -154,6 +154,15 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
     }
 
     @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getTopicGroups().forEach(t->t.makeNewCopy(revision));
+        getInstruments().forEach(i->i.makeNewCopy(revision));
+        getComments().clear();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Study)) return false;

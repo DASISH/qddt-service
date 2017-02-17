@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.questionItem;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.question.QuestionJson;
+import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainJsonEdit;
 
@@ -20,7 +19,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
 
     private Integer responseDomainRevision;
 
-    private QuestionJson question;
+    private Question question;
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
@@ -34,7 +33,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         super(questionItem);
         if (questionItem == null) return;
         setComments(questionItem.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
-        setQuestion(new QuestionJson(questionItem.getQuestion()));
+        setQuestion(questionItem.getQuestion());
         if (questionItem.getResponseDomain() != null)
             setResponseDomain(new ResponseDomainJsonEdit(questionItem.getResponseDomain()));
         setResponseDomainRevision(questionItem.getResponseDomainRevision());
@@ -58,11 +57,11 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         this.responseDomainRevision = responseDomainRevision;
     }
 
-    public QuestionJson getQuestion() {
+    public Question getQuestion() {
         return question;
     }
 
-    public void setQuestion(QuestionJson question) {
+    public void setQuestion(Question question) {
         this.question = question;
     }
 

@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain;
 
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public interface BaseService<T,ID> {
      * @param instance object T
      * @return saved instanse T (may have fields updated by backstore)
      */
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     <S extends T> S save(S instance);
 
     /**
@@ -43,23 +42,22 @@ public interface BaseService<T,ID> {
      * @param instances collection of objects to store
      * @return collection of saved objects returned from backstore.
      */
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     List<T> save(List<T> instances);
 
     /**
      * Deletes object with id ID from backstore, exception raised by failure.
      * @param id identifier ID
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     void delete(ID id);
 
     /**
      * Deletes object with these IDs from backstore, exception raised by failure.
      * @param instances list of indetifier IDs
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     void delete(List<T> instances);
-
 
 
 

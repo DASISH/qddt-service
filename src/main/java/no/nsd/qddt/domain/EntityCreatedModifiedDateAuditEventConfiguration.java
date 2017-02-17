@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
+import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
@@ -32,14 +33,12 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         try {
-//            System.out.println("create");
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
             if (entity instanceof Category) {
                 entity = fixAndValidateCategoryType((Category)entity);
             }
-
 
         } catch (Exception e){
             System.out.println(e.getMessage());
@@ -52,22 +51,21 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
      */
     @PreUpdate
     public void update(AbstractEntity entity) {
-//        System.out.println("@PreUpdate " + entity.getClass().getName());
         try {
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
             if (entity instanceof SurveyProgram){
-                checkAuthor((SurveyProgram)entity);
+                checkSurvey((SurveyProgram)entity);
             }
             if (entity instanceof Study){
-                checkAuthor((Study)entity);
+                checkStudy((Study)entity);
             }
             if (entity instanceof TopicGroup){
-                checkAuthor((TopicGroup)entity);
+                checkTopic((TopicGroup)entity);
             }
             if (entity instanceof Concept) {
-                checkAddedQuestions((Concept) entity);
+                checkConcept((Concept) entity);
             }
 
 
@@ -77,19 +75,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
         }
     }
 
-
-    private boolean isBasedOnCopy(AbstractEntityAudit rootEntity){
-        return (rootEntity.getId() == null &&
-                rootEntity.getBasedOnObject() != null &&
-                rootEntity.getChangeKind() == AbstractEntityAudit.ChangeKind.BASED_ON);
-    }
-
-    private AbstractEntityAudit makeBasedOnCopy(AbstractEntityAudit rootEntity){
-        rootEntity.setBasedOnObject(rootEntity.getId());
-        rootEntity.setId(null);
-        rootEntity.setChangeKind(AbstractEntityAudit.ChangeKind.BASED_ON);
-        return rootEntity;
-    }
 
     private boolean isAnOwner(AbstractEntityAudit entity, User user){
         return entity.getAgency().equals(user.getAgency());
@@ -116,22 +101,22 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
 
-    private SurveyProgram checkAuthor(SurveyProgram entity){
+    private SurveyProgram checkSurvey(SurveyProgram entity){
         entity.getAuthors().forEach(a->a.addSurvey(entity));
         return entity;
     }
 
-    private Study checkAuthor(Study entity){
+    private Study checkStudy(Study entity){
         entity.getAuthors().forEach(a->a.addStudy(entity));
         return entity;
     }
 
-    private TopicGroup checkAuthor(TopicGroup entity){
+    private TopicGroup checkTopic(TopicGroup entity){
         entity.getAuthors().forEach(a->a.addTopic(entity));
         return entity;
     }
 
-    private Concept checkAddedQuestions(Concept entity) {
+    private Concept checkConcept(Concept entity) {
         entity.getQuestionItems()
                 .forEach(qi -> {
                     if (!qi.getConcepts().contains(entity)) {

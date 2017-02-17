@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
+import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, EnversRevisionRepository<OtherMaterial, UUID, Integer> {
+interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, RevisionRepository<OtherMaterial, UUID, Integer> {
 
     Optional<OtherMaterial> findByOwnerAndOriginalName(UUID owner, String name);
 

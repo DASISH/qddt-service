@@ -28,7 +28,7 @@ public class QuestionJson {
 
     private Set<QuestionJson> children = new HashSet<>();
 
-    private String gridIdxRationale;
+    private String questionIdxRationale;
 
     private String intent;
 
@@ -41,7 +41,7 @@ public class QuestionJson {
         setModified(question.getModified());
         setId(question.getId());
         setChildren(question.getChildren().stream().map(F-> new QuestionJson(F)).collect(Collectors.toSet()));
-        setGridIdxRationale(question.getGridIdxRationale());
+        setQuestionIdxRationale(question.getQuestionIdxRationale());
         setIntent(question.getIntent());
         setQuestion(question.getQuestion());
     }
@@ -71,12 +71,12 @@ public class QuestionJson {
         this.children = children;
     }
 
-    public String getGridIdxRationale() {
-        return gridIdxRationale;
+    public String getQuestionIdxRationale() {
+        return questionIdxRationale;
     }
 
-    public void setGridIdxRationale(String gridIdxRationale) {
-        this.gridIdxRationale = gridIdxRationale;
+    public void setQuestionIdxRationale(String questionIdxRationale) {
+        this.questionIdxRationale = questionIdxRationale;
     }
 
     public String getIntent() {

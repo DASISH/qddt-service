@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -80,6 +82,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Column(name = "based_on_revision", nullable = true)
     private Integer basedOnRevision;
 
+
     @Embedded
     private Version version;
 
@@ -150,6 +153,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.changeComment = changeComment;
     }
 
+
     @PrePersist
     private void onInsert(){
         User user = SecurityContext.getUserDetails().getUser();
@@ -162,9 +166,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private void onUpdate(){
         Version ver = version;
         AbstractEntityAudit.ChangeKind change = changeKind;
-        if (isNewBasedOn()) {
-            makeNewCopy(true);
-        }
         if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
             change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
             changeKind = change;
@@ -203,8 +204,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         comments.stream().forEach(c->removeComments(c.getComments()));
     }
 
-
-
     /**
      * None null field compare, (ignores null value when comparing)
      * @param o
@@ -236,12 +235,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     This function should contain all copy code needed to make a complete copy of hierarchy under this element
     (an override should propigate downward and call makeNewCopy on it's children).
      */
-    protected void makeNewCopy(boolean isBasedOn){
+    public void makeNewCopy(Integer revision){
         if (hasRun) return;
-        if (isBasedOn)
+        if (revision != null) {
             setBasedOnObject(getId());
-
-        version.setVersionLabel("COPY OF [" + getId() + "]");
+            setBasedOnRevision(revision);
+            version.setVersionLabel("COPY OF [" + getName() + "]");
+        }
         setId(UUID.randomUUID());
         hasRun = true;
     }

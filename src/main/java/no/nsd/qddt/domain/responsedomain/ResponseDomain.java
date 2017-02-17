@@ -12,7 +12,7 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
-import no.nsd.qddt.utils.builders.StringTool;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -236,6 +236,7 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         managedRepresentation.setChangeComment("");
         managedRepresentation.setChangeKind(getChangeKind());
         managedRepresentation.setVersion(getVersion());
+//        System.out.println("setManagedRepresentation " + managedRepresentation.getName() );
     }
 
     public List<Code> getCodes() {
@@ -301,10 +302,13 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
                 getManagedRepresentation().toString());
     }
 
-    @JsonIgnore
-    public void makeBasedOn() {
-        if (!isNewBasedOn()) return;
-        managedRepresentation.setBasedOnObject(managedRepresentation.getId());
-        managedRepresentation.setId(null);
+    @Override
+    public void makeNewCopy(Integer revision){
+        System.out.println("RD makeNewCopy");
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        managedRepresentation.makeNewCopy(revision);
+
+        getComments().clear();
     }
 }

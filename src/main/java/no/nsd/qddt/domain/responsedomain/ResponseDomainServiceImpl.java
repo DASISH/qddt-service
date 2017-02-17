@@ -3,10 +3,12 @@ package no.nsd.qddt.domain.responsedomain;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +23,14 @@ import java.util.UUID;
 class ResponseDomainServiceImpl implements ResponseDomainService {
 
     private ResponseDomainRepository responseDomainRepository;
+    private ResponseDomainAuditService auditService;
     private CategoryService categoryService;
 
     @Autowired
-    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, CategoryService categoryService) {
+    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, CategoryService categoryService,ResponseDomainAuditService responseDomainAuditService) {
         this.responseDomainRepository = responseDomainRepository;
         this.categoryService = categoryService;
+        this.auditService = responseDomainAuditService;
     }
 
     @Override
@@ -49,19 +53,16 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
         instance.populateCodes();
-        if (instance.isNewBasedOn()) {
-            instance.makeBasedOn();
-            instance.setManagedRepresentation(
-                    categoryService.save(
-                            instance.getManagedRepresentation()));
-        }
-        instance = responseDomainRepository.save(instance);
+        instance = responseDomainRepository.save(makeCopy(instance));
         return instance;
     }
 
     @Override
     public List<ResponseDomain> save(List<ResponseDomain> instances) {
-        instances.forEach(rd->rd.populateCodes());
+        instances.forEach(rd->{
+            rd.populateCodes();
+            makeCopy(rd);
+        });
         return responseDomainRepository.save(instances);
     }
 
@@ -115,6 +116,42 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         return  save(mixedRd);
     }
 
+
+    private ResponseDomain makeCopy(ResponseDomain source){
+
+        if(source.isNewBasedOn()){
+
+            Revision<Integer, ResponseDomain> lastChange = auditService.findLastChange(source.getId());
+            ResponseDomain updated = lastChange.getEntity();
+            updated.setAgency(source.getAgency());
+            updated.setDescription(source.getDescription());
+            updated.setName(source.getName());
+            updated.setDisplayLayout(source.getDisplayLayout());
+            updated.setCodes(source.getCodes());
+            updated.setResponseCardinality(source.getResponseCardinality());
+            updated.setResponseKind(source.getResponseKind());
+            updated.setChangeComment(source.getChangeComment());
+            updated.setChangeKind(source.getChangeKind());
+            updated.setVersion(source.getVersion());
+            updated.setModified(source.getModified());
+            updated.setModifiedBy(source.getModifiedBy());
+            Category mr = updated.getManagedRepresentation();
+            mr.makeNewCopy(lastChange.getRevisionNumber());
+            mr.setLabel("basedOn " + source.getId());
+            updated.setManagedRepresentation(mr);
+            updated.makeNewCopy(lastChange.getRevisionNumber());
+            return updated;
+        }
+
+        if (source.getId() == null && source.getModified() != null) {
+            source.makeNewCopy(null);
+            Category mr = source.getManagedRepresentation();
+            mr.makeNewCopy(null);
+            mr.setLabel("basedOn " + source.getId());
+            source.setManagedRepresentation(mr);
+        }
+        return source;
+    }
 
     private String likeify(String value){
         value = value.replace("*", "%");

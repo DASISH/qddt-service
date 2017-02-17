@@ -73,12 +73,6 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
 
     }
 
-//    @PreUpdate
-//    private void checkAuthor(){
-//        System.out.println("PreUpdate-checkAuthor-> " + getName() );
-//        authors.forEach(a->a.addSurvey(this));
-//    }
-
     public String getDescription() {
         return description;
     }
@@ -89,7 +83,6 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
 
     public Set<Author> getAuthors() {
         return authors;
-
     }
 
     public void setAuthors(Set<Author> authors) {
@@ -110,6 +103,14 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
 
     public Set<Comment> getComments() {
         return comments;
+    }
+
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getStudies().forEach(s->s.makeNewCopy(revision));
+        getComments().clear();
     }
 
 

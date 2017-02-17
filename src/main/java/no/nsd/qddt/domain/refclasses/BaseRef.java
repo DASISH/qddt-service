@@ -35,8 +35,14 @@ abstract class BaseRef implements Refs{
 
     BaseRef(AbstractEntityAudit entity){
         assert entity != null;
-        setName(entity.getName());
-        setId(entity.getId());
+        try {
+            setName(entity.getName());
+            setId(entity.getId());
+        } catch (NullPointerException npe){
+            System.out.println("BaseRef NullPointerException");
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     BaseRef(){}

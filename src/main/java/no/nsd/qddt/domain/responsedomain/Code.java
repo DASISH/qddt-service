@@ -13,8 +13,7 @@ import javax.persistence.Embeddable;
  */
 @Audited
 @Embeddable
-
-public class Code {
+public class Code implements Comparable<Code> {
 
     @Column(name = "code_value")
     private String codeValue;
@@ -61,5 +60,16 @@ public class Code {
     @Override
     public String toString() {
         return String.format("Code { %s }" ,getCodeValue());
+    }
+
+    @Override
+    public int compareTo(Code o) {
+        try {
+            Integer a = Integer.parseInt(codeValue);
+            Integer b = Integer.parseInt(o.getCodeValue());
+            return a.compareTo(b);
+        } catch (NumberFormatException nfe) {
+            return codeValue.compareTo(o.getCodeValue());
+        }
     }
 }

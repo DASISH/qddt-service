@@ -1,25 +1,22 @@
 package no.nsd.qddt.domain.othermaterial.web;
 
+import net.logstash.logback.encoder.org.apache.commons.io.IOUtils;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
-
 
 /**
  * @author Stig Norland
@@ -80,11 +77,38 @@ public class OtherMaterialController {
         return service.saveFile(file, ownerId);
     }
 
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET)
-    public ResponseEntity<Resource> handleFileDownload(@PathVariable("fileId") UUID fileId) throws IOException {
-        return service.getFileAsResponseEntity(fileId);
+
+
+
+    @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    @ResponseBody()
+    public FileSystemResource getFile(@PathVariable("fileId") UUID fileId) throws IOException {
+        return new FileSystemResource(service.getFile(service.findOne(fileId)));
     }
+
+
+//    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
+//    public HttpEntity<byte[]> getFile(@PathVariable("fileId") UUID fileId) throws IOException {
+//
+//        File file = service.getFile(service.findOne(fileId));
+//        FileInputStream fis = new FileInputStream(file.getAbsoluteFile());
+//        HttpHeaders header = new HttpHeaders();
+//        header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//        header.set(HttpHeaders.CONTENT_DISPOSITION,
+//                "attachment; filename=" + file.getName().replace(" ", "_"));
+//        header.setContentLength(file.length());
+//
+//        return new HttpEntity<>(IOUtils.toByteArray(fis), header);
+//    }
+
+//    @ResponseStatus(value = HttpStatus.ACCEPTED)
+//    @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+//    public ResponseEntity<Resource> handleFileDownload(@PathVariable("fileId") UUID fileId) throws IOException {
+//        ResponseEntity<Resource> resource = service.getFileAsResponseEntity(fileId);
+//        resource.getHeaders().forEach((a,b)-> System.out.println("Headers[" + a + "] - " + b));
+//        return resource;
+//    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
@@ -93,17 +117,19 @@ public class OtherMaterialController {
     }
 
 //    @ResponseStatus(value = HttpStatus.ACCEPTED)
-//    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
+//    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 //    public void handleFileDownload(HttpServletResponse response, @PathVariable("fileId") UUID fileId) throws IOException {
 //        System.out.println("file download...");
 //        OtherMaterial om = service.findOne(fileId);
 //        File file = service.getFile(om);
 //
-//        response.addHeader("Content-disposition", "attachment;filename=" + om.getOriginalName());
-//        response.setContentType(om.getFileType());
+//        response.setHeader("Content-disposition", "attachment;filename=\"" + om.getOriginalName() + "\"");
 //        response.setContentLength((int) om.getSize());
+//        response.setContentType("application/octet-stream");
 //        FileInputStream fis = new FileInputStream(file.getAbsoluteFile());
 //        IOUtils.copy(fis, response.getOutputStream());
+//        System.out.println("buffer size " + response.getBufferSize());
+//        response.getHeaderNames().forEach(name-> System.out.println("Header["+ name + "] - " +response.getHeader(name)));
 //        response.flushBuffer();
 //
 //    }

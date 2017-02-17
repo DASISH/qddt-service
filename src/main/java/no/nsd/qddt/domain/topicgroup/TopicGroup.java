@@ -56,7 +56,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     private Study study;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     @OrderBy(value = "name asc")
     private Set<Concept> concepts = new LinkedHashSet<>();
 
@@ -96,11 +96,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         return comments;
     }
 
-
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
-
 
     public Study getStudy() {
         return study;
@@ -111,18 +109,22 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     }
 
     public Set<Concept> getConcepts() {
-        return Collections.unmodifiableSet(concepts);
+        if  ( concepts == null)
+            concepts = new HashSet<>();
+        return concepts;
     }
 
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
 
-    public void addConcept(Concept concept){
+    @Transient
+    public Concept addConcept(Concept concept){
         concept.setTopicGroup(this);
         concepts.add(concept);
         setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");
+        return concept;
     }
 
     public void removeConcept(Concept concept){
@@ -146,7 +148,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.otherMaterials = otherMaterials;
     }
 
-
     public String getAbstractDescription() {
         return abstractDescription;
     }
@@ -156,13 +157,30 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     }
 
     public ConceptJsonEdit getTopicQuestions(){
-        return new ConceptJsonEdit(concepts.stream().filter(p->p.getName()== null).findFirst().orElse(new Concept()));
+        try {
+            Concept tq = getConcepts().stream().filter(p -> p.getName() == null).findFirst().orElse(addConcept(new Concept()));
+            return new ConceptJsonEdit(tq);
+        }catch (Exception ex) {
+            System.out.println("getTopicQuestions exception");
+            ex.printStackTrace();
+            return new ConceptJsonEdit();
+        }
     }
 
     public void setTopicQuestions(Concept concept){
-        concepts.removeIf(c->c.getId() == concept.getId());
-        concepts.add(concept);
+        getConcepts().removeIf(c->c.getId() == concept.getId());
+        addConcept(concept);
     }
+
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getConcepts().forEach(c->c.makeNewCopy(revision));
+//        getOtherMaterials().forEach(m->m.);
+        getComments().clear();
+    }
+
 
     @Override
     public boolean equals(Object o) {

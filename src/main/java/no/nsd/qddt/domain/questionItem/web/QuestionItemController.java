@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.questionItem.web;
 
-import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
@@ -25,12 +24,14 @@ import java.util.UUID;
 public class QuestionItemController {
 
     private QuestionItemService service;
-    private QuestionService questionService;
+//    private QuestionService questionService;
 
     @Autowired
-    public QuestionItemController(QuestionItemService service,QuestionService questionService){
+    public QuestionItemController(QuestionItemService service
+//                                  ,QuestionService questionService
+    ){
         this.service = service;
-        this.questionService = questionService;
+//        this.questionService = questionService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -42,9 +43,9 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public QuestionItemJsonEdit update(@RequestBody QuestionItem instance) {
-        instance.setQuestion(
-                questionService.save(
-                        instance.getQuestion()));
+//        instance.setQuestion(
+//                questionService.save(
+//                        instance.getQuestion()));
 
         return question2Json(service.save(instance));
     }
@@ -53,9 +54,9 @@ public class QuestionItemController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public QuestionItemJsonEdit create(@RequestBody QuestionItem instance) {
 
-        instance.setQuestion(
-                questionService.save(
-                        instance.getQuestion()));
+//        instance.setQuestion(
+//                questionService.save(
+//                        instance.getQuestion()));
 
         return question2Json(service.save(instance));
     }

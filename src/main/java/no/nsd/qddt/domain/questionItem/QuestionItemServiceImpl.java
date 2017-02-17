@@ -6,9 +6,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
  * @author Stig Norland
@@ -56,17 +56,15 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public QuestionItem save(QuestionItem instance) {
-        System.out.println("QI save");
         try {
-            instance = setDefaultRevision(instance);
-            System.out.println(instance);
             return setRevisionedResponsedomain(
-                    questionItemRepository.save(instance));
+                    questionItemRepository.save(
+                            setDefaultRevision(instance)));
         } catch (Exception ex){
-            ex.printStackTrace();
             System.out.println("QI save ->"  + ex.getMessage());
+            ex.printStackTrace();
             throw ex;
         }
     }
@@ -88,20 +86,20 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public Page<QuestionItem> getHierarchy(Pageable pageable) {
-        return  questionItemRepository.findAll(pageable)
+        return  questionItemRepository.findAll(
+                defaultSort(pageable,"name", "questions.question"))
                 .map(qi-> setRevisionedResponsedomain(qi));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<QuestionItem> findAllPageable(Pageable pageable){
         try {
-            return questionItemRepository.findAll(pageable)
+            return questionItemRepository.findAll(
+                    defaultSort(pageable,"name"))
                     .map(qi -> setRevisionedResponsedomain(qi));
         }catch (Exception ex){
             ex.printStackTrace();
-            return  new PageImpl<QuestionItem>(null);
-
+            return new PageImpl<>(null);
         }
     }
 
@@ -109,14 +107,18 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public Page<QuestionItem> findByNameLikeAndQuestionLike(String name, String question, Pageable pageable) {
         question = question.replace("*","%");
         name = name.replace("*","%");
-        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,pageable)
+
+        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,
+                defaultSort(pageable,"name","question.question"))
                 .map(qi-> setRevisionedResponsedomain(qi));
     }
 
     @Override
     public Page<QuestionItem> findByNameLikeOrQuestionLike(String searchString, Pageable pageable) {
         searchString = searchString.replace("*","%");
-        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,pageable)
+
+        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,
+                defaultSort(pageable,"name","question.question"))
                 .map(qi-> setRevisionedResponsedomain(qi));
     }
 
@@ -161,6 +163,12 @@ class QuestionItemServiceImpl implements QuestionItemService {
             instance.setQuestion(questionService.save(instance.getQuestion().newCopyOf()));
         }
 
+        if (instance.getQuestion().getId() == null)
+            instance.setQuestion(
+                    questionService.save(
+                            instance.getQuestion()));
+
+
         if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
             if (instance.getResponseDomainUUID() == null) {
                 instance.setResponseDomainUUID(instance.getResponseDomain().getId());
@@ -181,5 +189,6 @@ class QuestionItemServiceImpl implements QuestionItemService {
         }
          return instance;
     }
+
 
 }

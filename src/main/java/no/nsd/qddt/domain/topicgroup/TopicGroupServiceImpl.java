@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,10 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = false)
     public TopicGroup save(TopicGroup instance) {
+
+        if(instance.getConcepts().isEmpty()){
+            instance.addConcept(new Concept());
+        }
         return topicGroupRepository.save(instance);
     }
 

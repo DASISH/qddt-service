@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,10 +41,10 @@ public class TopicGroupController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public TopicGroup update(@RequestBody TopicGroup instance) {
 
-        instance.getConcepts().forEach(c->{
-            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-            c.setChangeComment("");
-        });
+//        instance.getConcepts().forEach(c->{
+//            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+//            c.setChangeComment("");
+//        });
 //        instance.getOtherMaterials().forEach(c->{
 //            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
 //            c.setChangeComment("");
@@ -59,9 +61,6 @@ public class TopicGroupController {
             instance.setStudy(studyService.findOne(studyId));
         }
 
-        if(instance.getConcepts().isEmpty()){
-            instance.addConcept(new Concept());
-        }
         return service.save(instance);
     }
 
@@ -75,7 +74,13 @@ public class TopicGroupController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
     public List<TopicGroup> findByStudy(@PathVariable("uuid") UUID studyId) {
-        return service.findByStudyId(studyId);
+        try {
+            return service.findByStudyId(studyId);
+        } catch (Exception ex){
+            System.out.println("findByStudy Exception");
+            ex.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
     @ResponseStatus(value = HttpStatus.OK)

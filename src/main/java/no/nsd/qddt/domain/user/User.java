@@ -10,7 +10,7 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static no.nsd.qddt.utils.builders.StringTool.SafeString;
+import static no.nsd.qddt.utils.StringTool.SafeString;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -37,11 +37,10 @@ import static no.nsd.qddt.utils.builders.StringTool.SafeString;
 public class User {
 
     @Id
-    @Column(name = "id")
     @Type(type="pg-uuid")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
-            @org.hibernate.annotations.Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
 
     @Column(name = "username")
@@ -88,7 +87,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
-    private Set<Question> questions = new HashSet<>();
+    private Set<QuestionItem> questions = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
@@ -206,11 +205,11 @@ public class User {
         this.instructions = instructions;
     }
 
-    public Set<Question> getQuestions() {
+    public Set<QuestionItem> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(Set<Question> questions) {
+    public void setQuestions(Set<QuestionItem> questions) {
         this.questions = questions;
     }
 
