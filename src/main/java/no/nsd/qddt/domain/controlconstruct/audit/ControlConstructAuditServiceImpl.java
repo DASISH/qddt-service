@@ -1,13 +1,13 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -57,8 +59,13 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
     @Override
     public Revision<Integer, ControlConstruct> findFirstChange(UUID uuid) {
-        Revision<Integer, ControlConstruct> rev = controlConstructAuditRepository.findRevisions(uuid).
-                getContent().stream().min((i,o)->i.getRevisionNumber()).get();
+        PageRequest pageable = new PageRequest(0,1);
+        Revision<Integer, ControlConstruct> rev =
+                controlConstructAuditRepository.findRevisions(uuid,
+                        defaultSort(pageable,"RevisionNumber DESC")).getContent().get(0);
+
+//        Revision<Integer, ControlConstruct> rev = controlConstructAuditRepository.findRevisions(uuid).
+//                getContent().stream().min((i,o)->i.getRevisionNumber()).get();
         setInstructionAndRevisionedQI(rev.getEntity());
         return  new Revision<>(rev.getMetadata(),setInstructionAndRevisionedQI(rev.getEntity()));
     }
@@ -85,6 +92,7 @@ thus we need to populate some elements ourselves.
     private  ControlConstruct setInstructionAndRevisionedQI(ControlConstruct instance){
         assert  (instance != null);
         try{
+//            instance.getControlConstructInstructions().forEach(cci-> System.out.println(cci.getInstruction()));
             instance.populateInstructions();
 
             if(instance.getQuestionItemUUID() != null) {

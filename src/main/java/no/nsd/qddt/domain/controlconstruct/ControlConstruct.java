@@ -11,7 +11,6 @@ import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
@@ -24,8 +23,8 @@ import java.util.stream.Collectors;
 
 /**
  * Instrument is the significant relation.
- * Instrument will be asked for all {@link Question} instances it has and the
- * metadata in this class will be used as visual condition for each {@link Question}.
+ * Instrument will be asked for all {@link QuestionItem} instances it has and the
+ * metadata in this class will be used as visual condition for each {@link QuestionItem}.
  *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
@@ -109,7 +108,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
 
     //------------- End Instrument with "enver hack" ----------------------------
 
-    @Column(length = 300)
+    @Column(name="idx_rationale",length = 300)
     private String indexRationale;
 
     private String label;
@@ -122,9 +121,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "controlConstruct",fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE},orphanRemoval = true)
-//    @OrderColumn(name="instructions_idx")
 
     @JsonIgnore
     @OrderColumn(name="instruction_idx")
@@ -133,7 +129,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
                     joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>(0);
-
 
 
     private String condition;
@@ -172,7 +167,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     private void setDefaults(){
         if (controlConstructKind==null)
             controlConstructKind = ControlConstructKind.QUESTION_CONSTRUCT;
-//        System.out.println("setDefaults -> " + controlConstructKind);
     }
 
     public QuestionItem getQuestionItem() {
@@ -243,8 +237,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         this.children = children;
     }
 
-
-
     public List<ControlConstructInstruction> getControlConstructInstructions() {
          return controlConstructInstructions;
     }
@@ -252,7 +244,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     public void setControlConstructInstructions(List<ControlConstructInstruction> controlConstructInstructions) {
         this.controlConstructInstructions = controlConstructInstructions;
     }
-
 
     /*
     fetches pre and post instructions and add them to ControlConstructInstruction
@@ -276,7 +267,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
                 ControlConstructInstruction cci = new ControlConstructInstruction();
                 cci.setInstruction(instruction);
                 cci.setInstructionRank(ControlConstructInstructionRank.POST);
-//                cci.setControlConstruct(this);
                 this.getControlConstructInstructions().add(cci);
             }
         }catch (Exception ex){
@@ -291,7 +281,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
                 ControlConstructInstruction cci = new ControlConstructInstruction();
                 cci.setInstruction(preInstructions.get(i));
                 cci.setInstructionRank(ControlConstructInstructionRank.PRE);
-//                cci.setControlConstruct(this);
                 this.controlConstructInstructions.add(i, cci);
             }
         }catch (Exception ex) {
@@ -304,7 +293,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
-        System.out.println("populateInstructions");
+        System.out.println("populateInstructions " + getControlConstructInstructions().size());
         setPreInstructions(getControlConstructInstructions().stream()
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)

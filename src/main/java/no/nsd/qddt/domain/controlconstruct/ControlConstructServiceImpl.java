@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
+
 /**
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
@@ -118,14 +120,16 @@ class ControlConstructServiceImpl implements ControlConstructService {
         name = name.replace("*","%");
         question = question.replace("*","%");
 
-        return controlConstructRepository.findByInstrumentIsNullAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,pageable)
+        return controlConstructRepository.findByInstrumentIsNullAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,
+                defaultSort(pageable,"name ASC","modified DESC"))
                 .map(qi-> setInstructionAndRevisionedQI(qi));
     }
 
     @Override
     public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
         name = name.replace("*","%");
-        return controlConstructRepository.findByNameLikeIgnoreCaseAndControlConstructKind(name,kind,pageable)
+        return controlConstructRepository.findByNameLikeIgnoreCaseAndControlConstructKind(name,kind,
+                defaultSort(pageable,"name ASC","modified DESC"))
                 .map(qi-> setInstructionAndRevisionedQI(qi));
     }
 
@@ -162,7 +166,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     private  List<ControlConstruct> setInstructionAndRevisionedQI(List<ControlConstruct>instances) {
-        System.out.println("setInstructionAndRevisionedQI " + instances.size());
+//        System.out.println("setInstructionAndRevisionedQI " + instances.size());
         return instances.stream().map(p-> setInstructionAndRevisionedQI(p)).collect(Collectors.toList());
     }
 }
