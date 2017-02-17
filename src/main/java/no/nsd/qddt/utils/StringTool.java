@@ -1,4 +1,4 @@
-package no.nsd.qddt.utils.builders;
+package no.nsd.qddt.utils;
 
 /**
  * @author Stig Norland
