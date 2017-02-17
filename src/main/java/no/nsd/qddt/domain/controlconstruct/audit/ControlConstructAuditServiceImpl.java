@@ -92,7 +92,11 @@ thus we need to populate some elements ourselves.
     private  ControlConstruct setInstructionAndRevisionedQI(ControlConstruct instance){
         assert  (instance != null);
         try{
-//            instance.getControlConstructInstructions().forEach(cci-> System.out.println(cci.getInstruction()));
+            // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
+            // https://github.com/DASISH/qddt-client/issues/350
+            instance.getControlConstructInstructions().forEach(cci-> System.out.println(cci.getInstruction()));
+            //            instance.getControlConstructInstructions().forEach(cci->cci.getInstruction().toString());
+
             instance.populateInstructions();
 
             if(instance.getQuestionItemUUID() != null) {
