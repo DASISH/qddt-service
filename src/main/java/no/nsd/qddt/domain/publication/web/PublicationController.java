@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.publication.web;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.publication.PublicationService;
+import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ public class PublicationController {
         this.service = service;
     }
 
+    @JsonView(View.Simple.class)
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Publication get(@PathVariable("id") UUID id) {
@@ -62,19 +65,19 @@ public class PublicationController {
         return new ResponseEntity<>(assembler.toResource(selectables), HttpStatus.OK);
     }
 
-//    @SuppressWarnings("unchecked")
-//    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-//    public HttpEntity<PagedResources<Publication>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-//                                                           @RequestParam(value = "question",defaultValue = "%") String question,
-//                                                           Pageable pageable, PagedResourcesAssembler assembler) {
-//
-//        Page<Publication> questionitems = null;
-//        name = name.replace("*","%");
-//        question = question.replace("*","%");
-//
-//        questionitems = service.findByNameLikeAndQuestionLike(name,question, pageable);
-//
-//        return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
-//    }
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<Publication>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                           @RequestParam(value = "status",defaultValue = "%") String status,
+                                                           Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Publication> items = null;
+        name = name.replace("*","%");
+        status = status.replace("*","%");
+
+        items = service.findByNameOrPurposeAndStatus(name,name,status, pageable);
+
+        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+    }
 
 }

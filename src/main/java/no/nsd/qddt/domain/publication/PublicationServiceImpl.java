@@ -1,5 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
@@ -87,38 +90,79 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public Page<Publication> findAllPageable(Pageable pageable) {
-        return repository.findAll(pageable).map(p->fillElements(p));
+        return repository.findAll(pageable).map(this::fillElements);
+    }
+
+    @Override
+    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable) {
+        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,pageable)
+                .map(this::fillElements);
     }
 
     private Publication fillElements(Publication publication){
-        publication.getPublicationElements().stream().map(e->fill(e));
+
+        publication.getPublicationElements().forEach(this::fill);
         return publication;
     }
 
+
     private PublicationElement fill(PublicationElement element){
-        switch (element.getElementKind()) {
-            case CONCEPT:
-                element.setElement(conceptService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
-            case CONTROL_CONSTRUCT:
-                element.setElement(controlConstructService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
-            case INSTRUMENT:
-                element.setElement(instrumentService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
-            case QUESTION_ITEM:
-                element.setElement(questionItemService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
-            case STUDY:
-                element.setElement(studyService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
-            case SURVEY_PROGRAM:
-                element.setElement(surveyProgramService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
-            case TOPIC_GROUP:
-                element.setElement(topicGroupService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+        try {
+            switch (element.getElementKind()) {
+                case CONCEPT:
+                    element.setElement(
+                            conceptService.findRevision(
+                                    element.getId(),
+                                    element.getRevisionNumber())
+                                    .getEntity());
+                    break;
+                case CONTROL_CONSTRUCT:
+                    element.setElement(
+                            controlConstructService.findRevision(
+                                    element.getId(),
+                                    element.getRevisionNumber())
+                                    .getEntity());
+                    break;
+                case INSTRUMENT:
+                    element.setElement(
+                            instrumentService.findRevision(
+                                    element.getId(),
+                                    element.getRevisionNumber())
+                                    .getEntity());
+                    break;
+                case QUESTION_ITEM:
+                    element.setElement(
+                            questionItemService.findRevision(
+                                    element.getId(),
+                                    element.getRevisionNumber())
+                                    .getEntity());
+                    break;
+                case STUDY:
+                    element.setElement(
+                            studyService.findRevision(
+                                    element.getId(),
+                                    element.getRevisionNumber())
+                                    .getEntity());
+                    break;
+                case SURVEY_PROGRAM:
+                    element.setElement(
+                            surveyProgramService.findRevision(
+                                    element.getId(),
+                                    element.getRevisionNumber())
+                                    .getEntity());
+                    break;
+                case TOPIC_GROUP:
+                    element.setElement(
+                            topicGroupService.findRevision(
+                                    element.getId(),
+                                    element.getRevisionNumber())
+                                    .getEntity());
+                    break;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
         return element;
     }
 

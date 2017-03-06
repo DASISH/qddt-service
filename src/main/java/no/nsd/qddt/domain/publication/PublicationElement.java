@@ -1,19 +1,12 @@
 package no.nsd.qddt.domain.publication;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 import java.util.UUID;
 
@@ -30,14 +23,21 @@ public class PublicationElement  {
 
     private Integer revisionNumber;
 
+    @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
 
     @Transient
     @JsonSerialize
-    private String element;
+    private Object element;
 
 
     public PublicationElement() {
+    }
+
+    public PublicationElement(ElementKind kind,UUID id,Integer rev) {
+        setElementKind(kind);
+        setId(id);
+        setRevisionNumber(rev);
     }
 
     public UUID getId() {
@@ -64,52 +64,14 @@ public class PublicationElement  {
         this.elementKind = elementKind;
     }
 
-    public String getElement() {
+    public Object getElement() {
         return element;
     }
 
-    public void setElement(Concept element) {
-        System.out.println(element);
-        this.element = element.toString();
-//        Gson gson = new Gson();
-//        this.element =  gson.toJson(element);
+    public void setElement(Object element) {
+        this.element = element;
     }
-    public void setElement(ControlConstruct element) {
-        System.out.println(element);
-        this.element = element.toString();
-//        Gson gson = new Gson();
-//        this.element =  gson.toJson(element);
-    }
-    public void setElement(Instrument element) {
-        System.out.println(element);
-        this.element = element.toString();
-//        Gson gson = new Gson();
-//        this.element =  gson.toJson(element);
-    }
-    public void setElement(QuestionItem element) {
-        System.out.println(element);
-        this.element = element.toString();
-//        Gson gson = new Gson();
-//        this.element =  gson.toJson(element);
-    }
-    public void setElement(Study element) {
-        System.out.println(element);
-        this.element = element.toString();
-//        Gson gson = new Gson();
-//        this.element =  gson.toJson(element);
-    }
-    public void setElement(SurveyProgram element) {
-        System.out.println(element);
-        this.element = element.toString();
-//        Gson gson = new Gson();
-//        this.element =  gson.toJson(element);
-    }
-    public void setElement(TopicGroup element) {
-        System.out.println(element);
-        this.element = element.toString();
-//        Gson gson = new Gson();
-//        this.element =  gson.toJson(element);
-    }
+
 
     @Override
     public boolean equals(Object o) {
