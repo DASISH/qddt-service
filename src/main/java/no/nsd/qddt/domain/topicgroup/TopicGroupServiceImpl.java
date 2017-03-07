@@ -90,4 +90,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     public Page<TopicGroup> findAllPageable(Pageable pageable) {
         return topicGroupRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        return topicGroupRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
+    }
 }

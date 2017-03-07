@@ -16,4 +16,5 @@ public interface TopicGroupService extends BaseService<TopicGroup, UUID> {
 
     Page<TopicGroup> findAllPageable(Pageable pageable);
 
+    Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable);
 }

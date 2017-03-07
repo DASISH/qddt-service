@@ -71,4 +71,9 @@ class InstrumentServiceImpl implements InstrumentService {
     public Page<Instrument> findAllPageable(Pageable pageable) {
         return instrumentRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
+    }
 }

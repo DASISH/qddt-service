@@ -101,6 +101,14 @@ class ConceptServiceImpl implements ConceptService {
         return pages;
     }
 
+    @Override
+    public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,
+                defaultSort(pageable,"name","modified DESC"));
+        pages.map(c->populateRevisionedQI(c));
+        return pages;
+    }
+
     /*
         this function will make a copy of source and all it's child objects.
 
