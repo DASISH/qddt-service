@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -65,6 +66,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
 
     @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItem")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
@@ -135,6 +137,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
         this.question = question;
     }
 
+    @JsonIgnore
     public Set<Concept> getConcepts() {
         return conceptQuestionItems.stream().map(cqi->cqi.getConcept()).collect(Collectors.toSet());
     }
