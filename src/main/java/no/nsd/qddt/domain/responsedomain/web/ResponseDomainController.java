@@ -51,6 +51,7 @@ public class ResponseDomainController {
     public ResponseDomainJsonEdit create(@RequestBody ResponseDomain responseDomain) {
         assert  responseDomain != null;
         responseDomain = service.save(responseDomain);
+        //HACK -> after saving responsdomain, save managed representation one more time to correct name and version...
         categoryService.save(responseDomain.getManagedRepresentation());
         return responseDomain2Json(responseDomain);
     }
