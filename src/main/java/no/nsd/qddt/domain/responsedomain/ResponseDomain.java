@@ -87,8 +87,10 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     /**
      *   a link to a category root/group (template)
+     *   the managed representation is never reused (as was intended),
+     *   so we want to remove it when the responseDomain is removed.
      */
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = { CascadeType.MERGE ,CascadeType.REMOVE})
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
@@ -224,6 +226,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
         this.managedRepresentation = managedRepresentation;
+        setDefaultValues();
+    }
+
+    @PrePersist
+    private void setDefaultValues() {
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
@@ -236,7 +243,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         managedRepresentation.setChangeComment("");
         managedRepresentation.setChangeKind(getChangeKind());
         managedRepresentation.setVersion(getVersion());
-//        System.out.println("setManagedRepresentation " + managedRepresentation.getName() );
     }
 
     public List<Code> getCodes() {

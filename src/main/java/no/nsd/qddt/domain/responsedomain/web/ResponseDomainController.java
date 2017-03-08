@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
+import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,10 +25,12 @@ import java.util.UUID;
 public class ResponseDomainController {
 
     private ResponseDomainService service;
+    private CategoryService categoryService;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService service){
+    public ResponseDomainController(ResponseDomainService service,CategoryService categoryService){
         this.service = service;
+        this.categoryService = categoryService;
 
     }
 
@@ -47,7 +50,9 @@ public class ResponseDomainController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseDomainJsonEdit create(@RequestBody ResponseDomain responseDomain) {
         assert  responseDomain != null;
-        return responseDomain2Json(service.save(responseDomain));
+        responseDomain = service.save(responseDomain);
+        categoryService.save(responseDomain.getManagedRepresentation());
+        return responseDomain2Json(responseDomain);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
