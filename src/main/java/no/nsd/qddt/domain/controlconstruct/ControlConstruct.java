@@ -154,6 +154,10 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @Enumerated(EnumType.STRING)
     private ControlConstructKind controlConstructKind;
 
+    @Enumerated(EnumType.STRING)
+    private SequenceKind sequenceKind;
+
+
     @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
     @NotAudited
     private Set<Comment> comments = new HashSet<>();
@@ -167,6 +171,8 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     private void setDefaults(){
         if (controlConstructKind==null)
             controlConstructKind = ControlConstructKind.QUESTION_CONSTRUCT;
+        if (sequenceKind == null)
+            sequenceKind = SequenceKind.NA;
     }
 
     public QuestionItem getQuestionItem() {
@@ -249,7 +255,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     fetches pre and post instructions and add them to ControlConstructInstruction
      */
     public void populateControlConstructInstructions() {
-        System.out.println("populateControlConstructInstructions");
+//        System.out.println("populateControlConstructInstructions");
         if (controlConstructInstructions == null)
             controlConstructInstructions = new ArrayList<>();
         else
@@ -293,7 +299,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
-        System.out.println("populateInstructions " + getControlConstructInstructions().size());
+//        System.out.println("populateInstructions " + getControlConstructInstructions().size());
         setPreInstructions(getControlConstructInstructions().stream()
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)
@@ -303,6 +309,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList()));
+
     }
 
 
@@ -352,6 +359,14 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
 
     public void setControlConstructKind(ControlConstructKind controlConstructKind) {
         this.controlConstructKind = controlConstructKind;
+    }
+
+    public SequenceKind getSequenceKind() {
+        return sequenceKind;
+    }
+
+    public void setSequenceKind(SequenceKind sequenceKind) {
+        this.sequenceKind = sequenceKind;
     }
 
     public Set<Comment> getComments() {
