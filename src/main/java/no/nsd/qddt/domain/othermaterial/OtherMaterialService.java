@@ -21,15 +21,10 @@ public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
     List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException;
 
-//    static ResponseEntity<Resource> getFileAsResponseEntity(OtherMaterial otherMaterial) {
-//        return null;
-//    }
-
-    File getFile(OtherMaterial om);
-
-    ResponseEntity<Resource> getFileAsResponseEntity(UUID fileId) throws IOException;
+    void deleteFile(OtherMaterial om);
 
     OtherMaterial saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
 
-    void deleteFile(OtherMaterial om);
+    File getFile(OtherMaterial om);
+
 }
