@@ -101,30 +101,48 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
 
+    /*
+    Authors bidirectional relationship needs to be updated manually... FIX ME...
+     */
     private SurveyProgram checkSurvey(SurveyProgram entity){
         entity.getAuthors().forEach(a->a.addSurvey(entity));
         return entity;
     }
 
+    /*
+    Authors bidirectional relationship needs to be updated manually... FIX ME...
+     */
     private Study checkStudy(Study entity){
         entity.getAuthors().forEach(a->a.addStudy(entity));
         return entity;
     }
 
+    /*
+    Authors bidirectional relationship needs to be updated manually... FIX ME...
+     */
     private TopicGroup checkTopic(TopicGroup entity){
         entity.getAuthors().forEach(a->a.addTopic(entity));
         return entity;
     }
 
+    /*
+    Code to set status UPDATED_HIERARCY_RELATION when adding questionItem to Concept...
+
+     */
     private Concept checkConcept(Concept entity) {
-        entity.getQuestionItems()
-                .forEach(qi -> {
-                    if (!qi.getConcepts().contains(entity)) {
-                        qi.getConcepts().add(entity);
-                        entity.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-                        entity.setChangeComment("added question, " + qi.getName());
-                    }
+        entity.getConceptQuestionItems().stream().forEach(cqi->{
+            if (!cqi.getQuestionItem().getConceptQuestionItems().contains(cqi))
+                System.out.println("Concept <-> QuestionItem not in sync");
                 });
+
+//        entity.getQuestionItems()
+//                .forEach(qi -> {
+//                    if (!qi.getConceptQuestionItems().stream().anyMatch(cqi->cqi.getConcept().contains(entity)) {
+//                        qi.getConcepts().add(entity);
+//                        entity.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+//                        entity.setChangeComment("added question, " + qi.getName());
+//                    }
+//                });
         return entity;
     }
 

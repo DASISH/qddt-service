@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class ControlConstructInstruction {
 
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "instruction_id")
     private Instruction instruction;
 

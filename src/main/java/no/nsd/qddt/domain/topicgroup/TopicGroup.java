@@ -177,7 +177,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         if (hasRun) return;
         super.makeNewCopy(revision);
         getConcepts().forEach(c->c.makeNewCopy(revision));
-//        getOtherMaterials().forEach(m->m.);
+        getOtherMaterials().forEach(m->m.makeNewCopy(getId()));
         getComments().clear();
     }
 

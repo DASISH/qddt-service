@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import no.nsd.qddt.domain.instruction.InstructionService;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -26,18 +28,18 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 class ControlConstructServiceImpl implements ControlConstructService {
 
     private ControlConstructRepository controlConstructRepository;
-//    private ControlConstructInstructionService cciService;
+    private InstructionService iService;
     private QuestionItemAuditService qiAuditService;
     private QuestionItemService  qiService;
 
 
     @Autowired
     public ControlConstructServiceImpl(ControlConstructRepository ccRepository,
-//                                       ControlConstructInstructionService cciService,
+                                       InstructionService iService,
                                        QuestionItemAuditService questionAuditService,
                                        QuestionItemService questionItemService) {
         this.controlConstructRepository = ccRepository;
-//        this.cciService = cciService;
+        this.iService = iService;
         this.qiAuditService = questionAuditService;
         this.qiService = questionItemService;
     }
@@ -56,18 +58,20 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Transactional(readOnly = true)
     public ControlConstruct findOne(UUID id) {
 
-        ControlConstruct instance = controlConstructRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, ControlConstruct.class));
+        ControlConstruct instance = controlConstructRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id, ControlConstruct.class));
 
         return setInstructionAndRevisionedQI(instance);
-
     }
 
     @Override
     @Transactional()
     public ControlConstruct save(ControlConstruct instance) {
         instance.populateControlConstructInstructions();
-//        cciService.save(instance.getControlConstructInstructions());
+        instance.getControlConstructInstructions().forEach(cqi->{
+            if (cqi.getInstruction().getId() == null)
+                cqi.setInstruction(iService.save(cqi.getInstruction()));
+        });
         return setInstructionAndRevisionedQI(
                 controlConstructRepository.save(instance));
     }
@@ -128,7 +132,8 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
         name = name.replace("*","%");
-        return controlConstructRepository.findByNameLikeIgnoreCaseAndControlConstructKind(name,kind,
+        return controlConstructRepository.findByControlConstructKindAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(
+                kind,name,name,name,
                 defaultSort(pageable,"name ASC","modified DESC"))
                 .map(qi-> setInstructionAndRevisionedQI(qi));
     }
@@ -145,7 +150,9 @@ class ControlConstructServiceImpl implements ControlConstructService {
             instance.populateInstructions();
 
             // before returning fetch correct version of QI...
-            if(instance.getQuestionItemUUID() != null) {
+            if (instance.getQuestionItemUUID() == null)
+                instance.setQuestionItemRevision(0);
+            else {
                 if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
                     Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
                     instance.setQuestionItemRevision(rev.getRevisionNumber());
@@ -155,8 +162,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     instance.setQuestionItem(qi);
                 }
             }
-            else
-                instance.setQuestionItemRevision(0);
         } catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
@@ -166,7 +171,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     private  List<ControlConstruct> setInstructionAndRevisionedQI(List<ControlConstruct>instances) {
-//        System.out.println("setInstructionAndRevisionedQI " + instances.size());
         return instances.stream().map(p-> setInstructionAndRevisionedQI(p)).collect(Collectors.toList());
     }
 }

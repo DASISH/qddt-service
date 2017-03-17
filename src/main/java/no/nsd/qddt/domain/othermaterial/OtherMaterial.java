@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -40,6 +41,9 @@ public class OtherMaterial extends AbstractEntity {
 
     private long size;
 
+    @Type(type="pg-uuid")
+    @JsonIgnore
+    private UUID orgRef;
 
     public OtherMaterial(){
 
@@ -72,7 +76,10 @@ public class OtherMaterial extends AbstractEntity {
     }
 
     public UUID getOwner() {
-        return owner;
+        if (orgRef == null)
+            return owner;
+        else
+            return orgRef;
     }
 
     public void setOwner(UUID owner) {
@@ -109,6 +116,14 @@ public class OtherMaterial extends AbstractEntity {
 
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
+    }
+
+    public UUID getOrgRef() {
+        return orgRef;
+    }
+
+    public void setOrgRef(UUID orgRef) {
+        this.orgRef = orgRef;
     }
 
     @Override
@@ -149,4 +164,18 @@ public class OtherMaterial extends AbstractEntity {
         result = 31 * result + (int) (size ^ (size >>> 32));
         return result;
     }
+
+    @JsonIgnore
+    private boolean hasRun = false;
+
+
+    public void makeNewCopy(UUID newOwner){
+        if (hasRun) return;
+        setOrgRef(getOwner());
+        setOwner(newOwner);
+        setId(UUID.randomUUID());
+        hasRun = true;
+
+    }
+
 }

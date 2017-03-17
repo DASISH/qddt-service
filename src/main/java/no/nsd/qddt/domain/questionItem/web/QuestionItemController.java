@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.questionItem.web;
 
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemJsonEdit;
+import no.nsd.qddt.domain.questionItem.QuestionItemListJson;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -69,11 +70,9 @@ public class QuestionItemController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItemJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<QuestionItemJsonEdit> questionitems =
-                service.findAllPageable(pageable).map(F->question2Json(F));
-
+    public HttpEntity<PagedResources<QuestionItemListJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<QuestionItemListJson> questionitems =
+                service.findAllPageable(pageable).map(F->new QuestionItemListJson(F));
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 
@@ -95,6 +94,9 @@ public class QuestionItemController {
     private QuestionItemJsonEdit question2Json(QuestionItem questionItem){
         return  new QuestionItemJsonEdit(questionItem);
     }
+
+
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)

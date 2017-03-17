@@ -34,7 +34,7 @@ public class PublicationController {
 
     @JsonView(View.Simple.class)
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Publication get(@PathVariable("id") UUID id) {
         return service.findOne(id);
     }

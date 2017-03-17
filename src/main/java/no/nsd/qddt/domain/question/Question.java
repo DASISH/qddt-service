@@ -49,7 +49,7 @@ public class Question extends AbstractEntity {
     }
 
     protected Question(Question question) {
-        setChildren(question.getChildren().stream().map(q->new Question(q)).collect(Collectors.toSet()));
+        setChildren(question.getChildren().stream().map(q->newCopyOf(q)).collect(Collectors.toSet()));
         setId(question.getId());
         setModifiedBy(question.getModifiedBy());
         setModified(question.getModified());
@@ -138,8 +138,12 @@ public class Question extends AbstractEntity {
                 "} " + super.toString();
     }
 
-    public Question newCopyOf() {
-        Question instance = new Question(this);
+    public Question newCopyOf(){
+        return newCopyOf(this);
+    }
+
+    private Question newCopyOf(Question question) {
+        Question instance = new Question(question);
         instance.setId(null);
         return  instance;
     }

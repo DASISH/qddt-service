@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -64,14 +65,14 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     @JsonIgnore
-//    @JsonManagedReference(value="conceptQuestionItemsRef")
+    @JsonManagedReference(value="conceptQuestionItemsRef")
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH}, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private Set<QuestionItem> questionItems = new HashSet<>(0);
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+//    private Set<QuestionItem> questionItems = new HashSet<>(0);
 
 
     @Column(name = "label")
@@ -136,36 +137,23 @@ public class Concept extends AbstractEntityAudit implements Commentable {
 
 
     public Set<QuestionItem> getQuestionItems() {
-        if (questionItems.size() <= 0){
-//            System.out.println("conceptQuestionItems.stream().map");
-            questionItems = conceptQuestionItems.stream().map(c -> c.getQuestionItem()).collect(Collectors.toSet());
-        }
-        return questionItems;
+        return conceptQuestionItems.stream().map(c -> c.getQuestionItem()).collect(Collectors.toSet());
     }
 
 
     public void setQuestionItems(Set<QuestionItem> questions) {
-//        questions.forEach(questionItem -> {
-//            if (!conceptQuestionItems.stream().anyMatch(cqi-> cqi.getQuestionItem().getId().equals(questionItem.getId()))){
-//                conceptQuestionItems.add(new ConceptQuestionItem(this,questionItem));
-//                System.out.println("setQuestionItems add new cqi");
-//            }
-//        });
-        this.questionItems = questions;
-    }
-
-
-    public void addQuestion(Question question) {
-        QuestionItem qi = new QuestionItem();
-        qi.setQuestion(question);
-        this.addQuestionItem(qi);
+        questions.forEach(questionItem -> {
+            if (!conceptQuestionItems.stream().anyMatch(cqi-> cqi.getQuestionItem().getId().equals(questionItem.getId()))){
+                conceptQuestionItems.add(new ConceptQuestionItem(this,questionItem));
+                System.out.println("setQuestionItems add new cqi");
+            }
+        });
     }
 
 
     public void addQuestionItem(QuestionItem questionItem) {
-        if (!this.questionItems.contains(questionItem)) {
-            questionItem.getConcepts().add(this);
-            this.questionItems.add(questionItem);
+        if (!this.conceptQuestionItems.stream().anyMatch(cqi->cqi.getQuestionItem().equals(questionItem))) {
+            questionItem.getConceptQuestionItems().add(new ConceptQuestionItem(this,questionItem));
             questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
             questionItem.setChangeComment("Concept assosiation added");
             this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
@@ -180,11 +168,9 @@ public class Concept extends AbstractEntityAudit implements Commentable {
                 System.out.println("removing qi from Concept->" + qi.getId() );
                 qi.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 qi.getQuestionItem().setChangeComment("Concept assosiation removed");
-//                this.conceptQuestionItems.remove(qi);
                 this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 this.setChangeComment("QuestionItem assosiation removed");
             });
-//        this.getQuestionItems().forEach(questionItem -> System.out.println(questionItem));
     }
 
 
@@ -269,9 +255,8 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getQuestionItems().forEach(q->{
-            q.getConcepts().add(this);
-            System.out.println(q.getName());
+        getConceptQuestionItems().forEach(q->{
+            q.setConcept(this);
         });
         getChildren().forEach(c->c.makeNewCopy(revision));
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
@@ -306,7 +291,7 @@ public class Concept extends AbstractEntityAudit implements Commentable {
         return "Concept{" +
                 " children=" + (children!= null ?  children.size() : "0") +
                 ", topicGroup=" + (topicGroup!=null ? topicGroup.getName() :"null") +
-                ", questionItems=" + (questionItems !=null ? questionItems.size() :"0") +
+                ", questionItems=" + (conceptQuestionItems !=null ? conceptQuestionItems.size() :"0") +
                 ", comments=" + (comments != null ? comments.size() :"0") +
                 ", label='" + label + '\'' +
                 ", description='" + description + '\'' +

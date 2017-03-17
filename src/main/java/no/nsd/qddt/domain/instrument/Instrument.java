@@ -164,4 +164,13 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
                 ", instrumentType='" + instrumentType + '\'' +
                 "} " + super.toString();
     }
+
+
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getControlConstructs().forEach(c->c.makeNewCopy(revision));
+        getComments().clear();
+    }
 }

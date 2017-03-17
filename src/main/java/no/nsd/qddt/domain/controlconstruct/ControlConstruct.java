@@ -373,11 +373,9 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         return comments;
     }
 
-
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
-
 
     public void addComment(Comment comment) {
         comment.setOwnerId(this.getId());
@@ -425,6 +423,13 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
                 '}';
     }
 
+    @Override
+    public void makeNewCopy(Integer revision) {
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getChildren().forEach(c->c.makeNewCopy(revision));
+        getComments().clear();
+    }
 
 }
 

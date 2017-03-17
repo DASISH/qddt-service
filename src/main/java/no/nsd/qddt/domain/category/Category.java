@@ -232,10 +232,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.children.add(children);
     }
 
-    @Override
-    public void makeNewCopy(Integer revision){
-        super.makeNewCopy(revision);
-    }
 
     @Override
     @Column(nullable = false)
@@ -365,4 +361,10 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             setInputLimit("0","1");
     }
 
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getChildren().forEach(c->c.makeNewCopy(revision));
+    }
 }

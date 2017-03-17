@@ -121,4 +121,9 @@ public class ConceptQuestionItem  implements java.io.Serializable {
                 ", questionItemRevision=" + questionItemRevision +
                 '}';
     }
+
+
+    public void makeNewCopy(Integer revision) {
+     //TODO implement
+    }
 }

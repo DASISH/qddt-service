@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.study.Study;
@@ -14,6 +15,7 @@ import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -74,6 +76,11 @@ public class Agency extends AbstractEntity implements Comparable<Agency>{
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<User> users = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
+    @NotAudited
+    private Set<PublicationStatus> statuses = new HashSet<>();
 
     @Column(name = "name", length = 50)
     private String name;
@@ -168,6 +175,14 @@ public class Agency extends AbstractEntity implements Comparable<Agency>{
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public Set<PublicationStatus> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(Set<PublicationStatus> statuses) {
+        this.statuses = statuses;
     }
 
     @Override

@@ -35,4 +35,6 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
     Page<ControlConstruct> findByInstrumentIsNullAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(String name, String question, Pageable pageable);
 
     Page<ControlConstruct> findByNameLikeIgnoreCaseAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
+
+    Page<ControlConstruct> findByControlConstructKindAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(ControlConstructKind kind, String name, String questionName, String questionText, Pageable pageable);
 }

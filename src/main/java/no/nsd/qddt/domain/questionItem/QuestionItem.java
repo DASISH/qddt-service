@@ -138,7 +138,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     }
 
     @JsonIgnore
-    public Set<Concept> getConcepts() {
+    private Set<Concept> getConcepts() {
         return conceptQuestionItems.stream().map(cqi->cqi.getConcept()).collect(Collectors.toSet());
     }
 
@@ -199,6 +199,15 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
                 ", responseUUID=" + responseDomainUUID + '\'' +
                 ", responseRev" + responseDomainRevision  + '\'' +
                 "} " + System.lineSeparator();
+    }
+
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        setQuestion(question.newCopyOf());
+        setConceptQuestionItems(null);
+        getComments().clear();
     }
 
 
