@@ -2,15 +2,12 @@ package no.nsd.qddt.domain.publication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.embedded.Version;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.UUID;
 
 
@@ -24,13 +21,20 @@ public class PublicationElement  {
     @Type(type="pg-uuid")
     private UUID id;
 
-
+    @Column(name = "revision")
     private Integer revisionNumber;
-
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
 
+    private String name;
+
+    @JsonIgnore
+    private Integer major;
+    @JsonIgnore
+    private Integer minor;
+    @JsonIgnore
+    String versionLabel;
 
     @Transient
     @JsonSerialize
@@ -88,13 +92,37 @@ public class PublicationElement  {
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public Version getVersion() {
+        return new Version(major,minor,revisionNumber,versionLabel);
+    }
+
+
+    public void setVersion(Version version) {
+        major = version.getMajor();
+        minor = version.getMinor();
+        versionLabel = version.getVersionLabel();
+    }
+
+
     public Object getElement() {
         return element;
     }
 
+
     public void setElement(Object element) {
         this.element = element;
     }
+
 
     public void setElement(AbstractEntityAudit element) {
         this.element = element;

@@ -9,6 +9,7 @@ public enum ElementKind {
     QUESTION_CONSTRUCT("QuestionConstruct"),
     STATEMENT_CONSTRUCT("Statement"),
     SEQUENCE_CONSTRUCT("Sequence"),
+    CONDITION_CONSTRUCT("Condition"),
     INSTRUMENT("Instrument"),
     QUESTION_ITEM("QuestionItem"),
     STUDY("Study"),
@@ -25,11 +26,11 @@ public enum ElementKind {
         return this.description;
     }
 
-    public static ElementKind getEnum(String value) {
-        if(value == null)
+    public static ElementKind getEnum(String description) {
+        if(description == null)
             throw new IllegalArgumentException();
         for(ElementKind v : values())
-            if(value.equalsIgnoreCase(v.getDescription())) return v;
+            if(description.equalsIgnoreCase(v.getDescription())) return v;
         throw new IllegalArgumentException();
     }
 }
