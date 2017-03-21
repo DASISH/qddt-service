@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -21,10 +22,13 @@ public class PublicationElement  {
     @Type(type="pg-uuid")
     private UUID id;
 
+
     private Integer revisionNumber;
+
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
+
 
     @Transient
     @JsonSerialize
@@ -35,38 +39,57 @@ public class PublicationElement  {
     }
 
     public PublicationElement(ElementKind kind,UUID id,Integer rev) {
-        setElementKind(kind);
+        setElementEnum(kind);
         setId(id);
         setRevisionNumber(rev);
     }
+
 
     public UUID getId() {
         return id;
     }
 
+
     public void setId(UUID id) {
         this.id = id;
     }
+
 
     public Integer getRevisionNumber() {
         return revisionNumber;
     }
 
+
     public void setRevisionNumber(Integer revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
 
-    public ElementKind getElementKind() {
+
+    public String getElementKind() {
+        return elementKind.getDescription();
+    }
+
+
+    public void setElementKind(String elementDescription) {
+        this.elementKind = ElementKind.getEnum(elementDescription);
+    }
+
+
+    public void setElementEnum(ElementKind elementKind) {
+        this.elementKind = elementKind;
+    }
+
+
+    @JsonIgnore
+    public ElementKind getElementEnum(){
         return elementKind;
     }
 
-    public void setElementKind(ElementKind elementKind) {
-        this.elementKind = elementKind;
-    }
 
     public Object getElement() {
         return element;
     }
+
 
     public void setElement(Object element) {
         this.element = element;
@@ -86,6 +109,7 @@ public class PublicationElement  {
         return elementKind == that.elementKind;
     }
 
+
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
@@ -93,6 +117,7 @@ public class PublicationElement  {
         result = 31 * result + (elementKind != null ? elementKind.hashCode() : 0);
         return result;
     }
+
 
     @Override
     public String toString() {

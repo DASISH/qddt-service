@@ -58,49 +58,58 @@ public class PublicationServiceImpl implements PublicationService {
         return repository.count();
     }
 
+
     @Override
     public boolean exists(UUID uuid) {
         return repository.exists(uuid);
     }
+
 
     @Override
     public Publication findOne(UUID uuid) {
         return fillElements(repository.findOne(uuid));
     }
 
+
     @Override
     public Publication save(Publication instance) {
         return repository.save(instance);
     }
+
 
     @Override
     public List<Publication> save(List<Publication> instances) {
         return repository.save(instances);
     }
 
+
     @Override
     public void delete(UUID uuid) {
         repository.delete(uuid);
     }
+
 
     @Override
     public void delete(List<Publication> instances) {
         repository.delete(instances);
     }
 
+
     @Override
     public Page<Publication> findAllPageable(Pageable pageable) {
-        return repository.findAll(pageable).map(this::fillElements);
+        return repository.findAll(pageable);
+        //.map(this::fillElements);
     }
+
 
     @Override
     public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable) {
-        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,pageable)
-                .map(this::fillElements);
+        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,pageable);
+        // .map(this::fillElements);
     }
 
-    private Publication fillElements(Publication publication){
 
+    private Publication fillElements(Publication publication){
         publication.getPublicationElements().forEach(this::fill);
         return publication;
     }
@@ -108,7 +117,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     private PublicationElement fill(PublicationElement element){
         try {
-            switch (element.getElementKind()) {
+            switch (element.getElementEnum()) {
                 case CONCEPT:
                     element.setElement(
                             conceptService.findRevision(
@@ -117,6 +126,9 @@ public class PublicationServiceImpl implements PublicationService {
                                     .getEntity());
                     break;
                 case CONTROL_CONSTRUCT:
+                case QUESTION_CONSTRUCT:
+                case SEQUENCE_CONSTRUCT:
+                case STATEMENT_CONSTRUCT:
                     element.setElement(
                             controlConstructService.findRevision(
                                     element.getId(),

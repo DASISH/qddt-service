@@ -8,8 +8,8 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface PublicationStatusService  extends BaseService<PublicationStatus, UUID> {
+public interface PublicationStatusService  extends BaseService<PublicationStatus, Long> {
 
-    List<PublicationStatus> findAll();
+    List<PublicationStatusJsonListView> findAll();
 
 }

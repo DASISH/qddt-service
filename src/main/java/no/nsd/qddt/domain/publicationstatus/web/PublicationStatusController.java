@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.publicationstatus.web;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatusJsonListView;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
 import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class PublicationStatusController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public PublicationStatus get(@PathVariable("id") UUID id) {
+    public PublicationStatus get(@PathVariable("id") Long id) {
         return service.findOne(id);
     }
 
@@ -45,14 +46,14 @@ public class PublicationStatusController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") UUID id) {
+    public void delete(@PathVariable("id") Long id) {
         service.delete(id);
     }
 
     @JsonView(View.SimpleList.class)
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<PublicationStatus> getAll() {
+    public List<PublicationStatusJsonListView> getAll() {
 
         return service.findAll();
     }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -28,13 +29,13 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return repository.exists(uuid);
+    public boolean exists(Long id) {
+        return repository.exists(id);
     }
 
     @Override
-    public PublicationStatus findOne(UUID uuid) {
-        return repository.findOne(uuid);
+    public PublicationStatus findOne(Long id) {
+        return repository.findOne(id);
     }
 
     @Override
@@ -52,8 +53,8 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     }
 
     @Override
-    public void delete(UUID uuid) {
-        repository.delete(uuid);
+    public void delete(Long id) {
+        repository.delete(id);
     }
 
     @Override
@@ -63,8 +64,10 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
 
     @Override
-    public List<PublicationStatus> findAll() {
+    public List<PublicationStatusJsonListView> findAll() {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        return repository.findAllByAgencyOrderByStatus(agency);
+        return repository.findAllByAgencyOrderByStatus(agency).stream()
+                .map(s->new PublicationStatusJsonListView(s))
+                .collect(Collectors.toList());
     }
 }

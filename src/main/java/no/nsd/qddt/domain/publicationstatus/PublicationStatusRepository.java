@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-public interface PublicationStatusRepository extends BaseRepository<PublicationStatus,UUID> {
+public interface PublicationStatusRepository extends BaseRepository<PublicationStatus,Long> {
 
     List<PublicationStatus> findAllByAgencyOrderByStatus(Agency agency);
 }
