@@ -6,14 +6,14 @@ package no.nsd.qddt.domain.publication;
 public enum ElementKind {
     CONCEPT("Concept"),
     CONTROL_CONSTRUCT("Construct"),
-    QUESTION_CONSTRUCT("Question Construct"),
+    QUESTION_CONSTRUCT("QuestionConstruct"),
     STATEMENT_CONSTRUCT("Statement"),
     SEQUENCE_CONSTRUCT("Sequence"),
     INSTRUMENT("Instrument"),
-    QUESTION_ITEM("Question Item"),
+    QUESTION_ITEM("QuestionItem"),
     STUDY("Study"),
-    SURVEY_PROGRAM("Survey Program"),
-    TOPIC_GROUP("Questionnaire Module");
+    SURVEY_PROGRAM("Survey"),
+    TOPIC_GROUP("Module");
 
 
     private String description;
