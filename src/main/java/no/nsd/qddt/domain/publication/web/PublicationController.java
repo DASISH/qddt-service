@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.publication.web;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.publication.Publication;
+import no.nsd.qddt.domain.publication.PublicationElement;
 import no.nsd.qddt.domain.publication.PublicationService;
 import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,13 @@ public class PublicationController {
     public Publication get(@PathVariable("id") UUID id) {
         return service.findOne(id);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/element/", method = RequestMethod.GET)
+    public PublicationElement getDetail(@RequestBody PublicationElement instance) {
+        return service.getDetail(instance);
+    }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)

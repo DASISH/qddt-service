@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.publication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -90,10 +92,14 @@ public class PublicationElement  {
         return element;
     }
 
-
     public void setElement(Object element) {
         this.element = element;
     }
+
+    public void setElement(AbstractEntityAudit element) {
+        this.element = element;
+    }
+
 
 
     @Override

@@ -16,16 +16,13 @@ import java.util.List;
 @Table(name = "PUBLICATION")
 public class Publication extends AbstractEntityAudit {
 
-
     String purpose;
 
-//    @ManyToOne
     String status;
-
 
     @OrderColumn(name="element_idx")
     @OrderBy("element_idx ASC")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PUBLICATION_ELEMENT",joinColumns = @JoinColumn(name="element_id"))
     private List<PublicationElement>  publicationElements = new ArrayList<>();
 
@@ -34,25 +31,36 @@ public class Publication extends AbstractEntityAudit {
         return purpose;
     }
 
+
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
+
 
     public String getStatus() {
         return status;
     }
 
+
     public void setStatus(String status) {
         this.status = status;
     }
 
+
     public List<PublicationElement> getPublicationElements() {
-        return publicationElements;
+        try {
+            return publicationElements;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
     }
+
 
     public void setPublicationElements(List<PublicationElement> publicationElements) {
         this.publicationElements = publicationElements;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -65,6 +73,7 @@ public class Publication extends AbstractEntityAudit {
         return (status == that.status);
 
     }
+
 
     @Override
     public int hashCode() {

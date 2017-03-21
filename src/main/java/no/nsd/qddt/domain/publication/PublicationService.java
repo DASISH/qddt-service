@@ -14,4 +14,7 @@ public interface PublicationService extends BaseService<Publication, UUID> {
     Page<Publication> findAllPageable(Pageable pageable);
 
     Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable);
+
+    PublicationElement getDetail(PublicationElement publicationElement);
+
 }
