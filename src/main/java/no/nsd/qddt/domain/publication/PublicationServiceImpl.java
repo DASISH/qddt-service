@@ -13,6 +13,7 @@ import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +68,7 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     @Override
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public Publication findOne(UUID uuid) {
         return fillElements(repository.findOne(uuid));
     }
@@ -156,21 +157,23 @@ public class PublicationServiceImpl implements PublicationService {
         return null;
     }
 
-    private PublicationElement fill(PublicationElement element){
-        try{
+    private PublicationElement fill(PublicationElement element) {
+        try {
             BaseServiceAudit service = getService(element.getElementEnum());
             element.setElement(service.findRevision(
-                                element.getId(),
-                                element.getRevisionNumber())
-                                .getEntity());
+                    element.getId(),
+                    element.getRevisionNumber())
+                    .getEntity());
 
-        } catch (RevisionDoesNotExistException e){
+        } catch (RevisionDoesNotExistException e) {
             element.setElement(conceptService.findLastChange(element.getId()));
-
+        } catch (JpaSystemException se) {
+            System.out.println(se.getMessage());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+//        System.out.println("fill  -> " + element);
         return element;
     }
 

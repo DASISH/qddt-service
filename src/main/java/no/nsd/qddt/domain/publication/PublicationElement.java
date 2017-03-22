@@ -159,6 +159,9 @@ public class PublicationElement  {
                 "id=" + id +
                 ", revisionNumber=" + revisionNumber +
                 ", elementKind=" + elementKind +
+                ", name='" + name + '\'' +
+                ", Version =" + getVersion() + '\'' +
+                ", element=" + element +
                 '}';
     }
 }
