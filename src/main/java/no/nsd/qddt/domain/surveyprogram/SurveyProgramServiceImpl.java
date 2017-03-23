@@ -49,7 +49,9 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
         SurveyProgram retval=null;
         try {
-            retval= surveyProgramRepository.save(instance);
+            retval= postLoadProcessing(
+                    surveyProgramRepository.save(
+                            prePersistProcessing(instance)));
         }catch (Exception e){
             System.out.println("SAVING SURVEY FAILED ->" + e.getMessage());
         }
@@ -70,6 +72,16 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     public void delete(List<SurveyProgram> instances) {
         surveyProgramRepository.delete(instances);
+    }
+
+    @Override
+    public SurveyProgram prePersistProcessing(SurveyProgram instance) {
+        return instance;
+    }
+
+    @Override
+    public SurveyProgram postLoadProcessing(SurveyProgram instance) {
+        return instance;
     }
 
     @Override

@@ -46,8 +46,6 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     @Transactional(readOnly = false)
     public Comment save(Comment instance) {
-
-//        instance.setCreated(LocalDateTime.now());
         return commentRepository.save(instance);
     }
 
@@ -64,6 +62,16 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     public void delete(List<Comment> instances) {
         commentRepository.delete(instances);
+    }
+
+    @Override
+    public Comment prePersistProcessing(Comment instance) {
+        return instance;
+    }
+
+    @Override
+    public Comment postLoadProcessing(Comment instance) {
+        return instance;
     }
 
     @Override

@@ -1,18 +1,19 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-//import no.nsd.qddt.domain.downloadtoken.DownloadToken;
 
 /**
  * This class is just a placeholder for functionality not implemented.
@@ -41,9 +42,25 @@ public class OtherMaterial extends AbstractEntity {
 
     private long size;
 
+
+//    @JsonIgnore
     @Type(type="pg-uuid")
-    @JsonIgnore
+    @Column(name="org_ref")
     private UUID orgRef;
+
+    @JsonIgnore
+    @JsonBackReference(value = "orgReferences")
+    @ManyToOne()
+    @JoinColumn(name = "org_ref",updatable = false,insertable = false)
+    private OtherMaterial source;
+
+    @JsonIgnore
+    @JsonManagedReference(value = "orgReferences")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
+    @JoinColumn(name = "org_ref")
+//    @AuditMappedBy(mappedBy = "source")
+    private Set<OtherMaterial> referencesBy = new HashSet<>(0);
+
 
     public OtherMaterial(){
 
@@ -76,10 +93,10 @@ public class OtherMaterial extends AbstractEntity {
     }
 
     public UUID getOwner() {
-        if (orgRef == null)
+//        if (orgRef == null)
             return owner;
-        else
-            return orgRef;
+//        else
+//            return orgRef;
     }
 
     public void setOwner(UUID owner) {
@@ -126,6 +143,18 @@ public class OtherMaterial extends AbstractEntity {
         this.orgRef = orgRef;
     }
 
+    @JsonIgnore
+    public Set<OtherMaterial> getReferencesBy() {
+        return referencesBy;
+    }
+
+
+    @JsonIgnore
+    public OtherMaterial getSource() {
+        return source;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -166,16 +195,22 @@ public class OtherMaterial extends AbstractEntity {
     }
 
     @JsonIgnore
+    @Transient
     private boolean hasRun = false;
 
 
     public void makeNewCopy(UUID newOwner){
         if (hasRun) return;
-        setOrgRef(getOwner());
+        setOrgRef(getId());
         setOwner(newOwner);
         setId(UUID.randomUUID());
         hasRun = true;
-
     }
+
+    @PreRemove
+    private void cleanUp(){
+        System.out.println("Removal of file " + getOriginalName() +  ", on hold, due to revision concerns");
+    }
+
 
 }

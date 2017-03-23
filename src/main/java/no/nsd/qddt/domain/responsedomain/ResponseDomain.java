@@ -310,7 +310,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     @Override
     public void makeNewCopy(Integer revision){
-        System.out.println("RD makeNewCopy");
         if (hasRun) return;
         super.makeNewCopy(revision);
         managedRepresentation.makeNewCopy(revision);

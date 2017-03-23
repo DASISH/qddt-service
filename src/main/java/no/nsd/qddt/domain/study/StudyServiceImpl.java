@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,9 +46,9 @@ class StudyServiceImpl implements StudyService {
     @Override
     @Transactional(readOnly = false)
     public Study save(Study instance) {
-
-//        instance.setCreated(LocalDateTime.now());
-        return studyRepository.save(instance);
+        return postLoadProcessing(
+                studyRepository.save(
+                        prePersistProcessing(instance)));
     }
 
     @Override
@@ -66,5 +65,15 @@ class StudyServiceImpl implements StudyService {
     @Override
     public void delete(List<Study> instances) {
         studyRepository.delete(instances);
+    }
+
+    @Override
+    public Study prePersistProcessing(Study instance) {
+        return instance;
+    }
+
+    @Override
+    public Study postLoadProcessing(Study instance) {
+        return instance;
     }
 }

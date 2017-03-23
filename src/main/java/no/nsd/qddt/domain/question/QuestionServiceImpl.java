@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,7 +45,6 @@ class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = false)
     public Question save(Question instance) {
 
-//        instance.setModified(LocalDateTime.now());
         return questionRepository.save(instance);
     }
 
@@ -63,6 +61,16 @@ class QuestionServiceImpl implements QuestionService {
     @Override
     public void delete(List<Question> instances) {
         questionRepository.delete(instances);
+    }
+
+    @Override
+    public Question prePersistProcessing(Question instance) {
+        return instance;
+    }
+
+    @Override
+    public Question postLoadProcessing(Question instance) {
+        return instance;
     }
 
     @Override

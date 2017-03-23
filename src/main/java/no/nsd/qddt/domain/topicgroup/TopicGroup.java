@@ -70,6 +70,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
+
     @Column(name = "description", length = 10000)
     private String abstractDescription;
 

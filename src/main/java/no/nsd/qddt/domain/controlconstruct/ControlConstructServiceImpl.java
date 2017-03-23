@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instruction.InstructionService;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -28,6 +28,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 class ControlConstructServiceImpl implements ControlConstructService {
 
     private ControlConstructRepository controlConstructRepository;
+    private ControlConstructAuditService auditService;
     private InstructionService iService;
     private QuestionItemAuditService qiAuditService;
     private QuestionItemService  qiService;
@@ -35,10 +36,12 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Autowired
     public ControlConstructServiceImpl(ControlConstructRepository ccRepository,
+                                       ControlConstructAuditService controlConstructAuditService,
                                        InstructionService iService,
                                        QuestionItemAuditService questionAuditService,
                                        QuestionItemService questionItemService) {
         this.controlConstructRepository = ccRepository;
+        this.auditService = controlConstructAuditService;
         this.iService = iService;
         this.qiAuditService = questionAuditService;
         this.qiService = questionItemService;
@@ -61,27 +64,21 @@ class ControlConstructServiceImpl implements ControlConstructService {
         ControlConstruct instance = controlConstructRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id, ControlConstruct.class));
 
-        return setInstructionAndRevisionedQI(instance);
+        return postLoadProcessing(instance);
     }
 
     @Override
     @Transactional()
     public ControlConstruct save(ControlConstruct instance) {
-        instance.populateControlConstructInstructions();
-        instance.getControlConstructInstructions().forEach(cqi->{
-            if (cqi.getInstruction().getId() == null)
-                cqi.setInstruction(iService.save(cqi.getInstruction()));
-        });
-        return setInstructionAndRevisionedQI(
-                controlConstructRepository.save(instance));
+        return postLoadProcessing(
+                controlConstructRepository.save(
+                        prePersistProcessing(instance)));
     }
 
     @Override
     @Transactional()
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
-
         return  instances.stream().map(this::save).collect(Collectors.toList());
-
     }
 
     @Override
@@ -97,53 +94,25 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ControlConstruct> findByInstrumentId(UUID instrumentId) {
-        return setInstructionAndRevisionedQI(controlConstructRepository.findByInstrumentId(instrumentId));
+    public ControlConstruct prePersistProcessing(ControlConstruct instance) {
+        instance.populateControlConstructInstructions();
+
+        if(instance.isBasedOn()) {
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            instance.makeNewCopy(rev);
+        } else if (instance.isNewCopy()) {
+            instance.makeNewCopy(null);
+        }
+
+        instance.getControlConstructInstructions().forEach(cqi->{
+            if (cqi.getInstruction().getId() == null)
+                cqi.setInstruction(iService.save(cqi.getInstruction()));
+        });
+        return instance;
     }
 
     @Override
-    public List<ControlConstruct> findByQuestionItems(List<UUID> questionItemIds) {
-        assert (questionItemIds.size() > 0);
-        questionItemIds.forEach(System.out::println);
-        return setInstructionAndRevisionedQI(controlConstructRepository.findByquestionItemUUID(questionItemIds.get(0)));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ControlConstruct> findTop25ByQuestionItemQuestion(String question) {
-
-        List<UUID> uuidList = qiService.findByNameLikeAndQuestionLike(question,null,new PageRequest(0,25)).getContent()
-                            .stream().map(f->f.getId()).collect(Collectors.toList());
-
-        return findByQuestionItems(uuidList);
-    }
-
-    @Override
-    public Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable) {
-        name = name.replace("*","%");
-        question = question.replace("*","%");
-
-        return controlConstructRepository.findByInstrumentIsNullAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,
-                defaultSort(pageable,"name ASC","modified DESC"))
-                .map(qi-> setInstructionAndRevisionedQI(qi));
-    }
-
-    @Override
-    public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
-        name = name.replace("*","%");
-        return controlConstructRepository.findByControlConstructKindAndNameLikeIgnoreCaseOrQuestionItemReferenceOnlyNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(
-                kind,name,name,name,
-                defaultSort(pageable,"name ASC","modified DESC"))
-                .map(qi-> setInstructionAndRevisionedQI(qi));
-    }
-
-
-    /*
-    post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
-    thus we need to populate some elements ourselves.
-     */
-    private  ControlConstruct setInstructionAndRevisionedQI(ControlConstruct instance){
+    public ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
         try{
             // instructions has to unpacked into pre and post instructions
@@ -170,7 +139,42 @@ class ControlConstructServiceImpl implements ControlConstructService {
         return instance;
     }
 
-    private  List<ControlConstruct> setInstructionAndRevisionedQI(List<ControlConstruct>instances) {
-        return instances.stream().map(p-> setInstructionAndRevisionedQI(p)).collect(Collectors.toList());
+
+    @Override
+    public List<ControlConstruct> findByQuestionItems(List<UUID> questionItemIds) {
+        assert (questionItemIds.size() > 0);
+        return controlConstructRepository.findByquestionItemUUID(questionItemIds.get(0))
+            .stream().map(c->postLoadProcessing(c)).collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ControlConstruct> findTop25ByQuestionItemQuestion(String question) {
+
+        List<UUID> uuidList = qiService.findByNameLikeAndQuestionLike(question,null,new PageRequest(0,25)).getContent()
+                            .stream().map(f->f.getId()).collect(Collectors.toList());
+
+        return findByQuestionItems(uuidList);
+    }
+
+    @Override
+    public Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable) {
+        name = name.replace("*","%");
+        question = question.replace("*","%");
+
+        return controlConstructRepository.findByNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,
+                defaultSort(pageable,"name ASC","modified DESC"))
+                .map(qi-> postLoadProcessing(qi));
+    }
+
+    @Override
+    public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
+        name = name.replace("*","%");
+        return controlConstructRepository.findByQuery(
+                kind.toString(),name,name,name,
+                defaultSort(pageable,"name ASC","updated DESC"))
+                .map(qi-> postLoadProcessing(qi));
+    }
+
+
 }

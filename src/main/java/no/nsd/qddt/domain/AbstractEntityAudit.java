@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -58,7 +56,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 //        This was removed as publication is no longer part of the model, now uses list of published elements for each publication.
         MILESTONE,
         BASED_ON,
-        TRANSLATED
+        NEW_COPY, TRANSLATED
     }
 
 
@@ -195,13 +193,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         if (this instanceof Commentable){
             // we have to filter comments manually before sending them over to clients, this will be fixed in
             // a later version of Hibernate
-            removeComments(((Commentable)this).getComments());
+            hideComments(((Commentable)this).getComments());
         }
     }
 
-    private void removeComments(Set<Comment> comments){
+    private void hideComments(Set<Comment> comments){
         comments.removeIf(c->c.getIsHidden()==true);
-        comments.stream().forEach(c->removeComments(c.getComments()));
+        comments.stream().forEach(c-> hideComments(c.getComments()));
     }
 
     /**
@@ -222,8 +220,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
     @JsonIgnore
-    public boolean isNewBasedOn(){
+    public boolean isBasedOn(){
         return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
+    }
+
+    @JsonIgnore
+    public boolean isNewCopy(){
+        return (getChangeKind() == ChangeKind.NEW_COPY )
+                | (getId() == null & getChangeKind() != null & getChangeKind()!= ChangeKind.CREATED)
+                | (!getVersion().isNew() & getId() == null );
     }
 
     @JsonIgnore

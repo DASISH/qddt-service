@@ -208,6 +208,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
         setQuestion(question.newCopyOf());
         setConceptQuestionItems(null);
         getComments().clear();
+        System.out.println("MADE NEW COPY...");
     }
 
 

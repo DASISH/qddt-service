@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
+
 /**
  * @author Stig Norland
  */
@@ -68,9 +70,8 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     @Override
-//    @Transactional(readOnly = true)
     public Publication findOne(UUID uuid) {
-        return fillElements(repository.findOne(uuid));
+        return postLoadProcessing(repository.findOne(uuid));
     }
 
 
@@ -101,20 +102,30 @@ public class PublicationServiceImpl implements PublicationService {
         repository.delete(instances);
     }
 
+    @Override
+    public Publication prePersistProcessing(Publication instance) {
+        return instance;
+    }
+
+    @Override
+    public Publication postLoadProcessing(Publication instance) {
+        instance.getPublicationElements().forEach(this::fill);
+        return instance;
+    }
+
 
     @Override
     @Transactional(readOnly = true)
     public Page<Publication> findAllPageable(Pageable pageable) {
-        return repository.findAll(pageable);
-//                .map(this::fillElements);
+        return repository.findAll(defaultSort(pageable,"name","modified"));
     }
 
 
     @Override
     @Transactional(readOnly = true)
     public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable) {
-        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,pageable);
-//        .map(this::fillElements);
+        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
+                defaultSort(pageable,"name","modified"));
     }
 
     @Override
@@ -124,15 +135,6 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-    private Publication fillElements(Publication publication){
-        publication.getPublicationElements().forEach(this::fill);
-        return publication;
-    }
-
-//    private Publication fillElementsSimple(Publication publication){
-//        publication.getPublicationElements().forEach(this::fillSimple);
-//        return publication;
-//    }
 
     private BaseServiceAudit getService(ElementKind elementKind){
          switch (elementKind) {
@@ -173,27 +175,15 @@ public class PublicationServiceImpl implements PublicationService {
             ex.printStackTrace();
         }
 
+        if (element.getElement() != null){
+            element.setName(element.getElementAsEntity().getName());
+            element.setVersion(element.getElementAsEntity().getVersion());
+        }
 //        System.out.println("fill  -> " + element);
         return element;
     }
 
-//    private PublicationElement fillSimple(PublicationElement element){
-//        BaseServiceAudit service = getService(element.getElementEnum());
-//        try{
-//            element.setElement((AbstractEntityAudit)service.findRevision(
-//                    element.getId(),
-//                    element.getRevisionNumber())
-//                    .getEntity());
-//
-//        } catch (RevisionDoesNotExistException e){
-//            element.setElement((AbstractEntityAudit) service.findLastChange(element.getId()).getEntity());
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        return element;
-//    }
+
 
 
 }

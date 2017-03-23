@@ -58,6 +58,16 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public Author prePersistProcessing(Author instance) {
+        return instance;
+    }
+
+    @Override
+    public Author postLoadProcessing(Author instance) {
+        return instance;
+    }
+
+    @Override
     public Page<Author> findAllPageable(Pageable pageable) {
         return authorRepository.findAll(pageable);
     }

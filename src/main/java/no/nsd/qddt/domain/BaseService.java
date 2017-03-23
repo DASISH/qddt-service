@@ -59,6 +59,7 @@ public interface BaseService<T,ID> {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     void delete(List<T> instances);
 
+    T prePersistProcessing(T instance);
 
-
+    T postLoadProcessing(T instance);
 }

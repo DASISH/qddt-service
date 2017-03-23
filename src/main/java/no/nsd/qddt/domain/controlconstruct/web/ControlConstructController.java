@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.controlconstruct.web;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
+import no.nsd.qddt.domain.instruction.InstructionService;
+import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +36,13 @@ public class ControlConstructController {
 
     private ControlConstructService service;
     private OtherMaterialService omService;
+    private InstrumentService iService;
 
     @Autowired
-    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService){
+    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService, InstrumentService instrumentService){
         this.service = ccService;
         this.omService = otherMaterialService;
+        this.iService = instrumentService;
     }
 
 
@@ -80,8 +84,7 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-instrument/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getByFirst(@PathVariable("uuid") UUID firstId) {
-
-        return service.findByInstrumentId(firstId);
+        return iService.findOne(firstId).getControlConstructs();
     }
 
     @ResponseStatus(value = HttpStatus.OK)

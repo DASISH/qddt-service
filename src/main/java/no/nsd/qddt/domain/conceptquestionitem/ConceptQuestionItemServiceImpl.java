@@ -56,6 +56,16 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
     @Override
+    public ConceptQuestionItem prePersistProcessing(ConceptQuestionItem instance) {
+        return instance;
+    }
+
+    @Override
+    public ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
+        return instance;
+    }
+
+    @Override
     public List<ConceptQuestionItem> findByConceptQuestionItem(UUID conceptId, UUID questionItemId) {
         return repository.findByConceptIdAndQuestionItemId(conceptId, questionItemId);
     }

@@ -1,12 +1,14 @@
 package no.nsd.qddt.domain.questionItem;
 
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +28,18 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItemRepository questionItemRepository;
     private ResponseDomainAuditService rdAuditService;
+    private QuestionItemAuditService auditService;
     private QuestionService questionService;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
                                    ResponseDomainAuditService responseDomainAuditService,
-                                   QuestionService questionService) {
+                                   QuestionService questionService,
+                                   QuestionItemAuditService questionItemAuditService) {
         this.questionItemRepository = questionItemRepository;
         this.rdAuditService = responseDomainAuditService;
         this.questionService = questionService;
+        this.auditService = questionItemAuditService;
     }
 
     @Override
@@ -49,7 +54,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public QuestionItem findOne(UUID uuid) {
-        return  setRevisionedResponsedomain(questionItemRepository.findById(uuid).orElseThrow(
+        return  postLoadProcessing(questionItemRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, QuestionItem.class))
 
         );
@@ -59,9 +64,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Transactional()
     public QuestionItem save(QuestionItem instance) {
         try {
-            return setRevisionedResponsedomain(
+            return postLoadProcessing(
                     questionItemRepository.save(
-                            setDefaultRevision(instance)));
+                            prePersistProcessing(instance)));
         } catch (Exception ex){
             System.out.println("QI save ->"  + ex.getMessage());
             ex.printStackTrace();
@@ -88,7 +93,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public Page<QuestionItem> getHierarchy(Pageable pageable) {
         return  questionItemRepository.findAll(
                 defaultSort(pageable,"name", "questions.question"))
-                .map(qi-> setRevisionedResponsedomain(qi));
+                .map(qi-> postLoadProcessing(qi));
     }
 
     @Override
@@ -96,7 +101,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try {
             return questionItemRepository.findAll(
                     defaultSort(pageable,"name"))
-                    .map(qi -> setRevisionedResponsedomain(qi));
+                    .map(qi -> postLoadProcessing(qi));
         }catch (Exception ex){
             ex.printStackTrace();
             return new PageImpl<>(null);
@@ -110,7 +115,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
         return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,
                 defaultSort(pageable,"name","question.question"))
-                .map(qi-> setRevisionedResponsedomain(qi));
+                .map(qi-> postLoadProcessing(qi));
     }
 
     @Override
@@ -119,14 +124,15 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
         return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,
                 defaultSort(pageable,"name","question.question"))
-                .map(qi-> setRevisionedResponsedomain(qi));
+                .map(qi-> postLoadProcessing(qi));
     }
 
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
     */
-    private QuestionItem setRevisionedResponsedomain(QuestionItem instance){
+    @Override
+    public QuestionItem postLoadProcessing(QuestionItem instance){
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
@@ -153,21 +159,18 @@ class QuestionItemServiceImpl implements QuestionItemService {
         return instance;
     }
 
-    public List<QuestionItem> setRevisionedResponsedomain(List<QuestionItem>instances) {
-        return instances.stream().map(p-> setRevisionedResponsedomain(p)).collect(Collectors.toList());
-    }
+    @Override
+    public QuestionItem prePersistProcessing(QuestionItem instance){
 
-    protected QuestionItem setDefaultRevision(QuestionItem instance){
-        if (instance.getId() == null && instance.getQuestion().getId() != null) {
-            // new based on entity needs a new copy of question(text)
-            instance.setQuestion(questionService.save(instance.getQuestion().newCopyOf()));
+        if(instance.isBasedOn()) {
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            instance.makeNewCopy(rev);
+        } else if (instance.isNewCopy()){
+            instance.makeNewCopy(null);
         }
 
         if (instance.getQuestion().getId() == null)
-            instance.setQuestion(
-                    questionService.save(
-                            instance.getQuestion()));
-
+            instance.setQuestion(questionService.save(instance.getQuestion()));
 
         if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
             if (instance.getResponseDomainUUID() == null) {
@@ -189,6 +192,5 @@ class QuestionItemServiceImpl implements QuestionItemService {
         }
          return instance;
     }
-
 
 }

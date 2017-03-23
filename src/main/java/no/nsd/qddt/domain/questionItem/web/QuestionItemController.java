@@ -25,14 +25,10 @@ import java.util.UUID;
 public class QuestionItemController {
 
     private QuestionItemService service;
-//    private QuestionService questionService;
 
     @Autowired
-    public QuestionItemController(QuestionItemService service
-//                                  ,QuestionService questionService
-    ){
+    public QuestionItemController(QuestionItemService service){
         this.service = service;
-//        this.questionService = questionService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -44,21 +40,12 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public QuestionItemJsonEdit update(@RequestBody QuestionItem instance) {
-//        instance.setQuestion(
-//                questionService.save(
-//                        instance.getQuestion()));
-
         return question2Json(service.save(instance));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public QuestionItemJsonEdit create(@RequestBody QuestionItem instance) {
-
-//        instance.setQuestion(
-//                questionService.save(
-//                        instance.getQuestion()));
-
         return question2Json(service.save(instance));
     }
 
@@ -94,8 +81,6 @@ public class QuestionItemController {
     private QuestionItemJsonEdit question2Json(QuestionItem questionItem){
         return  new QuestionItemJsonEdit(questionItem);
     }
-
-
 
 
     @ResponseStatus(value = HttpStatus.OK)

@@ -52,17 +52,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
-        instance.populateCodes();
-        instance = responseDomainRepository.save(makeCopy(instance));
-        return instance;
+        return postLoadProcessing(
+                responseDomainRepository.save(
+                        prePersistProcessing(instance)));
     }
 
     @Override
     public List<ResponseDomain> save(List<ResponseDomain> instances) {
-        instances.forEach(rd->{
-            rd.populateCodes();
-            makeCopy(rd);
-        });
+        instances.forEach(rd->prePersistProcessing(rd));
         return responseDomainRepository.save(instances);
     }
 
@@ -74,6 +71,24 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     public void delete(List<ResponseDomain> instances) {
         responseDomainRepository.delete(instances);
+    }
+
+    @Override
+    public ResponseDomain prePersistProcessing(ResponseDomain instance) {
+        instance.populateCodes();
+
+        if(instance.isBasedOn()) {
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            instance.makeNewCopy(rev);
+        } else if (instance.isNewCopy()) {
+            instance.makeNewCopy(null);
+        }
+        return instance;
+    }
+
+    @Override
+    public ResponseDomain postLoadProcessing(ResponseDomain instance) {
+        return instance;
     }
 
     @Override
@@ -116,42 +131,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         return  save(mixedRd);
     }
 
-
-    private ResponseDomain makeCopy(ResponseDomain source){
-
-        if(source.isNewBasedOn()){
-
-            Revision<Integer, ResponseDomain> lastChange = auditService.findLastChange(source.getId());
-            ResponseDomain updated = lastChange.getEntity();
-            updated.setAgency(source.getAgency());
-            updated.setDescription(source.getDescription());
-            updated.setName(source.getName());
-            updated.setDisplayLayout(source.getDisplayLayout());
-            updated.setCodes(source.getCodes());
-            updated.setResponseCardinality(source.getResponseCardinality());
-            updated.setResponseKind(source.getResponseKind());
-            updated.setChangeComment(source.getChangeComment());
-            updated.setChangeKind(source.getChangeKind());
-            updated.setVersion(source.getVersion());
-            updated.setModified(source.getModified());
-            updated.setModifiedBy(source.getModifiedBy());
-            Category mr = updated.getManagedRepresentation();
-            mr.makeNewCopy(lastChange.getRevisionNumber());
-            mr.setLabel("basedOn " + source.getId());
-            updated.setManagedRepresentation(mr);
-            updated.makeNewCopy(lastChange.getRevisionNumber());
-            return updated;
-        }
-
-        if (source.getId() == null && source.getModified() != null) {
-            source.makeNewCopy(null);
-            Category mr = source.getManagedRepresentation();
-            mr.makeNewCopy(null);
-            mr.setLabel("basedOn " + source.getId());
-            source.setManagedRepresentation(mr);
-        }
-        return source;
-    }
 
     private String likeify(String value){
         value = value.replace("*", "%");

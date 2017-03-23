@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +59,16 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     public void delete(List<Instrument> instances) {
         instrumentRepository.delete(instances);
+    }
+
+    @Override
+    public Instrument prePersistProcessing(Instrument instance) {
+        return instance;
+    }
+
+    @Override
+    public Instrument postLoadProcessing(Instrument instance) {
+        return instance;
     }
 
     @Override

@@ -363,6 +363,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @Override
     public void makeNewCopy(Integer revision){
+        // Copying a simple Category doesn't make any sense... skipping...
+        hasRun = (getHierarchyLevel() == HierarchyLevel.ENTITY);
         if (hasRun) return;
         super.makeNewCopy(revision);
         getChildren().forEach(c->c.makeNewCopy(revision));

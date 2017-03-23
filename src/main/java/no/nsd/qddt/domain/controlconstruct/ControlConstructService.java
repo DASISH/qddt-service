@@ -13,14 +13,6 @@ import java.util.UUID;
  */
 public interface ControlConstructService extends BaseService<ControlConstruct, UUID> {
 
-
-    /**
-     *
-     * @param instrumentId
-     * @return
-     */
-    List<ControlConstruct> findByInstrumentId(UUID instrumentId);
-
     /**
      *
      * @param questionItemIds

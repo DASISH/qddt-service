@@ -37,8 +37,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     private OtherMaterialRepository otherMaterialRepository;
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository
-    ){
+    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository){
         this.otherMaterialRepository = otherMaterialRepository;
     }
 
@@ -93,6 +92,16 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
     @Override
+    public OtherMaterial prePersistProcessing(OtherMaterial instance) {
+        return instance;
+    }
+
+    @Override
+    public OtherMaterial postLoadProcessing(OtherMaterial instance) {
+        return instance;
+    }
+
+    @Override
     public OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException {
 
         String name = owner + " [" + filename + "]";
@@ -124,7 +133,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setFileType(multipartFile.getContentType());
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
-        } catch (Exception re){
+        } catch (ResourceNotFoundException re){
             om = new OtherMaterial(ownerId,multipartFile, null);
         }
 
@@ -141,11 +150,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
     @Override
+    @Deprecated
     public void deleteFile(OtherMaterial om) {
-
-        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
-        new File(filepath).delete();
-
+        // maybe this is wrong, files should be accessible to revision system forever...
+        if (om.getReferencesBy().size() == 0) {
+            String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
+            new File(filepath).delete();
+        }
     }
 
     /*
@@ -164,6 +175,9 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     public File getFile(OtherMaterial om){
+        if (om.getSource() != null)
+            return getFile(om.getSource());
+
         String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getOriginalName()).toString();
         return new File(filepath);
     }

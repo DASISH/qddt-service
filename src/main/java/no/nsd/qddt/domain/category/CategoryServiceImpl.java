@@ -10,8 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
@@ -86,38 +87,9 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional()
     public Category save(Category instance) {
-        // Category Save fails when there is a mix of new and existing children attached to a new element.
-        // This code fixes that.
-        Category retval = null;
-        try {
-            List<Category> tmplist = new LinkedList<>();
-
-            for (Category cat:instance.getChildren()) {
-                  tmplist.add(save((Category)cat));
-            }
-            instance.getChildren().clear();
-            instance.getChildren().addAll(tmplist);
-
-            if (!instance.isValid()) throw new InvalidObjectException(instance);
-
-            Code c =  instance.getCode();
-
-            if (instance.getId() == null) {
-                retval = categoryRepository.save(instance);
-            }
-            else {
-                Category fromRepository = findOne(instance.getId());
-                if (!instance.fieldCompare(fromRepository))
-                    retval = categoryRepository.save(instance);
-                else
-                    retval = instance;
-            }
-            retval.setCode(c);
-        }catch (Exception e) {
-            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
-            throw e;
-        }
-        return retval;
+        return postLoadProcessing(
+                categoryRepository.save(
+                        prePersistProcessing(instance)));
     }
 
 
@@ -137,5 +109,41 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(List<Category> instances) {
         categoryRepository.delete(instances);
+    }
+
+    @Override
+    public Category prePersistProcessing(Category instance) {
+        // Category Save fails when there is a mix of new and existing children attached to a new element.
+        // This code fixes that.
+        try {
+            List<Category> tmplist = new LinkedList<>();
+
+            for (Category cat:instance.getChildren()) {
+                tmplist.add(save(cat));
+            }
+            instance.getChildren().clear();
+            instance.getChildren().addAll(tmplist);
+
+            if (!instance.isValid()) throw new InvalidObjectException(instance);
+
+            Code c =  instance.getCode();
+
+            if (instance.getId() != null) {
+                Category fromRepository = findOne(instance.getId());
+                if (instance.fieldCompare(fromRepository)) {
+                    instance = fromRepository;
+                    instance.setCode(c);
+                }
+            }
+        }catch (Exception e) {
+            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
+            throw e;
+        }
+        return instance;
+    }
+
+    @Override
+    public Category postLoadProcessing(Category instance) {
+        return instance;
     }
 }

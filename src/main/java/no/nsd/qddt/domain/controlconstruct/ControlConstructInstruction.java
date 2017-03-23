@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class ControlConstructInstruction {
 
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "instruction_id")
     private Instruction instruction;
 
@@ -64,4 +64,6 @@ public class ControlConstructInstruction {
                 ", instructionRank=" + instructionRank +
                 '}';
     }
+
+
 }

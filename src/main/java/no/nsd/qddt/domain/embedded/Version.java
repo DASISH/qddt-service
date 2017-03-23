@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * @author Stig Norland
@@ -77,6 +78,13 @@ public class Version implements Comparable<Version> {
     }
 
     public Version() {   }
+
+    public Version(Integer major, Integer minor, Integer revision, String label) {
+        this.major = major;
+        this.minor = minor;
+        this.revision = revision;
+        this.versionLabel = label;
+    }
 
     public Version(boolean isNew) {
         this.isNew = isNew;

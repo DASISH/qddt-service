@@ -67,6 +67,16 @@ class InstructionServiceImpl implements InstructionService {
     }
 
     @Override
+    public Instruction prePersistProcessing(Instruction instance) {
+        return instance;
+    }
+
+    @Override
+    public Instruction postLoadProcessing(Instruction instance) {
+        return instance;
+    }
+
+    @Override
     public Page<Instruction> findByDescriptionLike(String description, Pageable pageable) {
         return instructionRepository.findByDescriptionIgnoreCaseLike(description,pageable);
     }

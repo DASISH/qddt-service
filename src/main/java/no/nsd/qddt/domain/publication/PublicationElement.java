@@ -118,16 +118,15 @@ public class PublicationElement  {
         return element;
     }
 
+    @JsonIgnore
+    @Transient
+    public AbstractEntityAudit getElementAsEntity(){
+        return (AbstractEntityAudit)element;
+    }
 
     public void setElement(Object element) {
         this.element = element;
     }
-
-
-    public void setElement(AbstractEntityAudit element) {
-        this.element = element;
-    }
-
 
 
     @Override

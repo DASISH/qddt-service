@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,11 +48,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = false)
     public TopicGroup save(TopicGroup instance) {
-
-        if(instance.getConcepts().isEmpty()){
-            instance.addConcept(new Concept());
-        }
-        return topicGroupRepository.save(instance);
+        return postLoadProcessing(
+                topicGroupRepository.save(
+                        prePersistProcessing(instance)));
     }
 
     @Override
@@ -73,6 +70,19 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Transactional(readOnly = false)
     public void delete(List<TopicGroup> instances) {
         topicGroupRepository.delete(instances);
+    }
+
+    @Override
+    public TopicGroup prePersistProcessing(TopicGroup instance) {
+        if(instance.getConcepts().isEmpty()){
+            instance.addConcept(new Concept());
+        }
+        return instance;
+    }
+
+    @Override
+    public TopicGroup postLoadProcessing(TopicGroup instance) {
+        return instance;
     }
 
 

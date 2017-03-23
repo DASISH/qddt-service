@@ -97,14 +97,19 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
 
     //------------- Begin Instrument with "enver hack" --------------------------
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "instrument_id")
-    private Instrument instrument;
 
-    // Ordered arrayList doesn't work with Enver FIX
-    @Column(insertable = false,updatable = false)
-    private Integer instrument_idx;
+    @JsonBackReference(value = "instrumentRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "controlConstructs")
+    private Set<Instrument> instruments = new HashSet<>();
+
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name = "instrument_id")
+//    private Instrument instrument;
+
+//    // Ordered arrayList doesn't work with Enver FIX
+//    @Column(insertable = false,updatable = false)
+//    private Integer instrument_idx;
 
     //------------- End Instrument with "enver hack" ----------------------------
 
@@ -227,12 +232,17 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         this.description = description;
     }
 
-    public Instrument getInstrument() {
-        return instrument;
+    public Set<Instrument> getInstruments() {
+        return instruments;
     }
 
-    public void setInstrument(Instrument instrument) {
-        this.instrument = instrument;
+    public void setInstruments(Set<Instrument> instruments) {
+        this.instruments = instruments;
+    }
+
+    public void addInstruments(Instrument instrument) {
+        if (!instruments.contains(instrument))
+            instrument.addControlConstruct(this);
     }
 
     public List<ControlConstruct> getChildren() {
@@ -392,7 +402,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
 
         if (!getControlConstructKind().equals(that.getControlConstructKind()))
             return false;
-        if (getInstrument() != null ? !getInstrument().equals(that.getInstrument()) : that.getInstrument() != null)
+        if (getInstruments() != null ? !getInstruments().equals(that.getInstruments()) : that.getInstruments() != null)
             return false;
         if (getQuestionItem() != null ? !getQuestionItem().equals(that.getQuestionItem()) : that.getQuestionItem() != null)
             return false;
@@ -428,6 +438,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         if (hasRun) return;
         super.makeNewCopy(revision);
         getChildren().forEach(c->c.makeNewCopy(revision));
+        getOtherMaterials().forEach(o->o.makeNewCopy(this.getId()));
         getComments().clear();
     }
 

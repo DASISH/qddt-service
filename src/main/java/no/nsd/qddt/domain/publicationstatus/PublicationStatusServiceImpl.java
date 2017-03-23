@@ -20,7 +20,6 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     @Autowired
     public PublicationStatusServiceImpl(PublicationStatusRepository publicationStatusRepository){
         this.repository = publicationStatusRepository;
-
     }
 
     @Override
@@ -39,16 +38,14 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     }
 
     @Override
-    public <S extends PublicationStatus> S save(S instance) {
-        Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        instance.setAgency(agency);
-        return repository.save(instance);
+    public PublicationStatus save(PublicationStatus instance) {
+        return repository.save(
+                prePersistProcessing(instance));
     }
 
     @Override
     public List<PublicationStatus> save(List<PublicationStatus> instances) {
-        Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        instances.forEach(i->i.setAgency(agency));
+        instances.forEach(p->prePersistProcessing(p));
         return repository.save(instances);
     }
 
@@ -60,6 +57,18 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     @Override
     public void delete(List<PublicationStatus> instances) {
         repository.delete(instances);
+    }
+
+    @Override
+    public PublicationStatus prePersistProcessing(PublicationStatus instance) {
+        Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
+        instance.setAgency(agency);
+        return instance;
+    }
+
+    @Override
+    public PublicationStatus postLoadProcessing(PublicationStatus instance) {
+        return instance;
     }
 
 

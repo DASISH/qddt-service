@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -53,7 +52,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Concept findOne(UUID uuid) {
-        return conceptRepository.findById(uuid).map(c->populateRevisionedQI(c)).orElseThrow(
+        return conceptRepository.findById(uuid).map(c-> postLoadProcessing(c)).orElseThrow(
 //        return conceptRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Concept.class));
 
@@ -62,10 +61,9 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @Transactional()
     public Concept save(Concept instance) {
-        System.out.println("Saving: " + instance.getName());
-        instance =  conceptRepository.save(makeCopy(instance));
-//        return instance;
-        return populateRevisionedQI(instance);
+        return postLoadProcessing(
+                conceptRepository.save(
+                        prePersistProcessing(instance)));
     }
 
     @Override
@@ -85,74 +83,34 @@ class ConceptServiceImpl implements ConceptService {
         conceptRepository.delete(instances);
     }
 
-
     @Override
-    public Page<Concept> findAllPageable(Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","modified DESC"));
-        pages.map(c->populateRevisionedQI(c));
-        return pages;
-    }
+    public Concept prePersistProcessing(Concept instance) {
+        instance = harvestRevisionedQI(instance);
 
-    @Override
-    public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
-                defaultSort(pageable,"name","modified DESC"));
-        pages.map(c->populateRevisionedQI(c));
-        return pages;
-    }
+        if (instance.getId() == null & instance.getTopicRef().getId() != null) {
+            TopicGroup tg = topicGroupService.findOne(instance.getTopicRef().getId());
+            instance.setTopicGroup(tg);
+        }
 
-    @Override
-    public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,
-                defaultSort(pageable,"name","modified DESC"));
-        pages.map(c->populateRevisionedQI(c));
-        return pages;
+        if (instance.isBasedOn()){
+            Revision<Integer, Concept> lastChange
+                    = auditService.findLastChange(instance.getId());
+            instance.makeNewCopy(lastChange.getRevisionNumber());
+        }
+
+        if( instance.isNewCopy()){
+            instance.makeNewCopy(null);
+        }
+
+        return instance;
     }
 
     /*
-        this function will make a copy of source and all it's child objects.
-
+        post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
+        thus we need to populate some elements ourselves.
      */
-    private Concept makeCopy(Concept source){
-
-        source = harvestRevisionedQI(source);
-
-        if(source.isNewBasedOn()){
-
-            Revision<Integer, Concept> lastChange = auditService.findLastChange(source.getId());
-            Concept updated = lastChange.getEntity();
-            updated.setAgency(source.getAgency());
-            updated.setDescription(source.getDescription());
-            updated.setLabel(source.getLabel());
-            updated.setName(source.getName());
-            updated.setChangeComment(source.getChangeComment());
-            updated.setChangeKind(source.getChangeKind());
-            updated.setVersion(source.getVersion());
-            updated.setModified(source.getModified());
-            updated.setModifiedBy(source.getModifiedBy());
-
-            if (source.getTopicGroup() != null)
-              updated.setTopicGroup(source.getTopicGroup());
-
-            updated.makeNewCopy(lastChange.getRevisionNumber());
-            return updated;
-        }
-
-        if (source.getId() == null & source.getTopicRef().getId() != null) {
-            TopicGroup tg = topicGroupService.findOne(source.getTopicRef().getId());
-            source.setTopicGroup(tg);
-            source.makeNewCopy(null);
-        }
-        return source;
-    }
-
-
-
-    /*
-    post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
-    thus we need to populate some elements ourselves.
-     */
-    private Concept populateRevisionedQI(Concept instance){
+    @Override
+    public Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
             System.out.println("populateRevisionedQI " + instance.getName());
@@ -175,6 +133,30 @@ class ConceptServiceImpl implements ConceptService {
             System.out.println(ex.getMessage());
         }
         return instance;
+    }
+
+
+    @Override
+    public Page<Concept> findAllPageable(Pageable pageable) {
+        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","modified DESC"));
+        pages.map(c-> postLoadProcessing(c));
+        return pages;
+    }
+
+    @Override
+    public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
+        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
+                defaultSort(pageable,"name","modified DESC"));
+        pages.map(c-> postLoadProcessing(c));
+        return pages;
+    }
+
+    @Override
+    public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,
+                defaultSort(pageable,"name","modified DESC"));
+        pages.map(c-> postLoadProcessing(c));
+        return pages;
     }
 
 
@@ -202,7 +184,6 @@ class ConceptServiceImpl implements ConceptService {
             System.out.println(ex.getMessage());
         }
         return instance;
-
     }
 
 }
