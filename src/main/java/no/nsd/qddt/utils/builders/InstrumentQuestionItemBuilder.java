@@ -39,7 +39,7 @@ public class InstrumentQuestionItemBuilder {
         ControlConstruct controlConstruct = new ControlConstruct();
         controlConstruct.setName(this.name);
         controlConstruct.setChangeComment(this.changeComment);
-        controlConstruct.setInstrument(this.instrument);
+        controlConstruct.addInstruments(this.instrument);
         controlConstruct.setQuestionItem(this.questionItem);
 
         return controlConstruct;

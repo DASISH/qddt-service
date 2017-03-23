@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatusJsonListView;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
 import no.nsd.qddt.domain.question.audit.QuestionAuditService;
 import org.hibernate.envers.Audited;
@@ -28,7 +29,7 @@ public class PublicationServiceTest extends AbstractServiceTest {
     private PublicationStatusService statusService;
 
 
-    List<PublicationStatus> pubstat = null;
+    List<PublicationStatusJsonListView> pubstat = null;
 
     @Before
     public void setup() {
@@ -58,7 +59,7 @@ public class PublicationServiceTest extends AbstractServiceTest {
         Publication publication = new Publication();
         publication.setName("TEST");
         publication.setPurpose("TEST PURPOSE");
-        publication.setStatus(pubstat.get(2));
+        publication.setStatus(pubstat.get(2).getStatus());
         List<PublicationElement> pubelements = new ArrayList<>();
         pubelements.add(new PublicationElement(ElementKind.QUESTION_ITEM, UUID.fromString("fe107534-b071-41d3-bafc-71cf5cf716d6"),420));
         pubelements.add(new PublicationElement(ElementKind.QUESTION_ITEM, UUID.fromString("635e2eac-91c2-4f1a-b6cf-3478621194c6"),418));

@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -12,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+
+//import no.nsd.qddt.domain.question.Question;
 
 /**
  * Created by Dag Østgulen Heradstveit.
@@ -28,8 +28,8 @@ public class ConceptServiceTest  extends AbstractServiceTest {
     @Autowired
     private ConceptRepository conceptRepository;
 
-    @Autowired
-    private QuestionService questionService;
+//    @Autowired
+//    private QuestionService questionService;
 
     @Autowired
     private QuestionItemService questionItemService;
@@ -143,7 +143,6 @@ super.setBaseRepositories(conceptRepository);
     public void testAddQuestion() throws Exception {
         Question question = new Question();
         question.setQuestion("What???");
-        question = questionService.save(question);
 
 
         QuestionItem questionItem = new QuestionItem();

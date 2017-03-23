@@ -1,10 +1,7 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -12,8 +9,6 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,17 +16,13 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Stig Norland
  */
 @Transactional
-@WebIntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
 public class TopicGroupControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired

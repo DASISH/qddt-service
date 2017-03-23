@@ -1,10 +1,12 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +20,12 @@ import java.util.UUID;
 class TopicGroupServiceImpl implements TopicGroupService {
 
     private TopicGroupRepository topicGroupRepository;
+    private TopicGroupAuditService auditService;
 
     @Autowired
-    public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository) {
+    public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository, TopicGroupAuditService topicGroupAuditService) {
         this.topicGroupRepository = topicGroupRepository;
+        this.auditService = topicGroupAuditService;
     }
 
     @Override
@@ -77,6 +81,18 @@ class TopicGroupServiceImpl implements TopicGroupService {
         if(instance.getConcepts().isEmpty()){
             instance.addConcept(new Concept());
         }
+
+        if (instance.isBasedOn()){
+            Revision<Integer, TopicGroup> lastChange
+                    = auditService.findLastChange(instance.getId());
+            instance.makeNewCopy(lastChange.getRevisionNumber());
+        }
+
+        if( instance.isNewCopy()){
+            instance.makeNewCopy(null);
+        }
+
+
         return instance;
     }
 

@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,20 +76,27 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
-    public void delete(UUID uuid) {
-
-        deleteFile(findOne(uuid));
-        otherMaterialRepository.delete(uuid);
-
+    public void delete(UUID uuid) throws ReferenceInUseException {
+        delete(findOne(uuid));
     }
 
     @Override
     @Transactional()
-    public void delete(List<OtherMaterial> instances) {
+    public void delete(List<OtherMaterial> instances)  {
 
-        instances.forEach(om->deleteFile(om));
-        otherMaterialRepository.delete(instances);
+        instances.forEach(om -> {
+            if (om.getSource()== null)
+                try {
+                    delete(om);
+                } catch (ReferenceInUseException e) {
+                    // checking before calling no exception
+                }
+        });
+    }
 
+    private void delete(OtherMaterial om) throws ReferenceInUseException{
+        deleteFile(om);
+        otherMaterialRepository.delete(om.getId());
     }
 
     @Override
@@ -151,12 +159,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Deprecated
-    public void deleteFile(OtherMaterial om) {
+    public void deleteFile(OtherMaterial om) throws ReferenceInUseException {
         // maybe this is wrong, files should be accessible to revision system forever...
-        if (om.getReferencesBy().size() == 0) {
-            String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
-            new File(filepath).delete();
-        }
+        if (om.getReferencesBy().size() > 0) throw  new ReferenceInUseException(om.getFileName());
+
+        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
+        new File(filepath).delete();
+
     }
 
     /*

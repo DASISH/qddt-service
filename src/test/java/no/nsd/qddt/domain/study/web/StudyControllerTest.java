@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.study.web;
 
-import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.study.Study;
@@ -10,8 +9,6 @@ import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Dag Østgulen Heradstveit
  */
 @Transactional
-@WebIntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
 public class StudyControllerTest extends ControllerWebIntegrationTest {
 //
 //    @Rule

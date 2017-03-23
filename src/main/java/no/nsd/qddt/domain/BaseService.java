@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.exception.ReferenceInUseException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public interface BaseService<T,ID> {
      * @param id identifier ID
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    void delete(ID id);
+    void delete(ID id) throws ReferenceInUseException;
 
     /**
      * Deletes object with these IDs from backstore, exception raised by failure.

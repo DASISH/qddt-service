@@ -5,13 +5,12 @@ import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.question.QuestionService;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
-import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -32,7 +31,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
     private TopicGroupService topicGroupService;
 
     @Autowired
-    private QuestionService questionService;
+    private QuestionItemService questionService;
 
     private Concept entity;
     private TopicGroup topicGroup;
@@ -100,8 +99,9 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
     @Test
     public void testAddQuestion() throws Exception {
 
-        Question question = new Question();
-        question.setQuestion("my precious");
+        QuestionItem question = new QuestionItem();
+        question.setQuestion(new Question("my precious"));
+
         question = questionService.save(question);
 
         Concept concept = new Concept();

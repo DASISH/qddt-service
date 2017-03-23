@@ -5,12 +5,7 @@ import no.nsd.qddt.domain.agency.web.AgencyControllerTest;
 import no.nsd.qddt.domain.category.CategoryServiceTest;
 import no.nsd.qddt.domain.category.audit.CategoryAuditServiceTest;
 import no.nsd.qddt.domain.category.web.CategoryControllerTest;
-//import no.nsd.qddt.domain.code.CodeHierarchyTest;
-//import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
-//import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
-//import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
 import no.nsd.qddt.domain.comment.CommentServiceTest;
-import no.nsd.qddt.domain.comment.audit.CommentAuditServiceTest;
 import no.nsd.qddt.domain.comment.web.CommentControllerTest;
 import no.nsd.qddt.domain.commentable.CommentableServiceTest;
 import no.nsd.qddt.domain.concept.ConceptServiceTest;
@@ -27,9 +22,6 @@ import no.nsd.qddt.domain.instrument.audit.InstrumentAuditServiceTest;
 import no.nsd.qddt.domain.instrument.web.InstrumentControllerTest;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialServiceTest;
 import no.nsd.qddt.domain.othermaterial.web.OtherMaterialControllerTest;
-import no.nsd.qddt.domain.question.QuestionServiceTest;
-import no.nsd.qddt.domain.question.audit.QuestionAuditServiceTest;
-import no.nsd.qddt.domain.question.web.QuestionControllerTest;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainServiceTest;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditServiceTest;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainControllerTest;
@@ -48,6 +40,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.springframework.test.context.ActiveProfiles;
 
+//import no.nsd.qddt.domain.code.CodeHierarchyTest;
+//import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
+//import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
+//import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
+
 @ActiveProfiles("test")
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -62,7 +59,6 @@ import org.springframework.test.context.ActiveProfiles;
 
         // ====== Comment ======
         CommentServiceTest.class,
-        CommentAuditServiceTest.class,
         CommentControllerTest.class,
 
         // ====== Commentable ======
@@ -97,10 +93,10 @@ import org.springframework.test.context.ActiveProfiles;
         OtherMaterialServiceTest.class,
         OtherMaterialControllerTest.class,
 
-        // ====== Question ======
-        QuestionServiceTest.class,
-        QuestionAuditServiceTest.class,
-        QuestionControllerTest.class,
+//        // ====== Question ======
+//        QuestionServiceTest.class,
+//        QuestionAuditServiceTest.class,
+//        QuestionControllerTest.class,
 
 
         // ====== ResponseDomain ======
