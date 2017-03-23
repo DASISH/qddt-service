@@ -51,7 +51,7 @@ public interface BaseService<T,ID> {
      * @param id identifier ID
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    void delete(ID id) throws ReferenceInUseException;
+    void delete(ID id);
 
     /**
      * Deletes object with these IDs from backstore, exception raised by failure.

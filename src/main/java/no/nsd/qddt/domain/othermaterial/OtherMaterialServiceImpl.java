@@ -76,8 +76,12 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
-    public void delete(UUID uuid) throws ReferenceInUseException {
-        delete(findOne(uuid));
+    public void delete(UUID uuid)  {
+        try {
+            delete(findOne(uuid));
+        } catch (ReferenceInUseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
