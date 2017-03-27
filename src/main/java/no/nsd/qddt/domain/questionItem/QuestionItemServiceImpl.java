@@ -131,8 +131,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
     */
-    @Override
-    public QuestionItem postLoadProcessing(QuestionItem instance){
+
+    protected QuestionItem postLoadProcessing(QuestionItem instance){
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
@@ -159,8 +159,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
         return instance;
     }
 
-    @Override
-    public QuestionItem prePersistProcessing(QuestionItem instance){
+
+    protected QuestionItem prePersistProcessing(QuestionItem instance){
 
         if(instance.isBasedOn()) {
             Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();

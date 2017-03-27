@@ -66,13 +66,13 @@ class UserServiceImpl implements UserService{
         userRepository.delete(instances);
     }
 
-    @Override
-    public User prePersistProcessing(User instance) {
+
+    protected User prePersistProcessing(User instance) {
         return instance;
     }
 
-    @Override
-    public User postLoadProcessing(User instance) {
+
+    protected User postLoadProcessing(User instance) {
         return instance;
     }
 

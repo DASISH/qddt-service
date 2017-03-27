@@ -111,8 +111,7 @@ class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(instances);
     }
 
-    @Override
-    public Category prePersistProcessing(Category instance) {
+    protected Category prePersistProcessing(Category instance) {
         // Category Save fails when there is a mix of new and existing children attached to a new element.
         // This code fixes that.
         try {
@@ -142,8 +141,7 @@ class CategoryServiceImpl implements CategoryService {
         return instance;
     }
 
-    @Override
-    public Category postLoadProcessing(Category instance) {
+    protected Category postLoadProcessing(Category instance) {
         return instance;
     }
 }

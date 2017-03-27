@@ -59,15 +59,15 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
         repository.delete(instances);
     }
 
-    @Override
-    public PublicationStatus prePersistProcessing(PublicationStatus instance) {
+
+    protected PublicationStatus prePersistProcessing(PublicationStatus instance) {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
         instance.setAgency(agency);
         return instance;
     }
 
-    @Override
-    public PublicationStatus postLoadProcessing(PublicationStatus instance) {
+
+    protected PublicationStatus postLoadProcessing(PublicationStatus instance) {
         return instance;
     }
 

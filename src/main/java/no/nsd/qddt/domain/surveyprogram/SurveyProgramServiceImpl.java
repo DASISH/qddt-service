@@ -74,13 +74,11 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         surveyProgramRepository.delete(instances);
     }
 
-    @Override
-    public SurveyProgram prePersistProcessing(SurveyProgram instance) {
+    protected SurveyProgram prePersistProcessing(SurveyProgram instance) {
         return instance;
     }
 
-    @Override
-    public SurveyProgram postLoadProcessing(SurveyProgram instance) {
+    protected SurveyProgram postLoadProcessing(SurveyProgram instance) {
         return instance;
     }
 

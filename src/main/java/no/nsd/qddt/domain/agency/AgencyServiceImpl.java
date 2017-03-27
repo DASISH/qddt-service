@@ -60,13 +60,11 @@ class AgencyServiceImpl implements AgencyService {
         agencyRepository.delete(instances);
     }
 
-    @Override
-    public Agency prePersistProcessing(Agency instance) {
+    protected Agency prePersistProcessing(Agency instance) {
         return instance;
     }
 
-    @Override
-    public Agency postLoadProcessing(Agency instance) {
+    protected Agency postLoadProcessing(Agency instance) {
         return instance;
     }
 }

@@ -55,13 +55,13 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
         repository.delete(instances);
     }
 
-    @Override
-    public ConceptQuestionItem prePersistProcessing(ConceptQuestionItem instance) {
+
+    protected ConceptQuestionItem prePersistProcessing(ConceptQuestionItem instance) {
         return instance;
     }
 
-    @Override
-    public ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
+
+    protected ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
         return instance;
     }
 

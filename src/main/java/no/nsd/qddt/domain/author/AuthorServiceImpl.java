@@ -57,13 +57,13 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.delete(instances);
     }
 
-    @Override
-    public Author prePersistProcessing(Author instance) {
+
+    protected Author prePersistProcessing(Author instance) {
         return instance;
     }
 
-    @Override
-    public Author postLoadProcessing(Author instance) {
+
+    protected Author postLoadProcessing(Author instance) {
         return instance;
     }
 

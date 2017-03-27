@@ -73,8 +73,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         responseDomainRepository.delete(instances);
     }
 
-    @Override
-    public ResponseDomain prePersistProcessing(ResponseDomain instance) {
+
+    protected ResponseDomain prePersistProcessing(ResponseDomain instance) {
         instance.populateCodes();
 
         if(instance.isBasedOn()) {
@@ -86,8 +86,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         return instance;
     }
 
-    @Override
-    public ResponseDomain postLoadProcessing(ResponseDomain instance) {
+
+    protected ResponseDomain postLoadProcessing(ResponseDomain instance) {
         return instance;
     }
 

@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.othermaterial.web;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.exception.ReferenceInUseException;
+import no.nsd.qddt.exception.RequestAbortedException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -49,7 +50,7 @@ public class OtherMaterialController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") UUID id) throws ReferenceInUseException {
+    public void delete(@PathVariable("id") UUID id) throws RequestAbortedException {
         service.delete(id);
     }
 

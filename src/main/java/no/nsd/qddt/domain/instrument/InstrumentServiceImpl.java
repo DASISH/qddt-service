@@ -61,13 +61,13 @@ class InstrumentServiceImpl implements InstrumentService {
         instrumentRepository.delete(instances);
     }
 
-    @Override
-    public Instrument prePersistProcessing(Instrument instance) {
+
+    protected Instrument prePersistProcessing(Instrument instance) {
         return instance;
     }
 
-    @Override
-    public Instrument postLoadProcessing(Instrument instance) {
+
+    protected Instrument postLoadProcessing(Instrument instance) {
         return instance;
     }
 

@@ -63,13 +63,13 @@ class QuestionServiceImpl implements QuestionService {
         questionRepository.delete(instances);
     }
 
-    @Override
-    public Question prePersistProcessing(Question instance) {
+
+    protected Question prePersistProcessing(Question instance) {
         return instance;
     }
 
-    @Override
-    public Question postLoadProcessing(Question instance) {
+
+    protected Question postLoadProcessing(Question instance) {
         return instance;
     }
 

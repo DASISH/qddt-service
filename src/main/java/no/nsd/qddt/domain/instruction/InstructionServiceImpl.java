@@ -66,13 +66,13 @@ class InstructionServiceImpl implements InstructionService {
         instructionRepository.delete(instructions);
     }
 
-    @Override
-    public Instruction prePersistProcessing(Instruction instance) {
+
+    protected Instruction prePersistProcessing(Instruction instance) {
         return instance;
     }
 
-    @Override
-    public Instruction postLoadProcessing(Instruction instance) {
+
+    protected Instruction postLoadProcessing(Instruction instance) {
         return instance;
     }
 

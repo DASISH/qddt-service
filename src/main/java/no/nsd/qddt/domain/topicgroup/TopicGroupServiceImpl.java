@@ -76,8 +76,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
         topicGroupRepository.delete(instances);
     }
 
-    @Override
-    public TopicGroup prePersistProcessing(TopicGroup instance) {
+
+    protected TopicGroup prePersistProcessing(TopicGroup instance) {
         if(instance.getConcepts().isEmpty()){
             instance.addConcept(new Concept());
         }
@@ -96,8 +96,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return instance;
     }
 
-    @Override
-    public TopicGroup postLoadProcessing(TopicGroup instance) {
+
+    protected TopicGroup postLoadProcessing(TopicGroup instance) {
         return instance;
     }
 

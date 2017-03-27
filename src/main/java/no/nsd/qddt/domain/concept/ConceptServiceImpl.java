@@ -83,8 +83,8 @@ class ConceptServiceImpl implements ConceptService {
         conceptRepository.delete(instances);
     }
 
-    @Override
-    public Concept prePersistProcessing(Concept instance) {
+
+    protected Concept prePersistProcessing(Concept instance) {
         instance = harvestRevisionedQI(instance);
 
         if (instance.getId() == null & instance.getTopicRef().getId() != null) {
@@ -109,8 +109,7 @@ class ConceptServiceImpl implements ConceptService {
         post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
         thus we need to populate some elements ourselves.
      */
-    @Override
-    public Concept postLoadProcessing(Concept instance) {
+    protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
             System.out.println("populateRevisionedQI " + instance.getName());

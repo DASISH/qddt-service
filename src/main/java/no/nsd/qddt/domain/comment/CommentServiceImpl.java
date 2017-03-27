@@ -64,13 +64,13 @@ class CommentServiceImpl  implements CommentService  {
         commentRepository.delete(instances);
     }
 
-    @Override
-    public Comment prePersistProcessing(Comment instance) {
+
+    protected Comment prePersistProcessing(Comment instance) {
         return instance;
     }
 
-    @Override
-    public Comment postLoadProcessing(Comment instance) {
+
+    protected Comment postLoadProcessing(Comment instance) {
         return instance;
     }
 

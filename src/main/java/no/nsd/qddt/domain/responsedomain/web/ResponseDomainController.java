@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.responsedomain.web;
 
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.*;
+import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
 /**
@@ -66,8 +68,14 @@ public class ResponseDomainController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") UUID id) {
-        service.delete(id);
+    public void delete(@PathVariable("id") UUID id) throws RequestAbortedException {
+        try {
+            service.delete(id);
+        }catch (ConstraintViolationException cex){
+            throw new RequestAbortedException(cex);
+        }catch (Exception ex){
+            throw new RequestAbortedException("This ResponseDomain is referenced and cannot be deleted.");
+        }
     }
 
     @SuppressWarnings("unchecked")

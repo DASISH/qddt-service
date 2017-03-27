@@ -67,13 +67,11 @@ class StudyServiceImpl implements StudyService {
         studyRepository.delete(instances);
     }
 
-    @Override
-    public Study prePersistProcessing(Study instance) {
+    protected Study prePersistProcessing(Study instance) {
         return instance;
     }
 
-    @Override
-    public Study postLoadProcessing(Study instance) {
+    protected Study postLoadProcessing(Study instance) {
         return instance;
     }
 }

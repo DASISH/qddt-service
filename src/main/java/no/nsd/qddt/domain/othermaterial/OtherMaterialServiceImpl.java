@@ -103,13 +103,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         otherMaterialRepository.delete(om.getId());
     }
 
-    @Override
-    public OtherMaterial prePersistProcessing(OtherMaterial instance) {
+
+    protected OtherMaterial prePersistProcessing(OtherMaterial instance) {
         return instance;
     }
 
-    @Override
-    public OtherMaterial postLoadProcessing(OtherMaterial instance) {
+
+    protected OtherMaterial postLoadProcessing(OtherMaterial instance) {
         return instance;
     }
 

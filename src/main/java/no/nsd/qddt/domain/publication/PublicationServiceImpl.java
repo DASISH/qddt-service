@@ -102,13 +102,13 @@ public class PublicationServiceImpl implements PublicationService {
         repository.delete(instances);
     }
 
-    @Override
-    public Publication prePersistProcessing(Publication instance) {
+
+    protected Publication prePersistProcessing(Publication instance) {
         return instance;
     }
 
-    @Override
-    public Publication postLoadProcessing(Publication instance) {
+
+    protected Publication postLoadProcessing(Publication instance) {
         instance.getPublicationElements().forEach(this::fill);
         return instance;
     }
