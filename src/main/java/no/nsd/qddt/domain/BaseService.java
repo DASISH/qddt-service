@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain;
 
-import no.nsd.qddt.exception.ReferenceInUseException;
+import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public interface BaseService<T,ID> {
      * @param id identifier ID
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    void delete(ID id);
+    void delete(ID id) throws RequestAbortedException;
 
     /**
      * Deletes object with these IDs from backstore, exception raised by failure.
@@ -60,7 +60,4 @@ public interface BaseService<T,ID> {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     void delete(List<T> instances);
 
-    T prePersistProcessing(T instance);
-
-    T postLoadProcessing(T instance);
 }
