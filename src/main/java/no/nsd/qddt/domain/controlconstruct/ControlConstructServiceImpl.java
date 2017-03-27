@@ -31,20 +31,21 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private ControlConstructAuditService auditService;
     private InstructionService iService;
     private QuestionItemAuditService qiAuditService;
-    private QuestionItemService  qiService;
+//    private QuestionItemService  qiService;
 
 
     @Autowired
     public ControlConstructServiceImpl(ControlConstructRepository ccRepository,
                                        ControlConstructAuditService controlConstructAuditService,
                                        InstructionService iService,
-                                       QuestionItemAuditService questionAuditService,
-                                       QuestionItemService questionItemService) {
+                                       QuestionItemAuditService questionAuditService
+//                                        ,QuestionItemService questionItemService
+    ) {
         this.controlConstructRepository = ccRepository;
         this.auditService = controlConstructAuditService;
         this.iService = iService;
         this.qiAuditService = questionAuditService;
-        this.qiService = questionItemService;
+//        this.qiService = questionItemService;
     }
 
     @Override
@@ -93,7 +94,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         controlConstructRepository.delete(instances);
     }
 
-    @Override
+
     public ControlConstruct prePersistProcessing(ControlConstruct instance) {
         instance.populateControlConstructInstructions();
 
@@ -111,7 +112,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
         return instance;
     }
 
-    @Override
     public ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
         try{
@@ -139,41 +139,49 @@ class ControlConstructServiceImpl implements ControlConstructService {
         return instance;
     }
 
+    private ConstructJson mapConstruct(ControlConstruct construct){
+        switch (construct.getControlConstructKind()) {
+            case QUESTION_CONSTRUCT:
+                return new ConstructQuestionJson(construct);
+            case STATEMENT_CONSTRUCT:
+                return new ConstructStatementJson(construct);
+            case CONDITION_CONSTRUCT:
+                return new ConstructConditionJson(construct);
+            case SEQUENCE_CONSTRUCT:
+                return new ConstructSequenceJson(construct);
+            default:
+                return new ConstructJson(construct);
+        }
+    }
+
 
     @Override
-    public List<ControlConstruct> findByQuestionItems(List<UUID> questionItemIds) {
+    public List<ConstructJson> findByQuestionItems(List<UUID> questionItemIds) {
         assert (questionItemIds.size() > 0);
         return controlConstructRepository.findByquestionItemUUID(questionItemIds.get(0))
-            .stream().map(c->postLoadProcessing(c)).collect(Collectors.toList());
+            .stream().map(c-> mapConstruct(postLoadProcessing(c))).collect(Collectors.toList());
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ControlConstruct> findTop25ByQuestionItemQuestion(String question) {
-
-        List<UUID> uuidList = qiService.findByNameLikeAndQuestionLike(question,null,new PageRequest(0,25)).getContent()
-                            .stream().map(f->f.getId()).collect(Collectors.toList());
-
-        return findByQuestionItems(uuidList);
-    }
-
-    @Override
-    public Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable) {
-        name = name.replace("*","%");
+    public List<ConstructJson> findTop25ByQuestionItemQuestion(String question) {
         question = question.replace("*","%");
+        PageRequest pageable = new PageRequest(0,25);
 
-        return controlConstructRepository.findByNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(name,question,
-                defaultSort(pageable,"name ASC","modified DESC"))
-                .map(qi-> postLoadProcessing(qi));
+        return controlConstructRepository.findByQuery(
+                ControlConstructKind.QUESTION_CONSTRUCT.toString(),
+                null,question,question,
+                defaultSort(pageable,"question ASC","name ASC"))
+                .map(qi-> mapConstruct(postLoadProcessing(qi))).getContent();
     }
 
+
     @Override
-    public Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
+    public Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
         name = name.replace("*","%");
         return controlConstructRepository.findByQuery(
                 kind.toString(),name,name,name,
                 defaultSort(pageable,"name ASC","updated DESC"))
-                .map(qi-> postLoadProcessing(qi));
+                .map(qi-> mapConstruct(postLoadProcessing(qi)));
     }
 
 

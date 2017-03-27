@@ -18,14 +18,14 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
      * @param questionItemIds
      * @return
      */
-    List<ControlConstruct> findByQuestionItems(List<UUID> questionItemIds);
+    List<ConstructJson> findByQuestionItems(List<UUID> questionItemIds);
 
 
     @Transactional(readOnly = true)
-    List<ControlConstruct> findTop25ByQuestionItemQuestion(String question);
+    List<ConstructJson> findTop25ByQuestionItemQuestion(String question);
 
-    Page<ControlConstruct> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable);
+//    Page<ConstructJson> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable);
 
-    Page<ControlConstruct> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
+    Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
 
 }

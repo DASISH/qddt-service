@@ -371,11 +371,22 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         this.controlConstructKind = controlConstructKind;
     }
 
-    public SequenceKind getSequenceKind() {
+    public String getSequenceKind() {
+        return getSequenceEnum().getName();
+    }
+
+    public void setSequenceKind(String name) {
+        this.sequenceKind = SequenceKind.getEnum(name);
+    }
+
+    @JsonIgnore
+    public SequenceKind getSequenceEnum() {
+        if (sequenceKind == null)
+            sequenceKind = SequenceKind.NA;
         return sequenceKind;
     }
 
-    public void setSequenceKind(SequenceKind sequenceKind) {
+    public void setSequenceEnum(SequenceKind sequenceKind) {
         this.sequenceKind = sequenceKind;
     }
 
