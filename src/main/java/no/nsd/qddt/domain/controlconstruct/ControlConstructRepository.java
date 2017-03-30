@@ -30,7 +30,7 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
 
     Page<ControlConstruct> findByNameLikeIgnoreCaseAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
 
-    @Query(value = "SELECT cc.* FROM control_construct cc " +
+    @Query(value = "SELECT cc.* , cc.updated as modified FROM control_construct cc " +
             "left join question_item qi on qi.id = cc.questionItem_id " +
             "left join question q on q.id = qi.question_id " +
             "WHERE cc.control_construct_kind = ?1 and ( cc.name ILIKE ?2 or qi.name ILIKE ?3 or q.question ILIKE ?4 ) " +

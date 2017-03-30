@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -14,22 +16,52 @@ public class FilterTool {
 
     public static PageRequest defaultSort(Pageable pageable, String... args){
         Sort sort;
-        if (pageable.getSort() == null ) {
-            sort = new Sort(
-                    Arrays.stream(args).map(s-> {
-                        String[] par = s.split(" ");
-                        if (par.length > 1)
-                            return new Sort.Order(Sort.Direction.fromString(par[1]), par[0]);
-                        else
-                            return new Sort.Order(Sort.Direction.ASC, par[0]);
-                    }).collect(Collectors.toList()));
-        }
-        else {
+        if (pageable.getSort() == null )
+            sort = defaultSort(args);
+        else
             sort = pageable.getSort();
-        }
+
         return  new PageRequest(pageable.getPageNumber()
                 ,pageable.getPageSize()
                 ,sort);
     }
+
+
+    public static PageRequest controlConstructSort(Pageable pageable, String... args){
+        Sort sort;
+        if (pageable.getSort() == null )
+            sort = defaultSort(args);
+        else
+            sort = controlConstructSort(pageable.getSort());
+
+        return  new PageRequest(pageable.getPageNumber()
+                ,pageable.getPageSize()
+                ,sort);
+    }
+
+
+    private static Sort defaultSort(String... args){
+        return new Sort(
+                Arrays.stream(args).map(s-> {
+                    String[] par = s.split(" ");
+                    if (par.length > 1)
+                        return new Sort.Order(Sort.Direction.fromString(par[1]), par[0]);
+                    else
+                        return new Sort.Order(Sort.Direction.ASC, par[0]);
+                }).collect(Collectors.toList()));
+    }
+
+
+    private static Sort controlConstructSort(Sort sort){
+        List<Sort.Order> orders = new LinkedList<>();
+        sort.forEach(o->{
+            if(o.getProperty().equals("modified")) {
+                orders.add(new Sort.Order(o.getDirection(), "updated"));
+            } else
+            orders.add(o);
+        });
+        return new Sort(orders);
+    }
+
 
 }

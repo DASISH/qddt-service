@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.controlconstruct;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.FilterTool.controlConstructSort;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -170,7 +169,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         return controlConstructRepository.findByQuery(
                 ControlConstructKind.QUESTION_CONSTRUCT.toString(),
                 null,question,question,
-                defaultSort(pageable,"question ASC","name ASC"))
+                controlConstructSort(pageable,"question ASC","name ASC"))
                 .map(qi-> mapConstruct(postLoadProcessing(qi))).getContent();
     }
 
@@ -180,7 +179,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         name = name.replace("*","%");
         return controlConstructRepository.findByQuery(
                 kind.toString(),name,name,name,
-                defaultSort(pageable,"name ASC","updated DESC"))
+                controlConstructSort(pageable,"name ASC","updated DESC"))
                 .map(qi-> mapConstruct(postLoadProcessing(qi)));
     }
 
