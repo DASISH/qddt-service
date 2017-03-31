@@ -31,32 +31,54 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      * @author Stig Norland
      */
     public enum ChangeKind {
-        //New element status
-        CREATED,
-        //ChildSaved as part of parent save
-        UPDATED_PARENT,
-        //ParentSaved as part of child save
-        UPDATED_CHILD,
-        //Element added to a collection, no changes to element itself
-        UPDATED_HIERARCY_RELATION,
-        //UnfinishedWork
-        IN_DEVELOPMENT,
-        //TypoOrNoMeaningChange
-        TYPO,
-        //ConceptualImprovement
-        CONCEPTUAL,
-        //RealLifeChange
-        EXTERNAL,
-        //OtherPurpose
-        OTHER,
-        //AddContentElement. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
-        ADDED_CONTENT,
+        CREATED("Created","New element status"),
+        UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
+        UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
+        UPDATED_HIERARCY_RELATION("Hierarcy Relation Updated","Element added to a collection, no changes to element itself"),
+
+        IN_DEVELOPMENT("In Development","UnfinishedWork"),
+
+        TYPO("NoMeaningChange","Typo or No Meaning Change"),
+
+        CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
+
+        EXTERNAL("RealLifeChange","Real Life Change"),
+
+        OTHER("","OtherPurpose"),
+        //. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
+        ADDED_CONTENT("AddContentElement","Add Content Element"),
         /* deprecated */
 //        milestone status, this version is published.
 //        This was removed as publication is no longer part of the model, now uses list of published elements for each publication.
-        MILESTONE,
-        BASED_ON,
-        NEW_COPY, TRANSLATED
+        MILESTONE("Deprecated",""),
+        BASED_ON("Based on","Based on copy"),
+        NEW_COPY("New Copy","Copy new"),
+        TRANSLATED("Translated","Translation of source");
+
+        ChangeKind(String name, String description){
+            this.name = name;
+            this.description = description;
+        }
+
+        private final String name;
+
+        private final String description;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public static ChangeKind getEnum(String name) {
+            if(name == null)
+                throw new IllegalArgumentException();
+            for(ChangeKind v : values())
+                if(name.equalsIgnoreCase(v.getName())) return v;
+            throw new IllegalArgumentException();
+        }
     }
 
 
@@ -120,6 +142,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
     public Version getVersion() {
+        if (version == null)
+            version = new Version(true);
         return version;
     }
 
@@ -166,6 +190,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         AbstractEntityAudit.ChangeKind change = changeKind;
         if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
             change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+            ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
             changeKind = change;
         }
         switch (change) {
