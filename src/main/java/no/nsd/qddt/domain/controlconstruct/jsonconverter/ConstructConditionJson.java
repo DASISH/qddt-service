@@ -1,5 +1,6 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.controlconstruct.jsonconverter;
 
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.parameter.CCParameter;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class ConstructConditionJson extends ConstructJson {
 
     private List<CCParameter> parameters = new ArrayList<>();
 
-    ConstructConditionJson(ControlConstruct construct) {
+    public ConstructConditionJson(ControlConstruct construct) {
         super(construct);
         condition = construct.getCondition();
         parameters = construct.getParameters();

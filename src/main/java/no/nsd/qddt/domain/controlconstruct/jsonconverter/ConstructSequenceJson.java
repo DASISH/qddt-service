@@ -1,4 +1,6 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.controlconstruct.jsonconverter;
+
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ public class ConstructSequenceJson extends ConstructJson {
 
     private String description;
 
-    ConstructSequenceJson(ControlConstruct construct) {
+    public ConstructSequenceJson(ControlConstruct construct) {
         super(construct);
         indexRationale = construct.getIndexRationale();
         label = construct.getLabel();

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
-import no.nsd.qddt.domain.controlconstruct.ConstructJson;
+import no.nsd.qddt.domain.controlconstruct.jsonconverter.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;

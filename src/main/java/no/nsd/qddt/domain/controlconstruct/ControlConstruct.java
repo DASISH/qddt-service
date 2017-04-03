@@ -16,6 +16,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.*;
@@ -102,14 +103,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "controlConstructs")
     private Set<Instrument> instruments = new HashSet<>();
 
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name = "instrument_id")
-//    private Instrument instrument;
-
-//    // Ordered arrayList doesn't work with Enver FIX
-//    @Column(insertable = false,updatable = false)
-//    private Integer instrument_idx;
 
     //------------- End Instrument with "enver hack" ----------------------------
 
@@ -122,7 +115,8 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     private String description;
 
 
-    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 

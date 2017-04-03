@@ -1,4 +1,6 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.controlconstruct.jsonconverter;
+
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 
 /**
  * @author Stig Norland
@@ -8,7 +10,7 @@ public class ConstructStatementJson extends ConstructJson {
     private String description;
 
 
-    ConstructStatementJson(ControlConstruct construct){
+    public ConstructStatementJson(ControlConstruct construct){
         super(construct);
         description = construct.getDescription();
     }

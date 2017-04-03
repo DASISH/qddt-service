@@ -1,5 +1,6 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.controlconstruct.jsonconverter;
 
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
@@ -31,7 +32,7 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private List<Instruction> postInstructions =new ArrayList<>();
 
-    ConstructQuestionJson(ControlConstruct construct) {
+    public ConstructQuestionJson(ControlConstruct construct) {
         super(construct);
         questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
         questionItemRevision = construct.getQuestionItemRevision();

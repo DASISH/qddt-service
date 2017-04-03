@@ -1,7 +1,11 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +17,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -28,12 +30,19 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
     private ControlConstructAuditRepository controlConstructAuditRepository;
     private QuestionItemAuditService qiAuditService;
+    private OtherMaterialService otherMaterialService;
+    private CommentService commentService;
 
 
     @Autowired
-    public ControlConstructAuditServiceImpl(ControlConstructAuditRepository controlConstructAuditRepository,QuestionItemAuditService questionItemAuditService) {
-        this.controlConstructAuditRepository = controlConstructAuditRepository;
-        this.qiAuditService = questionItemAuditService;
+    public ControlConstructAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
+            ,QuestionItemAuditService qAuditService
+            ,CommentService cService
+            ,OtherMaterialService oService) {
+        this.controlConstructAuditRepository = ccAuditRepository;
+        this.qiAuditService = qAuditService;
+        this.otherMaterialService = oService;
+        this.commentService = cService;
     }
 
     @Override
@@ -64,8 +73,6 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
                 controlConstructAuditRepository.findRevisions(uuid,
                         defaultSort(pageable,"RevisionNumber DESC")).getContent().get(0);
 
-//        Revision<Integer, ControlConstruct> rev = controlConstructAuditRepository.findRevisions(uuid).
-//                getContent().stream().min((i,o)->i.getRevisionNumber()).get();
         setInstructionAndRevisionedQI(rev.getEntity());
         return  new Revision<>(rev.getMetadata(),setInstructionAndRevisionedQI(rev.getEntity()));
     }
@@ -95,7 +102,6 @@ thus we need to populate some elements ourselves.
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
             instance.getControlConstructInstructions().forEach(cci-> System.out.println(cci.getInstruction()));
-            //            instance.getControlConstructInstructions().forEach(cci->cci.getInstruction().toString());
 
             instance.populateInstructions();
 
@@ -111,6 +117,15 @@ thus we need to populate some elements ourselves.
             }
             else
                 instance.setQuestionItemRevision(0);
+
+            // Manually load none audited elements
+
+            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
+            instance.setOtherMaterials(new HashSet<>(oms));
+
+            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            instance.setComments(new HashSet<>(coms));
+
         } catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());

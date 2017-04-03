@@ -10,7 +10,7 @@ public enum SequenceKind {
     BATTERY("Battery Sequence","Covers content of a questionnaire battery"),
     UNIVERSE("Universe Sequence","Covers content for a specific universe or population");
 
-    private SequenceKind(String name, String description){
+    SequenceKind(String name, String description){
         this.name = name;
         this.description = description;
     }

@@ -1,6 +1,9 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.controlconstruct.jsonconverter;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
+import no.nsd.qddt.domain.controlconstruct.SequenceKind;
 
 /**
  * @author Stig Norland
@@ -11,7 +14,7 @@ public class ConstructJson  extends BaseJsonEdit {
 
     protected SequenceKind sequenceKind;
 
-    ConstructJson(ControlConstruct construct){
+    public ConstructJson(ControlConstruct construct){
         super(construct);
         controlConstructKind = construct.getControlConstructKind();
         sequenceKind = construct.getSequenceEnum();
