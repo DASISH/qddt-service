@@ -80,4 +80,9 @@ class CommentServiceImpl  implements CommentService  {
         return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false, pageable);
     }
 
+    @Override
+    public List<Comment> findAllByOwnerId(UUID ownerId) {
+        return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false);
+    }
+
 }

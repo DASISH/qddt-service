@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,5 +20,7 @@ interface CommentRepository extends BaseRepository<Comment,UUID> {
      * @return All attachments that belongs to the module with moduleId.
      */
     Page<Comment> findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(UUID ownerUUID,boolean isHidden, Pageable pageable);
+
+    List<Comment> findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(UUID ownerUUID, boolean isHidden);
 
 }
