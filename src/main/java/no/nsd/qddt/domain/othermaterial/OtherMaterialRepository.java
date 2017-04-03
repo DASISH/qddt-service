@@ -7,6 +7,7 @@ import org.springframework.data.envers.repository.support.EnversRevisionReposito
 import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, Re
 
     Optional<OtherMaterial> findByOwnerAndOriginalName(UUID owner, String name);
 
-    Optional<OtherMaterial> findByOwner(UUID owner);
+    List<OtherMaterial> findByOwner(UUID owner);
 
 
     // Tar denne med for å teste funksjonaliteten, den er strengt tatt unødvendig å ha med, da findAllByModule gir deg det du trenger.

@@ -126,9 +126,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     public List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException {
-        return (List<OtherMaterial>) otherMaterialRepository.findByOwner(owner)
-                .orElseThrow(
-                () -> new ResourceNotFoundException(owner , ArrayList.class));
+        return otherMaterialRepository.findByOwner(owner);
     }
 
 
