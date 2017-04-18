@@ -11,6 +11,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -56,7 +57,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     private Study study;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE})
     @OrderBy(value = "name asc")
     private Set<Concept> concepts = new LinkedHashSet<>();
 
@@ -67,6 +68,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     private Set<Author> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
@@ -89,17 +91,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.authors = authors;
     }
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
 
     public Study getStudy() {
         return study;
@@ -157,14 +148,14 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.abstractDescription = abstractDescription;
     }
 
-    public ConceptJsonEdit getTopicQuestions(){
+    public TopicQuestions getTopicQuestions(){
         try {
             Concept tq = getConcepts().stream().filter(p -> p.getName() == null).findFirst().orElse(addConcept(new Concept()));
-            return new ConceptJsonEdit(tq);
+            return new TopicQuestions(tq);
         }catch (Exception ex) {
             System.out.println("getTopicQuestions exception");
             ex.printStackTrace();
-            return new ConceptJsonEdit();
+            return new TopicQuestions();
         }
     }
 
@@ -196,7 +187,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
         if (abstractDescription != null ? !abstractDescription.equals(that.abstractDescription) : that.abstractDescription != null) return false;
-        return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
+        return true;
 
     }
 
@@ -214,7 +205,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
                 ", concepts=" + (concepts !=null ? concepts.size() :"0") +
                 ", authors=" + (authors !=null ? authors.size() :"0") +
                 ", otherMaterials=" + (otherMaterials !=null ? otherMaterials.size() :"0") +
-                ", comments=" + (comments !=null ? comments.size() :"0") +
                 ", abstractDescription='" + abstractDescription + '\'' +
                 ", name='" + super.getName() + '\'' +
                 ", id ='" + super.getId() + '\'' +

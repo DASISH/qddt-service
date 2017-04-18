@@ -4,14 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -50,7 +46,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements Authorable ,Commentable{
+public class Study extends AbstractEntityAudit implements Authorable {
 
     @JsonIgnore
     @ManyToOne()
@@ -77,9 +73,9 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
     private Set<Author> authors = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
+//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+//    @NotAudited
+//    private Set<Comment> comments = new HashSet<>();
 
 
     public Study() {
@@ -118,10 +114,10 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
     public void setSurveyProgram(SurveyProgram surveyProgram) {
         this.surveyProgram = surveyProgram;
     }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
+//
+//    public Set<Comment> getComments() {
+//        return comments;
+//    }
 
 
     public Set<Instrument> getInstruments() {
@@ -174,7 +170,6 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
             return false;
         if (description != null ? !description.equals(study.description) : study.description != null) return false;
         if (authors != null ? !authors.equals(study.authors) : study.authors != null) return false;
-        if (comments != null ? !comments.equals(study.comments) : study.comments != null) return false;
         if (instruments != null ? !instruments.equals(study.instruments) : study.instruments != null) return false;
         return !(topicGroups != null ? !topicGroups.equals(study.topicGroups) : study.topicGroups != null);
 
@@ -185,7 +180,6 @@ public class Study extends AbstractEntityAudit implements Authorable ,Commentabl
         int result = super.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 

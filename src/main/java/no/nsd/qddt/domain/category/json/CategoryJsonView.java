@@ -1,7 +1,8 @@
-package no.nsd.qddt.domain.category;
+package no.nsd.qddt.domain.category.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.Code;
 
@@ -10,22 +11,20 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
  */
-public class CategoryJsonEdit extends BaseJsonEdit {
+public class CategoryJsonView {
+
+    private UUID id;
 
     private String label;
 
-    private String description;
-
     @Embedded
     private ResponseCardinality inputLimit;
-
-    @Enumerated(EnumType.STRING)
-    private CategoryRelationCodeType classificationLevel;
 
     @Enumerated(EnumType.STRING)
     private HierarchyLevel hierarchyLevel;
@@ -35,22 +34,28 @@ public class CategoryJsonEdit extends BaseJsonEdit {
 
     private Code code;
 
-    private List<CategoryJsonEdit> children = new ArrayList<>();
+    private List<CategoryJsonView> children = new ArrayList<>();
 
 
-    public CategoryJsonEdit() {
+    public CategoryJsonView() {
     }
 
-    public CategoryJsonEdit(Category category) {
-        super(category);
-        setChildren(category.getChildren().stream().map(F->new CategoryJsonEdit(F)).collect(Collectors.toList()));
+    public CategoryJsonView(Category category) {
+        setId(category.getId());
+        setChildren(category.getChildren().stream().map(F->new CategoryJsonView(F)).collect(Collectors.toList()));
         setLabel(category.getLabel());
-        setDescription(category.getDescription());
         setInputLimit(category.getInputLimit());
-        setClassificationLevel(category.getClassificationLevel());
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getLabel() {
@@ -61,28 +66,12 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         this.label = label;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public ResponseCardinality getInputLimit() {
         return inputLimit;
     }
 
     public void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
-    }
-
-    public CategoryRelationCodeType getClassificationLevel() {
-        return classificationLevel;
-    }
-
-    public void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
-        this.classificationLevel = classificationLevel;
     }
 
     public HierarchyLevel getHierarchyLevel() {
@@ -109,12 +98,11 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         this.code = code;
     }
 
-    public List<CategoryJsonEdit> getChildren() {
+    public List<CategoryJsonView> getChildren() {
         return children;
     }
 
-    public void setChildren(List<CategoryJsonEdit> children) {
+    public void setChildren(List<CategoryJsonView> children) {
         this.children = children;
     }
-
 }

@@ -1,17 +1,10 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -48,7 +41,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit implements Commentable,Authorable {
+public class SurveyProgram extends AbstractEntityAudit implements Authorable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
     @OrderBy(value = "modified ASC")
@@ -65,9 +58,9 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
+//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+//    @NotAudited
+//    private Set<Comment> comments = new HashSet<>();
 
     public SurveyProgram() {
 
@@ -101,9 +94,9 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
         this.studies = studies;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
+//    public Set<Comment> getComments() {
+//        return comments;
+//    }
 
     @Override
     public void makeNewCopy(Integer revision){
@@ -122,20 +115,15 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
 
         SurveyProgram that = (SurveyProgram) o;
 
-        if (studies != null ? !studies.equals(that.studies) : that.studies != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
-        return !(comments != null ? !comments.equals(that.comments) : that.comments != null);
-
+        return authors != null ? authors.equals(that.authors) : that.authors == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (studies != null ? studies.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
         return result;
     }
 

@@ -8,9 +8,12 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +23,8 @@ import java.util.UUID;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity {
+public abstract class AbstractEntityAudit extends AbstractEntity  {
+
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -112,6 +116,16 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Column(name = "change_comment")
     private String changeComment;
 
+
+    @Where(clause = "is_hidden = 'false'")
+    @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
+    @NotAudited
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+    private Set<Comment> comments = new HashSet<>();
+
+
     protected AbstractEntityAudit() {
 
     }
@@ -173,6 +187,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     public void setChangeComment(String changeComment) {
         this.changeComment = changeComment;
+    }
+
+    public Set<Comment> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
 

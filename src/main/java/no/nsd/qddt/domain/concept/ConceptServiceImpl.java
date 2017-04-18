@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -33,7 +32,10 @@ class ConceptServiceImpl implements ConceptService {
     private TopicGroupService topicGroupService;
 
     @Autowired
-      ConceptServiceImpl(ConceptRepository conceptRepository,ConceptAuditService conceptAuditService, TopicGroupService topicGroupService, QuestionItemAuditService questionAuditService){
+      ConceptServiceImpl(ConceptRepository conceptRepository
+            , ConceptAuditService conceptAuditService
+            , TopicGroupService topicGroupService
+            , QuestionItemAuditService questionAuditService){
         this.conceptRepository = conceptRepository;
         this.auditService = conceptAuditService;
         this.topicGroupService = topicGroupService;
@@ -85,23 +87,26 @@ class ConceptServiceImpl implements ConceptService {
 
 
     protected Concept prePersistProcessing(Concept instance) {
-        instance = harvestRevisionedQI(instance);
+        instance.harvestQuestionItems();
+        instance = syncQuestionItemRev(instance);
 
-        if (instance.getId() == null & instance.getTopicRef().getId() != null) {
-            TopicGroup tg = topicGroupService.findOne(instance.getTopicRef().getId());
-            instance.setTopicGroup(tg);
+        try {
+            if (instance.getId() == null & instance.getTopicRef().getId() != null) {        // load if new/basedon copy
+                TopicGroup tg = topicGroupService.findOne(instance.getTopicRef().getId());
+                instance.setTopicGroup(tg);
+            }
+
+            if (instance.isBasedOn()) {
+                Revision<Integer, Concept> lastChange
+                        = auditService.findLastChange(instance.getId());
+                instance.makeNewCopy(lastChange.getRevisionNumber());
+            } else if (instance.isNewCopy()) {
+                instance.makeNewCopy(null);
+            }
+        } catch(Exception ex) {
+            System.out.println("prePersistProcessing");
+            ex.printStackTrace();
         }
-
-        if (instance.isBasedOn()){
-            Revision<Integer, Concept> lastChange
-                    = auditService.findLastChange(instance.getId());
-            instance.makeNewCopy(lastChange.getRevisionNumber());
-        }
-
-        if( instance.isNewCopy()){
-            instance.makeNewCopy(null);
-        }
-
         return instance;
     }
 
@@ -112,21 +117,21 @@ class ConceptServiceImpl implements ConceptService {
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
-            System.out.println("populateRevisionedQI " + instance.getName());
             // this work as long as instance.getQuestionItems() hasn't been called yet for this instance
             for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
                 if (cqi.getQuestionItem().getVersion().getRevision() != null) {
-                    System.out.println("Get revision "  +cqi.getQuestionItem().getVersion().getRevision());
+                    System.out.println("Fetched revisioned QI "  + cqi.getQuestionItem().getVersion().getRevision());
                     cqi.setQuestionItem(questionAuditService.findRevision(
                             cqi.getQuestionItem().getId(),
                             cqi.getQuestionItemRevision())
                             .getEntity());
                 }
                 else {
-                    cqi.getQuestionItem().getVersion().setRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
-                    System.out.println("sat revision " + cqi.getQuestionItem().getVersion().getRevision());
+                    cqi.setQuestionItemRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
+                    System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItem().getVersion().getRevision());
                 }
             }
+            instance.populateQuestionItems();
         } catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
@@ -159,30 +164,32 @@ class ConceptServiceImpl implements ConceptService {
     }
 
 
-    private Concept harvestRevisionedQI(Concept instance){
+    private Concept syncQuestionItemRev(Concept instance){
         assert  (instance != null);
+        Concept fromDB= null;
         try{
-            if (instance.getConceptQuestionItems().size() == 0 &&
-                    instance.getQuestionItems().size() > 0) {
-                System.out.println("harvestRevisionedQI -> Load from DB 'questionItem'");
-                Set<ConceptQuestionItem> itemSet=  conceptRepository.findOne(instance.getId()).getConceptQuestionItems();
-                instance.setConceptQuestionItems(itemSet); //LOAD questionitems from DB if empty list
-            }
+            if (instance.getId() != null)
+                fromDB = conceptRepository.findOne(instance.getId());
+
+            if (fromDB != null)
+                fromDB.merge(instance);
             else
-                System.out.println("CQI:" + instance.getConceptQuestionItems().size() + " - QI:" +instance.getQuestionItems().size() );
+                fromDB = instance;
 
-            instance.getQuestionItems().forEach(qi-> {
-                if (!instance.getConceptQuestionItems().stream().anyMatch(cqi->cqi.getQuestionItem().getId().equals(qi.getId()))) {
-                    qi.getVersion().setRevision(questionAuditService.findLastChange(qi.getId()).getRevisionNumber());
-                    instance.getConceptQuestionItems().add(new ConceptQuestionItem(instance, qi));
-                }});
+            fromDB.getConceptQuestionItems().stream().filter(f->f.getQuestionItemRevision() == null)
+                    .forEach(cqi-> {
+                        cqi.setQuestionItemRevision(
+                                questionAuditService.findLastChange(
+                                        cqi.getId().getQuestionItemId()).getRevisionNumber());
+                        System.out.println("Revision set for " + cqi.getQuestionItem().getName() +" - " +cqi.getQuestionItem().getVersion().getRevision());
+                    });
 
-            instance.getConceptQuestionItems().forEach(q-> System.out.println(q.getQuestionItem().getName() +" - " + q.getQuestionItem().getVersion().getRevision()));
+
         } catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
-        return instance;
+        return fromDB;
     }
 
 }

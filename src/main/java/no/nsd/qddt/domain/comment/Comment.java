@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.commentable.Commentable;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -25,13 +24,14 @@ import java.util.UUID;
 //@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "comment")
-public class Comment extends AbstractEntity implements Commentable {
+public class Comment extends AbstractEntity  {
 
     @Column(name = "owner_id", updatable = false)
     @Type(type="pg-uuid")
     private UUID ownerId;
 
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+
     private Set<Comment> comments = new HashSet<>();
 
     private boolean isHidden;
@@ -57,12 +57,6 @@ public class Comment extends AbstractEntity implements Commentable {
     }
 
 
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        comment.setOwnerId(this.getOwnerId());
-    }
-
-    @Override
     public Set<Comment> getComments() {
         return this.comments;
     }
@@ -87,10 +81,11 @@ public class Comment extends AbstractEntity implements Commentable {
         isHidden = hidden;
     }
 
+
     @Transient
     @JsonSerialize()
     public int getTreeSize(){
-        return comments == null ? 0 : comments.stream().mapToInt(Comment::getTreeSize).sum();
+        return (comments == null) ? 0 : comments.stream().mapToInt(c-> c.getTreeSize() + 1).sum();
     }
 
     @Override

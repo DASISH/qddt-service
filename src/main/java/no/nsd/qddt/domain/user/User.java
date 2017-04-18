@@ -94,6 +94,7 @@ public class User {
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
     @JsonIgnore
+    @NotAudited
     @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 

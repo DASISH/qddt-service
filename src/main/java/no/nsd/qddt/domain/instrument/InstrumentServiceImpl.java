@@ -61,16 +61,6 @@ class InstrumentServiceImpl implements InstrumentService {
         instrumentRepository.delete(instances);
     }
 
-
-    protected Instrument prePersistProcessing(Instrument instance) {
-        return instance;
-    }
-
-
-    protected Instrument postLoadProcessing(Instrument instance) {
-        return instance;
-    }
-
     @Override
     public List<Instrument> findByStudy(UUID studyId) {
         return instrumentRepository.findByStudiesId(studyId);
@@ -84,5 +74,15 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     public Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
+    }
+
+
+    protected Instrument prePersistProcessing(Instrument instance) {
+        return instance;
+    }
+
+
+    protected Instrument postLoadProcessing(Instrument instance) {
+        return instance;
     }
 }

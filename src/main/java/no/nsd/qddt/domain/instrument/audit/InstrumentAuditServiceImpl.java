@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.instrument.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.instrument.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,8 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -20,32 +24,37 @@ import java.util.stream.Collectors;
 class InstrumentAuditServiceImpl implements InstrumentAuditService {
 
     private InstrumentAuditRepository instrumentAuditRepository;
+    private CommentService commentService;
 
     @Autowired
-    public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository) {
+    public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository, CommentService commentService) {
         this.instrumentAuditRepository = instrumentAuditRepository;
+        this.commentService = commentService;
     }
 
     @Override
     public Revision<Integer, Instrument> findLastChange(UUID uuid) {
-        return instrumentAuditRepository.findLastChangeRevision(uuid);
+        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid));
     }
 
     @Override
     public Revision<Integer, Instrument> findRevision(UUID uuid, Integer revision) {
-        return instrumentAuditRepository.findRevision(uuid, revision);
+        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision));
     }
 
     @Override
     public Page<Revision<Integer, Instrument>> findRevisions(UUID uuid, Pageable pageable) {
-        return instrumentAuditRepository.findRevisions(uuid, pageable);
+        return instrumentAuditRepository.findRevisions(uuid, pageable).
+                map(i->postLoadProcessing(i));
     }
 
     @Override
     public Revision<Integer, Instrument> findFirstChange(UUID uuid) {
         return instrumentAuditRepository.findRevisions(uuid).
                 getContent().stream().
-                min((i,o)->i.getRevisionNumber()).get();
+                min((i,o)->i.getRevisionNumber()).
+                map(i->postLoadProcessing(i)).
+                get();
     }
 
     @Override
@@ -57,8 +66,20 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
                         .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
+                        .map(i->postLoadProcessing(i))
                         .collect(Collectors.toList())
         );
     }
 
+
+    protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
+        postLoadProcessing(instance.getEntity());
+        return instance;
+    }
+
+    protected Instrument postLoadProcessing(Instrument instance) {
+        List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+        instance.setComments(new HashSet<>(coms));
+        return instance;
+    }
 }

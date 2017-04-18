@@ -1,12 +1,8 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.question.Question;
@@ -14,7 +10,6 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -36,26 +31,22 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit implements Commentable {
-
+public class QuestionItem extends AbstractEntityAudit  {
 
     /**
-     * This field will be populated with the correct version of a RD,
-     * but should never be persisted.
+     * This field will be populated with the correct version of a RD,  but should never be persisted.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     private ResponseDomain responseDomain;
 
     /**
-     * This field must be available "raw" in order to set and query
-     * responsedomain by ID
+     * This field must be available "raw" in order to set and query  responsedomain by ID
      */
     @JsonIgnore
     @Type(type="pg-uuid")
     @Column(name="responsedomain_id")
     private UUID responseDomainUUID;
-
 
     @Column(name = "responsedomain_revision")
     private Integer responseDomainRevision;
@@ -64,16 +55,10 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     @JoinColumn(name = "question_id")
     private Question question;
 
-
     @JsonIgnore
-    @JsonManagedReference
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItem")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "questionItem")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
-
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.LAZY)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
 
     public QuestionItem() {
 
@@ -83,8 +68,8 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
 
     @PreRemove
     private void removeReferencesFromQi(){
-        getConcepts().forEach( C-> updateStatusQI(C));
-        getConcepts().clear();
+        getConceptQuestionItems().forEach( CQ-> updateStatusQI(CQ.getConcept()));
+        getConceptQuestionItems().clear();
         setResponseDomain(null);
     }
 
@@ -129,6 +114,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
         this.responseDomainUUID = responseDomainUUID;
     }
 
+
     public Question getQuestion() {
         return question;
     }
@@ -137,10 +123,6 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
         this.question = question;
     }
 
-    @JsonIgnore
-    private Set<Concept> getConcepts() {
-        return conceptQuestionItems.stream().map(cqi->cqi.getConcept()).collect(Collectors.toSet());
-    }
 
     public Set<ConceptQuestionItem> getConceptQuestionItems() {
         return conceptQuestionItems;
@@ -151,22 +133,20 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable {
     }
 
 
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+//    private Set<ConceptRef> conceptRefs = new HashSet<>();
+
     @Transient
     @JsonSerialize
-    @JsonDeserialize
-    private Set<ConceptRef> conceptRefs = new HashSet<>();
-
     public Set<ConceptRef> getConceptRefs(){
         try {
-            return getConcepts().stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
+            return conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept())).collect(Collectors.toSet());
         } catch (Exception ex){
             ex.printStackTrace();
             return new HashSet<>(0);
         }
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
     }
 
     @Override

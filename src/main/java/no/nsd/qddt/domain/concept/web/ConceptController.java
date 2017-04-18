@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.concept.web;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemId;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
@@ -34,15 +35,15 @@ public class ConceptController {
     private ConceptService conceptService;
     private TopicGroupService topicGroupService;
     private QuestionItemService questionItemService;
-    private ConceptQuestionItemService conceptQuestionItemService;
+    private ConceptQuestionItemService cqiService;
 
     @Autowired
     public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,
-                             QuestionItemService questionItemService,ConceptQuestionItemService conceptQuestionItemService) {
+                             QuestionItemService questionItemService, ConceptQuestionItemService conceptQuestionItemService) {
         this.conceptService = conceptService;
         this.topicGroupService = topicGroupService;
         this.questionItemService = questionItemService;
-        this.conceptQuestionItemService = conceptQuestionItemService;
+        this.cqiService = conceptQuestionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -55,6 +56,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ConceptJsonEdit update(@RequestBody Concept concept) {
+        System.out.println(concept);
         return concept2Json(conceptService.save(concept));
     }
 
@@ -78,8 +80,10 @@ public class ConceptController {
     public ConceptJsonEdit removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         Concept concept=null;
         try{
-            conceptQuestionItemService.findByConceptQuestionItem(conceptId,questionItemId).forEach(c->
-                    conceptQuestionItemService.delete(c.getId()));
+            cqiService.delete(new ConceptQuestionItemId(questionItemId,conceptId));
+//            concept.removeQuestionItem(questionItemId);
+//            conceptQuestionItemService.findByConceptQuestionItem(conceptId,questionItemId).forEach(c->
+//                    conceptQuestionItemService.delete(c.getId()));
             return concept2Json(conceptService.findOne(conceptId));
         } catch (Exception ex) {
             ex.printStackTrace();

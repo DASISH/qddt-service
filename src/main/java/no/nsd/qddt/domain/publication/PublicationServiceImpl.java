@@ -135,7 +135,6 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-
     private BaseServiceAudit getService(ElementKind elementKind){
          switch (elementKind) {
             case CONCEPT:

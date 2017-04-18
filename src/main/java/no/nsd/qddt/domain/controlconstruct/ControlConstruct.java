@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONTROL_CONSTRUCT")
-public class ControlConstruct extends AbstractEntityAudit  implements Commentable{
+public class ControlConstruct extends AbstractEntityAudit {
 
     //------------- Begin QuestionItem revision early bind "hack" ---------------
 
@@ -157,9 +157,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
     private SequenceKind sequenceKind;
 
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
+
 
 
     public ControlConstruct() {
@@ -303,7 +301,7 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
-//        System.out.println("populateInstructions " + getControlConstructInstructions().size());
+//        System.out.println("populateQuestionItems " + getControlConstructInstructions().size());
         setPreInstructions(getControlConstructInstructions().stream()
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)
@@ -384,18 +382,6 @@ public class ControlConstruct extends AbstractEntityAudit  implements Commentabl
         this.sequenceKind = sequenceKind;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
 
     @Override
     public boolean equals(Object o) {

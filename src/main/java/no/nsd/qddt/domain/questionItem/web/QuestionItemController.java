@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.questionItem.web;
 
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.questionItem.QuestionItemJsonEdit;
-import no.nsd.qddt.domain.questionItem.QuestionItemListJson;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonEdit;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemListJson;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -65,13 +65,13 @@ public class QuestionItemController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItemJsonEdit>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<QuestionItemListJson>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                                    @RequestParam(value = "question",defaultValue = "%") String question,
                                                                    Pageable pageable, PagedResourcesAssembler assembler) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
-        Page<QuestionItemJsonEdit> questionitems = null;
+        Page<QuestionItemListJson> questionitems = null;
         try {
-            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(F->question2Json(F));
+            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(F->new QuestionItemListJson(F));
         } catch (Exception ex){
             ex.printStackTrace();
         }

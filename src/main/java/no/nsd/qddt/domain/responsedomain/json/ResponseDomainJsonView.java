@@ -1,15 +1,14 @@
-package no.nsd.qddt.domain.responsedomain;
+package no.nsd.qddt.domain.responsedomain.json;
 
-import no.nsd.qddt.domain.category.CategoryJsonEdit;
-import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.category.json.CategoryJsonView;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -24,14 +23,12 @@ public class ResponseDomainJsonView {
 
     private String description;
 
-    private CategoryJsonEdit managedRepresentation;
-
     private String displayLayout;
-
-    private Set<Comment> comments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
+
+    private CategoryJsonView managedRepresentation;
 
     @Embedded
     private ResponseCardinality responseCardinality;
@@ -43,12 +40,11 @@ public class ResponseDomainJsonView {
         if (responseDomain == null) return;
         setId(responseDomain.getId());
         setName(responseDomain.getName());
-        setComments(responseDomain.getComments());
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
-        setManagedRepresentation(new CategoryJsonEdit(responseDomain.getManagedRepresentation()));
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
+        setManagedRepresentation(new CategoryJsonView(responseDomain.getManagedRepresentation()));
     }
 
     public UUID getId() {
@@ -75,14 +71,6 @@ public class ResponseDomainJsonView {
         this.description = description;
     }
 
-    public CategoryJsonEdit getManagedRepresentation() {
-        return managedRepresentation;
-    }
-
-    public void setManagedRepresentation(CategoryJsonEdit managedRepresentation) {
-        this.managedRepresentation = managedRepresentation;
-    }
-
     public String getDisplayLayout() {
         return displayLayout;
     }
@@ -91,13 +79,6 @@ public class ResponseDomainJsonView {
         this.displayLayout = displayLayout;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
 
     public ResponseKind getResponseKind() {
         return responseKind;
@@ -113,5 +94,13 @@ public class ResponseDomainJsonView {
 
     public void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
+    }
+
+    public CategoryJsonView getManagedRepresentation() {
+        return managedRepresentation;
+    }
+
+    public void setManagedRepresentation(CategoryJsonView managedRepresentation) {
+        this.managedRepresentation = managedRepresentation;
     }
 }

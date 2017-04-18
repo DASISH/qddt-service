@@ -27,20 +27,7 @@ public class FilterTool {
     }
 
 
-    public static PageRequest controlConstructSort(Pageable pageable, String... args){
-        Sort sort;
-        if (pageable.getSort() == null )
-            sort = defaultSort(args);
-        else
-            sort = controlConstructSort(pageable.getSort());
-
-        return  new PageRequest(pageable.getPageNumber()
-                ,pageable.getPageSize()
-                ,sort);
-    }
-
-
-    private static Sort defaultSort(String... args){
+    public static Sort defaultSort(String... args){
         return new Sort(
                 Arrays.stream(args).map(s-> {
                     String[] par = s.split(" ");
@@ -49,18 +36,6 @@ public class FilterTool {
                     else
                         return new Sort.Order(Sort.Direction.ASC, par[0]);
                 }).collect(Collectors.toList()));
-    }
-
-
-    private static Sort controlConstructSort(Sort sort){
-        List<Sort.Order> orders = new LinkedList<>();
-        sort.forEach(o->{
-            if(o.getProperty().equals("modified")) {
-                orders.add(new Sort.Order(o.getDirection(), "updated"));
-            } else
-            orders.add(o);
-        });
-        return new Sort(orders);
     }
 
 

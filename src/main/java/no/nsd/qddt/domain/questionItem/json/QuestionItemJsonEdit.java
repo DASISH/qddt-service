@@ -1,10 +1,11 @@
-package no.nsd.qddt.domain.questionItem;
+package no.nsd.qddt.domain.questionItem.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.question.Question;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
-import no.nsd.qddt.domain.responsedomain.ResponseDomainJsonEdit;
+import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,19 +16,21 @@ import java.util.stream.Collectors;
  */
 public class QuestionItemJsonEdit extends BaseJsonEdit {
 
-    private ResponseDomainJsonEdit responseDomain;
+        private ResponseDomainJsonEdit responseDomain;
 
-    private Integer responseDomainRevision;
+        private Integer responseDomainRevision;
 
-    private Question question;
+        private Question question;
 
-    private Set<CommentJsonEdit> comments = new HashSet<>();
+        private Set<CommentJsonEdit> comments = new HashSet<>();
 
-    private Set<ConceptRef> conceptRefs;
+        private Set<ConceptRef> conceptRefs;
+
 
     public QuestionItemJsonEdit() {
 
     }
+
 
     public QuestionItemJsonEdit(QuestionItem questionItem) {
         super(questionItem);
@@ -80,6 +83,8 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
     public void setConceptRefs(Set<ConceptRef> conceptRefs) {
         this.conceptRefs = conceptRefs;
     }
+
+
 }
 
 

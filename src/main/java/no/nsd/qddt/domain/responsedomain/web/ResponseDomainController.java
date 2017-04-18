@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.responsedomain.web;
 
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.*;
+import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

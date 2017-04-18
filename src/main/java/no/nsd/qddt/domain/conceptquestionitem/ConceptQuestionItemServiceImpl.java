@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.conceptquestionitem;
 
+import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +20,20 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
         this.repository = repository;
     }
 
+
     @Override
     public long count() {
         return repository.count();
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return repository.exists(uuid);
+    public boolean exists(ConceptQuestionItemId conceptQuestionItemId) {
+        return repository.exists(conceptQuestionItemId);
     }
 
     @Override
-    public ConceptQuestionItem findOne(UUID uuid) {
-        return repository.findOne(uuid);
+    public ConceptQuestionItem findOne(ConceptQuestionItemId conceptQuestionItemId) {
+        return repository.findOne(conceptQuestionItemId);
     }
 
     @Override
@@ -45,10 +47,9 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
     @Override
-    public void delete(UUID uuid) {
-        repository.delete(uuid);
+    public void delete(ConceptQuestionItemId conceptQuestionItemId) throws RequestAbortedException {
+        repository.delete(conceptQuestionItemId);
     }
-
 
     @Override
     public void delete(List<ConceptQuestionItem> instances) {
@@ -65,8 +66,4 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
         return instance;
     }
 
-    @Override
-    public List<ConceptQuestionItem> findByConceptQuestionItem(UUID conceptId, UUID questionItemId) {
-        return repository.findByConceptIdAndQuestionItemId(conceptId, questionItemId);
-    }
 }

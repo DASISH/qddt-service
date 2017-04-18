@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id","based_on_object"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
-public class ResponseDomain extends AbstractEntityAudit implements Commentable {
+public class ResponseDomain extends AbstractEntityAudit  {
     /**
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
@@ -90,16 +90,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed.
      */
-    @ManyToOne(cascade = { CascadeType.MERGE ,CascadeType.REMOVE})
+    @ManyToOne(cascade = { CascadeType.MERGE ,CascadeType.REMOVE},fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
     private String displayLayout;
-
-    @Transient
-    @JoinColumn(referencedColumnName = "owner_uuid")
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Comment> comments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
@@ -255,10 +250,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.codes = codes;
     }
 
-    @Override
-    public Set<Comment> getComments() {
-        return comments;
-    }
 
 
 

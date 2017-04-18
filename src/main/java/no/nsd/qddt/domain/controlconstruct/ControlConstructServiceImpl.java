@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.controlconstruct.jsonconverter.ConstructJson;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.domain.controlconstruct.jsonconverter.Converter.mapConstruct;
+import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstruct;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.SynchronousQueue;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -79,6 +80,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     protected SurveyProgram postLoadProcessing(SurveyProgram instance) {
+        System.out.println("comments : " + instance.getComments().size());
         return instance;
     }
 
@@ -89,6 +91,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     public List<SurveyProgram> findByAgency(User user) {
-        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency());
+        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency())
+                .stream().map(s->postLoadProcessing(s)).collect(Collectors.toList());
     }
 }

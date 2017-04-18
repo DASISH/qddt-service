@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.controlconstruct.jsonconverter;
+package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;

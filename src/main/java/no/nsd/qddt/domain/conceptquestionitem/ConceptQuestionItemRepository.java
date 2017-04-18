@@ -10,7 +10,6 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-public interface ConceptQuestionItemRepository  extends BaseRepository<ConceptQuestionItem, UUID>{
+public interface ConceptQuestionItemRepository  extends BaseRepository<ConceptQuestionItem, ConceptQuestionItemId>{
 
-    List<ConceptQuestionItem> findByConceptIdAndQuestionItemId(UUID conceptId, UUID questionItemId);
 }

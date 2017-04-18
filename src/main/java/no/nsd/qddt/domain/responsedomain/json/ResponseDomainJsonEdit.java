@@ -1,10 +1,11 @@
-package no.nsd.qddt.domain.responsedomain;
+package no.nsd.qddt.domain.responsedomain.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
-import no.nsd.qddt.domain.category.CategoryJsonEdit;
-import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;

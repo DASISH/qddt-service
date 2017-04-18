@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface ConceptQuestionItemService extends BaseService<ConceptQuestionItem, UUID> {
+public interface ConceptQuestionItemService extends BaseService<ConceptQuestionItem, ConceptQuestionItemId> {
 
-    List<ConceptQuestionItem> findByConceptQuestionItem(UUID conceptId, UUID questionItemId);
+
 }

@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.questionItem.QuestionItemJsonEdit;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import org.hibernate.annotations.Type;
 
@@ -26,6 +26,8 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private Set<QuestionItemJsonEdit> questionItems = new HashSet<>();
 
+    private Set<ConceptQuestionItemJson> conceptQuestionItems = new HashSet<>();
+
     private String label;
 
     private String description;
@@ -46,7 +48,10 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setComments(concept.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
-            setQuestionItems(concept.getQuestionItems().stream().map(F-> new QuestionItemJsonEdit(F)).collect(Collectors.toSet()));
+            setQuestionItems(concept.getConceptQuestionItems().stream().map(F-> new QuestionItemJsonEdit(
+                    F.getQuestionItem())).collect(Collectors.toSet()));
+            setConceptQuestionItems(concept.getConceptQuestionItems().stream().map(Q-> new ConceptQuestionItemJson(Q))
+                .collect(Collectors.toSet()));
             setTopicRef(concept.getTopicRef());
         }catch (Exception ex){
             System.out.println("ConceptJsonEdit Exception");
@@ -85,6 +90,14 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     public void setQuestionItems(Set<QuestionItemJsonEdit> questionItems) {
         this.questionItems = questionItems;
+    }
+
+    public Set<ConceptQuestionItemJson> getConceptQuestionItems() {
+        return conceptQuestionItems;
+    }
+
+    public void setConceptQuestionItems(Set<ConceptQuestionItemJson> conceptQuestionItems) {
+        this.conceptQuestionItems = conceptQuestionItems;
     }
 
     public String getLabel() {

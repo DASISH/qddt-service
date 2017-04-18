@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "INSTRUMENT")
-public class Instrument extends AbstractEntityAudit implements Commentable {
+public class Instrument extends AbstractEntityAudit  {
 
 
     @JsonBackReference(value = "studyRef")
@@ -58,9 +58,9 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     @Column(name="instrument_kind")
     private String instrumentType;
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
+//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+//    @NotAudited
+//    private Set<Comment> comments = new HashSet<>();
 
     public Instrument() {
     }
@@ -130,20 +130,20 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
 
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
+//    public Set<Comment> getComments() {
+//        return comments;
+//    }
+//
+//
+//    public void setComments(Set<Comment> comments) {
+//        this.comments = comments;
+//    }
+//
+//
+//    public void addComment(Comment comment) {
+//        comment.setOwnerId(this.getId());
+//        comments.add(comment);
+//    }
 
     @Override
     public boolean equals(Object o) {
