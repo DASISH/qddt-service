@@ -23,6 +23,8 @@ public class CategoryJsonView {
 
     private String label;
 
+    private String name;
+
     @Embedded
     private ResponseCardinality inputLimit;
 
@@ -42,19 +44,20 @@ public class CategoryJsonView {
 
     public CategoryJsonView(Category category) {
         setId(category.getId());
-        setChildren(category.getChildren().stream().map(F->new CategoryJsonView(F)).collect(Collectors.toList()));
         setLabel(category.getLabel());
+        setName(category.getName());
         setInputLimit(category.getInputLimit());
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
+        setChildren(category.getChildren().stream().map(F->new CategoryJsonView(F)).collect(Collectors.toList()));
     }
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -62,15 +65,23 @@ public class CategoryJsonView {
         return label;
     }
 
-    public void setLabel(String label) {
+    private void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    private void setName(String name) {
+        this.name = name;
     }
 
     public ResponseCardinality getInputLimit() {
         return inputLimit;
     }
 
-    public void setInputLimit(ResponseCardinality inputLimit) {
+    private void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
 
@@ -78,7 +89,7 @@ public class CategoryJsonView {
         return hierarchyLevel;
     }
 
-    public void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
+    private void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
         this.hierarchyLevel = hierarchyLevel;
     }
 
@@ -86,7 +97,7 @@ public class CategoryJsonView {
         return categoryType;
     }
 
-    public void setCategoryType(CategoryType categoryType) {
+    private void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
     }
 
@@ -94,7 +105,7 @@ public class CategoryJsonView {
         return code;
     }
 
-    public void setCode(Code code) {
+    private void setCode(Code code) {
         this.code = code;
     }
 
@@ -102,7 +113,7 @@ public class CategoryJsonView {
         return children;
     }
 
-    public void setChildren(List<CategoryJsonView> children) {
+    private void setChildren(List<CategoryJsonView> children) {
         this.children = children;
     }
 }
