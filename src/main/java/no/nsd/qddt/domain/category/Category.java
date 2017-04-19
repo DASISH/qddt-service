@@ -50,8 +50,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
-//    @OrderBy("category_idx ASC")
-    private List<Category> children = new ArrayList<>();
+   private List<Category> children = new ArrayList<>();
 
 
     //name -> A description of a particular category or response.
