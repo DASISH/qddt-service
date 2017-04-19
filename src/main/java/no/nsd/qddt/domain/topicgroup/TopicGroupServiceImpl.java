@@ -92,7 +92,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
             instance.makeNewCopy(null);
         }
 
-
         return instance;
     }
 

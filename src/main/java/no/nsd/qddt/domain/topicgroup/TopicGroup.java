@@ -57,7 +57,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     private Study study;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     @OrderBy(value = "name asc")
     private Set<Concept> concepts = new LinkedHashSet<>();
 
@@ -68,7 +68,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     private Set<Author> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
