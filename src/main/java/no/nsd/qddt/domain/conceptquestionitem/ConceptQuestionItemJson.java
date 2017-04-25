@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.conceptquestionitem;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
+import no.nsd.qddt.utils.JsonDateSerializer;
 
 import javax.persistence.EmbeddedId;
 import java.sql.Timestamp;
@@ -17,6 +19,7 @@ public class ConceptQuestionItemJson {
 
     private Integer questionItemRevision;
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
 

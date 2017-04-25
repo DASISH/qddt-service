@@ -58,9 +58,10 @@ public class Concept extends AbstractEntityAudit {
     @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
-//    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "concept")
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
+
 
     @Transient
     @JsonSerialize
@@ -92,6 +93,7 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
+
     public Set<ConceptQuestionItem> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
@@ -100,14 +102,7 @@ public class Concept extends AbstractEntityAudit {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
-    @PreRemove
-    private void removeReferencesFromConcept(){
-        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
-        getQuestionItems().clear();
-        if (getTopicGroup() != null)
-            getTopicGroup().removeConcept(this);
 
-    }
 
     public Set<QuestionItem> getQuestionItems() {
         return questionItems;
@@ -118,8 +113,9 @@ public class Concept extends AbstractEntityAudit {
     }
 
     public void addQuestionItem(QuestionItem questionItem) {
-        if (!this.conceptQuestionItems.stream().anyMatch(cqi->cqi.getQuestionItem().getId().equals(questionItem.getId()))) {
-            this.conceptQuestionItems.add(new ConceptQuestionItem(this,questionItem));
+        if (this.conceptQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
+            new ConceptQuestionItem(this,questionItem);
+            System.out.println("New QuestionItem added to ConceptQuestionItems " + questionItem.getName() );
             questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
             questionItem.setChangeComment("Concept assosiation added");
             this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
@@ -144,6 +140,7 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
+
     public Set<Concept> getChildren() {
         return children;
     }
@@ -160,6 +157,7 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
+
     public String getLabel() {
         return label;
     }
@@ -169,6 +167,7 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
+
     public String getDescription() {
         return description;
     }
@@ -176,6 +175,7 @@ public class Concept extends AbstractEntityAudit {
     public void setDescription(String description) {
         this.description = description;
     }
+
 
 
     public TopicRef getTopicRef() {
@@ -201,63 +201,6 @@ public class Concept extends AbstractEntityAudit {
 
     public void setTopicRef(TopicRef topicRef) {
         this.topicRef = topicRef;
-    }
-
-
-    @Override
-    public void makeNewCopy(Integer revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q->{
-            q.setConcept(this);
-        });
-        getChildren().forEach(c->c.makeNewCopy(revision));
-        if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
-//            topicGroupId = getTopicRef().getId();
-            System.out.println("infering topicgroup id " + getTopicRef().getId() );
-        }
-        getComments().clear();
-    }
-
-    public void merge(Concept changed){
-        System.out.println("Concept.merge");
-        if (!getName().equals(changed.getName()))
-            setName(changed.getName());
-//        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
-//            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
-//                ConceptQuestionItem finalCqi = cqi;
-//                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
-//                if (!cqi.equals(tmp)) {
-//                    cqi = tmp;
-//                    System.out.println("ConceptQuestionItem changed in merge");
-//                }
-//            }
-//        }
-        if(!getChildren().equals(changed.getChildren()))
-            setChildren(changed.getChildren());
-        if(!getDescription().equals(changed.getDescription()))
-            setDescription(changed.getDescription());
-        if(!getLabel().equals(changed.getLabel()))
-            setLabel(changed.getLabel());
-        if(!getQuestionItems().equals(changed.questionItems))
-            setQuestionItems(changed.questionItems);
-        if(!getAgency().equals(changed.getAgency()))
-            setAgency(changed.getAgency());
-        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
-            setBasedOnObject(changed.getBasedOnObject());
-        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
-            setBasedOnRevision(changed.getBasedOnRevision());
-        if(!getChangeComment().equals(changed.getChangeComment()))
-            setChangeComment(changed.getChangeComment());
-        if(!getChangeKind().equals(changed.getChangeKind()))
-            setChangeKind(changed.getChangeKind());
-        if(!getVersion().equals(changed.getVersion()))
-            setVersion(changed.getVersion());
-        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
-        if(!getModified().equals(changed.getModified()))
-            setModified(changed.getModified());
-        if(!getModifiedBy().equals(changed.getModifiedBy()))
-            setModifiedBy(changed.getModifiedBy());
     }
 
 
@@ -304,18 +247,76 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getConceptQuestionItems().forEach(q->{
+            q.setConcept(this);
+        });
+        getChildren().forEach(c->c.makeNewCopy(revision));
+        if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
+//            topicGroupId = getTopicRef().getId();
+            System.out.println("infering topicgroup id " + getTopicRef().getId() );
+        }
+        getComments().clear();
+    }
+
+
+    public void merge(Concept changed){
+        System.out.println("Concept.merge");
+        if (!getName().equals(changed.getName()))
+            setName(changed.getName());
+//        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
+//            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
+//                ConceptQuestionItem finalCqi = cqi;
+//                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
+//                if (!cqi.equals(tmp)) {
+//                    cqi = tmp;
+//                    System.out.println("ConceptQuestionItem changed in merge");
+//                }
+//            }
+//        }
+        if(!getChildren().equals(changed.getChildren()))
+            setChildren(changed.getChildren());
+        if(!getDescription().equals(changed.getDescription()))
+            setDescription(changed.getDescription());
+        if(!getLabel().equals(changed.getLabel()))
+            setLabel(changed.getLabel());
+        if(!getQuestionItems().equals(changed.questionItems))
+            setQuestionItems(changed.questionItems);
+        if(!getAgency().equals(changed.getAgency()))
+            setAgency(changed.getAgency());
+        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
+            setBasedOnObject(changed.getBasedOnObject());
+        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
+            setBasedOnRevision(changed.getBasedOnRevision());
+        if(!getChangeComment().equals(changed.getChangeComment()))
+            setChangeComment(changed.getChangeComment());
+        if(!getChangeKind().equals(changed.getChangeKind()))
+            setChangeKind(changed.getChangeKind());
+        if(!getVersion().equals(changed.getVersion()))
+            setVersion(changed.getVersion());
+        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
+        if(!getModified().equals(changed.getModified()))
+            setModified(changed.getModified());
+        if(!getModifiedBy().equals(changed.getModifiedBy()))
+            setModifiedBy(changed.getModifiedBy());
+    }
+
+
     /*
     fetches pre and post instructions and add them to ControlConstructInstruction
      */
     public void harvestQuestionItems() {
         if (conceptQuestionItems == null)
             conceptQuestionItems = new HashSet<>(0);
-        else
-            conceptQuestionItems.clear();
+
+        System.out.println("conceptQuestionItems " +conceptQuestionItems.size());
 
         try {
             for (QuestionItem questionItem : getQuestionItems()) {
-                this.getConceptQuestionItems().add(new ConceptQuestionItem(this,questionItem));
+                addQuestionItem(questionItem);
             }
         }catch (Exception ex){
             System.out.println("harvestQuestionItems exception " + ex.getMessage());
@@ -323,6 +324,7 @@ public class Concept extends AbstractEntityAudit {
         }
 
         children.forEach(c->c.harvestQuestionItems());
+        System.out.println("conceptQuestionItems " +conceptQuestionItems.size());
     }
 
     /*
@@ -334,5 +336,16 @@ public class Concept extends AbstractEntityAudit {
             .collect(Collectors.toSet()));
         children.forEach(c->c.populateQuestionItems());
     }
+
+    @PreRemove
+    private void removeReferencesFromConcept(){
+        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
+        getQuestionItems().clear();
+        if (getTopicGroup() != null)
+            getTopicGroup().removeConcept(this);
+
+    }
+
+
 }
 

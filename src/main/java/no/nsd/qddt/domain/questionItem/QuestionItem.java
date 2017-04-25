@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.questionItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.question.Question;
@@ -56,7 +57,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     private Question question;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "questionItem")
+    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItem") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
 
@@ -89,13 +90,16 @@ public class QuestionItem extends AbstractEntityAudit  {
     // End pre remove ----------------------------------------------
 
 
-
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }
 
     public void setResponseDomain(ResponseDomain responseDomain) {
-        this.responseDomain = responseDomain;
+        if (responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
+            & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
+            System.out.println("MISSING ManagedRepresentation " + responseDomain.getManagedRepresentation().getName());
+        }
+            this.responseDomain = responseDomain;
     }
 
     public Integer getResponseDomainRevision() {
@@ -128,15 +132,22 @@ public class QuestionItem extends AbstractEntityAudit  {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
+    private void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
+//    public void addConcept(Concept concept) {
+//        if (this.conceptQuestionItems.stream().noneMatch(cqi->concept.getId().equals(cqi.getId().getConceptId()))) {
+//            new ConceptQuestionItem(concept,this);
+//            System.out.println("New QuestionItem added to ConceptQuestionItems " + concept.getName() );
+//            concept.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+//            concept.setChangeComment("QuestionItem assosiation added");
+//            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+//            this.setChangeComment("Concept assosiation added");
+//        }
+//        System.out.println("Already in collection " + concept.getName());
+//    }
 
-//    @Transient
-//    @JsonSerialize
-//    @JsonDeserialize
-//    private Set<ConceptRef> conceptRefs = new HashSet<>();
 
     @Transient
     @JsonSerialize

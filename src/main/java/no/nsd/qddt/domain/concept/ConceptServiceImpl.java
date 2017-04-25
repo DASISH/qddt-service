@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -87,10 +88,18 @@ class ConceptServiceImpl implements ConceptService {
 
 
     protected Concept prePersistProcessing(Concept instance) {
+        System.out.println("prePersistProcessing");
         instance.harvestQuestionItems();
-        instance = syncQuestionItemRev(instance);
 
         try {
+            instance.getConceptQuestionItems().stream()
+                    .filter(f->f.getQuestionItemRevision() == null)
+                    .forEach(cqi->{
+                        Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange(cqi.getId().getQuestionItemId());
+                        cqi.setQuestionItemRevision(rev.getRevisionNumber());
+                        System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItemRevision());
+            });
+
             if (instance.getId() == null & instance.getTopicRef().getId() != null) {        // load if new/basedon copy
                 TopicGroup tg = topicGroupService.findOne(instance.getTopicRef().getId());
                 instance.setTopicGroup(tg);
@@ -104,7 +113,6 @@ class ConceptServiceImpl implements ConceptService {
                 instance.makeNewCopy(null);
             }
         } catch(Exception ex) {
-            System.out.println("prePersistProcessing");
             ex.printStackTrace();
         }
         return instance;
@@ -116,19 +124,16 @@ class ConceptServiceImpl implements ConceptService {
      */
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
+        System.out.println("postLoadProcessing... " + instance.getName());
         try{
-            // this work as long as instance.getQuestionItems() hasn't been called yet for this instance
             for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
-                if (cqi.getQuestionItem().getVersion().getRevision() != null) {
-                    System.out.println("Fetched revisioned QI "  + cqi.getQuestionItem().getVersion().getRevision());
-                    cqi.setQuestionItem(questionAuditService.findRevision(
-                            cqi.getQuestionItem().getId(),
-                            cqi.getQuestionItemRevision())
-                            .getEntity());
-                }
-                else {
-                    cqi.setQuestionItemRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
-                    System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItem().getVersion().getRevision());
+                if (cqi.getQuestionItemRevision() != null & cqi.getUpdated() != null) {
+                    System.out.println("Fetching revisioned QI "  + cqi.getQuestionItemRevision());
+                    Revision<Integer, QuestionItem> rev = questionAuditService.findRevision(
+                                cqi.getId().getQuestionItemId(),
+                                cqi.getQuestionItemRevision());
+                    if (rev != null)
+                        cqi.setQuestionItem(rev.getEntity());
                 }
             }
             instance.populateQuestionItems();
@@ -136,6 +141,7 @@ class ConceptServiceImpl implements ConceptService {
             ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
+        instance.getChildren().forEach(c->postLoadProcessing(c));
         return instance;
     }
 
@@ -164,32 +170,6 @@ class ConceptServiceImpl implements ConceptService {
     }
 
 
-    private Concept syncQuestionItemRev(Concept instance){
-        assert  (instance != null);
-        Concept fromDB= null;
-        try{
-            if (instance.getId() != null)
-                fromDB = conceptRepository.findOne(instance.getId());
 
-            if (fromDB != null)
-                fromDB.merge(instance);
-            else
-                fromDB = instance;
-
-            fromDB.getConceptQuestionItems().stream().filter(f->f.getQuestionItemRevision() == null)
-                    .forEach(cqi-> {
-                        cqi.setQuestionItemRevision(
-                                questionAuditService.findLastChange(
-                                        cqi.getId().getQuestionItemId()).getRevisionNumber());
-                        System.out.println("Revision set for " + cqi.getQuestionItem().getName() +" - " +cqi.getQuestionItem().getVersion().getRevision());
-                    });
-
-
-        } catch (Exception ex){
-            ex.printStackTrace();
-            System.out.println(ex.getMessage());
-        }
-        return fromDB;
-    }
 
 }

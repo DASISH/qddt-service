@@ -1,8 +1,13 @@
 package no.nsd.qddt.domain.conceptquestionitem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.utils.JsonDateSerializer;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -16,8 +21,8 @@ import java.sql.Timestamp;
 @Audited
 @Table(name = "CONCEPT_QUESTION_ITEM")
 @AssociationOverrides({
-        @AssociationOverride(name = "id.concept", joinColumns = @JoinColumn(name = "CONCEPT_ID")),  //, foreignKey = @ForeignKey(name="id")
-        @AssociationOverride(name = "id.questionItem", joinColumns = @JoinColumn(name = "QUESTIONITEM_ID")) //, foreignKey = @ForeignKey(name="id")
+        @AssociationOverride(name = "id.concept", joinColumns = @JoinColumn(name = "CONCEPT_ID")),
+        @AssociationOverride(name = "id.questionItem", joinColumns = @JoinColumn(name = "QUESTIONITEM_ID"))
 })
 public class ConceptQuestionItem  implements java.io.Serializable {
 
@@ -25,18 +30,16 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     private ConceptQuestionItemId id = new ConceptQuestionItemId();
 
     @JsonBackReference(value = "ConceptQuestionItemConceptRef")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @MapsId("id")
     @JoinColumn(name = "CONCEPT_ID",insertable = false, updatable = false)
-//    @Type(type="pg-uuid")
     private Concept concept;
 
 
     @JsonBackReference(value = "ConceptQuestionItemQuestionItemRef")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @MapsId("id")
     @JoinColumn(name = "QUESTIONITEM_ID",insertable = false, updatable = false)
-//    @Type(type="pg-uuid")
     private QuestionItem questionItem;
 
 
@@ -45,22 +48,23 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     @Version
     @Column(name = "updated")
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
     public ConceptQuestionItem() {
     }
 
     public ConceptQuestionItem(Concept concept, QuestionItem questionItem) {
-
-//        System.out.println("ConceptQuestionItem(2) created");
         setConcept(concept);
         setQuestionItem(questionItem);
+        if (concept.getConceptQuestionItems().stream().noneMatch(c->c.getId().getQuestionItemId().equals(questionItem.getId()))){
+            concept.getConceptQuestionItems().add(this);
+        }
+
     }
 
     public ConceptQuestionItem(Concept concept, QuestionItem questionItem, Integer questionItemRevision) {
-//        System.out.println("ConceptQuestionItem(3) created");
-        setConcept(concept);
-        setQuestionItem(questionItem);
+        this(concept,questionItem);
         setQuestionItemRevision(questionItemRevision);
     }
 
@@ -79,8 +83,8 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     }
 
     public void setConcept(Concept concept) {
+        this.concept = concept;
         this.id.setConceptId(concept.getId());
-//        this.concept = concept;
     }
 
 
@@ -89,9 +93,8 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     }
 
     public void setQuestionItem(QuestionItem questionItem) {
+        this.questionItem = questionItem;
         this.id.setQuestionItemId(questionItem.getId());
-        if (getQuestionItemRevision() != questionItem.getVersion().getRevision() &  questionItem.getVersion().getRevision() != null )
-            setQuestionItemRevision(questionItem.getVersion().getRevision());
     }
 
 

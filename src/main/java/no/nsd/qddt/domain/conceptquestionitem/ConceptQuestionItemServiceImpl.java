@@ -1,11 +1,12 @@
 package no.nsd.qddt.domain.conceptquestionitem;
 
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -14,10 +15,12 @@ import java.util.UUID;
 public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemService {
 
     private ConceptQuestionItemRepository repository;
+    private QuestionItemAuditService auditService;
 
     @Autowired
-    public ConceptQuestionItemServiceImpl(ConceptQuestionItemRepository repository) {
+    public ConceptQuestionItemServiceImpl(ConceptQuestionItemRepository repository, QuestionItemAuditService questionItemAuditService) {
         this.repository = repository;
+        this.auditService = questionItemAuditService;
     }
 
 
@@ -33,17 +36,19 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
 
     @Override
     public ConceptQuestionItem findOne(ConceptQuestionItemId conceptQuestionItemId) {
-        return repository.findOne(conceptQuestionItemId);
+        return postLoadProcessing(repository.findOne(conceptQuestionItemId));
     }
 
     @Override
-    public <S extends ConceptQuestionItem> S save(S instance) {
-        return repository.save(instance);
+    public ConceptQuestionItem save(ConceptQuestionItem instance) {
+        return postLoadProcessing(repository.save(instance));
     }
 
     @Override
     public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
-        return repository.save(instances);
+        return repository.save(instances).stream().
+                map(q->postLoadProcessing(q)).
+                collect(Collectors.toList());
     }
 
     @Override
@@ -63,6 +68,10 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
 
 
     protected ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
+        instance.setQuestionItem(auditService.findRevision(
+                instance.getId().getQuestionItemId(),
+                instance.getQuestionItemRevision())
+                .getEntity());
         return instance;
     }
 

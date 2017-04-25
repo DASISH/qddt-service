@@ -37,7 +37,10 @@ public class ResponseDomainJsonView {
     }
 
     public ResponseDomainJsonView(ResponseDomain responseDomain) {
-        if (responseDomain == null) return;
+        if (responseDomain == null){
+            System.out.println("ResponseDomainJsonView(NULL)");
+            return;
+        }
         setId(responseDomain.getId());
         setName(responseDomain.getName());
         setDescription(responseDomain.getDescription());

@@ -136,10 +136,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
-                    System.out.println("Fetch latest RD");
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(rev.getRevisionNumber());
                     instance.setResponseDomain(rev.getEntity());
+                    System.out.println("Latest RD fetched " + rev.getRevisionNumber());
                 } else {
                     try {
                         ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
