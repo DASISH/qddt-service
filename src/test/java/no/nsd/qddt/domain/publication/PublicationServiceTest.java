@@ -1,11 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusJsonListView;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
-import no.nsd.qddt.domain.question.audit.QuestionAuditService;
-import org.hibernate.envers.Audited;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
