@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.questionItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.question.Question;
@@ -17,6 +18,17 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.List;
+import com.itextpdf.layout.element.ListItem;
+
+import java.io.ByteArrayOutputStream;
 /**
  * Question Item is a container for Question (text) and responsedomain
  * This entity introduce a breaking change into the model. it supports early binding of
@@ -31,7 +43,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit  {
+public class QuestionItem extends AbstractEntityAudit implements Pdfable{
 
     /**
      * This field will be populated with the correct version of a RD,  but should never be persisted.
@@ -191,7 +203,37 @@ public class QuestionItem extends AbstractEntityAudit  {
         System.out.println("MADE NEW COPY...");
     }
 
+    @Override
+    public ByteArrayOutputStream makePdf() {
 
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
+        Document doc = new Document(pdf);
+        fillDoc(doc);
+        doc.close();
+        return baosPDF;
+    }
+
+    @Override
+    public void fillDoc(Document document) {
+
+        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        document.add(new Paragraph("Survey Toc:").setFont(font));
+        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+                .setSymbolIndent(12)
+                .setListSymbol("\u2022")
+                .setFont(font);
+        list.add(new ListItem(this.getName()));
+        document.add(list);
+        document.add(new Paragraph(this.getName()));
+        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+        document.add(new Paragraph(this.getResponseDomain().toString()));
+        document.add(new Paragraph(this.getQuestion().toString()));
+        document.add(new Paragraph(this.getComments().toString()));
+
+        //    for (QuestionItem item : getQuestionItems()) {   item.fillDoc(document);  }
+    }
 }
+
 
 

@@ -1,22 +1,33 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructInstruction;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructInstructionRank;
-import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.List;
+import com.itextpdf.layout.element.ListItem;
+
+import java.io.ByteArrayOutputStream;
+
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -37,16 +48,16 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit {
+public class Concept extends AbstractEntityAudit implements Pdfable {
 
 
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
-    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    @JoinColumn(name = "parent_id", updatable = false, insertable = false)
     private Concept parentReferenceOnly;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE})
     @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
@@ -55,10 +66,10 @@ public class Concept extends AbstractEntityAudit {
 
     @JsonBackReference(value = "TopicGroupRef")
     @ManyToOne()
-    @JoinColumn(name = "topicgroup_id",updatable = false)
+    @JoinColumn(name = "topicgroup_id", updatable = false)
     private TopicGroup topicGroup;
 
-//    @JsonIgnore
+    //    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
@@ -101,8 +112,8 @@ public class Concept extends AbstractEntityAudit {
     }
 
     @PreRemove
-    private void removeReferencesFromConcept(){
-        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
+    private void removeReferencesFromConcept() {
+        getConceptQuestionItems().forEach(cqi -> cqi.getQuestionItem().updateStatusQI(this));
         getQuestionItems().clear();
         if (getTopicGroup() != null)
             getTopicGroup().removeConcept(this);
@@ -118,8 +129,8 @@ public class Concept extends AbstractEntityAudit {
     }
 
     public void addQuestionItem(QuestionItem questionItem) {
-        if (!this.conceptQuestionItems.stream().anyMatch(cqi->cqi.getQuestionItem().getId().equals(questionItem.getId()))) {
-            this.conceptQuestionItems.add(new ConceptQuestionItem(this,questionItem));
+        if (!this.conceptQuestionItems.stream().anyMatch(cqi -> cqi.getQuestionItem().getId().equals(questionItem.getId()))) {
+            this.conceptQuestionItems.add(new ConceptQuestionItem(this, questionItem));
             questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
             questionItem.setChangeComment("Concept assosiation added");
             this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
@@ -127,19 +138,19 @@ public class Concept extends AbstractEntityAudit {
         }
     }
 
-    public  void removeQuestionItem(UUID qiId){
+    public void removeQuestionItem(UUID qiId) {
         getConceptQuestionItems().stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
-            forEach(cq->{
-                System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
-                cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-                cq.getQuestionItem().setChangeComment("Concept assosiation removed");
-                this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-                this.setChangeComment("QuestionItem assosiation removed");
-            });
+                forEach(cq -> {
+                    System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
+                    cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                    cq.getQuestionItem().setChangeComment("Concept assosiation removed");
+                    this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                    this.setChangeComment("QuestionItem assosiation removed");
+                });
         getConceptQuestionItems().removeIf(q -> q.getQuestionItem().getId().equals(qiId));
     }
 
-    public  void removeQuestionItem(QuestionItem questionItem){
+    public void removeQuestionItem(QuestionItem questionItem) {
         removeQuestionItem(questionItem.getId());
     }
 
@@ -152,7 +163,7 @@ public class Concept extends AbstractEntityAudit {
         this.children = children;
     }
 
-    public void addChildren(Concept concept){
+    public void addChildren(Concept concept) {
         this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
         setChangeComment("SubConcept added");
         this.children.add(concept);
@@ -191,9 +202,9 @@ public class Concept extends AbstractEntityAudit {
         return topicRef;
     }
 
-    private TopicGroup findTopicGroup2(){
+    private TopicGroup findTopicGroup2() {
         Concept current = this;
-        while(current.parentReferenceOnly !=  null){
+        while (current.parentReferenceOnly != null) {
             current = current.parentReferenceOnly;
         }
         return current.getTopicGroup();
@@ -205,21 +216,21 @@ public class Concept extends AbstractEntityAudit {
 
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Integer revision) {
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q->{
+        getConceptQuestionItems().forEach(q -> {
             q.setConcept(this);
         });
-        getChildren().forEach(c->c.makeNewCopy(revision));
+        getChildren().forEach(c -> c.makeNewCopy(revision));
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
 //            topicGroupId = getTopicRef().getId();
-            System.out.println("infering topicgroup id " + getTopicRef().getId() );
+            System.out.println("infering topicgroup id " + getTopicRef().getId());
         }
         getComments().clear();
     }
 
-    public void merge(Concept changed){
+    public void merge(Concept changed) {
         System.out.println("Concept.merge");
         if (!getName().equals(changed.getName()))
             setName(changed.getName());
@@ -233,33 +244,32 @@ public class Concept extends AbstractEntityAudit {
 //                }
 //            }
 //        }
-        if(!getChildren().equals(changed.getChildren()))
+        if (!getChildren().equals(changed.getChildren()))
             setChildren(changed.getChildren());
-        if(!getDescription().equals(changed.getDescription()))
+        if (!getDescription().equals(changed.getDescription()))
             setDescription(changed.getDescription());
-        if(!getLabel().equals(changed.getLabel()))
+        if (!getLabel().equals(changed.getLabel()))
             setLabel(changed.getLabel());
-        if(!getQuestionItems().equals(changed.questionItems))
+        if (!getQuestionItems().equals(changed.questionItems))
             setQuestionItems(changed.questionItems);
-        if(!getAgency().equals(changed.getAgency()))
+        if (!getAgency().equals(changed.getAgency()))
             setAgency(changed.getAgency());
-        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
+        if (!getBasedOnObject().equals(changed.getBasedOnObject()))
             setBasedOnObject(changed.getBasedOnObject());
-        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
+        if (!getBasedOnRevision().equals(changed.getBasedOnRevision()))
             setBasedOnRevision(changed.getBasedOnRevision());
-        if(!getChangeComment().equals(changed.getChangeComment()))
+        if (!getChangeComment().equals(changed.getChangeComment()))
             setChangeComment(changed.getChangeComment());
-        if(!getChangeKind().equals(changed.getChangeKind()))
+        if (!getChangeKind().equals(changed.getChangeKind()))
             setChangeKind(changed.getChangeKind());
-        if(!getVersion().equals(changed.getVersion()))
+        if (!getVersion().equals(changed.getVersion()))
             setVersion(changed.getVersion());
         // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
-        if(!getModified().equals(changed.getModified()))
+        if (!getModified().equals(changed.getModified()))
             setModified(changed.getModified());
-        if(!getModifiedBy().equals(changed.getModifiedBy()))
+        if (!getModifiedBy().equals(changed.getModifiedBy()))
             setModifiedBy(changed.getModifiedBy());
     }
-
 
 
     @Override
@@ -287,9 +297,9 @@ public class Concept extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "Concept{" +
-                " children=" + (children!= null ?  children.size() : "0") +
-                ", topicGroup=" + (topicGroup!=null ? topicGroup.getName() :"null") +
-                ", questionItems=" + (conceptQuestionItems !=null ? conceptQuestionItems.size() :"0") +
+                " children=" + (children != null ? children.size() : "0") +
+                ", topicGroup=" + (topicGroup != null ? topicGroup.getName() : "null") +
+                ", questionItems=" + (conceptQuestionItems != null ? conceptQuestionItems.size() : "0") +
                 ", label='" + label + '\'' +
                 ", description='" + description + '\'' +
                 ", name='" + super.getName() + '\'' +
@@ -299,7 +309,7 @@ public class Concept extends AbstractEntityAudit {
 
 
     @Override
-    public String toDDIXml(){
+    public String toDDIXml() {
         return super.toDDIXml();
     }
 
@@ -315,24 +325,58 @@ public class Concept extends AbstractEntityAudit {
 
         try {
             for (QuestionItem questionItem : getQuestionItems()) {
-                this.getConceptQuestionItems().add(new ConceptQuestionItem(this,questionItem));
+                this.getConceptQuestionItems().add(new ConceptQuestionItem(this, questionItem));
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("harvestQuestionItems exception " + ex.getMessage());
             ex.printStackTrace();
         }
 
-        children.forEach(c->c.harvestQuestionItems());
+        children.forEach(c -> c.harvestQuestionItems());
     }
 
     /*
     this function is useful for populating ControlConstructInstructions after loading from DB
     */
-    public void populateQuestionItems(){
+    public void populateQuestionItems() {
         setQuestionItems(getConceptQuestionItems().stream()
-            .map(cqi->cqi.getQuestionItem())
-            .collect(Collectors.toSet()));
-        children.forEach(c->c.populateQuestionItems());
+                .map(cqi -> cqi.getQuestionItem())
+                .collect(Collectors.toSet()));
+        children.forEach(c -> c.populateQuestionItems());
+    }
+
+    @Override
+    public ByteArrayOutputStream makePdf() {
+
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter(baosPDF));
+        Document doc = new Document(pdf);
+        fillDoc(doc);
+        doc.close();
+        return baosPDF;
+    }
+
+    @Override
+    public void fillDoc(Document document)  {
+
+        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        document.add(new Paragraph("Survey Toc:").setFont(font));
+        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+                .setSymbolIndent(12)
+                .setListSymbol("\u2022")
+                .setFont(font);
+        list.add(new ListItem(this.getName()));
+        document.add(list);
+        document.add(new Paragraph(this.getName()));
+        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+        document.add(new Paragraph(this.getDescription()));
+        document.add(new Paragraph(this.getLabel()));
+        document.add(new Paragraph(this.getTopicGroup().toString()));
+        document.add(new Paragraph(this.getComments().toString()));
+
+        for (QuestionItem item : getQuestionItems()) {
+            item.fillDoc(document);
+        }
+
     }
 }
-
