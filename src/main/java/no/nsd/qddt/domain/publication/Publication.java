@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,43 +12,55 @@ import java.util.List;
  * @author Stig Norland
  */
 @Entity
+@Audited
 @Table(name = "PUBLICATION")
-public class Publication extends AbstractEntity {
+public class Publication extends AbstractEntityAudit {
 
-    String name;
+    String purpose;
 
-    PublicationKind publicationKind;
+    String status;
 
     @OrderColumn(name="element_idx")
     @OrderBy("element_idx ASC")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PUBLICATION_ELEMENT",joinColumns = @JoinColumn(name="element_id"))
     private List<PublicationElement>  publicationElements = new ArrayList<>();
 
 
-    public String getName() {
-        return name;
+    public String getPurpose() {
+        return purpose;
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 
-    public PublicationKind getPublicationKind() {
-        return publicationKind;
+
+    public String getStatus() {
+        return status;
     }
 
-    public void setPublicationKind(PublicationKind selectableType) {
-        this.publicationKind = selectableType;
+
+    public void setStatus(String status) {
+        this.status = status;
     }
+
 
     public List<PublicationElement> getPublicationElements() {
-        return publicationElements;
+        try {
+            return publicationElements;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
     }
+
 
     public void setPublicationElements(List<PublicationElement> publicationElements) {
         this.publicationElements = publicationElements;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -56,16 +70,15 @@ public class Publication extends AbstractEntity {
 
         Publication that = (Publication) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return (publicationKind == that.publicationKind);
+        return (status == that.status);
 
     }
+
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (publicationKind != null ? publicationKind.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
 }

@@ -21,11 +21,10 @@ import java.util.UUID;
 public class Authority {
 
     @Id
-    @Column(name = "id")
     @Type(type="pg-uuid")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2", parameters = {
-            @Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
 
     @Column(name = "name")

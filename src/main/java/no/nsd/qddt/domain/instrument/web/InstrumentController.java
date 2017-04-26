@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.instrument.web;
 
+import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,18 @@ public class InstrumentController  {
         return new ResponseEntity<>(assembler.toResource(instruments), HttpStatus.OK);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<Instrument>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                             Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Instrument> items;
+        name = name.replace("*","%");
+
+        items = service.findByNameAndDescriptionPageable(name,name, pageable);
+
+        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {

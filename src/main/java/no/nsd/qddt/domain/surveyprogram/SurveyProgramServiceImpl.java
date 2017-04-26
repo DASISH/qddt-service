@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.SynchronousQueue;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -49,7 +50,9 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
         SurveyProgram retval=null;
         try {
-            retval= surveyProgramRepository.save(instance);
+            retval= postLoadProcessing(
+                    surveyProgramRepository.save(
+                            prePersistProcessing(instance)));
         }catch (Exception e){
             System.out.println("SAVING SURVEY FAILED ->" + e.getMessage());
         }
@@ -72,6 +75,15 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         surveyProgramRepository.delete(instances);
     }
 
+    protected SurveyProgram prePersistProcessing(SurveyProgram instance) {
+        return instance;
+    }
+
+    protected SurveyProgram postLoadProcessing(SurveyProgram instance) {
+        System.out.println("comments : " + instance.getComments().size());
+        return instance;
+    }
+
     @Override
     public List<SurveyProgram> findByModifiedBy(User user) {
         return surveyProgramRepository.findByModifiedByOrderByModifiedAsc(user);
@@ -79,6 +91,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     public List<SurveyProgram> findByAgency(User user) {
-        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency());
+        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency())
+                .stream().map(s->postLoadProcessing(s)).collect(Collectors.toList());
     }
 }

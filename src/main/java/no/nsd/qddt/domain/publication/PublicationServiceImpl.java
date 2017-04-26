@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.publication;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.BaseServiceAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
@@ -7,13 +9,18 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
+import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
  * @author Stig Norland
@@ -55,71 +62,127 @@ public class PublicationServiceImpl implements PublicationService {
         return repository.count();
     }
 
+
     @Override
     public boolean exists(UUID uuid) {
         return repository.exists(uuid);
     }
 
-    @Override
-    public Publication findOne(UUID uuid) {
-        return fillElements(repository.findOne(uuid));
-    }
 
     @Override
+    public Publication findOne(UUID uuid) {
+        return postLoadProcessing(repository.findOne(uuid));
+    }
+
+
+    @Override
+    @Transactional()
     public Publication save(Publication instance) {
         return repository.save(instance);
     }
 
+
     @Override
+    @Transactional()
     public List<Publication> save(List<Publication> instances) {
         return repository.save(instances);
     }
 
+
     @Override
+    @Transactional()
     public void delete(UUID uuid) {
         repository.delete(uuid);
     }
 
+
     @Override
+    @Transactional()
     public void delete(List<Publication> instances) {
         repository.delete(instances);
     }
 
+
+    protected Publication prePersistProcessing(Publication instance) {
+        return instance;
+    }
+
+
+    protected Publication postLoadProcessing(Publication instance) {
+        instance.getPublicationElements().forEach(this::fill);
+        return instance;
+    }
+
+
     @Override
+    @Transactional(readOnly = true)
     public Page<Publication> findAllPageable(Pageable pageable) {
-        return repository.findAll(pageable).map(p->fillElements(p));
+        return repository.findAll(defaultSort(pageable,"name","modified"));
     }
 
-    private Publication fillElements(Publication publication){
-        publication.getPublicationElements().stream().map(e->fill(e));
-        return publication;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable) {
+        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
+                defaultSort(pageable,"name","modified"));
     }
 
-    private PublicationElement fill(PublicationElement element){
-        switch (element.getElementKind()) {
+    @Override
+    @Transactional(readOnly = true)
+    public PublicationElement getDetail(PublicationElement publicationElement) {
+        return fill(publicationElement);
+    }
+
+
+    private BaseServiceAudit getService(ElementKind elementKind){
+         switch (elementKind) {
             case CONCEPT:
-                element.setElement(conceptService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+                return conceptService;
             case CONTROL_CONSTRUCT:
-                element.setElement(controlConstructService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+            case QUESTION_CONSTRUCT:
+            case STATEMENT_CONSTRUCT:
+            case SEQUENCE_CONSTRUCT:
+                return controlConstructService;
             case INSTRUMENT:
-                element.setElement(instrumentService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+                return instrumentService;
             case QUESTION_ITEM:
-                element.setElement(questionItemService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+                return questionItemService;
             case STUDY:
-                element.setElement(studyService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+                return studyService;
             case SURVEY_PROGRAM:
-                element.setElement(surveyProgramService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+                return surveyProgramService;
             case TOPIC_GROUP:
-                element.setElement(topicGroupService.findRevision(element.getId(),element.getRevisionNumber()).getEntity());
-                break;
+                return topicGroupService;
         }
+        return null;
+    }
+
+    private PublicationElement fill(PublicationElement element) {
+        try {
+            BaseServiceAudit service = getService(element.getElementEnum());
+            element.setElement(service.findRevision(
+                    element.getId(),
+                    element.getRevisionNumber())
+                    .getEntity());
+
+        } catch (RevisionDoesNotExistException e) {
+            element.setElement(conceptService.findLastChange(element.getId()));
+        } catch (JpaSystemException se) {
+            System.out.println(se.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (element.getElement() != null){
+            element.setName(element.getElementAsEntity().getName());
+            element.setVersion(element.getElementAsEntity().getVersion());
+        }
+//        System.out.println("fill  -> " + element);
         return element;
     }
+
+
+
 
 }

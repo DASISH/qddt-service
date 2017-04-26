@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
+import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +36,13 @@ public class ControlConstructController {
 
     private ControlConstructService service;
     private OtherMaterialService omService;
+    private InstrumentService iService;
 
     @Autowired
-    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService){
+    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService, InstrumentService instrumentService){
         this.service = ccService;
         this.omService = otherMaterialService;
+        this.iService = instrumentService;
     }
 
 
@@ -80,13 +84,12 @@ public class ControlConstructController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-instrument/{uuid}", method = RequestMethod.GET)
     public List<ControlConstruct> getByFirst(@PathVariable("uuid") UUID firstId) {
-
-        return service.findByInstrumentId(firstId);
+        return iService.findOne(firstId).getControlConstructs();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
-    public List<ControlConstruct> getBySecond(@PathVariable("uuid") UUID secondId) {
+    public List<ConstructJson> getBySecond(@PathVariable("uuid") UUID secondId) {
         try {
             return service.findByQuestionItems(Arrays.asList(new UUID[]{secondId}));
         } catch (Exception ex){
@@ -98,24 +101,22 @@ public class ControlConstructController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-questiontext/{question}", method = RequestMethod.GET)
-    public List<ControlConstruct> getTop25ByQuestionText(@PathVariable("question") String questionText) {
+    public List<ConstructJson> getTop25ByQuestionText(@PathVariable("question") String questionText) {
         return service.findTop25ByQuestionItemQuestion(questionText);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ControlConstruct>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<ConstructJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                               @RequestParam(value = "questiontext",defaultValue = "%") String question,
-                                                              @RequestParam(value = "constructkind",defaultValue = "QuestionConstruct") ControlConstructKind kind,
+                                                              @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") ControlConstructKind kind,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<ControlConstruct> controlConstructs = null;
+        Page<ConstructJson> controlConstructs = null;
 
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it neccessary to distingwish
-        if (kind == ControlConstructKind.QUESTION_CONSTRUCT)
-            controlConstructs= service.findByNameLikeOrQuestionLike(name, question, pageable);
-        else
-            controlConstructs = service.findByNameLikeAndControlConstructKind(name,kind,pageable);
+
+        controlConstructs = service.findByNameLikeAndControlConstructKind(name,kind,pageable);
 
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }

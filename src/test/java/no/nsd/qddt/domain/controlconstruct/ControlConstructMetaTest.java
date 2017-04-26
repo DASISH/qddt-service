@@ -1,10 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -17,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
@@ -28,11 +25,10 @@ import static org.junit.Assert.assertEquals;
 ;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = QDDT.class)
 public class ControlConstructMetaTest {
 
-    @Autowired
-    private QuestionService questionService;
+//    @Autowired
+//    private QuestionService questionService;
 
     @Autowired
     private QuestionItemService questionItemService;
@@ -57,8 +53,8 @@ public class ControlConstructMetaTest {
         i1 = instrumentService.save(new InstrumentBuilder().setName("Test Instrument 1").setChangeComment("Changed for tests.").createInstrument());
         i2 = instrumentService.save(new InstrumentBuilder().setName("Test Instrument 2").setChangeComment("Changed for more tests.").createInstrument());
 
-        q1 = questionService.save(new QuestionBuilder().setName("Male").setChangeComment("Changed typo").createQuestion());
-        q2 = questionService.save(new QuestionBuilder().setName("Female").setChangeComment("Changed changed another typo").createQuestion());
+        q1 = new QuestionBuilder().setName("Male").setChangeComment("Changed typo").createQuestion();
+        q2 = new QuestionBuilder().setName("Female").setChangeComment("Changed changed another typo").createQuestion();
 
         r1 = responseDomainService.save(new ResponseDomain());
 
@@ -75,19 +71,13 @@ public class ControlConstructMetaTest {
                 .setQuestion(qi2).setInstrument(i2).createInstrument());
     }
 
-    @Test
-    public void findByInstrumentTest() throws Exception {
-        List<ControlConstruct> isq = controlConstructService.findByInstrumentId(i1.getId());
-        assertEquals("Expected two elements!", isq.size(), 1);
-    }
-
     /**
      * Make sure only 1 of 3 possible questions are giving us htis here.
      * @throws Exception
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<ControlConstruct> iqs = controlConstructService.findByQuestionItems(Arrays.asList(q1.getId()));
+        List<ControlConstruct> iqs = controlConstructService.findByQuestionItems(Arrays.asList(qi1.getId()));
         assertEquals("Expected two elements!", iqs.size(), 2);
     }
 }

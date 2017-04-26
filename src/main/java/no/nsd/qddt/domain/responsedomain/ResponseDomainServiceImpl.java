@@ -3,10 +3,12 @@ package no.nsd.qddt.domain.responsedomain;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +23,14 @@ import java.util.UUID;
 class ResponseDomainServiceImpl implements ResponseDomainService {
 
     private ResponseDomainRepository responseDomainRepository;
+    private ResponseDomainAuditService auditService;
     private CategoryService categoryService;
 
     @Autowired
-    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, CategoryService categoryService) {
+    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, CategoryService categoryService,ResponseDomainAuditService responseDomainAuditService) {
         this.responseDomainRepository = responseDomainRepository;
         this.categoryService = categoryService;
+        this.auditService = responseDomainAuditService;
     }
 
     @Override
@@ -48,20 +52,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @Transactional(readOnly = false)
     public ResponseDomain save(ResponseDomain instance) {
-        instance.populateCodes();
-        if (instance.isNewBasedOn()) {
-            instance.makeBasedOn();
-            instance.setManagedRepresentation(
-                    categoryService.save(
-                            instance.getManagedRepresentation()));
-        }
-        instance = responseDomainRepository.save(instance);
-        return instance;
+        return postLoadProcessing(
+                responseDomainRepository.save(
+                        prePersistProcessing(instance)));
     }
 
     @Override
     public List<ResponseDomain> save(List<ResponseDomain> instances) {
-        instances.forEach(rd->rd.populateCodes());
+        instances.forEach(rd->prePersistProcessing(rd));
         return responseDomainRepository.save(instances);
     }
 
@@ -73,6 +71,24 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     public void delete(List<ResponseDomain> instances) {
         responseDomainRepository.delete(instances);
+    }
+
+
+    protected ResponseDomain prePersistProcessing(ResponseDomain instance) {
+        instance.populateCodes();
+
+        if(instance.isBasedOn()) {
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            instance.makeNewCopy(rev);
+        } else if (instance.isNewCopy()) {
+            instance.makeNewCopy(null);
+        }
+        return instance;
+    }
+
+
+    protected ResponseDomain postLoadProcessing(ResponseDomain instance) {
+        return instance;
     }
 
     @Override

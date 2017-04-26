@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.AbstractAuditServiceTest;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
-import no.nsd.qddt.domain.question.QuestionService;
+//import no.nsd.qddt.domain.question.QuestionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class InstrumentAuditServiceTest extends AbstractAuditServiceTest {
     @Autowired
     private InstrumentAuditService instrumentAuditService;
 
-    @Autowired
-    private QuestionService questionService;
+//    @Autowired
+//    private QuestionService questionService;
 
     @Autowired
     private ControlConstructService controlConstructService;

@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.concept.web;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemId;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -33,12 +35,15 @@ public class ConceptController {
     private ConceptService conceptService;
     private TopicGroupService topicGroupService;
     private QuestionItemService questionItemService;
+    private ConceptQuestionItemService cqiService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService, QuestionItemService questionItemService) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,
+                             QuestionItemService questionItemService, ConceptQuestionItemService conceptQuestionItemService) {
         this.conceptService = conceptService;
         this.topicGroupService = topicGroupService;
         this.questionItemService = questionItemService;
+        this.cqiService = conceptQuestionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -51,6 +56,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ConceptJsonEdit update(@RequestBody Concept concept) {
+        System.out.println(concept);
         return concept2Json(conceptService.save(concept));
     }
 
@@ -72,14 +78,17 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
     public ConceptJsonEdit removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
+        Concept concept=null;
         try{
-            Concept concept  = conceptService.findOne(conceptId);
-            concept.removeQuestionItem(questionItemId);
-            return concept2Json(conceptService.save(concept));
+            cqiService.delete(new ConceptQuestionItemId(questionItemId,conceptId));
+//            concept.removeQuestionItem(questionItemId);
+//            conceptQuestionItemService.findByConceptQuestionItem(conceptId,questionItemId).forEach(c->
+//                    conceptQuestionItemService.delete(c.getId()));
+            return concept2Json(conceptService.findOne(conceptId));
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println( ex.getMessage());
-            return null;
+            return concept2Json(concept);
         }
     }
 
@@ -130,7 +139,18 @@ public class ConceptController {
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
+        Page<ConceptJsonEdit> items;
+        name = name.replace("*","%");
+
+        items = conceptService.findByNameAndDescriptionPageable(name,name, pageable).map(F->new ConceptJsonEdit(F));
+
+        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+    }
 
     @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
     @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})

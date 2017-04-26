@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,5 +69,20 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     public Page<Instrument> findAllPageable(Pageable pageable) {
         return instrumentRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
+    }
+
+
+    protected Instrument prePersistProcessing(Instrument instance) {
+        return instance;
+    }
+
+
+    protected Instrument postLoadProcessing(Instrument instance) {
+        return instance;
     }
 }

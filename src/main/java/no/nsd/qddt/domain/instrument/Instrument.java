@@ -1,12 +1,16 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -29,20 +33,20 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "INSTRUMENT")
-public class Instrument extends AbstractEntityAudit implements Commentable {
+public class Instrument extends AbstractEntityAudit  {
 
 
     @JsonBackReference(value = "studyRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "instruments")
     private Set<Study> studies = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
-    @JoinTable(name = "INSTRUMENT_CONTROL_CONSTRUCT",
-            joinColumns = {@JoinColumn(name = "instrument_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
-    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "instrument_idx")
+
     @OrderColumn(name="instrument_idx")
     @OrderBy("instrument_idx ASC")
+//    @AuditMappedBy(mappedBy = "instruments", positionMappedBy = "instrument_idx")
+    @ElementCollection
+    @CollectionTable(name = "INSTRUMENT_CONTROL_CONSTRUCT",
+            joinColumns = {@JoinColumn(name = "instrument_id", referencedColumnName = "id")})
     private List<ControlConstruct> controlConstructs = new ArrayList<>();
 
     private String description;
@@ -54,9 +58,9 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
     @Column(name="instrument_kind")
     private String instrumentType;
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
+//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
+//    @NotAudited
+//    private Set<Comment> comments = new HashSet<>();
 
     public Instrument() {
     }
@@ -110,6 +114,11 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
         this.controlConstructs = controlConstructs;
     }
 
+    public void addControlConstruct(ControlConstruct controlConstruct) {
+        if (!controlConstructs.contains(controlConstruct))
+            controlConstructs.add(controlConstruct);
+    }
+
     @Transient
     public Set<StudyRef> getStudyRefs() {
         try{
@@ -121,20 +130,20 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
 
 
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-
-    public void addComment(Comment comment) {
-        comment.setOwnerId(this.getId());
-        comments.add(comment);
-    }
+//    public Set<Comment> getComments() {
+//        return comments;
+//    }
+//
+//
+//    public void setComments(Set<Comment> comments) {
+//        this.comments = comments;
+//    }
+//
+//
+//    public void addComment(Comment comment) {
+//        comment.setOwnerId(this.getId());
+//        comments.add(comment);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -164,4 +173,14 @@ public class Instrument extends AbstractEntityAudit implements Commentable {
                 ", instrumentType='" + instrumentType + '\'' +
                 "} " + super.toString();
     }
+
+
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getControlConstructs().forEach(c->c.makeNewCopy(revision));
+        getComments().clear();
+    }
+
 }

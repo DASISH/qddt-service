@@ -43,11 +43,12 @@ class UserServiceImpl implements UserService{
         );
     }
 
-
     @Override
     @Transactional(readOnly = false)
     public User save(User user) {
-        return userRepository.save(user);
+        return postLoadProcessing(
+                userRepository.save(
+                        prePersistProcessing(user)));
     }
 
     @Override
@@ -63,6 +64,16 @@ class UserServiceImpl implements UserService{
     @Override
     public void delete(List<User> instances) {
         userRepository.delete(instances);
+    }
+
+
+    protected User prePersistProcessing(User instance) {
+        return instance;
+    }
+
+
+    protected User postLoadProcessing(User instance) {
+        return instance;
     }
 
 

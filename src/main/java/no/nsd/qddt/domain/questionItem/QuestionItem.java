@@ -1,30 +1,17 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.ListItem;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
-import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -44,29 +31,22 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit implements Commentable, Pdfable {
-
+public class QuestionItem extends AbstractEntityAudit  {
 
     /**
-     * This field will be populated with the correct version of a RD,
-     * but should never be persisted.
+     * This field will be populated with the correct version of a RD,  but should never be persisted.
      */
-//    @JsonSerialize
-//    @JsonDeserialize
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     private ResponseDomain responseDomain;
 
-
     /**
-     * This field must be available "raw" in order to set and query
-     * responsedomain by ID
+     * This field must be available "raw" in order to set and query  responsedomain by ID
      */
     @JsonIgnore
     @Type(type="pg-uuid")
     @Column(name="responsedomain_id")
     private UUID responseDomainUUID;
-
 
     @Column(name = "responsedomain_revision")
     private Integer responseDomainRevision;
@@ -75,15 +55,10 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable, Pd
     @JoinColumn(name = "question_id")
     private Question question;
 
-
-//    @JsonBackReference(value = "conceptRef")
     @JsonIgnore
-    @ManyToMany(mappedBy="questionItems")
-    private Set<Concept> concepts = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "questionItem")
+    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
-    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.LAZY)
-    @NotAudited
-    private Set<Comment> comments = new HashSet<>();
 
     public QuestionItem() {
 
@@ -93,8 +68,8 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable, Pd
 
     @PreRemove
     private void removeReferencesFromQi(){
-        getConcepts().forEach( C-> updateStatusQI(C));
-        getConcepts().clear();
+        getConceptQuestionItems().forEach( CQ-> updateStatusQI(CQ.getConcept()));
+        getConceptQuestionItems().clear();
         setResponseDomain(null);
     }
 
@@ -104,9 +79,9 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable, Pd
     }
 
     public void updateStatusQI(UUID conceptId) {
-        concepts.forEach(C->{
-            if (C.getId().equals(conceptId)) {
-                updateStatusQI(C);
+        conceptQuestionItems.forEach(C->{
+            if (C.getConcept().getId().equals(conceptId)) {
+                updateStatusQI(C.getConcept());
             }
         });
     }
@@ -139,6 +114,7 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable, Pd
         this.responseDomainUUID = responseDomainUUID;
     }
 
+
     public Question getQuestion() {
         return question;
     }
@@ -147,30 +123,30 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable, Pd
         this.question = question;
     }
 
-    public Set<Concept> getConcepts() {
-        return concepts;
+
+    public Set<ConceptQuestionItem> getConceptQuestionItems() {
+        return conceptQuestionItems;
     }
 
-    public void setConcepts(Set<Concept> concepts) {
-        this.concepts = concepts;
+    public void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
+        this.conceptQuestionItems = conceptQuestionItems;
     }
+
+
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+//    private Set<ConceptRef> conceptRefs = new HashSet<>();
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
-    private Set<ConceptRef> conceptRefs = new HashSet<>();
-
     public Set<ConceptRef> getConceptRefs(){
         try {
-            return concepts.stream().map(c -> new ConceptRef(c)).collect(Collectors.toSet());
+            return conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept())).collect(Collectors.toSet());
         } catch (Exception ex){
             ex.printStackTrace();
             return new HashSet<>(0);
         }
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
     }
 
     @Override
@@ -205,38 +181,17 @@ public class QuestionItem extends AbstractEntityAudit implements Commentable, Pd
                 "} " + System.lineSeparator();
     }
 
-
     @Override
-    public ByteArrayOutputStream makePdf() {
-
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        setQuestion(question.newCopyOf());
+        setConceptQuestionItems(null);
+        getComments().clear();
+        System.out.println("MADE NEW COPY...");
     }
 
-    @Override
-    public void fillDoc(Document document) {
 
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        document.add(new Paragraph("Survey Toc:").setFont(font));
-        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
-        document.add(new Paragraph(this.getResponseDomain()));
-        document.add(new Paragraph(this.getQuestion().toString()));
-        document.add(new Paragraph(this.getComments().toString()));
-
-    //    for (QuestionItem item : getQuestionItems()) {   item.fillDoc(document);  }
-    }
-}
 }
 
 

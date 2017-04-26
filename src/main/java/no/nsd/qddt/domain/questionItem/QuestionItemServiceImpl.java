@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.questionItem;
 
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.question.QuestionService;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
+
 /**
  * @author Stig Norland
  */
@@ -26,15 +28,18 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItemRepository questionItemRepository;
     private ResponseDomainAuditService rdAuditService;
+    private QuestionItemAuditService auditService;
     private QuestionService questionService;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
                                    ResponseDomainAuditService responseDomainAuditService,
-                                   QuestionService questionService) {
+                                   QuestionService questionService,
+                                   QuestionItemAuditService questionItemAuditService) {
         this.questionItemRepository = questionItemRepository;
         this.rdAuditService = responseDomainAuditService;
         this.questionService = questionService;
+        this.auditService = questionItemAuditService;
     }
 
     @Override
@@ -49,24 +54,22 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public QuestionItem findOne(UUID uuid) {
-        return  setRevisionedResponsedomain(questionItemRepository.findById(uuid).orElseThrow(
+        return  postLoadProcessing(questionItemRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, QuestionItem.class))
 
         );
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public QuestionItem save(QuestionItem instance) {
-        System.out.println("QI save");
         try {
-            instance = setDefaultRevision(instance);
-            System.out.println(instance);
-            return setRevisionedResponsedomain(
-                    questionItemRepository.save(instance));
+            return postLoadProcessing(
+                    questionItemRepository.save(
+                            prePersistProcessing(instance)));
         } catch (Exception ex){
-            ex.printStackTrace();
             System.out.println("QI save ->"  + ex.getMessage());
+            ex.printStackTrace();
             throw ex;
         }
     }
@@ -88,20 +91,20 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public Page<QuestionItem> getHierarchy(Pageable pageable) {
-        return  questionItemRepository.findAll(pageable)
-                .map(qi-> setRevisionedResponsedomain(qi));
+        return  questionItemRepository.findAll(
+                defaultSort(pageable,"name", "questions.question"))
+                .map(qi-> postLoadProcessing(qi));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<QuestionItem> findAllPageable(Pageable pageable){
         try {
-            return questionItemRepository.findAll(pageable)
-                    .map(qi -> setRevisionedResponsedomain(qi));
+            return questionItemRepository.findAll(
+                    defaultSort(pageable,"name"))
+                    .map(qi -> postLoadProcessing(qi));
         }catch (Exception ex){
             ex.printStackTrace();
-            return  new PageImpl<QuestionItem>(null);
-
+            return new PageImpl<>(null);
         }
     }
 
@@ -109,22 +112,27 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public Page<QuestionItem> findByNameLikeAndQuestionLike(String name, String question, Pageable pageable) {
         question = question.replace("*","%");
         name = name.replace("*","%");
-        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,pageable)
-                .map(qi-> setRevisionedResponsedomain(qi));
+
+        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,
+                defaultSort(pageable,"name","question.question"))
+                .map(qi-> postLoadProcessing(qi));
     }
 
     @Override
     public Page<QuestionItem> findByNameLikeOrQuestionLike(String searchString, Pageable pageable) {
         searchString = searchString.replace("*","%");
-        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,pageable)
-                .map(qi-> setRevisionedResponsedomain(qi));
+
+        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,
+                defaultSort(pageable,"name","question.question"))
+                .map(qi-> postLoadProcessing(qi));
     }
 
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
     */
-    private QuestionItem setRevisionedResponsedomain(QuestionItem instance){
+
+    protected QuestionItem postLoadProcessing(QuestionItem instance){
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
@@ -151,15 +159,18 @@ class QuestionItemServiceImpl implements QuestionItemService {
         return instance;
     }
 
-    public List<QuestionItem> setRevisionedResponsedomain(List<QuestionItem>instances) {
-        return instances.stream().map(p-> setRevisionedResponsedomain(p)).collect(Collectors.toList());
-    }
 
-    protected QuestionItem setDefaultRevision(QuestionItem instance){
-        if (instance.getId() == null && instance.getQuestion().getId() != null) {
-            // new based on entity needs a new copy of question(text)
-            instance.setQuestion(questionService.save(instance.getQuestion().newCopyOf()));
+    protected QuestionItem prePersistProcessing(QuestionItem instance){
+
+        if(instance.isBasedOn()) {
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            instance.makeNewCopy(rev);
+        } else if (instance.isNewCopy()){
+            instance.makeNewCopy(null);
         }
+
+        if (instance.getQuestion().getId() == null)
+            instance.setQuestion(questionService.save(instance.getQuestion()));
 
         if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
             if (instance.getResponseDomainUUID() == null) {

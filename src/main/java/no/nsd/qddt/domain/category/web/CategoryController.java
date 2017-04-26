@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.category.web;
 
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.CategoryJsonEdit;
+import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
 import org.springframework.beans.factory.annotation.Autowired;

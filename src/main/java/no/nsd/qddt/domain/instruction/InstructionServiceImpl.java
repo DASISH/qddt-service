@@ -66,8 +66,18 @@ class InstructionServiceImpl implements InstructionService {
         instructionRepository.delete(instructions);
     }
 
+
+    protected Instruction prePersistProcessing(Instruction instance) {
+        return instance;
+    }
+
+
+    protected Instruction postLoadProcessing(Instruction instance) {
+        return instance;
+    }
+
     @Override
     public Page<Instruction> findByDescriptionLike(String description, Pageable pageable) {
-        return instructionRepository.findByDescriptionLike(description,pageable);
+        return instructionRepository.findByDescriptionIgnoreCaseLike(description,pageable);
     }
 }

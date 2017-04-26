@@ -7,7 +7,6 @@ import no.nsd.qddt.utils.BeforeSecurityContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
@@ -18,7 +17,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-@IntegrationTest
 public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
 
     @Autowired

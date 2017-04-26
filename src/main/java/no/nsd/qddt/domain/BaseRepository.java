@@ -21,18 +21,4 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
 
 }
 
-//
-//    Optional<T> findById(UUID id);
-//
-//    Optional<T> findByGuid(UUID id);
-//
-//    List<T> findAll();
-//
-//    Page<T> findAll(Pageable pageable);
-//
-//    T save(T instance);
-//
-//    void delete(T instance);
-//
-//
-//}
+

@@ -8,9 +8,12 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +23,8 @@ import java.util.UUID;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity {
+public abstract class AbstractEntityAudit extends AbstractEntity  {
+
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -31,32 +35,54 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
      * @author Stig Norland
      */
     public enum ChangeKind {
-        //New element status
-        CREATED,
-        //ChildSaved as part of parent save
-        UPDATED_PARENT,
-        //ParentSaved as part of child save
-        UPDATED_CHILD,
-        //Element added to a collection, no changes to element itself
-        UPDATED_HIERARCY_RELATION,
-        //UnfinishedWork
-        IN_DEVELOPMENT,
-        //TypoOrNoMeaningChange
-        TYPO,
-        //ConceptualImprovement
-        CONCEPTUAL,
-        //RealLifeChange
-        EXTERNAL,
-        //OtherPurpose
-        OTHER,
-        //AddContentElement. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
-        ADDED_CONTENT,
+        CREATED("Created","New element status"),
+        UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
+        UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
+        UPDATED_HIERARCY_RELATION("Hierarcy Relation Updated","Element added to a collection, no changes to element itself"),
+
+        IN_DEVELOPMENT("In Development","UnfinishedWork"),
+
+        TYPO("NoMeaningChange","Typo or No Meaning Change"),
+
+        CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
+
+        EXTERNAL("RealLifeChange","Real Life Change"),
+
+        OTHER("","OtherPurpose"),
+        //. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
+        ADDED_CONTENT("AddContentElement","Add Content Element"),
         /* deprecated */
 //        milestone status, this version is published.
 //        This was removed as publication is no longer part of the model, now uses list of published elements for each publication.
-        MILESTONE,
-        BASED_ON,
-        TRANSLATED
+        MILESTONE("Deprecated",""),
+        BASED_ON("Based on","Based on copy"),
+        NEW_COPY("New Copy","Copy new"),
+        TRANSLATED("Translated","Translation of source");
+
+        ChangeKind(String name, String description){
+            this.name = name;
+            this.description = description;
+        }
+
+        private final String name;
+
+        private final String description;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public static ChangeKind getEnum(String name) {
+            if(name == null)
+                throw new IllegalArgumentException();
+            for(ChangeKind v : values())
+                if(name.equalsIgnoreCase(v.getName())) return v;
+            throw new IllegalArgumentException();
+        }
     }
 
 
@@ -80,6 +106,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     @Column(name = "based_on_revision", nullable = true)
     private Integer basedOnRevision;
 
+
     @Embedded
     private Version version;
 
@@ -88,6 +115,16 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
     @Column(name = "change_comment")
     private String changeComment;
+
+
+    @Where(clause = "is_hidden = 'false'")
+    @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
+    @NotAudited
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+    private Set<Comment> comments = new HashSet<>();
+
 
     protected AbstractEntityAudit() {
 
@@ -119,6 +156,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
     public Version getVersion() {
+        if (version == null)
+            version = new Version(true);
         return version;
     }
 
@@ -150,6 +189,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.changeComment = changeComment;
     }
 
+    public Set<Comment> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+
     @PrePersist
     private void onInsert(){
         User user = SecurityContext.getUserDetails().getUser();
@@ -162,11 +210,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     private void onUpdate(){
         Version ver = version;
         AbstractEntityAudit.ChangeKind change = changeKind;
-        if (isNewBasedOn()) {
-            makeNewCopy(true);
-        }
         if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
             change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+            ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
             changeKind = change;
         }
         switch (change) {
@@ -194,16 +240,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         if (this instanceof Commentable){
             // we have to filter comments manually before sending them over to clients, this will be fixed in
             // a later version of Hibernate
-            removeComments(((Commentable)this).getComments());
+            hideComments(((Commentable)this).getComments());
         }
     }
 
-    private void removeComments(Set<Comment> comments){
+    private void hideComments(Set<Comment> comments){
         comments.removeIf(c->c.getIsHidden()==true);
-        comments.stream().forEach(c->removeComments(c.getComments()));
+        comments.stream().forEach(c-> hideComments(c.getComments()));
     }
-
-
 
     /**
      * None null field compare, (ignores null value when comparing)
@@ -223,8 +267,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
     @JsonIgnore
-    public boolean isNewBasedOn(){
+    public boolean isBasedOn(){
         return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
+    }
+
+    @JsonIgnore
+    public boolean isNewCopy(){
+        return (getChangeKind() == ChangeKind.NEW_COPY )
+                | (getId() == null & getChangeKind() != null & getChangeKind()!= ChangeKind.CREATED)
+                | (!getVersion().isNew() & getId() == null );
     }
 
     @JsonIgnore
@@ -236,12 +287,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     This function should contain all copy code needed to make a complete copy of hierarchy under this element
     (an override should propigate downward and call makeNewCopy on it's children).
      */
-    protected void makeNewCopy(boolean isBasedOn){
+    public void makeNewCopy(Integer revision){
         if (hasRun) return;
-        if (isBasedOn)
+        if (revision != null) {
             setBasedOnObject(getId());
-
-        version.setVersionLabel("COPY OF [" + getId() + "]");
+            setBasedOnRevision(revision);
+            version.setVersionLabel("COPY OF [" + getName() + "]");
+        }
         setId(UUID.randomUUID());
         hasRun = true;
     }

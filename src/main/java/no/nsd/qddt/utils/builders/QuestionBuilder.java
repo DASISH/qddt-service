@@ -1,5 +1,6 @@
 package no.nsd.qddt.utils.builders;
 
+
 import no.nsd.qddt.domain.question.Question;
 
 /**

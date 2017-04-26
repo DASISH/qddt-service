@@ -1,11 +1,13 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -33,12 +36,10 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Value("${fileroot}")
     private String fileRoot;
     private OtherMaterialRepository otherMaterialRepository;
-    private ApplicationContext applicationContext;
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository,ApplicationContext applicationContext){
+    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository){
         this.otherMaterialRepository = otherMaterialRepository;
-        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -52,16 +53,10 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
 
-//    public boolean exists(UUID owner, String filename) {
-//
-//        return otherMaterialRepository.findByOwnerAndOriginalName(owner,filename).isPresent();
-//
-//    }
-
     @Override
     public OtherMaterial findOne(UUID uuid) {
-        return otherMaterialRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, OtherMaterial.class)
+        return otherMaterialRepository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException(uuid, OtherMaterial.class)
         );
     }
 
@@ -81,61 +76,57 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
-    public void delete(UUID uuid) {
-
-        deleteFile(findOne(uuid));
-        otherMaterialRepository.delete(uuid);
-
+    public void delete(UUID uuid)  {
+        try {
+            delete(findOne(uuid));
+        } catch (ReferenceInUseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     @Transactional()
-    public void delete(List<OtherMaterial> instances) {
+    public void delete(List<OtherMaterial> instances)  {
 
-        instances.forEach(om->deleteFile(om));
-        otherMaterialRepository.delete(instances);
+        instances.forEach(om -> {
+            if (om.getSource()== null)
+                try {
+                    delete(om);
+                } catch (ReferenceInUseException e) {
+                    // checking before calling no exception
+                }
+        });
+    }
 
+    private void delete(OtherMaterial om) throws ReferenceInUseException{
+        deleteFile(om);
+        otherMaterialRepository.delete(om.getId());
+    }
+
+
+    protected OtherMaterial prePersistProcessing(OtherMaterial instance) {
+        return instance;
+    }
+
+
+    protected OtherMaterial postLoadProcessing(OtherMaterial instance) {
+        return instance;
     }
 
     @Override
     public OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException {
 
         String name = owner + " [" + filename + "]";
-        return otherMaterialRepository.findByOwnerAndOriginalName(owner,filename).orElseThrow(
+        return otherMaterialRepository.findByOwnerAndOriginalName(owner,filename)
+                .orElseThrow(
                 () -> new ResourceNotFoundException(name , OtherMaterial.class)
         );
 
     }
 
-
-
     @Override
     public List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException {
-        return (List<OtherMaterial>) otherMaterialRepository.findByOwner(owner).orElseThrow(
-                () -> new ResourceNotFoundException(owner , ArrayList.class));
-    }
-
-    @Override
-    public File getFile(OtherMaterial om){
-        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getOriginalName()).toString();
-        return new File(filepath);
-    }
-
-
-    @Override
-    public ResponseEntity<Resource> getFileAsResponseEntity(UUID fileId) throws IOException {
-        OtherMaterial om = findOne(fileId);
-        File file = getFile(om);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.valueOf(om.getFileType()));
-        httpHeaders.setContentLength(om.getSize());
-        httpHeaders.setContentDispositionFormData("attachment", om.getOriginalName());
-        System.out.println(httpHeaders);
-        Resource fileSystemResource = applicationContext.getResource("file:" + file.getAbsolutePath());
-        return ResponseEntity
-                .ok()
-                .headers(httpHeaders)
-                .body(fileSystemResource);
+        return otherMaterialRepository.findByOwner(owner);
     }
 
 
@@ -152,7 +143,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setFileType(multipartFile.getContentType());
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
-        } catch (Exception re){
+        } catch (ResourceNotFoundException re){
             om = new OtherMaterial(ownerId,multipartFile, null);
         }
 
@@ -169,7 +160,10 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
     @Override
-    public void deleteFile(OtherMaterial om) {
+    @Deprecated
+    public void deleteFile(OtherMaterial om) throws ReferenceInUseException {
+        // maybe this is wrong, files should be accessible to revision system forever...
+        if (om.getReferencesBy().size() > 0) throw  new ReferenceInUseException(om.getFileName());
 
         String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
         new File(filepath).delete();
@@ -179,7 +173,6 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     /*
     return absolute path to save folder, creates folder if not exists
      */
-    @Transactional()
     private String getFolder(String ownerId) {
 
         File directory= new File(fileRoot + ownerId.toLowerCase());
@@ -191,5 +184,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     }
 
+    @Override
+    public File getFile(OtherMaterial om){
+        if (om.getSource() != null)
+            return getFile(om.getSource());
+
+        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getOriginalName()).toString();
+        return new File(filepath);
+    }
 
 }

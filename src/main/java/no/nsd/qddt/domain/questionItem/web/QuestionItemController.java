@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.questionItem.web;
 
-import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.questionItem.QuestionItemJsonEdit;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonEdit;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemListJson;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,12 +25,10 @@ import java.util.UUID;
 public class QuestionItemController {
 
     private QuestionItemService service;
-    private QuestionService questionService;
 
     @Autowired
-    public QuestionItemController(QuestionItemService service,QuestionService questionService){
+    public QuestionItemController(QuestionItemService service){
         this.service = service;
-        this.questionService = questionService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -42,21 +40,12 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public QuestionItemJsonEdit update(@RequestBody QuestionItem instance) {
-        instance.setQuestion(
-                questionService.save(
-                        instance.getQuestion()));
-
         return question2Json(service.save(instance));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public QuestionItemJsonEdit create(@RequestBody QuestionItem instance) {
-
-        instance.setQuestion(
-                questionService.save(
-                        instance.getQuestion()));
-
         return question2Json(service.save(instance));
     }
 
@@ -68,23 +57,21 @@ public class QuestionItemController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItemJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<QuestionItemJsonEdit> questionitems =
-                service.findAllPageable(pageable).map(F->question2Json(F));
-
+    public HttpEntity<PagedResources<QuestionItemListJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<QuestionItemListJson> questionitems =
+                service.findAllPageable(pageable).map(F->new QuestionItemListJson(F));
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItemJsonEdit>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<QuestionItemListJson>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                                    @RequestParam(value = "question",defaultValue = "%") String question,
                                                                    Pageable pageable, PagedResourcesAssembler assembler) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
-        Page<QuestionItemJsonEdit> questionitems = null;
+        Page<QuestionItemListJson> questionitems = null;
         try {
-            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(F->question2Json(F));
+            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(F->new QuestionItemListJson(F));
         } catch (Exception ex){
             ex.printStackTrace();
         }
@@ -94,6 +81,7 @@ public class QuestionItemController {
     private QuestionItemJsonEdit question2Json(QuestionItem questionItem){
         return  new QuestionItemJsonEdit(questionItem);
     }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)

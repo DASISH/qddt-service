@@ -7,18 +7,14 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.Code;
-import no.nsd.qddt.utils.builders.StringTool;
-import org.hibernate.annotations.Type;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.utils.builders.StringTool.SafeString;
+import static no.nsd.qddt.utils.StringTool.SafeString;
 
 /**
  *
@@ -46,6 +42,7 @@ import static no.nsd.qddt.utils.builders.StringTool.SafeString;
 @Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind","based_on_object"},name = "UNQ_CATEGORY_NAME_KIND")})
 public class Category extends AbstractEntityAudit  implements Comparable<Category>{
 
+
     @Transient
     @JsonSerialize
     @JsonDeserialize
@@ -53,8 +50,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
-//    @OrderBy("category_idx ASC")
-    private List<Category> children = new ArrayList<>();
+   private List<Category> children = new ArrayList<>();
 
 
     //name -> A description of a particular category or response.
@@ -95,12 +91,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
      */
     private String format;
 
-//    /**
-//     * concept reference to a versioned concept within the system.
-//     */
-//    @Column(name = "concept_reference")
-//    @Type(type="pg-uuid")
-//    private UUID conceptReference;
 
     @Column(name = "Hierarchy_level",nullable = false)
     @Enumerated(EnumType.STRING)
@@ -184,14 +174,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.description = description;
     }
 
-//    public UUID getConceptReference() {
-//        return conceptReference;
-//    }
-//
-//    public void setConceptReference(UUID conceptReference) {
-//        this.conceptReference = conceptReference;
-//    }
-
     public Code getCode() {
         return code;
     }
@@ -231,10 +213,17 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     public List<Category> getChildren() {
-        return  children.stream().filter(c->c!=null).collect(Collectors.toList());
+        if (categoryType == CategoryType.SCALE)
+            return  children.stream().filter(c->c!=null)
+                    .sorted(Comparator.comparing(Category::getCode))
+                    .collect(Collectors.toList());
+        else
+            return  children.stream().filter(c->c!=null).collect(Collectors.toList());
     }
 
     public void setChildren(List<Category> children) {
+        if (categoryType == CategoryType.SCALE)
+            this.children = children.stream().sorted(Comparator.comparing(Category::getCode)).collect(Collectors.toList());
         this.children = children;
     }
 
@@ -242,15 +231,15 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.children.add(children);
     }
 
-     @Override
-     @Column(nullable = false)
-     public String getName(){
+
+    @Override
+    @Column(nullable = false)
+    public String getName(){
         if (StringTool.IsNullOrTrimEmpty(super.getName()))
             return this.getLabel().toUpperCase();
         else
             return super.getName();
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -371,4 +360,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             setInputLimit("0","1");
     }
 
+    @Override
+    public void makeNewCopy(Integer revision){
+        // Copying a simple Category doesn't make any sense... skipping...
+        hasRun = (getHierarchyLevel() == HierarchyLevel.ENTITY);
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getChildren().forEach(c->c.makeNewCopy(revision));
+    }
 }

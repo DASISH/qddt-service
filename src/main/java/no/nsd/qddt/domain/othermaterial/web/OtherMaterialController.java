@@ -2,24 +2,18 @@ package no.nsd.qddt.domain.othermaterial.web;
 
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
+import no.nsd.qddt.exception.ReferenceInUseException;
+import no.nsd.qddt.exception.RequestAbortedException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
-
 
 /**
  * @author Stig Norland
@@ -56,7 +50,7 @@ public class OtherMaterialController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") UUID id) {
+    public void delete(@PathVariable("id") UUID id) throws RequestAbortedException {
         service.delete(id);
     }
 
@@ -80,11 +74,14 @@ public class OtherMaterialController {
         return service.saveFile(file, ownerId);
     }
 
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET)
-    public ResponseEntity<Resource> handleFileDownload(@PathVariable("fileId") UUID fileId) throws IOException {
-        return service.getFileAsResponseEntity(fileId);
+
+    @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    @ResponseBody()
+    public FileSystemResource getFile(@PathVariable("fileId") UUID fileId) throws IOException {
+        return new FileSystemResource(service.getFile(service.findOne(fileId)));
     }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
@@ -92,19 +89,5 @@ public class OtherMaterialController {
         return service.findOne(id).toDDIXml();
     }
 
-//    @ResponseStatus(value = HttpStatus.ACCEPTED)
-//    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
-//    public void handleFileDownload(HttpServletResponse response, @PathVariable("fileId") UUID fileId) throws IOException {
-//        System.out.println("file download...");
-//        OtherMaterial om = service.findOne(fileId);
-//        File file = service.getFile(om);
-//
-//        response.addHeader("Content-disposition", "attachment;filename=" + om.getOriginalName());
-//        response.setContentType(om.getFileType());
-//        response.setContentLength((int) om.getSize());
-//        FileInputStream fis = new FileInputStream(file.getAbsoluteFile());
-//        IOUtils.copy(fis, response.getOutputStream());
-//        response.flushBuffer();
-//
-//    }
+
 }

@@ -32,14 +32,12 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PrePersist
     public void create(AbstractEntity entity) {
         try {
-//            System.out.println("create");
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
             if (entity instanceof Category) {
                 entity = fixAndValidateCategoryType((Category)entity);
             }
-
 
         } catch (Exception e){
             System.out.println(e.getMessage());
@@ -52,22 +50,21 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
      */
     @PreUpdate
     public void update(AbstractEntity entity) {
-//        System.out.println("@PreUpdate " + entity.getClass().getName());
         try {
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
             if (entity instanceof SurveyProgram){
-                checkAuthor((SurveyProgram)entity);
+                checkSurvey((SurveyProgram)entity);
             }
             if (entity instanceof Study){
-                checkAuthor((Study)entity);
+                checkStudy((Study)entity);
             }
             if (entity instanceof TopicGroup){
-                checkAuthor((TopicGroup)entity);
+                checkTopic((TopicGroup)entity);
             }
             if (entity instanceof Concept) {
-                checkAddedQuestions((Concept) entity);
+                checkConcept((Concept) entity);
             }
 
 
@@ -77,19 +74,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
         }
     }
 
-
-    private boolean isBasedOnCopy(AbstractEntityAudit rootEntity){
-        return (rootEntity.getId() == null &&
-                rootEntity.getBasedOnObject() != null &&
-                rootEntity.getChangeKind() == AbstractEntityAudit.ChangeKind.BASED_ON);
-    }
-
-    private AbstractEntityAudit makeBasedOnCopy(AbstractEntityAudit rootEntity){
-        rootEntity.setBasedOnObject(rootEntity.getId());
-        rootEntity.setId(null);
-        rootEntity.setChangeKind(AbstractEntityAudit.ChangeKind.BASED_ON);
-        return rootEntity;
-    }
 
     private boolean isAnOwner(AbstractEntityAudit entity, User user){
         return entity.getAgency().equals(user.getAgency());
@@ -116,30 +100,48 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
 
-    private SurveyProgram checkAuthor(SurveyProgram entity){
+    /*
+    Authors bidirectional relationship needs to be updated manually... FIX ME...
+     */
+    private SurveyProgram checkSurvey(SurveyProgram entity){
         entity.getAuthors().forEach(a->a.addSurvey(entity));
         return entity;
     }
 
-    private Study checkAuthor(Study entity){
+    /*
+    Authors bidirectional relationship needs to be updated manually... FIX ME...
+     */
+    private Study checkStudy(Study entity){
         entity.getAuthors().forEach(a->a.addStudy(entity));
         return entity;
     }
 
-    private TopicGroup checkAuthor(TopicGroup entity){
+    /*
+    Authors bidirectional relationship needs to be updated manually... FIX ME...
+     */
+    private TopicGroup checkTopic(TopicGroup entity){
         entity.getAuthors().forEach(a->a.addTopic(entity));
         return entity;
     }
 
-    private Concept checkAddedQuestions(Concept entity) {
-        entity.getQuestionItems()
-                .forEach(qi -> {
-                    if (!qi.getConcepts().contains(entity)) {
-                        qi.getConcepts().add(entity);
-                        entity.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
-                        entity.setChangeComment("added question, " + qi.getName());
-                    }
+    /*
+    Code to set status UPDATED_HIERARCY_RELATION when adding questionItem to Concept...
+
+     */
+    private Concept checkConcept(Concept entity) {
+        entity.getConceptQuestionItems().stream().forEach(cqi->{
+            if (!cqi.getQuestionItem().getConceptQuestionItems().contains(cqi))
+                System.out.println("Concept <-> QuestionItem not in sync");
                 });
+
+//        entity.getQuestionItems()
+//                .forEach(qi -> {
+//                    if (!qi.getConceptQuestionItems().stream().anyMatch(cqi->cqi.getConcept().contains(entity)) {
+//                        qi.getConcepts().add(entity);
+//                        entity.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCY_RELATION);
+//                        entity.setChangeComment("added question, " + qi.getName());
+//                    }
+//                });
         return entity;
     }
 

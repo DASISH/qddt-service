@@ -1,13 +1,15 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,10 +20,12 @@ import java.util.UUID;
 class TopicGroupServiceImpl implements TopicGroupService {
 
     private TopicGroupRepository topicGroupRepository;
+    private TopicGroupAuditService auditService;
 
     @Autowired
-    public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository) {
+    public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository, TopicGroupAuditService topicGroupAuditService) {
         this.topicGroupRepository = topicGroupRepository;
+        this.auditService = topicGroupAuditService;
     }
 
     @Override
@@ -48,7 +52,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = false)
     public TopicGroup save(TopicGroup instance) {
-        return topicGroupRepository.save(instance);
+        return postLoadProcessing(
+                topicGroupRepository.save(
+                        prePersistProcessing(instance)));
     }
 
     @Override
@@ -71,6 +77,30 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
 
+    protected TopicGroup prePersistProcessing(TopicGroup instance) {
+        if(instance.getConcepts().isEmpty()){
+            instance.addConcept(new Concept());
+        }
+
+        if (instance.isBasedOn()){
+            Revision<Integer, TopicGroup> lastChange
+                    = auditService.findLastChange(instance.getId());
+            instance.makeNewCopy(lastChange.getRevisionNumber());
+        }
+
+        if( instance.isNewCopy()){
+            instance.makeNewCopy(null);
+        }
+
+        return instance;
+    }
+
+
+    protected TopicGroup postLoadProcessing(TopicGroup instance) {
+        return instance;
+    }
+
+
     @Transactional(readOnly = false)
     public void delete(TopicGroup instance) {
         topicGroupRepository.delete(instance.getId());
@@ -84,5 +114,10 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     public Page<TopicGroup> findAllPageable(Pageable pageable) {
         return topicGroupRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        return topicGroupRepository.findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(name,description,pageable);
     }
 }

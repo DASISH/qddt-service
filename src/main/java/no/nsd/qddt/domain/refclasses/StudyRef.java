@@ -17,7 +17,11 @@ public class StudyRef extends BaseRef {
 
     public StudyRef(Study study) {
         super(study);
-        parent = new SurveyRef(study.getSurveyProgram());
+        try {
+            parent = new SurveyRef(study.getSurveyProgram());
+        } catch (Exception ex) {
+            parent = new SurveyRef();
+        }
     }
 
     public SurveyRef getSurveyRef() {

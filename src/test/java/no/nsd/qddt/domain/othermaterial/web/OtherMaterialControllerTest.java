@@ -6,12 +6,17 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+
+import java.io.IOException;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 /**
  * @author Dag Heradstveit
@@ -76,5 +81,26 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
                 .andExpect(status().isOk());
 
         assertFalse("Instruction should no longer exist", entityService.exists(entity.getId()));
+    }
+
+    @Test
+    public void testBinaryFileDownload() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "file",
+                MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                "\1\2\3\4\5".getBytes());
+
+         entityService.saveFile(file,entity.getId());
+
+
+        mvc.perform(get("/othermaterial/files/{id}",entity.getId()))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().bytes(new byte[]{'\1', '\2', '\3', '\4', '\5'}))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void testFileUp() throws IOException {
     }
 }

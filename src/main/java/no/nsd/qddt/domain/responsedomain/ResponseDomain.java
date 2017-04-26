@@ -12,7 +12,7 @@ import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
-import no.nsd.qddt.utils.builders.StringTool;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id","based_on_object"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
-public class ResponseDomain extends AbstractEntityAudit implements Commentable {
+public class ResponseDomain extends AbstractEntityAudit  {
     /**
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
@@ -87,17 +87,14 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
 
     /**
      *   a link to a category root/group (template)
+     *   the managed representation is never reused (as was intended),
+     *   so we want to remove it when the responseDomain is removed.
      */
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = { CascadeType.MERGE ,CascadeType.REMOVE},fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
     private String displayLayout;
-
-    @Transient
-    @JoinColumn(referencedColumnName = "owner_uuid")
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Comment> comments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
@@ -224,6 +221,11 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
         this.managedRepresentation = managedRepresentation;
+        setDefaultValues();
+    }
+
+    @PrePersist
+    private void setDefaultValues() {
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
@@ -248,10 +250,6 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
         this.codes = codes;
     }
 
-    @Override
-    public Set<Comment> getComments() {
-        return comments;
-    }
 
 
 
@@ -301,10 +299,12 @@ public class ResponseDomain extends AbstractEntityAudit implements Commentable {
                 getManagedRepresentation().toString());
     }
 
-    @JsonIgnore
-    public void makeBasedOn() {
-        if (!isNewBasedOn()) return;
-        managedRepresentation.setBasedOnObject(managedRepresentation.getId());
-        managedRepresentation.setId(null);
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        managedRepresentation.makeNewCopy(revision);
+
+        getComments().clear();
     }
 }

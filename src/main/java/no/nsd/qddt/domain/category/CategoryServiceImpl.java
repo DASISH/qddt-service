@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.exception.InvalidObjectException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
  * http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/FieldLevelDocumentation/schemas/logicalproduct_xsd/elements/Category.html
@@ -29,7 +33,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<Category> findByNameLike(String name, Pageable pageable) {
-        return categoryRepository.findByNameIgnoreCaseLike(name,pageable);
+        return categoryRepository.findByNameIgnoreCaseLike(name,defaultSort(pageable,"name","modified"));
     }
 
     /*
@@ -38,7 +42,8 @@ class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Page<Category> findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,pageable);
+        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,
+                defaultSort(pageable,"name","modified"));
     }
 
 
@@ -48,12 +53,14 @@ class CategoryServiceImpl implements CategoryService {
          */
     @Override
     public Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name, pageable);
+        return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name,
+                defaultSort(pageable,"name","modified"));
     }
 
     @Override
     public Page<Category> findByHierarchyAndNameLike(HierarchyLevel level, String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name, pageable);
+        return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name,
+                defaultSort(pageable,"name","modified"));
     }
 
     @Override
@@ -80,35 +87,9 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional()
     public Category save(Category instance) {
-        // Category Save fails when there is a mix of new and existing children attached to a new element.
-        // This code fixes that.
-        Category retval = null;
-        try {
-            List<Category> tmplist = new LinkedList<>();
-
-            for (Category cat:instance.getChildren()) {
-                  tmplist.add(save((Category)cat));
-            }
-            instance.getChildren().clear();
-            instance.getChildren().addAll(tmplist);
-
-            if (!instance.isValid()) throw new InvalidObjectException(instance);
-
-            if (instance.getId() == null) {
-                retval = categoryRepository.save(instance);
-            }
-            else {
-                Category fromRepository = findOne(instance.getId());
-                if (!instance.fieldCompare(fromRepository))
-                    retval = categoryRepository.save(instance);
-                else
-                    retval = instance;
-            }
-        }catch (Exception e) {
-            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
-            throw e;
-        }
-        return retval;
+        return postLoadProcessing(
+                categoryRepository.save(
+                        prePersistProcessing(instance)));
     }
 
 
@@ -128,5 +109,39 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(List<Category> instances) {
         categoryRepository.delete(instances);
+    }
+
+    protected Category prePersistProcessing(Category instance) {
+        // Category Save fails when there is a mix of new and existing children attached to a new element.
+        // This code fixes that.
+        try {
+            List<Category> tmplist = new LinkedList<>();
+
+            for (Category cat:instance.getChildren()) {
+                tmplist.add(save(cat));
+            }
+            instance.getChildren().clear();
+            instance.getChildren().addAll(tmplist);
+
+            if (!instance.isValid()) throw new InvalidObjectException(instance);
+
+            Code c =  instance.getCode();
+
+            if (instance.getId() != null) {
+                Category fromRepository = findOne(instance.getId());
+                if (instance.fieldCompare(fromRepository)) {
+                    instance = fromRepository;
+                    instance.setCode(c);
+                }
+            }
+        }catch (Exception e) {
+            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
+            throw e;
+        }
+        return instance;
+    }
+
+    protected Category postLoadProcessing(Category instance) {
+        return instance;
     }
 }

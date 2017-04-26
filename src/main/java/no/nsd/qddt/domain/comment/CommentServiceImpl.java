@@ -46,8 +46,6 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     @Transactional(readOnly = false)
     public Comment save(Comment instance) {
-
-//        instance.setCreated(LocalDateTime.now());
         return commentRepository.save(instance);
     }
 
@@ -66,10 +64,25 @@ class CommentServiceImpl  implements CommentService  {
         commentRepository.delete(instances);
     }
 
+
+    protected Comment prePersistProcessing(Comment instance) {
+        return instance;
+    }
+
+
+    protected Comment postLoadProcessing(Comment instance) {
+        return instance;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable) {
         return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false, pageable);
+    }
+
+    @Override
+    public List<Comment> findAllByOwnerId(UUID ownerId) {
+        return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false);
     }
 
 }

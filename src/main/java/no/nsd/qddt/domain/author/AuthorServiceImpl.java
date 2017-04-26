@@ -57,6 +57,16 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.delete(instances);
     }
 
+
+    protected Author prePersistProcessing(Author instance) {
+        return instance;
+    }
+
+
+    protected Author postLoadProcessing(Author instance) {
+        return instance;
+    }
+
     @Override
     public Page<Author> findAllPageable(Pageable pageable) {
         return authorRepository.findAll(pageable);

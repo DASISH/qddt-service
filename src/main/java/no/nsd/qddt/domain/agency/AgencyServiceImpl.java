@@ -59,4 +59,12 @@ class AgencyServiceImpl implements AgencyService {
     public void delete(List<Agency> instances) {
         agencyRepository.delete(instances);
     }
+
+    protected Agency prePersistProcessing(Agency instance) {
+        return instance;
+    }
+
+    protected Agency postLoadProcessing(Agency instance) {
+        return instance;
+    }
 }

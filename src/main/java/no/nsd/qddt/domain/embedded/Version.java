@@ -1,9 +1,13 @@
 package no.nsd.qddt.domain.embedded;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * @author Stig Norland
@@ -15,16 +19,19 @@ public class Version implements Comparable<Version> {
     private Integer major=1;
     private Integer minor=0;
     private String versionLabel="";
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    @Column(name ="rev")
+    private Integer revision;
+
     @Transient
     private boolean isModified = false;
 
     @Transient
-    @JsonIgnore
     private boolean isNew = false;
 
-
-//    @org.springframework.data.annotation.Version
-//    private Long build;
 
     public Integer getMajor() {
         return major;
@@ -57,11 +64,27 @@ public class Version implements Comparable<Version> {
         this.versionLabel = versionLabel;
     }
 
+    public Integer getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Integer revision) {
+        this.revision = revision;
+    }
+
+    @JsonIgnore
     public boolean isNew() {
         return isNew;
     }
 
     public Version() {   }
+
+    public Version(Integer major, Integer minor, Integer revision, String label) {
+        this.major = major;
+        this.minor = minor;
+        this.revision = revision;
+        this.versionLabel = label;
+    }
 
     public Version(boolean isNew) {
         this.isNew = isNew;
