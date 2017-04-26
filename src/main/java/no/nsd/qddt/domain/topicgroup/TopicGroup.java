@@ -27,6 +27,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -222,7 +223,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
     }
 
 
-    @Override
+
     public ByteArrayOutputStream makePdf() {
 
         ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
@@ -236,7 +237,12 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
     @Override
     public void fillDoc(Document document) {
 
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        PdfFont font = null;
+        try {
+            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         document.add(new Paragraph("Survey Toc:").setFont(font));
         com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
                 .setSymbolIndent(12)

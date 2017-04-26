@@ -13,6 +13,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -203,7 +204,6 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
         System.out.println("MADE NEW COPY...");
     }
 
-    @Override
     public ByteArrayOutputStream makePdf() {
 
         ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
@@ -217,9 +217,14 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
     @Override
     public void fillDoc(Document document) {
 
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        PdfFont font = null;
+        try {
+            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         document.add(new Paragraph("Survey Toc:").setFont(font));
-        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+        List list = new List()
                 .setSymbolIndent(12)
                 .setListSymbol("\u2022")
                 .setFont(font);

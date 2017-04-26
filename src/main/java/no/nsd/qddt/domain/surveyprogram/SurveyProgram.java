@@ -20,6 +20,7 @@ import com.itextpdf.layout.element.ListItem;
 import java.io.ByteArrayOutputStream;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -149,7 +150,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable, Pd
 //                ", comments=" + comments +
                 "} " + super.toString();
     }
-    @Override
+    //@Override
     public ByteArrayOutputStream makePdf() {
 
         ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
@@ -164,7 +165,12 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable, Pd
     public void fillDoc(Document document) {
         //    if (document == null)
         //        document = new Document();
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        PdfFont font = null;
+        try {
+            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         document.add(new Paragraph("Survay Toc:").setFont(font));
         document.add(new Paragraph("To the top").setFont(font));
         List list = new List()
