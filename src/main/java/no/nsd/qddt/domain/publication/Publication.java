@@ -1,10 +1,12 @@
 package no.nsd.qddt.domain.publication;
 
+import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,5 +82,10 @@ public class Publication extends AbstractEntityAudit {
         int result = super.hashCode();
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    protected void fillDoc(Document document) throws IOException {
+
     }
 }

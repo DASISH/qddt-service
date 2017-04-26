@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.instruction;
 
+import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import org.hibernate.envers.Audited;
 
@@ -7,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.IOException;
 
 /**
  * @author Stig Norland
@@ -64,5 +66,10 @@ public class Instruction extends AbstractEntityAudit {
         return "Instruction{" +
                 ", description='" + description + '\'' +
                 "} " + super.toString();
+    }
+
+    @Override
+    protected void fillDoc(Document document) throws IOException {
+
     }
 }

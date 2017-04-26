@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.responsedomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
@@ -16,6 +17,7 @@ import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -297,6 +299,11 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 super.toString(),
                 getCodes(),
                 getManagedRepresentation().toString());
+    }
+
+    @Override
+    protected void fillDoc(Document document) throws IOException {
+
     }
 
     @Override

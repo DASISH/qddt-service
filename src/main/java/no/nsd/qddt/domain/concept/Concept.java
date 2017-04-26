@@ -1,34 +1,24 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.ListItem;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructInstruction;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructInstructionRank;
-import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.List;
-import com.itextpdf.layout.element.ListItem;
-
-import java.io.ByteArrayOutputStream;
-
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +40,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements Pdfable {
+public class Concept extends AbstractEntityAudit {
 
 
     @JsonBackReference(value = "parentRef")
@@ -170,7 +160,6 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
     }
 
 
-
     public String getLabel() {
         return label;
     }
@@ -230,47 +219,6 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
             System.out.println("infering topicgroup id " + getTopicRef().getId() );
         }
         getComments().clear();
-    }
-
-    public void merge(Concept changed){
-        System.out.println("Concept.merge");
-        if (!getName().equals(changed.getName()))
-            setName(changed.getName());
-//        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
-//            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
-//                ConceptQuestionItem finalCqi = cqi;
-//                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
-//                if (!cqi.equals(tmp)) {
-//                    cqi = tmp;
-//                    System.out.println("ConceptQuestionItem changed in merge");
-//                }
-//            }
-//        }
-        if(!getChildren().equals(changed.getChildren()))
-            setChildren(changed.getChildren());
-        if(!getDescription().equals(changed.getDescription()))
-            setDescription(changed.getDescription());
-        if(!getLabel().equals(changed.getLabel()))
-            setLabel(changed.getLabel());
-        if(!getQuestionItems().equals(changed.questionItems))
-            setQuestionItems(changed.questionItems);
-        if(!getAgency().equals(changed.getAgency()))
-            setAgency(changed.getAgency());
-        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
-            setBasedOnObject(changed.getBasedOnObject());
-        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
-            setBasedOnRevision(changed.getBasedOnRevision());
-        if(!getChangeComment().equals(changed.getChangeComment()))
-            setChangeComment(changed.getChangeComment());
-        if(!getChangeKind().equals(changed.getChangeKind()))
-            setChangeKind(changed.getChangeKind());
-        if(!getVersion().equals(changed.getVersion()))
-            setVersion(changed.getVersion());
-        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
-        if(!getModified().equals(changed.getModified()))
-            setModified(changed.getModified());
-        if(!getModifiedBy().equals(changed.getModifiedBy()))
-            setModifiedBy(changed.getModifiedBy());
     }
 
 
@@ -347,16 +295,7 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
         children.forEach(c->c.populateQuestionItems());
     }
 
-    @Override
-    public ByteArrayOutputStream makePdf() {
 
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter(baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
-    }
 
     @PreRemove
     private void removeReferencesFromConcept(){
@@ -368,12 +307,8 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
     }
 
 
-    public void fillDoc(Document document) {
-    }
-}
-
     @Override
-    public void fillDoc(Document document)  {
+    public void fillDoc(Document document) throws IOException {
 
         PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
         document.add(new Paragraph("Survey Toc:").setFont(font));

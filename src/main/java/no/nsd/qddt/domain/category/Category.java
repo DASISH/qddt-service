@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.category;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
@@ -11,6 +12,7 @@ import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -277,6 +279,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
                 ", categoryType=" + getCategoryType() +
                 ", children=" + Arrays.toString(getChildren().stream().map(F->F.toString()).toArray()) +
                 "}" ;
+    }
+
+    @Override
+    protected void fillDoc(Document document) throws IOException {
+
     }
 
     public boolean fieldCompare(Category o) {

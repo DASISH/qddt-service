@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.instrument;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -17,6 +18,7 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -58,9 +60,6 @@ public class Instrument extends AbstractEntityAudit  {
     @Column(name="instrument_kind")
     private String instrumentType;
 
-//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-//    @NotAudited
-//    private Set<Comment> comments = new HashSet<>();
 
     public Instrument() {
     }
@@ -130,21 +129,6 @@ public class Instrument extends AbstractEntityAudit  {
 
 
 
-//    public Set<Comment> getComments() {
-//        return comments;
-//    }
-//
-//
-//    public void setComments(Set<Comment> comments) {
-//        this.comments = comments;
-//    }
-//
-//
-//    public void addComment(Comment comment) {
-//        comment.setOwnerId(this.getId());
-//        comments.add(comment);
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -172,6 +156,11 @@ public class Instrument extends AbstractEntityAudit  {
                 "description='" + description + '\'' +
                 ", instrumentType='" + instrumentType + '\'' +
                 "} " + super.toString();
+    }
+
+    @Override
+    protected void fillDoc(Document document) throws IOException {
+
     }
 
 

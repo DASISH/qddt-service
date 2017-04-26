@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.instrument.Instrument;
@@ -23,6 +22,7 @@ import com.itextpdf.layout.element.ListItem;
 import java.io.ByteArrayOutputStream;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,7 +59,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
+public class Study extends AbstractEntityAudit implements Authorable {
 
     @JsonIgnore
     @ManyToOne()
@@ -84,11 +84,6 @@ public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
             joinColumns = {@JoinColumn(name ="study_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
-
-
-//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-//    @NotAudited
-//    private Set<Comment> comments = new HashSet<>();
 
 
     public Study() {
@@ -127,10 +122,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
     public void setSurveyProgram(SurveyProgram surveyProgram) {
         this.surveyProgram = surveyProgram;
     }
-//
-//    public Set<Comment> getComments() {
-//        return comments;
-//    }
+
 
 
     public Set<Instrument> getInstruments() {
@@ -203,20 +195,10 @@ public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
                 "} " + super.toString();
     }
 
-    public ByteArrayOutputStream makePdf() {
-
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
-    }
 
     @Override
-    public void fillDoc(Document document) {
-        //    if (document == null)
-        //        document = new Document();
+    public void fillDoc(Document document) throws IOException {
+
         PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
         document.add(new Paragraph("Study Toc:").setFont(font));
         List list = new List()

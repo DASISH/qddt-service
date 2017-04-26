@@ -10,7 +10,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
@@ -56,7 +55,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfable {
+public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -217,21 +216,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
                 "} ";
     }
 
-
-    @Override
-    public ByteArrayOutputStream makePdf() {
-
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        try {
-            fillDoc(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        doc.close();
-        return baosPDF;
-                                          }
 
     @Override
     public void fillDoc(Document document) throws IOException {

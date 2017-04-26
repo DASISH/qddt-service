@@ -13,6 +13,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -43,7 +44,7 @@ import java.io.ByteArrayOutputStream;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit implements Pdfable{
+public class QuestionItem extends AbstractEntityAudit {
 
     /**
      * This field will be populated with the correct version of a RD,  but should never be persisted.
@@ -147,18 +148,6 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
-//    public void addConcept(Concept concept) {
-//        if (this.conceptQuestionItems.stream().noneMatch(cqi->concept.getId().equals(cqi.getId().getConceptId()))) {
-//            new ConceptQuestionItem(concept,this);
-//            System.out.println("New QuestionItem added to ConceptQuestionItems " + concept.getName() );
-//            concept.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-//            concept.setChangeComment("QuestionItem assosiation added");
-//            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-//            this.setChangeComment("Concept assosiation added");
-//        }
-//        System.out.println("Already in collection " + concept.getName());
-//    }
-
 
     @Transient
     @JsonSerialize
@@ -213,19 +202,9 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
         System.out.println("MADE NEW COPY...");
     }
 
-    @Override
-    public ByteArrayOutputStream makePdf() {
-
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
-    }
 
     @Override
-    public void fillDoc(Document document) {
+    public void fillDoc(Document document) throws IOException {
 
         PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
         document.add(new Paragraph("Survey Toc:").setFont(font));

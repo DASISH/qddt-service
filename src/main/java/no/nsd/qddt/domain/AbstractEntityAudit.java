@@ -1,6 +1,9 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -13,6 +16,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -24,6 +29,7 @@ import java.util.UUID;
 @Audited
 @MappedSuperclass
 public abstract class AbstractEntityAudit extends AbstractEntity  {
+
 
 
     /**
@@ -343,5 +349,21 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 "</BasedOnObject>";
     }
 
+
+    protected abstract void fillDoc(Document document) throws IOException;
+
+    public ByteArrayOutputStream makePdf() {
+
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter(baosPDF));
+        Document doc = new Document(pdf);
+        try {
+            fillDoc(doc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        doc.close();
+        return baosPDF;
+    }
 
 }

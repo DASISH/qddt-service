@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
@@ -19,6 +20,7 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -422,6 +424,11 @@ public class ControlConstruct extends AbstractEntityAudit {
                 ", pre#=" + getPreInstructions().size() + '\'' +
                 ", post#=" + getPostInstructions().size() + '\'' +
                 '}';
+    }
+
+    @Override
+    protected void fillDoc(Document document) throws IOException {
+
     }
 
     @Override
