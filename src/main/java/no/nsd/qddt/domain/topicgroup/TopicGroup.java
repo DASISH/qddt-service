@@ -1,34 +1,30 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.ListItem;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
-import javax.persistence.Table;
 import java.io.ByteArrayOutputStream;
-import java.util.*;
-import java.util.List;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -228,13 +224,17 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
         ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
         PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
         Document doc = new Document(pdf);
-        fillDoc(doc);
+        try {
+            fillDoc(doc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         doc.close();
         return baosPDF;
                                           }
 
     @Override
-    public void fillDoc(Document document) {
+    public void fillDoc(Document document) throws IOException {
 
         PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
         document.add(new Paragraph("Survey Toc:").setFont(font));

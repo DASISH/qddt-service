@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.conceptquestionitem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -35,11 +36,24 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     @JoinColumn(name = "CONCEPT_ID",insertable = false, updatable = false)
     private Concept concept;
 
-
+    /*
+    This is the reference to the current QuestionItem, it has to be here in order for the framework
+    to map the reference from and to Concept/ConceptQuestionItem/QuestionItem
+     */
+    @JsonIgnore
     @JsonBackReference(value = "ConceptQuestionItemQuestionItemRef")
     @ManyToOne
     @MapsId("id")
     @JoinColumn(name = "QUESTIONITEM_ID",insertable = false, updatable = false)
+    private QuestionItem questionItemLateBound;
+
+
+    /*
+    This is the versioned QuestionItem, it has to be filled in manually, by the fetching service
+     */
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
     private QuestionItem questionItem;
 
 
@@ -48,7 +62,7 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     @Version
     @Column(name = "updated")
-    @JsonSerialize(using = JsonDateSerializer.class)
+//    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
     public ConceptQuestionItem() {
@@ -56,11 +70,11 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     public ConceptQuestionItem(Concept concept, QuestionItem questionItem) {
         setConcept(concept);
-        setQuestionItem(questionItem);
+        setQuestionItemLateBound(questionItem);
         if (concept.getConceptQuestionItems().stream().noneMatch(c->c.getId().getQuestionItemId().equals(questionItem.getId()))){
             concept.getConceptQuestionItems().add(this);
         }
-
+        System.out.println("Created " + this);
     }
 
     public ConceptQuestionItem(Concept concept, QuestionItem questionItem, Integer questionItemRevision) {
@@ -88,13 +102,20 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     }
 
 
+    public QuestionItem getQuestionItemLateBound() {
+        return questionItemLateBound;
+    }
+
+    public void setQuestionItemLateBound(QuestionItem questionItemLateBound) {
+        this.questionItemLateBound = questionItemLateBound;
+    }
+
     public QuestionItem getQuestionItem() {
         return questionItem;
     }
 
     public void setQuestionItem(QuestionItem questionItem) {
         this.questionItem = questionItem;
-        this.id.setQuestionItemId(questionItem.getId());
     }
 
 
@@ -113,9 +134,9 @@ public class ConceptQuestionItem  implements java.io.Serializable {
         return updated;
     }
 
-    private void setUpdated(Timestamp updated) {
-        this.updated = updated;
-    }
+//    private void setUpdated(Timestamp updated) {
+//        this.updated = updated;
+//    }
 
 
     @Override

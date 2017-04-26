@@ -150,14 +150,11 @@ class ControlConstructServiceImpl implements ControlConstructService {
             if (instance.getQuestionItemUUID() == null)
                 instance.setQuestionItemRevision(0);
             else {
-                if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
-                    Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
-                    instance.setQuestionItemRevision(rev.getRevisionNumber());
-                    instance.setQuestionItem(rev.getEntity());
-                } else {
-                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision()).getEntity();
-                    instance.setQuestionItem(qi);
-                }
+                Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
+                        instance.getQuestionItemUUID(),
+                        instance.getQuestionItemRevision());
+                instance.setQuestionItemRevision(rev.getRevisionNumber());
+                instance.setQuestionItem(rev.getEntity());
             }
         } catch (Exception ex){
             ex.printStackTrace();

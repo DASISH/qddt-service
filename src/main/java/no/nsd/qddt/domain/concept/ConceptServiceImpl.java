@@ -124,20 +124,19 @@ class ConceptServiceImpl implements ConceptService {
      */
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
-        System.out.println("postLoadProcessing... " + instance.getName());
         try{
             for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
-                if (cqi.getQuestionItemRevision() != null & cqi.getUpdated() != null) {
-                    System.out.println("Fetching revisioned QI "  + cqi.getQuestionItemRevision());
-                    Revision<Integer, QuestionItem> rev = questionAuditService.findRevision(
-                                cqi.getId().getQuestionItemId(),
-                                cqi.getQuestionItemRevision());
-                    if (rev != null)
-                        cqi.setQuestionItem(rev.getEntity());
-                }
+
+                Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
+                        cqi.getId().getQuestionItemId(),
+                        cqi.getQuestionItemRevision());
+                cqi.setQuestionItem(rev.getEntity());
+                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber()))
+                    cqi.setQuestionItemRevision(rev.getRevisionNumber());
             }
             instance.populateQuestionItems();
         } catch (Exception ex){
+            System.out.println("postLoadProcessing... " + instance.getName());
             ex.printStackTrace();
             System.out.println(ex.getMessage());
         }

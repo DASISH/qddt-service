@@ -5,11 +5,12 @@ package no.nsd.qddt.domain;
  */
 import com.itextpdf.layout.Document;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public interface Pdfable {
 
     ByteArrayOutputStream makePdf(Document document);
 
-    void fillDoc(Document document);
+    void fillDoc(Document document) throws IOException;
 
 }

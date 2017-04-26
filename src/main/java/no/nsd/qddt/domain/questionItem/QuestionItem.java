@@ -57,7 +57,7 @@ public class QuestionItem extends AbstractEntityAudit  {
     private Question question;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItem") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
+    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
 

@@ -71,6 +71,14 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
         );
     }
 
+    @Override
+    public Revision<Integer, QuestionItem> getQuestionItemLastOrRevision(UUID id, Integer revision) {
+        if (revision == null || revision <= 0)
+            return findLastChange(id);
+        else
+            return findRevision(id, revision);
+    }
+
     private Revision<Integer, QuestionItem> populateResponseDomain(Revision<Integer, QuestionItem> rev){
         if (rev.getEntity().getResponseDomainUUID() != null) {
             rev.getEntity().setResponseDomain(
