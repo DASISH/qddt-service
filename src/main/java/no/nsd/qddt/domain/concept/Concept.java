@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructInstruction;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructInstructionRank;
@@ -15,6 +15,18 @@ import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
+
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.List;
+import com.itextpdf.layout.element.ListItem;
+
+import java.io.ByteArrayOutputStream;
 
 import javax.persistence.*;
 import java.util.*;
@@ -38,7 +50,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit {
+public class Concept extends AbstractEntityAudit implements Pdfable {
 
 
     @JsonBackReference(value = "parentRef")
@@ -205,6 +217,63 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
+    @Override
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        super.makeNewCopy(revision);
+        getConceptQuestionItems().forEach(q->{
+            q.setConcept(this);
+        });
+        getChildren().forEach(c->c.makeNewCopy(revision));
+        if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
+//            topicGroupId = getTopicRef().getId();
+            System.out.println("infering topicgroup id " + getTopicRef().getId() );
+        }
+        getComments().clear();
+    }
+
+    public void merge(Concept changed){
+        System.out.println("Concept.merge");
+        if (!getName().equals(changed.getName()))
+            setName(changed.getName());
+//        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
+//            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
+//                ConceptQuestionItem finalCqi = cqi;
+//                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
+//                if (!cqi.equals(tmp)) {
+//                    cqi = tmp;
+//                    System.out.println("ConceptQuestionItem changed in merge");
+//                }
+//            }
+//        }
+        if(!getChildren().equals(changed.getChildren()))
+            setChildren(changed.getChildren());
+        if(!getDescription().equals(changed.getDescription()))
+            setDescription(changed.getDescription());
+        if(!getLabel().equals(changed.getLabel()))
+            setLabel(changed.getLabel());
+        if(!getQuestionItems().equals(changed.questionItems))
+            setQuestionItems(changed.questionItems);
+        if(!getAgency().equals(changed.getAgency()))
+            setAgency(changed.getAgency());
+        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
+            setBasedOnObject(changed.getBasedOnObject());
+        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
+            setBasedOnRevision(changed.getBasedOnRevision());
+        if(!getChangeComment().equals(changed.getChangeComment()))
+            setChangeComment(changed.getChangeComment());
+        if(!getChangeKind().equals(changed.getChangeKind()))
+            setChangeKind(changed.getChangeKind());
+        if(!getVersion().equals(changed.getVersion()))
+            setVersion(changed.getVersion());
+        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
+        if(!getModified().equals(changed.getModified()))
+            setModified(changed.getModified());
+        if(!getModifiedBy().equals(changed.getModifiedBy()))
+            setModifiedBy(changed.getModifiedBy());
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -248,64 +317,6 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
-    @Override
-    public void makeNewCopy(Integer revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q->{
-            q.setConcept(this);
-        });
-        getChildren().forEach(c->c.makeNewCopy(revision));
-        if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
-//            topicGroupId = getTopicRef().getId();
-            System.out.println("infering topicgroup id " + getTopicRef().getId() );
-        }
-        getComments().clear();
-    }
-
-
-//    public void merge(Concept changed){
-//        System.out.println("Concept.merge");
-//        if (!getName().equals(changed.getName()))
-//            setName(changed.getName());
-////        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
-////            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
-////                ConceptQuestionItem finalCqi = cqi;
-////                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
-////                if (!cqi.equals(tmp)) {
-////                    cqi = tmp;
-////                    System.out.println("ConceptQuestionItem changed in merge");
-////                }
-////            }
-////        }
-//        if(!getChildren().equals(changed.getChildren()))
-//            setChildren(changed.getChildren());
-//        if(!getDescription().equals(changed.getDescription()))
-//            setDescription(changed.getDescription());
-//        if(!getLabel().equals(changed.getLabel()))
-//            setLabel(changed.getLabel());
-//        if(!getQuestionItems().equals(changed.questionItems))
-//            setQuestionItems(changed.questionItems);
-//        if(!getAgency().equals(changed.getAgency()))
-//            setAgency(changed.getAgency());
-//        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
-//            setBasedOnObject(changed.getBasedOnObject());
-//        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
-//            setBasedOnRevision(changed.getBasedOnRevision());
-//        if(!getChangeComment().equals(changed.getChangeComment()))
-//            setChangeComment(changed.getChangeComment());
-//        if(!getChangeKind().equals(changed.getChangeKind()))
-//            setChangeKind(changed.getChangeKind());
-//        if(!getVersion().equals(changed.getVersion()))
-//            setVersion(changed.getVersion());
-//        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
-//        if(!getModified().equals(changed.getModified()))
-//            setModified(changed.getModified());
-//        if(!getModifiedBy().equals(changed.getModifiedBy()))
-//            setModifiedBy(changed.getModifiedBy());
-//    }
-//
-
     /*
     fetches pre and post instructions and add them to ControlConstructInstruction
      */
@@ -336,6 +347,17 @@ public class Concept extends AbstractEntityAudit {
         children.forEach(c->c.populateQuestionItems());
     }
 
+    @Override
+    public ByteArrayOutputStream makePdf() {
+
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter(baosPDF));
+        Document doc = new Document(pdf);
+        fillDoc(doc);
+        doc.close();
+        return baosPDF;
+    }
+
     @PreRemove
     private void removeReferencesFromConcept(){
         getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
@@ -350,3 +372,27 @@ public class Concept extends AbstractEntityAudit {
     }
 }
 
+    @Override
+    public void fillDoc(Document document)  {
+
+        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        document.add(new Paragraph("Survey Toc:").setFont(font));
+        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+                .setSymbolIndent(12)
+                .setListSymbol("\u2022")
+                .setFont(font);
+        list.add(new ListItem(this.getName()));
+        document.add(list);
+        document.add(new Paragraph(this.getName()));
+        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+        document.add(new Paragraph(this.getDescription()));
+        document.add(new Paragraph(this.getLabel()));
+        document.add(new Paragraph(this.getTopicGroup().toString()));
+        document.add(new Paragraph(this.getComments().toString()));
+
+        for (QuestionItem item : getQuestionItems()) {
+            item.fillDoc(document);
+        }
+
+    }
+}
