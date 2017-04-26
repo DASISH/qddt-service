@@ -2,7 +2,15 @@ package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.*;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
@@ -17,7 +25,10 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import javax.persistence.Table;
+import java.io.ByteArrayOutputStream;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +60,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements Authorable {
+public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -211,4 +222,38 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     }
 
 
+    @Override
+    public ByteArrayOutputStream makePdf() {
+
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
+        Document doc = new Document(pdf);
+        fillDoc(doc);
+        doc.close();
+        return baosPDF;
+                                          }
+
+    @Override
+    public void fillDoc(Document document) {
+
+        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        document.add(new Paragraph("Survey Toc:").setFont(font));
+        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+                .setSymbolIndent(12)
+                .setListSymbol("\u2022")
+                .setFont(font);
+        list.add(new ListItem(this.getName()));
+        document.add(list);
+        document.add(new Paragraph(this.getName()));
+        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+        document.add(new Paragraph(this.getAbstractDescription()));
+        document.add(new Paragraph(this.getTopicQuestions().toString()));
+        document.add(new Paragraph(this.getOtherMaterials().toString()));
+        document.add(new Paragraph(this.getComments().toString()));
+
+        for (Concept concept : getConcepts()) {
+            concept.fillDoc(document);
+                                               }
+
+    }
 }
