@@ -1,22 +1,30 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.List;
+import com.itextpdf.layout.element.ListItem;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.user.User;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
+import java.io.ByteArrayOutputStream;
+
+
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
 /**
  * <ul class="inheritance">
  * <li>A Survey is a root element of this model. Every Survey has atleast one Study and one Instrument.
@@ -48,7 +56,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit implements Commentable,Authorable {
+public class SurveyProgram extends AbstractEntityAudit implements Commentable,Authorable,Pdfable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
     @OrderBy(value = "modified ASC")
@@ -146,5 +154,46 @@ public class SurveyProgram extends AbstractEntityAudit implements Commentable,Au
 //                ", authors='" + authors + '\'' +
 //                ", comments=" + comments +
                 "} " + super.toString();
+    }
+
+
+    @Override
+    public ByteArrayOutputStream makePdf() {
+
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
+        Document doc = new Document(pdf);
+        fillDoc(doc);
+        doc.close();
+        return baosPDF;
+             }
+
+    @Override
+    public void fillDoc(Document document) {
+    //    if (document == null)
+    //        document = new Document();
+              PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+              document.add(new Paragraph("Survay Toc:").setFont(font));
+              document.add(new Paragraph("To the top").setFont(font));
+                List list = new List()
+                .setSymbolIndent(12)
+                .setListSymbol("\u2022")
+                .setFont(font);
+                list.add(new ListItem (this.getName()));
+
+              document.add(list);
+              document.add(new Paragraph(this.getName()));
+              document.add(new Paragraph(this.getDescription()));
+              document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+              document.add(new Paragraph(this.getComments().toString()));
+
+
+        for (Study study : getStudies()) {
+
+           study.fillDoc(document);
+        }
+
+       // studies.stream().forEach(s->  document = s.makeDocument(document));
+       // return document;
     }
 }

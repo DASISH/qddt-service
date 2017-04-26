@@ -1,18 +1,30 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.List;
+import com.itextpdf.layout.element.ListItem;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Pdfable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
+import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -35,7 +47,7 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements Commentable {
+public class Concept extends AbstractEntityAudit implements Commentable, Pdfable {
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE}, orphanRemoval = true)
@@ -267,6 +279,40 @@ public class Concept extends AbstractEntityAudit implements Commentable {
     @Override
     public String toDDIXml(){
         return super.toDDIXml();
+    }
+
+    @Override
+    public ByteArrayOutputStream makePdf() {
+
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
+        Document doc = new Document(pdf);
+        fillDoc(doc);
+        doc.close();
+        return baosPDF;
+    }
+
+    @Override
+    public void fillDoc(Document document) {
+
+        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        document.add(new Paragraph("Survey Toc:").setFont(font));
+        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+                .setSymbolIndent(12)
+                .setListSymbol("\u2022")
+                .setFont(font);
+        list.add(new ListItem(this.getName()));
+        document.add(list);
+        document.add(new Paragraph(this.getName()));
+        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+        document.add(new Paragraph(this.getDescription()));
+        document.add(new Paragraph(this.getLabel()));
+        document.add(new Paragraph(this.getTopicGroup().toString()));
+        document.add(new Paragraph(this.getComments().toString()));
+
+        for (QuestionItem item : getQuestionItems()) {
+            item.fillDoc(document);
+        }
     }
 }
 
