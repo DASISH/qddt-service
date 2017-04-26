@@ -263,47 +263,47 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
-    public void merge(Concept changed){
-        System.out.println("Concept.merge");
-        if (!getName().equals(changed.getName()))
-            setName(changed.getName());
-//        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
-//            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
-//                ConceptQuestionItem finalCqi = cqi;
-//                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
-//                if (!cqi.equals(tmp)) {
-//                    cqi = tmp;
-//                    System.out.println("ConceptQuestionItem changed in merge");
-//                }
-//            }
-//        }
-        if(!getChildren().equals(changed.getChildren()))
-            setChildren(changed.getChildren());
-        if(!getDescription().equals(changed.getDescription()))
-            setDescription(changed.getDescription());
-        if(!getLabel().equals(changed.getLabel()))
-            setLabel(changed.getLabel());
-        if(!getQuestionItems().equals(changed.questionItems))
-            setQuestionItems(changed.questionItems);
-        if(!getAgency().equals(changed.getAgency()))
-            setAgency(changed.getAgency());
-        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
-            setBasedOnObject(changed.getBasedOnObject());
-        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
-            setBasedOnRevision(changed.getBasedOnRevision());
-        if(!getChangeComment().equals(changed.getChangeComment()))
-            setChangeComment(changed.getChangeComment());
-        if(!getChangeKind().equals(changed.getChangeKind()))
-            setChangeKind(changed.getChangeKind());
-        if(!getVersion().equals(changed.getVersion()))
-            setVersion(changed.getVersion());
-        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
-        if(!getModified().equals(changed.getModified()))
-            setModified(changed.getModified());
-        if(!getModifiedBy().equals(changed.getModifiedBy()))
-            setModifiedBy(changed.getModifiedBy());
-    }
-
+//    public void merge(Concept changed){
+//        System.out.println("Concept.merge");
+//        if (!getName().equals(changed.getName()))
+//            setName(changed.getName());
+////        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
+////            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
+////                ConceptQuestionItem finalCqi = cqi;
+////                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
+////                if (!cqi.equals(tmp)) {
+////                    cqi = tmp;
+////                    System.out.println("ConceptQuestionItem changed in merge");
+////                }
+////            }
+////        }
+//        if(!getChildren().equals(changed.getChildren()))
+//            setChildren(changed.getChildren());
+//        if(!getDescription().equals(changed.getDescription()))
+//            setDescription(changed.getDescription());
+//        if(!getLabel().equals(changed.getLabel()))
+//            setLabel(changed.getLabel());
+//        if(!getQuestionItems().equals(changed.questionItems))
+//            setQuestionItems(changed.questionItems);
+//        if(!getAgency().equals(changed.getAgency()))
+//            setAgency(changed.getAgency());
+//        if(!getBasedOnObject().equals(changed.getBasedOnObject()))
+//            setBasedOnObject(changed.getBasedOnObject());
+//        if(!getBasedOnRevision().equals(changed.getBasedOnRevision()))
+//            setBasedOnRevision(changed.getBasedOnRevision());
+//        if(!getChangeComment().equals(changed.getChangeComment()))
+//            setChangeComment(changed.getChangeComment());
+//        if(!getChangeKind().equals(changed.getChangeKind()))
+//            setChangeKind(changed.getChangeKind());
+//        if(!getVersion().equals(changed.getVersion()))
+//            setVersion(changed.getVersion());
+//        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
+//        if(!getModified().equals(changed.getModified()))
+//            setModified(changed.getModified());
+//        if(!getModifiedBy().equals(changed.getModifiedBy()))
+//            setModifiedBy(changed.getModifiedBy());
+//    }
+//
 
     /*
     fetches pre and post instructions and add them to ControlConstructInstruction
@@ -311,8 +311,6 @@ public class Concept extends AbstractEntityAudit {
     public void harvestQuestionItems() {
         if (conceptQuestionItems == null)
             conceptQuestionItems = new HashSet<>(0);
-
-        System.out.println("conceptQuestionItems " +conceptQuestionItems.size());
 
         try {
             for (QuestionItem questionItem : getQuestionItems()) {
