@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.author;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;

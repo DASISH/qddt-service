@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.publication;
 
 import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

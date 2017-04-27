@@ -6,7 +6,6 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
@@ -241,19 +240,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         version =  ver;
     }
 
-    @PostLoad
-    private void customfilter(){
-        if (this instanceof Commentable){
-            // we have to filter comments manually before sending them over to clients, this will be fixed in
-            // a later version of Hibernate
-            hideComments(((Commentable)this).getComments());
-        }
-    }
 
-    private void hideComments(Set<Comment> comments){
-        comments.removeIf(c->c.getIsHidden()==true);
-        comments.stream().forEach(c-> hideComments(c.getComments()));
-    }
 
     /**
      * None null field compare, (ignores null value when comparing)

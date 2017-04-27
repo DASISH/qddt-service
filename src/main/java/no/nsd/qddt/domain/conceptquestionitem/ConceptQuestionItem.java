@@ -4,11 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.utils.JsonDateSerializer;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

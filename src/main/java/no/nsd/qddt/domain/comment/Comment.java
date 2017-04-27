@@ -1,11 +1,7 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.annotations.Type;
