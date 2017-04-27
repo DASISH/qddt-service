@@ -80,7 +80,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     protected SurveyProgram postLoadProcessing(SurveyProgram instance) {
-        System.out.println("comments : " + instance.getComments().size());
+//        System.out.println("comments : " + instance.getComments().size());
         return instance;
     }
 

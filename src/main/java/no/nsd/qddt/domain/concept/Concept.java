@@ -10,6 +10,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
@@ -184,7 +185,7 @@ public class Concept extends AbstractEntityAudit {
         if (topicRef == null) {
             TopicGroup topicGroup = findTopicGroup2();
             if (topicGroup == null) {
-                System.out.println("getTopicRef IsNull -> " + this.getName());
+//                System.out.println("getTopicRef IsNull -> " + this.getName());
                 topicRef = new TopicRef();
             } else
                 topicRef = new TopicRef(topicGroup);
@@ -282,7 +283,7 @@ public class Concept extends AbstractEntityAudit {
         }
 
         children.forEach(c->c.harvestQuestionItems());
-        System.out.println("conceptQuestionItems " +conceptQuestionItems.size());
+        System.out.println("conceptQuestionItems [" + getName()+ "] - "+ +conceptQuestionItems.size());
     }
 
     /*
@@ -322,11 +323,13 @@ public class Concept extends AbstractEntityAudit {
         document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
         document.add(new Paragraph(this.getDescription()));
         document.add(new Paragraph(this.getLabel()));
-        document.add(new Paragraph(this.getTopicGroup().toString()));
-        document.add(new Paragraph(this.getComments().toString()));
 
-        for (QuestionItem item : getQuestionItems()) {
+        for (Comment item : this.getComments()) {
             item.fillDoc(document);
+        }
+
+        for (ConceptQuestionItem item : getConceptQuestionItems()) {
+            item.getQuestionItem().fillDoc(document);
         }
 
     }

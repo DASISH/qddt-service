@@ -53,4 +53,12 @@ public class ConceptQuestionItemId implements Serializable {
     public void setConceptId(UUID conceptId) {
         this.conceptId = conceptId;
     }
+
+    @Override
+    public String toString() {
+        return "Id{" +
+                " QuestionId=" + questionItemId +
+                ", conceptId=" + conceptId +
+                '}';
+    }
 }

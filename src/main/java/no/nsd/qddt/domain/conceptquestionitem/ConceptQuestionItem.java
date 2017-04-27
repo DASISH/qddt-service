@@ -108,6 +108,7 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     public void setQuestionItemLateBound(QuestionItem questionItemLateBound) {
         this.questionItemLateBound = questionItemLateBound;
+        this.getId().setQuestionItemId(questionItemLateBound.getId());
     }
 
     public QuestionItem getQuestionItem() {

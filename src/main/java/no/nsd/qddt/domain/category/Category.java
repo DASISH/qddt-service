@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
@@ -283,7 +285,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @Override
     protected void fillDoc(Document document) throws IOException {
-
+        document.add(new Paragraph(getLabel()));
     }
 
     public boolean fieldCompare(Category o) {

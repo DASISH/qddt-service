@@ -1,10 +1,17 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.ListItem;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -118,4 +125,15 @@ public class Comment extends AbstractEntity  {
     }
 
 
+    public void fillDoc(Document document) throws IOException {
+        document.setLeftMargin(document.getLeftMargin()+5f);
+        document.add(new Paragraph(this.getModifiedBy().toString() + " - " + this.getModified()));
+        document.add(new Paragraph(this.getComment()));
+
+        for (Comment item : this.getComments()) {
+            item.fillDoc(document);
+        }
+
+        document.setLeftMargin(document.getLeftMargin()-5f);
+    }
 }

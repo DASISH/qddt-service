@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.question.Question;
@@ -214,13 +215,18 @@ public class QuestionItem extends AbstractEntityAudit {
                 .setFont(font);
         list.add(new ListItem(this.getName()));
         document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
-        document.add(new Paragraph(this.getResponseDomain().toString()));
-        document.add(new Paragraph(this.getQuestion().toString()));
-        document.add(new Paragraph(this.getComments().toString()));
+        Paragraph p1 = new Paragraph();
+        p1.add(getName());
+        p1.add(getModifiedBy().toString());
+        document.add(p1);
 
-        //    for (QuestionItem item : getQuestionItems()) {   item.fillDoc(document);  }
+        document.add(new Paragraph(this.getQuestion().toString()));
+        document.add(new Paragraph(this.getResponseDomain().toString()));
+
+        for (Comment item : this.getComments()) {
+            item.fillDoc(document);
+        }
+
     }
 }
 
