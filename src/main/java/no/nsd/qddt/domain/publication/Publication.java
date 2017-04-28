@@ -83,8 +83,21 @@ public class Publication extends AbstractEntityAudit {
         return result;
     }
 
-    @Override
-    protected void fillDoc(Document document) throws IOException {
 
+    @Override
+    public String toString() {
+        return "Publication{" +
+                "purpose='" + purpose + '\'' +
+                ", status='" + status + '\'' +
+                ", publicationElements=" + publicationElements +
+                "} " + super.toString();
+    }
+
+
+    @Override
+    public void fillDoc(Document document) throws IOException {
+        for (PublicationElement element:getPublicationElements()){
+            element.getElementAsEntity().fillDoc(document);
+        }
     }
 }

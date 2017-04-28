@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -36,8 +38,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
      * First entry will always be CREATED.
      * TYPO, can be used modify without breaking a release.
      * Every other version is a IN_DEVELOPMENT change.
-     *
-     * @author Stig Norland
      */
     public enum ChangeKind {
         CREATED("Created","New element status"),
@@ -53,7 +53,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
         EXTERNAL("RealLifeChange","Real Life Change"),
 
-        OTHER("","OtherPurpose"),
+        OTHER("OtherPurpose","Other Purpose"),
         //. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
         ADDED_CONTENT("AddContentElement","Add Content Element"),
         /* deprecated */
@@ -62,6 +62,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         MILESTONE("Deprecated",""),
         BASED_ON("Based on","Based on copy"),
         NEW_COPY("New Copy","Copy new"),
+        REFERENCED("Reference of","Concepts can be copied as a reference, to facilitate hierarchical revision trees"),
         TRANSLATED("Translated","Translation of source");
 
         ChangeKind(String name, String description){
@@ -337,7 +338,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     }
 
 
-    protected abstract void fillDoc(Document document) throws IOException;
+    public abstract void fillDoc(Document document) throws IOException;
 
     public ByteArrayOutputStream makePdf() {
 

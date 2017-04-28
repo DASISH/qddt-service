@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.questionItem.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainAuditController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,8 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,29 +27,30 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
 
     private QuestionItemAuditRepository questionItemAuditRepository;
     private ResponseDomainAuditController rdAuditController;
+    private CommentService commentService;
 
     @Autowired
-    public QuestionItemItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository,ResponseDomainAuditController rdAuditController) {
+    public QuestionItemItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository,ResponseDomainAuditController rdAuditController,
+                                            CommentService commentService) {
         this.questionItemAuditRepository = questionItemAuditRepository;
         this.rdAuditController = rdAuditController;
+        this.commentService = commentService;
     }
 
     @Override
     public Revision<Integer, QuestionItem> findLastChange(UUID uuid) {
-        Revision<Integer, QuestionItem> rev =questionItemAuditRepository.findLastChangeRevision(uuid);
-        return populateResponseDomain(rev);
+        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid));
     }
 
     @Override
     public Revision<Integer, QuestionItem> findRevision(UUID uuid, Integer revision) {
-        Revision<Integer, QuestionItem> rev = questionItemAuditRepository.findRevision(uuid, revision);
-        return populateResponseDomain(rev);
+        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision));
     }
 
     @Override
     public Page<Revision<Integer, QuestionItem>> findRevisions(UUID uuid, Pageable pageable) {
         return new PageImpl<>(questionItemAuditRepository.findRevisions(uuid,pageable).getContent().stream()
-                .map(rev -> populateResponseDomain(rev))
+                .map(rev -> postLoadProcessing(rev))
                 .collect(Collectors.toList())
         );
     }
@@ -53,8 +58,10 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
     @Override
     public Revision<Integer, QuestionItem> findFirstChange(UUID uuid) {
         return questionItemAuditRepository.findRevisions(uuid).
-                getContent().stream().
-                min((i,o)->i.getRevisionNumber()).get();
+                getContent().stream()
+                .min((i,o)->i.getRevisionNumber())
+                .map(rev -> postLoadProcessing(rev))
+                .get();
     }
 
     @Override
@@ -66,7 +73,7 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
                         .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
-                        .map(rev -> populateResponseDomain(rev))
+                        .map(rev -> postLoadProcessing(rev))
                         .collect(Collectors.toList())
         );
     }
@@ -79,13 +86,15 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
             return findRevision(id, revision);
     }
 
-    private Revision<Integer, QuestionItem> populateResponseDomain(Revision<Integer, QuestionItem> rev){
+    private Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> rev){
         if (rev.getEntity().getResponseDomainUUID() != null) {
             rev.getEntity().setResponseDomain(
                 rdAuditController.getByRevision(
                     rev.getEntity().getResponseDomainUUID(),
                     rev.getEntity().getResponseDomainRevision()).getEntity());
         }
+        List<Comment> coms = commentService.findAllByOwnerId( rev.getEntity().getId());
+        rev.getEntity().setComments(new HashSet<>(coms));
         return rev;
     }
 

@@ -73,11 +73,13 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
 
 
     protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
+        assert  (instance != null);
         postLoadProcessing(instance.getEntity());
         return instance;
     }
 
     protected Instrument postLoadProcessing(Instrument instance) {
+        assert  (instance != null);
         List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
         instance.setComments(new HashSet<>(coms));
         return instance;

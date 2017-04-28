@@ -54,4 +54,19 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
 //    }
 
 
+    // Categories most likely don't have discussions about them... and you are not often interested in old versions of a category,
+    // hence we don't need to fetch comments that never are there...
+
+//    protected Revision<Integer, Instruction> postLoadProcessing(Revision<Integer, Instruction> instance) {
+//        assert  (instance != null);
+//        postLoadProcessing(instance.getEntity());
+//        return instance;
+//    }
+//
+//    protected Instruction postLoadProcessing(Instruction instance) {
+//        assert  (instance != null);
+//        List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+//        instance.setComments(new HashSet<>(coms));
+//        return instance;
+//    }
 }

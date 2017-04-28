@@ -100,6 +100,7 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
                     cqi.getQuestionItem().getVersion().setRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
                 }
             }
+//            System.out.println("ConceptAuditService postLoadProcessing");
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
 

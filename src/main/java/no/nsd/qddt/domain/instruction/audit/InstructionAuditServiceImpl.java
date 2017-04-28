@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.instruction.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.instruction.Instruction;
+import no.nsd.qddt.domain.instrument.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,6 +12,8 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,5 +65,19 @@ class InstructionAuditServiceImpl implements InstructionAuditService {
         );
     }
 
+    // we don't have an interface for editing instructions, hence we don't need to fetch comments that never are there...
+
+//    protected Revision<Integer, Instruction> postLoadProcessing(Revision<Integer, Instruction> instance) {
+//        assert  (instance != null);
+//        postLoadProcessing(instance.getEntity());
+//        return instance;
+//    }
+//
+//    protected Instruction postLoadProcessing(Instruction instance) {
+//        assert  (instance != null);
+//        List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+//        instance.setComments(new HashSet<>(coms));
+//        return instance;
+//    }
 }
 

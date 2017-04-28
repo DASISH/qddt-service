@@ -34,7 +34,6 @@ public class Comment extends AbstractEntity  {
     private UUID ownerId;
 
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
-
     private Set<Comment> comments = new HashSet<>();
 
     private boolean isHidden;
@@ -68,6 +67,7 @@ public class Comment extends AbstractEntity  {
         this.comments = comments;
     }
 
+
     public String getComment() {
         return comment;
     }
@@ -75,6 +75,7 @@ public class Comment extends AbstractEntity  {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
 
     public boolean getIsHidden() {
         return isHidden;

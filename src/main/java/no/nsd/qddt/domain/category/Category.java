@@ -286,7 +286,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     @Override
-    protected void fillDoc(Document document) throws IOException {
+    public void fillDoc(Document document) throws IOException {
         document.add(new Paragraph(getLabel()));
     }
 

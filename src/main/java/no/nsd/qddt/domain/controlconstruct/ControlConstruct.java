@@ -424,7 +424,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     @Override
-    protected void fillDoc(Document document) throws IOException {
+    public void fillDoc(Document document) throws IOException {
 
     }
 
