@@ -204,6 +204,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
                 "} " + super.toString();
     }
 
+    //@Override
     public ByteArrayOutputStream makePdf() {
 
         ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
