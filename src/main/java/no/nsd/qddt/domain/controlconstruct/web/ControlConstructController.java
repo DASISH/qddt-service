@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -119,6 +121,22 @@ public class ControlConstructController {
         controlConstructs = service.findByNameLikeAndControlConstructKind(name,kind,pageable);
 
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    public @ResponseBody
+    ResponseEntity<ByteArrayInputStream> getPdf(@PathVariable("id") UUID id) {
+        try {
+            ByteArrayOutputStream pdfStream = service.findOne(id).makePdf();
+            return ResponseEntity
+                    .ok()
+                    .contentLength(pdfStream.size())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new ByteArrayInputStream (pdfStream.toByteArray()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
+        }
     }
 
     @ResponseStatus(value = HttpStatus.OK)

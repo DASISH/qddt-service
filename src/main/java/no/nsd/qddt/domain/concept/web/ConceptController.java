@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptJsonEdit;
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemId;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
@@ -10,6 +10,8 @@ import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -20,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +35,7 @@ import java.util.UUID;
 @RequestMapping("/concept")
 public class ConceptController {
 
-    private ConceptService conceptService;
+    private ConceptService service;
     private TopicGroupService topicGroupService;
     private QuestionItemService questionItemService;
     private ConceptQuestionItemService cqiService;
@@ -40,7 +43,7 @@ public class ConceptController {
     @Autowired
     public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,
                              QuestionItemService questionItemService, ConceptQuestionItemService conceptQuestionItemService) {
-        this.conceptService = conceptService;
+        this.service = conceptService;
         this.topicGroupService = topicGroupService;
         this.questionItemService = questionItemService;
         this.cqiService = conceptQuestionItemService;
@@ -49,7 +52,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ConceptJsonEdit get(@PathVariable("id") UUID id) {
-        return concept2Json(conceptService.findOne(id));
+        return concept2Json(service.findOne(id));
     }
 
 
@@ -57,17 +60,17 @@ public class ConceptController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ConceptJsonEdit update(@RequestBody Concept concept) {
         System.out.println(concept);
-        return concept2Json(conceptService.save(concept));
+        return concept2Json(service.save(concept));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "questionitem"})
     public ConceptJsonEdit addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         try {
-            Concept concept = conceptService.findOne(conceptId);
+            Concept concept = service.findOne(conceptId);
             QuestionItem questionItem = questionItemService.findOne(questionItemId);
             concept.addQuestionItem(questionItem);
-            return concept2Json(conceptService.save(concept));
+            return concept2Json(service.save(concept));
         }catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
@@ -84,7 +87,7 @@ public class ConceptController {
 //            concept.removeQuestionItem(questionItemId);
 //            conceptQuestionItemService.findByConceptQuestionItem(conceptId,questionItemId).forEach(c->
 //                    conceptQuestionItemService.delete(c.getId()));
-            return concept2Json(conceptService.findOne(conceptId));
+            return concept2Json(service.findOne(conceptId));
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println( ex.getMessage());
@@ -97,9 +100,9 @@ public class ConceptController {
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
     public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("uuid") UUID parentId) {
 
-        Concept parent = conceptService.findOne(parentId);
+        Concept parent = service.findOne(parentId);
         parent.addChildren(concept);
-        ConceptJsonEdit parentJson = concept2Json(conceptService.save(parent));
+        ConceptJsonEdit parentJson = concept2Json(service.save(parent));
 
         return parentJson.getChildren().stream()
                 .filter(c -> c.getName() == concept.getName()).findFirst()
@@ -111,14 +114,14 @@ public class ConceptController {
     @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
     public ConceptJsonEdit createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
         topicGroupService.findOne(topicId).addConcept(concept);
-        return concept2Json(conceptService.save(concept));
+        return concept2Json(service.save(concept));
     }
 
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") UUID id) {
-        conceptService.delete(id);
+        service.delete(id);
     }
 
 
@@ -126,7 +129,7 @@ public class ConceptController {
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConceptJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<ConceptJsonEdit> concepts = conceptService.findAllPageable(pageable).map(F->new ConceptJsonEdit(F));
+        Page<ConceptJsonEdit> concepts = service.findAllPageable(pageable).map(F->new ConceptJsonEdit(F));
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
@@ -135,7 +138,7 @@ public class ConceptController {
     @RequestMapping(value = "/page/by-topicgroup/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<ConceptJsonEdit> concepts = conceptService.findByTopicGroupPageable(id,pageable).map(F->new ConceptJsonEdit(F));
+        Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,pageable).map(F->new ConceptJsonEdit(F));
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
@@ -144,10 +147,9 @@ public class ConceptController {
     public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                         Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<ConceptJsonEdit> items;
         name = name.replace("*","%");
 
-        items = conceptService.findByNameAndDescriptionPageable(name,name, pageable).map(F->new ConceptJsonEdit(F));
+        Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,name, pageable).map(F->new ConceptJsonEdit(F));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
@@ -161,11 +163,36 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return conceptService.findOne(id).toDDIXml();
+        return service.findOne(id).toDDIXml();
     }
 
+//    @ResponseBody()
+//    @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+//    public byte[] getasPdf(@PathVariable("id") UUID id)  {
+//        try {
+//            ByteArrayOutputStream pdfStream = service.findOne(id).makePdf();
+//            return pdfStream.toByteArray();
+//
+//        } catch (Exception ex){
+//            ex.printStackTrace();
+//        }
+//    }
 
-
+    @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    public @ResponseBody
+    ResponseEntity<ByteArrayInputStream > getPdf(@PathVariable("id") UUID id) {
+        try {
+            ByteArrayOutputStream pdfStream = service.findOne(id).makePdf();
+            return ResponseEntity
+                    .ok()
+                    .contentLength(pdfStream.size())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new ByteArrayInputStream (pdfStream.toByteArray()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
 
     private ConceptJsonEdit concept2Json(Concept concept){
         return  new ConceptJsonEdit(concept);

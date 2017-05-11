@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -80,6 +82,23 @@ public class QuestionItemController {
 
     private QuestionItemJsonEdit question2Json(QuestionItem questionItem){
         return  new QuestionItemJsonEdit(questionItem);
+    }
+
+
+    @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    public @ResponseBody
+    ResponseEntity<ByteArrayInputStream> getPdf(@PathVariable("id") UUID id) {
+        try {
+            ByteArrayOutputStream pdfStream = service.findOne(id).makePdf();
+            return ResponseEntity
+                    .ok()
+                    .contentLength(pdfStream.size())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new ByteArrayInputStream (pdfStream.toByteArray()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
+        }
     }
 
 

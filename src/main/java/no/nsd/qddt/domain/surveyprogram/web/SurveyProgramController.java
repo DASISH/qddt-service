@@ -8,8 +8,11 @@ import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,21 +64,22 @@ public class SurveyProgramController {
     }
 
 
-//    /**
-//     * Add a comment to the survey, this should
-//     * @param id of the survey
-//     * @param comment to add
-//     * @return the added comment with no relations
-//     */
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
-//
-//        System.out.println("COMMENTS->");
-//        SurveyProgram surveyProgram = service.findOne(id);
-//        comment.setOwner(surveyProgram.getId());
-//        return commentService.save(comment);
-//    }
+
+    @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    public @ResponseBody
+    ResponseEntity<ByteArrayInputStream> getPdf(@PathVariable("id") UUID id) {
+        try {
+            ByteArrayOutputStream pdfStream = service.findOne(id).makePdf();
+            return ResponseEntity
+                    .ok()
+                    .contentLength(pdfStream.size())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new ByteArrayInputStream (pdfStream.toByteArray()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)
