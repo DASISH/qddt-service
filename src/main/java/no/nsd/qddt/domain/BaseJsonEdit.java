@@ -47,7 +47,14 @@ public class BaseJsonEdit {
     }
 
     public BaseJsonEdit(AbstractEntityAudit entity) {
-        if (entity == null) return;
+        if (entity == null){
+            System.out.println("BaseJsonEdit entity is null");
+            StackTraceElement[] stack =  Thread.currentThread().getStackTrace();
+            for (int i = 1; i < 6; i++) {
+                System.out.println(stack[i]);
+            }
+            return;
+        }
         setId(entity.getId());
         setName(entity.getName());
         setAgency(new AgencyJsonView(entity.getAgency()));
