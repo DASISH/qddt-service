@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -13,13 +15,17 @@ import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Filter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,15 +60,25 @@ import java.util.stream.Collectors;
 @Table(name = "TOPIC_GROUP")
 public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
+    @Column(name = "description", length = 10000)
+    private String abstractDescription;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
+
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
-    @OrderBy(value = "name asc")
-    private Set<Concept> concepts = new LinkedHashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE})
+//    @Filter(name="concepts" ,condition = "name is not NULL")
+    private Set<Concept> concepts = new HashSet<>();
+
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE})
+////    @Filter(name="topicQuestions" ,condition = "name is NULL")
+//    private Set<Concept> defaultConcept = new HashSet<>();
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
     @JoinTable(name = "TOPIC_AUTHORS",
@@ -70,13 +86,13 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
+
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-
-    @Column(name = "description", length = 10000)
-    private String abstractDescription;
+    public TopicGroup() {
+    }
 
     @Override
     public void addAuthor(Author user) {
@@ -102,37 +118,24 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.study = study;
     }
 
+
+    @Transient
+    public Concept addConcept(Concept concept){
+        System.out.println("new concept added to TopicGroup [" + this.getId() +"] concept:"+ concept.getId());
+        concept.setTopicGroup(this);
+        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        setChangeComment("Concept ["+ concept.getName() +"] added");
+        return concept;
+    }
+
     public Set<Concept> getConcepts() {
-        if  ( concepts == null)
-            concepts = new HashSet<>();
-        return concepts;
+        return concepts.stream().filter(c->c.getName() != null).collect(Collectors.toSet());
     }
 
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
 
-    @Transient
-    public Concept addConcept(Concept concept){
-        concept.setTopicGroup(this);
-        concepts.add(concept);
-        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        setChangeComment("Concept ["+ concept.getName() +"] added");
-        return concept;
-    }
-
-    public void removeConcept(Concept concept){
-        try {
-
-            concepts = concepts.stream().filter(c->c.equals(concept)== false).collect(Collectors.toSet());
-            concept.setTopicGroup(null);
-            setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            setChangeComment("Concept [" + concept.getName() + "] removed");
-        } catch (Exception ex){
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
 
     public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
@@ -142,6 +145,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.otherMaterials = otherMaterials;
     }
 
+
     public String getAbstractDescription() {
         return abstractDescription;
     }
@@ -150,20 +154,46 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.abstractDescription = abstractDescription;
     }
 
+
+    private Set<Concept> getDefaultConcept() {
+        return concepts.stream().filter(c->c.getName() == null).collect(Collectors.toSet());
+    }
+
+//    private void setDefaultConcept(Set<Concept> defaultConcept) {
+//        this.defaultConcept = defaultConcept;
+//    }
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
     public TopicQuestions getTopicQuestions(){
         try {
-            Concept tq = getConcepts().stream().filter(p -> p.getName() == null).findFirst().orElse(addConcept(new Concept()));
+            Concept tq = getDefaultConcept().stream().findFirst().get();
             return new TopicQuestions(tq);
         }catch (Exception ex) {
             System.out.println("getTopicQuestions exception");
             ex.printStackTrace();
-            return new TopicQuestions();
+            return null;
         }
     }
 
-    public void setTopicQuestions(Concept concept){
-        getConcepts().removeIf(c->c.getId() == concept.getId());
-        addConcept(concept);
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    public void setTopicQuestions(TopicQuestions topicQuestions){
+        Optional<Concept> source = getDefaultConcept().stream().findFirst();
+        if (source.isPresent()) {
+            System.out.println("TG -> merging QIs");
+            topicQuestions.getQuestionItems().forEach(qi -> source.get().addConceptQuestionItem(qi));
+        } else {
+            System.out.println("TG -> redeploy C & QIs");
+            Concept c = new Concept();
+            c.setId(topicQuestions.getId());
+            c.setConceptQuestionItems(topicQuestions.getQuestionItems());
+            c.setVersion(this.getVersion());
+            c.setTopicGroup(this);
+            getDefaultConcept().add(c);
+        }
     }
 
     @Override
@@ -185,6 +215,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         TopicGroup that = (TopicGroup) o;
 
         if (study != null ? !study.equals(that.study) : that.study != null) return false;
+//        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
@@ -193,6 +224,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
     }
 
+
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -200,17 +232,17 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         return result;
     }
 
+
     @Override
     public String toString() {
-        return "TopicGroup{" +
-                "studyName =" + (study !=null ? study.getName() :"null") +
-                ", concepts=" + (concepts !=null ? concepts.size() :"0") +
-                ", authors=" + (authors !=null ? authors.size() :"0") +
-                ", otherMaterials=" + (otherMaterials !=null ? otherMaterials.size() :"0") +
-                ", abstractDescription='" + abstractDescription + '\'' +
-                ", name='" + super.getName() + '\'' +
-                ", id ='" + super.getId() + '\'' +
-                "} ";
+        return "{\"_class\":\"TopicGroup\", " +
+                super.toString() +
+                "\"abstractDescription\":" + (abstractDescription == null ? "null" : "\"" + abstractDescription + "\"") +
+                "\"concepts\":" + (getConcepts() == null ? "null" : Arrays.toString(getConcepts().toArray())) + ", " +
+                "\"defaultConcept\":" + (getDefaultConcept() == null ? "null" : getDefaultConcept()) + ", " +
+                "\"authors\":" + (authors == null ? "null" : Arrays.toString(authors.toArray())) + ", " +
+                "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
+                "}";
     }
 
 
@@ -234,7 +266,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
         for (Concept concept : getConcepts()) {
             concept.fillDoc(document);
-                                               }
+        }
 
     }
+
+
 }

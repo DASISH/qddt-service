@@ -1,6 +1,12 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +16,9 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -21,11 +29,15 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     private TopicGroupRepository topicGroupRepository;
     private TopicGroupAuditService auditService;
+    private QuestionItemAuditService questionAuditService;
 
     @Autowired
-    public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository, TopicGroupAuditService topicGroupAuditService) {
+    public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository,
+                                 TopicGroupAuditService topicGroupAuditService,
+                                 QuestionItemAuditService questionItemAuditService) {
         this.topicGroupRepository = topicGroupRepository;
         this.auditService = topicGroupAuditService;
+        this.questionAuditService = questionItemAuditService;
     }
 
     @Override
@@ -50,36 +62,42 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public TopicGroup save(TopicGroup instance) {
-        return postLoadProcessing(
-                topicGroupRepository.save(
-                        prePersistProcessing(instance)));
+        try {
+            instance = postLoadProcessing(
+                    topicGroupRepository.save(
+                            prePersistProcessing(instance)));
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return instance;
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public List<TopicGroup> save(List<TopicGroup> instances) {
         return topicGroupRepository.save(instances);
     }
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void delete(UUID uuid) {
         topicGroupRepository.delete(uuid);
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void delete(List<TopicGroup> instances) {
         topicGroupRepository.delete(instances);
     }
 
 
     protected TopicGroup prePersistProcessing(TopicGroup instance) {
-        if(instance.getConcepts().isEmpty()){
-            instance.addConcept(new Concept());
+        System.out.println("prePersistProcessing");
+        if(instance.getConcepts().isEmpty() & instance.getVersion().isNew()){
+             instance.getConcepts().add(new Concept());
         }
 
         if (instance.isBasedOn()){
@@ -91,17 +109,25 @@ class TopicGroupServiceImpl implements TopicGroupService {
         if( instance.isNewCopy()){
             instance.makeNewCopy(null);
         }
-
         return instance;
     }
 
 
     protected TopicGroup postLoadProcessing(TopicGroup instance) {
+
+        for (ConceptQuestionItem cqi :instance.getTopicQuestions().getQuestionItems()) {
+            Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
+                    cqi.getId().getQuestionItemId(),
+                    cqi.getQuestionItemRevision());
+            System.out.println("postLoadProcessing TopicGroup " + rev.toString() +  cqi.getId());
+            cqi.setQuestionItem(rev.getEntity());
+        }
+
         return instance;
     }
 
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void delete(TopicGroup instance) {
         topicGroupRepository.delete(instance.getId());
     }
