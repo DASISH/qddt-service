@@ -89,8 +89,6 @@ class ConceptServiceImpl implements ConceptService {
 
     protected Concept prePersistProcessing(Concept instance) {
         System.out.println("prePersistProcessing");
-        instance.harvestQuestionItems();
-
         try {
             instance.getConceptQuestionItems().stream()
                     .filter(f->f.getQuestionItemRevision() == null)
@@ -134,7 +132,6 @@ class ConceptServiceImpl implements ConceptService {
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber()))
                     cqi.setQuestionItemRevision(rev.getRevisionNumber());
             }
-            instance.populateQuestionItems();
         } catch (Exception ex){
             System.out.println("postLoadProcessing... " + instance.getName());
             ex.printStackTrace();
@@ -167,8 +164,6 @@ class ConceptServiceImpl implements ConceptService {
         pages.map(c-> postLoadProcessing(c));
         return pages;
     }
-
-
 
 
 }

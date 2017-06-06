@@ -81,28 +81,26 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
 
     protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
-        postLoadProcessing(instance.getEntity());
-        return instance;
+        return new Revision<>(
+                instance.getMetadata(),
+                postLoadProcessing(instance.getEntity()));
     }
 
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
+
         try{
-            // this work as long as instance.getQuestionItems() hasn't been called yet for this instance
-            for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
-                if (cqi.getQuestionItem().getVersion().getRevision() != null) {
-                    cqi.setQuestionItem(questionAuditService.findRevision(
-                            cqi.getQuestionItem().getId(),
-                            cqi.getQuestionItemRevision())
-                            .getEntity());
-                }
-                else {
-                    cqi.getQuestionItem().getVersion().setRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
-                }
-            }
-//            System.out.println("ConceptAuditService postLoadProcessing");
+            System.out.println("postLoadProcessing ConceptAuditService " + instance.getName()+ " QI:" + instance.getConceptQuestionItems().size());
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
+            instance.getConceptQuestionItems().forEach(cqi->{
+                    System.out.println("    Fetching QI for cqi :");
+                    cqi.setQuestionItem(questionAuditService.getQuestionItemLastOrRevision(
+                            cqi.getId().getQuestionItemId(),
+                            cqi.getQuestionItemRevision()).
+                            getEntity());
+                    System.out.println("    QI fetched: " + cqi.getQuestionItem().getName());
+            });
 
             instance.getChildren().stream().map(c->postLoadProcessing(c));
 

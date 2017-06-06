@@ -142,23 +142,24 @@ public class ConceptController {
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
+
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                         Pageable pageable, PagedResourcesAssembler assembler) {
 
         name = name.replace("*","%");
-
         Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,name, pageable).map(F->new ConceptJsonEdit(F));
-
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
+
 
     @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
     @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Concept> getbyQuestionItemId(@PathVariable("qiId") UUID id) {
         return  new ArrayList<>(); // conceptService.findByQuestionItem(id);
     }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
@@ -177,6 +178,7 @@ public class ConceptController {
 //            ex.printStackTrace();
 //        }
 //    }
+
 
     @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
     public @ResponseBody
