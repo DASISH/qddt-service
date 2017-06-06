@@ -92,10 +92,10 @@ public abstract class AbstractEntity {
 
     @Override
     public String toString() {
-        return "{ id=" + id +
-                ", modified=" + (modified!=null ? modified.toString(): "?") +
-                ", modifiedBy=" + (modifiedBy!=null ? modifiedBy.toString(): "?") +
-                "} ";
+        return "\"id\":" + (id == null ? "null" : id) + ", " +
+                "\"modified\":" + (modified == null ? "null" : modified) + ", " +
+                "\"modifiedBy\":" + (modifiedBy == null ? "null" : modifiedBy)+ ", ";
+
     }
 
     public String toDDIXml(){

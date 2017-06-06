@@ -17,8 +17,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -44,15 +44,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
         UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
         UPDATED_HIERARCY_RELATION("Hierarcy Relation Updated","Element added to a collection, no changes to element itself"),
-
         IN_DEVELOPMENT("In Development","UnfinishedWork"),
-
         TYPO("NoMeaningChange","Typo or No Meaning Change"),
-
         CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
-
         EXTERNAL("RealLifeChange","Real Life Change"),
-
         OTHER("OtherPurpose","Other Purpose"),
         //. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
         ADDED_CONTENT("AddContentElement","Add Content Element"),
@@ -88,6 +83,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             for(ChangeKind v : values())
                 if(name.equalsIgnoreCase(v.getName())) return v;
             throw new IllegalArgumentException();
+        }
+
+        @Override
+        public String toString() {
+            return "{\"_class\":\"ChangeKind\", " +
+                    "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+                    "\"description\":" + (description == null ? "null" : "\"" + description + "\"") +
+                    "}";
         }
     }
 
@@ -206,6 +209,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @PrePersist
     private void onInsert(){
+        System.out.println("PrePersist");
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
         changeKind = AbstractEntityAudit.ChangeKind.CREATED;
@@ -218,7 +222,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         AbstractEntityAudit.ChangeKind change = changeKind;
         if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
             change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
-            ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
             changeKind = change;
         }
         switch (change) {
@@ -231,11 +234,16 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             case OTHER:
             case ADDED_CONTENT:
                 ver.incMajor();
+                ver.setVersionLabel("");
                 break;
             case TYPO:
                 ver.incMinor();
+                ver.setVersionLabel("");
                 break;
-            default:        //CREATED / UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
+            case CREATED:
+                break;
+            default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
+                ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
                 break;
         }
         version =  ver;
@@ -316,15 +324,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @Override
     public String toString() {
-        return "{ " +
-                super.toString() +
-                ", " + agency +
-                ", name='" + name + '\'' +
-                ", basedOnObject=" + basedOnObject +
-                ", version='" + version + '\'' +
-                ", changeKind=" + changeKind +
-                ", changeComment='" + changeComment + '\'' +
-                "} " ;
+        return "{" + super.toString() +
+                "\"version\":" + (version == null ? "null" : version) + ", " +
+                "\"changeKind\":" + (changeKind == null ? "null" : changeKind) + ", " +
+                "\"changeComment\":" + (changeComment == null ? "null" : "\"" + changeComment + "\"") + ", " +
+                "\"basedOnObject\":" + (basedOnObject == null ? "null" : basedOnObject) + ", " +
+                "\"basedOnRevision\":" + (basedOnRevision == null ? "null" : "\"" + basedOnRevision + "\"") + ", " +
+                "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"agency\":" + (agency == null ? "null" : agency) + ", ";
     }
 
     @Override
@@ -342,16 +349,20 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     public ByteArrayOutputStream makePdf() {
 
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter(baosPDF));
-        Document doc = new Document(pdf);
+        ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+        Document doc = new Document(
+                        new PdfDocument(
+                            new PdfWriter( pdfOutputStream)));
         try {
             fillDoc(doc);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        doc.close();
-        return baosPDF;
+        finally {
+            doc.close();
+        }
+
+        return pdfOutputStream;
     }
 
 }
