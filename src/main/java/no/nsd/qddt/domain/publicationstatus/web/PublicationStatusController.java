@@ -1,16 +1,15 @@
 package no.nsd.qddt.domain.publicationstatus.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
-import no.nsd.qddt.domain.publicationstatus.PublicationStatusJsonListView;
+import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
-import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -50,12 +49,14 @@ public class PublicationStatusController {
         service.delete(id);
     }
 
-    @JsonView(View.SimpleList.class)
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<PublicationStatusJsonListView> getAll() {
-
-        return service.findAll();
+    @RequestMapping(value = "/list", method = RequestMethod.GET , produces = "application/json")
+    public List<PublicationStatusJsonParent> getAll() {
+        List<PublicationStatusJsonParent> list =service.findAll()
+                .stream().map(s->new PublicationStatusJsonParent(s))
+                .sorted(Comparator.comparing(PublicationStatusJsonParent::getChildrenIdx))
+                .collect(Collectors.toList());
+        return list;
     }
     
 }

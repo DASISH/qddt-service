@@ -1,12 +1,13 @@
 package no.nsd.qddt.domain.publicationstatus;
 
 import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -73,10 +74,8 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
 
     @Override
-    public List<PublicationStatusJsonListView> findAll() {
+    public List<PublicationStatus> findAll() {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        return repository.findAllByAgencyOrderByStatus(agency).stream()
-                .map(s->new PublicationStatusJsonListView(s))
-                .collect(Collectors.toList());
+        return repository.findAllByAgencyAndParentIdIsNull(agency);
     }
 }

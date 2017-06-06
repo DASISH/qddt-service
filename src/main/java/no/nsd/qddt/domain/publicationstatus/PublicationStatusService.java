@@ -1,15 +1,15 @@
 package no.nsd.qddt.domain.publicationstatus;
 
 import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
 public interface PublicationStatusService  extends BaseService<PublicationStatus, Long> {
 
-    List<PublicationStatusJsonListView> findAll();
+    List<PublicationStatus> findAll();
 
 }
