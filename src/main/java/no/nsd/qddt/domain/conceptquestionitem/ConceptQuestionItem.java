@@ -22,6 +22,10 @@ import java.sql.Timestamp;
         @AssociationOverride(name = "id.concept", joinColumns = @JoinColumn(name = "CONCEPT_ID")),
         @AssociationOverride(name = "id.questionItem", joinColumns = @JoinColumn(name = "QUESTIONITEM_ID"))
 })
+@NamedNativeQuery(name="AuditQuestionItem", query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +
+                "FROM question_item_aud " +
+                "WHERE id =:id and rev = :rev; ",
+                resultClass = QuestionItem.class)
 public class ConceptQuestionItem  implements java.io.Serializable {
 
     @EmbeddedId
@@ -65,9 +69,15 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     public ConceptQuestionItem() {
     }
 
+    public ConceptQuestionItem(ConceptQuestionItemId id, Integer questionItemRevision){
+        setId(id);
+        setQuestionItemRevision(questionItemRevision);
+    }
+
     public ConceptQuestionItem(Concept concept, QuestionItem questionItem) {
         setConcept(concept);
-        setQuestionItemLateBound(questionItem);
+        setQuestionItem(questionItem);
+//        setQuestionItemLateBound(questionItem);
         if (concept.getConceptQuestionItems().stream().noneMatch(c->c.getId().getQuestionItemId().equals(questionItem.getId()))){
             concept.getConceptQuestionItems().add(this);
         }
@@ -78,6 +88,8 @@ public class ConceptQuestionItem  implements java.io.Serializable {
         this(concept,questionItem);
         setQuestionItemRevision(questionItemRevision);
     }
+
+
 
 
     public ConceptQuestionItemId getId() {
@@ -113,6 +125,9 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     }
 
     public void setQuestionItem(QuestionItem questionItem) {
+        this.getId().setQuestionItemId(questionItem.getId());
+        if (questionItemRevision == null)
+            setQuestionItemRevision(questionItem.getVersion().getRevision());
         this.questionItem = questionItem;
     }
 
@@ -132,9 +147,6 @@ public class ConceptQuestionItem  implements java.io.Serializable {
         return updated;
     }
 
-//    private void setUpdated(Timestamp updated) {
-//        this.updated = updated;
-//    }
 
 
     @Override
@@ -154,9 +166,13 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "ConceptQuestionItem{" +
-                "pk=" + id +
-                '}';
+        return "{\"_class\":\"ConceptQuestionItem\", " +
+                "\"id\":" + (id == null ? "null" : id) + ", " +
+                "\"questionItemLateBound\":" + (questionItemLateBound == null ? "null" : questionItemLateBound) + ", " +
+                "\"questionItem\":" + (questionItem == null ? "null" : questionItem) + ", " +
+                "\"questionItemRevision\":" + (questionItemRevision == null ? "null" : "\"" + questionItemRevision + "\"") + ", " +
+                "\"updated\":" + (updated == null ? "null" : updated) +
+                "}";
     }
 
     public void makeNewCopy(Integer revision) {

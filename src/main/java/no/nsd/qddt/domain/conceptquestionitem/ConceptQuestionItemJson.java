@@ -22,6 +22,10 @@ public class ConceptQuestionItemJson {
 
 
     public ConceptQuestionItemJson(ConceptQuestionItem q) {
+        if (q == null) {
+            System.out.println("ConceptQuestionItem is null");
+            return;
+        }
         setId(q.getId());
         setQuestionItem(new QuestionItemJsonView(q.getQuestionItem()));
         setQuestionItemRevision(q.getQuestionItemRevision());
