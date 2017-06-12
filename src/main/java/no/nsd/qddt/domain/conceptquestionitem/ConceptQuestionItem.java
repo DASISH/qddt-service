@@ -77,19 +77,12 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     public ConceptQuestionItem(Concept concept, QuestionItem questionItem) {
         setConcept(concept);
         setQuestionItem(questionItem);
-//        setQuestionItemLateBound(questionItem);
-        if (concept.getConceptQuestionItems().stream().noneMatch(c->c.getId().getQuestionItemId().equals(questionItem.getId()))){
-            concept.getConceptQuestionItems().add(this);
-        }
-        System.out.println("Created " + this);
     }
 
     public ConceptQuestionItem(Concept concept, QuestionItem questionItem, Integer questionItemRevision) {
         this(concept,questionItem);
         setQuestionItemRevision(questionItemRevision);
     }
-
-
 
 
     public ConceptQuestionItemId getId() {
@@ -126,7 +119,7 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 
     public void setQuestionItem(QuestionItem questionItem) {
         this.getId().setQuestionItemId(questionItem.getId());
-        if (questionItemRevision == null)
+        if (questionItemRevision == null && questionItem.getVersion().getRevision() != null)
             setQuestionItemRevision(questionItem.getVersion().getRevision());
         this.questionItem = questionItem;
     }
@@ -146,7 +139,6 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     public Timestamp getUpdated() {
         return updated;
     }
-
 
 
     @Override

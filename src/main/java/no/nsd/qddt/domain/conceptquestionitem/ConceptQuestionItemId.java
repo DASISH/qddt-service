@@ -33,7 +33,7 @@ public class ConceptQuestionItemId implements Serializable {
         this.setConceptId(concept.getId());
     }
 
-    public ConceptQuestionItemId(UUID questionItemId, UUID conceptId) {
+    public ConceptQuestionItemId(UUID conceptId,UUID questionItemId) {
         this.questionItemId = questionItemId;
         this.conceptId = conceptId;
     }
