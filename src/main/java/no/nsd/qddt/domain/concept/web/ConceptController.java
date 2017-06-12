@@ -38,14 +38,11 @@ public class ConceptController {
 
     private ConceptService service;
     private TopicGroupService topicGroupService;
-    private ConceptQuestionItemService cqiService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,
-                              ConceptQuestionItemService conceptQuestionItemService) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService) {
         this.service = conceptService;
         this.topicGroupService = topicGroupService;
-        this.cqiService = conceptQuestionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -62,15 +59,14 @@ public class ConceptController {
         return concept2Json(service.save(concept));
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "questionitem","questionitemrevision"})
-    public ConceptJsonEdit addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId,
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "conceptid", "questionitemid","questionitemrevision"})
+    public ConceptJsonEdit addQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             Concept concept = service.findOne(conceptId);
-            if (questionItemRevision != null)
+            if (questionItemRevision == null)
                 questionItemRevision=0;
-
             concept.addConceptQuestionItem(
                 new ConceptQuestionItem(
                     new ConceptQuestionItemId(conceptId,questionItemId),questionItemRevision.intValue()));
@@ -83,16 +79,14 @@ public class ConceptController {
         }
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
     public ConceptJsonEdit removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
         Concept concept=null;
         try{
-            cqiService.delete(new ConceptQuestionItemId(questionItemId,conceptId));
-//            concept.removeQuestionItem(questionItemId);
-//            conceptQuestionItemService.findByConceptQuestionItem(conceptId,questionItemId).forEach(c->
-//                    conceptQuestionItemService.delete(c.getId()));
-            return concept2Json(service.findOne(conceptId));
+            concept = service.findOne(conceptId);
+            concept.removeQuestionItem(questionItemId);
+            return concept2Json(service.save(concept));
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println( ex.getMessage());

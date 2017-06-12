@@ -106,12 +106,16 @@ public class Concept extends AbstractEntityAudit {
 
     public void addConceptQuestionItem(ConceptQuestionItem conceptQuestionItem) {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->conceptQuestionItem.getId().equals(cqi.getId()))) {
-            conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            conceptQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
+            if (conceptQuestionItem.getQuestionItem() != null){
+                conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                conceptQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
+            }
             conceptQuestionItems.add(conceptQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
         }
+        else
+            System.out.println("ConceptQuestionItem not inserted, match found" );
     }
 
 

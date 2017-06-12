@@ -129,8 +129,10 @@ class ConceptServiceImpl implements ConceptService {
                         cqi.getId().getQuestionItemId(),
                         cqi.getQuestionItemRevision());
                 cqi.setQuestionItem(rev.getEntity());
-                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber()))
+                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
+                    System.out.println("missmatch wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
                     cqi.setQuestionItemRevision(rev.getRevisionNumber());
+                }
             }
         } catch (Exception ex){
             System.out.println("postLoadProcessing... " + instance.getName());
