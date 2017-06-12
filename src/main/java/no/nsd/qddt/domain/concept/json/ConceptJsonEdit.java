@@ -1,10 +1,12 @@
 package no.nsd.qddt.domain.concept.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.refclasses.TopicRef;
+import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -30,6 +32,10 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private String description;
 
+    private UserJson modifiedBy;
+
+    private AgencyJsonView agency;
+
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
     private TopicRef topicRef;
@@ -47,6 +53,8 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setComments(concept.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
+            setAgency(new AgencyJsonView(concept.getAgency()));
+            setModifiedBy(new UserJson(concept.getModifiedBy()));
             setConceptQuestionItems(
                     concept.getConceptQuestionItems().stream().map(Q-> new ConceptQuestionItemJson(Q)).collect(Collectors.toSet()));
             setTopicRef(concept.getTopicRef());
@@ -72,7 +80,6 @@ public class ConceptJsonEdit extends BaseJsonEdit {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public Set<ConceptJsonEdit> getChildren() {
         return children;
@@ -104,6 +111,27 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public UserJson getModifiedBy() {
+        return modifiedBy;
+    }
+
+    @Override
+    public void setModifiedBy(UserJson modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+
+    @Override
+    public AgencyJsonView getAgency() {
+        return agency;
+    }
+
+    @Override
+    public void setAgency(AgencyJsonView agency) {
+        this.agency = agency;
     }
 
     public Set<CommentJsonEdit> getComments() {

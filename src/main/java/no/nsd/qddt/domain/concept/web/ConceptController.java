@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.concept.web;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemId;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -37,15 +38,13 @@ public class ConceptController {
 
     private ConceptService service;
     private TopicGroupService topicGroupService;
-    private QuestionItemService questionItemService;
     private ConceptQuestionItemService cqiService;
 
     @Autowired
     public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,
-                             QuestionItemService questionItemService, ConceptQuestionItemService conceptQuestionItemService) {
+                              ConceptQuestionItemService conceptQuestionItemService) {
         this.service = conceptService;
         this.topicGroupService = topicGroupService;
-        this.questionItemService = questionItemService;
         this.cqiService = conceptQuestionItemService;
     }
 
@@ -64,12 +63,18 @@ public class ConceptController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "questionitem"})
-    public ConceptJsonEdit addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
+    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "concept", "questionitem","questionitemrevision"})
+    public ConceptJsonEdit addQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId,
+                                           @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             Concept concept = service.findOne(conceptId);
-            QuestionItem questionItem = questionItemService.findOne(questionItemId);
-            concept.addQuestionItem(questionItem);
+            if (questionItemRevision != null)
+                questionItemRevision=0;
+
+            concept.addConceptQuestionItem(
+                new ConceptQuestionItem(
+                    new ConceptQuestionItemId(conceptId,questionItemId),questionItemRevision.intValue()));
+
             return concept2Json(service.save(concept));
         }catch (Exception ex){
             ex.printStackTrace();
