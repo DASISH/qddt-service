@@ -1,12 +1,7 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -17,9 +12,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

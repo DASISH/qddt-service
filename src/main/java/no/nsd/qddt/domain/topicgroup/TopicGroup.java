@@ -14,7 +14,6 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
-import org.hibernate.annotations.Filter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -22,7 +21,6 @@ import javax.persistence.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 /**

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-@Service("conceptQuestionItemService")
+@Service("topicGroupQuestionItemService")
 public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItemService {
 
     private TopicGroupQuestionItemRepository repository;

@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.json.ConceptJsonView;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.topicgroup.TopicQuestions;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemJson;
 
 import java.util.HashSet;
