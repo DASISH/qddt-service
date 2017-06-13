@@ -11,7 +11,9 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import org.hibernate.envers.Audited;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -65,8 +68,8 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE})
-//    @Filter(name="concepts" ,condition = "name is not NULL")
     private Set<Concept> concepts = new HashSet<>();
+
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "topicGroup")
     private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
@@ -127,6 +130,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.concepts = concepts;
     }
 
+
     public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
     }
@@ -143,6 +147,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.abstractDescription = abstractDescription;
     }
 
+
     public Set<TopicGroupQuestionItem> getTopicQuestionItems() {
         return topicQuestionItems;
     }
@@ -150,6 +155,42 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     public void setTopicQuestionItems(Set<TopicGroupQuestionItem> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
+
+    public void addConceptQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
+        if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
+            if (topicQuestionItem.getQuestionItem() != null){
+                topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                topicQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
+            }
+            topicQuestionItems.add(topicQuestionItem);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeComment("QuestionItem assosiation added");
+        }
+        else
+            System.out.println("ConceptQuestionItem not inserted, match found" );
+    }
+
+    public void addQuestionItem(QuestionItem questionItem) {
+        if (this.topicQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
+            new TopicGroupQuestionItem(this,questionItem);
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            questionItem.setChangeComment("Concept assosiation added");
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeComment("QuestionItem assosiation added");
+        }
+    }
+
+    public  void removeQuestionItem(UUID qiId){
+        topicQuestionItems.stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
+                forEach(cq->{
+                    cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                    cq.getQuestionItem().setChangeComment("Concept assosiation removed");
+                    this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                    this.setChangeComment("QuestionItem assosiation removed");
+                });
+        topicQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
+    }
+
 
     @Override
     public void makeNewCopy(Integer revision){

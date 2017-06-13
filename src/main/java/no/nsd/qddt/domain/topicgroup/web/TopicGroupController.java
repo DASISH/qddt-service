@@ -2,11 +2,15 @@ package no.nsd.qddt.domain.topicgroup.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
+import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,15 +56,6 @@ public class TopicGroupController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public TopicGroup update(@RequestBody TopicGroup instance) {
-
-//        instance.getConcepts().forEach(c->{
-//            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-//            c.setChangeComment("");
-//        });
-//        instance.getOtherMaterials().forEach(c->{
-//            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-//            c.setChangeComment("");
-//        });
         return service.save(instance);
     }
 
@@ -104,16 +99,47 @@ public class TopicGroupController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<TopicGroupRevisionJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<TopicGroupRevisionJson> items = null;
         name = name.replace("*","%");
-
-        items = service.findByNameAndDescriptionPageable(name,name, pageable)
-        .map(i->postLoad(i));
+        Page<TopicGroupRevisionJson> items =
+                service.findByNameAndDescriptionPageable(name,name, pageable).map(i->postLoad(i));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
 
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "topicid", "questionitemid","questionitemrevision"})
+    public TopicGroupRevisionJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+                                           @RequestParam("questionitemrevision") Number questionItemRevision ) {
+        try {
+            TopicGroup topicGroup = service.findOne(topicId);
+            if (questionItemRevision == null)
+                questionItemRevision=0;
+            topicGroup.addConceptQuestionItem(
+                    new TopicGroupQuestionItem(
+                            new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.intValue()));
+
+            return new TopicGroupRevisionJson(service.save(topicGroup));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "topicid", "questionitemid"})
+    public TopicGroupRevisionJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
+        TopicGroup topicGroup =null;
+        try{
+            topicGroup = service.findOne(topicId);
+            topicGroup.removeQuestionItem(questionItemId);
+            return new TopicGroupRevisionJson(service.save(topicGroup));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println( ex.getMessage());
+            return new TopicGroupRevisionJson(topicGroup);
+        }
+    }
 
     @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
     public @ResponseBody

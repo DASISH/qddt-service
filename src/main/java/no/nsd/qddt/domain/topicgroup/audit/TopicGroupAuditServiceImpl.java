@@ -86,8 +86,7 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     protected TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-
-            System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
+//            System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
 

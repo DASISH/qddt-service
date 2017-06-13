@@ -91,11 +91,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
 
     protected TopicGroup prePersistProcessing(TopicGroup instance) {
-        System.out.println("prePersistProcessing");
-//        if(instance.getConcepts().isEmpty() & instance.getVersion().isNew()){
-//             instance.getConcepts().add(new Concept());
-//        }
-
         if (instance.isBasedOn()){
             Revision<Integer, TopicGroup> lastChange
                     = auditService.findLastChange(instance.getId());
@@ -113,13 +108,11 @@ class TopicGroupServiceImpl implements TopicGroupService {
         assert  (instance != null);
         try{
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
-
                 Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
                         cqi.getId().getQuestionItemId(),
                         cqi.getQuestionItemRevision());
                 cqi.setQuestionItem(rev.getEntity());
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
-                    System.out.println("missmatch wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
                     cqi.setQuestionItemRevision(rev.getRevisionNumber());
                 }
             }
