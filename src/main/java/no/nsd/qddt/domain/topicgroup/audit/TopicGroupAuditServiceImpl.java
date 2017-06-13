@@ -3,12 +3,10 @@ package no.nsd.qddt.domain.topicgroup.audit;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -92,21 +90,8 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
             System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
-            instance.getConcepts().size();
-            instance.getConcepts().stream().forEach(c->{
-                System.out.println("... " + c.getName() + " QI:" + c.getConceptQuestionItems().size());
-                final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId());
-                c.setComments(new HashSet<>(coms2));
-                c.getConceptQuestionItems().forEach(cqi->{
-                    cqi.setQuestionItem(questionItemAuditService.getQuestionItemLastOrRevision(
-                        cqi.getId().getQuestionItemId(),
-                        cqi.getQuestionItemRevision()).
-                        getEntity());
-                    System.out.println("    QI fetched: " + cqi.getQuestionItem().getName());
-                });
-            });
 
-            for (ConceptQuestionItem cqi :instance.getTopicQuestions().getQuestionItems()) {
+            for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
                 Revision<Integer, QuestionItem> rev = questionItemAuditService.getQuestionItemLastOrRevision(
                         cqi.getId().getQuestionItemId(),
                         cqi.getQuestionItemRevision());

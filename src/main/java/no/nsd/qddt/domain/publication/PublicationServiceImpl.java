@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.BaseServiceAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
@@ -9,10 +8,12 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
+import org.hibernate.Session;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -159,15 +160,18 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     private PublicationElement fill(PublicationElement element) {
+        BaseServiceAudit service = getService(element.getElementEnum());
         try {
-            BaseServiceAudit service = getService(element.getElementEnum());
+            System.out.println("Fill element " + element.getName() + " - " + element.getElementKind());
             element.setElement(service.findRevision(
                     element.getId(),
                     element.getRevisionNumber())
                     .getEntity());
 
         } catch (RevisionDoesNotExistException e) {
-            element.setElement(conceptService.findLastChange(element.getId()));
+            Revision rev = service.findLastChange(element.getId());
+            element.setElement(rev.getEntity());
+            element.setRevisionNumber(rev.getRevisionNumber().intValue());
         } catch (JpaSystemException se) {
             System.out.println(se.getMessage());
         } catch (Exception ex) {

@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.instrument.web;
 
-import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -76,6 +77,25 @@ public class InstrumentController  {
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
+
+
+    @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    public @ResponseBody
+    ResponseEntity<ByteArrayInputStream> getPdf(@PathVariable("id") UUID id) {
+        try {
+            ByteArrayOutputStream pdfStream = service.findOne(id).makePdf();
+            return ResponseEntity
+                    .ok()
+                    .contentLength(pdfStream.size())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new ByteArrayInputStream (pdfStream.toByteArray()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
+
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {

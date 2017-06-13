@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.conceptquestionitem;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Embeddable
-public class ConceptQuestionItemId implements Serializable {
+public class ParentQuestionItemId implements Serializable {
 
     private static final long serialVersionUID = -7261887879839337877L;
 
@@ -21,21 +22,26 @@ public class ConceptQuestionItemId implements Serializable {
     private UUID questionItemId;
 
     @Type(type="pg-uuid")
-    @Column(name = "CONCEPT_ID")
-    private UUID conceptId;
+    @Column(name = "PARENT_ID")
+    private UUID parentId;
 
 
-    public ConceptQuestionItemId() {
+    public ParentQuestionItemId() {
     }
 
-    public ConceptQuestionItemId(Concept concept, QuestionItem questionItem) {
+    public ParentQuestionItemId(Concept concept, QuestionItem questionItem) {
+        this.setParentId(concept.getId());
         this.setQuestionItemId(questionItem.getId());
-        this.setConceptId(concept.getId());
     }
 
-    public ConceptQuestionItemId(UUID conceptId,UUID questionItemId) {
+    public ParentQuestionItemId(TopicGroup topicGroup, QuestionItem questionItem) {
+        this.setParentId(topicGroup.getId());
+        this.setQuestionItemId(questionItem.getId());
+    }
+
+    public ParentQuestionItemId(UUID parentId, UUID questionItemId) {
         this.questionItemId = questionItemId;
-        this.conceptId = conceptId;
+        this.parentId = parentId;
     }
 
     public UUID getQuestionItemId() {
@@ -46,19 +52,19 @@ public class ConceptQuestionItemId implements Serializable {
         this.questionItemId = questionItemId;
     }
 
-    public UUID getConceptId() {
-        return conceptId;
+    public UUID getParentId() {
+        return parentId;
     }
 
-    public void setConceptId(UUID conceptId) {
-        this.conceptId = conceptId;
+    public void setParentId(UUID parentId) {
+        this.parentId = parentId;
     }
 
     @Override
     public String toString() {
         return "Id{" +
+                ", ParentId=" + parentId +
                 " QuestionId=" + questionItemId +
-                ", conceptId=" + conceptId +
                 '}';
     }
 }

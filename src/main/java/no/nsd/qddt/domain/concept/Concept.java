@@ -83,7 +83,7 @@ public class Concept extends AbstractEntityAudit {
     private TopicRef topicRef;
 
     public Concept() {
-
+//        System.out.println("CSTR Concept");
     }
 
 

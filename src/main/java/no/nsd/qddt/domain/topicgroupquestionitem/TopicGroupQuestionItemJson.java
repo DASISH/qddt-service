@@ -1,5 +1,6 @@
-package no.nsd.qddt.domain.conceptquestionitem;
+package no.nsd.qddt.domain.topicgroupquestionitem;
 
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 
 import javax.persistence.EmbeddedId;
@@ -8,7 +9,7 @@ import java.sql.Timestamp;
 /**
  * @author Stig Norland
  */
-public class ConceptQuestionItemJson {
+public class TopicGroupQuestionItemJson {
 
     @EmbeddedId
     private ParentQuestionItemId id = new ParentQuestionItemId();
@@ -21,7 +22,7 @@ public class ConceptQuestionItemJson {
     private Timestamp updated;
 
 
-    public ConceptQuestionItemJson(ConceptQuestionItem q) {
+    public TopicGroupQuestionItemJson(TopicGroupQuestionItem q) {
         if (q == null) {
             System.out.println("ConceptQuestionItem is null");
             return;

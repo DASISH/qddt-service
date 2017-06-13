@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
+import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 /**
@@ -87,9 +89,9 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
-    public List<TopicGroup> findByStudy(@PathVariable("uuid") UUID studyId) {
+    public List<TopicGroupRevisionJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
-            return service.findByStudyId(studyId);
+            return service.findByStudyId(studyId).stream().map(i->postLoad(i)).collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
             ex.printStackTrace();
@@ -100,13 +102,14 @@ public class TopicGroupController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<TopicGroup>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<TopicGroupRevisionJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<TopicGroup> items = null;
+        Page<TopicGroupRevisionJson> items = null;
         name = name.replace("*","%");
 
-        items = service.findByNameAndDescriptionPageable(name,name, pageable);
+        items = service.findByNameAndDescriptionPageable(name,name, pageable)
+        .map(i->postLoad(i));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
@@ -127,6 +130,11 @@ public class TopicGroupController {
             return  null;
         }
     }
+
+    private TopicGroupRevisionJson postLoad(TopicGroup topicGroup){
+        return new TopicGroupRevisionJson(topicGroup);
+    }
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)

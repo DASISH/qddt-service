@@ -52,7 +52,7 @@ import java.util.Set;
 @Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit implements Authorable {
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderBy(value = "modified ASC")
     private Set<Study> studies = new HashSet<>();
 

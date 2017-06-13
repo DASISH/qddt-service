@@ -114,7 +114,7 @@ public class Version implements Comparable<Version> {
     @Override
     public String
     toString() {
-        return  String.format(versionFormat, major, minor, versionLabel);
+        return  String.format(versionFormat, major, minor, versionLabel).trim();
     }
 
     @Override

@@ -19,6 +19,8 @@ public class TopicQuestions {
     @Type(type="pg-uuid")
     private UUID id;
 
+    private UUID parent;
+
     private Set<ConceptQuestionItem> questionItems = new HashSet<>();
 
 
@@ -27,8 +29,9 @@ public class TopicQuestions {
 
     public TopicQuestions(Concept concept) {
         try{
-            setId(concept.getId());
             setQuestionItems(concept.getConceptQuestionItems());
+            setParent(concept.getTopicGroup().getId());
+            setId(concept.getId());
         }catch (Exception ex){
             System.out.println("TopicQuestions Exception");
             ex.printStackTrace();
@@ -41,6 +44,14 @@ public class TopicQuestions {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public UUID getParent() {
+        return parent;
+    }
+
+    public void setParent(UUID parent) {
+        this.parent = parent;
     }
 
     public Set<ConceptQuestionItem> getQuestionItems() {

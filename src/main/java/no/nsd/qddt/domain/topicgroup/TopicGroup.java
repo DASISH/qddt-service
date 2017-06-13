@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -15,8 +13,7 @@ import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import org.hibernate.annotations.Filter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -27,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -74,10 +70,8 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
 //    @Filter(name="concepts" ,condition = "name is not NULL")
     private Set<Concept> concepts = new HashSet<>();
 
-//    @JsonIgnore
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE})
-////    @Filter(name="topicQuestions" ,condition = "name is NULL")
-//    private Set<Concept> defaultConcept = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "topicGroup")
+    private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -119,7 +113,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     }
 
 
-    @Transient
     public Concept addConcept(Concept concept){
         System.out.println("new concept added to TopicGroup [" + this.getId() +"] concept:"+ concept.getId());
         concept.setTopicGroup(this);
@@ -129,13 +122,12 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     }
 
     public Set<Concept> getConcepts() {
-        return concepts.stream().filter(c->c.getName() != null).collect(Collectors.toSet());
+        return concepts;
     }
 
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
-
 
     public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
@@ -145,7 +137,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.otherMaterials = otherMaterials;
     }
 
-
     public String getAbstractDescription() {
         return abstractDescription;
     }
@@ -154,53 +145,19 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.abstractDescription = abstractDescription;
     }
 
-
-    private Set<Concept> getDefaultConcept() {
-        return concepts.stream().filter(c->c.getName() == null).collect(Collectors.toSet());
+    public Set<TopicGroupQuestionItem> getTopicQuestionItems() {
+        return topicQuestionItems;
     }
 
-//    private void setDefaultConcept(Set<Concept> defaultConcept) {
-//        this.defaultConcept = defaultConcept;
-//    }
-
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    public TopicQuestions getTopicQuestions(){
-        try {
-            Concept tq = getDefaultConcept().stream().findFirst().get();
-            return new TopicQuestions(tq);
-        }catch (Exception ex) {
-            System.out.println("getTopicQuestions exception");
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    public void setTopicQuestions(TopicQuestions topicQuestions){
-        Optional<Concept> source = getDefaultConcept().stream().findFirst();
-        if (source.isPresent()) {
-            System.out.println("TG -> merging QIs");
-            topicQuestions.getQuestionItems().forEach(qi -> source.get().addConceptQuestionItem(qi));
-        } else {
-            System.out.println("TG -> redeploy C & QIs");
-            Concept c = new Concept();
-            c.setId(topicQuestions.getId());
-            c.setConceptQuestionItems(topicQuestions.getQuestionItems());
-            c.setVersion(this.getVersion());
-            c.setTopicGroup(this);
-            getDefaultConcept().add(c);
-        }
+    public void setTopicQuestionItems(Set<TopicGroupQuestionItem> topicQuestionItems) {
+        this.topicQuestionItems = topicQuestionItems;
     }
 
     @Override
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getConcepts().forEach(c->c.makeNewCopy(revision));
+//        getConcepts().forEach(c->c.makeNewCopy(revision));
         getOtherMaterials().forEach(m->m.makeNewCopy(getId()));
         getComments().clear();
     }
@@ -239,7 +196,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
                 super.toString() +
                 "\"abstractDescription\":" + (abstractDescription == null ? "null" : "\"" + abstractDescription + "\"") +
                 "\"concepts\":" + (getConcepts() == null ? "null" : Arrays.toString(getConcepts().toArray())) + ", " +
-                "\"defaultConcept\":" + (getDefaultConcept() == null ? "null" : getDefaultConcept()) + ", " +
                 "\"authors\":" + (authors == null ? "null" : Arrays.toString(authors.toArray())) + ", " +
                 "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
                 "}";
@@ -260,13 +216,13 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         document.add(new Paragraph(this.getName()));
         document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
         document.add(new Paragraph(this.getAbstractDescription()));
-        document.add(new Paragraph(this.getTopicQuestions().toString()));
+        document.add(new Paragraph(this.getTopicQuestionItems().toString()));
         document.add(new Paragraph(this.getOtherMaterials().toString()));
         document.add(new Paragraph(this.getComments().toString()));
 
-        for (Concept concept : getConcepts()) {
-            concept.fillDoc(document);
-        }
+//        for (Concept concept : getConcepts()) {
+//            concept.fillDoc(document);
+//        }
 
     }
 

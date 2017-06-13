@@ -1,5 +1,6 @@
-package no.nsd.qddt.domain.conceptquestionitem;
+package no.nsd.qddt.domain.topicgroupquestionitem;
 
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,13 @@ import java.util.stream.Collectors;
  * @author Stig Norland
  */
 @Service("conceptQuestionItemService")
-public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemService {
+public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItemService {
 
-    private ConceptQuestionItemRepository repository;
+    private TopicGroupQuestionItemRepository repository;
     private QuestionItemAuditService auditService;
 
     @Autowired
-    public ConceptQuestionItemServiceImpl(ConceptQuestionItemRepository repository, QuestionItemAuditService questionItemAuditService) {
+    public TopicGroupQuestionItemServiceImpl(TopicGroupQuestionItemRepository repository, QuestionItemAuditService questionItemAuditService) {
         this.repository = repository;
         this.auditService = questionItemAuditService;
     }
@@ -35,17 +36,17 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
     @Override
-    public ConceptQuestionItem findOne(ParentQuestionItemId parentQuestionItemId) {
+    public TopicGroupQuestionItem findOne(ParentQuestionItemId parentQuestionItemId) {
         return postLoadProcessing(repository.findOne(parentQuestionItemId));
     }
 
     @Override
-    public ConceptQuestionItem save(ConceptQuestionItem instance) {
+    public TopicGroupQuestionItem save(TopicGroupQuestionItem instance) {
         return postLoadProcessing(repository.save(instance));
     }
 
     @Override
-    public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
+    public List<TopicGroupQuestionItem> save(List<TopicGroupQuestionItem> instances) {
         return repository.save(instances).stream().
                 map(q->postLoadProcessing(q)).
                 collect(Collectors.toList());
@@ -57,17 +58,17 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
     @Override
-    public void delete(List<ConceptQuestionItem> instances) {
+    public void delete(List<TopicGroupQuestionItem> instances) {
         repository.delete(instances);
     }
 
 
-    protected ConceptQuestionItem prePersistProcessing(ConceptQuestionItem instance) {
+    protected TopicGroupQuestionItem prePersistProcessing(TopicGroupQuestionItem instance) {
         return instance;
     }
 
 
-    protected ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
+    protected TopicGroupQuestionItem postLoadProcessing(TopicGroupQuestionItem instance) {
         instance.setQuestionItem(auditService.findRevision(
                 instance.getId().getQuestionItemId(),
                 instance.getQuestionItemRevision())

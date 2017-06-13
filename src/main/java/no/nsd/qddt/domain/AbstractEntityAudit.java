@@ -15,6 +15,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.springframework.data.domain.Example;
 
 import javax.persistence.*;
 import java.io.*;
@@ -218,35 +219,42 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @PreUpdate
     private void onUpdate(){
-        Version ver = version;
-        AbstractEntityAudit.ChangeKind change = changeKind;
-        if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
-            change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
-            changeKind = change;
+        try {
+            Version ver = version;
+            AbstractEntityAudit.ChangeKind change = changeKind;
+            if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
+                change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+                changeKind = change;
+            }
+            switch (change) {
+                case BASED_ON:
+                case TRANSLATED:
+                    ver = new Version();
+                    break;
+                case CONCEPTUAL:
+                case EXTERNAL:
+                case OTHER:
+                case ADDED_CONTENT:
+                    ver.incMajor();
+                    ver.setVersionLabel("");
+                    break;
+                case TYPO:
+                    ver.incMinor();
+                    ver.setVersionLabel("");
+                    break;
+                case CREATED:
+                    break;
+                default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
+                    ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
+                    break;
+            }
+            version = ver;
+        }catch (Exception ex){
+            System.out.println("Exception in AbstracEntityAudit::onUpdate");
+            System.out.println(ex.getStackTrace()[0]);
+            System.out.println(ex.getMessage());
+            System.out.println(this);
         }
-        switch (change) {
-            case BASED_ON:
-            case TRANSLATED:
-                ver = new Version();
-                break;
-            case CONCEPTUAL:
-            case EXTERNAL:
-            case OTHER:
-            case ADDED_CONTENT:
-                ver.incMajor();
-                ver.setVersionLabel("");
-                break;
-            case TYPO:
-                ver.incMinor();
-                ver.setVersionLabel("");
-                break;
-            case CREATED:
-                break;
-            default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
-                ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
-                break;
-        }
-        version =  ver;
     }
 
 

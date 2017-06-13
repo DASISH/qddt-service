@@ -12,13 +12,14 @@ import org.hibernate.annotations.Type;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
-public class BaseJsonEdit {
+public class BaseJsonEdit implements Serializable {
 
     @Type(type="pg-uuid")
     private UUID id;

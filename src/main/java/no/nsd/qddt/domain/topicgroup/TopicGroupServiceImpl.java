@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
+import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -55,7 +57,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = true)
     public TopicGroup findOne(UUID uuid) {
-        return topicGroupRepository.findById(uuid).orElseThrow(
+        return topicGroupRepository.findById(uuid)
+                .map(t->postLoadProcessing(t)).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, TopicGroup.class)
         );
     }
@@ -96,9 +99,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     protected TopicGroup prePersistProcessing(TopicGroup instance) {
         System.out.println("prePersistProcessing");
-        if(instance.getConcepts().isEmpty() & instance.getVersion().isNew()){
-             instance.getConcepts().add(new Concept());
-        }
+//        if(instance.getConcepts().isEmpty() & instance.getVersion().isNew()){
+//             instance.getConcepts().add(new Concept());
+//        }
 
         if (instance.isBasedOn()){
             Revision<Integer, TopicGroup> lastChange
@@ -114,15 +117,24 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
 
     protected TopicGroup postLoadProcessing(TopicGroup instance) {
+        assert  (instance != null);
+        try{
+            for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
 
-        for (ConceptQuestionItem cqi :instance.getTopicQuestions().getQuestionItems()) {
-            Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
-                    cqi.getId().getQuestionItemId(),
-                    cqi.getQuestionItemRevision());
-            System.out.println("postLoadProcessing TopicGroup " + rev.toString() +  cqi.getId());
-            cqi.setQuestionItem(rev.getEntity());
+                Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
+                        cqi.getId().getQuestionItemId(),
+                        cqi.getQuestionItemRevision());
+                cqi.setQuestionItem(rev.getEntity());
+                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
+                    System.out.println("missmatch wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
+                    cqi.setQuestionItemRevision(rev.getRevisionNumber());
+                }
+            }
+        } catch (Exception ex){
+            System.out.println("postLoadProcessing... " + instance.getName());
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
         }
-
         return instance;
     }
 
@@ -134,16 +146,19 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     public List<TopicGroup> findByStudyId(UUID id) {
-        return topicGroupRepository.findByStudyId(id);
+        return topicGroupRepository.findByStudyId(id).stream()
+                .map(topicGroup -> postLoadProcessing(topicGroup)).collect(Collectors.toList());
     }
 
     @Override
     public Page<TopicGroup> findAllPageable(Pageable pageable) {
-        return topicGroupRepository.findAll(pageable);
+        return topicGroupRepository.findAll(pageable)
+                .map(t->postLoadProcessing(t));
     }
 
     @Override
     public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        return topicGroupRepository.findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(name,description,pageable);
+        return topicGroupRepository.findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(name,description,pageable)
+                .map(t->postLoadProcessing(t));
     }
 }

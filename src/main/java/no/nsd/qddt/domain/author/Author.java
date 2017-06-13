@@ -188,13 +188,14 @@ public class Author extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Author{" +
-                "name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", about='" + about + '\'' +
-                ", homepage=" + homepage +
-                ", picture=" + picture +
-                "} " + super.toString();
+        return "{\"_class\":\"Author\", " +
+                "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"email\":" + (email == null ? "null" : "\"" + email + "\"") + ", " +
+                "\"about\":" + (about == null ? "null" : "\"" + about + "\"") + ", " +
+                "\"homepage\":" + (homepage == null ? "null" : homepage) + ", " +
+                "\"picture\":" + (picture == null ? "null" : picture) + ", " +
+                "\"authorsAffiliation\":" + (authorsAffiliation == null ? "null" : "\"" + authorsAffiliation + "\"") +
+                "}";
     }
 
     public String getAuthorsAffiliation() {

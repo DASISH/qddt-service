@@ -65,7 +65,8 @@ public class Instruction extends AbstractEntityAudit {
     public String toString() {
         return "Instruction{" +
                 ", description='" + description + '\'' +
-                "} " + super.toString();
+                ", id ='" + getId() + '\'' +
+                "}";
     }
 
     @Override

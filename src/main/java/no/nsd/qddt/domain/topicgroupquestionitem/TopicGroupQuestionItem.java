@@ -1,10 +1,11 @@
-package no.nsd.qddt.domain.conceptquestionitem;
+package no.nsd.qddt.domain.topicgroupquestionitem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
@@ -27,18 +28,20 @@ import java.sql.Timestamp;
                 "FROM question_item_aud " +
                 "WHERE id =:id and rev = :rev; ",
                 resultClass = QuestionItem.class)
-public class ConceptQuestionItem  implements java.io.Serializable {
+public class TopicGroupQuestionItem  implements java.io.Serializable {
 
-    private static final long serialVersionUID = -7261887349839337877L;
+    private static final long serialVersionUID = -7261887449839337877L;
 
     @EmbeddedId
     private ParentQuestionItemId id = new ParentQuestionItemId();
+
+
 
     @JsonBackReference(value = "ConceptQuestionItemConceptRef")
     @ManyToOne
     @MapsId("id")
     @JoinColumn(name = "PARENT_ID",insertable = false, updatable = false)
-    private Concept concept;
+    private TopicGroup topicGroup;
 
 
     /*
@@ -70,21 +73,21 @@ public class ConceptQuestionItem  implements java.io.Serializable {
 //    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
-    public ConceptQuestionItem() {
+    public TopicGroupQuestionItem() {
     }
 
-    public ConceptQuestionItem(ParentQuestionItemId id, Integer questionItemRevision){
+    public TopicGroupQuestionItem(ParentQuestionItemId id, Integer questionItemRevision){
         setId(id);
         setQuestionItemRevision(questionItemRevision);
     }
 
-    public ConceptQuestionItem(Concept concept, QuestionItem questionItem) {
-        setConcept(concept);
+    public TopicGroupQuestionItem(TopicGroup topicGroup, QuestionItem questionItem) {
+        setTopicGroup(topicGroup);
         setQuestionItem(questionItem);
     }
 
-    public ConceptQuestionItem(Concept concept, QuestionItem questionItem, Integer questionItemRevision) {
-        this(concept,questionItem);
+    public TopicGroupQuestionItem(TopicGroup topicGroup, QuestionItem questionItem, Integer questionItemRevision) {
+        this(topicGroup,questionItem);
         setQuestionItemRevision(questionItemRevision);
     }
 
@@ -97,14 +100,13 @@ public class ConceptQuestionItem  implements java.io.Serializable {
         this.id = id;
     }
 
-
-    public Concept getConcept() {
-        return concept;
+    public TopicGroup getTopicGroup() {
+        return topicGroup;
     }
 
-    public void setConcept(Concept concept) {
-        this.concept = concept;
-        this.id.setParentId(concept.getId());
+    public void setTopicGroup(TopicGroup topicGroup) {
+        this.topicGroup = topicGroup;
+        this.id.setParentId(topicGroup.getId());
     }
 
 
@@ -150,11 +152,17 @@ public class ConceptQuestionItem  implements java.io.Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ConceptQuestionItem)) return false;
+        if (!(o instanceof TopicGroupQuestionItem)) return false;
 
-        ConceptQuestionItem that = (ConceptQuestionItem) o;
+        TopicGroupQuestionItem that = (TopicGroupQuestionItem) o;
 
-        return id != null ? id.equals(that.id) : that.id == null;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (topicGroup != null ? !topicGroup.equals(that.topicGroup) : that.topicGroup != null) return false;
+        if (questionItemLateBound != null ? !questionItemLateBound.equals(that.questionItemLateBound) : that.questionItemLateBound != null)
+            return false;
+        if (questionItemRevision != null ? !questionItemRevision.equals(that.questionItemRevision) : that.questionItemRevision != null)
+            return false;
+        return updated != null ? updated.equals(that.updated) : that.updated == null;
     }
 
     @Override

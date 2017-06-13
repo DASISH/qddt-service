@@ -56,7 +56,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
-   private List<Category> children = new ArrayList<>();
+    private List<Category> children = new ArrayList<>();
 
 
     //name -> A description of a particular category or response.
@@ -169,7 +169,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     public void setLabel(String label) {
         this.label = label;
         if (StringTool.IsNullOrTrimEmpty(getName()))
-            setName(label.toUpperCase());
+            setName(StringTool.CapString(label));
     }
 
     public String getDescription() {
@@ -242,7 +242,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Column(nullable = false)
     public String getName(){
         if (StringTool.IsNullOrTrimEmpty(super.getName()))
-            return this.getLabel().toUpperCase();
+            return StringTool.CapString(this.getLabel());
         else
             return super.getName();
     }
@@ -269,20 +269,30 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         int result = super.hashCode();
         result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-//        result = 31 * result + (getConceptReference() != null ? getConceptReference().hashCode() : 0);
         result = 31 * result + (getHierarchyLevel() != null ? getHierarchyLevel().hashCode() : 0);
         return result;
     }
 
+
     @Override
     public String toString() {
-        return "Category{" + super.toString() +
-                ", label=" + getLabel() +
-                ", description=" + getDescription() +
-                ", hierarchyLevel=" + getHierarchyLevel() +
-                ", categoryType=" + getCategoryType() +
-                ", children=" + Arrays.toString(getChildren().stream().map(F->F.toString()).toArray()) +
-                "}" ;
+        final StringBuffer sb = new StringBuffer("{\"_class\":\"Category\", ");
+        sb.append(super.toString()).append(", ");
+        sb.append("\"label\":").append(label == null ? "null" : "\"" + label + "\"").append(", ");
+        sb.append("\"description\":").append((description == null ? "null" : "\"" + description + "\"")).append(", ");
+        if (categoryType == CategoryType.CATEGORY) {
+            sb.append("\"code\":").append(code == null ? "null" : code).append(", ");
+            sb.append("\"format\":").append(format == null ? "null" : "\"" + format + "\"").append(", ");
+        }
+        else {
+            sb.append("\"categoryType\":").append((categoryType == null ? "null" : categoryType)).append(", ");
+            sb.append("\"inputLimit\":").append((inputLimit == null ? "null" : inputLimit)).append(", ");
+            sb.append("\"classificationLevel\":").append((classificationLevel == null ? "null" : classificationLevel)).append(", ");
+            sb.append("\"hierarchyLevel\":").append((hierarchyLevel == null ? "null" : hierarchyLevel)).append(", ");
+            sb.append("\"children\":").append((children == null ? "null" : Arrays.toString(children.toArray()))).append(", ");
+        }
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override

@@ -4,15 +4,10 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemId;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.questionItem.QuestionItemService;
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -69,7 +64,7 @@ public class ConceptController {
                 questionItemRevision=0;
             concept.addConceptQuestionItem(
                 new ConceptQuestionItem(
-                    new ConceptQuestionItemId(conceptId,questionItemId),questionItemRevision.intValue()));
+                    new ParentQuestionItemId(conceptId,questionItemId),questionItemRevision.intValue()));
 
             return concept2Json(service.save(concept));
         }catch (Exception ex){

@@ -70,7 +70,7 @@ public class Study extends AbstractEntityAudit implements Authorable {
             inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "study", fetch = FetchType.LAZY, orphanRemoval = false)
+    @OneToMany( cascade = {CascadeType.REMOVE,CascadeType.PERSIST}, mappedBy = "study", fetch = FetchType.LAZY, orphanRemoval = false)
     @OrderBy(value = "modified ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
