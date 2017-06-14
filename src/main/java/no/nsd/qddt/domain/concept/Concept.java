@@ -132,7 +132,7 @@ public class Concept extends AbstractEntityAudit {
     }
 
     public  void removeQuestionItem(UUID qiId){
-        getConceptQuestionItems().stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
+        getConceptQuestionItems().stream().filter(q -> q.getId().getQuestionItemId().equals(qiId)).
             forEach(cq->{
                 System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
                 cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
@@ -140,7 +140,7 @@ public class Concept extends AbstractEntityAudit {
                 this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
                 this.setChangeComment("QuestionItem assosiation removed");
             });
-        getConceptQuestionItems().removeIf(q -> q.getQuestionItem().getId().equals(qiId));
+        getConceptQuestionItems().removeIf(q -> q.getId().getQuestionItemId().equals(qiId));
     }
 
 

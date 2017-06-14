@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -33,11 +34,13 @@ public class ConceptController {
 
     private ConceptService service;
     private TopicGroupService topicGroupService;
+    private ConceptQuestionItemService cqiService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,ConceptQuestionItemService conceptQuestionItem) {
         this.service = conceptService;
         this.topicGroupService = topicGroupService;
+        this.cqiService = conceptQuestionItem;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -75,12 +78,13 @@ public class ConceptController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "concept", "questionitem"})
-    public ConceptJsonEdit removeQuestionItem(@RequestParam("concept") UUID conceptId, @RequestParam("questionitem") UUID questionItemId) {
+    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "conceptid", "questionitemid"})
+    public ConceptJsonEdit removeQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId) {
         Concept concept=null;
         try{
             concept = service.findOne(conceptId);
             concept.removeQuestionItem(questionItemId);
+            cqiService.delete(new ParentQuestionItemId(conceptId,questionItemId));
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
             ex.printStackTrace();

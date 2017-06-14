@@ -90,17 +90,12 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         assert  (instance != null);
 
         try{
-            System.out.println("postLoadProcessing ConceptAuditService " + instance.getName()+ " QI:" + instance.getConceptQuestionItems().size());
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
-            instance.getConceptQuestionItems().forEach(cqi->{
-                    System.out.println("    Fetching QI for cqi :");
-                    cqi.setQuestionItem(questionAuditService.getQuestionItemLastOrRevision(
-                            cqi.getId().getQuestionItemId(),
-                            cqi.getQuestionItemRevision()).
-                            getEntity());
-                    System.out.println("    QI fetched: " + cqi.getQuestionItem().getName());
-            });
+            instance.getConceptQuestionItems().forEach(cqi-> cqi.setQuestionItem(questionAuditService.getQuestionItemLastOrRevision(
+                    cqi.getId().getQuestionItemId(),
+                    cqi.getQuestionItemRevision()).
+                    getEntity()));
 
             instance.getChildren().stream().map(c->postLoadProcessing(c));
 

@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.study.StudyService;
@@ -40,11 +41,14 @@ public class TopicGroupController {
 
     private TopicGroupService service;
     private StudyService studyService;
+    private ConceptQuestionItemService cqiService;
+
 
     @Autowired
-    public TopicGroupController(TopicGroupService service, StudyService studyService) {
+    public TopicGroupController(TopicGroupService service, StudyService studyService, ConceptQuestionItemService conceptQuestionItemService) {
         this.service = service;
         this.studyService = studyService;
+        this.cqiService = conceptQuestionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -133,6 +137,7 @@ public class TopicGroupController {
         try{
             topicGroup = service.findOne(topicId);
             topicGroup.removeQuestionItem(questionItemId);
+            cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
             return new TopicGroupRevisionJson(service.save(topicGroup));
         } catch (Exception ex) {
             ex.printStackTrace();

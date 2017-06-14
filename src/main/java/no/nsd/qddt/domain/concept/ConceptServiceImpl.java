@@ -88,8 +88,9 @@ class ConceptServiceImpl implements ConceptService {
 
 
     protected Concept prePersistProcessing(Concept instance) {
-        System.out.println("prePersistProcessing");
+        System.out.println("prePersistProcessing " + instance.getName());
         try {
+            System.out.println("Number of QIs: " + instance.getConceptQuestionItems().size());
             instance.getConceptQuestionItems().stream()
                     .filter(f->f.getQuestionItemRevision() == null)
                     .forEach(cqi->{

@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @Audited
 @Table(name = "CONCEPT_QUESTION_ITEM")
 @AssociationOverrides({
-        @AssociationOverride(name = "id.concept", joinColumns = @JoinColumn(name = "CONCEPT_ID")),
+        @AssociationOverride(name = "id.concept", joinColumns = @JoinColumn(name = "PARENT_ID")),
         @AssociationOverride(name = "id.questionItem", joinColumns = @JoinColumn(name = "QUESTIONITEM_ID"))
 })
 @NamedNativeQuery(name="AuditQuestionItem", query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +

@@ -18,12 +18,12 @@ public class ParentQuestionItemId implements Serializable {
     private static final long serialVersionUID = -7261887879839337877L;
 
     @Type(type="pg-uuid")
-    @Column(name = "QUESTIONITEM_ID")
-    private UUID questionItemId;
-
-    @Type(type="pg-uuid")
     @Column(name = "PARENT_ID")
     private UUID parentId;
+
+    @Type(type="pg-uuid")
+    @Column(name = "QUESTIONITEM_ID")
+    private UUID questionItemId;
 
 
     public ParentQuestionItemId() {
