@@ -281,7 +281,6 @@ public class Concept extends AbstractEntityAudit {
         document.add(new Paragraph(this.getName()));
         document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
         document.add(new Paragraph(this.getDescription()));
-        document.add(new Paragraph(this.getLabel()));
 
         for (Comment item : this.getComments()) {
             item.fillDoc(document);

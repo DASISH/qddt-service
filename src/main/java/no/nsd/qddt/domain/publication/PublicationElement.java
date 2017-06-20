@@ -127,7 +127,6 @@ public class PublicationElement  {
                 case CONCEPT:
                     if(element instanceof Concept)
                         return new ConceptJsonEdit((Concept) element);
-                    System.out.println("GetElement Concept " + element);
                     break;
                 case CONTROL_CONSTRUCT:
                     break;
@@ -144,7 +143,6 @@ public class PublicationElement  {
                 case QUESTION_ITEM:
                     if (element instanceof QuestionItem)
                         return new QuestionItemJsonView((QuestionItem) element);
-                    System.out.println("GetElement QuestionItem " + element);
                     break;
                 case STUDY:
                     break;
@@ -153,7 +151,6 @@ public class PublicationElement  {
                 case TOPIC_GROUP:
                     if(element instanceof TopicGroup)
                         return new TopicGroupRevisionJson((TopicGroup) element);
-                    System.out.println("GetElement TopicGroup " + element);
                     break;
             }
         }catch (Exception ex){

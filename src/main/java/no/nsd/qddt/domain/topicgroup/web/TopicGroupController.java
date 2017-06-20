@@ -146,20 +146,10 @@ public class TopicGroupController {
         }
     }
 
-    @RequestMapping(value="/pdf/{id}", method=RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
-    public @ResponseBody
-    ResponseEntity<ByteArrayInputStream> getPdf(@PathVariable("id") UUID id) {
-        try {
-            ByteArrayOutputStream pdfStream = service.findOne(id).makePdf();
-            return ResponseEntity
-                    .ok()
-                    .contentLength(pdfStream.size())
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(new ByteArrayInputStream (pdfStream.toByteArray()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  null;
-        }
+    @ResponseBody
+    @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf().toByteArray();
     }
 
     private TopicGroupRevisionJson postLoad(TopicGroup topicGroup){

@@ -365,6 +365,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             fillDoc(doc);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception ex) {
+            System.out.println(ex);
+            ex.printStackTrace();
         }
         finally {
             doc.close();
