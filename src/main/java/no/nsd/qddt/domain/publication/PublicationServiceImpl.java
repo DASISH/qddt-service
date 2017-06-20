@@ -162,7 +162,6 @@ public class PublicationServiceImpl implements PublicationService {
     private PublicationElement fill(PublicationElement element) {
         BaseServiceAudit service = getService(element.getElementEnum());
         try {
-            System.out.println("Fill element " + element.getName() + " - " + element.getElementKind());
             element.setElement(service.findRevision(
                     element.getId(),
                     element.getRevisionNumber())
@@ -173,8 +172,10 @@ public class PublicationServiceImpl implements PublicationService {
             element.setElement(rev.getEntity());
             element.setRevisionNumber(rev.getRevisionNumber().intValue());
         } catch (JpaSystemException se) {
+            System.out.println("PublicationElement - JpaSystemException");
             System.out.println(se.getMessage());
         } catch (Exception ex) {
+            System.out.println("PublicationElement fill");
             ex.printStackTrace();
         }
 
@@ -182,7 +183,6 @@ public class PublicationServiceImpl implements PublicationService {
             element.setName(element.getElementAsEntity().getName());
             element.setVersion(element.getElementAsEntity().getVersion());
         }
-//        System.out.println("fill  -> " + element);
         return element;
     }
 

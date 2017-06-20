@@ -86,9 +86,20 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     protected TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-//            System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
+            System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
+            int size = instance.getConcepts().size();
+            if (size>0)
+                instance.getConcepts().forEach(c-> c.getConceptQuestionItems().forEach(cqi->{
+                    Revision<Integer, QuestionItem> rev = questionItemAuditService.getQuestionItemLastOrRevision(
+                            cqi.getId().getQuestionItemId(),
+                            cqi.getQuestionItemRevision());
+                    cqi.setQuestionItem(rev.getEntity());
+                    if (rev.getEntity() == null)
+                        System.out.println("Failed loading QI:" + cqi.getId() + "- rev:" + cqi.getQuestionItemRevision());
+                }));
+
 
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
                 Revision<Integer, QuestionItem> rev = questionItemAuditService.getQuestionItemLastOrRevision(

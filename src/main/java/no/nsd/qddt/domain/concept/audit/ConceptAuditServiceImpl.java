@@ -92,9 +92,10 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         try{
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
-            instance.getConceptQuestionItems().forEach(cqi-> cqi.setQuestionItem(questionAuditService.getQuestionItemLastOrRevision(
-                    cqi.getId().getQuestionItemId(),
-                    cqi.getQuestionItemRevision()).
+            instance.getConceptQuestionItems().forEach(cqi-> cqi.setQuestionItem(
+                    questionAuditService.getQuestionItemLastOrRevision(
+                        cqi.getId().getQuestionItemId(),
+                        cqi.getQuestionItemRevision()).
                     getEntity()));
 
             instance.getChildren().stream().map(c->postLoadProcessing(c));

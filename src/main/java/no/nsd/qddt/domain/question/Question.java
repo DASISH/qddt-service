@@ -1,12 +1,14 @@
 package no.nsd.qddt.domain.question;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.utils.StringTool;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -24,21 +26,33 @@ import java.util.stream.Collectors;
 @Table(name = "QUESTION")
 public class Question extends AbstractEntity {
 
-    @OrderColumn(name = "children_idx")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "parent_id")
-    private Set<Question> children = new HashSet<>();
-
-    /// Reason why this Question is before or after its siblings
-    private String questionIdxRationale;
+    /// QuestionText: the actual question to ask.
+    @Column(name = "question", length = 1500)
+    private String question;
 
     /// QuestionIntent: what the question is supposed to gather information about.
     @Column(name = "intent", length = 2000)
     private String intent;
 
-    /// QuestionText: the actual question to ask.
-    @Column(name = "question", length = 1500)
-    private String question;
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @JoinColumn(name = "parent_id")
+    @OrderColumn(name = "question_idx")
+    // Ordered arrayList DOESN'T-WORK-WITH-ENVER-FIX
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "question_idx")
+    private List<Question> children = new ArrayList<>();
+
+    // Ordered arrayList doesn't work with Enver FIX
+    @Column(insertable = false,updatable = false)
+    private Integer question_idx;
+
+    /// Reason why this Question is before or after its siblings
+    private String questionIdxRationale;
+
+    @JsonBackReference(value = "parentRef")
+    @ManyToOne()
+    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    private Question parentReferenceOnly;
+
 
     public Question() {
 
@@ -49,7 +63,7 @@ public class Question extends AbstractEntity {
     }
 
     protected Question(Question question) {
-        setChildren(question.getChildren().stream().map(q->newCopyOf(q)).collect(Collectors.toSet()));
+        setChildren(question.getChildren().stream().map(q->newCopyOf(q)).collect(Collectors.toList()));
         setId(question.getId());
         setModifiedBy(question.getModifiedBy());
         setModified(question.getModified());
@@ -59,8 +73,19 @@ public class Question extends AbstractEntity {
     }
 
 
-    public Set<Question> getChildren() {
+    public List<Question> getChildren() {
         return children;
+    }
+
+    public void setChildren(List<Question> children) {
+        this.children = children;
+    }
+    /**
+     * Add a new comment to the set.
+     * @param question to be added to parent.
+     */
+    public void addChild(Question question) {
+        this.children.add(question);
     }
 
 
@@ -94,15 +119,6 @@ public class Question extends AbstractEntity {
         this.question = question;
     }
 
-    /**
-     * Add a new comment to the set.
-     * @param question to be added to parent.
-     */
-    public void addChild(Question question) {
-        this.children.add(question);
-    }
-
-    public void setChildren(Set<Question> children) {this.children = children;}
 
     @Override
     public boolean equals(Object o) {

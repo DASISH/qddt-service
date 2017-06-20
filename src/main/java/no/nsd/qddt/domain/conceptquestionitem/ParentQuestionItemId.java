@@ -61,6 +61,24 @@ public class ParentQuestionItemId implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ParentQuestionItemId)) return false;
+
+        ParentQuestionItemId that = (ParentQuestionItemId) o;
+
+        if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) return false;
+        return questionItemId != null ? questionItemId.equals(that.questionItemId) : that.questionItemId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parentId != null ? parentId.hashCode() : 0;
+        result = 31 * result + (questionItemId != null ? questionItemId.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Id{" +
                 ", ParentId=" + parentId +
