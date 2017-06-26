@@ -18,12 +18,12 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.OrderedSetType;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 /**
  * Question Item is a container for Question (text) and responsedomain
@@ -146,12 +146,15 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @Transient
     @JsonSerialize
-    public Set<ConceptRef> getConceptRefs(){
+    public List<ConceptRef> getConceptRefs(){
         try {
-            return conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept())).collect(Collectors.toSet());
+            System.out.println("getConceptRefs...");
+            return conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept()))
+                    .sorted(ConceptRef::compareTo)
+                    .collect(Collectors.toList());
         } catch (Exception ex){
             ex.printStackTrace();
-            return new HashSet<>(0);
+            return new ArrayList<>();
         }
     }
 
@@ -201,21 +204,14 @@ public class QuestionItem extends AbstractEntityAudit {
     @Override
     public void fillDoc(Document document) throws IOException {
 
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        document.add(new Paragraph("Survey Toc:").setFont(font));
-        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
         Paragraph p1 = new Paragraph();
-        p1.add(getName());
-        p1.add(getModifiedBy().toString());
-        document.add(p1);
-
-        document.add(new Paragraph(this.getQuestion().toString()));
-        document.add(new Paragraph(this.getResponseDomain().toString()));
+        p1.add("Name: "  + getName());
+        p1.add("Modified By: " + getModifiedBy().getUsername());
+        p1.add("Question: " +question.getQuestion());
+        Paragraph finalP = p1;
+        question.getChildren().forEach(c-> finalP.add("Question: " +c.getQuestion()));
+        document.add(finalP);
+        document.add(new Paragraph(this.getResponseDomain().getName()));
 
         for (Comment item : this.getComments()) {
             item.fillDoc(document);
