@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.concept.Concept;
 /**
  * @author Stig Norland
  */
-public class ConceptRef extends BaseRef {
+public class ConceptRef extends BaseRef<ConceptRef> {
 
     private TopicRef parent;
 
@@ -48,5 +48,15 @@ public class ConceptRef extends BaseRef {
         return "ConceptRef{" +
                 "topicRef=" + parent +
                 "} " + super.toString();
+    }
+
+    @Override
+    public int compareTo(ConceptRef o) {
+        int i =  this.getTopicRef().getStudyRef().compareTo(o.getTopicRef().getStudyRef());
+        if (i==0)
+            i =  this.getTopicRef().compareTo(o.getTopicRef());
+        if (i==0)
+            i= getName().compareToIgnoreCase(o.getName());
+        return i;
     }
 }

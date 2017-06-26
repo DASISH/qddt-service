@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-abstract class BaseRef implements Refs{
+abstract class BaseRef<T> implements Refs<T> {
 
     private String name;
     private UUID id;
@@ -73,4 +73,10 @@ abstract class BaseRef implements Refs{
                 ", id=" + id +
                 '}';
     }
+
+    public int compareTo(BaseRef o) {
+        if (o==null) return 1;
+        return this.getName().compareToIgnoreCase(o.getName());
+    }
+
 }

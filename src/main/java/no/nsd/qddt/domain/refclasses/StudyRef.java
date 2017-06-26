@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.study.Study;
 /**
  * @author Stig Norland
  */
-public class StudyRef extends BaseRef {
+public class StudyRef extends BaseRef<StudyRef> {
 
     private SurveyRef parent;
 
@@ -52,5 +52,10 @@ public class StudyRef extends BaseRef {
         return "StudyRef{" +
                 "surveyRef=" + parent +
                 "} " + super.toString();
+    }
+
+    @Override
+    public int compareTo(StudyRef o) {
+        return this.getName().compareToIgnoreCase(o.getName());
     }
 }
