@@ -8,11 +8,13 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -202,20 +204,22 @@ public class QuestionItem extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(Document document) throws IOException {
-
-        Paragraph p1 = new Paragraph();
-        p1.add("Name: "  + getName());
-        p1.add("Modified By: " + getModifiedBy().getUsername());
-        p1.add("Question: " +question.getQuestion());
-        Paragraph finalP = p1;
-        question.getChildren().forEach(c-> finalP.add("Question: " +c.getQuestion()));
-        document.add(finalP);
-        document.add(new Paragraph(this.getResponseDomain().getName()));
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph()
+                .setFont(pdfReport.getParagraphFont())
+                .add(getName()));
+        document.add(new Paragraph()
+                .add(question.getQuestion()));
+        document.add(new Paragraph()
+                .add("ResponseDomain"));
+        this.getResponseDomain().fillDoc(pdfReport);
+//        question.getChildren().forEach(c-> finalP.add("Question: " +c.getQuestion()));
 
         for (Comment item : this.getComments()) {
-            item.fillDoc(document);
+            item.fillDoc(pdfReport);
         }
+        pdfReport.addFooter(this);
 
     }
 }

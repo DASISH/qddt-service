@@ -5,11 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
@@ -424,8 +427,28 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     @Override
-    public void fillDoc(Document document) throws IOException {
-
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph()
+            .add("ControlConstruct (" + this.controlConstructKind.name() + ")"));
+        document.add(new Paragraph()
+                .add("Name")
+                .add(new Tab())
+                .add(getName()));
+        document.add(new Paragraph()
+                .add("Pre Instructions"));
+        for(Instruction pre:getPreInstructions()){
+            document.add(new Paragraph()
+                    .add(pre.getDescription()));
+        }
+        getQuestionItem().fillDoc(pdfReport);
+        document.add(new Paragraph()
+                .add("Post Instructions"));
+        for(Instruction post:getPostInstructions()){
+            document.add(new Paragraph()
+                    .add(post.getDescription()));
+        }
+        pdfReport.addFooter(this);
     }
 
     @Override

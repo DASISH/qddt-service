@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.publication;
 
 import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -95,9 +96,9 @@ public class Publication extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(Document document) throws IOException {
+    public void fillDoc(PdfReport pdfReport) throws IOException {
         for (PublicationElement element:getPublicationElements()){
-            element.getElementAsEntity().fillDoc(document);
+            element.getElementAsEntity().fillDoc(pdfReport);
         }
     }
 }

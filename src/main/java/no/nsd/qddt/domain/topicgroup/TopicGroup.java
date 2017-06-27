@@ -13,6 +13,7 @@ import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
@@ -242,27 +243,30 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
 
     @Override
-    public void fillDoc(Document document) throws IOException {
-
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        document.add(new Paragraph("Survey Toc:").setFont(font));
-        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+//        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+//        document.add(new Paragraph("Survey Toc:").setFont(font));
+//        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+//                .setSymbolIndent(12)
+//                .setListSymbol("\u2022")
+//                .setFont(font);
+//        list.add(new ListItem(this.getName()));
+//        document.add(list);
         document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
         document.add(new Paragraph(this.getAbstractDescription()));
-        document.add(new Paragraph(this.getTopicQuestionItems().toString()));
-        document.add(new Paragraph(this.getOtherMaterials().toString()));
-        document.add(new Paragraph(this.getComments().toString()));
+        this.getTopicQuestionItems().forEach(q -> {
+            try {
+                q.getQuestionItem().fillDoc(pdfReport);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
-//        for (Concept concept : getConcepts()) {
-//            concept.fillDoc(document);
-//        }
-
+        for (Concept concept : getConcepts()) {
+            concept.fillDoc(pdfReport);
+        }
+        pdfReport.addFooter(this);
     }
 
 

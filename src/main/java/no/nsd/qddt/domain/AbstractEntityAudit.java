@@ -1,25 +1,21 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.springframework.data.domain.Example;
 
 import javax.persistence.*;
-import java.io.*;
-import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -130,9 +126,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Where(clause = "is_hidden = 'false'")
     @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
     @NotAudited
-//    @Transient
-//    @JsonSerialize
-//    @JsonDeserialize
     private Set<Comment> comments = new HashSet<>();
 
 
@@ -258,7 +251,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     }
 
 
-
     /**
      * None null field compare, (ignores null value when comparing)
      * @param o
@@ -353,26 +345,21 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     }
 
 
-    public abstract void fillDoc(Document document) throws IOException;
+    public abstract void fillDoc(PdfReport pdfReport) throws IOException;
 
     public ByteArrayOutputStream makePdf() {
-
         ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
-        Document doc = new Document(
-                        new PdfDocument(
-                            new PdfWriter( pdfOutputStream)));
+        PdfReport pdf = new PdfReport(pdfOutputStream);
         try {
-            fillDoc(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
+            fillDoc(pdf);
+            pdf.createToc();
         } catch (Exception ex) {
             System.out.println(ex);
             ex.printStackTrace();
         }
         finally {
-            doc.close();
+            pdf.close();
         }
-
         return pdfOutputStream;
     }
 

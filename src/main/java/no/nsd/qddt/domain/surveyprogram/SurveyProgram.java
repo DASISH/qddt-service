@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.surveyprogram;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
@@ -141,30 +142,15 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable {
 
 
     @Override
-    public void fillDoc(Document document) throws IOException {
-        //    if (document == null)
-        //        document = new Document();
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        document.add(new Paragraph("Survay Toc:").setFont(font));
-        document.add(new Paragraph("To the top").setFont(font));
-        List list = new List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem (this.getName()));
-
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph(this.getName()).setFont(pdfReport.getChapterFont()));
         document.add(new Paragraph(this.getDescription()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
-        document.add(new Paragraph(this.getComments().toString()));
-
 
         for (Study study : getStudies()) {
-
-            study.fillDoc(document);
+            study.fillDoc(pdfReport);
         }
-
+        pdfReport.addFooter(this);
     }
 
 }

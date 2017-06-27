@@ -8,6 +8,7 @@ import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
@@ -296,8 +297,29 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     @Override
-    public void fillDoc(Document document) throws IOException {
-        document.add(new Paragraph(getLabel()));
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        switch (getCategoryType()){
+            case DATETIME:
+            case TEXT:
+            case NUMERIC:
+            case BOOLEAN:
+            case URI:
+            case CATEGORY:
+                document.add(new Paragraph("Category " + getLabel()));
+                document.add(new Paragraph("Type " + getCategoryType().name()));
+                break;
+            case MISSING_GROUP:
+                break;
+            case LIST:
+                break;
+            case SCALE:
+                break;
+            case MIXED:
+                break;
+        }
+
+        document.add(new Paragraph(" " ));
     }
 
     public boolean fieldCompare(Category o) {

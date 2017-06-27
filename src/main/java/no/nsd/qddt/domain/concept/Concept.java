@@ -13,6 +13,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -20,6 +21,7 @@ import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -268,26 +270,22 @@ public class Concept extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(Document document) throws IOException {
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
 
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        document.add(new Paragraph("Survey Toc:").setFont(font));
-        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+        document.add(new Paragraph("Concept " + this.getName()).setFont(pdfReport.getChapterFont()));
+        document.add(new Paragraph("Description"));
         document.add(new Paragraph(this.getDescription()));
+        pdfReport.addFooter(this);
 
         for (Comment item : this.getComments()) {
-            item.fillDoc(document);
+            item.fillDoc(pdfReport);
         }
-
+        document.add(new Paragraph()
+                .setFont(pdfReport.getParagraphFont())
+                .add("QuestionItem(s)"));
         for (ConceptQuestionItem item : getConceptQuestionItems()) {
-            item.getQuestionItem().fillDoc(document);
+            item.getQuestionItem().fillDoc(pdfReport);
         }
 
     }

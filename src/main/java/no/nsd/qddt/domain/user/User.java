@@ -279,6 +279,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{ " + username + "@" + agency + " }";
+        return "User{ " + username + "@" + agency.getName() + " }";
     }
 }

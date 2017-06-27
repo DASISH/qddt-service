@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.instruction;
 
 import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -70,7 +71,7 @@ public class Instruction extends AbstractEntityAudit {
     }
 
     @Override
-    public void fillDoc(Document document) throws IOException {
+    public void fillDoc(PdfReport pdfReport) throws IOException {
 
     }
 }

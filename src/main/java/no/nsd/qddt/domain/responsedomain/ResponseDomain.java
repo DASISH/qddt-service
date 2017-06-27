@@ -4,11 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
 import no.nsd.qddt.utils.StringTool;
@@ -300,7 +303,16 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     @Override
-    public void fillDoc(Document document) throws IOException {
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph().setFont(pdfReport.getParagraphFont())
+                .add("Name")
+                .add(new Tab())
+                .add(getName()));
+        document.add(new Paragraph()
+                .add("ManagedRepresentation"));
+        getManagedRepresentation().fillDoc(pdfReport);
+        pdfReport.addFooter(this);
 
     }
 

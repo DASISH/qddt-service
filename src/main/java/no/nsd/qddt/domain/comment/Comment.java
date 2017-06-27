@@ -1,9 +1,12 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -122,13 +125,18 @@ public class Comment extends AbstractEntity  {
     }
 
 
-    public void fillDoc(Document document) throws IOException {
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
         document.setLeftMargin(document.getLeftMargin()+5f);
-        document.add(new Paragraph(this.getModifiedBy().toString() + " - " + this.getModified()));
-        document.add(new Paragraph(this.getComment()));
+        document.add(new Paragraph(this.getComment()).setFont(pdfReport.getFont()));
+        document.add(new Paragraph()
+                .add(new Tab())
+                .add(getModifiedBy().toString())
+                .add(new Tab())
+                .add(getModified().toString()));
 
         for (Comment item : this.getComments()) {
-            item.fillDoc(document);
+            item.fillDoc(pdfReport);
         }
 
         document.setLeftMargin(document.getLeftMargin()-5f);

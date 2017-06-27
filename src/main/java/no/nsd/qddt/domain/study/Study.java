@@ -8,10 +8,12 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.List;
 import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
@@ -192,23 +194,16 @@ public class Study extends AbstractEntityAudit implements Authorable {
 
 
     @Override
-    public void fillDoc(Document document) throws IOException {
-
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        document.add(new Paragraph("Study Toc:").setFont(font));
-        List list = new List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph()
+                .add("Name")
+                .add(new Tab())
+                .add(this.getName()));
         document.add(new Paragraph(this.getDescription()));
-        document.add(new Paragraph(this.getComments().toString()));
         for (TopicGroup topic : getTopicGroups()) {
-            topic.fillDoc(document);
+            topic.fillDoc(pdfReport);
         }
-
+        pdfReport.addFooter(this);
     }
 }
