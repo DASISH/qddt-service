@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/publicationstatus")
 public class PublicationStatusController {
     
-    private PublicationStatusService service;
+    private final PublicationStatusService service;
 
     @Autowired
     public PublicationStatusController(PublicationStatusService service){
@@ -52,11 +52,10 @@ public class PublicationStatusController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list", method = RequestMethod.GET , produces = "application/json")
     public List<PublicationStatusJsonParent> getAll() {
-        List<PublicationStatusJsonParent> list =service.findAll()
-                .stream().map(s->new PublicationStatusJsonParent(s))
+        return service.findAll()
+                .stream().map(PublicationStatusJsonParent::new)
                 .sorted(Comparator.comparing(PublicationStatusJsonParent::getChildrenIdx))
                 .collect(Collectors.toList());
-        return list;
     }
     
 }

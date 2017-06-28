@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequestMapping(value = "/comment")
 public class CommentController {
 
-    private CommentService service;
+    private final CommentService service;
 
     @Autowired
     public CommentController(CommentService service){
@@ -60,7 +60,7 @@ public class CommentController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<CommentJsonEdit>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<CommentJsonEdit> comments = service.findAllByOwnerIdPageable(ownerId, pageable).map(c->new CommentJsonEdit(c));
+        Page<CommentJsonEdit> comments = service.findAllByOwnerIdPageable(ownerId, pageable).map(CommentJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 

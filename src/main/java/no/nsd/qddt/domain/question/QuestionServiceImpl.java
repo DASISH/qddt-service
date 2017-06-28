@@ -17,7 +17,7 @@ import java.util.UUID;
 class QuestionServiceImpl implements QuestionService {
 
 
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
     @Autowired
     public QuestionServiceImpl(QuestionRepository questionRepository) {
@@ -42,7 +42,7 @@ class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public Question save(Question instance) {
 
         return questionRepository.save(instance);

@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.Version;
@@ -40,7 +39,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         CREATED("Created","New element status"),
         UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
         UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
-        UPDATED_HIERARCY_RELATION("Hierarcy Relation Updated","Element added to a collection, no changes to element itself"),
+        UPDATED_HIERARCHY_RELATION("Hierarchy Relation Updated","Element added to a collection, no changes to element itself"),
         IN_DEVELOPMENT("In Development","UnfinishedWork"),
         TYPO("NoMeaningChange","Typo or No Meaning Change"),
         CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
@@ -105,11 +104,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "based_on_object", nullable = true)
+    @Column(name = "based_on_object")
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    @Column(name = "based_on_revision", nullable = true)
+    @Column(name = "based_on_revision")
     private Integer basedOnRevision;
 
 
@@ -146,7 +145,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         return basedOnObject;
     }
 
-    public void setBasedOnObject(UUID basedOnObject) {
+    private void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
@@ -154,7 +153,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         return basedOnRevision;
     }
 
-    public void setBasedOnRevision(Integer basedOnRevision) {
+    private void setBasedOnRevision(Integer basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
@@ -243,7 +242,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             }
             version = ver;
         }catch (Exception ex){
-            System.out.println("Exception in AbstracEntityAudit::onUpdate");
+            System.out.println("Exception in AbstractEntityAudit::onUpdate");
             System.out.println(ex.getStackTrace()[0]);
             System.out.println(ex.getMessage());
             System.out.println(this);
@@ -287,7 +286,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @JsonIgnore
     /*
     This function should contain all copy code needed to make a complete copy of hierarchy under this element
-    (an override should propigate downward and call makeNewCopy on it's children).
+    (an override should propagate downward and call makeNewCopy on it's children).
      */
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
@@ -349,16 +348,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     public ByteArrayOutputStream makePdf() {
         ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
-        PdfReport pdf = new PdfReport(pdfOutputStream);
-        try {
+        try (PdfReport pdf = new PdfReport(pdfOutputStream)) {
             fillDoc(pdf);
             pdf.createToc();
         } catch (Exception ex) {
-            System.out.println(ex);
             ex.printStackTrace();
-        }
-        finally {
-            pdf.close();
         }
         return pdfOutputStream;
     }

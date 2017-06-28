@@ -63,7 +63,7 @@ public class Question extends AbstractEntity {
     }
 
     protected Question(Question question) {
-        setChildren(question.getChildren().stream().map(q->newCopyOf(q)).collect(Collectors.toList()));
+        setChildren(question.getChildren().stream().map(this::newCopyOf).collect(Collectors.toList()));
         setId(question.getId());
         setModifiedBy(question.getModifiedBy());
         setModified(question.getModified());
@@ -77,7 +77,7 @@ public class Question extends AbstractEntity {
         return children;
     }
 
-    public void setChildren(List<Question> children) {
+    private void setChildren(List<Question> children) {
         this.children = children;
     }
     /**
@@ -93,7 +93,7 @@ public class Question extends AbstractEntity {
         return questionIdxRationale;
     }
 
-    public void setQuestionIdxRationale(String gridIdxRationale) {
+    private void setQuestionIdxRationale(String gridIdxRationale) {
         this.questionIdxRationale = gridIdxRationale;
     }
 
@@ -104,7 +104,7 @@ public class Question extends AbstractEntity {
             return intent;
     }
 
-    public void setIntent(String intent) {
+    private void setIntent(String intent) {
         this.intent = intent;
     }
 

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -93,7 +92,7 @@ public class ConceptQuestionItem  implements java.io.Serializable {
         return id;
     }
 
-    public void setId(ParentQuestionItemId id) {
+    private void setId(ParentQuestionItemId id) {
         this.id = id;
     }
 

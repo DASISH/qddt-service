@@ -15,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -26,7 +24,7 @@ import java.util.UUID;
 @RequestMapping("/questionitem")
 public class QuestionItemController {
 
-    private QuestionItemService service;
+    private final QuestionItemService service;
 
     @Autowired
     public QuestionItemController(QuestionItemService service){
@@ -61,7 +59,7 @@ public class QuestionItemController {
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<QuestionItemListJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
         Page<QuestionItemListJson> questionitems =
-                service.findAllPageable(pageable).map(F->new QuestionItemListJson(F));
+                service.findAllPageable(pageable).map(QuestionItemListJson::new);
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 
@@ -73,7 +71,7 @@ public class QuestionItemController {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         Page<QuestionItemListJson> questionitems = null;
         try {
-            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(F->new QuestionItemListJson(F));
+            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(QuestionItemListJson::new);
         } catch (Exception ex){
             ex.printStackTrace();
         }

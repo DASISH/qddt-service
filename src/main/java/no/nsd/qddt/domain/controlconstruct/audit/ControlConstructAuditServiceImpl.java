@@ -28,10 +28,10 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("instrumentAuditQuestionService")
 class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
-    private ControlConstructAuditRepository controlConstructAuditRepository;
-    private QuestionItemAuditService qiAuditService;
-    private OtherMaterialService otherMaterialService;
-    private CommentService commentService;
+    private final ControlConstructAuditRepository controlConstructAuditRepository;
+    private final QuestionItemAuditService qiAuditService;
+    private final OtherMaterialService otherMaterialService;
+    private final CommentService commentService;
 
 
     @Autowired
@@ -134,7 +134,7 @@ thus we need to populate some elements ourselves.
     }
 
     private List<ControlConstruct> postLoadProcessing(List<ControlConstruct>instances) {
-        return instances.stream().map(p-> postLoadProcessing(p)).collect(Collectors.toList());
+        return instances.stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
 

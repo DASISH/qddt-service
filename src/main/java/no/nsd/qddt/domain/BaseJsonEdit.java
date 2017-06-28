@@ -44,10 +44,10 @@ public class BaseJsonEdit implements Serializable {
     @Enumerated(EnumType.STRING)
     private AbstractEntityAudit.ChangeKind changeKind;
 
-    public BaseJsonEdit() {
+    protected BaseJsonEdit() {
     }
 
-    public BaseJsonEdit(AbstractEntityAudit entity) {
+    protected BaseJsonEdit(AbstractEntityAudit entity) {
         if (entity == null){
             System.out.println("BaseJsonEdit entity is null");
             StackTraceElement[] stack =  Thread.currentThread().getStackTrace();
@@ -70,7 +70,7 @@ public class BaseJsonEdit implements Serializable {
         return id;
     }
 
-    public void setId(UUID id) {
+    protected void setId(UUID id) {
         this.id = id;
     }
 
@@ -78,7 +78,7 @@ public class BaseJsonEdit implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = name;
     }
 
@@ -86,7 +86,7 @@ public class BaseJsonEdit implements Serializable {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    private void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
@@ -94,7 +94,7 @@ public class BaseJsonEdit implements Serializable {
         return modifiedBy;
     }
 
-    public void setModifiedBy(UserJson modifiedBy) {
+    protected void setModifiedBy(UserJson modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
@@ -102,7 +102,7 @@ public class BaseJsonEdit implements Serializable {
         return agency;
     }
 
-    public void setAgency(AgencyJsonView agency) {
+    protected void setAgency(AgencyJsonView agency) {
         this.agency = agency;
     }
 
@@ -110,7 +110,7 @@ public class BaseJsonEdit implements Serializable {
         return basedOnObject;
     }
 
-    public void setBasedOnObject(UUID basedOnObject) {
+    private void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
@@ -118,7 +118,7 @@ public class BaseJsonEdit implements Serializable {
         return version;
     }
 
-    public void setVersion(Version version) {
+    private void setVersion(Version version) {
         this.version = version;
     }
 
@@ -126,7 +126,7 @@ public class BaseJsonEdit implements Serializable {
         return changeKind;
     }
 
-    public void setChangeKind(AbstractEntityAudit.ChangeKind changeKind) {
+    private void setChangeKind(AbstractEntityAudit.ChangeKind changeKind) {
         this.changeKind = changeKind;
     }
 }

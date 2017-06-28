@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.authorable;
 
 import no.nsd.qddt.domain.author.Author;
-import no.nsd.qddt.domain.user.User;
 
 import java.util.Set;
 

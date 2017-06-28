@@ -13,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -26,7 +24,7 @@ import java.util.UUID;
 @RequestMapping("/instrument")
 public class InstrumentController  {
 
-    private InstrumentService service;
+    private final InstrumentService service;
 
     @Autowired
     public InstrumentController(InstrumentService service){

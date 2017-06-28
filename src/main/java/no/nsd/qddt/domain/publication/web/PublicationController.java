@@ -24,7 +24,7 @@ import java.util.UUID;
 public class PublicationController {
 
 
-    private PublicationService service;
+    private final PublicationService service;
 
     @Autowired
     public PublicationController(PublicationService service) {
@@ -76,12 +76,10 @@ public class PublicationController {
     public HttpEntity<PagedResources<Publication>> getBy(@RequestParam(value = "name", defaultValue = "%") String name,
                                                          @RequestParam(value = "status", defaultValue = "%") String status,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Publication> items = null;
         name = name.replace("*", "%");
         status = status.replace("*", "%");
-
-        items = service.findByNameOrPurposeAndStatus(name, name, status, pageable);
+        Page<Publication> items =
+                service.findByNameOrPurposeAndStatus(name, name, status, pageable);
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.SynchronousQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 @Service("surveyProgramService")
 class SurveyProgramServiceImpl implements SurveyProgramService {
 
-    private SurveyProgramRepository surveyProgramRepository;
+    private final SurveyProgramRepository surveyProgramRepository;
 
     @Autowired
     public SurveyProgramServiceImpl(SurveyProgramRepository surveyProgramRepository) {
@@ -45,7 +44,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public SurveyProgram save(SurveyProgram instance) {
 
         SurveyProgram retval=null;
@@ -60,7 +59,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public List<SurveyProgram> save(List<SurveyProgram> instances) {
         return surveyProgramRepository.save(instances);
     }
@@ -75,11 +74,11 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         surveyProgramRepository.delete(instances);
     }
 
-    protected SurveyProgram prePersistProcessing(SurveyProgram instance) {
+    private SurveyProgram prePersistProcessing(SurveyProgram instance) {
         return instance;
     }
 
-    protected SurveyProgram postLoadProcessing(SurveyProgram instance) {
+    private SurveyProgram postLoadProcessing(SurveyProgram instance) {
 //        System.out.println("comments : " + instance.getComments().size());
         return instance;
     }
@@ -92,6 +91,6 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     public List<SurveyProgram> findByAgency(User user) {
         return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency())
-                .stream().map(s->postLoadProcessing(s)).collect(Collectors.toList());
+                .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 }

@@ -40,6 +40,7 @@ public class PublicationElement  {
     @JsonIgnore
     private Integer minor;
     @JsonIgnore
+    private
     String versionLabel;
 
     @Transient
@@ -62,7 +63,7 @@ public class PublicationElement  {
     }
 
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -87,7 +88,7 @@ public class PublicationElement  {
     }
 
 
-    public void setElementEnum(ElementKind elementKind) {
+    private void setElementEnum(ElementKind elementKind) {
         this.elementKind = elementKind;
     }
 
@@ -108,7 +109,7 @@ public class PublicationElement  {
     }
 
 
-    public Version getVersion() {
+    private Version getVersion() {
         return new Version(major,minor,revisionNumber,versionLabel);
     }
 

@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.publicationstatus.json;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,16 +13,17 @@ import java.util.stream.Collectors;
 public class PublicationStatusJsonParent extends PublicationStatusJsonChild {
 
 
-    List<PublicationStatusJsonChild> children = new ArrayList<>();
+    private List<PublicationStatusJsonChild> children = new ArrayList<>();
 
     @JsonIgnore
+    private final
     Integer childrenIdx;
 
     public PublicationStatusJsonParent(PublicationStatus publicationStatus){
         super(publicationStatus);
         childrenIdx = publicationStatus.getChildrenIdx();
         children = publicationStatus.getChildren().stream()
-                .map(c->new PublicationStatusJsonChild(c))
+                .map(PublicationStatusJsonChild::new)
                 .collect(Collectors.toList());
     }
 

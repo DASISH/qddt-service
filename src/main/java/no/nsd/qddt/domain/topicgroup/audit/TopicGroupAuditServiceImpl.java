@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +23,9 @@ import java.util.stream.Collectors;
 @Service("topicGroupAuditService")
 class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
-    private TopicGroupAuditRepository topicGroupAuditRepository;
-    private QuestionItemAuditService  questionItemAuditService;
-    private CommentService commentService;
+    private final TopicGroupAuditRepository topicGroupAuditRepository;
+    private final QuestionItemAuditService  questionItemAuditService;
+    private final CommentService commentService;
 
     @Autowired
     public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,QuestionItemAuditService  questionItemAuditService,CommentService commentService) {
@@ -50,16 +47,16 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     @Override
     public Page<Revision<Integer, TopicGroup>> findRevisions(UUID uuid, Pageable pageable) {
         return topicGroupAuditRepository.findRevisions(uuid, pageable)
-                .map(c-> postLoadProcessing(c));
+                .map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, TopicGroup> findFirstChange(UUID uuid) {
         return topicGroupAuditRepository.findRevisions(uuid).
                 getContent().stream()
-                .min((i,o)->i.getRevisionNumber())
-                .map(c-> postLoadProcessing(c))
-                .get();
+                .min(Comparator.comparing(Revision::getRevisionNumber))
+                .map(this::postLoadProcessing)
+                .orElse(null);
     }
 
     @Override
@@ -71,19 +68,19 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
                         .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
-                        .map(c-> postLoadProcessing(c))
+                        .map(this::postLoadProcessing)
                         .collect(Collectors.toList())
         );
     }
 
-    protected Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
+    private Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
         assert  (instance != null);
         return new Revision<>(instance.getMetadata(),
                 postLoadProcessing(instance.getEntity()));
 
     }
 
-    protected TopicGroup postLoadProcessing(TopicGroup instance) {
+    private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
             System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());

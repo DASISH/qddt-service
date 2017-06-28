@@ -13,7 +13,7 @@ import java.util.List;
 public class QDDTUserDetails implements UserDetails {
     private static final long serialVersionUID = -2985656388091941799L;
 
-    private User user;
+    private final User user;
     private List<? extends GrantedAuthority> authorities = new ArrayList<>();
 
     public QDDTUserDetails(User user, List<? extends GrantedAuthority> authorities) {

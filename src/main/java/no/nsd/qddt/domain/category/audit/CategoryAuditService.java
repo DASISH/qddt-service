@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.category.audit;
 
 import no.nsd.qddt.domain.BaseServiceAudit;
 import no.nsd.qddt.domain.category.Category;
-import org.springframework.data.history.Revision;
 
 import java.util.UUID;
 

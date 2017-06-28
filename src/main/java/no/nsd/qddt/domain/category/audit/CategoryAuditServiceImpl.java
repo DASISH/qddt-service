@@ -8,6 +8,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.UUID;
 
 /**
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Service("categoryAuditService")
 class CategoryAuditServiceImpl implements CategoryAuditService {
 
-    private CategoryAuditRepository categoryAuditRepository;
+    private final CategoryAuditRepository categoryAuditRepository;
 
     @Autowired
     public CategoryAuditServiceImpl(CategoryAuditRepository repository) {
@@ -45,7 +46,7 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
     public Revision<Integer, Category> findFirstChange(UUID uuid) {
         return categoryAuditRepository.findRevisions(uuid).
                 getContent().stream().
-                min((i,o)->i.getRevisionNumber()).get();
+                min(Comparator.comparing(Revision::getRevisionNumber)).orElse(null);
     }
 
 //    @Override

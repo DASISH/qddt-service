@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
@@ -114,7 +113,7 @@ public class Instrument extends AbstractEntityAudit  {
     @Transient
     public Set<StudyRef> getStudyRefs() {
         try{
-            return  studies.stream().map(s-> new StudyRef(s)).collect(Collectors.toSet());
+            return  studies.stream().map(StudyRef::new).collect(Collectors.toSet());
         } catch (Exception ex ) {
             return null;
         }

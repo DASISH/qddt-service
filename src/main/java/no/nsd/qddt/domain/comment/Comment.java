@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Tab;
@@ -42,7 +41,7 @@ public class Comment extends AbstractEntity  {
     private boolean isHidden;
 
     @Column(name = "comment",length = 2000)
-    public String comment;
+    private String comment;
 
 
     public Comment() {
@@ -125,7 +124,7 @@ public class Comment extends AbstractEntity  {
     }
 
 
-    public void fillDoc(PdfReport pdfReport) throws IOException {
+    public void fillDoc(PdfReport pdfReport) {
         Document document =pdfReport.getTheDocument();
         document.setLeftMargin(document.getLeftMargin()+5f);
         document.add(new Paragraph(this.getComment()).setFont(pdfReport.getFont()));

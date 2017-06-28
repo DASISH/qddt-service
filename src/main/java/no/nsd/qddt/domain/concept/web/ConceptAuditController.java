@@ -4,7 +4,6 @@ package no.nsd.qddt.domain.concept.web;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +27,7 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/concept", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ConceptAuditController {
 
-    private ConceptAuditService auditService;
+    private final ConceptAuditService auditService;
 
     @Autowired
     public ConceptAuditController(ConceptAuditService service) {
@@ -49,7 +48,7 @@ public class ConceptAuditController {
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Concept>>> allProjects(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT") Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT") Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindNotIn(id,changekinds, pageable);

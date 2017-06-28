@@ -120,7 +120,7 @@ public class ConstructQuestionJson  extends ConstructJson {
         }
 
         public class Question {
-            String question;
+            final String question;
 
             public Question(String question) {
                 this.question = question;

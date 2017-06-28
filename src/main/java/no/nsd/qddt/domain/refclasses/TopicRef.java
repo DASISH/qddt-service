@@ -9,7 +9,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 public class TopicRef extends BaseRef<TopicRef>{
 
-    StudyRef parent;
+    private final StudyRef parent;
 
     public TopicRef(){
         super();

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service("authorService")
 public class AuthorServiceImpl implements AuthorService {
 
-    private AuthorRepository authorRepository;
+    private final AuthorRepository authorRepository;
 
     @Autowired
     public AuthorServiceImpl(AuthorRepository authorRepository) {

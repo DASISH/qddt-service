@@ -1,17 +1,12 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -216,8 +211,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
-        if (abstractDescription != null ? !abstractDescription.equals(that.abstractDescription) : that.abstractDescription != null) return false;
-        return true;
+        return abstractDescription != null ? abstractDescription.equals(that.abstractDescription) : that.abstractDescription == null;
 
     }
 

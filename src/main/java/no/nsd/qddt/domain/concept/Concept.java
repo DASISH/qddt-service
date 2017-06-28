@@ -2,17 +2,11 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
@@ -21,13 +15,10 @@ import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import javax.print.Doc;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * <ul class="inheritance">
@@ -89,7 +80,7 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
-    public TopicGroup getTopicGroup() {
+    private TopicGroup getTopicGroup() {
         return topicGroup;
     }
 
@@ -109,11 +100,12 @@ public class Concept extends AbstractEntityAudit {
     public void addConceptQuestionItem(ConceptQuestionItem conceptQuestionItem) {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->conceptQuestionItem.getId().equals(cqi.getId()))) {
             if (conceptQuestionItem.getQuestionItem() != null){
-                conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-                conceptQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
+                conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+                conceptQuestionItem.getQuestionItem().setChangeComment("Concept association added");
             }
             conceptQuestionItems.add(conceptQuestionItem);
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
             this.setChangeComment("QuestionItem assosiation added");
         }
         else
@@ -126,9 +118,11 @@ public class Concept extends AbstractEntityAudit {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
             new ConceptQuestionItem(this,questionItem);
             System.out.println("New QuestionItem added to ConceptQuestionItems " + questionItem.getName() );
-            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
             questionItem.setChangeComment("Concept assosiation added");
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
             this.setChangeComment("QuestionItem assosiation added");
         }
     }
@@ -137,9 +131,11 @@ public class Concept extends AbstractEntityAudit {
         getConceptQuestionItems().stream().filter(q -> q.getId().getQuestionItemId().equals(qiId)).
             forEach(cq->{
                 System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
-                cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
                 cq.getQuestionItem().setChangeComment("Concept assosiation removed");
-                this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
                 this.setChangeComment("QuestionItem assosiation removed");
             });
         getConceptQuestionItems().removeIf(q -> q.getId().getQuestionItemId().equals(qiId));
@@ -155,7 +151,8 @@ public class Concept extends AbstractEntityAudit {
     }
 
     public void addChildren(Concept concept){
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
         setChangeComment("SubConcept added");
         this.children.add(concept);
 
@@ -212,9 +209,7 @@ public class Concept extends AbstractEntityAudit {
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q->{
-            q.setConcept(this);
-        });
+        getConceptQuestionItems().forEach(q-> q.setConcept(this));
         getChildren().forEach(c->c.makeNewCopy(revision));
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
 //            topicGroupId = getTopicRef().getId();

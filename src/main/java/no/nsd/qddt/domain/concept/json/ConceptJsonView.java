@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.concept.json;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
-import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import org.hibernate.annotations.Type;
 
@@ -40,10 +39,10 @@ public class ConceptJsonView {
         setName(concept.getName());
         setLabel(concept.getLabel());
         setDescription(concept.getDescription());
-        setChildren(concept.getChildren().stream().map(F-> new ConceptJsonView(F)).collect(Collectors.toSet()));
-        setConceptQuestionItems(concept.getConceptQuestionItems().stream().map(Q-> new ConceptQuestionItemJson(Q))
+        setChildren(concept.getChildren().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
+        setConceptQuestionItems(concept.getConceptQuestionItems().stream().map(ConceptQuestionItemJson::new)
                 .collect(Collectors.toSet()));
-        setComments(concept.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
+        setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setTopicRef(concept.getTopicRef());
     }
 
@@ -51,7 +50,7 @@ public class ConceptJsonView {
         return id;
     }
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -59,7 +58,7 @@ public class ConceptJsonView {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
@@ -67,7 +66,7 @@ public class ConceptJsonView {
         return label;
     }
 
-    public void setLabel(String label) {
+    private void setLabel(String label) {
         this.label = label;
     }
 
@@ -75,7 +74,7 @@ public class ConceptJsonView {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -83,7 +82,7 @@ public class ConceptJsonView {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(Set<ConceptQuestionItemJson> conceptQuestionItems) {
+    private void setConceptQuestionItems(Set<ConceptQuestionItemJson> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
@@ -91,7 +90,7 @@ public class ConceptJsonView {
         return comments;
     }
 
-    public void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
@@ -99,7 +98,7 @@ public class ConceptJsonView {
         return children;
     }
 
-    public void setChildren(Set<ConceptJsonView> children) {
+    private void setChildren(Set<ConceptJsonView> children) {
         this.children = children;
     }
 
@@ -107,7 +106,7 @@ public class ConceptJsonView {
         return topicRef;
     }
 
-    public void setTopicRef(TopicRef topicRef) {
+    private void setTopicRef(TopicRef topicRef) {
         this.topicRef = topicRef;
     }
 }

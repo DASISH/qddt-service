@@ -95,7 +95,7 @@ public class TopicGroupQuestionItem  implements java.io.Serializable {
         return id;
     }
 
-    public void setId(ParentQuestionItemId id) {
+    private void setId(ParentQuestionItemId id) {
         this.id = id;
     }
 
@@ -103,7 +103,7 @@ public class TopicGroupQuestionItem  implements java.io.Serializable {
         return topicGroup;
     }
 
-    public void setTopicGroup(TopicGroup topicGroup) {
+    private void setTopicGroup(TopicGroup topicGroup) {
         this.topicGroup = topicGroup;
         this.id.setParentId(topicGroup.getId());
     }

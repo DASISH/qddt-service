@@ -8,7 +8,6 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
-import org.hibernate.Session;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,14 +28,14 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("selectableService")
 public class PublicationServiceImpl implements PublicationService {
 
-    private PublicationRepository repository;
-    private ConceptAuditService conceptService;
-    private ControlConstructAuditService controlConstructService;
-    private InstrumentAuditService instrumentService;
-    private QuestionItemAuditService questionItemService;
-    private StudyAuditService studyService;
-    private SurveyProgramAuditService surveyProgramService;
-    private TopicGroupAuditService topicGroupService;
+    private final PublicationRepository repository;
+    private final ConceptAuditService conceptService;
+    private final ControlConstructAuditService controlConstructService;
+    private final InstrumentAuditService instrumentService;
+    private final QuestionItemAuditService questionItemService;
+    private final StudyAuditService studyService;
+    private final SurveyProgramAuditService surveyProgramService;
+    private final TopicGroupAuditService topicGroupService;
 
     @Autowired
     public PublicationServiceImpl(PublicationRepository repository,
@@ -109,7 +108,7 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-    protected Publication postLoadProcessing(Publication instance) {
+    private Publication postLoadProcessing(Publication instance) {
         instance.getPublicationElements().forEach(this::fill);
         return instance;
     }

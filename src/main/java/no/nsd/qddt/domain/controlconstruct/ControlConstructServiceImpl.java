@@ -30,10 +30,10 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("instrumentQuestionService")
 class ControlConstructServiceImpl implements ControlConstructService {
 
-    private ControlConstructRepository controlConstructRepository;
-    private ControlConstructAuditService auditService;
-    private InstructionService iService;
-    private QuestionItemAuditService qiAuditService;
+    private final ControlConstructRepository controlConstructRepository;
+    private final ControlConstructAuditService auditService;
+    private final InstructionService iService;
+    private final QuestionItemAuditService qiAuditService;
 
 
     @Autowired

@@ -56,20 +56,20 @@ public class OtherMaterial extends AbstractEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
     @JoinColumn(name = "org_ref")
 //    @AuditMappedBy(mappedBy = "source")
-    private Set<OtherMaterial> referencesBy = new HashSet<>(0);
+    private final Set<OtherMaterial> referencesBy = new HashSet<>(0);
 
 
     public OtherMaterial(){
 
     }
 
-    public OtherMaterial(UUID owner,MultipartFile file, String description){
+    public OtherMaterial(UUID owner, MultipartFile file){
         setOwner(owner);
         setFileName(file.getName());
         setOriginalName(file.getOriginalFilename());
         setFileType(file.getContentType());
         setSize(file.getSize());
-        setDescription(description);
+        setDescription(null);
     }
 
     public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
@@ -96,7 +96,7 @@ public class OtherMaterial extends AbstractEntity {
 //            return orgRef;
     }
 
-    public void setOwner(UUID owner) {
+    private void setOwner(UUID owner) {
         this.owner = owner;
     }
 
@@ -120,7 +120,7 @@ public class OtherMaterial extends AbstractEntity {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -136,7 +136,7 @@ public class OtherMaterial extends AbstractEntity {
         return orgRef;
     }
 
-    public void setOrgRef(UUID orgRef) {
+    private void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
     }
 

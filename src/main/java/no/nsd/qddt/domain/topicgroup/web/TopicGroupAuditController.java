@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/topicgroup", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TopicGroupAuditController {
 
-    private TopicGroupAuditService service;
+    private final TopicGroupAuditService service;
 
     @Autowired
     public TopicGroupAuditController(TopicGroupAuditService service) {
@@ -47,12 +47,12 @@ public class TopicGroupAuditController {
     public HttpEntity<PagedResources<Revision<Integer, TopicGroupRevisionJson>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",
-                    defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+                    defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
             Page<Revision<Integer, TopicGroupRevisionJson>> revisions =
-                    service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable).map(F->topicRev2Json(F));
+                    service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable).map(this::topicRev2Json);
 
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }

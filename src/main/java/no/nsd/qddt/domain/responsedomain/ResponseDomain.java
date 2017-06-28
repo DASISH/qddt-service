@@ -20,10 +20,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -143,7 +140,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return responseCardinality;
     }
 
-    public void setResponseCardinality(ResponseCardinality responseCardinality) {
+    private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
     }
 
@@ -232,7 +229,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
-            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(f -> f.getName()).collect(Collectors.joining(" + "))));
+            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(Category::getName).collect(Collectors.joining(" + "))));
         }
         managedRepresentation.setName(getName());
         managedRepresentation.setDescription(String.format("[%s] group - %s",
@@ -246,7 +243,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     public List<Code> getCodes() {
         if (codes == null)
             codes = new ArrayList<>();
-        return codes.stream().filter(c->c != null).collect(Collectors.toList());
+        return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void setCodes(List<Code> codes) {

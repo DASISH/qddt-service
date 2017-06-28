@@ -12,10 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -25,9 +22,9 @@ import java.util.stream.Collectors;
 @Service("questionItemAuditService")
 class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
 
-    private QuestionItemAuditRepository questionItemAuditRepository;
-    private ResponseDomainAuditController rdAuditController;
-    private CommentService commentService;
+    private final QuestionItemAuditRepository questionItemAuditRepository;
+    private final ResponseDomainAuditController rdAuditController;
+    private final CommentService commentService;
 
     @Autowired
     public QuestionItemItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository,ResponseDomainAuditController rdAuditController,
@@ -50,7 +47,7 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
     @Override
     public Page<Revision<Integer, QuestionItem>> findRevisions(UUID uuid, Pageable pageable) {
         return new PageImpl<>(questionItemAuditRepository.findRevisions(uuid,pageable).getContent().stream()
-                .map(rev -> postLoadProcessing(rev))
+                .map(this::postLoadProcessing)
                 .collect(Collectors.toList())
         );
     }
@@ -59,9 +56,9 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
     public Revision<Integer, QuestionItem> findFirstChange(UUID uuid) {
         return questionItemAuditRepository.findRevisions(uuid).
                 getContent().stream()
-                .min((i,o)->i.getRevisionNumber())
-                .map(rev -> postLoadProcessing(rev))
-                .get();
+                .min(Comparator.comparing(Revision::getRevisionNumber))
+                .map(this::postLoadProcessing)
+                .orElse(null);
     }
 
     @Override
@@ -73,7 +70,7 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
                         .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
-                        .map(rev -> postLoadProcessing(rev))
+                        .map(this::postLoadProcessing)
                         .collect(Collectors.toList())
         );
     }

@@ -27,10 +27,10 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("conceptService")
 class ConceptServiceImpl implements ConceptService {
 
-    private ConceptRepository conceptRepository;
-    private ConceptAuditService auditService;
-    private QuestionItemAuditService questionAuditService;
-    private TopicGroupService topicGroupService;
+    private final ConceptRepository conceptRepository;
+    private final ConceptAuditService auditService;
+    private final QuestionItemAuditService questionAuditService;
+    private final TopicGroupService topicGroupService;
 
     @Autowired
       ConceptServiceImpl(ConceptRepository conceptRepository
@@ -55,7 +55,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Concept findOne(UUID uuid) {
-        return conceptRepository.findById(uuid).map(c-> postLoadProcessing(c)).orElseThrow(
+        return conceptRepository.findById(uuid).map(this::postLoadProcessing).orElseThrow(
 //        return conceptRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Concept.class));
 
@@ -72,7 +72,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @Transactional()
     public List<Concept> save(List<Concept> instances) {
-        instances.stream().forEach(c-> save(c));
+        instances.forEach(this::save);
         return instances;
     }
 
@@ -87,7 +87,7 @@ class ConceptServiceImpl implements ConceptService {
     }
 
 
-    protected Concept prePersistProcessing(Concept instance) {
+    private Concept prePersistProcessing(Concept instance) {
         System.out.println("prePersistProcessing " + instance.getName());
         try {
             System.out.println("Number of QIs: " + instance.getConceptQuestionItems().size());
@@ -121,7 +121,7 @@ class ConceptServiceImpl implements ConceptService {
         post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
         thus we need to populate some elements ourselves.
      */
-    protected Concept postLoadProcessing(Concept instance) {
+    private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
             for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
@@ -140,7 +140,7 @@ class ConceptServiceImpl implements ConceptService {
             ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
-        instance.getChildren().forEach(c->postLoadProcessing(c));
+        instance.getChildren().forEach(this::postLoadProcessing);
         return instance;
     }
 
@@ -148,7 +148,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public Page<Concept> findAllPageable(Pageable pageable) {
         Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","modified DESC"));
-        pages.map(c-> postLoadProcessing(c));
+        pages.map(this::postLoadProcessing);
         return pages;
     }
 
@@ -156,7 +156,7 @@ class ConceptServiceImpl implements ConceptService {
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
                 defaultSort(pageable,"name","modified DESC"));
-        pages.map(c-> postLoadProcessing(c));
+        pages.map(this::postLoadProcessing);
         return pages;
     }
 
@@ -164,7 +164,7 @@ class ConceptServiceImpl implements ConceptService {
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,
                 defaultSort(pageable,"name","modified DESC"));
-        pages.map(c-> postLoadProcessing(c));
+        pages.map(this::postLoadProcessing);
         return pages;
     }
 

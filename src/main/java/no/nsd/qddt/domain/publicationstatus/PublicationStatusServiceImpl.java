@@ -1,14 +1,11 @@
 package no.nsd.qddt.domain.publicationstatus;
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -16,7 +13,7 @@ import java.util.stream.Collectors;
 @Service("publicationStatusService")
 public class PublicationStatusServiceImpl implements PublicationStatusService {
 
-    private PublicationStatusRepository repository;
+    private final PublicationStatusRepository repository;
 
     @Autowired
     public PublicationStatusServiceImpl(PublicationStatusRepository publicationStatusRepository){
@@ -46,7 +43,7 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
     @Override
     public List<PublicationStatus> save(List<PublicationStatus> instances) {
-        instances.forEach(p->prePersistProcessing(p));
+        instances.forEach(this::prePersistProcessing);
         return repository.save(instances);
     }
 
@@ -61,7 +58,7 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     }
 
 
-    protected PublicationStatus prePersistProcessing(PublicationStatus instance) {
+    private PublicationStatus prePersistProcessing(PublicationStatus instance) {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
         instance.setAgency(agency);
         return instance;

@@ -1,9 +1,7 @@
 package no.nsd.qddt.domain.instruction.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.domain.instrument.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,8 +10,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,7 +20,7 @@ import java.util.stream.Collectors;
 @Service("instructionAuditService")
 class InstructionAuditServiceImpl implements InstructionAuditService {
 
-    private InstructionAuditRepository instructionAuditRepository;
+    private final InstructionAuditRepository instructionAuditRepository;
 
     @Autowired
     public InstructionAuditServiceImpl(InstructionAuditRepository instrumentRepository) {
@@ -49,7 +46,7 @@ class InstructionAuditServiceImpl implements InstructionAuditService {
     public Revision<Integer, Instruction> findFirstChange(UUID uuid) {
         return instructionAuditRepository.findRevisions(uuid).
                 getContent().stream().
-                min((i,o)->i.getRevisionNumber()).get();
+                min(Comparator.comparing(Revision::getRevisionNumber)).orElse(null);
     }
 
     @Override

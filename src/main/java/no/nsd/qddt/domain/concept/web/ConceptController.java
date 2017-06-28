@@ -19,9 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -32,9 +32,9 @@ import java.util.UUID;
 @RequestMapping("/concept")
 public class ConceptController {
 
-    private ConceptService service;
-    private TopicGroupService topicGroupService;
-    private ConceptQuestionItemService cqiService;
+    private final ConceptService service;
+    private final TopicGroupService topicGroupService;
+    private final ConceptQuestionItemService cqiService;
 
     @Autowired
     public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,ConceptQuestionItemService conceptQuestionItem) {
@@ -103,7 +103,7 @@ public class ConceptController {
         ConceptJsonEdit parentJson = concept2Json(service.save(parent));
 
         return parentJson.getChildren().stream()
-                .filter(c -> c.getName() == concept.getName()).findFirst()
+                .filter(c -> Objects.equals(c.getName(), concept.getName())).findFirst()
                 .orElseThrow( ()-> new ResourceNotFoundException(0, Concept.class));
     }
 
@@ -127,7 +127,7 @@ public class ConceptController {
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConceptJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<ConceptJsonEdit> concepts = service.findAllPageable(pageable).map(F->new ConceptJsonEdit(F));
+        Page<ConceptJsonEdit> concepts = service.findAllPageable(pageable).map(ConceptJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
@@ -136,7 +136,7 @@ public class ConceptController {
     @RequestMapping(value = "/page/by-topicgroup/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,pageable).map(F->new ConceptJsonEdit(F));
+        Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,pageable).map(ConceptJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
     }
 
@@ -147,7 +147,7 @@ public class ConceptController {
                                                         Pageable pageable, PagedResourcesAssembler assembler) {
 
         name = name.replace("*","%");
-        Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,name, pageable).map(F->new ConceptJsonEdit(F));
+        Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,name, pageable).map(ConceptJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
 

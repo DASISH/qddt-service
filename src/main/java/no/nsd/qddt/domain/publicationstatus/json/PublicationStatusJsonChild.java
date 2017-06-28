@@ -7,14 +7,14 @@ import java.io.Serializable;
 /**
  * @author Stig Norland
  */
-public class PublicationStatusJsonChild implements Serializable {
+class PublicationStatusJsonChild implements Serializable {
 
-    Long id;
-    String label;
-    String name;
-    String description;
+    final Long id;
+    final String label;
+    final String name;
+    private final String description;
 
-    public PublicationStatusJsonChild(PublicationStatus publicationStatus) {
+    PublicationStatusJsonChild(PublicationStatus publicationStatus) {
         id = publicationStatus.getId();
         label = publicationStatus.getLabel();
         name = publicationStatus.getName();

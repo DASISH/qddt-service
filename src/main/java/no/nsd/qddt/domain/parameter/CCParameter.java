@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.parameter;
 
 
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import org.hibernate.envers.Audited;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

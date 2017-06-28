@@ -5,24 +5,16 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +27,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Value("${fileroot}")
     private String fileRoot;
-    private OtherMaterialRepository otherMaterialRepository;
+    private final OtherMaterialRepository otherMaterialRepository;
 
     @Autowired
     OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository){
@@ -99,7 +91,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
     private void delete(OtherMaterial om) throws ReferenceInUseException{
-        deleteFile(om);
+//        deleteFile(om);
         otherMaterialRepository.delete(om.getId());
     }
 
@@ -144,7 +136,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
         } catch (ResourceNotFoundException re){
-            om = new OtherMaterial(ownerId,multipartFile, null);
+            om = new OtherMaterial(ownerId,multipartFile);
         }
 
 
@@ -159,16 +151,16 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         }
     }
 
-    @Override
-    @Deprecated
-    public void deleteFile(OtherMaterial om) throws ReferenceInUseException {
-        // maybe this is wrong, files should be accessible to revision system forever...
-        if (om.getReferencesBy().size() > 0) throw  new ReferenceInUseException(om.getFileName());
-
-        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
-        new File(filepath).delete();
-
-    }
+//    @Override
+//    @Deprecated
+//    public void deleteFile(OtherMaterial om) throws ReferenceInUseException {
+//        // maybe this is wrong, files should be accessible to revision system forever...
+//        if (om.getReferencesBy().size() > 0) throw  new ReferenceInUseException(om.getFileName());
+//
+//        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
+//        new File(filepath).delete();
+//
+//    }
 
     /*
     return absolute path to save folder, creates folder if not exists

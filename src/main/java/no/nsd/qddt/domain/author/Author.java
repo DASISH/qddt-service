@@ -47,7 +47,7 @@ public class Author extends AbstractEntity {
 
     @JsonBackReference(value = "topicRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
-    private Set<TopicGroup> topicGroups = new HashSet<>();
+    private final Set<TopicGroup> topicGroups = new HashSet<>();
 //
 //    @JsonBackReference(value = "conceptRef")
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)

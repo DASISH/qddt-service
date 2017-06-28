@@ -28,7 +28,7 @@ public class CommentJsonEdit {
 
     private boolean isHidden;
 
-    public String comment;
+    private String comment;
 
     public CommentJsonEdit() {
     }
@@ -38,7 +38,7 @@ public class CommentJsonEdit {
         setModified(comment.getModified());
         setModifiedBy(new UserJson(comment.getModifiedBy()));
         setOwnerId(comment.getOwnerId());
-        setComments(comment.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
+        setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setIsHidden(comment.getIsHidden());
         setComment(comment.getComment());
     }
@@ -48,7 +48,7 @@ public class CommentJsonEdit {
         return id;
     }
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -56,7 +56,7 @@ public class CommentJsonEdit {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    private void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
@@ -64,7 +64,7 @@ public class CommentJsonEdit {
         return modifiedBy;
     }
 
-    public void setModifiedBy(UserJson modifiedBy) {
+    private void setModifiedBy(UserJson modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
@@ -72,7 +72,7 @@ public class CommentJsonEdit {
         return ownerId;
     }
 
-    public void setOwnerId(UUID ownerId) {
+    private void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -80,7 +80,7 @@ public class CommentJsonEdit {
         return comments;
     }
 
-    public void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
@@ -88,7 +88,7 @@ public class CommentJsonEdit {
         return isHidden;
     }
 
-    public void setIsHidden(boolean hidden) {
+    private void setIsHidden(boolean hidden) {
         isHidden = hidden;
     }
 
@@ -96,7 +96,7 @@ public class CommentJsonEdit {
         return comment;
     }
 
-    public void setComment(String comment) {
+    private void setComment(String comment) {
         this.comment = comment;
     }
 }

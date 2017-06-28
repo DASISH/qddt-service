@@ -11,10 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,8 +20,8 @@ import java.util.stream.Collectors;
 @Service("responseDomainAuditService")
 class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
 
-    private ResponseDomainAuditRepository responseDomainAuditRepository;
-    private CommentService commentService;
+    private final ResponseDomainAuditRepository responseDomainAuditRepository;
+    private final CommentService commentService;
 
     @Autowired
     public ResponseDomainAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository,CommentService commentService) {
@@ -45,15 +42,15 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
     @Override
     public Page<Revision<Integer, ResponseDomain>> findRevisions(UUID uuid, Pageable pageable) {
         return responseDomainAuditRepository.findRevisions(uuid,pageable)
-                .map(c-> postLoadProcessing(c));
+                .map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, ResponseDomain> findFirstChange(UUID uuid) {
         return responseDomainAuditRepository.findRevisions(uuid).
                 getContent().stream()
-                .min((i,o)->i.getRevisionNumber())
-                .map(c-> postLoadProcessing(c)).get();
+                .min(Comparator.comparing(Revision::getRevisionNumber))
+                .map(this::postLoadProcessing).orElse(null);
     }
 
     @Override
@@ -65,18 +62,18 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
                         .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
-                        .map(c-> postLoadProcessing(c))
+                        .map(this::postLoadProcessing)
                         .collect(Collectors.toList())
         );
     }
 
-    protected Revision<Integer, ResponseDomain> postLoadProcessing(Revision<Integer, ResponseDomain> instance) {
+    private Revision<Integer, ResponseDomain> postLoadProcessing(Revision<Integer, ResponseDomain> instance) {
         assert  (instance != null);
         postLoadProcessing(instance.getEntity());
         return instance;
     }
 
-    protected ResponseDomain postLoadProcessing(ResponseDomain instance) {
+    private ResponseDomain postLoadProcessing(ResponseDomain instance) {
         assert  (instance != null);
 
         try{

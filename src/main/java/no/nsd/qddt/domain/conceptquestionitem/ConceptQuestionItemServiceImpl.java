@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 @Service("conceptQuestionItemService")
 public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemService {
 
-    private ConceptQuestionItemRepository repository;
-    private QuestionItemAuditService auditService;
+    private final ConceptQuestionItemRepository repository;
+    private final QuestionItemAuditService auditService;
 
     @Autowired
     public ConceptQuestionItemServiceImpl(ConceptQuestionItemRepository repository, QuestionItemAuditService questionItemAuditService) {
@@ -47,7 +47,7 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     @Override
     public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
         return repository.save(instances).stream().
-                map(q->postLoadProcessing(q)).
+                map(this::postLoadProcessing).
                 collect(Collectors.toList());
     }
 
@@ -67,7 +67,7 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
 
-    protected ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
+    private ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
         instance.setQuestionItem(auditService.findRevision(
                 instance.getId().getQuestionItemId(),
                 instance.getQuestionItemRevision())

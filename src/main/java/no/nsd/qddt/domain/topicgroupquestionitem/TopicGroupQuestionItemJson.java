@@ -37,7 +37,7 @@ public class TopicGroupQuestionItemJson {
         return id;
     }
 
-    public void setId(ParentQuestionItemId id) {
+    private void setId(ParentQuestionItemId id) {
         this.id = id;
     }
 
@@ -45,7 +45,7 @@ public class TopicGroupQuestionItemJson {
         return questionItem;
     }
 
-    public void setQuestionItem(QuestionItemJsonView questionItem) {
+    private void setQuestionItem(QuestionItemJsonView questionItem) {
         this.questionItem = questionItem;
     }
 
@@ -53,7 +53,7 @@ public class TopicGroupQuestionItemJson {
         return questionItemRevision;
     }
 
-    public void setQuestionItemRevision(Integer questionItemRevision) {
+    private void setQuestionItemRevision(Integer questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
 
@@ -61,7 +61,7 @@ public class TopicGroupQuestionItemJson {
         return updated;
     }
 
-    public void setUpdated(Timestamp updated) {
+    private void setUpdated(Timestamp updated) {
         this.updated = updated;
     }
 }

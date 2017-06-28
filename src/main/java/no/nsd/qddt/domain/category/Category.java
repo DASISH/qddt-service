@@ -15,10 +15,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.SafeString;
@@ -207,7 +204,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         return classificationLevel;
     }
 
-    public void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
+    private void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
         this.classificationLevel = classificationLevel;
     }
 
@@ -221,11 +218,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public List<Category> getChildren() {
         if (categoryType == CategoryType.SCALE)
-            return  children.stream().filter(c->c!=null)
+            return  children.stream().filter(Objects::nonNull)
                     .sorted(Comparator.comparing(Category::getCode))
                     .collect(Collectors.toList());
         else
-            return  children.stream().filter(c->c!=null).collect(Collectors.toList());
+            return  children.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void setChildren(List<Category> children) {
@@ -277,7 +274,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("{\"_class\":\"Category\", ");
+        final StringBuilder sb = new StringBuilder("{\"_class\":\"Category\", ");
         sb.append(super.toString()).append(", ");
         sb.append("\"label\":").append(label == null ? "null" : "\"" + label + "\"").append(", ");
         sb.append("\"description\":").append((description == null ? "null" : "\"" + description + "\"")).append(", ");
@@ -338,7 +335,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     preRec for valid Categories
      */
     @JsonIgnore
-    protected  boolean isValid(){
+    boolean isValid(){
         if (hierarchyLevel== HierarchyLevel.ENTITY)
             switch (categoryType) {
                 case DATETIME:

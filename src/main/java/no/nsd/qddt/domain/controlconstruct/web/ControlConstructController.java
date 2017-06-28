@@ -19,12 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This controller relates to a meta storage, which has a rank,logic and Rankrationale property, and thus need control
@@ -36,9 +31,9 @@ import java.util.UUID;
 @RequestMapping("/controlconstruct")
 public class ControlConstructController {
 
-    private ControlConstructService service;
-    private OtherMaterialService omService;
-    private InstrumentService iService;
+    private final ControlConstructService service;
+    private final OtherMaterialService omService;
+    private final InstrumentService iService;
 
     @Autowired
     public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService, InstrumentService instrumentService){
@@ -93,7 +88,7 @@ public class ControlConstructController {
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
     public List<ConstructJson> getBySecond(@PathVariable("uuid") UUID secondId) {
         try {
-            return service.findByQuestionItems(Arrays.asList(new UUID[]{secondId}));
+            return service.findByQuestionItems(Collections.singletonList(secondId));
         } catch (Exception ex){
             System.out.println(ex.getMessage());
             ex.printStackTrace();
@@ -113,12 +108,13 @@ public class ControlConstructController {
                                                               @RequestParam(value = "questiontext",defaultValue = "%") String question,
                                                               @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") ControlConstructKind kind,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<ConstructJson> controlConstructs = null;
+
 
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it neccessary to distingwish
 
-        controlConstructs = service.findByNameLikeAndControlConstructKind(name,kind,pageable);
+        Page<ConstructJson> controlConstructs =
+                service.findByNameLikeAndControlConstructKind(name,kind,pageable);
 
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }

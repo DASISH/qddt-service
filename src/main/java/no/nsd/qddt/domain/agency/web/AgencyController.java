@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequestMapping("/agency")
 public class AgencyController {
 
-    private AgencyService service;
+    private final AgencyService service;
 
     @Autowired
     public AgencyController(AgencyService service) {

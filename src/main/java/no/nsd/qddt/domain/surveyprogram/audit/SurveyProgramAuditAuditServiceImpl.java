@@ -12,7 +12,6 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,8 +21,8 @@ import java.util.stream.Collectors;
 @Service("surveyProgramAuditService")
 class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
 
-    private SurveyProgramAuditRepository surveyProgramAuditRepository;
-    private CommentService commentService;
+    private final SurveyProgramAuditRepository surveyProgramAuditRepository;
+    private final CommentService commentService;
 
     @Autowired
     public SurveyProgramAuditAuditServiceImpl(SurveyProgramAuditRepository surveyProgramAuditRepository,CommentService commentService) {
@@ -49,16 +48,16 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
 //        return surveyProgramAuditRepository.findRevisionsByIdAndChangeKindNotIn(uuid,
 //                Arrays.asList(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT),pageable);
         return surveyProgramAuditRepository.findRevisions(uuid,pageable)
-                .map(c-> postLoadProcessing(c));
+                .map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, SurveyProgram> findFirstChange(UUID uuid) {
         return surveyProgramAuditRepository.findRevisions(uuid).
                 getContent().stream().
-                min((i,o)->i.getRevisionNumber())
-                .map(c-> postLoadProcessing(c))
-                .get();
+                min(Comparator.comparing(Revision::getRevisionNumber))
+                .map(this::postLoadProcessing)
+                .orElse(null);
     }
 
     @Override
@@ -70,24 +69,24 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
                         .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
-                        .map(c-> postLoadProcessing(c))
+                        .map(this::postLoadProcessing)
                         .collect(Collectors.toList())
         );
     }
 
-    protected Revision<Integer, SurveyProgram> postLoadProcessing(Revision<Integer, SurveyProgram> instance) {
+    private Revision<Integer, SurveyProgram> postLoadProcessing(Revision<Integer, SurveyProgram> instance) {
         assert  (instance != null);
         postLoadProcessing(instance.getEntity());
         return instance;
     }
 
-    protected SurveyProgram postLoadProcessing(SurveyProgram instance) {
+    private SurveyProgram postLoadProcessing(SurveyProgram instance) {
         assert  (instance != null);
         try{
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
 
-            instance.getStudies().stream().forEach(c->{
+            instance.getStudies().forEach(c->{
                 final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId());
                 c.setComments(new HashSet<>(coms2));
             });

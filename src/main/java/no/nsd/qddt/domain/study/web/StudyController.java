@@ -6,12 +6,8 @@ import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -22,8 +18,8 @@ import java.util.UUID;
 @RequestMapping("/study")
 public class StudyController {
 
-    private StudyService service;
-    private SurveyProgramService surveyProgramService;
+    private final StudyService service;
+    private final SurveyProgramService surveyProgramService;
 //    private InstrumentService instrumentService;
 
 

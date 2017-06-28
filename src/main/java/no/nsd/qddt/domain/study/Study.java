@@ -1,12 +1,7 @@
 package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.List;
-import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -72,7 +67,7 @@ public class Study extends AbstractEntityAudit implements Authorable {
             inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany( cascade = {CascadeType.REMOVE,CascadeType.PERSIST}, mappedBy = "study", fetch = FetchType.LAZY, orphanRemoval = false)
+    @OneToMany( cascade = {CascadeType.REMOVE,CascadeType.PERSIST}, mappedBy = "study", fetch = FetchType.LAZY)
     @OrderBy(value = "modified ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
@@ -122,7 +117,7 @@ public class Study extends AbstractEntityAudit implements Authorable {
 
 
 
-    public Set<Instrument> getInstruments() {
+    private Set<Instrument> getInstruments() {
         if (instruments == null)
             instruments = new HashSet<>();
         return instruments;

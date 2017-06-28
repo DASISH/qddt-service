@@ -17,7 +17,6 @@ import com.itextpdf.layout.property.TextAlignment;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 
 import java.io.ByteArrayOutputStream;
-import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class PdfReport extends PdfDocument {
     private PdfFont paragraphFont;
     private PdfFont font;
     private PdfFont bold;
-    private List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
+    private final List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
     private Document document;
 
     public PdfReport(ByteArrayOutputStream outputStream) {
@@ -48,7 +47,6 @@ public class PdfReport extends PdfDocument {
                     .setFont(font)
                     .setFontSize(11);
         } catch (Exception ex) {
-            System.out.println(ex);
             ex.printStackTrace();
         }
     }

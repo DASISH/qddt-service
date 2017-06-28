@@ -29,6 +29,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
      * Run before persisting a new entity.
      * @param entity target for persistence
      */
+    @SuppressWarnings("UnusedAssignment")
     @PrePersist
     public void create(AbstractEntity entity) {
         try {
@@ -36,6 +37,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
             if (entity instanceof Category) {
+                //noinspection UnusedAssignment
                 entity = fixAndValidateCategoryType((Category)entity);
             }
 
@@ -125,7 +127,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
     /*
-    Code to set status UPDATED_HIERARCY_RELATION when adding questionItem to Concept...
+    Code to set status UPDATED_HIERARCHY_RELATION when adding questionItem to Concept...
 
      */
     private Concept checkConcept(Concept concept) {

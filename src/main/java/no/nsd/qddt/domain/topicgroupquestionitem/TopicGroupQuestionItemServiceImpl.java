@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Service("topicGroupQuestionItemService")
 public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItemService {
 
-    private TopicGroupQuestionItemRepository repository;
-    private QuestionItemAuditService auditService;
+    private final TopicGroupQuestionItemRepository repository;
+    private final QuestionItemAuditService auditService;
 
     @Autowired
     public TopicGroupQuestionItemServiceImpl(TopicGroupQuestionItemRepository repository, QuestionItemAuditService questionItemAuditService) {
@@ -48,7 +48,7 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
     @Override
     public List<TopicGroupQuestionItem> save(List<TopicGroupQuestionItem> instances) {
         return repository.save(instances).stream().
-                map(q->postLoadProcessing(q)).
+                map(this::postLoadProcessing).
                 collect(Collectors.toList());
     }
 
@@ -68,7 +68,7 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
     }
 
 
-    protected TopicGroupQuestionItem postLoadProcessing(TopicGroupQuestionItem instance) {
+    private TopicGroupQuestionItem postLoadProcessing(TopicGroupQuestionItem instance) {
         instance.setQuestionItem(auditService.findRevision(
                 instance.getId().getQuestionItemId(),
                 instance.getQuestionItemRevision())

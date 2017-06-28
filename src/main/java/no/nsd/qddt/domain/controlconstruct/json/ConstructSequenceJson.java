@@ -13,11 +13,11 @@ public class ConstructSequenceJson extends ConstructJson {
 
     private List<ConstructJson> children = new ArrayList<>();
 
-    private String indexRationale;
+    private final String indexRationale;
 
-    private String label;
+    private final String label;
 
-    private String description;
+    private final String description;
 
     public ConstructSequenceJson(ControlConstruct construct) {
         super(construct);

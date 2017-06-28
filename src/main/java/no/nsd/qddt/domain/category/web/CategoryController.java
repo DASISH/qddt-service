@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequestMapping("/category")
 public class CategoryController {
 
-    private CategoryService service;
+    private final CategoryService service;
 
     @Autowired
     public CategoryController(CategoryService categoryService) {
@@ -64,7 +64,7 @@ public class CategoryController {
 
         name = name.replace("*","%");
         Page<Category> categories = service.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
-        categories.map(c->new CategoryJsonEdit(c));
+        categories.map(CategoryJsonEdit::new);
 
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
@@ -75,7 +75,7 @@ public class CategoryController {
         name = name.replace("*","%");
 
         Page<Category> categories = service.findByHierarchyAndNameLike(HierarchyLevel.ENTITY, name, pageable);
-        categories.map(c->new CategoryJsonEdit(c));
+        categories.map(CategoryJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 
@@ -86,7 +86,7 @@ public class CategoryController {
                                                        @RequestParam(value = "name",defaultValue = "%") String name,
                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Category> categories = null;
+        Page<Category> categories;
         name = name.replace("*","%");
         if (level == null || level.isEmpty()) {
             if (category == null || category.isEmpty()) {
@@ -105,7 +105,7 @@ public class CategoryController {
                 categories = service.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable);
             }
         }
-        categories.map(c->new CategoryJsonEdit(c));
+        categories.map(CategoryJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
     }
 

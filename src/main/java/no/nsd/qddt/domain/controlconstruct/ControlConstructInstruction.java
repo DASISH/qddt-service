@@ -45,8 +45,7 @@ public class ControlConstructInstruction {
 
         ControlConstructInstruction that = (ControlConstructInstruction) o;
 
-        if (instruction != null ? !instruction.equals(that.instruction) : that.instruction != null) return false;
-        return instructionRank == that.instructionRank;
+        return (instruction != null ? instruction.equals(that.instruction) : that.instruction == null) && instructionRank == that.instructionRank;
 
     }
 

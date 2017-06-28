@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/category", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CategoryAuditController {
 
-    private CategoryAuditService auditService;
+    private final CategoryAuditService auditService;
 
     @Autowired
     public CategoryAuditController(CategoryAuditService service) {

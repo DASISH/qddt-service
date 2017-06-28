@@ -8,7 +8,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +21,9 @@ import java.util.UUID;
 @Service("responseDomainService")
 class ResponseDomainServiceImpl implements ResponseDomainService {
 
-    private ResponseDomainRepository responseDomainRepository;
-    private ResponseDomainAuditService auditService;
-    private CategoryService categoryService;
+    private final ResponseDomainRepository responseDomainRepository;
+    private final ResponseDomainAuditService auditService;
+    private final CategoryService categoryService;
 
     @Autowired
     public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, CategoryService categoryService,ResponseDomainAuditService responseDomainAuditService) {
@@ -50,7 +49,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public ResponseDomain save(ResponseDomain instance) {
         return postLoadProcessing(
                 responseDomainRepository.save(
@@ -59,7 +58,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public List<ResponseDomain> save(List<ResponseDomain> instances) {
-        instances.forEach(rd->prePersistProcessing(rd));
+        instances.forEach(this::prePersistProcessing);
         return responseDomainRepository.save(instances);
     }
 
@@ -74,7 +73,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
 
-    protected ResponseDomain prePersistProcessing(ResponseDomain instance) {
+    private ResponseDomain prePersistProcessing(ResponseDomain instance) {
         instance.populateCodes();
 
         if(instance.isBasedOn()) {
@@ -87,26 +86,27 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
 
-    protected ResponseDomain postLoadProcessing(ResponseDomain instance) {
+    private ResponseDomain postLoadProcessing(ResponseDomain instance) {
         return instance;
     }
 
     @Override
     public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, Pageable pageable) {
 
-        Page<ResponseDomain> pages = responseDomainRepository.findByResponseKindAndNameIgnoreCaseLikeAndDescriptionIgnoreCaseLike(
+        return responseDomainRepository.findByResponseKindAndNameIgnoreCaseLikeAndDescriptionIgnoreCaseLike(
                 responseKind,
                 likeify(name),
                 likeify(description),
                 pageable);
-        return pages;
     }
 
     @Override
-    public Page<ResponseDomain> findByQuestion(ResponseKind responseKind, String name, String question, Pageable pageable) {
-        return  null;
-//        Page<ResponseDomain> pages = responseDomainRepository.findByResponseKindAndNameLikeOrQuestionItemQuestionQuestionLike(responseKind,name,question,pageable);
-//        return pages;
+    public Page<ResponseDomain> findByQuestion(ResponseKind responseKind,  String question, Pageable pageable) {
+        return
+                responseDomainRepository.findByResponseKindAndNameLikeOrQuestionItemQuestionQuestionLike(
+                        responseKind,
+                        likeify(question),
+                        pageable);
     }
 
     @Override
@@ -117,7 +117,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
         mixedCa.setName(old.getManagedRepresentation().getName() +" + " + missing.getName());
         mixedCa.setCategoryType(CategoryType.MIXED);
-        mixedCa.addChild((Category)old.getManagedRepresentation());
+        mixedCa.addChild(old.getManagedRepresentation());
         mixedCa.addChild(missing);
 
         ResponseDomain mixedRd = new ResponseDomain();

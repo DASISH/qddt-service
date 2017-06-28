@@ -1,12 +1,7 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
-import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -23,10 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,9 +31,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/topicgroup")
 public class TopicGroupController {
 
-    private TopicGroupService service;
-    private StudyService studyService;
-    private ConceptQuestionItemService cqiService;
+    private final TopicGroupService service;
+    private final StudyService studyService;
+    private final ConceptQuestionItemService cqiService;
 
 
     @Autowired
@@ -90,7 +82,7 @@ public class TopicGroupController {
     @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
     public List<TopicGroupRevisionJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
-            return service.findByStudyId(studyId).stream().map(i->postLoad(i)).collect(Collectors.toList());
+            return service.findByStudyId(studyId).stream().map(this::postLoad).collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
             ex.printStackTrace();
@@ -105,7 +97,7 @@ public class TopicGroupController {
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
         name = name.replace("*","%");
         Page<TopicGroupRevisionJson> items =
-                service.findByNameAndDescriptionPageable(name,name, pageable).map(i->postLoad(i));
+                service.findByNameAndDescriptionPageable(name,name, pageable).map(this::postLoad);
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

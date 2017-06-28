@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.instruction;
 
-import com.itextpdf.layout.Document;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.envers.Audited;
@@ -20,7 +19,7 @@ import java.io.IOException;
 @Table(name = "INSTRUCTION", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_INSTRUCTION_NAME")})
 public class Instruction extends AbstractEntityAudit {
 
-//    //TODO ArrayList dosn't work with Enver
+//    //TODO ArrayList doesn't work with Enver
 //    @JsonBackReference(value = "controlConstructInstructionRef")
 //    @OneToMany(mappedBy = "instruction")
 //    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();

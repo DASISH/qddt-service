@@ -2,9 +2,7 @@ package no.nsd.qddt.domain.publicationstatus;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.jsonviews.View;
 
 import javax.persistence.*;
 import java.util.ArrayList;

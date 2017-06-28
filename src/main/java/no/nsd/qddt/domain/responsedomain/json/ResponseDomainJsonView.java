@@ -54,7 +54,7 @@ public class ResponseDomainJsonView {
         return id;
     }
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -62,7 +62,7 @@ public class ResponseDomainJsonView {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
@@ -70,7 +70,7 @@ public class ResponseDomainJsonView {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -78,7 +78,7 @@ public class ResponseDomainJsonView {
         return displayLayout;
     }
 
-    public void setDisplayLayout(String displayLayout) {
+    private void setDisplayLayout(String displayLayout) {
         this.displayLayout = displayLayout;
     }
 
@@ -87,7 +87,7 @@ public class ResponseDomainJsonView {
         return responseKind;
     }
 
-    public void setResponseKind(ResponseKind responseKind) {
+    private void setResponseKind(ResponseKind responseKind) {
         this.responseKind = responseKind;
     }
 
@@ -95,7 +95,7 @@ public class ResponseDomainJsonView {
         return responseCardinality;
     }
 
-    public void setResponseCardinality(ResponseCardinality responseCardinality) {
+    private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
     }
 
@@ -103,7 +103,7 @@ public class ResponseDomainJsonView {
         return managedRepresentation;
     }
 
-    public void setManagedRepresentation(CategoryJsonView managedRepresentation) {
+    private void setManagedRepresentation(CategoryJsonView managedRepresentation) {
         this.managedRepresentation = managedRepresentation;
     }
 }

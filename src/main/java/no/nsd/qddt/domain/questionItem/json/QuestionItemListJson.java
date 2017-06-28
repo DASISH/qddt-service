@@ -47,8 +47,6 @@ public class QuestionItemListJson {
 
     private ResponseDomainJsonView responseDomain;
 
-    private Integer responseDomainRevision;
-
 
     public QuestionItemListJson() {
     }
@@ -65,7 +63,7 @@ public class QuestionItemListJson {
         modifiedBy =new UserJson(entity.getModifiedBy());
         question =entity.getQuestion();
         responseDomain = new ResponseDomainJsonView(entity.getResponseDomain());
-        responseDomainRevision = entity.getResponseDomainRevision();
+        Integer responseDomainRevision = entity.getResponseDomainRevision();
     }
 
     public UUID getId() {

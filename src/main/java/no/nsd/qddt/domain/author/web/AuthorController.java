@@ -1,9 +1,7 @@
 package no.nsd.qddt.domain.author.web;
 
-import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.AuthorService;
-import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -27,10 +25,10 @@ import java.util.UUID;
 @RequestMapping(value = "/author")
 public class AuthorController {
 
-    private AuthorService authorService;
-    private SurveyProgramService surveyService;
-    private StudyService studyService;
-    private TopicGroupService topicService;
+    private final AuthorService authorService;
+    private final SurveyProgramService surveyService;
+    private final StudyService studyService;
+    private final TopicGroupService topicService;
 
     @Autowired
     public AuthorController(AuthorService authorService,

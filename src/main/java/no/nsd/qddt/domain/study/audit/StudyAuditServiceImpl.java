@@ -12,10 +12,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,8 +21,8 @@ import java.util.stream.Collectors;
 @Service("studyAuditService")
 class StudyAuditServiceImpl implements StudyAuditService {
 
-    private StudyAuditRepository studyAuditRepository;
-    private CommentService commentService;
+    private final StudyAuditRepository studyAuditRepository;
+    private final CommentService commentService;
 
     @Autowired
     public StudyAuditServiceImpl(StudyAuditRepository studyAuditRepository,CommentService commentService) {
@@ -56,7 +53,7 @@ class StudyAuditServiceImpl implements StudyAuditService {
     public Revision<Integer, Study> findFirstChange(UUID uuid) {
         return studyAuditRepository.findRevisions(uuid).
                 getContent().stream().
-                min((i, o) -> i.getRevisionNumber()).get();
+                min(Comparator.comparing(Revision::getRevisionNumber)).orElse(null);
     }
 
     @Override
@@ -78,13 +75,13 @@ class StudyAuditServiceImpl implements StudyAuditService {
         return instance;
     }
 
-    protected Study postLoadProcessing(Study instance) {
+    private Study postLoadProcessing(Study instance) {
         assert  (instance != null);
         try{
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
 
-            instance.getTopicGroups().stream().forEach(c->{
+            instance.getTopicGroups().forEach(c->{
                 final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId());
                 c.setComments(new HashSet<>(coms2));
             });

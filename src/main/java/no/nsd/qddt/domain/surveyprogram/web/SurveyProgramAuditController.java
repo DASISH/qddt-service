@@ -25,7 +25,7 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/surveyprogram")
 public class SurveyProgramAuditController {
 
-    private SurveyProgramAuditService service;
+    private final SurveyProgramAuditService service;
 
     @Autowired
     public SurveyProgramAuditController(SurveyProgramAuditService service) {
@@ -45,7 +45,7 @@ public class SurveyProgramAuditController {
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> allProjects(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 

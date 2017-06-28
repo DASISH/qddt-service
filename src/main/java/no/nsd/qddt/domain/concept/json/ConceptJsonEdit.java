@@ -49,14 +49,14 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         try{
             setId(concept.getId());
             setName(concept.getName());
-            setChildren(concept.getChildren().stream().map(F-> new ConceptJsonEdit(F)).collect(Collectors.toSet()));
-            setComments(concept.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
+            setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toSet()));
+            setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
             setAgency(new AgencyJsonView(concept.getAgency()));
             setModifiedBy(new UserJson(concept.getModifiedBy()));
             setConceptQuestionItems(
-                    concept.getConceptQuestionItems().stream().map(Q-> new ConceptQuestionItemJson(Q)).collect(Collectors.toSet()));
+                    concept.getConceptQuestionItems().stream().map(ConceptQuestionItemJson::new).collect(Collectors.toSet()));
             setTopicRef(concept.getTopicRef());
         }catch (Exception ex){
             System.out.println("ConceptJsonEdit Exception");
@@ -69,7 +69,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return id;
     }
 
-    public void setId(UUID id) {
+    protected void setId(UUID id) {
         this.id = id;
     }
 
@@ -77,7 +77,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = name;
     }
 
@@ -85,7 +85,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return children;
     }
 
-    public void setChildren(Set<ConceptJsonEdit> children) {
+    private void setChildren(Set<ConceptJsonEdit> children) {
         this.children = children;
     }
 
@@ -93,7 +93,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(Set<ConceptQuestionItemJson> conceptQuestionItems) {
+    private void setConceptQuestionItems(Set<ConceptQuestionItemJson> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
@@ -101,7 +101,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return label;
     }
 
-    public void setLabel(String label) {
+    private void setLabel(String label) {
         this.label = label;
     }
 
@@ -109,7 +109,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -119,7 +119,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
     }
 
     @Override
-    public void setModifiedBy(UserJson modifiedBy) {
+    protected void setModifiedBy(UserJson modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
@@ -130,7 +130,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
     }
 
     @Override
-    public void setAgency(AgencyJsonView agency) {
+    protected void setAgency(AgencyJsonView agency) {
         this.agency = agency;
     }
 
@@ -138,7 +138,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return comments;
     }
 
-    public void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
@@ -146,7 +146,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         return topicRef;
     }
 
-    public void setTopicRef(TopicRef topicRef) {
+    private void setTopicRef(TopicRef topicRef) {
         this.topicRef = topicRef;
     }
 

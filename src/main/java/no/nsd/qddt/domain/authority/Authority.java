@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.authority;
 
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;

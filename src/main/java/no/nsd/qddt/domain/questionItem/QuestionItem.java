@@ -2,13 +2,8 @@ package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.comment.Comment;
@@ -20,12 +15,10 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.type.OrderedSetType;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 /**
  * Question Item is a container for Question (text) and responsedomain
@@ -137,10 +130,11 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
 
-    public Set<ConceptQuestionItem> getConceptQuestionItems() {
+    private Set<ConceptQuestionItem> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }

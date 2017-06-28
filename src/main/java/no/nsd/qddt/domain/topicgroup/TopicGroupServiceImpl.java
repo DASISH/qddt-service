@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @Service("topicGroupService")
 class TopicGroupServiceImpl implements TopicGroupService {
 
-    private TopicGroupRepository topicGroupRepository;
-    private TopicGroupAuditService auditService;
-    private QuestionItemAuditService questionAuditService;
+    private final TopicGroupRepository topicGroupRepository;
+    private final TopicGroupAuditService auditService;
+    private final QuestionItemAuditService questionAuditService;
 
     @Autowired
     public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository,
@@ -51,7 +51,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Transactional(readOnly = true)
     public TopicGroup findOne(UUID uuid) {
         return topicGroupRepository.findById(uuid)
-                .map(t->postLoadProcessing(t)).orElseThrow(
+                .map(this::postLoadProcessing).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, TopicGroup.class)
         );
     }
@@ -90,7 +90,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
 
-    protected TopicGroup prePersistProcessing(TopicGroup instance) {
+    private TopicGroup prePersistProcessing(TopicGroup instance) {
         if (instance.isBasedOn()){
             Revision<Integer, TopicGroup> lastChange
                     = auditService.findLastChange(instance.getId());
@@ -104,7 +104,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
 
-    protected TopicGroup postLoadProcessing(TopicGroup instance) {
+    private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
@@ -133,18 +133,18 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     public List<TopicGroup> findByStudyId(UUID id) {
         return topicGroupRepository.findByStudyId(id).stream()
-                .map(topicGroup -> postLoadProcessing(topicGroup)).collect(Collectors.toList());
+                .map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
     @Override
     public Page<TopicGroup> findAllPageable(Pageable pageable) {
         return topicGroupRepository.findAll(pageable)
-                .map(t->postLoadProcessing(t));
+                .map(this::postLoadProcessing);
     }
 
     @Override
     public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         return topicGroupRepository.findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(name,description,pageable)
-                .map(t->postLoadProcessing(t));
+                .map(this::postLoadProcessing);
     }
 }

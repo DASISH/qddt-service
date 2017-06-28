@@ -11,10 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,8 +20,8 @@ import java.util.stream.Collectors;
 @Service("instrumentAuditService")
 class InstrumentAuditServiceImpl implements InstrumentAuditService {
 
-    private InstrumentAuditRepository instrumentAuditRepository;
-    private CommentService commentService;
+    private final InstrumentAuditRepository instrumentAuditRepository;
+    private final CommentService commentService;
 
     @Autowired
     public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository, CommentService commentService) {
@@ -45,16 +42,16 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
     @Override
     public Page<Revision<Integer, Instrument>> findRevisions(UUID uuid, Pageable pageable) {
         return instrumentAuditRepository.findRevisions(uuid, pageable).
-                map(i->postLoadProcessing(i));
+                map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, Instrument> findFirstChange(UUID uuid) {
         return instrumentAuditRepository.findRevisions(uuid).
                 getContent().stream().
-                min((i,o)->i.getRevisionNumber()).
-                map(i->postLoadProcessing(i)).
-                get();
+                min(Comparator.comparing(Revision::getRevisionNumber)).
+                map(this::postLoadProcessing).
+                orElse(null);
     }
 
     @Override
@@ -66,19 +63,19 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
                         .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
                         .skip(skip)
                         .limit(limit)
-                        .map(i->postLoadProcessing(i))
+                        .map(this::postLoadProcessing)
                         .collect(Collectors.toList())
         );
     }
 
 
-    protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
+    private Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
         assert  (instance != null);
         postLoadProcessing(instance.getEntity());
         return instance;
     }
 
-    protected Instrument postLoadProcessing(Instrument instance) {
+    private Instrument postLoadProcessing(Instrument instance) {
         assert  (instance != null);
         List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
         instance.setComments(new HashSet<>(coms));

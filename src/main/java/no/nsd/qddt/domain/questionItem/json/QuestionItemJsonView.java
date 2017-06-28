@@ -26,7 +26,7 @@ public class QuestionItemJsonView extends BaseJsonEdit{
         return question;
     }
 
-    public void setQuestion(Question question) {
+    private void setQuestion(Question question) {
         if (question==null)
             System.out.println("Question is null!");
         else
@@ -37,7 +37,7 @@ public class QuestionItemJsonView extends BaseJsonEdit{
         return responseDomain;
     }
 
-    public void setResponseDomain(ResponseDomainJsonView responseDomain) {
+    private void setResponseDomain(ResponseDomainJsonView responseDomain) {
         this.responseDomain = responseDomain;
     }
 }

@@ -36,7 +36,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
     public QuestionItemJsonEdit(QuestionItem questionItem) {
         super(questionItem);
         if (questionItem == null) return;
-        setComments(questionItem.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
+        setComments(questionItem.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setQuestion(questionItem.getQuestion());
         if (questionItem.getResponseDomain() != null)
             setResponseDomain(new ResponseDomainJsonEdit(questionItem.getResponseDomain()));
@@ -49,7 +49,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return responseDomain;
     }
 
-    public void setResponseDomain(ResponseDomainJsonEdit responseDomain) {
+    private void setResponseDomain(ResponseDomainJsonEdit responseDomain) {
         this.responseDomain = responseDomain;
     }
 
@@ -57,7 +57,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return responseDomainRevision;
     }
 
-    public void setResponseDomainRevision(Integer responseDomainRevision) {
+    private void setResponseDomainRevision(Integer responseDomainRevision) {
         this.responseDomainRevision = responseDomainRevision;
     }
 
@@ -65,7 +65,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return question;
     }
 
-    public void setQuestion(Question question) {
+    private void setQuestion(Question question) {
         this.question = question;
     }
 
@@ -73,7 +73,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return comments;
     }
 
-    public void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
@@ -81,7 +81,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return conceptRefs;
     }
 
-    public void setConceptRefs(List<ConceptRef> conceptRefs) {
+    private void setConceptRefs(List<ConceptRef> conceptRefs) {
         this.conceptRefs = conceptRefs;
     }
 }

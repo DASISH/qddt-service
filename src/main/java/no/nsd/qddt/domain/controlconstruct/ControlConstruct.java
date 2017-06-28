@@ -194,7 +194,7 @@ public class ControlConstruct extends AbstractEntityAudit {
         return questionItemUUID;
     }
 
-    public void setQuestionItemUUID(UUID questionItem) {
+    private void setQuestionItemUUID(UUID questionItem) {
         questionItemUUID = questionItem;
     }
 
@@ -226,7 +226,7 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.description = description;
     }
 
-    public Set<Instrument> getInstruments() {
+    private Set<Instrument> getInstruments() {
         return instruments;
     }
 
@@ -321,7 +321,7 @@ public class ControlConstruct extends AbstractEntityAudit {
         return preInstructions;
     }
 
-    public void setPreInstructions(List<Instruction> preInstructions) {
+    private void setPreInstructions(List<Instruction> preInstructions) {
         this.preInstructions = preInstructions;
     }
 
@@ -329,7 +329,7 @@ public class ControlConstruct extends AbstractEntityAudit {
          return postInstructions;
     }
 
-    public void setPostInstructions(List<Instruction> postInstructions) {
+    private void setPostInstructions(List<Instruction> postInstructions) {
         this.postInstructions = postInstructions;
     }
 
@@ -399,9 +399,7 @@ public class ControlConstruct extends AbstractEntityAudit {
             return false;
         if (getQuestionItem() != null ? !getQuestionItem().equals(that.getQuestionItem()) : that.getQuestionItem() != null)
             return false;
-        if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
-            return false;
-        return !(getCondition() != null ? !getCondition().equals(that.getCondition()) : that.getCondition() != null);
+        return (getIndexRationale() != null ? getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() == null) && !(getCondition() != null ? !getCondition().equals(that.getCondition()) : that.getCondition() != null);
 
     }
 

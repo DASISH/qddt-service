@@ -33,7 +33,7 @@ public interface BaseService<T,ID> {
     /**
      * Store object T to backstore
      * @param instance object T
-     * @return saved instanse T (may have fields updated by backstore)
+     * @return saved instance T (may have fields updated by backstore)
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     <S extends T> S save(S instance);
@@ -55,7 +55,7 @@ public interface BaseService<T,ID> {
 
     /**
      * Deletes object with these IDs from backstore, exception raised by failure.
-     * @param instances list of indetifier IDs
+     * @param instances list of identifier IDs
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     void delete(List<T> instances);

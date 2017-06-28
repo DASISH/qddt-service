@@ -8,11 +8,8 @@ import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +21,7 @@ import java.util.UUID;
 @RequestMapping("/surveyprogram")
 public class SurveyProgramController {
 
-    private SurveyProgramService service;
+    private final SurveyProgramService service;
 //    private CommentService commentService;
 
     @Autowired

@@ -17,7 +17,7 @@ public enum ElementKind {
     TOPIC_GROUP("Module");
 
 
-    private String description;
+    private final String description;
     ElementKind(String description) {
         this.description = description;
     }

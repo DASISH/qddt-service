@@ -10,9 +10,9 @@ import no.nsd.qddt.domain.controlconstruct.SequenceKind;
  */
 public class ConstructJson  extends BaseJsonEdit {
 
-    protected ControlConstructKind controlConstructKind;
+    private ControlConstructKind controlConstructKind;
 
-    protected SequenceKind sequenceKind;
+    private SequenceKind sequenceKind;
 
     public ConstructJson(ControlConstruct construct){
         super(construct);
@@ -43,8 +43,7 @@ public class ConstructJson  extends BaseJsonEdit {
 
         ConstructJson that = (ConstructJson) o;
 
-        if (controlConstructKind != that.controlConstructKind) return false;
-        return sequenceKind == that.sequenceKind;
+        return controlConstructKind == that.controlConstructKind && sequenceKind == that.sequenceKind;
     }
 
     @Override

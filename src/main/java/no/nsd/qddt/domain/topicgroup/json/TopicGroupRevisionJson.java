@@ -33,18 +33,18 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         super(topicGroup);
         if (topicGroup == null) return;
         setAbstractDescription(topicGroup.getAbstractDescription());
-        setTopicGroupQuestions( topicGroup.getTopicQuestionItems().stream().map(i->new TopicGroupQuestionItemJson(i)).collect(Collectors.toSet()));
+        setTopicGroupQuestions( topicGroup.getTopicQuestionItems().stream().map(TopicGroupQuestionItemJson::new).collect(Collectors.toSet()));
         setAuthors(topicGroup.getAuthors());
         setOtherMaterials(topicGroup.getOtherMaterials());
-        setComments(topicGroup.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
-        setConcepts(topicGroup.getConcepts().stream().map(i->new ConceptJsonView(i)).collect(Collectors.toSet()));
+        setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
     }
 
     public String getAbstractDescription() {
         return abstractDescription;
     }
 
-    public void setAbstractDescription(String abstractDescription) {
+    private void setAbstractDescription(String abstractDescription) {
         this.abstractDescription = abstractDescription;
     }
 
@@ -52,7 +52,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         return topicGroupQuestions;
     }
 
-    public void setTopicGroupQuestions(Set<TopicGroupQuestionItemJson> topicGroupQuestions) {
+    private void setTopicGroupQuestions(Set<TopicGroupQuestionItemJson> topicGroupQuestions) {
         this.topicGroupQuestions = topicGroupQuestions;
     }
 
@@ -60,7 +60,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         return concepts;
     }
 
-    public void setConcepts(Set<ConceptJsonView> concepts) {
+    private void setConcepts(Set<ConceptJsonView> concepts) {
         this.concepts = concepts;
     }
 
@@ -68,7 +68,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         return authors;
     }
 
-    public void setAuthors(Set<Author> authors) {
+    private void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
 
@@ -76,7 +76,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         return otherMaterials;
     }
 
-    public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
+    private void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 
@@ -84,7 +84,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         return comments;
     }
 
-    public void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
