@@ -77,10 +77,14 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
 
     @Override
     public Revision<Integer, QuestionItem> getQuestionItemLastOrRevision(UUID id, Integer revision) {
+        Revision<Integer, QuestionItem> retval;
         if (revision == null || revision <= 0)
-            return findLastChange(id);
+            retval = findLastChange(id);
         else
-            return findRevision(id, revision);
+            retval = findRevision(id, revision);
+        if (retval == null)
+            System.out.println("getQuestionItemLastOrRevision returned with null (" + id + "," + revision + ")");
+        return retval;
     }
 
     private Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> rev){

@@ -77,7 +77,7 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     public void updateStatusQI(Concept concept) {
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         this.setChangeComment("Concept reference removed");
     }
 

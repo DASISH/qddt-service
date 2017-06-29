@@ -63,7 +63,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public List<Instrument> findByStudy(UUID studyId) {
-        return instrumentRepository.findByStudyId(studyId);
+        return instrumentRepository.findByStudies(studyId);
     }
 
     @Override

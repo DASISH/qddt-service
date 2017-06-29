@@ -1,7 +1,6 @@
 package no.nsd.qddt.utils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
@@ -17,7 +16,7 @@ public class JsonDateSerializer extends JsonSerializer<Timestamp> {
 
     @Override
     public void serialize(Timestamp value, JsonGenerator g, SerializerProvider provider)
-            throws IOException, JsonProcessingException {
+            throws IOException {
 
 //        if (useTimestamp(provider)) {
 //            g.writeStartArray();

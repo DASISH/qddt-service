@@ -9,7 +9,6 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
  */
 public class QuestionItemBuilder {
 
-    private String name;
     private Question question;
     private ResponseDomain responseDomain;
 
@@ -19,7 +18,6 @@ public class QuestionItemBuilder {
     }
 
     public QuestionItemBuilder setName(String name) {
-        this.name = name;
         return this;
     }
 

@@ -11,7 +11,6 @@ import no.nsd.qddt.domain.category.CategoryType;
 public class CategoryBuilder {
     private String name;
     private String label;
-    private String code;
     private HierarchyLevel hierarchyLevel = HierarchyLevel.ENTITY;
     private CategoryType categoryType = CategoryType.CATEGORY;
 
@@ -26,7 +25,6 @@ public class CategoryBuilder {
     }
 
     public CategoryBuilder setCode(String code) {
-        this.code = code;
         return this;
     }
 
