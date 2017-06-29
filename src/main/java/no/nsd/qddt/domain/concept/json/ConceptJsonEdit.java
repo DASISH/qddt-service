@@ -24,19 +24,15 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private String name;
 
-    private Set<ConceptJsonEdit> children = new HashSet<>();
-
-    private Set<ConceptQuestionItemJson> conceptQuestionItems = new HashSet<>();
-
     private String label;
 
     private String description;
 
-    private UserJson modifiedBy;
-
-    private AgencyJsonView agency;
+    private Set<ConceptQuestionItemJson> conceptQuestionItems = new HashSet<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
+
+    private Set<ConceptJsonEdit> children = new HashSet<>();
 
     private TopicRef topicRef;
 
@@ -53,8 +49,8 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
-            setAgency(new AgencyJsonView(concept.getAgency()));
-            setModifiedBy(new UserJson(concept.getModifiedBy()));
+//            setAgency(new AgencyJsonView(concept.getAgency()));
+//            setModifiedBy(new UserJson(concept.getModifiedBy()));
             setConceptQuestionItems(
                     concept.getConceptQuestionItems().stream().map(ConceptQuestionItemJson::new).collect(Collectors.toSet()));
             setTopicRef(concept.getTopicRef());
@@ -113,26 +109,26 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         this.description = description;
     }
 
-    @Override
-    public UserJson getModifiedBy() {
-        return modifiedBy;
-    }
-
-    @Override
-    protected void setModifiedBy(UserJson modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-
-    @Override
-    public AgencyJsonView getAgency() {
-        return agency;
-    }
-
-    @Override
-    protected void setAgency(AgencyJsonView agency) {
-        this.agency = agency;
-    }
+//    @Override
+//    public UserJson getModifiedBy() {
+//        return modifiedBy;
+//    }
+//
+//    @Override
+//    protected void setModifiedBy(UserJson modifiedBy) {
+//        this.modifiedBy = modifiedBy;
+//    }
+//
+//
+//    @Override
+//    public AgencyJsonView getAgency() {
+//        return agency;
+//    }
+//
+//    @Override
+//    protected void setAgency(AgencyJsonView agency) {
+//        this.agency = agency;
+//    }
 
     public Set<CommentJsonEdit> getComments() {
         return comments;

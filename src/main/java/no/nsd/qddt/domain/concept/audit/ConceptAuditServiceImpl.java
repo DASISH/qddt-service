@@ -4,6 +4,8 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -88,11 +90,9 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         try{
             List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
-            instance.getConceptQuestionItems().forEach(cqi-> cqi.setQuestionItem(
-                    questionAuditService.getQuestionItemLastOrRevision(
-                        cqi.getId().getQuestionItemId(),
-                        cqi.getQuestionItemRevision()).
-                    getEntity()));
+            instance.getConceptQuestionItems()
+                    .forEach(cqi-> cqi.setQuestionItem(
+                            getQuestionItemLastOrRevision(cqi)));
 
             instance.getChildren().stream().map(this::postLoadProcessing);
 
@@ -101,5 +101,11 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
             System.out.println(ex.getMessage());
         }
         return instance;
+    }
+
+    private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
+        return questionAuditService.getQuestionItemLastOrRevision(
+                cqi.getId().getQuestionItemId(),
+                cqi.getQuestionItemRevision()).getEntity();
     }
 }

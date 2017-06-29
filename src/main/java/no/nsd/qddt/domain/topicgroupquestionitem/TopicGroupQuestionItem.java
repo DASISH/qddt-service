@@ -73,6 +73,8 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
 //    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
+    public TopicGroupQuestionItem() {
+    }
 
     public TopicGroupQuestionItem(ParentQuestionItemId id, Integer questionItemRevision){
         setId(id);

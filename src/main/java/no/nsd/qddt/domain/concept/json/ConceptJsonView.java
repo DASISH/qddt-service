@@ -1,11 +1,20 @@
 package no.nsd.qddt.domain.concept.json;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
+import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.refclasses.TopicRef;
+import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
 
+import javax.persistence.Embedded;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +34,18 @@ public class ConceptJsonView {
 
     private String description;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    private LocalDateTime modified;
+
+    private UserJson modifiedBy;
+
+    private AgencyJsonView agency;
+
+    @Embedded
+    private Version version;
+
     private Set<ConceptQuestionItemJson> conceptQuestionItems = new HashSet<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
@@ -39,6 +60,10 @@ public class ConceptJsonView {
         setName(concept.getName());
         setLabel(concept.getLabel());
         setDescription(concept.getDescription());
+        modifiedBy = new UserJson(concept.getModifiedBy());
+        agency = new AgencyJsonView(concept.getAgency());
+        modified = concept.getModified();
+        version = concept.getVersion();
         setChildren(concept.getChildren().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
         setConceptQuestionItems(concept.getConceptQuestionItems().stream().map(ConceptQuestionItemJson::new)
                 .collect(Collectors.toSet()));
@@ -76,6 +101,22 @@ public class ConceptJsonView {
 
     private void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getModified() {
+        return modified;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public UserJson getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public AgencyJsonView getAgency() {
+        return agency;
     }
 
     public Set<ConceptQuestionItemJson> getConceptQuestionItems() {
