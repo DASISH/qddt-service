@@ -40,6 +40,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
         UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
         UPDATED_HIERARCHY_RELATION("Hierarchy Relation Updated","Element added to a collection, no changes to element itself"),
+        /* deprecated */
+        UPDATED_HIERARCY_RELATION("deprecated","deprecated"),
         IN_DEVELOPMENT("In Development","UnfinishedWork"),
         TYPO("NoMeaningChange","Typo or No Meaning Change"),
         CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
@@ -236,7 +238,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                     break;
                 case CREATED:
                     break;
-                default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
+                default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCHY_RELATION / IN_DEVELOPMENT
                     ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
                     break;
             }
