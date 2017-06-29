@@ -113,7 +113,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     public Concept addConcept(Concept concept){
         System.out.println("new concept added to TopicGroup [" + this.getId() +"] concept:"+ concept.getId());
         concept.setTopicGroup(this);
-        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");
         return concept;
     }
@@ -155,11 +155,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     public void addConceptQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
             if (topicQuestionItem.getQuestionItem() != null){
-                topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
                 topicQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
             }
             topicQuestionItems.add(topicQuestionItem);
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
         }
         else
@@ -169,9 +169,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     public void addQuestionItem(QuestionItem questionItem) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
             new TopicGroupQuestionItem(this,questionItem);
-            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             questionItem.setChangeComment("Concept assosiation added");
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
         }
     }
@@ -179,9 +179,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     public  void removeQuestionItem(UUID qiId){
         topicQuestionItems.stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
                 forEach(cq->{
-                    cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                    cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
                     cq.getQuestionItem().setChangeComment("Concept assosiation removed");
-                    this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+                    this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
                     this.setChangeComment("QuestionItem assosiation removed");
                 });
         topicQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));

@@ -26,7 +26,7 @@ import java.sql.Timestamp;
                 "FROM question_item_aud " +
                 "WHERE id =:id and rev = :rev; ",
                 resultClass = QuestionItem.class)
-public class ConceptQuestionItem  implements java.io.Serializable {
+public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializable {
 
     private static final long serialVersionUID = -7261887349839337877L;
 

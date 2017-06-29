@@ -3,6 +3,10 @@ package no.nsd.qddt.domain.topicgroup.audit;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -26,12 +30,15 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     private final TopicGroupAuditRepository topicGroupAuditRepository;
     private final QuestionItemAuditService  questionItemAuditService;
     private final CommentService commentService;
+    private final OtherMaterialService otherMaterialService;
 
     @Autowired
-    public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,QuestionItemAuditService  questionItemAuditService,CommentService commentService) {
+    public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,QuestionItemAuditService  questionItemAuditService
+                                      ,CommentService commentService,OtherMaterialService otherMaterialService) {
         this.topicGroupAuditRepository = topicGroupAuditRepository;
         this.questionItemAuditService = questionItemAuditService;
         this.commentService = commentService;
+        this.otherMaterialService = otherMaterialService;
     }
 
     @Override
@@ -84,31 +91,34 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
         assert  (instance != null);
         try{
             System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
-            instance.setComments(new HashSet<>(coms));
-            int size = instance.getConcepts().size();
-            if (size>0)
-                instance.getConcepts().forEach(c-> c.getConceptQuestionItems().forEach(cqi->{
-                    Revision<Integer, QuestionItem> rev = questionItemAuditService.getQuestionItemLastOrRevision(
-                            cqi.getId().getQuestionItemId(),
-                            cqi.getQuestionItemRevision());
-                    cqi.setQuestionItem(rev.getEntity());
-                    if (rev.getEntity() == null)
-                        System.out.println("Failed loading QI:" + cqi.getId() + "- rev:" + cqi.getQuestionItemRevision());
-                }));
-
+            if (instance.getConcepts().size()>0)
+                instance.getConcepts()
+                        .forEach(c-> c.getConceptQuestionItems()
+                        .forEach(cqi->cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi))));
 
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
-                Revision<Integer, QuestionItem> rev = questionItemAuditService.getQuestionItemLastOrRevision(
-                        cqi.getId().getQuestionItemId(),
-                        cqi.getQuestionItemRevision());
-                cqi.setQuestionItem(rev.getEntity());
+                cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi));
             }
+
+            // Manually load none audited elements
+
+            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
+            instance.setOtherMaterials(new HashSet<>(oms));
+
+            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            instance.setComments(new HashSet<>(coms));
+
 
         } catch (Exception ex){
             System.out.println(instance);
             ex.printStackTrace();
         }
         return instance;
+    }
+
+    private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
+        return questionItemAuditService.getQuestionItemLastOrRevision(
+                cqi.getId().getQuestionItemId(),
+                cqi.getQuestionItemRevision()).getEntity();
     }
 }

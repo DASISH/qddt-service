@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -27,7 +28,7 @@ import java.sql.Timestamp;
                 "FROM question_item_aud " +
                 "WHERE id =:id and rev = :rev; ",
                 resultClass = QuestionItem.class)
-public class TopicGroupQuestionItem  implements java.io.Serializable {
+public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Serializable {
 
     private static final long serialVersionUID = -7261887449839337877L;
 
@@ -72,8 +73,6 @@ public class TopicGroupQuestionItem  implements java.io.Serializable {
 //    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
-    public TopicGroupQuestionItem() {
-    }
 
     public TopicGroupQuestionItem(ParentQuestionItemId id, Integer questionItemRevision){
         setId(id);
@@ -85,10 +84,10 @@ public class TopicGroupQuestionItem  implements java.io.Serializable {
         setQuestionItem(questionItem);
     }
 
-    public TopicGroupQuestionItem(TopicGroup topicGroup, QuestionItem questionItem, Integer questionItemRevision) {
-        this(topicGroup,questionItem);
-        setQuestionItemRevision(questionItemRevision);
-    }
+//    public TopicGroupQuestionItem(TopicGroup topicGroup, QuestionItem questionItem, Integer questionItemRevision) {
+//        this(topicGroup,questionItem);
+//        setQuestionItemRevision(questionItemRevision);
+//    }
 
 
     public ParentQuestionItemId getId() {
