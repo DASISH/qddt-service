@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.responsedomain.json;
 
 import no.nsd.qddt.domain.category.json.CategoryJsonView;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import org.hibernate.annotations.Type;
@@ -25,6 +26,8 @@ public class ResponseDomainJsonView {
 
     private String displayLayout;
 
+    private Version version;
+
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
 
@@ -45,6 +48,7 @@ public class ResponseDomainJsonView {
         setName(responseDomain.getName());
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
+        setVersion(responseDomain.getVersion());
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
         setManagedRepresentation(new CategoryJsonView(responseDomain.getManagedRepresentation()));
@@ -82,6 +86,13 @@ public class ResponseDomainJsonView {
         this.displayLayout = displayLayout;
     }
 
+    public Version getVersion() {
+        return version;
+    }
+
+    private void setVersion(Version version) {
+        this.version = version;
+    }
 
     public ResponseKind getResponseKind() {
         return responseKind;
