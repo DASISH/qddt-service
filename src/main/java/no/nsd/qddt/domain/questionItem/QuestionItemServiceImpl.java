@@ -81,7 +81,12 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public void delete(UUID uuid) {
-        questionItemRepository.delete(uuid);
+        try {
+            questionItemRepository.delete(uuid);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override

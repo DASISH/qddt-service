@@ -97,7 +97,7 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     public void setResponseDomain(ResponseDomain responseDomain) {
-        if (responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
+        if (responseDomain!=null && responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
             & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
             System.out.println("MISSING ManagedRepresentation " + responseDomain.getManagedRepresentation().getName());
         }
