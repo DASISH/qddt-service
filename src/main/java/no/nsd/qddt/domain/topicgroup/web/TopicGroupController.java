@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.study.StudyService;
@@ -62,6 +63,7 @@ public class TopicGroupController {
 
         if(instance.getStudy() == null ){
             instance.setStudy(studyService.findOne(studyId));
+            instance.getStudy().setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCHY_RELATION);
         }
         try {
             instance = service.save(instance);
@@ -72,7 +74,7 @@ public class TopicGroupController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id){
         service.delete(id);
     }

@@ -18,6 +18,7 @@ public class Code implements Comparable<Code> {
     @Column(name = "code_value")
     private String codeValue;
 
+    private String alignment;
 
     public Code() {
         codeValue = "";
@@ -37,23 +38,29 @@ public class Code implements Comparable<Code> {
         this.codeValue = codeValue;
     }
 
+    public String getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(String alignment) {
+        this.alignment = alignment;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Code)) return false;
-        if (!super.equals(o)) return false;
 
         Code code = (Code) o;
 
-        return codeValue != null ? codeValue.equals(code.codeValue) : code.codeValue == null;
-
+        if (codeValue != null ? !codeValue.equals(code.codeValue) : code.codeValue != null) return false;
+        return alignment != null ? alignment.equals(code.alignment) : code.alignment == null;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (codeValue != null ? codeValue.hashCode() : 0);
+        int result = codeValue != null ? codeValue.hashCode() : 0;
+        result = 31 * result + (alignment != null ? alignment.hashCode() : 0);
         return result;
     }
 

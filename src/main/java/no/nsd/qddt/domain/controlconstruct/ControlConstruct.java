@@ -303,7 +303,7 @@ public class ControlConstruct extends AbstractEntityAudit {
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
-//        System.out.println("populateQuestionItems " + getControlConstructInstructions().size());
+        System.out.println("populate Instructions " + getControlConstructInstructions().size());
         setPreInstructions(getControlConstructInstructions().stream()
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)
@@ -313,7 +313,7 @@ public class ControlConstruct extends AbstractEntityAudit {
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList()));
-
+//        getControlConstructInstructions().stream().forEach(c-> System.out.println(c.getInstruction().getName()));
     }
 
 

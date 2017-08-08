@@ -60,7 +60,7 @@ public class Concept extends AbstractEntityAudit {
     private TopicGroup topicGroup;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "concept")
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE}, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
 

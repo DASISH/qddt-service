@@ -19,7 +19,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
 
     private String abstractDescription;
 
-    private Set<TopicGroupQuestionItemJson> topicGroupQuestions;
+    private Set<TopicGroupQuestionItemJson> topicQuestionItems;
 
     private Set<ConceptJsonView> concepts = new HashSet<>();
 
@@ -33,7 +33,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         super(topicGroup);
         if (topicGroup == null) return;
         setAbstractDescription(topicGroup.getAbstractDescription());
-        setTopicGroupQuestions( topicGroup.getTopicQuestionItems().stream().map(TopicGroupQuestionItemJson::new).collect(Collectors.toSet()));
+        setTopicQuestionItems( topicGroup.getTopicQuestionItems().stream().map(TopicGroupQuestionItemJson::new).collect(Collectors.toSet()));
         setAuthors(topicGroup.getAuthors());
         setOtherMaterials(topicGroup.getOtherMaterials());
         setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
@@ -48,12 +48,12 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         this.abstractDescription = abstractDescription;
     }
 
-    public Set<TopicGroupQuestionItemJson> getTopicGroupQuestions() {
-        return topicGroupQuestions;
+    public Set<TopicGroupQuestionItemJson> getTopicQuestionItems() {
+        return topicQuestionItems;
     }
 
-    private void setTopicGroupQuestions(Set<TopicGroupQuestionItemJson> topicGroupQuestions) {
-        this.topicGroupQuestions = topicGroupQuestions;
+    public void setTopicQuestionItems(Set<TopicGroupQuestionItemJson> topicQuestionItems) {
+        this.topicQuestionItems = topicQuestionItems;
     }
 
     public Set<ConceptJsonView> getConcepts() {
@@ -98,7 +98,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
 
         if (abstractDescription != null ? !abstractDescription.equals(that.abstractDescription) : that.abstractDescription != null)
             return false;
-        if (topicGroupQuestions != null ? !topicGroupQuestions.equals(that.topicGroupQuestions) : that.topicGroupQuestions != null)
+        if (topicQuestionItems != null ? !topicQuestionItems.equals(that.topicQuestionItems) : that.topicQuestionItems != null)
             return false;
 //        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
@@ -122,6 +122,6 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
     public String toString() {
         return String.format(
                 "TopicGroupRevisionJson (abstractDescription=%s, topicQuestions=%s, concepts=%s, authors=%s, otherMaterials=%s, comments=%s)",
-                this.abstractDescription, this.topicGroupQuestions, this.concepts, this.authors, this.otherMaterials, this.comments);
+                this.abstractDescription, this.topicQuestionItems, this.concepts, this.authors, this.otherMaterials, this.comments);
     }
 }

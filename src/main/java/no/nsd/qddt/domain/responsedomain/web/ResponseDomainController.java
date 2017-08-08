@@ -68,7 +68,7 @@ public class ResponseDomainController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) throws RequestAbortedException {
         try {
             service.delete(id);

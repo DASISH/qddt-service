@@ -31,7 +31,7 @@ public abstract class AbstractEntity {
     @GeneratedValue(generator = "uuid-gen")
     private UUID id;
 
-//    @Version
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
@@ -108,7 +108,7 @@ public abstract class AbstractEntity {
      * @param o
      * @return
      */
-    boolean fieldCompare(AbstractEntity o) {
+    public boolean fieldCompare(AbstractEntity o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

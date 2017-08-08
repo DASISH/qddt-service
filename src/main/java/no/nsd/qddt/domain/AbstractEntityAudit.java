@@ -106,11 +106,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "based_on_object")
+    @Column(name = "based_on_object",updatable = false)
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    @Column(name = "based_on_revision")
+    @Column(name = "based_on_revision",updatable = false)
     private Integer basedOnRevision;
 
 

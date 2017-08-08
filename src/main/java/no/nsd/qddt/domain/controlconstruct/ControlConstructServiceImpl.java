@@ -143,7 +143,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
         try{
-            // instructions has to unpacked into pre and post instructions
+            // instructions has to be unpacked into pre and post instructions
             instance.populateInstructions();
 
             // before returning fetch correct version of QI...
