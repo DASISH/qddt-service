@@ -146,7 +146,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Page<Concept> findAllPageable(Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","name DESC"));
+        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -154,7 +154,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
-                defaultSort(pageable,"name","name DESC"));
+                defaultSort(pageable,"name","name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -162,7 +162,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,
-                defaultSort(pageable,"name","name DESC"));
+                defaultSort(pageable,"name","name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
