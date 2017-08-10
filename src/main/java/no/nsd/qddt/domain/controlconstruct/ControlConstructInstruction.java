@@ -21,7 +21,6 @@ public class ControlConstructInstruction {
     @Enumerated(EnumType.STRING)
     private ControlConstructInstructionRank instructionRank;
 
-
     public Instruction getInstruction() {
         return instruction;
     }

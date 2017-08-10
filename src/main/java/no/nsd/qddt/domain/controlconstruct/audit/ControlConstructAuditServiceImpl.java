@@ -101,7 +101,7 @@ thus we need to populate some elements ourselves.
         try{
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
-            System.out.println("postLoadProcessing instruction -> " + instance.getControlConstructInstructions().size());
+//            System.out.println("postLoadProcessing instruction -> " + instance.getControlConstructInstructions().size());
             instance.populateInstructions();
 
             if(instance.getQuestionItemUUID() != null) {

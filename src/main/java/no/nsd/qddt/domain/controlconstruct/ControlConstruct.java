@@ -126,7 +126,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JsonIgnore
     @OrderColumn(name="instruction_idx")
     @OrderBy("instruction_idx ASC")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
                     joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>(0);
@@ -259,42 +259,27 @@ public class ControlConstruct extends AbstractEntityAudit {
     fetches pre and post instructions and add them to ControlConstructInstruction
      */
     public void populateControlConstructInstructions() {
-//        System.out.println("populateControlConstructInstructions");
         if (controlConstructInstructions == null)
             controlConstructInstructions = new ArrayList<>();
         else
             controlConstructInstructions.clear();
 
-        harvestPreInstructions(getPreInstructions());
-        harvestPostInstructions(getPostInstructions());
+        harvestInstructions(ControlConstructInstructionRank.PRE, getPreInstructions());
+        harvestInstructions(ControlConstructInstructionRank.POST, getPostInstructions());
         if (this.getQuestionItem() != null)
             setQuestionItemUUID(this.getQuestionItem().getId());
     }
 
-    private void harvestPostInstructions(List<Instruction> instructions) {
+    private void harvestInstructions(ControlConstructInstructionRank rank,List<Instruction> instructions) {
         try {
             for (Instruction instruction : instructions) {
                 ControlConstructInstruction cci = new ControlConstructInstruction();
                 cci.setInstruction(instruction);
-                cci.setInstructionRank(ControlConstructInstructionRank.POST);
+                cci.setInstructionRank(rank);
                 this.getControlConstructInstructions().add(cci);
             }
         }catch (Exception ex){
             System.out.println("harvestPostInstructions exception " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
-    private void harvestPreInstructions(List<Instruction> instructions){
-        try {
-            for (int i = 0; i < instructions.size(); i++) {
-                ControlConstructInstruction cci = new ControlConstructInstruction();
-                cci.setInstruction(preInstructions.get(i));
-                cci.setInstructionRank(ControlConstructInstructionRank.PRE);
-                this.controlConstructInstructions.add(i, cci);
-            }
-        }catch (Exception ex) {
-            System.out.println("harvestPreInstructions exception " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -313,7 +298,7 @@ public class ControlConstruct extends AbstractEntityAudit {
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList()));
-//        getControlConstructInstructions().stream().forEach(c-> System.out.println(c.getInstruction().getName()));
+        getControlConstructInstructions().stream().forEach(c-> System.out.println(c.getInstruction().getName()));
     }
 
 
