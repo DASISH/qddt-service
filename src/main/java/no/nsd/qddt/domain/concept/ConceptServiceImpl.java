@@ -88,9 +88,7 @@ class ConceptServiceImpl implements ConceptService {
 
 
     private Concept prePersistProcessing(Concept instance) {
-        System.out.println("prePersistProcessing " + instance.getName());
         try {
-            System.out.println("Number of QIs: " + instance.getConceptQuestionItems().size());
             instance.getConceptQuestionItems().stream()
                     .filter(f->f.getQuestionItemRevision() == null)
                     .forEach(cqi->{
@@ -112,6 +110,7 @@ class ConceptServiceImpl implements ConceptService {
                 instance.makeNewCopy(null);
             }
         } catch(Exception ex) {
+            System.out.println("ConceptService-> prePersistProcessing " + instance.getName());
             ex.printStackTrace();
         }
         return instance;
@@ -131,7 +130,7 @@ class ConceptServiceImpl implements ConceptService {
                         cqi.getQuestionItemRevision());
                 cqi.setQuestionItem(rev.getEntity());
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
-                    System.out.println("missmatch wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
+                    System.out.println("ConceptService-> postLoadProcessing: MISSMATCH; wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
                     cqi.setQuestionItemRevision(rev.getRevisionNumber());
                 }
             }
@@ -147,7 +146,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Page<Concept> findAllPageable(Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","modified DESC"));
+        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","name DESC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -155,7 +154,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
-                defaultSort(pageable,"name","modified DESC"));
+                defaultSort(pageable,"name","name DESC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -163,7 +162,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,
-                defaultSort(pageable,"name","modified DESC"));
+                defaultSort(pageable,"name","name DESC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
