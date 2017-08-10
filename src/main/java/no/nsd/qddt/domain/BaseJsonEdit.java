@@ -38,6 +38,8 @@ public class BaseJsonEdit implements Serializable {
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
+    private Integer basedOnRevision;
+
     @Embedded
     private Version version;
 
@@ -60,6 +62,7 @@ public class BaseJsonEdit implements Serializable {
         setName(entity.getName());
         setAgency(new AgencyJsonView(entity.getAgency()));
         setBasedOnObject(entity.getBasedOnObject());
+        setBasedOnRevision(entity.getBasedOnRevision());
         setModified(entity.getModified());
         setModifiedBy(new UserJson(entity.getModifiedBy()));
         setVersion(entity.getVersion());
@@ -112,6 +115,14 @@ public class BaseJsonEdit implements Serializable {
 
     private void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
+    }
+
+    public Integer getBasedOnRevision() {
+        return basedOnRevision;
+    }
+
+    public void setBasedOnRevision(Integer basedOnRevision) {
+        this.basedOnRevision = basedOnRevision;
     }
 
     public Version getVersion() {
