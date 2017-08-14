@@ -61,18 +61,6 @@ public class StudyController {
         if (instance.getSurveyProgram() == null){
             instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
         }
-
-//        if (instance.getId() != null) {
-//            instance.getInstruments().addAll(instrumentService.findByStudy(instance.getId()));
-//            instance.getInstruments().forEach(c->{
-//                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-//                c.setChangeComment("");
-//            });
-//        }
-//        else
-//            instance.SetDefaultInstrument();
-
-
         if (instance.getTopicGroups() != null) {
             instance.getTopicGroups().forEach(c->{
                 c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
@@ -86,7 +74,12 @@ public class StudyController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
-        service.delete(id);
+        System.out.println("Study delete " + id);
+        try {
+            service.delete(id);
+        }catch (Exception ex) {
+            System.out.println(ex.fillInStackTrace());
+        }
     }
 
 

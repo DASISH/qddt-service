@@ -4,17 +4,19 @@ package no.nsd.qddt.domain.publication;
  * @author Stig Norland
  */
 public enum ElementKind {
+    SURVEY_PROGRAM("Survey"),
+    STUDY("Study"),
+    TOPIC_GROUP("Module"),
     CONCEPT("Concept"),
-    CONTROL_CONSTRUCT("Construct"),
+    QUESTION_ITEM("QuestionItem"),
+    RESPONSEDOMAIN("ResponseDomain"),
+    INSTRUMENT("Instrument"),
+    PUBLICATION("Publication"),
+    CONTROL_CONSTRUCT("ControlConstruct"),
     QUESTION_CONSTRUCT("QuestionConstruct"),
     STATEMENT_CONSTRUCT("Statement"),
-    SEQUENCE_CONSTRUCT("Sequence"),
     CONDITION_CONSTRUCT("Condition"),
-    INSTRUMENT("Instrument"),
-    QUESTION_ITEM("QuestionItem"),
-    STUDY("Study"),
-    SURVEY_PROGRAM("Survey"),
-    TOPIC_GROUP("Module");
+    SEQUENCE_CONSTRUCT("Sequence");
 
 
     private final String description;

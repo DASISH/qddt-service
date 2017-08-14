@@ -76,6 +76,10 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
         }
     }
 
+//    @PreRemove
+//    public void delete(AbstractEntity entity){
+//        entity
+//    }
 
     private boolean isAnOwner(AbstractEntityAudit entity, User user){
         return entity.getAgency().equals(user.getAgency());

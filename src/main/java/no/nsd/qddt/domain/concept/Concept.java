@@ -60,7 +60,7 @@ public class Concept extends AbstractEntityAudit {
     private TopicGroup topicGroup;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE}, mappedBy = "concept")
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
 
@@ -260,7 +260,9 @@ public class Concept extends AbstractEntityAudit {
 
     @PreRemove
     private void removeReferencesFromConcept(){
-        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
+        System.out.println("Concept pre remove");
+//        getConceptQuestionItems().clear();
+//        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
     }
 
 

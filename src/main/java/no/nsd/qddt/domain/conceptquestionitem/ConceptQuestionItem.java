@@ -176,5 +176,10 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
      //TODO implement
     }
 
+    @PreRemove
+    public void remove(){
+        System.out.println("ConceptQuestionItem pre remove");
+        this.questionItem = null;
+    }
 
 }

@@ -59,6 +59,7 @@ class StudyServiceImpl implements StudyService {
     @Override
     @Transactional()
     public void delete(UUID uuid) {
+
         studyRepository.delete(uuid);
     }
 

@@ -67,8 +67,8 @@ public class Study extends AbstractEntityAudit implements Authorable {
             inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany( cascade = {CascadeType.MERGE}, mappedBy = "study", fetch = FetchType.LAZY)
-    @OrderBy(value = "modified ASC")
+    @OneToMany( cascade = {CascadeType.MERGE ,CascadeType.REMOVE}, mappedBy = "study", fetch = FetchType.LAZY)
+    @OrderBy(value = "name ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
@@ -200,5 +200,16 @@ public class Study extends AbstractEntityAudit implements Authorable {
             topic.fillDoc(pdfReport);
         }
         pdfReport.addFooter(this);
+    }
+
+    @PreRemove
+    public void remove(){
+        System.out.println(" Study pre remove");
+        if (this.getSurveyProgram() != null) {
+            System.out.println(getSurveyProgram().getName());
+            this.getSurveyProgram().getStudies().removeIf(p->p.getId() == this.getId());
+        }
+        this.getAuthors().clear();
+        this.getInstruments().clear();
     }
 }

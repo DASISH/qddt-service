@@ -63,11 +63,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
 
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
     private Set<Concept> concepts = new HashSet<>();
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE }, mappedBy = "topicGroup")
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE }, mappedBy = "topicGroup")
     private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
 
 
@@ -78,7 +78,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     private Set<Author> authors = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
+    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER )
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
@@ -156,7 +156,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
             if (topicQuestionItem.getQuestionItem() != null){
                 topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                topicQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
+                topicQuestionItem.getQuestionItem().setChangeComment("Topic assosiation added");
             }
             topicQuestionItems.add(topicQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
@@ -176,6 +176,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         }
     }
 
+    //TODO: Is this correct? maybe no update for QI when removing (it is bound to a revision anyway...).
     public  void removeQuestionItem(UUID qiId){
         topicQuestionItems.stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
                 forEach(cq->{
@@ -263,5 +264,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         pdfReport.addFooter(this);
     }
 
+    @PreRemove
+    public void preRemove(){
+        System.out.println("Topic pre remove");
+        getAuthors().clear();
+        getOtherMaterials().clear();
+    }
 
 }

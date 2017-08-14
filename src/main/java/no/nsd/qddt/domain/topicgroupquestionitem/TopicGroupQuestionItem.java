@@ -181,6 +181,13 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
                 "}";
     }
 
+    @PreRemove
+    public void remove(){
+        System.out.println("TopicGroupQuestionItem pre remove");
+        this.questionItem = null;
+    }
+
+
     public void makeNewCopy(Integer revision) {
      //TODO implement
     }

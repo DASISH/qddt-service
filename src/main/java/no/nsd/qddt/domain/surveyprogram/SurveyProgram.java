@@ -49,7 +49,7 @@ import java.util.Set;
 public class SurveyProgram extends AbstractEntityAudit implements Authorable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    @OrderBy(value = "modified ASC")
+    @OrderBy(value = "name ASC")
     private Set<Study> studies = new HashSet<>();
 
     @Column(length = 10000)

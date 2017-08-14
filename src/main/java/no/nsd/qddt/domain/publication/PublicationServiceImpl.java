@@ -143,6 +143,7 @@ public class PublicationServiceImpl implements PublicationService {
             case QUESTION_CONSTRUCT:
             case STATEMENT_CONSTRUCT:
             case SEQUENCE_CONSTRUCT:
+            case CONDITION_CONSTRUCT:
                 return controlConstructService;
             case INSTRUMENT:
                 return instrumentService;
