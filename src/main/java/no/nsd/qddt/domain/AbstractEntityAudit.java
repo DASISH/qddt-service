@@ -238,8 +238,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                     break;
                 case CREATED:
                     break;
-                default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCHY_RELATION / IN_DEVELOPMENT
+                case IN_DEVELOPMENT:
                     ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
+                    break;
+                default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCHY_RELATION
+                    ver.setVersionLabel("Changes in hierarchy");
                     break;
             }
             version = ver;
