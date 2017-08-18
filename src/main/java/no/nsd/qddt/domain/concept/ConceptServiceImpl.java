@@ -167,5 +167,10 @@ class ConceptServiceImpl implements ConceptService {
         return pages;
     }
 
+    @Override
+    public List<Concept> findByQuestionItem(UUID id) {
+        return conceptRepository.findByConceptQuestionItemsIdQuestionItemId(id);
+    }
+
 
 }

@@ -175,6 +175,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     public QuestionItem getQuestionItem() {
+        if (questionItemReferenceOnly != null)
+            questionItem.setConceptRefs(questionItemReferenceOnly.getConceptRefs());
         return questionItem;
     }
 

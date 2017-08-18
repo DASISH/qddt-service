@@ -30,14 +30,14 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
 
     Page<ControlConstruct> findByNameLikeIgnoreCaseAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
 
-    @Query(value = "SELECT cc.* , cc.updated as modified FROM control_construct cc " +
-            "left join question_item qi on qi.id = cc.questionItem_id " +
-            "left join question q on q.id = qi.question_id " +
+    @Query(value = "SELECT cc.* , cc.updated as modified FROM CONTROL_CONSTRUCT cc " +
+            "left join QUESTION_ITEM qi on qi.id = cc.questionItem_id " +
+            "left join QUESTION q on q.id = qi.question_id " +
             "WHERE cc.control_construct_kind = ?1 and ( cc.name ILIKE ?2 or qi.name ILIKE ?3 or q.question ILIKE ?4 ) " +
             "ORDER BY ?#{#pageable}",
-            countQuery = "SELECT count(cc.*)  FROM Control_Construct cc " +
-            "left join question_item qi on qi.id = cc.questionItem_id " +
-            "left join question q on q.id = qi.question_id " +
+            countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
+            "left join QUESTION_ITEM qi on qi.id = cc.questionItem_id " +
+            "left join QUESTION q on q.id = qi.question_id " +
             "WHERE cc.control_construct_kind = ?1 and ( cc.name ILIKE ?2 or qi.name ILIKE ?3 or q.question ILIKE ?4 )",
             nativeQuery = true)
     Page<ControlConstruct> findByQuery(String kind, String name, String questionName, String questionText, Pageable pageable);

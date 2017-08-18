@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
@@ -62,6 +63,10 @@ public class QuestionItem extends AbstractEntityAudit {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
+
+    @Transient
+    @JsonSerialize
+    private List<ConceptRef> conceptRefs;
 
 
     public QuestionItem() {
@@ -147,19 +152,24 @@ public class QuestionItem extends AbstractEntityAudit {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
-
-    @Transient
-    @JsonSerialize
     public List<ConceptRef> getConceptRefs(){
         try {
-            System.out.println("getConceptRefs...");
-            return conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept()))
-                    .sorted(ConceptRef::compareTo)
-                    .collect(Collectors.toList());
-        } catch (Exception ex){
+            if (conceptRefs == null) {
+                System.out.println("QI getConceptRefs...");
+                conceptRefs = conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept()))
+                        .filter(qi -> qi.getTopicRef() != null)
+                        .sorted(ConceptRef::compareTo)
+                        .collect(Collectors.toList());
+            }
+        } catch(Exception ex){
             ex.printStackTrace();
             return new ArrayList<>();
         }
+        return conceptRefs;
+    }
+
+    public void setConceptRefs(List<ConceptRef> conceptRefs) {
+        this.conceptRefs = conceptRefs;
     }
 
     @Override
@@ -224,6 +234,7 @@ public class QuestionItem extends AbstractEntityAudit {
         pdfReport.addFooter(this);
 
     }
+
 }
 
 

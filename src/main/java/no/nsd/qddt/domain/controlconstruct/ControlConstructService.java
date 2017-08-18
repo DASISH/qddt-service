@@ -29,4 +29,6 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
 
     Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
 
+//    Page<ConstructJson> findByNameLikeAndControlConstructKindOrQuestionItemQuestionLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
+
 }

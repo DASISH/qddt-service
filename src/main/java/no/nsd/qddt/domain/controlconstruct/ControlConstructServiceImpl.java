@@ -154,7 +154,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         instance.getQuestionItemUUID(),
                         instance.getQuestionItemRevision());
                 instance.setQuestionItemRevision(rev.getRevisionNumber());
+//                System.out.println("CCS -> refs: " + rev.getEntity().getConceptRefs().size());
+
                 instance.setQuestionItem(rev.getEntity());
+
             }
         } catch (Exception ex){
             ex.printStackTrace();

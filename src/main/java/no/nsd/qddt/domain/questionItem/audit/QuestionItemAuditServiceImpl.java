@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
  * @author Dag Østgulen Heradstveit
  */
 @Service("questionItemAuditService")
-class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
+class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
 
     private final QuestionItemAuditRepository questionItemAuditRepository;
     private final ResponseDomainAuditController rdAuditController;
     private final CommentService commentService;
 
     @Autowired
-    public QuestionItemItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository,ResponseDomainAuditController rdAuditController,
+    public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository,ResponseDomainAuditController rdAuditController,
                                             CommentService commentService) {
         this.questionItemAuditRepository = questionItemAuditRepository;
         this.rdAuditController = rdAuditController;
@@ -94,6 +94,7 @@ class QuestionItemItemAuditServiceImpl implements QuestionItemAuditService {
                     rev.getEntity().getResponseDomainUUID(),
                     rev.getEntity().getResponseDomainRevision()).getEntity());
         }
+//        System.out.println("QIAS -> refs: " + rev.getEntity().getConceptRefs().size());
         List<Comment> coms = commentService.findAllByOwnerId( rev.getEntity().getId());
         rev.getEntity().setComments(new HashSet<>(coms));
         return rev;

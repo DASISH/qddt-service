@@ -52,11 +52,18 @@ public class ConceptRef extends BaseRef<ConceptRef> {
 
     @Override
     public int compareTo(ConceptRef o) {
-        int i =  this.getTopicRef().getStudyRef().compareTo(o.getTopicRef().getStudyRef());
-        if (i==0)
-            i =  this.getTopicRef().compareTo(o.getTopicRef());
-        if (i==0)
-            i= getName().compareToIgnoreCase(o.getName());
+        if (o == null)
+            return  -1;
+        int i;
+        try {
+            i = this.getTopicRef().getStudyRef().compareTo(o.getTopicRef().getStudyRef());
+            if (i == 0)
+                i = this.getTopicRef().compareTo(o.getTopicRef());
+            if (i == 0)
+                i = getName().compareToIgnoreCase(o.getName());
+        } catch (NullPointerException ex) {
+            i = -1;
+        }
         return i;
     }
 }

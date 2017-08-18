@@ -104,8 +104,7 @@ public class Concept extends AbstractEntityAudit {
                 conceptQuestionItem.getQuestionItem().setChangeComment("Concept association added");
             }
             conceptQuestionItems.add(conceptQuestionItem);
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
-);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
         }
         else

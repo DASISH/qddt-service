@@ -154,8 +154,8 @@ public class ConceptController {
 
     @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
     @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Concept> getbyQuestionItemId(@PathVariable("qiId") UUID id) {
-        return  new ArrayList<>(); // conceptService.findByQuestionItem(id);
+    public List<Concept> getByQuestionItemId(@PathVariable("qiId") UUID id) {
+        return  service.findByQuestionItem(id);
     }
 
 
