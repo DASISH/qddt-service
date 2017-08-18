@@ -15,6 +15,7 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -97,9 +98,14 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     public void setResponseDomain(ResponseDomain responseDomain) {
-        if (responseDomain!=null && responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
+        if (responseDomain!=null && (responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.BOOLEAN
+                & responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
+                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.DATETIME
+                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.NUMERIC
+                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.TEXT)
             & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
-            System.out.println("MISSING ManagedRepresentation " + responseDomain.getManagedRepresentation().getName());
+            System.out.println(DateTime.now() + "MISSING ManagedRepresentation "
+                    + responseDomain.getManagedRepresentation());
         }
             this.responseDomain = responseDomain;
         if (this.responseDomain != null)

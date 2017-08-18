@@ -58,7 +58,7 @@ public class ConceptController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "conceptid", "questionitemid","questionitemrevision"})
+    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "conceptid", "questionitemid","questionitemrevision"})
     public ConceptJsonEdit addQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
@@ -78,7 +78,7 @@ public class ConceptController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "conceptid", "questionitemid"})
+    @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "conceptid", "questionitemid"})
     public ConceptJsonEdit removeQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId) {
         Concept concept=null;
         try{

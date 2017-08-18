@@ -105,7 +105,7 @@ public class TopicGroupController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "topicid", "questionitemid","questionitemrevision"})
+    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
     public TopicGroupRevisionJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
@@ -125,7 +125,7 @@ public class TopicGroupController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "topicid", "questionitemid"})
+    @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "topicid", "questionitemid"})
     public TopicGroupRevisionJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
         TopicGroup topicGroup =null;
         try{

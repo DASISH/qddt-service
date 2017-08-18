@@ -61,7 +61,7 @@ public class Study extends AbstractEntityAudit implements Authorable {
     @Column(length = 10000)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
     @JoinTable(name = "STUDY_INSTRUMENTS",
             joinColumns = {@JoinColumn(name = "study_id")},
             inverseJoinColumns = {@JoinColumn(name = "instruments_id")})

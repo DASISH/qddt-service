@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
-import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
+import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -21,7 +21,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
 
     private String description;
 
-    private CategoryJsonEdit managedRepresentation;
+    private ManagedRepresentationJsonEdit managedRepresentation;
 
     private String displayLayout;
 
@@ -42,7 +42,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         setComments(responseDomain.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
-        setManagedRepresentation(new CategoryJsonEdit(responseDomain.getManagedRepresentation()));
+        setManagedRepresentation(new ManagedRepresentationJsonEdit(responseDomain.getManagedRepresentation()));
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
     }
@@ -55,11 +55,11 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         this.description = description;
     }
 
-    public CategoryJsonEdit getManagedRepresentation() {
+    public ManagedRepresentationJsonEdit getManagedRepresentation() {
         return managedRepresentation;
     }
 
-    private void setManagedRepresentation(CategoryJsonEdit managedRepresentation) {
+    private void setManagedRepresentation(ManagedRepresentationJsonEdit managedRepresentation) {
         this.managedRepresentation = managedRepresentation;
     }
 

@@ -16,6 +16,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -201,8 +202,12 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 Code code = codes.get(_Index);
                 current.setCode(code);
                 _Index++;
+            } catch (IndexOutOfBoundsException iob){
+                current.setCode(new Code());
             } catch(Exception e) {
-                System.out.println("populateCatCodes catch & continue " + e.getMessage());
+                System.out.println(DateTime.now().toDateTimeISO()+
+                        " populateCatCodes (catch & continue) " + e.getMessage()+ " - " +
+                        current);
                 current.setCode(new Code());
             }
         }

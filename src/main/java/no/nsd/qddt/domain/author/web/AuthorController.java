@@ -75,7 +75,7 @@ public class AuthorController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "authorId" })
+    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "authorId" })
     public Author addAuthor(@RequestParam("authorId") UUID authorId
                         ,@RequestParam("surveyId") UUID surveyId
                         ,@RequestParam("studyId") UUID studyId
@@ -96,7 +96,7 @@ public class AuthorController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "authorId"})
+    @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "authorId"})
     public Author removeQuestion(@RequestParam("authorId") UUID authorId
             ,@RequestParam("surveyId") UUID surveyId
             ,@RequestParam("studyId") UUID studyId
