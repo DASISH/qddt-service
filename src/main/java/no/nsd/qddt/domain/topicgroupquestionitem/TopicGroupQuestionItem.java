@@ -30,14 +30,14 @@ import java.sql.Timestamp;
                 resultClass = QuestionItem.class)
 public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Serializable {
 
-    private static final long serialVersionUID = -7261887449839337877L;
+    private static final long serialVersionUID = -7261887559839337877L;
 
     @EmbeddedId
     private ParentQuestionItemId id = new ParentQuestionItemId();
 
 
 
-    @JsonBackReference(value = "ConceptQuestionItemConceptRef")
+    @JsonBackReference(value = "TopicQuestionItemConceptRef")
     @ManyToOne
     @MapsId("id")
     @JoinColumn(name = "PARENT_ID",insertable = false, updatable = false)
@@ -120,6 +120,13 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
     }
 
     public QuestionItem getQuestionItem() {
+        if (questionItemLateBound != null) {
+            System.out.println("Get Topic QuestionItem (set concept ref)" + questionItemLateBound.getConceptRefs().size());
+            if (questionItem != null)
+                questionItem.setConceptRefs(questionItemLateBound.getConceptRefs());
+            else
+                System.out.println("questionItem was NULL");
+        }
         return questionItem;
     }
 

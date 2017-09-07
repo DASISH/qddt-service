@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -46,7 +47,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit implements Authorable {
+public class SurveyProgram extends AbstractEntityAudit implements Authorable,Archivable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderBy(value = "name ASC")
@@ -62,6 +63,8 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable {
             joinColumns = {@JoinColumn(name ="survey_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
+
+    private boolean isArchived;
 
     public SurveyProgram() {
 
@@ -148,4 +151,13 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable {
         pdfReport.addFooter(this);
     }
 
+    @Override
+    public boolean getIsArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setIsArchived(boolean archived) {
+        isArchived = archived;
+    }
 }

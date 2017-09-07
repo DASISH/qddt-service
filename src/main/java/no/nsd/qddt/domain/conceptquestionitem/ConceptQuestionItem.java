@@ -117,8 +117,13 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
     }
 
     public QuestionItem getQuestionItem() {
-        System.out.println("Get Concept QuestionItem (set concept ref)" + questionItemLateBound.getConceptRefs().size() );
-        questionItem.setConceptRefs(this.questionItemLateBound.getConceptRefs());
+        if (questionItemLateBound != null) {
+            System.out.println("Get Concept QuestionItem (set concept ref)" + questionItemLateBound.getConceptRefs().size());
+            if (questionItem != null)
+                questionItem.setConceptRefs(questionItemLateBound.getConceptRefs());
+            else
+                System.out.println("questionItem was NULL");
+        }
         return questionItem;
     }
 

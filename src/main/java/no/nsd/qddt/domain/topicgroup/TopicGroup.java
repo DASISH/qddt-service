@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
@@ -51,7 +52,7 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements Authorable {
+public class TopicGroup extends AbstractEntityAudit implements Authorable,Archivable {
 
     @Column(name = "description", length = 10000)
     private String abstractDescription;
@@ -81,6 +82,8 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER )
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
+
+    private boolean isArchived;
 
     public TopicGroup() {
     }
@@ -152,7 +155,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         this.topicQuestionItems = topicQuestionItems;
     }
 
-    public void addConceptQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
+    public void addTopicQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
             if (topicQuestionItem.getQuestionItem() != null){
                 topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
@@ -181,7 +184,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         topicQuestionItems.stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
                 forEach(cq->{
                     cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                    cq.getQuestionItem().setChangeComment("Concept assosiation removed");
+                    cq.getQuestionItem().setChangeComment("Topic assosiation removed");
                     this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
                     this.setChangeComment("QuestionItem assosiation removed");
                 });
@@ -271,4 +274,13 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable {
         getOtherMaterials().clear();
     }
 
+    @Override
+    public boolean getIsArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setIsArchived(boolean archived) {
+        isArchived = archived;
+    }
 }

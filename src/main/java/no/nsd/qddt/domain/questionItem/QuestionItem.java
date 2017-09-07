@@ -157,7 +157,6 @@ public class QuestionItem extends AbstractEntityAudit {
             if (conceptRefs == null) {
                 System.out.println("QI getConceptRefs...");
                 conceptRefs = conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept()))
-                        .filter(qi -> qi.getTopicRef() != null)
                         .sorted(ConceptRef::compareTo)
                         .collect(Collectors.toList());
             }

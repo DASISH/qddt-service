@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
+import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,14 +35,14 @@ public class TopicGroupController {
 
     private final TopicGroupService service;
     private final StudyService studyService;
-    private final ConceptQuestionItemService cqiService;
+    private final TopicGroupQuestionItemService cqiService;
 
 
     @Autowired
-    public TopicGroupController(TopicGroupService service, StudyService studyService, ConceptQuestionItemService conceptQuestionItemService) {
+    public TopicGroupController(TopicGroupService service, StudyService studyService, TopicGroupQuestionItemService topicGroupQuestionItemService) {
         this.service = service;
         this.studyService = studyService;
-        this.cqiService = conceptQuestionItemService;
+        this.cqiService = topicGroupQuestionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -84,7 +85,9 @@ public class TopicGroupController {
     @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
     public List<TopicGroupRevisionJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
-            return service.findByStudyId(studyId).stream().map(this::postLoad).collect(Collectors.toList());
+            return service.findByStudyId(studyId).stream()
+                    .map(this::postLoad)
+                    .collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
             ex.printStackTrace();
@@ -104,19 +107,20 @@ public class TopicGroupController {
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
 
+
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
-    public TopicGroupRevisionJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+    public TopicGroup addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             TopicGroup topicGroup = service.findOne(topicId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
-            topicGroup.addConceptQuestionItem(
+            topicGroup.addTopicQuestionItem(
                     new TopicGroupQuestionItem(
                             new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.intValue()));
 
-            return new TopicGroupRevisionJson(service.save(topicGroup));
+            return service.save(topicGroup);
         }catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
@@ -126,17 +130,17 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "topicid", "questionitemid"})
-    public TopicGroupRevisionJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
+    public TopicGroup removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
         TopicGroup topicGroup =null;
         try{
             topicGroup = service.findOne(topicId);
             topicGroup.removeQuestionItem(questionItemId);
             cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
-            return new TopicGroupRevisionJson(service.save(topicGroup));
+            return service.save(topicGroup);
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println( ex.getMessage());
-            return new TopicGroupRevisionJson(topicGroup);
+            return topicGroup;
         }
     }
 

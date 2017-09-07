@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -38,7 +39,7 @@ import java.util.UUID;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit {
+public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @JsonBackReference(value = "parentRef")
@@ -74,6 +75,8 @@ public class Concept extends AbstractEntityAudit {
     @Transient
     @JsonDeserialize
     private TopicRef topicRef;
+
+    private boolean isArchived;
 
     public Concept() {
 //        System.out.println("CSTR Concept");
@@ -287,4 +290,13 @@ public class Concept extends AbstractEntityAudit {
     }
 
 
+    @Override
+    public boolean getIsArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setIsArchived(boolean archived) {
+        isArchived = archived;
+    }
 }

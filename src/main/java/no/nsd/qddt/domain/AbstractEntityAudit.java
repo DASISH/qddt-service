@@ -56,7 +56,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         BASED_ON("Based on","Based on copy"),
         NEW_COPY("New Copy","Copy new"),
         REFERENCED("Reference of","Concepts can be copied as a reference, to facilitate hierarchical revision trees"),
-        TRANSLATED("Translated","Translation of source");
+        TRANSLATED("Translated","Translation of source"),
+        ARCHIVED("Archived","READ ONLY");
 
         ChangeKind(String name, String description){
             this.name = name;
@@ -106,6 +107,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Column(name = "name")
     private String name;
 
+
     @Column(name = "based_on_object",updatable = false)
     @Type(type="pg-uuid")
     private UUID basedOnObject;
@@ -131,7 +133,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
 
     protected AbstractEntityAudit() {
-
+//        isArchived = false;
     }
 
 
@@ -142,6 +144,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     public void setAgency(Agency agency) {
         this.agency = agency;
     }
+
 
     public UUID getBasedOnObject() {
         return basedOnObject;

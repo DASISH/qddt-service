@@ -5,6 +5,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.instrument.Instrument;
@@ -51,7 +52,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements Authorable {
+public class Study extends AbstractEntityAudit implements Authorable, Archivable {
 
     @JsonIgnore
     @ManyToOne()
@@ -76,6 +77,8 @@ public class Study extends AbstractEntityAudit implements Authorable {
             joinColumns = {@JoinColumn(name ="study_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
+
+    private boolean isArchived;
 
 
     public Study() {
@@ -212,4 +215,15 @@ public class Study extends AbstractEntityAudit implements Authorable {
         this.getAuthors().clear();
         this.getInstruments().clear();
     }
+
+    @Override
+    public boolean getIsArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setIsArchived(boolean archived) {
+        isArchived = archived;
+    }
+
 }

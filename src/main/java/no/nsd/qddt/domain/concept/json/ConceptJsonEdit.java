@@ -34,6 +34,8 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private Set<ConceptJsonEdit> children = new HashSet<>();
 
+    private boolean isArchived;
+
     private TopicRef topicRef;
 
     public ConceptJsonEdit() {
@@ -49,6 +51,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
+            setIsArchived(concept.getIsArchived());
 //            setAgency(new AgencyJsonView(concept.getAgency()));
 //            setModifiedBy(new UserJson(concept.getModifiedBy()));
             setConceptQuestionItems(
@@ -179,4 +182,11 @@ public class ConceptJsonEdit extends BaseJsonEdit {
     }
 
 
+    public boolean getIsArchived() {
+        return isArchived;
+    }
+
+    public void setIsArchived(boolean archived) {
+        isArchived = archived;
+    }
 }

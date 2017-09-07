@@ -27,6 +27,8 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
 
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
+    private boolean isArchived;
+
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
     public TopicGroupRevisionJson(TopicGroup topicGroup) {
@@ -36,6 +38,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         setTopicQuestionItems( topicGroup.getTopicQuestionItems().stream().map(TopicGroupQuestionItemJson::new).collect(Collectors.toSet()));
         setAuthors(topicGroup.getAuthors());
         setOtherMaterials(topicGroup.getOtherMaterials());
+        setIsArchived(topicGroup.getIsArchived());
         setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
     }
@@ -123,5 +126,13 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         return String.format(
                 "TopicGroupRevisionJson (abstractDescription=%s, topicQuestions=%s, concepts=%s, authors=%s, otherMaterials=%s, comments=%s)",
                 this.abstractDescription, this.topicQuestionItems, this.concepts, this.authors, this.otherMaterials, this.comments);
+    }
+
+    public boolean getIsArchived() {
+        return isArchived;
+    }
+
+    public void setIsArchived(boolean archived) {
+        isArchived = archived;
     }
 }
