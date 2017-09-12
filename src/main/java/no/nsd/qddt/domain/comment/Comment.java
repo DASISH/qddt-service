@@ -38,10 +38,10 @@ public class Comment extends AbstractEntity  {
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
 
-    private boolean isHidden;
+    private Boolean isHidden;
 
     @Column(name = "is_public")
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @Column(name = "comment",length = 2000)
     private String comment;
@@ -84,7 +84,7 @@ public class Comment extends AbstractEntity  {
 
 
     public boolean getIsHidden() {
-        return isHidden;
+        return (isHidden == null)?true:isHidden;
     }
 
     public void setIsHidden(boolean hidden) {
@@ -93,7 +93,7 @@ public class Comment extends AbstractEntity  {
 
 
     public boolean isPublic() {
-        return isPublic;
+        return (isPublic == null)?true:isPublic;
     }
 
     public void setPublic(boolean aPublic) {
