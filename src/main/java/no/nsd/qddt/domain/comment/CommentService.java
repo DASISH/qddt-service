@@ -14,6 +14,8 @@ public interface CommentService extends BaseService<Comment,UUID> {
 
     Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable);
 
+    Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable);
+
     List<Comment> findAllByOwnerId(UUID ownerId);
 
 

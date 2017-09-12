@@ -21,6 +21,8 @@ interface CommentRepository extends BaseRepository<Comment,UUID> {
      */
     Page<Comment> findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(UUID ownerUUID,boolean isHidden, Pageable pageable);
 
+    Page<Comment> findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(UUID ownerId, boolean isHidden, boolean isPublic, Pageable pageable);
+
     List<Comment> findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(UUID ownerUUID, boolean isHidden);
 
 }

@@ -40,12 +40,16 @@ public class Comment extends AbstractEntity  {
 
     private boolean isHidden;
 
+    @Column(name = "is_public")
+    private boolean isPublic;
+
     @Column(name = "comment",length = 2000)
     private String comment;
 
 
     public Comment() {
         isHidden = false;
+        isPublic = true;
     }
 
     public Comment(String comment) {
@@ -88,6 +92,14 @@ public class Comment extends AbstractEntity  {
     }
 
 
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
     @Transient
     @JsonSerialize()
     public int getTreeSize(){
@@ -102,15 +114,18 @@ public class Comment extends AbstractEntity  {
 
         Comment comment1 = (Comment) o;
 
+        if (isHidden != comment1.isHidden) return false;
+        if (isPublic != comment1.isPublic) return false;
         if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
-        return !(comment != null ? !comment.equals(comment1.comment) : comment1.comment != null);
-
+        return comment != null ? comment.equals(comment1.comment) : comment1.comment == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (isHidden ? 1 : 0);
+        result = 31 * result + (isPublic ? 1 : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }
@@ -140,4 +155,5 @@ public class Comment extends AbstractEntity  {
 
         document.setLeftMargin(document.getLeftMargin()-5f);
     }
+
 }

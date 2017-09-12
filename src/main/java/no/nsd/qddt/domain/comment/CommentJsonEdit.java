@@ -28,6 +28,8 @@ public class CommentJsonEdit {
 
     private boolean isHidden;
 
+    private boolean isPublic;
+
     private String comment;
 
     public CommentJsonEdit() {
@@ -40,6 +42,7 @@ public class CommentJsonEdit {
         setOwnerId(comment.getOwnerId());
         setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setIsHidden(comment.getIsHidden());
+        setPublic(comment.isPublic());
         setComment(comment.getComment());
     }
 
@@ -98,5 +101,13 @@ public class CommentJsonEdit {
 
     private void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }
