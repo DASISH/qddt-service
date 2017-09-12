@@ -67,7 +67,7 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         return new PageImpl<>(
-          conceptAuditRepository.findRevisions(id).getContent().stream()
+          conceptAuditRepository.findRevisionsOrBasedOnEqualsOrderByModified(id,id).getContent().stream()
                   .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
                   .skip(skip)
                   .limit(limit)
