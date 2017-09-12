@@ -44,7 +44,7 @@ public class StudyController {
     public Study update(@RequestBody Study instance) {
         System.out.println("study update");
 
-        if (instance.getTopicGroups() != null)
+        if (instance.getTopicGroups() != null & !instance.isArchived())
             instance.getTopicGroups().forEach(c->{
                 c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
                 c.setChangeComment("");

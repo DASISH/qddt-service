@@ -5,7 +5,8 @@ package no.nsd.qddt.domain;
  */
 public interface Archivable {
 
-    boolean getIsArchived();
-    void setIsArchived(boolean archived);
+    boolean isArchived();
+
+    void setArchived(boolean archived);
 
 }

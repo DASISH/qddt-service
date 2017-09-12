@@ -239,6 +239,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                     ver.incMinor();
                     ver.setVersionLabel("");
                     break;
+                case ARCHIVED:
+                    ((Archivable)this).setArchived(true);
+                    ver.setVersionLabel("");
                 case CREATED:
                     break;
                 case IN_DEVELOPMENT:
@@ -256,7 +259,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             System.out.println(this);
         }
     }
-
 
     /**
      * None null field compare, (ignores null value when comparing)

@@ -6,10 +6,12 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -151,13 +153,18 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
         pdfReport.addFooter(this);
     }
 
-    @Override
-    public boolean getIsArchived() {
+    public boolean isArchived() {
         return isArchived;
     }
 
     @Override
-    public void setIsArchived(boolean archived) {
+    public void setArchived(boolean archived) {
         isArchived = archived;
+        setChangeKind(ChangeKind.ARCHIVED);
+        Hibernate.initialize(this.getStudies());
+        for (Study study:getStudies()){
+            if(!study.isArchived())
+                study.setArchived(archived);
+        }
     }
 }

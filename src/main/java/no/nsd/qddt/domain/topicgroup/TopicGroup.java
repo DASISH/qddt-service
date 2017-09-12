@@ -13,6 +13,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -275,12 +276,22 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     }
 
     @Override
-    public boolean getIsArchived() {
+    public boolean isArchived() {
         return isArchived;
     }
 
     @Override
-    public void setIsArchived(boolean archived) {
+    public void setArchived(boolean archived) {
         isArchived = archived;
+        setChangeKind(ChangeKind.ARCHIVED);
+        System.out.println("Topc archived " + getName() );
+        Hibernate.initialize(this.getConcepts());
+        for (Concept concept:getConcepts()){
+            if (!concept.isArchived())
+                concept.setArchived(archived);
+        }
     }
+
+
+
 }

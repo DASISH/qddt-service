@@ -51,7 +51,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
-            setIsArchived(concept.getIsArchived());
+            setArchived(concept.isArchived());
 //            setAgency(new AgencyJsonView(concept.getAgency()));
 //            setModifiedBy(new UserJson(concept.getModifiedBy()));
             setConceptQuestionItems(
@@ -112,27 +112,6 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         this.description = description;
     }
 
-//    @Override
-//    public UserJson getModifiedBy() {
-//        return modifiedBy;
-//    }
-//
-//    @Override
-//    protected void setModifiedBy(UserJson modifiedBy) {
-//        this.modifiedBy = modifiedBy;
-//    }
-//
-//
-//    @Override
-//    public AgencyJsonView getAgency() {
-//        return agency;
-//    }
-//
-//    @Override
-//    protected void setAgency(AgencyJsonView agency) {
-//        this.agency = agency;
-//    }
-
     public Set<CommentJsonEdit> getComments() {
         return comments;
     }
@@ -182,11 +161,11 @@ public class ConceptJsonEdit extends BaseJsonEdit {
     }
 
 
-    public boolean getIsArchived() {
+    public boolean isArchived() {
         return isArchived;
     }
 
-    public void setIsArchived(boolean archived) {
+    public void setArchived(boolean archived) {
         isArchived = archived;
     }
 }

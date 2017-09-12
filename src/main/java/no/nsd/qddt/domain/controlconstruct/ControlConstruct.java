@@ -14,6 +14,7 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.universe.Universe;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
@@ -115,6 +116,14 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Column(length = 3000)
     private String description;
+
+
+    @OrderColumn(name="universe_idx")
+    @OrderBy("universe_idx ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "CONTROL_CONSTRUCT_UNIVERSE",
+            joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
+    private List<Universe> universes =new ArrayList<>(0);
 
 
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
@@ -226,6 +235,14 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Universe> getUniverses() {
+        return universes;
+    }
+
+    public void setUniverses(List<Universe> universes) {
+        this.universes = universes;
     }
 
     private Set<Instrument> getInstruments() {

@@ -12,6 +12,7 @@ import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -217,13 +218,25 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     }
 
     @Override
-    public boolean getIsArchived() {
+    public boolean isArchived() {
         return isArchived;
     }
 
     @Override
-    public void setIsArchived(boolean archived) {
-        isArchived = archived;
+    public void setArchived(boolean archived) {
+        try {
+            isArchived = archived;
+            setChangeKind(ChangeKind.ARCHIVED);
+
+            Hibernate.initialize(this.getTopicGroups());
+            for (TopicGroup topicGroup : getTopicGroups()) {
+                if (!topicGroup.isArchived())
+                    topicGroup.setArchived(archived);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            System.out.println(ex.getStackTrace());
+        }
     }
 
 }
