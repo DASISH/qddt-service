@@ -161,7 +161,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,
+        Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndBasedOnObjectIsNull(name,description,
                 defaultSort(pageable,"name","name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;

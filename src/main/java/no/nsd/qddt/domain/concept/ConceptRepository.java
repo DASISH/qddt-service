@@ -19,7 +19,7 @@ interface ConceptRepository extends BaseRepository<Concept,UUID> {
 
     Page<Concept> findByTopicGroupIdAndNameIsNotNull(UUID id, Pageable pageable);
 
-    Page<Concept> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(String name, String description, Pageable pageable);
+    Page<Concept> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndBasedOnObjectIsNull(String name, String description, Pageable pageable);
 
     List<Concept> findByConceptQuestionItemsIdQuestionItemId(UUID questionItemId);
 }
