@@ -123,7 +123,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_UNIVERSE",
             joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
-    private List<Universe> universes =new ArrayList<>(0);
+    private List<Universe> universe =new ArrayList<>(0);
 
 
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
@@ -237,12 +237,12 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.description = description;
     }
 
-    public List<Universe> getUniverses() {
-        return universes;
+    public List<Universe> getUniverse() {
+        return universe;
     }
 
-    public void setUniverses(List<Universe> universes) {
-        this.universes = universes;
+    public void setUniverse(List<Universe> universe) {
+        this.universe = universe;
     }
 
     private Set<Instrument> getInstruments() {
