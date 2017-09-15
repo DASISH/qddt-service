@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Entity
 @Audited
-@Table(name = "INSTRUCTION", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_INSTRUCTION_NAME")})
+@Table(name = "UNIVERSE", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_universe_name")})
 public class Universe extends AbstractEntityAudit {
 
 //    //TODO ArrayList doesn't work with Enver
