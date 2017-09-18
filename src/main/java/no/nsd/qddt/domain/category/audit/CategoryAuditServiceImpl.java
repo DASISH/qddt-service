@@ -49,11 +49,11 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
                 min(Comparator.comparing(Revision::getRevisionNumber)).orElse(null);
     }
 
-//    @Override
-//    public Page<Revision<Integer, Category>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-//        return null;
-//    }
-
+    // we don't have an interface for editing instructions, hence we don't need to fetch comments that never are there...
+    @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        // no implementation
+    }
 
     // Categories most likely don't have discussions about them... and you are not often interested in old versions of a category,
     // hence we don't need to fetch comments that never are there...
