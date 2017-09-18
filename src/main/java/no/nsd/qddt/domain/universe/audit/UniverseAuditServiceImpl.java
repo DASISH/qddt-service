@@ -62,7 +62,11 @@ class UniverseAuditServiceImpl implements UniverseAuditService {
         );
     }
 
-    // we don't have an interface for editing universes, hence we don't need to fetch comments that never are there...
+    // we don't have an interface for editing instructions, hence we don't need to fetch comments that never are there...
+    @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        // no implementation
+    }
 
 //    protected Revision<Integer, Universe> postLoadProcessing(Revision<Integer, Universe> instance) {
 //        assert  (instance != null);

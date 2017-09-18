@@ -23,6 +23,7 @@ class StudyAuditServiceImpl implements StudyAuditService {
 
     private final StudyAuditRepository studyAuditRepository;
     private final CommentService commentService;
+    private boolean showPrivateComments;
 
     @Autowired
     public StudyAuditServiceImpl(StudyAuditRepository studyAuditRepository,CommentService commentService) {
@@ -57,6 +58,11 @@ class StudyAuditServiceImpl implements StudyAuditService {
     }
 
     @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments=showPrivate;
+    }
+
+    @Override
     public Page<Revision<Integer, Study>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
@@ -78,7 +84,11 @@ class StudyAuditServiceImpl implements StudyAuditService {
     private Study postLoadProcessing(Study instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
             instance.setComments(new HashSet<>(coms));
 
             instance.getTopicGroups().forEach(c->{

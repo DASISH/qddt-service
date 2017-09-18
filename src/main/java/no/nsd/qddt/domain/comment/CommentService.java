@@ -18,5 +18,7 @@ public interface CommentService extends BaseService<Comment,UUID> {
 
     List<Comment> findAllByOwnerId(UUID ownerId);
 
+    List<Comment> findAllByOwnerIdPublic(UUID ownerId);
+
 
 }

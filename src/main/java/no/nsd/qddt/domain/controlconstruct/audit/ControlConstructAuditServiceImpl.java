@@ -32,6 +32,7 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
     private final QuestionItemAuditService qiAuditService;
     private final OtherMaterialService otherMaterialService;
     private final CommentService commentService;
+    private boolean showPrivateComments;
 
 
     @Autowired
@@ -75,6 +76,11 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
         postLoadProcessing(rev.getEntity());
         return  new Revision<>(rev.getMetadata(), postLoadProcessing(rev.getEntity()));
+    }
+
+    @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments = showPrivate;
     }
 
     @Override
@@ -122,7 +128,12 @@ thus we need to populate some elements ourselves.
             List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
             instance.setOtherMaterials(new HashSet<>(oms));
 
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+
             instance.setComments(new HashSet<>(coms));
 
         } catch (Exception ex){

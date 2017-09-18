@@ -49,6 +49,7 @@ class InstructionAuditServiceImpl implements InstructionAuditService {
                 min(Comparator.comparing(Revision::getRevisionNumber)).orElse(null);
     }
 
+
     @Override
     public Page<Revision<Integer, Instruction>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
@@ -63,6 +64,10 @@ class InstructionAuditServiceImpl implements InstructionAuditService {
     }
 
     // we don't have an interface for editing instructions, hence we don't need to fetch comments that never are there...
+    @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        // no implementation
+    }
 
 //    protected Revision<Integer, Instruction> postLoadProcessing(Revision<Integer, Instruction> instance) {
 //        assert  (instance != null);

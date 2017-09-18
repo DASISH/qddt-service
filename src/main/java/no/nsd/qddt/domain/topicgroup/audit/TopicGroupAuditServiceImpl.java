@@ -31,6 +31,7 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     private final QuestionItemAuditService  questionItemAuditService;
     private final CommentService commentService;
     private final OtherMaterialService otherMaterialService;
+    private boolean showPrivateComments;
 
     @Autowired
     public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,QuestionItemAuditService  questionItemAuditService
@@ -64,6 +65,11 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
                 .min(Comparator.comparing(Revision::getRevisionNumber))
                 .map(this::postLoadProcessing)
                 .orElse(null);
+    }
+
+    @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments=showPrivate;
     }
 
     @Override
@@ -104,8 +110,12 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
             List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
             instance.setOtherMaterials(new HashSet<>(oms));
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
 
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
             instance.setComments(new HashSet<>(coms));
 
 

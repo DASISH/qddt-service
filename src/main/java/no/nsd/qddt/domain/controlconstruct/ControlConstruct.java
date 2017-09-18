@@ -14,6 +14,7 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.domain.universe.Universe;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
@@ -118,11 +119,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String description;
 
 
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn(name="universe_idx")
-    @OrderBy("universe_idx ASC")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "CONTROL_CONSTRUCT_UNIVERSE",
-            joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
     private List<Universe> universe =new ArrayList<>(0);
 
 

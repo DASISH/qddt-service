@@ -36,6 +36,7 @@ public class PublicationServiceImpl implements PublicationService {
     private final StudyAuditService studyService;
     private final SurveyProgramAuditService surveyProgramService;
     private final TopicGroupAuditService topicGroupService;
+    private boolean showPrivate= true;
 
     @Autowired
     public PublicationServiceImpl(PublicationRepository repository,
@@ -109,6 +110,9 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     private Publication postLoadProcessing(Publication instance) {
+        if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
+            showPrivate = false;
+
         instance.getPublicationElements().forEach(this::fill);
         return instance;
     }
@@ -161,6 +165,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     private PublicationElement fill(PublicationElement element) {
         BaseServiceAudit service = getService(element.getElementEnum());
+        service.setShowPrivateComment(showPrivate);
         try {
             element.setElement(service.findRevision(
                     element.getId(),

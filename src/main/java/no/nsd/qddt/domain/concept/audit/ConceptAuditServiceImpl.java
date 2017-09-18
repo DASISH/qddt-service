@@ -26,6 +26,7 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
     private final ConceptAuditRepository conceptAuditRepository;
     private final QuestionItemAuditService questionAuditService;
     private final CommentService commentService;
+    private boolean showPrivateComments;
 
     @Autowired
     ConceptAuditServiceImpl(ConceptAuditRepository conceptAuditRepository,
@@ -63,6 +64,11 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
     }
 
     @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments=showPrivate;
+    }
+
+    @Override
     public Page<Revision<Integer, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
@@ -88,7 +94,11 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         assert  (instance != null);
 
         try{
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
             instance.setComments(new HashSet<>(coms));
             instance.getConceptQuestionItems()
                     .forEach(cqi-> cqi.setQuestionItem(

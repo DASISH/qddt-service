@@ -101,4 +101,5 @@ public class Publication extends AbstractEntityAudit {
             element.getElementAsEntity().fillDoc(pdfReport);
         }
     }
+
 }

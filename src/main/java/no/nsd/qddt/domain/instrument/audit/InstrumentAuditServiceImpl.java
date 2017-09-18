@@ -22,6 +22,7 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
 
     private final InstrumentAuditRepository instrumentAuditRepository;
     private final CommentService commentService;
+    private boolean showPrivateComments;
 
     @Autowired
     public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository, CommentService commentService) {
@@ -55,6 +56,11 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
     }
 
     @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments = showPrivate;
+    }
+
+    @Override
     public Page<Revision<Integer, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
@@ -77,7 +83,11 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
 
     private Instrument postLoadProcessing(Instrument instance) {
         assert  (instance != null);
-        List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+        List<Comment> coms;
+        if (showPrivateComments)
+            coms = commentService.findAllByOwnerId(instance.getId());
+        else
+            coms  =commentService.findAllByOwnerIdPublic(instance.getId());
         instance.setComments(new HashSet<>(coms));
         return instance;
     }

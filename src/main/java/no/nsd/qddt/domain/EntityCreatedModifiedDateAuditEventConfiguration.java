@@ -9,7 +9,9 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.prepost.PreFilter;
 
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
@@ -147,7 +149,5 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
 //                });
         return concept;
     }
-
-
 
 }

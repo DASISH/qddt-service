@@ -22,6 +22,7 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
 
     private final ResponseDomainAuditRepository responseDomainAuditRepository;
     private final CommentService commentService;
+    private boolean showPrivateComments;
 
     @Autowired
     public ResponseDomainAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository,CommentService commentService) {
@@ -54,6 +55,11 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
     }
 
     @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments=showPrivate;
+    }
+
+    @Override
     public Page<Revision<Integer, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
@@ -77,7 +83,11 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
         assert  (instance != null);
 
         try{
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
             instance.setComments(new HashSet<>(coms));
             instance.getManagedRepresentation();        //Lazy loading trick... (we want the MR when locking at a revision).
         } catch (Exception ex){

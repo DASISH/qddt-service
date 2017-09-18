@@ -89,4 +89,9 @@ class CommentServiceImpl  implements CommentService  {
         return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false);
     }
 
+    @Override
+    public List<Comment> findAllByOwnerIdPublic(UUID ownerId) {
+        return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true);
+    }
+
 }

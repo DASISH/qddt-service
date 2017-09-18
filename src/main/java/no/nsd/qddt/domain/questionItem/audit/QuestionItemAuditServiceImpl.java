@@ -25,6 +25,7 @@ class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
     private final QuestionItemAuditRepository questionItemAuditRepository;
     private final ResponseDomainAuditController rdAuditController;
     private final CommentService commentService;
+    private boolean showPrivateComments;
 
     @Autowired
     public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository,ResponseDomainAuditController rdAuditController,
@@ -62,6 +63,11 @@ class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
     }
 
     @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments = showPrivate;
+    }
+
+    @Override
     public Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
@@ -94,8 +100,11 @@ class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
                     rev.getEntity().getResponseDomainUUID(),
                     rev.getEntity().getResponseDomainRevision()).getEntity());
         }
-//        System.out.println("QIAS -> refs: " + rev.getEntity().getConceptRefs().size());
-        List<Comment> coms = commentService.findAllByOwnerId( rev.getEntity().getId());
+        List<Comment> coms;
+        if (showPrivateComments)
+            coms = commentService.findAllByOwnerId(rev.getEntity().getId());
+        else
+            coms  =commentService.findAllByOwnerIdPublic(rev.getEntity().getId());
         rev.getEntity().setComments(new HashSet<>(coms));
         return rev;
     }

@@ -23,6 +23,7 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
 
     private final SurveyProgramAuditRepository surveyProgramAuditRepository;
     private final CommentService commentService;
+    private boolean showPrivateComments;
 
     @Autowired
     public SurveyProgramAuditAuditServiceImpl(SurveyProgramAuditRepository surveyProgramAuditRepository,CommentService commentService) {
@@ -61,6 +62,11 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
     }
 
     @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments=showPrivate;
+    }
+
+    @Override
     public Page<Revision<Integer, SurveyProgram>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
@@ -83,7 +89,11 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
             instance.setComments(new HashSet<>(coms));
 
             instance.getStudies().forEach(c->{

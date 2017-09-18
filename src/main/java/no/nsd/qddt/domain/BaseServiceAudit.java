@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Interface for all service classes dealing with entity classes
  * annotated by {@link org.hibernate.envers.Audited}
@@ -43,15 +45,7 @@ public interface BaseServiceAudit<T,ID, N extends Number & Comparable<N>> {
      */
     Revision<N, T> findFirstChange(ID id);
 
-
-
-//    /**
-//     * Find all revisions and return in a pageable view
-//     * @param id of the entity
-//     * @param changeKinds
-//     * @param pageable from controller method
-//     * @return {@link org.springframework.data.domain.Page} of the entity
-//     */
-//    Page<Revision<N,T>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    @NotNull
+    void setShowPrivateComment(boolean showPrivate);
 
 }
