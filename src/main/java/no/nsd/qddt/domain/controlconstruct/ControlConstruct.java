@@ -4,21 +4,25 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.responsedomain.Code;
+import no.nsd.qddt.domain.universe.Universe;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -115,6 +119,11 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String description;
 
 
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OrderColumn(name="universe_idx")
+    private List<Universe> universe =new ArrayList<>(0);
+
+
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
 //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @NotAudited
@@ -124,7 +133,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @JsonIgnore
     @OrderColumn(name="instruction_idx")
     @OrderBy("instruction_idx ASC")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
                     joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>(0);
@@ -173,6 +182,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     public QuestionItem getQuestionItem() {
+        if (questionItemReferenceOnly != null && questionItem != null)
+            questionItem.setConceptRefs(questionItemReferenceOnly.getConceptRefs());
         return questionItem;
     }
 
@@ -192,7 +203,7 @@ public class ControlConstruct extends AbstractEntityAudit {
         return questionItemUUID;
     }
 
-    public void setQuestionItemUUID(UUID questionItem) {
+    private void setQuestionItemUUID(UUID questionItem) {
         questionItemUUID = questionItem;
     }
 
@@ -224,7 +235,15 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.description = description;
     }
 
-    public Set<Instrument> getInstruments() {
+    public List<Universe> getUniverse() {
+        return universe;
+    }
+
+    public void setUniverse(List<Universe> universe) {
+        this.universe = universe;
+    }
+
+    private Set<Instrument> getInstruments() {
         return instruments;
     }
 
@@ -257,24 +276,23 @@ public class ControlConstruct extends AbstractEntityAudit {
     fetches pre and post instructions and add them to ControlConstructInstruction
      */
     public void populateControlConstructInstructions() {
-//        System.out.println("populateControlConstructInstructions");
         if (controlConstructInstructions == null)
             controlConstructInstructions = new ArrayList<>();
         else
             controlConstructInstructions.clear();
 
-        harvestPreInstructions(getPreInstructions());
-        harvestPostInstructions(getPostInstructions());
+        harvestInstructions(ControlConstructInstructionRank.PRE, getPreInstructions());
+        harvestInstructions(ControlConstructInstructionRank.POST, getPostInstructions());
         if (this.getQuestionItem() != null)
             setQuestionItemUUID(this.getQuestionItem().getId());
     }
 
-    private void harvestPostInstructions(List<Instruction> instructions) {
+    private void harvestInstructions(ControlConstructInstructionRank rank,List<Instruction> instructions) {
         try {
             for (Instruction instruction : instructions) {
                 ControlConstructInstruction cci = new ControlConstructInstruction();
                 cci.setInstruction(instruction);
-                cci.setInstructionRank(ControlConstructInstructionRank.POST);
+                cci.setInstructionRank(rank);
                 this.getControlConstructInstructions().add(cci);
             }
         }catch (Exception ex){
@@ -283,25 +301,11 @@ public class ControlConstruct extends AbstractEntityAudit {
         }
     }
 
-    private void harvestPreInstructions(List<Instruction> instructions){
-        try {
-            for (int i = 0; i < instructions.size(); i++) {
-                ControlConstructInstruction cci = new ControlConstructInstruction();
-                cci.setInstruction(preInstructions.get(i));
-                cci.setInstructionRank(ControlConstructInstructionRank.PRE);
-                this.controlConstructInstructions.add(i, cci);
-            }
-        }catch (Exception ex) {
-            System.out.println("harvestPreInstructions exception " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
     /*
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
-//        System.out.println("populateQuestionItems " + getControlConstructInstructions().size());
+        System.out.println("populate Instructions " + getControlConstructInstructions().size());
         setPreInstructions(getControlConstructInstructions().stream()
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)
@@ -311,7 +315,7 @@ public class ControlConstruct extends AbstractEntityAudit {
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList()));
-
+        getControlConstructInstructions().stream().forEach(c-> System.out.println(c.getInstruction().getName()));
     }
 
 
@@ -319,7 +323,7 @@ public class ControlConstruct extends AbstractEntityAudit {
         return preInstructions;
     }
 
-    public void setPreInstructions(List<Instruction> preInstructions) {
+    private void setPreInstructions(List<Instruction> preInstructions) {
         this.preInstructions = preInstructions;
     }
 
@@ -327,7 +331,7 @@ public class ControlConstruct extends AbstractEntityAudit {
          return postInstructions;
     }
 
-    public void setPostInstructions(List<Instruction> postInstructions) {
+    private void setPostInstructions(List<Instruction> postInstructions) {
         this.postInstructions = postInstructions;
     }
 
@@ -397,9 +401,7 @@ public class ControlConstruct extends AbstractEntityAudit {
             return false;
         if (getQuestionItem() != null ? !getQuestionItem().equals(that.getQuestionItem()) : that.getQuestionItem() != null)
             return false;
-        if (getIndexRationale() != null ? !getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() != null)
-            return false;
-        return !(getCondition() != null ? !getCondition().equals(that.getCondition()) : that.getCondition() != null);
+        return (getIndexRationale() != null ? getIndexRationale().equals(that.getIndexRationale()) : that.getIndexRationale() == null) && !(getCondition() != null ? !getCondition().equals(that.getCondition()) : that.getCondition() != null);
 
     }
 
@@ -422,6 +424,31 @@ public class ControlConstruct extends AbstractEntityAudit {
                 ", pre#=" + getPreInstructions().size() + '\'' +
                 ", post#=" + getPostInstructions().size() + '\'' +
                 '}';
+    }
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph()
+            .add("ControlConstruct (" + this.controlConstructKind.name() + ")"));
+        document.add(new Paragraph()
+                .add("Name")
+                .add(new Tab())
+                .add(getName()));
+        document.add(new Paragraph()
+                .add("Pre Instructions"));
+        for(Instruction pre:getPreInstructions()){
+            document.add(new Paragraph()
+                    .add(pre.getDescription()));
+        }
+        getQuestionItem().fillDoc(pdfReport);
+        document.add(new Paragraph()
+                .add("Post Instructions"));
+        for(Instruction post:getPostInstructions()){
+            document.add(new Paragraph()
+                    .add(post.getDescription()));
+        }
+        pdfReport.addFooter(this);
     }
 
     @Override

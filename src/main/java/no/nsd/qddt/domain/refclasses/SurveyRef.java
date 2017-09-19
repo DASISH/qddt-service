@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.refclasses;
 
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 
-public class SurveyRef extends BaseRef{
+public class SurveyRef extends BaseRef<SurveyRef>{
 
 
     public SurveyRef(){
@@ -13,4 +13,8 @@ public class SurveyRef extends BaseRef{
         super(surveyProgram);
     }
 
+    @Override
+    public int compareTo(SurveyRef o) {
+        return this.getName().compareToIgnoreCase(o.getName());
+    }
 }

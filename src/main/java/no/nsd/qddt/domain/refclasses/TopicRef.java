@@ -7,9 +7,9 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
  */
 
 
-public class TopicRef extends BaseRef{
+public class TopicRef extends BaseRef<TopicRef>{
 
-    StudyRef parent;
+    private final StudyRef parent;
 
     public TopicRef(){
         super();
@@ -51,5 +51,10 @@ public class TopicRef extends BaseRef{
         return "TopicRef{" +
                 "studyRef=" + parent +
                 "} " + super.toString();
+    }
+
+    @Override
+    public int compareTo(TopicRef o) {
+        return this.getName().compareToIgnoreCase(o.getName());
     }
 }

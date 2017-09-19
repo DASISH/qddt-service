@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.author;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -49,7 +47,7 @@ public class Author extends AbstractEntity {
 
     @JsonBackReference(value = "topicRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
-    private Set<TopicGroup> topicGroups = new HashSet<>();
+    private final Set<TopicGroup> topicGroups = new HashSet<>();
 //
 //    @JsonBackReference(value = "conceptRef")
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
@@ -190,13 +188,14 @@ public class Author extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Author{" +
-                "name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", about='" + about + '\'' +
-                ", homepage=" + homepage +
-                ", picture=" + picture +
-                "} " + super.toString();
+        return "{\"_class\":\"Author\", " +
+                "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"email\":" + (email == null ? "null" : "\"" + email + "\"") + ", " +
+                "\"about\":" + (about == null ? "null" : "\"" + about + "\"") + ", " +
+                "\"homepage\":" + (homepage == null ? "null" : homepage) + ", " +
+                "\"picture\":" + (picture == null ? "null" : picture) + ", " +
+                "\"authorsAffiliation\":" + (authorsAffiliation == null ? "null" : "\"" + authorsAffiliation + "\"") +
+                "}";
     }
 
     public String getAuthorsAffiliation() {

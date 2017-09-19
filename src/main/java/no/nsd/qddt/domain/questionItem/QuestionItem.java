@@ -1,35 +1,27 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
+import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.List;
-import com.itextpdf.layout.element.ListItem;
-
-import java.io.ByteArrayOutputStream;
 /**
  * Question Item is a container for Question (text) and responsedomain
  * This entity introduce a breaking change into the model. it supports early binding of
@@ -44,7 +36,7 @@ import java.io.ByteArrayOutputStream;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit implements Pdfable{
+public class QuestionItem extends AbstractEntityAudit {
 
     /**
      * This field will be populated with the correct version of a RD,  but should never be persisted.
@@ -69,8 +61,12 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
     private Question question;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "questionItem")
+    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
+
+    @Transient
+    @JsonSerialize
+    private List<ConceptRef> conceptRefs;
 
 
     public QuestionItem() {
@@ -87,7 +83,7 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
     }
 
     public void updateStatusQI(Concept concept) {
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         this.setChangeComment("Concept reference removed");
     }
 
@@ -102,13 +98,23 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
     // End pre remove ----------------------------------------------
 
 
-
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }
 
     public void setResponseDomain(ResponseDomain responseDomain) {
-        this.responseDomain = responseDomain;
+        if (responseDomain!=null && (responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.BOOLEAN
+                & responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
+                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.DATETIME
+                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.NUMERIC
+                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.TEXT)
+            & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
+            System.out.println(DateTime.now() + "MISSING ManagedRepresentation "
+                    + responseDomain.getManagedRepresentation());
+        }
+            this.responseDomain = responseDomain;
+        if (this.responseDomain != null)
+            this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
     }
 
     public Integer getResponseDomainRevision() {
@@ -137,29 +143,32 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
     }
 
 
-    public Set<ConceptQuestionItem> getConceptQuestionItems() {
+    private Set<ConceptQuestionItem> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
+    @SuppressWarnings("SameParameterValue")
+    private void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
-
-//    @Transient
-//    @JsonSerialize
-//    @JsonDeserialize
-//    private Set<ConceptRef> conceptRefs = new HashSet<>();
-
-    @Transient
-    @JsonSerialize
-    public Set<ConceptRef> getConceptRefs(){
+    public List<ConceptRef> getConceptRefs(){
         try {
-            return conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept())).collect(Collectors.toSet());
-        } catch (Exception ex){
+            if (conceptRefs == null) {
+                System.out.println("QI getConceptRefs...");
+                conceptRefs = conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept()))
+                        .sorted(ConceptRef::compareTo)
+                        .collect(Collectors.toList());
+            }
+        } catch(Exception ex){
             ex.printStackTrace();
-            return new HashSet<>(0);
+            return new ArrayList<>();
         }
+        return conceptRefs;
+    }
+
+    public void setConceptRefs(List<ConceptRef> conceptRefs) {
+        this.conceptRefs = conceptRefs;
     }
 
     @Override
@@ -203,42 +212,28 @@ public class QuestionItem extends AbstractEntityAudit implements Pdfable{
         getComments().clear();
         System.out.println("MADE NEW COPY...");
     }
-    //@Override
-    public ByteArrayOutputStream makePdf() {
 
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
-    }
 
     @Override
-    public void fillDoc(Document document) {
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph()
+                .setFont(pdfReport.getParagraphFont())
+                .add(getName()));
+        document.add(new Paragraph()
+                .add(question.getQuestion()));
+        document.add(new Paragraph()
+                .add("ResponseDomain"));
+        this.getResponseDomain().fillDoc(pdfReport);
+//        question.getChildren().forEach(c-> finalP.add("Question: " +c.getQuestion()));
 
-        PdfFont font = null;
-        try {
-            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Comment item : this.getComments()) {
+            item.fillDoc(pdfReport);
         }
-        document.add(new Paragraph("Survey Toc:").setFont(font));
-        List list = new List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
-        document.add(new Paragraph(this.getResponseDomain().toString()));
-        document.add(new Paragraph(this.getQuestion().toString()));
-        document.add(new Paragraph(this.getComments().toString()));
+        pdfReport.addFooter(this);
 
-        //    for (QuestionItem item : getQuestionItems()) {   item.fillDoc(document);  }
     }
-}
 
+}
 
 

@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service("studyService")
 class StudyServiceImpl implements StudyService {
 
-    private StudyRepository studyRepository;
+    private final StudyRepository studyRepository;
 
     @Autowired
     public StudyServiceImpl(StudyRepository studyRepository) {
@@ -44,7 +44,7 @@ class StudyServiceImpl implements StudyService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public Study save(Study instance) {
         return postLoadProcessing(
                 studyRepository.save(
@@ -57,8 +57,9 @@ class StudyServiceImpl implements StudyService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public void delete(UUID uuid) {
+
         studyRepository.delete(uuid);
     }
 
@@ -67,11 +68,11 @@ class StudyServiceImpl implements StudyService {
         studyRepository.delete(instances);
     }
 
-    protected Study prePersistProcessing(Study instance) {
+    private Study prePersistProcessing(Study instance) {
         return instance;
     }
 
-    protected Study postLoadProcessing(Study instance) {
+    private Study postLoadProcessing(Study instance) {
         return instance;
     }
 }

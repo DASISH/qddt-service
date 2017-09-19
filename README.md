@@ -9,3 +9,7 @@ Deploy
 -------
 
 gradlew build -x test
+
+Documentation
+-------------
+https://dasish.github.io/qddt-service/

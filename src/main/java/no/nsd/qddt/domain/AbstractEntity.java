@@ -31,7 +31,7 @@ public abstract class AbstractEntity {
     @GeneratedValue(generator = "uuid-gen")
     private UUID id;
 
-//    @Version
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
@@ -92,10 +92,10 @@ public abstract class AbstractEntity {
 
     @Override
     public String toString() {
-        return "{ id=" + id +
-                ", modified=" + (modified!=null ? modified.toString(): "?") +
-                ", modifiedBy=" + (modifiedBy!=null ? modifiedBy.toString(): "?") +
-                "} ";
+        return "\"id\":" + (id == null ? "null" : id) + ", " +
+                "\"modified\":" + (modified == null ? "null" : modified) + ", " +
+                "\"modifiedBy\":" + (modifiedBy == null ? "null" : modifiedBy)+ ", ";
+
     }
 
     public String toDDIXml(){
@@ -114,9 +114,9 @@ public abstract class AbstractEntity {
 
         if (id != null && !id.equals(o.id)) return false;
         if (modified != null && !modified.equals(o.modified)) return false;
-        if (modifiedBy.getId() != null && !modifiedBy.getId().equals(o.modifiedBy.getId())) return false;
-
-        return true;
+        return !(modifiedBy.getId() != null && !modifiedBy.getId().equals(o.modifiedBy.getId()));
     }
+
+
 
 }

@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.instrument.web;
 
-import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ import java.util.UUID;
 @RequestMapping("/instrument")
 public class InstrumentController  {
 
-    private InstrumentService service;
+    private final InstrumentService service;
 
     @Autowired
     public InstrumentController(InstrumentService service){
@@ -51,7 +50,7 @@ public class InstrumentController  {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
     }
@@ -76,6 +75,14 @@ public class InstrumentController  {
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf().toByteArray();
+    }
+
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {

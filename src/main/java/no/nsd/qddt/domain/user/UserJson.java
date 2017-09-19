@@ -36,7 +36,7 @@ public class UserJson {
         return id;
     }
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -44,7 +44,7 @@ public class UserJson {
         return username;
     }
 
-    public void setUsername(String username) {
+    private void setUsername(String username) {
         this.username = username;
     }
 
@@ -52,7 +52,7 @@ public class UserJson {
         return email;
     }
 
-    public void setEmail(String email) {
+    private void setEmail(String email) {
         this.email = email;
     }
 
@@ -60,7 +60,7 @@ public class UserJson {
         return agency;
     }
 
-    public void setAgency(AgencyJsonView agency) {
+    private void setAgency(AgencyJsonView agency) {
         this.agency = agency;
     }
 }

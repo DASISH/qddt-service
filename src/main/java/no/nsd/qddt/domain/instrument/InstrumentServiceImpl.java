@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service("instrumentService")
 class InstrumentServiceImpl implements InstrumentService {
 
-    private InstrumentRepository instrumentRepository;
+    private final InstrumentRepository instrumentRepository;
 
     @Autowired
     public InstrumentServiceImpl(InstrumentRepository instrumentRepository) {
@@ -41,7 +41,7 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public Instrument save(Instrument instance) {
         return instrumentRepository.save(instance);
     }
@@ -63,7 +63,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public List<Instrument> findByStudy(UUID studyId) {
-        return instrumentRepository.findByStudiesId(studyId);
+        return instrumentRepository.findByStudies(studyId);
     }
 
     @Override

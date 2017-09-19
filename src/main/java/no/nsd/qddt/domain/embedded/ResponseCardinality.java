@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.embedded;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import java.util.Objects;
 
 /**
  * Indicates the minimum and maximum number of occurrences of a response within the given parameters.
@@ -19,7 +20,7 @@ public class ResponseCardinality {
         return minimum;
     }
 
-    public void setMinimum(String minimum) {
+    private void setMinimum(String minimum) {
         this.minimum = minimum;
     }
 
@@ -27,7 +28,7 @@ public class ResponseCardinality {
         return maximum;
     }
 
-    public void setMaximum(String maximum) {
+    private void setMaximum(String maximum) {
         this.maximum = maximum;
     }
 
@@ -48,8 +49,8 @@ public class ResponseCardinality {
 
         ResponseCardinality that = (ResponseCardinality) o;
 
-        if (minimum != that.minimum) return false;
-        return maximum == that.maximum;
+        if (!Objects.equals(minimum, that.minimum)) return false;
+        return Objects.equals(maximum, that.maximum);
 
     }
 

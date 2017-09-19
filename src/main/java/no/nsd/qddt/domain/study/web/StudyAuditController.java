@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.study.web;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
-import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -27,7 +25,7 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/study", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudyAuditController {
 
-    private StudyAuditService service;
+    private final StudyAuditService service;
 
     @Autowired
     public StudyAuditController(StudyAuditService service) {
@@ -48,7 +46,7 @@ public class StudyAuditController {
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 

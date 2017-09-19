@@ -1,12 +1,14 @@
 package no.nsd.qddt.domain.instruction;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.IOException;
 
 /**
  * @author Stig Norland
@@ -17,7 +19,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "INSTRUCTION", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_INSTRUCTION_NAME")})
 public class Instruction extends AbstractEntityAudit {
 
-//    //TODO ArrayList dosn't work with Enver
+//    //TODO ArrayList doesn't work with Enver
 //    @JsonBackReference(value = "controlConstructInstructionRef")
 //    @OneToMany(mappedBy = "instruction")
 //    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
@@ -63,6 +65,12 @@ public class Instruction extends AbstractEntityAudit {
     public String toString() {
         return "Instruction{" +
                 ", description='" + description + '\'' +
-                "} " + super.toString();
+                ", id ='" + getId() + '\'' +
+                "}";
+    }
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+
     }
 }

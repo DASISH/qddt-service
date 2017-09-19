@@ -17,4 +17,7 @@ import java.util.UUID;
 public interface QuestionItemAuditService extends BaseServiceAudit<QuestionItem, UUID, Integer> {
 
     Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+
+    Revision<Integer, QuestionItem> getQuestionItemLastOrRevision(UUID id, Integer revision);
+
 }

@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.instruction.web;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instruction.audit.InstructionAuditService;
-import no.nsd.qddt.domain.instrument.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,7 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/instruction", produces = MediaType.APPLICATION_JSON_VALUE)
 public class InstructionAuditController {
 
-    private InstructionAuditService auditService;
+    private final InstructionAuditService auditService;
 
     @Autowired
     public InstructionAuditController(InstructionAuditService service) {
@@ -47,7 +46,7 @@ public class InstructionAuditController {
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Instruction>>> allProjects(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 

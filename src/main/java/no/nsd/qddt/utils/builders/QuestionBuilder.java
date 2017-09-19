@@ -8,22 +8,16 @@ import no.nsd.qddt.domain.question.Question;
  */
 public class QuestionBuilder {
 
-    private String changeComment;
-    private String name;
-
     public QuestionBuilder setChangeComment(String changeComment) {
-        this.changeComment = changeComment;
         return this;
     }
 
     public QuestionBuilder setName(String name) {
-        this.name = name;
         return this;
     }
 
 
     public Question createQuestion() {
-        Question question = new Question();
-        return question;
+        return new Question();
     }
 }

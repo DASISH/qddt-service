@@ -174,14 +174,6 @@ public class User {
         this.studies = studies;
     }
 
-//    public Set<Comment> getComments() {
-//        return comments;
-//    }
-//
-//    public void setComments(Set<Comment> comments) {
-//        this.comments = comments;
-//    }
-
     public Set<Instrument> getInstrument() {
         return instrument;
     }
@@ -287,12 +279,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + username + '\'' +
-//                ", pwd='" + (password != null ? "[Present]":"[Hidden]") + '\'' +
-//                ", email='" + email + '\'' +
-//                ", agency='"  + (agency != null ? agency.getName(): "[NULL]") + '\'' +
-                "}";
+        return "User{ " + username + "@" + agency.getName() + " }";
     }
 }

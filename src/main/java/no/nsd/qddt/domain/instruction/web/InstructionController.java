@@ -1,8 +1,5 @@
 package no.nsd.qddt.domain.instruction.web;
 
-import no.nsd.qddt.domain.HierarchyLevel;
-import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/instruction")
 public class InstructionController {
 
-    private InstructionService service;
+    private final InstructionService service;
 
     @Autowired
     public InstructionController(InstructionService service) {
@@ -52,7 +49,7 @@ public class InstructionController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
     }
@@ -63,10 +60,10 @@ public class InstructionController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Instruction>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
                                                       Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<Instruction> instructions = null;
+
         description = description.replace("*","%");
 
-        instructions = service.findByDescriptionLike(description, pageable);
+        Page<Instruction> instructions = service.findByDescriptionLike(description, pageable);
         return new ResponseEntity<>(assembler.toResource(instructions), HttpStatus.OK);
     }
 

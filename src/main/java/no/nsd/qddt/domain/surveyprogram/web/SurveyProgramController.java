@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequestMapping("/surveyprogram")
 public class SurveyProgramController {
 
-    private SurveyProgramService service;
+    private final SurveyProgramService service;
 //    private CommentService commentService;
 
     @Autowired
@@ -55,27 +55,18 @@ public class SurveyProgramController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
     }
 
 
-//    /**
-//     * Add a comment to the survey, this should
-//     * @param id of the survey
-//     * @param comment to add
-//     * @return the added comment with no relations
-//     */
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/{id}/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Comment addComment(@RequestBody Comment comment, @PathVariable("id") UUID id) {
-//
-//        System.out.println("COMMENTS->");
-//        SurveyProgram surveyProgram = service.findOne(id);
-//        comment.setOwner(surveyProgram.getId());
-//        return commentService.save(comment);
-//    }
+
+    @ResponseBody
+    @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf().toByteArray();
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)

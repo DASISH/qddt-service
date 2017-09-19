@@ -30,10 +30,10 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("instrumentQuestionService")
 class ControlConstructServiceImpl implements ControlConstructService {
 
-    private ControlConstructRepository controlConstructRepository;
-    private ControlConstructAuditService auditService;
-    private InstructionService iService;
-    private QuestionItemAuditService qiAuditService;
+    private final ControlConstructRepository controlConstructRepository;
+    private final ControlConstructAuditService auditService;
+    private final InstructionService iService;
+    private final QuestionItemAuditService qiAuditService;
 
 
     @Autowired
@@ -143,21 +143,21 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
         try{
-            // instructions has to unpacked into pre and post instructions
+            // instructions has to be unpacked into pre and post instructions
             instance.populateInstructions();
 
             // before returning fetch correct version of QI...
             if (instance.getQuestionItemUUID() == null)
                 instance.setQuestionItemRevision(0);
             else {
-                if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
-                    Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
-                    instance.setQuestionItemRevision(rev.getRevisionNumber());
-                    instance.setQuestionItem(rev.getEntity());
-                } else {
-                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision()).getEntity();
-                    instance.setQuestionItem(qi);
-                }
+                Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
+                        instance.getQuestionItemUUID(),
+                        instance.getQuestionItemRevision());
+                instance.setQuestionItemRevision(rev.getRevisionNumber());
+//                System.out.println("CCS -> refs: " + rev.getEntity().getConceptRefs().size());
+
+                instance.setQuestionItem(rev.getEntity());
+
             }
         } catch (Exception ex){
             ex.printStackTrace();

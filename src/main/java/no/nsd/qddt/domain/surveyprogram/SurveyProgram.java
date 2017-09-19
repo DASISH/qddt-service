@@ -1,23 +1,17 @@
 package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
+import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.List;
-import com.itextpdf.layout.element.ListItem;
-
-import java.io.ByteArrayOutputStream;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -55,10 +49,10 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit implements Authorable, Pdfable {
+public class SurveyProgram extends AbstractEntityAudit implements Authorable,Archivable {
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = CascadeType.ALL)
-    @OrderBy(value = "modified ASC")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @OrderBy(value = "name ASC")
     private Set<Study> studies = new HashSet<>();
 
     @Column(length = 10000)
@@ -72,9 +66,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable, Pd
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-//    @NotAudited
-//    private Set<Comment> comments = new HashSet<>();
+    private boolean isArchived;
 
     public SurveyProgram() {
 
@@ -108,9 +100,6 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable, Pd
         this.studies = studies;
     }
 
-//    public Set<Comment> getComments() {
-//        return comments;
-//    }
 
     @Override
     public void makeNewCopy(Integer revision){
@@ -150,49 +139,32 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable, Pd
 //                ", comments=" + comments +
                 "} " + super.toString();
     }
-    //@Override
-    public ByteArrayOutputStream makePdf() {
 
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph(this.getName()).setFont(pdfReport.getChapterFont()));
+        document.add(new Paragraph(this.getDescription()));
+
+        for (Study study : getStudies()) {
+            study.fillDoc(pdfReport);
+        }
+        pdfReport.addFooter(this);
+    }
+
+    public boolean isArchived() {
+        return isArchived;
     }
 
     @Override
-    public void fillDoc(Document document) {
-        //    if (document == null)
-        //        document = new Document();
-        PdfFont font = null;
-        try {
-            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+        setChangeKind(ChangeKind.ARCHIVED);
+        Hibernate.initialize(this.getStudies());
+        for (Study study:getStudies()){
+            if(!study.isArchived())
+                study.setArchived(archived);
         }
-        document.add(new Paragraph("Survay Toc:").setFont(font));
-        document.add(new Paragraph("To the top").setFont(font));
-        List list = new List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem (this.getName()));
-
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getDescription()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
-        document.add(new Paragraph(this.getComments().toString()));
-
-
-        for (Study study : getStudies()) {
-
-            study.fillDoc(document);
-        }
-
-        // studies.stream().forEach(s->  document = s.makeDocument(document));
-        // return document;
     }
-
 }

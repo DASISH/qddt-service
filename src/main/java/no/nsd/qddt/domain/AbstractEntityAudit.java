@@ -3,8 +3,8 @@ package no.nsd.qddt.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.Type;
@@ -13,6 +13,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,29 +28,25 @@ import java.util.UUID;
 public abstract class AbstractEntityAudit extends AbstractEntity  {
 
 
+
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
      * First entry will always be CREATED.
      * TYPO, can be used modify without breaking a release.
      * Every other version is a IN_DEVELOPMENT change.
-     *
-     * @author Stig Norland
      */
     public enum ChangeKind {
         CREATED("Created","New element status"),
         UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
         UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
-        UPDATED_HIERARCY_RELATION("Hierarcy Relation Updated","Element added to a collection, no changes to element itself"),
-
+        UPDATED_HIERARCHY_RELATION("Hierarchy Relation Updated","Element added to a collection, no changes to element itself"),
+        /* deprecated */
+        UPDATED_HIERARCY_RELATION("deprecated","deprecated"),
         IN_DEVELOPMENT("In Development","UnfinishedWork"),
-
         TYPO("NoMeaningChange","Typo or No Meaning Change"),
-
         CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
-
         EXTERNAL("RealLifeChange","Real Life Change"),
-
-        OTHER("","OtherPurpose"),
+        OTHER("OtherPurpose","Other Purpose"),
         //. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
         ADDED_CONTENT("AddContentElement","Add Content Element"),
         /* deprecated */
@@ -57,7 +55,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         MILESTONE("Deprecated",""),
         BASED_ON("Based on","Based on copy"),
         NEW_COPY("New Copy","Copy new"),
-        TRANSLATED("Translated","Translation of source");
+        REFERENCED("Reference of","Concepts can be copied as a reference, to facilitate hierarchical revision trees"),
+        TRANSLATED("Translated","Translation of source"),
+        ARCHIVED("Archived","READ ONLY");
 
         ChangeKind(String name, String description){
             this.name = name;
@@ -83,6 +83,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 if(name.equalsIgnoreCase(v.getName())) return v;
             throw new IllegalArgumentException();
         }
+
+        @Override
+        public String toString() {
+            return "{\"_class\":\"ChangeKind\", " +
+                    "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+                    "\"description\":" + (description == null ? "null" : "\"" + description + "\"") +
+                    "}";
+        }
     }
 
 
@@ -99,11 +107,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "based_on_object", nullable = true)
+
+    @Column(name = "based_on_object",updatable = false)
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    @Column(name = "based_on_revision", nullable = true)
+    @Column(name = "based_on_revision",updatable = false)
     private Integer basedOnRevision;
 
 
@@ -120,14 +129,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Where(clause = "is_hidden = 'false'")
     @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
     @NotAudited
-//    @Transient
-//    @JsonSerialize
-//    @JsonDeserialize
     private Set<Comment> comments = new HashSet<>();
 
 
     protected AbstractEntityAudit() {
-
+//        isArchived = false;
     }
 
 
@@ -139,11 +145,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         this.agency = agency;
     }
 
+
     public UUID getBasedOnObject() {
         return basedOnObject;
     }
 
-    public void setBasedOnObject(UUID basedOnObject) {
+    private void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
@@ -151,7 +158,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         return basedOnRevision;
     }
 
-    public void setBasedOnRevision(Integer basedOnRevision) {
+    private void setBasedOnRevision(Integer basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
@@ -200,6 +207,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @PrePersist
     private void onInsert(){
+        System.out.println("PrePersist");
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
         changeKind = AbstractEntityAudit.ChangeKind.CREATED;
@@ -208,45 +216,48 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @PreUpdate
     private void onUpdate(){
-        Version ver = version;
-        AbstractEntityAudit.ChangeKind change = changeKind;
-        if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
-            change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
-            ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
-            changeKind = change;
+        try {
+            Version ver = version;
+            AbstractEntityAudit.ChangeKind change = changeKind;
+            if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
+                change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+                changeKind = change;
+            }
+            switch (change) {
+                case BASED_ON:
+                case TRANSLATED:
+                    ver = new Version();
+                    break;
+                case CONCEPTUAL:
+                case EXTERNAL:
+                case OTHER:
+                case ADDED_CONTENT:
+                    ver.incMajor();
+                    ver.setVersionLabel("");
+                    break;
+                case TYPO:
+                    ver.incMinor();
+                    ver.setVersionLabel("");
+                    break;
+                case ARCHIVED:
+                    ((Archivable)this).setArchived(true);
+                    ver.setVersionLabel("");
+                case CREATED:
+                    break;
+                case IN_DEVELOPMENT:
+                    ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
+                    break;
+                default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCHY_RELATION
+                    ver.setVersionLabel("Changes in hierarchy");
+                    break;
+            }
+            version = ver;
+        }catch (Exception ex){
+            System.out.println("Exception in AbstractEntityAudit::onUpdate");
+            System.out.println(ex.getStackTrace()[0]);
+            System.out.println(ex.getMessage());
+            System.out.println(this);
         }
-        switch (change) {
-            case BASED_ON:
-            case TRANSLATED:
-                ver = new Version();
-                break;
-            case CONCEPTUAL:
-            case EXTERNAL:
-            case OTHER:
-            case ADDED_CONTENT:
-                ver.incMajor();
-                break;
-            case TYPO:
-                ver.incMinor();
-                break;
-            default:        //CREATED / UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCY_RELATION / IN_DEVELOPMENT
-                break;
-        }
-        version =  ver;
-    }
-
-    @PostLoad
-    private void customfilter(){
-        if (this instanceof Commentable){
-            // we have to filter comments manually before sending them over to clients, this will be fixed in
-            // a later version of Hibernate
-            hideComments(((Commentable)this).getComments());
-        }
-    }
-
-    private void hideComments(Set<Comment> comments){
-        comments.removeIf(c->c.getIsHidden()==true);
-        comments.stream().forEach(c-> hideComments(c.getComments()));
     }
 
     /**
@@ -285,7 +296,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @JsonIgnore
     /*
     This function should contain all copy code needed to make a complete copy of hierarchy under this element
-    (an override should propigate downward and call makeNewCopy on it's children).
+    (an override should propagate downward and call makeNewCopy on it's children).
      */
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
@@ -322,15 +333,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @Override
     public String toString() {
-        return "{ " +
-                super.toString() +
-                ", " + agency +
-                ", name='" + name + '\'' +
-                ", basedOnObject=" + basedOnObject +
-                ", version='" + version + '\'' +
-                ", changeKind=" + changeKind +
-                ", changeComment='" + changeComment + '\'' +
-                "} " ;
+        return "{" + super.toString() +
+                "\"version\":" + (version == null ? "null" : version) + ", " +
+                "\"changeKind\":" + (changeKind == null ? "null" : changeKind) + ", " +
+                "\"changeComment\":" + (changeComment == null ? "null" : "\"" + changeComment + "\"") + ", " +
+                "\"basedOnObject\":" + (basedOnObject == null ? "null" : basedOnObject) + ", " +
+                "\"basedOnRevision\":" + (basedOnRevision == null ? "null" : "\"" + basedOnRevision + "\"") + ", " +
+                "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"agency\":" + (agency == null ? "null" : agency) + ", ";
     }
 
     @Override
@@ -343,5 +353,18 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 "</BasedOnObject>";
     }
 
+
+    public abstract void fillDoc(PdfReport pdfReport) throws IOException;
+
+    public ByteArrayOutputStream makePdf() {
+        ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+        try (PdfReport pdf = new PdfReport(pdfOutputStream)) {
+            fillDoc(pdf);
+            pdf.createToc();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return pdfOutputStream;
+    }
 
 }

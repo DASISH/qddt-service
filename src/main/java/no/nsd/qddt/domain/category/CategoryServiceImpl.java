@@ -24,7 +24,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("categoryService")
 class CategoryServiceImpl implements CategoryService {
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -94,7 +94,7 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public List<Category> save(List<Category> instances) {
         return categoryRepository.save(instances);
     }
@@ -111,7 +111,7 @@ class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(instances);
     }
 
-    protected Category prePersistProcessing(Category instance) {
+    private Category prePersistProcessing(Category instance) {
         // Category Save fails when there is a mix of new and existing children attached to a new element.
         // This code fixes that.
         try {
@@ -141,7 +141,7 @@ class CategoryServiceImpl implements CategoryService {
         return instance;
     }
 
-    protected Category postLoadProcessing(Category instance) {
+    private Category postLoadProcessing(Category instance) {
         return instance;
     }
 }

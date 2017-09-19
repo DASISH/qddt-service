@@ -73,9 +73,7 @@ public class Urn {
 
         if (agency != null ? !agency.equals(urn.agency) : urn.agency != null) return false;
         if (id != null ? !id.equals(urn.id) : urn.id != null) return false;
-        if (version != null ? !version.equals(urn.version) : urn.version != null) return false;
-
-        return true;
+        return version != null ? version.equals(urn.version) : urn.version == null;
     }
 
     @Override

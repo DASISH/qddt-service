@@ -2,34 +2,24 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
+import no.nsd.qddt.domain.Archivable;
+import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.List;
-import com.itextpdf.layout.element.ListItem;
-
-import java.io.ByteArrayOutputStream;
-
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * <ul class="inheritance">
@@ -49,16 +39,16 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements Pdfable {
+public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
-    @JoinColumn(name = "parent_id", updatable = false, insertable = false)
+    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
     private Concept parentReferenceOnly;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE})
     @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
@@ -67,18 +57,13 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
 
     @JsonBackReference(value = "TopicGroupRef")
     @ManyToOne()
-    @JoinColumn(name = "topicgroup_id", updatable = false)
+    @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
-    //    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "concept")
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    @OneToMany
-    private Set<QuestionItem> questionItems = new HashSet<>(0);
 
     private String label;
 
@@ -91,11 +76,14 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
     @JsonDeserialize
     private TopicRef topicRef;
 
-    public Concept() {
+    private boolean isArchived;
 
+    public Concept() {
+//        System.out.println("CSTR Concept");
     }
 
-    public TopicGroup getTopicGroup() {
+
+    private TopicGroup getTopicGroup() {
         return topicGroup;
     }
 
@@ -112,47 +100,47 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
-    @PreRemove
-    private void removeReferencesFromConcept() {
-        getConceptQuestionItems().forEach(cqi -> cqi.getQuestionItem().updateStatusQI(this));
-        getQuestionItems().clear();
-        if (getTopicGroup() != null)
-            getTopicGroup().removeConcept(this);
-
+    public void addConceptQuestionItem(ConceptQuestionItem conceptQuestionItem) {
+        if (this.conceptQuestionItems.stream().noneMatch(cqi->conceptQuestionItem.getId().equals(cqi.getId()))) {
+            if (conceptQuestionItem.getQuestionItem() != null){
+                conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+                conceptQuestionItem.getQuestionItem().setChangeComment("Concept association added");
+            }
+            conceptQuestionItems.add(conceptQuestionItem);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            this.setChangeComment("QuestionItem assosiation added");
+        }
+        else
+            System.out.println("ConceptQuestionItem not inserted, match found" );
     }
 
-    public Set<QuestionItem> getQuestionItems() {
-        return questionItems;
-    }
 
-    public void setQuestionItems(Set<QuestionItem> questionItems) {
-        this.questionItems = questionItems;
-    }
 
     public void addQuestionItem(QuestionItem questionItem) {
-        if (!this.conceptQuestionItems.stream().anyMatch(cqi -> cqi.getQuestionItem().getId().equals(questionItem.getId()))) {
-            this.conceptQuestionItems.add(new ConceptQuestionItem(this, questionItem));
-            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+        if (this.conceptQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
+            new ConceptQuestionItem(this,questionItem);
+            System.out.println("New QuestionItem added to ConceptQuestionItems " + questionItem.getName() );
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
             questionItem.setChangeComment("Concept assosiation added");
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
             this.setChangeComment("QuestionItem assosiation added");
         }
     }
 
-    public void removeQuestionItem(UUID qiId) {
-        getConceptQuestionItems().stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
-                forEach(cq -> {
-                    System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
-                    cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-                    cq.getQuestionItem().setChangeComment("Concept assosiation removed");
-                    this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-                    this.setChangeComment("QuestionItem assosiation removed");
-                });
-        getConceptQuestionItems().removeIf(q -> q.getQuestionItem().getId().equals(qiId));
-    }
-
-    public void removeQuestionItem(QuestionItem questionItem) {
-        removeQuestionItem(questionItem.getId());
+    public  void removeQuestionItem(UUID qiId){
+        getConceptQuestionItems().stream().filter(q -> q.getId().getQuestionItemId().equals(qiId)).
+            forEach(cq->{
+                System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
+                cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
+                cq.getQuestionItem().setChangeComment("Concept assosiation removed");
+                this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
+                this.setChangeComment("QuestionItem assosiation removed");
+            });
+        getConceptQuestionItems().removeIf(q -> q.getId().getQuestionItemId().equals(qiId));
     }
 
 
@@ -164,8 +152,9 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
         this.children = children;
     }
 
-    public void addChildren(Concept concept) {
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
+    public void addChildren(Concept concept){
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
+);
         setChangeComment("SubConcept added");
         this.children.add(concept);
 
@@ -181,6 +170,7 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
     }
 
 
+
     public String getDescription() {
         return description;
     }
@@ -190,11 +180,12 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
     }
 
 
+
     public TopicRef getTopicRef() {
         if (topicRef == null) {
             TopicGroup topicGroup = findTopicGroup2();
             if (topicGroup == null) {
-                System.out.println("getTopicRef IsNull -> " + this.getName());
+//                System.out.println("getTopicRef IsNull -> " + this.getName());
                 topicRef = new TopicRef();
             } else
                 topicRef = new TopicRef(topicGroup);
@@ -203,9 +194,9 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
         return topicRef;
     }
 
-    private TopicGroup findTopicGroup2() {
+    private TopicGroup findTopicGroup2(){
         Concept current = this;
-        while (current.parentReferenceOnly != null) {
+        while(current.parentReferenceOnly !=  null){
             current = current.parentReferenceOnly;
         }
         return current.getTopicGroup();
@@ -217,59 +208,16 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
 
 
     @Override
-    public void makeNewCopy(Integer revision) {
+    public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q -> {
-            q.setConcept(this);
-        });
-        getChildren().forEach(c -> c.makeNewCopy(revision));
+        getConceptQuestionItems().forEach(q-> q.setConcept(this));
+        getChildren().forEach(c->c.makeNewCopy(revision));
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
 //            topicGroupId = getTopicRef().getId();
-            System.out.println("infering topicgroup id " + getTopicRef().getId());
+            System.out.println("infering topicgroup id " + getTopicRef().getId() );
         }
         getComments().clear();
-    }
-
-    public void merge(Concept changed) {
-        System.out.println("Concept.merge");
-        if (!getName().equals(changed.getName()))
-            setName(changed.getName());
-//        if (!getConceptQuestionItems().equals(changed.getConceptQuestionItems())) {
-//            for (ConceptQuestionItem cqi:getConceptQuestionItems()) {
-//                ConceptQuestionItem finalCqi = cqi;
-//                Optional<ConceptQuestionItem> tmp= changed.getConceptQuestionItems().stream().filter(c->c.getId().equals(finalCqi.getId())).findFirst();
-//                if (!cqi.equals(tmp)) {
-//                    cqi = tmp;
-//                    System.out.println("ConceptQuestionItem changed in merge");
-//                }
-//            }
-//        }
-        if (!getChildren().equals(changed.getChildren()))
-            setChildren(changed.getChildren());
-        if (!getDescription().equals(changed.getDescription()))
-            setDescription(changed.getDescription());
-        if (!getLabel().equals(changed.getLabel()))
-            setLabel(changed.getLabel());
-        if (!getQuestionItems().equals(changed.questionItems))
-            setQuestionItems(changed.questionItems);
-        if (!getAgency().equals(changed.getAgency()))
-            setAgency(changed.getAgency());
-        if (!getBasedOnObject().equals(changed.getBasedOnObject()))
-            setBasedOnObject(changed.getBasedOnObject());
-        if (!getBasedOnRevision().equals(changed.getBasedOnRevision()))
-            setBasedOnRevision(changed.getBasedOnRevision());
-        if (!getChangeComment().equals(changed.getChangeComment()))
-            setChangeComment(changed.getChangeComment());
-        if (!getChangeKind().equals(changed.getChangeKind()))
-            setChangeKind(changed.getChangeKind());
-        if (!getVersion().equals(changed.getVersion()))
-            setVersion(changed.getVersion());
-        // these are set everytime we persist, but this function might be used in other settings, and copy must be complete.
-        if (!getModified().equals(changed.getModified()))
-            setModified(changed.getModified());
-        if (!getModifiedBy().equals(changed.getModifiedBy()))
-            setModifiedBy(changed.getModifiedBy());
     }
 
 
@@ -294,95 +242,66 @@ public class Concept extends AbstractEntityAudit implements Pdfable {
         return result;
     }
 
-
     @Override
     public String toString() {
-        return "Concept{" +
-                " children=" + (children != null ? children.size() : "0") +
-                ", topicGroup=" + (topicGroup != null ? topicGroup.getName() : "null") +
-                ", questionItems=" + (conceptQuestionItems != null ? conceptQuestionItems.size() : "0") +
-                ", label='" + label + '\'' +
-                ", description='" + description + '\'' +
-                ", name='" + super.getName() + '\'' +
-                ", id ='" + super.getId() + '\'' +
-                "} ";
+        return "{\"Concept\":"
+                + super.toString()
+                + ", \"conceptQuestionItems\":" + conceptQuestionItems
+                + ", \"label\":\"" + label + "\""
+                + ", \"description\":\"" + description + "\""
+                + ", \"children\":" + children
+                + "}";
     }
 
 
     @Override
-    public String toDDIXml() {
+    public String toDDIXml(){
         return super.toDDIXml();
     }
 
 
-    /*
-    fetches pre and post instructions and add them to ControlConstructInstruction
-     */
-    public void harvestQuestionItems() {
-        if (conceptQuestionItems == null)
-            conceptQuestionItems = new HashSet<>(0);
-        else
-            conceptQuestionItems.clear();
+    @PreRemove
+    private void removeReferencesFromConcept(){
+        System.out.println("Concept pre remove");
+//        getConceptQuestionItems().clear();
+//        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
+    }
 
-        try {
-            for (QuestionItem questionItem : getQuestionItems()) {
-                this.getConceptQuestionItems().add(new ConceptQuestionItem(this, questionItem));
-            }
-        } catch (Exception ex) {
-            System.out.println("harvestQuestionItems exception " + ex.getMessage());
-            ex.printStackTrace();
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+
+        document.add(new Paragraph("Concept " + this.getName()).setFont(pdfReport.getChapterFont()));
+        document.add(new Paragraph("Description"));
+        document.add(new Paragraph(this.getDescription()));
+        pdfReport.addFooter(this);
+
+        for (Comment item : this.getComments()) {
+            item.fillDoc(pdfReport);
+        }
+        document.add(new Paragraph()
+                .setFont(pdfReport.getParagraphFont())
+                .add("QuestionItem(s)"));
+        for (ConceptQuestionItem item : getConceptQuestionItems()) {
+            item.getQuestionItem().fillDoc(pdfReport);
         }
 
-        children.forEach(c -> c.harvestQuestionItems());
-    }
-
-    /*
-    this function is useful for populating ControlConstructInstructions after loading from DB
-    */
-    public void populateQuestionItems() {
-        setQuestionItems(getConceptQuestionItems().stream()
-                .map(cqi -> cqi.getQuestionItem())
-                .collect(Collectors.toSet()));
-        children.forEach(c -> c.populateQuestionItems());
-    }
-
-    //@Override
-    public ByteArrayOutputStream makePdf() {
-
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter(baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
     }
 
     @Override
-    public void fillDoc(Document document)  {
+    public boolean isArchived() {
+        return isArchived;
+    }
 
-        PdfFont font = null;
-        try {
-            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public void setArchived(boolean archived) {
+        System.out.println("Concept archived " + getName() );
+        isArchived = archived;
+        setChangeKind(ChangeKind.ARCHIVED);
+        for (Concept concept : getChildren()){
+            if (!concept.isArchived())
+                concept.setArchived(archived);
         }
-        document.add(new Paragraph("Survey Toc:").setFont(font));
-        List list = new List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
-        document.add(new Paragraph(this.getDescription()));
-        document.add(new Paragraph(this.getLabel()));
-        document.add(new Paragraph(this.getTopicGroup().toString()));
-        document.add(new Paragraph(this.getComments().toString()));
-
-        for (QuestionItem item : getQuestionItems()) {
-            item.fillDoc(document);
-        }
-
     }
 }

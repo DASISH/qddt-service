@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain;
 
-import no.nsd.qddt.exception.RequestAbortedException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public interface BaseService<T,ID> {
     /**
      * Store object T to backstore
      * @param instance object T
-     * @return saved instanse T (may have fields updated by backstore)
+     * @return saved instance T (may have fields updated by backstore)
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     <S extends T> S save(S instance);
@@ -51,13 +51,13 @@ public interface BaseService<T,ID> {
      * @param id identifier ID
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    void delete(ID id) throws RequestAbortedException;
+    void delete(ID id) throws DataAccessException;
 
     /**
      * Deletes object with these IDs from backstore, exception raised by failure.
-     * @param instances list of indetifier IDs
+     * @param instances list of identifier IDs
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    void delete(List<T> instances);
+    void delete(List<T> instances) throws DataAccessException;
 
 }

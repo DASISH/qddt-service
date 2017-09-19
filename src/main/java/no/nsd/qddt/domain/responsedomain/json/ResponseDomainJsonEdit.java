@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
-import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
+import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -21,7 +21,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
 
     private String description;
 
-    private CategoryJsonEdit managedRepresentation;
+    private ManagedRepresentationJsonEdit managedRepresentation;
 
     private String displayLayout;
 
@@ -39,10 +39,10 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
     public ResponseDomainJsonEdit(ResponseDomain responseDomain) {
         super(responseDomain);
         if (responseDomain == null) return;
-        setComments(responseDomain.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
+        setComments(responseDomain.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
-        setManagedRepresentation(new CategoryJsonEdit(responseDomain.getManagedRepresentation()));
+        setManagedRepresentation(new ManagedRepresentationJsonEdit(responseDomain.getManagedRepresentation()));
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
     }
@@ -51,15 +51,15 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
-    public CategoryJsonEdit getManagedRepresentation() {
+    public ManagedRepresentationJsonEdit getManagedRepresentation() {
         return managedRepresentation;
     }
 
-    public void setManagedRepresentation(CategoryJsonEdit managedRepresentation) {
+    private void setManagedRepresentation(ManagedRepresentationJsonEdit managedRepresentation) {
         this.managedRepresentation = managedRepresentation;
     }
 
@@ -67,7 +67,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         return displayLayout;
     }
 
-    public void setDisplayLayout(String displayLayout) {
+    private void setDisplayLayout(String displayLayout) {
         this.displayLayout = displayLayout;
     }
 
@@ -75,7 +75,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         return comments;
     }
 
-    public void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
@@ -83,7 +83,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         return responseKind;
     }
 
-    public void setResponseKind(ResponseKind responseKind) {
+    private void setResponseKind(ResponseKind responseKind) {
         this.responseKind = responseKind;
     }
 
@@ -91,7 +91,7 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
         return responseCardinality;
     }
 
-    public void setResponseCardinality(ResponseCardinality responseCardinality) {
+    private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
     }
 }

@@ -4,7 +4,8 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -25,9 +23,10 @@ import java.util.stream.Collectors;
 @Service("conceptAuditService")
 class ConceptAuditServiceImpl implements ConceptAuditService {
 
-    private ConceptAuditRepository conceptAuditRepository;
-    private QuestionItemAuditService questionAuditService;
-    private CommentService commentService;
+    private final ConceptAuditRepository conceptAuditRepository;
+    private final QuestionItemAuditService questionAuditService;
+    private final CommentService commentService;
+    private boolean showPrivateComments;
 
     @Autowired
     ConceptAuditServiceImpl(ConceptAuditRepository conceptAuditRepository,
@@ -52,16 +51,21 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
     @Override
     public Page<Revision<Integer, Concept>> findRevisions(UUID uuid, Pageable pageable) {
         return conceptAuditRepository.findRevisions(uuid, pageable).
-                map(c-> postLoadProcessing(c));
+                map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, Concept> findFirstChange(UUID uuid) {
         return conceptAuditRepository.findRevisions(uuid).
                 getContent().stream().
-                min((i,o)->i.getRevisionNumber()).
-                map(c-> postLoadProcessing(c)).
-                get();
+                min(Comparator.comparing(Revision::getRevisionNumber)).
+                map(this::postLoadProcessing).
+                orElse(null);
+    }
+
+    @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments=showPrivate;
     }
 
     @Override
@@ -69,46 +73,49 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         return new PageImpl<>(
-          conceptAuditRepository.findRevisions(id).getContent().stream()
+          conceptAuditRepository.findRevisionsOrBasedOnEqualsOrderByModified(id,id).getContent().stream()
                   .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
                   .skip(skip)
                   .limit(limit)
-                  .map(c-> postLoadProcessing(c))
+                  .map(this::postLoadProcessing)
                   .collect(Collectors.toList())
         );
     }
 
 
-    protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
+    private Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
-        postLoadProcessing(instance.getEntity());
-        return instance;
+        return new Revision<>(
+                instance.getMetadata(),
+                postLoadProcessing(instance.getEntity()));
     }
 
-    protected Concept postLoadProcessing(Concept instance) {
+    private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
-        try{
-            // this work as long as instance.getQuestionItems() hasn't been called yet for this instance
-            for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
-                if (cqi.getQuestionItem().getVersion().getRevision() != null) {
-                    cqi.setQuestionItem(questionAuditService.findRevision(
-                            cqi.getQuestionItem().getId(),
-                            cqi.getQuestionItemRevision())
-                            .getEntity());
-                }
-                else {
-                    cqi.getQuestionItem().getVersion().setRevision(questionAuditService.findLastChange(cqi.getQuestionItem().getId()).getRevisionNumber());
-                }
-            }
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
-            instance.setComments(new HashSet<>(coms));
 
-            instance.getChildren().stream().map(c->postLoadProcessing(c));
+        try{
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+            instance.setComments(new HashSet<>(coms));
+            instance.getConceptQuestionItems()
+                    .forEach(cqi-> cqi.setQuestionItem(
+                            getQuestionItemLastOrRevision(cqi)));
+
+            instance.getChildren().stream().map(this::postLoadProcessing);
 
         } catch (Exception ex){
             ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
         return instance;
+    }
+
+    private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
+        return questionAuditService.getQuestionItemLastOrRevision(
+                cqi.getId().getQuestionItemId(),
+                cqi.getQuestionItemRevision()).getEntity();
     }
 }

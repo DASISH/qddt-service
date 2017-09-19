@@ -1,22 +1,16 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -58,9 +52,6 @@ public class Instrument extends AbstractEntityAudit  {
     @Column(name="instrument_kind")
     private String instrumentType;
 
-//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-//    @NotAudited
-//    private Set<Comment> comments = new HashSet<>();
 
     public Instrument() {
     }
@@ -122,28 +113,13 @@ public class Instrument extends AbstractEntityAudit  {
     @Transient
     public Set<StudyRef> getStudyRefs() {
         try{
-            return  studies.stream().map(s-> new StudyRef(s)).collect(Collectors.toSet());
+            return  studies.stream().map(StudyRef::new).collect(Collectors.toSet());
         } catch (Exception ex ) {
             return null;
         }
     }
 
 
-
-//    public Set<Comment> getComments() {
-//        return comments;
-//    }
-//
-//
-//    public void setComments(Set<Comment> comments) {
-//        this.comments = comments;
-//    }
-//
-//
-//    public void addComment(Comment comment) {
-//        comment.setOwnerId(this.getId());
-//        comments.add(comment);
-//    }
 
     @Override
     public boolean equals(Object o) {
@@ -172,6 +148,12 @@ public class Instrument extends AbstractEntityAudit  {
                 "description='" + description + '\'' +
                 ", instrumentType='" + instrumentType + '\'' +
                 "} " + super.toString();
+    }
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        pdfReport.getTheDocument().add(new Paragraph()
+                .add("Instrument..."));
     }
 
 

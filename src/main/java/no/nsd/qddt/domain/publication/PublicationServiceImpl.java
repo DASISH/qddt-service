@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.BaseServiceAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
@@ -13,6 +12,7 @@ import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,14 +28,15 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("selectableService")
 public class PublicationServiceImpl implements PublicationService {
 
-    private PublicationRepository repository;
-    private ConceptAuditService conceptService;
-    private ControlConstructAuditService controlConstructService;
-    private InstrumentAuditService instrumentService;
-    private QuestionItemAuditService questionItemService;
-    private StudyAuditService studyService;
-    private SurveyProgramAuditService surveyProgramService;
-    private TopicGroupAuditService topicGroupService;
+    private final PublicationRepository repository;
+    private final ConceptAuditService conceptService;
+    private final ControlConstructAuditService controlConstructService;
+    private final InstrumentAuditService instrumentService;
+    private final QuestionItemAuditService questionItemService;
+    private final StudyAuditService studyService;
+    private final SurveyProgramAuditService surveyProgramService;
+    private final TopicGroupAuditService topicGroupService;
+    private boolean showPrivate= true;
 
     @Autowired
     public PublicationServiceImpl(PublicationRepository repository,
@@ -108,7 +109,10 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-    protected Publication postLoadProcessing(Publication instance) {
+    private Publication postLoadProcessing(Publication instance) {
+        if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
+            showPrivate = false;
+
         instance.getPublicationElements().forEach(this::fill);
         return instance;
     }
@@ -143,6 +147,7 @@ public class PublicationServiceImpl implements PublicationService {
             case QUESTION_CONSTRUCT:
             case STATEMENT_CONSTRUCT:
             case SEQUENCE_CONSTRUCT:
+            case CONDITION_CONSTRUCT:
                 return controlConstructService;
             case INSTRUMENT:
                 return instrumentService;
@@ -159,18 +164,23 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     private PublicationElement fill(PublicationElement element) {
+        BaseServiceAudit service = getService(element.getElementEnum());
+        service.setShowPrivateComment(showPrivate);
         try {
-            BaseServiceAudit service = getService(element.getElementEnum());
             element.setElement(service.findRevision(
                     element.getId(),
                     element.getRevisionNumber())
                     .getEntity());
 
         } catch (RevisionDoesNotExistException e) {
-            element.setElement(conceptService.findLastChange(element.getId()));
+            Revision rev = service.findLastChange(element.getId());
+            element.setElement(rev.getEntity());
+            element.setRevisionNumber(rev.getRevisionNumber().intValue());
         } catch (JpaSystemException se) {
+            System.out.println("PublicationElement - JpaSystemException");
             System.out.println(se.getMessage());
         } catch (Exception ex) {
+            System.out.println("PublicationElement fill");
             ex.printStackTrace();
         }
 
@@ -178,7 +188,6 @@ public class PublicationServiceImpl implements PublicationService {
             element.setName(element.getElementAsEntity().getName());
             element.setVersion(element.getElementAsEntity().getVersion());
         }
-//        System.out.println("fill  -> " + element);
         return element;
     }
 

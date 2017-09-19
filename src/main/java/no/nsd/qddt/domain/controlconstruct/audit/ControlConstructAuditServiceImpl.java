@@ -28,10 +28,11 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("instrumentAuditQuestionService")
 class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
-    private ControlConstructAuditRepository controlConstructAuditRepository;
-    private QuestionItemAuditService qiAuditService;
-    private OtherMaterialService otherMaterialService;
-    private CommentService commentService;
+    private final ControlConstructAuditRepository controlConstructAuditRepository;
+    private final QuestionItemAuditService qiAuditService;
+    private final OtherMaterialService otherMaterialService;
+    private final CommentService commentService;
+    private boolean showPrivateComments;
 
 
     @Autowired
@@ -78,6 +79,11 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
     }
 
     @Override
+    public void setShowPrivateComment(boolean showPrivate) {
+        showPrivateComments = showPrivate;
+    }
+
+    @Override
     public Page<Revision<Integer, ControlConstruct>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
@@ -101,8 +107,7 @@ thus we need to populate some elements ourselves.
         try{
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
-            instance.getControlConstructInstructions().forEach(cci-> System.out.println(cci.getInstruction()));
-
+//            System.out.println("postLoadProcessing instruction -> " + instance.getControlConstructInstructions().size());
             instance.populateInstructions();
 
             if(instance.getQuestionItemUUID() != null) {
@@ -123,7 +128,12 @@ thus we need to populate some elements ourselves.
             List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
             instance.setOtherMaterials(new HashSet<>(oms));
 
-            List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
+            List<Comment> coms;
+            if (showPrivateComments)
+                coms = commentService.findAllByOwnerId(instance.getId());
+            else
+                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+
             instance.setComments(new HashSet<>(coms));
 
         } catch (Exception ex){
@@ -135,7 +145,7 @@ thus we need to populate some elements ourselves.
     }
 
     private List<ControlConstruct> postLoadProcessing(List<ControlConstruct>instances) {
-        return instances.stream().map(p-> postLoadProcessing(p)).collect(Collectors.toList());
+        return instances.stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
 

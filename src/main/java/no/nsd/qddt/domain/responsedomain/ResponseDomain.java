@@ -3,24 +3,25 @@ package no.nsd.qddt.domain.responsedomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -140,7 +141,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return responseCardinality;
     }
 
-    public void setResponseCardinality(ResponseCardinality responseCardinality) {
+    private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
     }
 
@@ -201,8 +202,12 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 Code code = codes.get(_Index);
                 current.setCode(code);
                 _Index++;
+            } catch (IndexOutOfBoundsException iob){
+                current.setCode(new Code());
             } catch(Exception e) {
-                System.out.println("populateCatCodes catch & continue " + e.getMessage());
+                System.out.println(DateTime.now().toDateTimeISO()+
+                        " populateCatCodes (catch & continue) " + e.getMessage()+ " - " +
+                        current);
                 current.setCode(new Code());
             }
         }
@@ -229,7 +234,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
-            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(f -> f.getName()).collect(Collectors.joining(" + "))));
+            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(Category::getName).collect(Collectors.joining(" + "))));
         }
         managedRepresentation.setName(getName());
         managedRepresentation.setDescription(String.format("[%s] group - %s",
@@ -243,7 +248,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     public List<Code> getCodes() {
         if (codes == null)
             codes = new ArrayList<>();
-        return codes.stream().filter(c->c != null).collect(Collectors.toList());
+        return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void setCodes(List<Code> codes) {
@@ -297,6 +302,20 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 super.toString(),
                 getCodes(),
                 getManagedRepresentation().toString());
+    }
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph().setFont(pdfReport.getParagraphFont())
+                .add("Name")
+                .add(new Tab())
+                .add(getName()));
+        document.add(new Paragraph()
+                .add("ManagedRepresentation"));
+        getManagedRepresentation().fillDoc(pdfReport);
+        pdfReport.addFooter(this);
+
     }
 
     @Override

@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequestMapping(value = "/comment")
 public class CommentController {
 
-    private CommentService service;
+    private final CommentService service;
 
     @Autowired
     public CommentController(CommentService service){
@@ -51,7 +51,7 @@ public class CommentController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
     }
@@ -59,8 +59,12 @@ public class CommentController {
     @SuppressWarnings("unchecked")
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<CommentJsonEdit>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<CommentJsonEdit> comments = service.findAllByOwnerIdPageable(ownerId, pageable).map(c->new CommentJsonEdit(c));
+    public HttpEntity<PagedResources<CommentJsonEdit>> get(@PathVariable("ownerId")UUID ownerId,@RequestParam(value = "public",defaultValue = "false") boolean publicOnly, Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<CommentJsonEdit> comments;
+        if (publicOnly)
+            comments = service.findAllByOwnerIdPublicPageable(ownerId, pageable).map(CommentJsonEdit::new);
+        else
+            comments = service.findAllByOwnerIdPageable(ownerId, pageable).map(CommentJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 

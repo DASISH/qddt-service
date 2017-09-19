@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service("instructionService")
 class InstructionServiceImpl implements InstructionService {
 
-    private InstructionRepository instructionRepository;
+    private final InstructionRepository instructionRepository;
 
     @Autowired
     public InstructionServiceImpl(InstructionRepository instructionRepository) {
@@ -43,25 +43,25 @@ class InstructionServiceImpl implements InstructionService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public Instruction save(Instruction instruction) {
         return instructionRepository.save(instruction);
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public List<Instruction> save(List<Instruction> instructions) {
         return instructionRepository.save(instructions);
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public void delete(UUID uuid) {
         instructionRepository.delete(uuid);
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public void delete(List<Instruction> instructions) {
         instructionRepository.delete(instructions);
     }

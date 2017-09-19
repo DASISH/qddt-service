@@ -16,6 +16,7 @@ public class QuestionItemJsonView extends BaseJsonEdit{
 
     public QuestionItemJsonView(QuestionItem questionItem) {
         super(questionItem);
+        if (questionItem == null) return;
         setQuestion(questionItem.getQuestion());
         setResponseDomain(new ResponseDomainJsonView(questionItem.getResponseDomain()));
     }
@@ -25,15 +26,18 @@ public class QuestionItemJsonView extends BaseJsonEdit{
         return question;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    private void setQuestion(Question question) {
+        if (question==null)
+            System.out.println("Question is null!");
+        else
+            this.question = question;
     }
 
     public ResponseDomainJsonView getResponseDomain() {
         return responseDomain;
     }
 
-    public void setResponseDomain(ResponseDomainJsonView responseDomain) {
+    private void setResponseDomain(ResponseDomainJsonView responseDomain) {
         this.responseDomain = responseDomain;
     }
 }

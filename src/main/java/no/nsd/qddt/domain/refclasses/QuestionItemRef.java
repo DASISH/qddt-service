@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * @author Stig Norland
  */
-public class QuestionItemRef extends BaseRef {
+public class QuestionItemRef extends BaseRef<QuestionItemRef> {
 
     private Set<ConceptRef> parents;
 
@@ -55,5 +55,10 @@ public class QuestionItemRef extends BaseRef {
         return "QuestionRef{" +
                 "conceptRefs=" + parents +
                 "} " + super.toString();
+    }
+
+    @Override
+    public int compareTo(QuestionItemRef o) {
+        return this.getName().compareToIgnoreCase(o.getName());
     }
 }

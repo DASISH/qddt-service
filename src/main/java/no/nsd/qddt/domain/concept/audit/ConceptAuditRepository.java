@@ -2,8 +2,11 @@ package no.nsd.qddt.domain.concept.audit;
 
 import no.nsd.qddt.domain.concept.Concept;
 import org.springframework.data.envers.repository.support.EnversRevisionRepository;
+import org.springframework.data.history.Revision;
+import org.springframework.data.history.Revisions;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -12,5 +15,5 @@ import java.util.UUID;
 @Repository
 interface ConceptAuditRepository extends EnversRevisionRepository<Concept, UUID, Integer> {
 
-//      List<Revision<Integer,Concept>> findRevisions(UUID id);
+    Revisions<Integer,Concept> findRevisionsOrBasedOnEqualsOrderByModified(UUID id, UUID basedon);
 }

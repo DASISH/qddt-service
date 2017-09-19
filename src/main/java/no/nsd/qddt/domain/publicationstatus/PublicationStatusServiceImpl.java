@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -15,7 +13,7 @@ import java.util.stream.Collectors;
 @Service("publicationStatusService")
 public class PublicationStatusServiceImpl implements PublicationStatusService {
 
-    private PublicationStatusRepository repository;
+    private final PublicationStatusRepository repository;
 
     @Autowired
     public PublicationStatusServiceImpl(PublicationStatusRepository publicationStatusRepository){
@@ -45,7 +43,7 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
     @Override
     public List<PublicationStatus> save(List<PublicationStatus> instances) {
-        instances.forEach(p->prePersistProcessing(p));
+        instances.forEach(this::prePersistProcessing);
         return repository.save(instances);
     }
 
@@ -60,7 +58,7 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     }
 
 
-    protected PublicationStatus prePersistProcessing(PublicationStatus instance) {
+    private PublicationStatus prePersistProcessing(PublicationStatus instance) {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
         instance.setAgency(agency);
         return instance;
@@ -73,10 +71,8 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
 
     @Override
-    public List<PublicationStatusJsonListView> findAll() {
+    public List<PublicationStatus> findAll() {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        return repository.findAllByAgencyOrderByStatus(agency).stream()
-                .map(s->new PublicationStatusJsonListView(s))
-                .collect(Collectors.toList());
+        return repository.findAllByAgencyAndParentIdIsNull(agency);
     }
 }

@@ -1,15 +1,11 @@
 package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.BaseService;
-import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +18,7 @@ public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
     List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException;
 
-    void deleteFile(OtherMaterial om) throws ReferenceInUseException;
+//    void deleteFile(OtherMaterial om) throws ReferenceInUseException;
 
     OtherMaterial saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
 

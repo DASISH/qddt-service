@@ -1,10 +1,15 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -31,17 +36,20 @@ public class Comment extends AbstractEntity  {
     private UUID ownerId;
 
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
-
     private Set<Comment> comments = new HashSet<>();
 
-    private boolean isHidden;
+    private Boolean isHidden;
+
+    @Column(name = "is_public")
+    private Boolean isPublic;
 
     @Column(name = "comment",length = 2000)
-    public String comment;
+    private String comment;
 
 
     public Comment() {
         isHidden = false;
+        isPublic = true;
     }
 
     public Comment(String comment) {
@@ -65,6 +73,7 @@ public class Comment extends AbstractEntity  {
         this.comments = comments;
     }
 
+
     public String getComment() {
         return comment;
     }
@@ -73,14 +82,23 @@ public class Comment extends AbstractEntity  {
         this.comment = comment;
     }
 
+
     public boolean getIsHidden() {
-        return isHidden;
+        return (isHidden == null)?true:isHidden;
     }
 
     public void setIsHidden(boolean hidden) {
         isHidden = hidden;
     }
 
+
+    public boolean isPublic() {
+        return (isPublic == null)?true:isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
 
     @Transient
     @JsonSerialize()
@@ -96,15 +114,18 @@ public class Comment extends AbstractEntity  {
 
         Comment comment1 = (Comment) o;
 
+        if (isHidden != comment1.isHidden) return false;
+        if (isPublic != comment1.isPublic) return false;
         if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
-        return !(comment != null ? !comment.equals(comment1.comment) : comment1.comment != null);
-
+        return comment != null ? comment.equals(comment1.comment) : comment1.comment == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (isHidden ? 1 : 0);
+        result = 31 * result + (isPublic ? 1 : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }
@@ -117,5 +138,22 @@ public class Comment extends AbstractEntity  {
                 "} " + super.toString();
     }
 
+
+    public void fillDoc(PdfReport pdfReport) {
+        Document document =pdfReport.getTheDocument();
+        document.setLeftMargin(document.getLeftMargin()+5f);
+        document.add(new Paragraph(this.getComment()).setFont(pdfReport.getFont()));
+        document.add(new Paragraph()
+                .add(new Tab())
+                .add(getModifiedBy().toString())
+                .add(new Tab())
+                .add(getModified().toString()));
+
+        for (Comment item : this.getComments()) {
+            item.fillDoc(pdfReport);
+        }
+
+        document.setLeftMargin(document.getLeftMargin()-5f);
+    }
 
 }

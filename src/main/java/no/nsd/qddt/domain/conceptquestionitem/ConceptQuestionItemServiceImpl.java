@@ -1,11 +1,12 @@
 package no.nsd.qddt.domain.conceptquestionitem;
 
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -13,11 +14,13 @@ import java.util.UUID;
 @Service("conceptQuestionItemService")
 public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemService {
 
-    private ConceptQuestionItemRepository repository;
+    private final ConceptQuestionItemRepository repository;
+    private final QuestionItemAuditService auditService;
 
     @Autowired
-    public ConceptQuestionItemServiceImpl(ConceptQuestionItemRepository repository) {
+    public ConceptQuestionItemServiceImpl(ConceptQuestionItemRepository repository, QuestionItemAuditService questionItemAuditService) {
         this.repository = repository;
+        this.auditService = questionItemAuditService;
     }
 
 
@@ -27,28 +30,30 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
     @Override
-    public boolean exists(ConceptQuestionItemId conceptQuestionItemId) {
-        return repository.exists(conceptQuestionItemId);
+    public boolean exists(ParentQuestionItemId parentQuestionItemId) {
+        return repository.exists(parentQuestionItemId);
     }
 
     @Override
-    public ConceptQuestionItem findOne(ConceptQuestionItemId conceptQuestionItemId) {
-        return repository.findOne(conceptQuestionItemId);
+    public ConceptQuestionItem findOne(ParentQuestionItemId parentQuestionItemId) {
+        return postLoadProcessing(repository.findOne(parentQuestionItemId));
     }
 
     @Override
-    public <S extends ConceptQuestionItem> S save(S instance) {
-        return repository.save(instance);
+    public ConceptQuestionItem save(ConceptQuestionItem instance) {
+        return postLoadProcessing(repository.save(instance));
     }
 
     @Override
     public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
-        return repository.save(instances);
+        return repository.save(instances).stream().
+                map(this::postLoadProcessing).
+                collect(Collectors.toList());
     }
 
     @Override
-    public void delete(ConceptQuestionItemId conceptQuestionItemId) throws RequestAbortedException {
-        repository.delete(conceptQuestionItemId);
+    public void delete(ParentQuestionItemId parentQuestionItemId) throws RequestAbortedException {
+        repository.delete(parentQuestionItemId);
     }
 
     @Override
@@ -62,7 +67,11 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
 
-    protected ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
+    private ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
+        instance.setQuestionItem(auditService.findRevision(
+                instance.getId().getQuestionItemId(),
+                instance.getQuestionItemRevision())
+                .getEntity());
         return instance;
     }
 

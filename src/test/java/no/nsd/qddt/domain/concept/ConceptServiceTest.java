@@ -151,7 +151,7 @@ super.setBaseRepositories(conceptRepository);
         Concept concept = new Concept();
         concept.setName("FIRST");
         concept = conceptService.save(concept);
-        concept.getQuestionItems().add(questionItem);
+        concept.addQuestionItem(questionItem);
 
         Concept savedConcept = conceptService.save(concept);
 

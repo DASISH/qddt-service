@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.question.Question;
@@ -77,7 +78,7 @@ public class ControlConstructMetaTest {
      */
     @Test
     public void findByQuestionTest() throws Exception {
-        List<ControlConstruct> iqs = controlConstructService.findByQuestionItems(Arrays.asList(qi1.getId()));
+        List<ConstructJson> iqs = controlConstructService.findByQuestionItems(Arrays.asList(qi1.getId()));
         assertEquals("Expected two elements!", iqs.size(), 2);
     }
 }

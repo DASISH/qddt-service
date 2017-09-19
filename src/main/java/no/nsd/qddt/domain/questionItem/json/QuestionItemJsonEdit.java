@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
 
         private Set<CommentJsonEdit> comments = new HashSet<>();
 
-        private Set<ConceptRef> conceptRefs;
+        private List<ConceptRef> conceptRefs;
 
 
     public QuestionItemJsonEdit() {
@@ -35,7 +36,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
     public QuestionItemJsonEdit(QuestionItem questionItem) {
         super(questionItem);
         if (questionItem == null) return;
-        setComments(questionItem.getComments().stream().map(F-> new CommentJsonEdit(F)).collect(Collectors.toSet()));
+        setComments(questionItem.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setQuestion(questionItem.getQuestion());
         if (questionItem.getResponseDomain() != null)
             setResponseDomain(new ResponseDomainJsonEdit(questionItem.getResponseDomain()));
@@ -48,7 +49,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return responseDomain;
     }
 
-    public void setResponseDomain(ResponseDomainJsonEdit responseDomain) {
+    private void setResponseDomain(ResponseDomainJsonEdit responseDomain) {
         this.responseDomain = responseDomain;
     }
 
@@ -56,7 +57,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return responseDomainRevision;
     }
 
-    public void setResponseDomainRevision(Integer responseDomainRevision) {
+    private void setResponseDomainRevision(Integer responseDomainRevision) {
         this.responseDomainRevision = responseDomainRevision;
     }
 
@@ -64,7 +65,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return question;
     }
 
-    public void setQuestion(Question question) {
+    private void setQuestion(Question question) {
         this.question = question;
     }
 
@@ -72,19 +73,17 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         return comments;
     }
 
-    public void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
-    public Set<ConceptRef> getConceptRefs() {
+    public List<ConceptRef> getConceptRefs() {
         return conceptRefs;
     }
 
-    public void setConceptRefs(Set<ConceptRef> conceptRefs) {
+    private void setConceptRefs(List<ConceptRef> conceptRefs) {
         this.conceptRefs = conceptRefs;
     }
-
-
 }
 
 

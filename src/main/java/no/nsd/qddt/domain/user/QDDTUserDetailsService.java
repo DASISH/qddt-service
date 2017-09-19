@@ -18,8 +18,12 @@ public class QDDTUserDetailsService  implements UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(QDDTUserDetailsService.class);
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public QDDTUserDetailsService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

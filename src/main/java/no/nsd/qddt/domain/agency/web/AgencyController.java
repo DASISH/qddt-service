@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequestMapping("/agency")
 public class AgencyController {
 
-    private AgencyService service;
+    private final AgencyService service;
 
     @Autowired
     public AgencyController(AgencyService service) {
@@ -42,7 +42,7 @@ public class AgencyController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
     }

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service("agencyService")
 class AgencyServiceImpl implements AgencyService {
 
-    private AgencyRepository agencyRepository;
+    private final AgencyRepository agencyRepository;
 
     @Autowired
     AgencyServiceImpl(AgencyRepository agencyRepository){
@@ -40,7 +40,7 @@ class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public Agency save(Agency instance) {
         return agencyRepository.save(instance);
     }

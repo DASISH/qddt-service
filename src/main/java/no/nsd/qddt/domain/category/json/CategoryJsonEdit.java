@@ -46,7 +46,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
 
     public CategoryJsonEdit(Category category) {
         super(category);
-        setChildren(category.getChildren().stream().map(F->new CategoryJsonEdit(F)).collect(Collectors.toList()));
+        setChildren(category.getChildren().stream().map(CategoryJsonEdit::new).collect(Collectors.toList()));
         setLabel(category.getLabel());
         setDescription(category.getDescription());
         setInputLimit(category.getInputLimit());
@@ -60,7 +60,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return label;
     }
 
-    public void setLabel(String label) {
+    private void setLabel(String label) {
         this.label = label;
     }
 
@@ -68,7 +68,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -76,7 +76,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return inputLimit;
     }
 
-    public void setInputLimit(ResponseCardinality inputLimit) {
+    private void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
 
@@ -84,7 +84,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return classificationLevel;
     }
 
-    public void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
+    private void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
         this.classificationLevel = classificationLevel;
     }
 
@@ -92,7 +92,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return hierarchyLevel;
     }
 
-    public void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
+    private void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
         this.hierarchyLevel = hierarchyLevel;
     }
 
@@ -100,7 +100,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return categoryType;
     }
 
-    public void setCategoryType(CategoryType categoryType) {
+    private void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
     }
 
@@ -108,7 +108,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return code;
     }
 
-    public void setCode(Code code) {
+    private void setCode(Code code) {
         this.code = code;
     }
 
@@ -116,7 +116,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         return children;
     }
 
-    public void setChildren(List<CategoryJsonEdit> children) {
+    private void setChildren(List<CategoryJsonEdit> children) {
         this.children = children;
     }
 

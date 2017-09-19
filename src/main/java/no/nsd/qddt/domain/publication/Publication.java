@@ -1,12 +1,14 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Stig Norland
@@ -16,9 +18,9 @@ import java.util.List;
 @Table(name = "PUBLICATION")
 public class Publication extends AbstractEntityAudit {
 
-    String purpose;
+    private String purpose;
 
-    String status;
+    private String status;
 
     @OrderColumn(name="element_idx")
     @OrderBy("element_idx ASC")
@@ -70,7 +72,7 @@ public class Publication extends AbstractEntityAudit {
 
         Publication that = (Publication) o;
 
-        return (status == that.status);
+        return (Objects.equals(status, that.status));
 
     }
 
@@ -81,4 +83,23 @@ public class Publication extends AbstractEntityAudit {
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
+
+
+    @Override
+    public String toString() {
+        return "Publication{" +
+                "purpose='" + purpose + '\'' +
+                ", status='" + status + '\'' +
+                ", publicationElements=" + publicationElements +
+                "} " + super.toString();
+    }
+
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        for (PublicationElement element:getPublicationElements()){
+            element.getElementAsEntity().fillDoc(pdfReport);
+        }
+    }
+
 }

@@ -50,7 +50,7 @@ public class CategoryJsonView {
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
-        setChildren(category.getChildren().stream().map(F->new CategoryJsonView(F)).collect(Collectors.toList()));
+        setChildren(category.getChildren().stream().map(CategoryJsonView::new).collect(Collectors.toList()));
     }
 
     public UUID getId() {

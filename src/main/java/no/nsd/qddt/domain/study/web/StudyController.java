@@ -18,8 +18,8 @@ import java.util.UUID;
 @RequestMapping("/study")
 public class StudyController {
 
-    private StudyService service;
-    private SurveyProgramService surveyProgramService;
+    private final StudyService service;
+    private final SurveyProgramService surveyProgramService;
 //    private InstrumentService instrumentService;
 
 
@@ -44,7 +44,7 @@ public class StudyController {
     public Study update(@RequestBody Study instance) {
         System.out.println("study update");
 
-        if (instance.getTopicGroups() != null)
+        if (instance.getTopicGroups() != null & !instance.isArchived())
             instance.getTopicGroups().forEach(c->{
                 c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
                 c.setChangeComment("");
@@ -61,18 +61,6 @@ public class StudyController {
         if (instance.getSurveyProgram() == null){
             instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
         }
-
-//        if (instance.getId() != null) {
-//            instance.getInstruments().addAll(instrumentService.findByStudy(instance.getId()));
-//            instance.getInstruments().forEach(c->{
-//                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-//                c.setChangeComment("");
-//            });
-//        }
-//        else
-//            instance.SetDefaultInstrument();
-
-
         if (instance.getTopicGroups() != null) {
             instance.getTopicGroups().forEach(c->{
                 c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
@@ -84,9 +72,21 @@ public class StudyController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
-        service.delete(id);
+        System.out.println("Study delete " + id);
+        try {
+            service.delete(id);
+        }catch (Exception ex) {
+            System.out.println(ex.fillInStackTrace());
+        }
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf().toByteArray();
     }
 
     @ResponseStatus(value = HttpStatus.OK)

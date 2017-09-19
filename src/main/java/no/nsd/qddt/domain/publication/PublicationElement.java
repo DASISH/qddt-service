@@ -3,7 +3,13 @@ package no.nsd.qddt.domain.publication;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -34,6 +40,7 @@ public class PublicationElement  {
     @JsonIgnore
     private Integer minor;
     @JsonIgnore
+    private
     String versionLabel;
 
     @Transient
@@ -56,7 +63,7 @@ public class PublicationElement  {
     }
 
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -81,7 +88,7 @@ public class PublicationElement  {
     }
 
 
-    public void setElementEnum(ElementKind elementKind) {
+    private void setElementEnum(ElementKind elementKind) {
         this.elementKind = elementKind;
     }
 
@@ -102,7 +109,7 @@ public class PublicationElement  {
     }
 
 
-    public Version getVersion() {
+    private Version getVersion() {
         return new Version(major,minor,revisionNumber,versionLabel);
     }
 
@@ -114,7 +121,42 @@ public class PublicationElement  {
     }
 
 
+    @JsonSerialize
     public Object getElement() {
+        try {
+            switch (elementKind) {
+                case CONCEPT:
+                    if(element instanceof Concept)
+                        return new ConceptJsonEdit((Concept) element);
+                    break;
+                case CONTROL_CONSTRUCT:
+                    break;
+                case QUESTION_CONSTRUCT:
+                    break;
+                case STATEMENT_CONSTRUCT:
+                    break;
+                case SEQUENCE_CONSTRUCT:
+                    break;
+                case CONDITION_CONSTRUCT:
+                    break;
+                case INSTRUMENT:
+                    break;
+                case QUESTION_ITEM:
+                    if (element instanceof QuestionItem)
+                        return new QuestionItemJsonView((QuestionItem) element);
+                    break;
+                case STUDY:
+                    break;
+                case SURVEY_PROGRAM:
+                    break;
+                case TOPIC_GROUP:
+                    if(element instanceof TopicGroup)
+                        return new TopicGroupRevisionJson((TopicGroup) element);
+                    break;
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return element;
     }
 

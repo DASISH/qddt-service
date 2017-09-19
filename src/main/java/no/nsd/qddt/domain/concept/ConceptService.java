@@ -17,4 +17,6 @@ public interface ConceptService  extends BaseService<Concept, UUID> {
     Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable);
 
     Page<Concept> findByNameAndDescriptionPageable(String name, String name1, Pageable pageable);
+
+    List<Concept> findByQuestionItem(UUID id);
 }

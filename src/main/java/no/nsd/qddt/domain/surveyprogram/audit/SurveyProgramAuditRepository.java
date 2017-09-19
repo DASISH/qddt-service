@@ -9,7 +9,6 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 /**

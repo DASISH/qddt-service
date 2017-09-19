@@ -11,27 +11,32 @@ import java.sql.Timestamp;
 public class ConceptQuestionItemJson {
 
     @EmbeddedId
-    private ConceptQuestionItemId id = new ConceptQuestionItemId();
+    private ParentQuestionItemId id = new ParentQuestionItemId();
 
     private QuestionItemJsonView questionItem;
 
     private Integer questionItemRevision;
 
+//    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
 
     public ConceptQuestionItemJson(ConceptQuestionItem q) {
+        if (q == null) {
+            System.out.println("ConceptQuestionItem is null");
+            return;
+        }
         setId(q.getId());
         setQuestionItem(new QuestionItemJsonView(q.getQuestionItem()));
         setQuestionItemRevision(q.getQuestionItemRevision());
         setUpdated(q.getUpdated());
     }
 
-    public ConceptQuestionItemId getId() {
+    public ParentQuestionItemId getId() {
         return id;
     }
 
-    public void setId(ConceptQuestionItemId id) {
+    private void setId(ParentQuestionItemId id) {
         this.id = id;
     }
 
@@ -39,7 +44,7 @@ public class ConceptQuestionItemJson {
         return questionItem;
     }
 
-    public void setQuestionItem(QuestionItemJsonView questionItem) {
+    private void setQuestionItem(QuestionItemJsonView questionItem) {
         this.questionItem = questionItem;
     }
 
@@ -47,7 +52,7 @@ public class ConceptQuestionItemJson {
         return questionItemRevision;
     }
 
-    public void setQuestionItemRevision(Integer questionItemRevision) {
+    private void setQuestionItemRevision(Integer questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
 
@@ -55,7 +60,7 @@ public class ConceptQuestionItemJson {
         return updated;
     }
 
-    public void setUpdated(Timestamp updated) {
+    private void setUpdated(Timestamp updated) {
         this.updated = updated;
     }
 }

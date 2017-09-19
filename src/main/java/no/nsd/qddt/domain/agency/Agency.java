@@ -205,9 +205,8 @@ public class Agency extends AbstractEntity implements Comparable<Agency>{
 
     @Override
     public String toString() {
-        return "Agency{" +
-                "name='" + name + '\'' +
-                "} "; //+ super.toString();
+        return String.format(
+                "Agency (name=%s)", this.name);
     }
 
     public int compareTo(Agency o) {

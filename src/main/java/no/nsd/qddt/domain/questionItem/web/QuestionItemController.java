@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequestMapping("/questionitem")
 public class QuestionItemController {
 
-    private QuestionItemService service;
+    private final QuestionItemService service;
 
     @Autowired
     public QuestionItemController(QuestionItemService service){
@@ -50,7 +50,7 @@ public class QuestionItemController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
     }
@@ -59,7 +59,7 @@ public class QuestionItemController {
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<QuestionItemListJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
         Page<QuestionItemListJson> questionitems =
-                service.findAllPageable(pageable).map(F->new QuestionItemListJson(F));
+                service.findAllPageable(pageable).map(QuestionItemListJson::new);
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 
@@ -71,7 +71,7 @@ public class QuestionItemController {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         Page<QuestionItemListJson> questionitems = null;
         try {
-            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(F->new QuestionItemListJson(F));
+            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(QuestionItemListJson::new);
         } catch (Exception ex){
             ex.printStackTrace();
         }
@@ -80,6 +80,13 @@ public class QuestionItemController {
 
     private QuestionItemJsonEdit question2Json(QuestionItem questionItem){
         return  new QuestionItemJsonEdit(questionItem);
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf().toByteArray();
     }
 
 

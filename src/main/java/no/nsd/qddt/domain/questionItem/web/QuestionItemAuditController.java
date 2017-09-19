@@ -25,7 +25,7 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/questionitem", produces = MediaType.APPLICATION_JSON_VALUE)
 public class QuestionItemAuditController {
 
-    private QuestionItemAuditService auditService;
+    private final QuestionItemAuditService auditService;
 
     @Autowired
     public QuestionItemAuditController(QuestionItemAuditService service) {
@@ -46,7 +46,7 @@ public class QuestionItemAuditController {
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, QuestionItem>>> allProjects(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 

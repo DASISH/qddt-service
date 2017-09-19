@@ -12,13 +12,14 @@ import org.hibernate.annotations.Type;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
-public class BaseJsonEdit {
+public class BaseJsonEdit implements Serializable {
 
     @Type(type="pg-uuid")
     private UUID id;
@@ -37,21 +38,31 @@ public class BaseJsonEdit {
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
+    private Integer basedOnRevision;
+
     @Embedded
     private Version version;
 
     @Enumerated(EnumType.STRING)
     private AbstractEntityAudit.ChangeKind changeKind;
 
-    public BaseJsonEdit() {
+    protected BaseJsonEdit() {
     }
 
-    public BaseJsonEdit(AbstractEntityAudit entity) {
-        if (entity == null) return;
+    protected BaseJsonEdit(AbstractEntityAudit entity) {
+        if (entity == null){
+            System.out.println("BaseJsonEdit entity is null");
+            StackTraceElement[] stack =  Thread.currentThread().getStackTrace();
+            for (int i = 1; i < 6; i++) {
+                System.out.println(stack[i]);
+            }
+            return;
+        }
         setId(entity.getId());
         setName(entity.getName());
         setAgency(new AgencyJsonView(entity.getAgency()));
         setBasedOnObject(entity.getBasedOnObject());
+        setBasedOnRevision(entity.getBasedOnRevision());
         setModified(entity.getModified());
         setModifiedBy(new UserJson(entity.getModifiedBy()));
         setVersion(entity.getVersion());
@@ -62,7 +73,7 @@ public class BaseJsonEdit {
         return id;
     }
 
-    public void setId(UUID id) {
+    protected void setId(UUID id) {
         this.id = id;
     }
 
@@ -70,7 +81,7 @@ public class BaseJsonEdit {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = name;
     }
 
@@ -78,7 +89,7 @@ public class BaseJsonEdit {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    private void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
@@ -86,7 +97,7 @@ public class BaseJsonEdit {
         return modifiedBy;
     }
 
-    public void setModifiedBy(UserJson modifiedBy) {
+    protected void setModifiedBy(UserJson modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
@@ -94,7 +105,7 @@ public class BaseJsonEdit {
         return agency;
     }
 
-    public void setAgency(AgencyJsonView agency) {
+    protected void setAgency(AgencyJsonView agency) {
         this.agency = agency;
     }
 
@@ -102,15 +113,23 @@ public class BaseJsonEdit {
         return basedOnObject;
     }
 
-    public void setBasedOnObject(UUID basedOnObject) {
+    private void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
+    }
+
+    public Integer getBasedOnRevision() {
+        return basedOnRevision;
+    }
+
+    public void setBasedOnRevision(Integer basedOnRevision) {
+        this.basedOnRevision = basedOnRevision;
     }
 
     public Version getVersion() {
         return version;
     }
 
-    public void setVersion(Version version) {
+    private void setVersion(Version version) {
         this.version = version;
     }
 
@@ -118,7 +137,7 @@ public class BaseJsonEdit {
         return changeKind;
     }
 
-    public void setChangeKind(AbstractEntityAudit.ChangeKind changeKind) {
+    private void setChangeKind(AbstractEntityAudit.ChangeKind changeKind) {
         this.changeKind = changeKind;
     }
 }

@@ -1,16 +1,15 @@
 package no.nsd.qddt.domain.publicationstatus.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
-import no.nsd.qddt.domain.publicationstatus.PublicationStatusJsonListView;
+import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
-import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -19,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/publicationstatus")
 public class PublicationStatusController {
     
-    private PublicationStatusService service;
+    private final PublicationStatusService service;
 
     @Autowired
     public PublicationStatusController(PublicationStatusService service){
@@ -45,17 +44,18 @@ public class PublicationStatusController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {
         service.delete(id);
     }
 
-    @JsonView(View.SimpleList.class)
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<PublicationStatusJsonListView> getAll() {
-
-        return service.findAll();
+    @RequestMapping(value = "/list", method = RequestMethod.GET , produces = "application/json")
+    public List<PublicationStatusJsonParent> getAll() {
+        return service.findAll()
+                .stream().map(PublicationStatusJsonParent::new)
+                .sorted(Comparator.comparing(PublicationStatusJsonParent::getChildrenIdx))
+                .collect(Collectors.toList());
     }
     
 }

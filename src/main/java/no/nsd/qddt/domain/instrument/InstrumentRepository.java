@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 interface InstrumentRepository extends BaseRepository<Instrument,UUID> {
 
-    List<Instrument> findByStudiesId(UUID studyId);
+    List<Instrument> findByStudies(UUID studyId);
 
     Page<Instrument> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(String name, String description, Pageable pageable);
 }

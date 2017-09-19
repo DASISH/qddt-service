@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service("userService")
 class UserServiceImpl implements UserService{
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -44,7 +44,7 @@ class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public User save(User user) {
         return postLoadProcessing(
                 userRepository.save(
@@ -67,12 +67,12 @@ class UserServiceImpl implements UserService{
     }
 
 
-    protected User prePersistProcessing(User instance) {
+    private User prePersistProcessing(User instance) {
         return instance;
     }
 
 
-    protected User postLoadProcessing(User instance) {
+    private User postLoadProcessing(User instance) {
         return instance;
     }
 

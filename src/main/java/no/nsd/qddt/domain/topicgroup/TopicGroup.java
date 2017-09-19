@@ -1,36 +1,28 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
+import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.commentable.Commentable;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
-import org.hibernate.envers.AuditMappedBy;
+import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
-import javax.persistence.Table;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -61,17 +53,25 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfable {
+public class TopicGroup extends AbstractEntityAudit implements Authorable,Archivable {
+
+    @Column(name = "description", length = 10000)
+    private String abstractDescription;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
+
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
-    @OrderBy(value = "name asc")
-    private Set<Concept> concepts = new LinkedHashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<Concept> concepts = new HashSet<>();
+
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE }, mappedBy = "topicGroup")
+    private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
     @JoinTable(name = "TOPIC_AUTHORS",
@@ -79,13 +79,15 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
+
+    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER )
     @NotAudited
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
+    private boolean isArchived;
 
-    @Column(name = "description", length = 10000)
-    private String abstractDescription;
+    public TopicGroup() {
+    }
 
     @Override
     public void addAuthor(Author user) {
@@ -111,9 +113,16 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
         this.study = study;
     }
 
+
+    public Concept addConcept(Concept concept){
+        System.out.println("new concept added to TopicGroup [" + this.getId() +"] concept:"+ concept.getId());
+        concept.setTopicGroup(this);
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        setChangeComment("Concept ["+ concept.getName() +"] added");
+        return concept;
+    }
+
     public Set<Concept> getConcepts() {
-        if  ( concepts == null)
-            concepts = new HashSet<>();
         return concepts;
     }
 
@@ -121,27 +130,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
         this.concepts = concepts;
     }
 
-    @Transient
-    public Concept addConcept(Concept concept){
-        concept.setTopicGroup(this);
-        concepts.add(concept);
-        setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-        setChangeComment("Concept ["+ concept.getName() +"] added");
-        return concept;
-    }
-
-    public void removeConcept(Concept concept){
-        try {
-
-            concepts = concepts.stream().filter(c->c.equals(concept)== false).collect(Collectors.toSet());
-            concept.setTopicGroup(null);
-            setChangeKind(ChangeKind.UPDATED_HIERARCY_RELATION);
-            setChangeComment("Concept [" + concept.getName() + "] removed");
-        } catch (Exception ex){
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
 
     public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
@@ -159,27 +147,57 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
         this.abstractDescription = abstractDescription;
     }
 
-    public TopicQuestions getTopicQuestions(){
-        try {
-            Concept tq = getConcepts().stream().filter(p -> p.getName() == null).findFirst().orElse(addConcept(new Concept()));
-            return new TopicQuestions(tq);
-        }catch (Exception ex) {
-            System.out.println("getTopicQuestions exception");
-            ex.printStackTrace();
-            return new TopicQuestions();
+
+    public Set<TopicGroupQuestionItem> getTopicQuestionItems() {
+        return topicQuestionItems;
+    }
+
+    public void setTopicQuestionItems(Set<TopicGroupQuestionItem> topicQuestionItems) {
+        this.topicQuestionItems = topicQuestionItems;
+    }
+
+    public void addTopicQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
+        if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
+            if (topicQuestionItem.getQuestionItem() != null){
+                topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+                topicQuestionItem.getQuestionItem().setChangeComment("Topic assosiation added");
+            }
+            topicQuestionItems.add(topicQuestionItem);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            this.setChangeComment("QuestionItem assosiation added");
+        }
+        else
+            System.out.println("ConceptQuestionItem not inserted, match found" );
+    }
+
+    public void addQuestionItem(QuestionItem questionItem) {
+        if (this.topicQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
+            new TopicGroupQuestionItem(this,questionItem);
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            questionItem.setChangeComment("Concept assosiation added");
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            this.setChangeComment("QuestionItem assosiation added");
         }
     }
 
-    public void setTopicQuestions(Concept concept){
-        getConcepts().removeIf(c->c.getId() == concept.getId());
-        addConcept(concept);
+    //TODO: Is this correct? maybe no update for QI when removing (it is bound to a revision anyway...).
+    public  void removeQuestionItem(UUID qiId){
+        topicQuestionItems.stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
+                forEach(cq->{
+                    cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+                    cq.getQuestionItem().setChangeComment("Topic assosiation removed");
+                    this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+                    this.setChangeComment("QuestionItem assosiation removed");
+                });
+        topicQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
     }
+
 
     @Override
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getConcepts().forEach(c->c.makeNewCopy(revision));
+//        getConcepts().forEach(c->c.makeNewCopy(revision));
         getOtherMaterials().forEach(m->m.makeNewCopy(getId()));
         getComments().clear();
     }
@@ -194,13 +212,14 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
         TopicGroup that = (TopicGroup) o;
 
         if (study != null ? !study.equals(that.study) : that.study != null) return false;
+//        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
-        if (abstractDescription != null ? !abstractDescription.equals(that.abstractDescription) : that.abstractDescription != null) return false;
-        return true;
+        return abstractDescription != null ? abstractDescription.equals(that.abstractDescription) : that.abstractDescription == null;
 
     }
+
 
     @Override
     public int hashCode() {
@@ -209,57 +228,70 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable, Pdfab
         return result;
     }
 
+
     @Override
     public String toString() {
-        return "TopicGroup{" +
-                "studyName =" + (study !=null ? study.getName() :"null") +
-                ", concepts=" + (concepts !=null ? concepts.size() :"0") +
-                ", authors=" + (authors !=null ? authors.size() :"0") +
-                ", otherMaterials=" + (otherMaterials !=null ? otherMaterials.size() :"0") +
-                ", abstractDescription='" + abstractDescription + '\'' +
-                ", name='" + super.getName() + '\'' +
-                ", id ='" + super.getId() + '\'' +
-                "} ";
+        return "{\"_class\":\"TopicGroup\", " +
+                super.toString() +
+                "\"abstractDescription\":" + (abstractDescription == null ? "null" : "\"" + abstractDescription + "\"") +
+                "\"concepts\":" + (getConcepts() == null ? "null" : Arrays.toString(getConcepts().toArray())) + ", " +
+                "\"authors\":" + (authors == null ? "null" : Arrays.toString(authors.toArray())) + ", " +
+                "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
+                "}";
     }
 
-
-
-    public ByteArrayOutputStream makePdf() {
-
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
-                                          }
 
     @Override
-    public void fillDoc(Document document) {
-
-        PdfFont font = null;
-        try {
-            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        document.add(new Paragraph("Survey Toc:").setFont(font));
-        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+//        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+//        document.add(new Paragraph("Survey Toc:").setFont(font));
+//        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
+//                .setSymbolIndent(12)
+//                .setListSymbol("\u2022")
+//                .setFont(font);
+//        list.add(new ListItem(this.getName()));
+//        document.add(list);
         document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
         document.add(new Paragraph(this.getAbstractDescription()));
-        document.add(new Paragraph(this.getTopicQuestions().toString()));
-        document.add(new Paragraph(this.getOtherMaterials().toString()));
-        document.add(new Paragraph(this.getComments().toString()));
+        this.getTopicQuestionItems().forEach(q -> {
+            try {
+                q.getQuestionItem().fillDoc(pdfReport);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         for (Concept concept : getConcepts()) {
-            concept.fillDoc(document);
-                                               }
-
+            concept.fillDoc(pdfReport);
+        }
+        pdfReport.addFooter(this);
     }
+
+    @PreRemove
+    public void preRemove(){
+        System.out.println("Topic pre remove");
+        getAuthors().clear();
+        getOtherMaterials().clear();
+    }
+
+    @Override
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+        setChangeKind(ChangeKind.ARCHIVED);
+        System.out.println("Topc archived " + getName() );
+        Hibernate.initialize(this.getConcepts());
+        for (Concept concept:getConcepts()){
+            if (!concept.isArchived())
+                concept.setArchived(archived);
+        }
+    }
+
+
+
 }

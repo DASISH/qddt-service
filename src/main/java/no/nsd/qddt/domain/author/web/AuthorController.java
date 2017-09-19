@@ -1,9 +1,7 @@
 package no.nsd.qddt.domain.author.web;
 
-import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.AuthorService;
-import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -27,10 +25,10 @@ import java.util.UUID;
 @RequestMapping(value = "/author")
 public class AuthorController {
 
-    private AuthorService authorService;
-    private SurveyProgramService surveyService;
-    private StudyService studyService;
-    private TopicGroupService topicService;
+    private final AuthorService authorService;
+    private final SurveyProgramService surveyService;
+    private final StudyService studyService;
+    private final TopicGroupService topicService;
 
     @Autowired
     public AuthorController(AuthorService authorService,
@@ -63,7 +61,7 @@ public class AuthorController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
         authorService.delete(id);
     }
@@ -77,7 +75,7 @@ public class AuthorController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/combine", method = RequestMethod.GET, params = { "authorId" })
+    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "authorId" })
     public Author addAuthor(@RequestParam("authorId") UUID authorId
                         ,@RequestParam("surveyId") UUID surveyId
                         ,@RequestParam("studyId") UUID studyId
@@ -98,7 +96,7 @@ public class AuthorController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/decombine", method = RequestMethod.GET, params = { "authorId"})
+    @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "authorId"})
     public Author removeQuestion(@RequestParam("authorId") UUID authorId
             ,@RequestParam("surveyId") UUID surveyId
             ,@RequestParam("studyId") UUID studyId

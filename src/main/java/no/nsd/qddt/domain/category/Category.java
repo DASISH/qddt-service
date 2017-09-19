@@ -3,14 +3,18 @@ package no.nsd.qddt.domain.category;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +54,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
-   private List<Category> children = new ArrayList<>();
+    private List<Category> children = new ArrayList<>();
 
 
     //name -> A description of a particular category or response.
@@ -163,7 +167,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     public void setLabel(String label) {
         this.label = label;
         if (StringTool.IsNullOrTrimEmpty(getName()))
-            setName(label.toUpperCase());
+            setName(StringTool.CapString(label));
     }
 
     public String getDescription() {
@@ -200,7 +204,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         return classificationLevel;
     }
 
-    public void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
+    private void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
         this.classificationLevel = classificationLevel;
     }
 
@@ -214,11 +218,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public List<Category> getChildren() {
         if (categoryType == CategoryType.SCALE)
-            return  children.stream().filter(c->c!=null)
+            return  children.stream().filter(Objects::nonNull)
                     .sorted(Comparator.comparing(Category::getCode))
                     .collect(Collectors.toList());
         else
-            return  children.stream().filter(c->c!=null).collect(Collectors.toList());
+            return  children.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void setChildren(List<Category> children) {
@@ -236,7 +240,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Column(nullable = false)
     public String getName(){
         if (StringTool.IsNullOrTrimEmpty(super.getName()))
-            return this.getLabel().toUpperCase();
+            return StringTool.CapString(this.getLabel());
         else
             return super.getName();
     }
@@ -263,20 +267,56 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         int result = super.hashCode();
         result = 31 * result + (getLabel() != null ? getLabel().hashCode() : 0);
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-//        result = 31 * result + (getConceptReference() != null ? getConceptReference().hashCode() : 0);
         result = 31 * result + (getHierarchyLevel() != null ? getHierarchyLevel().hashCode() : 0);
         return result;
     }
 
+
     @Override
     public String toString() {
-        return "Category{" + super.toString() +
-                ", label=" + getLabel() +
-                ", description=" + getDescription() +
-                ", hierarchyLevel=" + getHierarchyLevel() +
-                ", categoryType=" + getCategoryType() +
-                ", children=" + Arrays.toString(getChildren().stream().map(F->F.toString()).toArray()) +
-                "}" ;
+        final StringBuilder sb = new StringBuilder("{\"_class\":\"Category\", ");
+        sb.append(super.toString()).append(", ");
+        sb.append("\"label\":").append(label == null ? "null" : "\"" + label + "\"").append(", ");
+        sb.append("\"description\":").append((description == null ? "null" : "\"" + description + "\"")).append(", ");
+        if (categoryType == CategoryType.CATEGORY) {
+            sb.append("\"code\":").append(code == null ? "null" : code).append(", ");
+            sb.append("\"format\":").append(format == null ? "null" : "\"" + format + "\"").append(", ");
+        }
+        else {
+            sb.append("\"categoryType\":").append((categoryType == null ? "null" : categoryType)).append(", ");
+            sb.append("\"inputLimit\":").append((inputLimit == null ? "null" : inputLimit)).append(", ");
+            sb.append("\"classificationLevel\":").append((classificationLevel == null ? "null" : classificationLevel)).append(", ");
+            sb.append("\"hierarchyLevel\":").append((hierarchyLevel == null ? "null" : hierarchyLevel)).append(", ");
+            sb.append("\"children\":").append((children == null ? "null" : Arrays.toString(children.toArray()))).append(", ");
+        }
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        switch (getCategoryType()){
+            case DATETIME:
+            case TEXT:
+            case NUMERIC:
+            case BOOLEAN:
+            case URI:
+            case CATEGORY:
+                document.add(new Paragraph("Category " + getLabel()));
+                document.add(new Paragraph("Type " + getCategoryType().name()));
+                break;
+            case MISSING_GROUP:
+                break;
+            case LIST:
+                break;
+            case SCALE:
+                break;
+            case MIXED:
+                break;
+        }
+
+        document.add(new Paragraph(" " ));
     }
 
     public boolean fieldCompare(Category o) {
@@ -295,7 +335,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     preRec for valid Categories
      */
     @JsonIgnore
-    protected  boolean isValid(){
+    boolean isValid(){
         if (hierarchyLevel== HierarchyLevel.ENTITY)
             switch (categoryType) {
                 case DATETIME:

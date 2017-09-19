@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.HierarchyLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -22,10 +21,4 @@ public interface CategoryService extends BaseService<Category, UUID> {
 
     Page<Category>findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType,String name,Pageable pageable);
 
-
-//    Page<Category>findGroupByName(String name,Pageable pageable );
-//
-//    public List<String> findAllCategoies();
-//
-//    public Page<String> findAllCategoies(Pageable pageable);
 }

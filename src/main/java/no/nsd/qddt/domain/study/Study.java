@@ -1,26 +1,19 @@
 package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Pdfable;
+import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.authorable.Authorable;
 import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
-
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.List;
-import com.itextpdf.layout.element.ListItem;
-
-import java.io.ByteArrayOutputStream;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -60,7 +53,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
+public class Study extends AbstractEntityAudit implements Authorable, Archivable {
 
     @JsonIgnore
     @ManyToOne()
@@ -70,26 +63,23 @@ public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
     @Column(length = 10000)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
     @JoinTable(name = "STUDY_INSTRUMENTS",
             joinColumns = {@JoinColumn(name = "study_id")},
             inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "study", fetch = FetchType.LAZY, orphanRemoval = false)
-    @OrderBy(value = "modified ASC")
+    @OneToMany( cascade = {CascadeType.MERGE ,CascadeType.REMOVE}, mappedBy = "study", fetch = FetchType.LAZY)
+    @OrderBy(value = "name ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "STUDY_AUTHORS",
             joinColumns = {@JoinColumn(name ="study_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-
-//    @OneToMany(mappedBy = "ownerId" ,fetch = FetchType.EAGER)
-//    @NotAudited
-//    private Set<Comment> comments = new HashSet<>();
+    private boolean isArchived;
 
 
     public Study() {
@@ -128,13 +118,10 @@ public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
     public void setSurveyProgram(SurveyProgram surveyProgram) {
         this.surveyProgram = surveyProgram;
     }
-//
-//    public Set<Comment> getComments() {
-//        return comments;
-//    }
 
 
-    public Set<Instrument> getInstruments() {
+
+    private Set<Instrument> getInstruments() {
         if (instruments == null)
             instruments = new HashSet<>();
         return instruments;
@@ -204,41 +191,52 @@ public class Study extends AbstractEntityAudit implements Authorable, Pdfable {
                 "} " + super.toString();
     }
 
-    //@Override
-    public ByteArrayOutputStream makePdf() {
 
-        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter( baosPDF));
-        Document doc = new Document(pdf);
-        fillDoc(doc);
-        doc.close();
-        return baosPDF;
+    @Override
+    public void fillDoc(PdfReport pdfReport) throws IOException {
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph()
+                .add("Name")
+                .add(new Tab())
+                .add(this.getName()));
+        document.add(new Paragraph(this.getDescription()));
+        for (TopicGroup topic : getTopicGroups()) {
+            topic.fillDoc(pdfReport);
+        }
+        pdfReport.addFooter(this);
+    }
+
+    @PreRemove
+    public void remove(){
+        System.out.println(" Study pre remove");
+        if (this.getSurveyProgram() != null) {
+            System.out.println(getSurveyProgram().getName());
+            this.getSurveyProgram().getStudies().removeIf(p->p.getId() == this.getId());
+        }
+        this.getAuthors().clear();
+        this.getInstruments().clear();
     }
 
     @Override
-    public void fillDoc(Document document) {
-        //    if (document == null)
-        //        document = new Document();
-        PdfFont font = null;
-        try {
-            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        document.add(new Paragraph("Study Toc:").setFont(font));
-        List list = new List()
-                .setSymbolIndent(12)
-                .setListSymbol("\u2022")
-                .setFont(font);
-        list.add(new ListItem(this.getName()));
-        document.add(list);
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getModifiedBy() + "@" + this.getAgency()));
-        document.add(new Paragraph(this.getDescription()));
-        document.add(new Paragraph(this.getComments().toString()));
-        for (TopicGroup topic : getTopicGroups()) {
-            topic.fillDoc(document);
-        }
-
+    public boolean isArchived() {
+        return isArchived;
     }
+
+    @Override
+    public void setArchived(boolean archived) {
+        try {
+            isArchived = archived;
+            setChangeKind(ChangeKind.ARCHIVED);
+
+            Hibernate.initialize(this.getTopicGroups());
+            for (TopicGroup topicGroup : getTopicGroups()) {
+                if (!topicGroup.isArchived())
+                    topicGroup.setArchived(archived);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            System.out.println(ex.getStackTrace());
+        }
+    }
+
 }

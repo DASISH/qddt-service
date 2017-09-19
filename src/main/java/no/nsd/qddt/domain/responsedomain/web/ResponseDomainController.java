@@ -27,8 +27,8 @@ import java.util.UUID;
 @RequestMapping("/responsedomain")
 public class ResponseDomainController {
 
-    private ResponseDomainService service;
-    private CategoryService categoryService;
+    private final ResponseDomainService service;
+    private final CategoryService categoryService;
 
     @Autowired
     public ResponseDomainController(ResponseDomainService service,CategoryService categoryService){
@@ -68,7 +68,7 @@ public class ResponseDomainController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) throws RequestAbortedException {
         try {
             service.delete(id);
@@ -90,9 +90,9 @@ public class ResponseDomainController {
         Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
             if (question == null || question.isEmpty()) {
-                responseDomains = service.findBy(response, name, description, pageable).map(F->responseDomain2Json(F));
+                responseDomains = service.findBy(response, name, description, pageable).map(this::responseDomain2Json);
             } else {
-                responseDomains = service.findByQuestion(response, name, question, pageable).map(F->responseDomain2Json(F));
+                responseDomains = service.findByQuestion(response,  question, pageable).map(this::responseDomain2Json);
             }
 
         } catch (Exception ex){

@@ -1,9 +1,6 @@
 package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.BaseRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.envers.repository.support.EnversRevisionRepository;
 import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Repository;
 

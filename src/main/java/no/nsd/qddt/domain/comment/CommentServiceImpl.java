@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ import java.util.UUID;
 @Service("commentService")
 class CommentServiceImpl  implements CommentService  {
 
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
     public CommentServiceImpl(CommentRepository commentRepository) {
@@ -44,7 +43,7 @@ class CommentServiceImpl  implements CommentService  {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public Comment save(Comment instance) {
         return commentRepository.save(instance);
     }
@@ -81,8 +80,18 @@ class CommentServiceImpl  implements CommentService  {
     }
 
     @Override
+    public Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable) {
+        return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true, pageable);
+    }
+
+    @Override
     public List<Comment> findAllByOwnerId(UUID ownerId) {
         return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false);
+    }
+
+    @Override
+    public List<Comment> findAllByOwnerIdPublic(UUID ownerId) {
+        return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true);
     }
 
 }

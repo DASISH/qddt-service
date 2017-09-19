@@ -26,10 +26,10 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 class QuestionItemServiceImpl implements QuestionItemService {
 
 
-    private QuestionItemRepository questionItemRepository;
-    private ResponseDomainAuditService rdAuditService;
-    private QuestionItemAuditService auditService;
-    private QuestionService questionService;
+    private final QuestionItemRepository questionItemRepository;
+    private final ResponseDomainAuditService rdAuditService;
+    private final QuestionItemAuditService auditService;
+    private final QuestionService questionService;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
@@ -81,7 +81,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public void delete(UUID uuid) {
-        questionItemRepository.delete(uuid);
+        try {
+            System.out.println("delete question " + uuid);
+            questionItemRepository.delete(uuid);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
@@ -93,7 +99,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public Page<QuestionItem> getHierarchy(Pageable pageable) {
         return  questionItemRepository.findAll(
                 defaultSort(pageable,"name", "questions.question"))
-                .map(qi-> postLoadProcessing(qi));
+                .map(this::postLoadProcessing);
     }
 
     @Override
@@ -101,7 +107,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try {
             return questionItemRepository.findAll(
                     defaultSort(pageable,"name"))
-                    .map(qi -> postLoadProcessing(qi));
+                    .map(this::postLoadProcessing);
         }catch (Exception ex){
             ex.printStackTrace();
             return new PageImpl<>(null);
@@ -115,7 +121,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
         return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,
                 defaultSort(pageable,"name","question.question"))
-                .map(qi-> postLoadProcessing(qi));
+                .map(this::postLoadProcessing);
     }
 
     @Override
@@ -124,7 +130,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
         return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,
                 defaultSort(pageable,"name","question.question"))
-                .map(qi-> postLoadProcessing(qi));
+                .map(this::postLoadProcessing);
     }
 
     /*
@@ -132,14 +138,14 @@ class QuestionItemServiceImpl implements QuestionItemService {
     thus we need to populate some elements ourselves.
     */
 
-    protected QuestionItem postLoadProcessing(QuestionItem instance){
+    private QuestionItem postLoadProcessing(QuestionItem instance){
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
-                    System.out.println("Fetch latest RD");
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(rev.getRevisionNumber());
                     instance.setResponseDomain(rev.getEntity());
+                    System.out.println("Latest RD fetched " + rev.getRevisionNumber());
                 } else {
                     try {
                         ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
@@ -160,7 +166,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
 
-    protected QuestionItem prePersistProcessing(QuestionItem instance){
+    private QuestionItem prePersistProcessing(QuestionItem instance){
 
         if(instance.isBasedOn()) {
             Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
