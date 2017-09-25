@@ -160,11 +160,13 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
     @Override
     public void setArchived(boolean archived) {
         isArchived = archived;
-        setChangeKind(ChangeKind.ARCHIVED);
-        Hibernate.initialize(this.getStudies());
-        for (Study study:getStudies()){
-            if(!study.isArchived())
-                study.setArchived(archived);
+        if(archived) {
+            setChangeKind(ChangeKind.ARCHIVED);
+            Hibernate.initialize(this.getStudies());
+            for (Study study : getStudies()) {
+                if (!study.isArchived())
+                    study.setArchived(archived);
+            }
         }
     }
 }

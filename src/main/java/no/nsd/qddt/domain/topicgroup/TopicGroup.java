@@ -283,12 +283,14 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     @Override
     public void setArchived(boolean archived) {
         isArchived = archived;
-        setChangeKind(ChangeKind.ARCHIVED);
-        System.out.println("Topc archived " + getName() );
-        Hibernate.initialize(this.getConcepts());
-        for (Concept concept:getConcepts()){
-            if (!concept.isArchived())
-                concept.setArchived(archived);
+        if (archived) {
+            setChangeKind(ChangeKind.ARCHIVED);
+            System.out.println("Topc archived " + getName());
+            Hibernate.initialize(this.getConcepts());
+            for (Concept concept : getConcepts()) {
+                if (!concept.isArchived())
+                    concept.setArchived(archived);
+            }
         }
     }
 

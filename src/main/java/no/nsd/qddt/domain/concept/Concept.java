@@ -296,12 +296,14 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
     @Override
     public void setArchived(boolean archived) {
-        System.out.println("Concept archived " + getName() );
         isArchived = archived;
-        setChangeKind(ChangeKind.ARCHIVED);
-        for (Concept concept : getChildren()){
-            if (!concept.isArchived())
-                concept.setArchived(archived);
+        if (archived) {
+            System.out.println("Concept archived " + getName());
+            setChangeKind(ChangeKind.ARCHIVED);
+            for (Concept concept : getChildren()) {
+                if (!concept.isArchived())
+                    concept.setArchived(archived);
+            }
         }
     }
 }

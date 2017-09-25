@@ -226,12 +226,13 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     public void setArchived(boolean archived) {
         try {
             isArchived = archived;
-            setChangeKind(ChangeKind.ARCHIVED);
-
-            Hibernate.initialize(this.getTopicGroups());
-            for (TopicGroup topicGroup : getTopicGroups()) {
-                if (!topicGroup.isArchived())
-                    topicGroup.setArchived(archived);
+            if(archived) {
+                setChangeKind(ChangeKind.ARCHIVED);
+                Hibernate.initialize(this.getTopicGroups());
+                for (TopicGroup topicGroup : getTopicGroups()) {
+                    if (!topicGroup.isArchived())
+                        topicGroup.setArchived(archived);
+                }
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
