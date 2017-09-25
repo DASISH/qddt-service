@@ -35,6 +35,8 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
 
+    private String format;
+
 //    private Code code;
 
     private List<CategoryJsonView> children = new ArrayList<>();
@@ -52,6 +54,7 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
         setClassificationLevel(category.getClassificationLevel());
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
+        setFormat(category.getFormat());
 //        setCode(category.getCode());
     }
 
@@ -110,6 +113,13 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
 //    private void setCode(Code code) {
 //        this.code = code;
 //    }
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
 
     public List<CategoryJsonView> getChildren() {
         return children;
