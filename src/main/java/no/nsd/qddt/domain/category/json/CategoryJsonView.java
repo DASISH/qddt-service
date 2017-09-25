@@ -39,6 +39,8 @@ public class CategoryJsonView {
 
     private Code code;
 
+    private String format;
+
     private List<CategoryJsonView> children = new ArrayList<>();
 
 
@@ -54,6 +56,7 @@ public class CategoryJsonView {
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
+        setFormat(category.getFormat());
         setChildren(category.getChildren().stream().map(CategoryJsonView::new).collect(Collectors.toList()));
     }
 
@@ -119,6 +122,14 @@ public class CategoryJsonView {
 
     private void setCode(Code code) {
         this.code = code;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public List<CategoryJsonView> getChildren() {
