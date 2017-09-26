@@ -76,22 +76,33 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         return new PageImpl<>(
-            Stream.concat(
-                Stream.of(conceptAuditRepository.findRevisions(id).getLatestRevision())
-                        .map(e->{
-                            e.getEntity().getVersion().setVersionLabel("Latest version");
-                            return e;
-                        }),
-                conceptAuditRepository.findRevisions(id).reverse().getContent().stream()
-                    .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-            )
-            .skip(skip)
-            .limit(limit)
-            .map(this::postLoadProcessing)
-            .collect(Collectors.toList()));
+            conceptAuditRepository.findRevisions(id).reverse().getContent().stream()
+                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
+                .skip(skip)
+                .limit(limit)
+                .map(this::postLoadProcessing)
+                .collect(Collectors.toList()));
     }
 
-
+    @Override
+    public Page<Revision<Integer, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        int skip = pageable.getOffset();
+        int limit = pageable.getPageSize();
+        return new PageImpl<>(
+                Stream.concat(
+                        Stream.of(conceptAuditRepository.findRevisions(id).getLatestRevision())
+                                .map(e->{
+                                    e.getEntity().getVersion().setVersionLabel("Latest version");
+                                    return e;
+                                }),
+                        conceptAuditRepository.findRevisions(id).reverse().getContent().stream()
+                                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
+                )
+                        .skip(skip)
+                        .limit(limit)
+                        .map(this::postLoadProcessing)
+                        .collect(Collectors.toList()));
+    }
 
     private Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);

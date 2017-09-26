@@ -18,6 +18,7 @@ import java.util.UUID;
 public interface ConceptAuditService extends BaseServiceAudit<Concept, UUID,Integer> {
 
     Page<Revision<Integer, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
 
 }
