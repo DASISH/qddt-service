@@ -112,9 +112,9 @@ public abstract class AbstractEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        if (id != null && !id.equals(o.id)) return false;
-        if (modified != null && !modified.equals(o.modified)) return false;
-        return !(modifiedBy.getId() != null && !modifiedBy.getId().equals(o.modifiedBy.getId()));
+        if (id != null ? !id.equals(o.id) : o.id != null) return false;
+        if (modified != null ? !modified.equals(o.modified) : o.modified != null) return false;
+        return modifiedBy != null ? modifiedBy.equals(o.modifiedBy) : o.modifiedBy == null;
     }
 
 
