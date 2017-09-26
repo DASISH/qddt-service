@@ -8,6 +8,8 @@ import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,11 +38,13 @@ public abstract class AbstractEntity {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated")
+    @LastModifiedDate
     private LocalDateTime modified;
 
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @LastModifiedBy
     private User modifiedBy;
 
     public UUID getId() {
