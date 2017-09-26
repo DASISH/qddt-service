@@ -75,19 +75,33 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         return new PageImpl<>(
-            Stream.concat(
-                Stream.of(topicGroupAuditRepository.findRevisions(id).getLatestRevision())
-                    .map(e->{
-                        e.getEntity().getVersion().setVersionLabel("Latest version");
-                        return e;
-                    }),
-                topicGroupAuditRepository.findRevisions(id).reverse().getContent().stream()
-                    .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-            )
-            .skip(skip)
-            .limit(limit)
-            .map(this::postLoadProcessing)
-            .collect(Collectors.toList())
+            topicGroupAuditRepository.findRevisions(id).reverse().getContent().stream()
+                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
+                .skip(skip)
+                .limit(limit)
+                .map(this::postLoadProcessing)
+                .collect(Collectors.toList())
+        );
+    }
+
+    @Override
+    public Page<Revision<Integer, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        int skip = pageable.getOffset();
+        int limit = pageable.getPageSize();
+        return new PageImpl<>(
+                Stream.concat(
+                        Stream.of(topicGroupAuditRepository.findRevisions(id).getLatestRevision())
+                                .map(e->{
+                                    e.getEntity().getVersion().setVersionLabel("Latest version");
+                                    return e;
+                                }),
+                        topicGroupAuditRepository.findRevisions(id).reverse().getContent().stream()
+                                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
+                )
+                        .skip(skip)
+                        .limit(limit)
+                        .map(this::postLoadProcessing)
+                        .collect(Collectors.toList())
         );
     }
 

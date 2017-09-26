@@ -16,4 +16,7 @@ import java.util.UUID;
 public interface TopicGroupAuditService extends BaseServiceAudit<TopicGroup, UUID, Integer> {
 
     Page<Revision<Integer, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+
+
 }

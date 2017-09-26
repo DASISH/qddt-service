@@ -21,6 +21,7 @@ import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @RestController
 @RequestMapping(value = "/audit/topicgroup", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +58,19 @@ public class TopicGroupAuditController {
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{id}/allinclatest", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Revision<Integer, TopicGroupRevisionJson>>> allIncludinglatest(
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "ignorechangekinds",
+                    defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_HIERARCY_RELATION,UPDATED_PARENT")
+                    Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            Pageable pageable, PagedResourcesAssembler assembler) {
 
+        Page<Revision<Integer, TopicGroupRevisionJson>> revisions =
+                service.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable).map(this::topicRev2Json);
+
+        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
+    }
     private Revision<Integer,TopicGroupRevisionJson> topicRev2Json(Revision<Integer, TopicGroup> revision){
         return new Revision<>(
                 revision.getMetadata(),
