@@ -12,10 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
+import org.springframework.data.history.Revisions;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -38,6 +40,10 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         this.commentService = commentService;
     }
 
+    private static int compare(Revision<Integer, Concept> f, Revision<Integer, Concept> g) {
+        return f.getRevisionNumber();
+    }
+
     @Override
     public Revision<Integer, Concept> findLastChange(UUID uuid) {
         return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid));
@@ -56,11 +62,8 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
 
     @Override
     public Revision<Integer, Concept> findFirstChange(UUID uuid) {
-        return conceptAuditRepository.findRevisions(uuid).
-                getContent().stream().
-                min(Comparator.comparing(Revision::getRevisionNumber)).
-                map(this::postLoadProcessing).
-                orElse(null);
+        return postLoadProcessing(conceptAuditRepository.findRevisions(uuid).
+            getContent().get(0));
     }
 
     @Override
@@ -73,14 +76,21 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         return new PageImpl<>(
-          conceptAuditRepository.findRevisionsOrBasedOnEqualsOrderByModified(id,id).getContent().stream()
-                  .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-                  .skip(skip)
-                  .limit(limit)
-                  .map(this::postLoadProcessing)
-                  .collect(Collectors.toList())
-        );
+            Stream.concat(
+                Stream.of(conceptAuditRepository.findRevisions(id).getLatestRevision())
+                        .map(e->{
+                            e.getEntity().getVersion().setVersionLabel("Latest version");
+                            return e;
+                        }),
+                conceptAuditRepository.findRevisions(id).reverse().getContent().stream()
+                    .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
+            )
+            .skip(skip)
+            .limit(limit)
+            .map(this::postLoadProcessing)
+            .collect(Collectors.toList()));
     }
+
 
 
     private Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {

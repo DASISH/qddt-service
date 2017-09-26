@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * <ul class="inheritance">
@@ -180,6 +181,24 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
 
+    @Override
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+        if (archived) {
+            System.out.println("Concept archived " + getName());
+            setChangeKind(ChangeKind.ARCHIVED);
+            for (Concept concept : getChildren()) {
+                if (!concept.isArchived())
+                    concept.setArchived(archived);
+            }
+        }
+    }
+
 
     public TopicRef getTopicRef() {
         if (topicRef == null) {
@@ -277,7 +296,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         document.add(new Paragraph(this.getDescription()));
         pdfReport.addFooter(this);
 
-        for (Comment item : this.getComments()) {
+        for (Comment item : this.getComments().stream().filter(c->c.isPublic()).collect(Collectors.toList())) {
             item.fillDoc(pdfReport);
         }
         document.add(new Paragraph()
@@ -289,21 +308,4 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
     }
 
-    @Override
-    public boolean isArchived() {
-        return isArchived;
-    }
-
-    @Override
-    public void setArchived(boolean archived) {
-        isArchived = archived;
-        if (archived) {
-            System.out.println("Concept archived " + getName());
-            setChangeKind(ChangeKind.ARCHIVED);
-            for (Concept concept : getChildren()) {
-                if (!concept.isArchived())
-                    concept.setArchived(archived);
-            }
-        }
-    }
 }
