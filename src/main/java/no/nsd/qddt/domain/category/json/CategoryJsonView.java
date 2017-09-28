@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.responsedomain.Code;
 
 import javax.persistence.Embedded;
@@ -25,6 +26,8 @@ public class CategoryJsonView {
 
     private String name;
 
+    private Version version;
+
     @Embedded
     private ResponseCardinality inputLimit;
 
@@ -36,6 +39,8 @@ public class CategoryJsonView {
 
     private Code code;
 
+    private String format;
+
     private List<CategoryJsonView> children = new ArrayList<>();
 
 
@@ -46,10 +51,12 @@ public class CategoryJsonView {
         setId(category.getId());
         setLabel(category.getLabel());
         setName(category.getName());
+        setVersion(category.getVersion());
         setInputLimit(category.getInputLimit());
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
+        setFormat(category.getFormat());
         setChildren(category.getChildren().stream().map(CategoryJsonView::new).collect(Collectors.toList()));
     }
 
@@ -75,6 +82,14 @@ public class CategoryJsonView {
 
     private void setName(String name) {
         this.name = name;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
     }
 
     public ResponseCardinality getInputLimit() {
@@ -107,6 +122,14 @@ public class CategoryJsonView {
 
     private void setCode(Code code) {
         this.code = code;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public List<CategoryJsonView> getChildren() {

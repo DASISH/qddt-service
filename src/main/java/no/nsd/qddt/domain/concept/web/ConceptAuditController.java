@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -55,4 +56,18 @@ public class ConceptAuditController {
 
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{id}/allinclatest", method = RequestMethod.GET)
+    public HttpEntity<PagedResources<Revision<Integer, Concept>>> allIncludinglatest(
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_HIERARCY_RELATION,UPDATED_PARENT") Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable);
+
+        return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
+    }
+
+
+
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -60,11 +61,8 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
     @Override
     public Revision<Integer, TopicGroup> findFirstChange(UUID uuid) {
-        return topicGroupAuditRepository.findRevisions(uuid).
-                getContent().stream()
-                .min(Comparator.comparing(Revision::getRevisionNumber))
-                .map(this::postLoadProcessing)
-                .orElse(null);
+        return postLoadProcessing(topicGroupAuditRepository.findRevisions(uuid).
+                getContent().get(0));
     }
 
     @Override
@@ -77,8 +75,29 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         return new PageImpl<>(
-                topicGroupAuditRepository.findRevisions(id).getContent().stream()
-                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
+            topicGroupAuditRepository.findRevisions(id).reverse().getContent().stream()
+                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
+                .skip(skip)
+                .limit(limit)
+                .map(this::postLoadProcessing)
+                .collect(Collectors.toList())
+        );
+    }
+
+    @Override
+    public Page<Revision<Integer, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+        int skip = pageable.getOffset();
+        int limit = pageable.getPageSize();
+        return new PageImpl<>(
+                Stream.concat(
+                        Stream.of(topicGroupAuditRepository.findRevisions(id).getLatestRevision())
+                                .map(e->{
+                                    e.getEntity().getVersion().setVersionLabel("Latest version");
+                                    return e;
+                                }),
+                        topicGroupAuditRepository.findRevisions(id).reverse().getContent().stream()
+                                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
+                )
                         .skip(skip)
                         .limit(limit)
                         .map(this::postLoadProcessing)
@@ -97,26 +116,21 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
         assert  (instance != null);
         try{
             System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
-            if (instance.getConcepts().size()>0)
+            if (instance.getConcepts().size()>-1)
                 instance.getConcepts()
-                        .forEach(c-> c.getConceptQuestionItems()
-                        .forEach(cqi->cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi))));
+                        .forEach(c-> {
+                            c.getConceptQuestionItems()
+                                    .forEach(cqi->cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi)));
+                            c.setComments(loadComments(c.getId()));
+                        });
 
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
                 cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi));
             }
 
-            // Manually load none audited elements
-
             List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
             instance.setOtherMaterials(new HashSet<>(oms));
-            List<Comment> coms;
-            if (showPrivateComments)
-                coms = commentService.findAllByOwnerId(instance.getId());
-            else
-                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
-
-            instance.setComments(new HashSet<>(coms));
+            instance.setComments(loadComments(instance.getId()));
 
 
         } catch (Exception ex){
@@ -125,6 +139,16 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
         }
         return instance;
     }
+
+    private HashSet<Comment> loadComments(UUID id){
+        List<Comment> coms;
+        if (showPrivateComments)
+            coms = commentService.findAllByOwnerId(id);
+        else
+            coms  =commentService.findAllByOwnerIdPublic(id);
+        return new HashSet<>(coms);
+    }
+
 
     private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
         return questionItemAuditService.getQuestionItemLastOrRevision(

@@ -38,6 +38,8 @@ public class CategoryJsonEdit extends BaseJsonEdit {
 
     private Code code;
 
+    private String format;
+
     private List<CategoryJsonEdit> children = new ArrayList<>();
 
 
@@ -54,6 +56,7 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
+        setFormat(category.getFormat());
     }
 
     public String getLabel() {
@@ -110,6 +113,14 @@ public class CategoryJsonEdit extends BaseJsonEdit {
 
     private void setCode(Code code) {
         this.code = code;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public List<CategoryJsonEdit> getChildren() {

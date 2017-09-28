@@ -15,5 +15,5 @@ import java.util.UUID;
 @Repository
 interface ConceptAuditRepository extends EnversRevisionRepository<Concept, UUID, Integer> {
 
-    Revisions<Integer,Concept> findRevisionsOrBasedOnEqualsOrderByModified(UUID id, UUID basedon);
+
 }
