@@ -78,11 +78,6 @@ public class ControlConstructController {
         service.delete(id);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-instrument/{uuid}", method = RequestMethod.GET)
-    public List<ControlConstruct> getByFirst(@PathVariable("uuid") UUID firstId) {
-        return iService.findOne(firstId).getControlConstructs();
-    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)

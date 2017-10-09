@@ -3,19 +3,17 @@ package no.nsd.qddt.domain.instrument;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * You change your meaning by emphasizing different words in your sentence. ex: "I never said she stole my money" has 7 meanings.
@@ -31,17 +29,16 @@ public class Instrument extends AbstractEntityAudit  {
 
 
     @JsonBackReference(value = "studyRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "instruments")
-    private Set<Study> studies = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="study_id",updatable = false)
+    private Study study;
 
 
-    @OrderColumn(name="instrument_idx")
+    @OrderColumn(name="index")
     @OrderBy("instrument_idx ASC")
-//    @AuditMappedBy(mappedBy = "instruments", positionMappedBy = "instrument_idx")
-    @ElementCollection
-    @CollectionTable(name = "INSTRUMENT_CONTROL_CONSTRUCT",
-            joinColumns = {@JoinColumn(name = "instrument_id", referencedColumnName = "id")})
-    private List<ControlConstruct> controlConstructs = new ArrayList<>();
+    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "index")
+    @OneToMany(mappedBy = "instrument",fetch = FetchType.EAGER)
+    private List<ControlConstructRef> controlConstructs = new ArrayList<>();
 
     private String description;
 
@@ -89,31 +86,26 @@ public class Instrument extends AbstractEntityAudit  {
         this.instrumentType = instrumentType;
     }
 
-    public Set<Study> getStudies() {
-        return studies;
+    public Study getStudy() {
+        return study;
     }
 
-    public void setStudies(Set<Study> studies) {
-        this.studies = studies;
+    public void setStudy(Study study) {
+        this.study = study;
     }
 
-    public List<ControlConstruct> getControlConstructs() {
+    public List<ControlConstructRef> getControlConstructs() {
         return controlConstructs;
     }
 
-    public void setControlConstructs(List<ControlConstruct> controlConstructs) {
+    public void setControlConstructs(List<ControlConstructRef> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
 
-    public void addControlConstruct(ControlConstruct controlConstruct) {
-        if (!controlConstructs.contains(controlConstruct))
-            controlConstructs.add(controlConstruct);
-    }
-
     @Transient
-    public Set<StudyRef> getStudyRefs() {
+    public StudyRef getStudyRef() {
         try{
-            return  studies.stream().map(StudyRef::new).collect(Collectors.toSet());
+            return  new StudyRef(getStudy());
         } catch (Exception ex ) {
             return null;
         }
@@ -157,12 +149,12 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
 
-    @Override
-    public void makeNewCopy(Integer revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        getControlConstructs().forEach(c->c.makeNewCopy(revision));
-        getComments().clear();
-    }
+//    @Override
+//    public void makeNewCopy(Integer revision){
+//        if (hasRun) return;
+//        super.makeNewCopy(revision);
+//        getControlConstructs().getChildren().forEach(c->c.makeNewCopy(revision));
+//        getComments().clear();
+//    }
 
 }

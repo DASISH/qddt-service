@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
@@ -11,6 +12,8 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -26,6 +29,9 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
 
     @Autowired
     private ConceptService entityService;
+
+    @Autowired
+    private ConceptAuditService entityAuditService;
 
     @Autowired
     private TopicGroupService topicGroupService;
@@ -51,8 +57,16 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
 
     @Test
     public void testGet() throws Exception {
-        mvc.perform(get("/concept/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(get("/concept/"+entity.getId()+"/listall").header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void testGetAudit() throws Exception {
+//        List<> test = entityAuditService.test(entity.getId(),(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT));
+//        mvc.perform(get("/audit/concept/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
+//                .andExpect(status().isOk());
     }
 
     @Test

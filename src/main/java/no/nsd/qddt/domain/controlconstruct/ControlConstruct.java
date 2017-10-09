@@ -100,16 +100,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     //------------- End Child elements with "enver hack"  -----------------------
 
 
-    //------------- Begin Instrument with "enver hack" --------------------------
-
-
-    @JsonBackReference(value = "instrumentRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "controlConstructs")
-    private Set<Instrument> instruments = new HashSet<>();
-
-
-    //------------- End Instrument with "enver hack" ----------------------------
-
     @Column(name="idx_rationale",length = 300)
     private String indexRationale;
 
@@ -164,10 +154,6 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Enumerated(EnumType.STRING)
     private SequenceKind sequenceKind;
-
-
-
-
 
     public ControlConstruct() {
     }
@@ -241,19 +227,6 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     public void setUniverse(List<Universe> universe) {
         this.universe = universe;
-    }
-
-    private Set<Instrument> getInstruments() {
-        return instruments;
-    }
-
-    public void setInstruments(Set<Instrument> instruments) {
-        this.instruments = instruments;
-    }
-
-    public void addInstruments(Instrument instrument) {
-        if (!instruments.contains(instrument))
-            instrument.addControlConstruct(this);
     }
 
     public List<ControlConstruct> getChildren() {
@@ -396,8 +369,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         ControlConstruct that = (ControlConstruct) o;
 
         if (!getControlConstructKind().equals(that.getControlConstructKind()))
-            return false;
-        if (getInstruments() != null ? !getInstruments().equals(that.getInstruments()) : that.getInstruments() != null)
             return false;
         if (getQuestionItem() != null ? !getQuestionItem().equals(that.getQuestionItem()) : that.getQuestionItem() != null)
             return false;
