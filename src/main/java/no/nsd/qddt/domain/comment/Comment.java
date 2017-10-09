@@ -38,9 +38,10 @@ public class Comment extends AbstractEntity  {
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
 
+    @Column(name = "is_hidden", columnDefinition = "boolean not null default false")
     private Boolean isHidden;
 
-    @Column(name = "is_public")
+    @Column(name = "is_public", columnDefinition = "boolean not null default true")
     private Boolean isPublic;
 
     @Column(name = "comment",length = 2000)

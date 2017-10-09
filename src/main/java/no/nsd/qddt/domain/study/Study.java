@@ -63,10 +63,10 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     @Column(length = 10000)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
-    @JoinTable(name = "STUDY_INSTRUMENTS",
-            joinColumns = {@JoinColumn(name = "study_id")},
-            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH} , mappedBy = "study")
+//    @JoinTable(name = "STUDY_INSTRUMENTS",
+//            joinColumns = {@JoinColumn(name = "study_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
     @OneToMany( cascade = {CascadeType.MERGE ,CascadeType.REMOVE}, mappedBy = "study", fetch = FetchType.LAZY)
