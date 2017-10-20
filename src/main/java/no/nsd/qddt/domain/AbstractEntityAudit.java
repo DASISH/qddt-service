@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
@@ -40,8 +41,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
         UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
         UPDATED_HIERARCHY_RELATION("Hierarchy Relation Updated","Element added to a collection, no changes to element itself"),
-        /* deprecated */
-        UPDATED_HIERARCY_RELATION("deprecated","deprecated"),
         IN_DEVELOPMENT("In Development","UnfinishedWork"),
         TYPO("NoMeaningChange","Typo or No Meaning Change"),
         CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
@@ -362,7 +361,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             fillDoc(pdf);
             pdf.createToc();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return pdfOutputStream;
     }

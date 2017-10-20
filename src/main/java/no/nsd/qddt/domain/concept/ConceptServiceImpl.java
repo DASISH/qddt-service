@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -7,6 +8,7 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -97,6 +99,10 @@ class ConceptServiceImpl implements ConceptService {
                         System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItemRevision());
             });
 
+            // children are saved to hold revision info... i guess, these saves shouldn't
+            instance.getChildren().stream()
+                    .forEach(c->setChildChangeStatus(c));
+
             if (instance.getId() == null & instance.getTopicRef().getId() != null) {        // load if new/basedon copy
                 TopicGroup tg = topicGroupService.findOne(instance.getTopicRef().getId());
                 instance.setTopicGroup(tg);
@@ -111,9 +117,15 @@ class ConceptServiceImpl implements ConceptService {
             }
         } catch(Exception ex) {
             System.out.println("ConceptService-> prePersistProcessing " + instance.getName());
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return instance;
+    }
+
+    private void setChildChangeStatus(Concept concept){
+        if (concept.getChangeKind() != AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT &&
+                concept.getChangeKind() != AbstractEntityAudit.ChangeKind.ARCHIVED )
+            concept.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
     }
 
     /*
@@ -136,7 +148,7 @@ class ConceptServiceImpl implements ConceptService {
             }
         } catch (Exception ex){
             System.out.println("postLoadProcessing... " + instance.getName());
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
         instance.getChildren().forEach(this::postLoadProcessing);

@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +66,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                     topicGroupRepository.save(
                             prePersistProcessing(instance)));
         }catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return instance;
     }
@@ -118,7 +119,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
             }
         } catch (Exception ex){
             System.out.println("postLoadProcessing... " + instance.getName());
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
         return instance;

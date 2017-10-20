@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -181,7 +182,7 @@ public class PublicationServiceImpl implements PublicationService {
             System.out.println(se.getMessage());
         } catch (Exception ex) {
             System.out.println("PublicationElement fill");
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
 
         if (element.getElement() != null){

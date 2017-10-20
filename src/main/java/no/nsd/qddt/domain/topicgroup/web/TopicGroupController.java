@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemService;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,7 +70,7 @@ public class TopicGroupController {
         try {
             instance = service.save(instance);
         }catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return instance;
     }
@@ -90,7 +91,7 @@ public class TopicGroupController {
                     .collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             return Collections.emptyList();
         }
     }
@@ -122,7 +123,7 @@ public class TopicGroupController {
 
             return service.save(topicGroup);
         }catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
             return null;
         }
@@ -138,7 +139,7 @@ public class TopicGroupController {
             cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
             return service.save(topicGroup);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println( ex.getMessage());
             return topicGroup;
         }

@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemListJson;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,7 +74,7 @@ public class QuestionItemController {
         try {
             questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(QuestionItemListJson::new);
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }

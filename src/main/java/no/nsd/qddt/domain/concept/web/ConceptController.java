@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,7 +72,7 @@ public class ConceptController {
 
             return concept2Json(service.save(concept));
         }catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
             return null;
         }
@@ -87,7 +88,7 @@ public class ConceptController {
             cqiService.delete(new ParentQuestionItemId(conceptId,questionItemId));
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println( ex.getMessage());
             return concept2Json(concept);
         }

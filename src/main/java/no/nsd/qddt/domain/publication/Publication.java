@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -53,7 +54,7 @@ public class Publication extends AbstractEntityAudit {
         try {
             return publicationElements;
         }catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             return new ArrayList<>();
         }
     }

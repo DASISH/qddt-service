@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -69,7 +70,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
                             prePersistProcessing(instance)));
         } catch (Exception ex){
             System.out.println("QI save ->"  + ex.getMessage());
-            ex.printStackTrace();
+            StackTraceFilter.filter(ex.getStackTrace());
             throw ex;
         }
     }
@@ -85,7 +86,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
             System.out.println("delete question " + uuid);
             questionItemRepository.delete(uuid);
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             throw ex;
         }
     }
@@ -109,7 +110,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
                     defaultSort(pageable,"name"))
                     .map(this::postLoadProcessing);
         }catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             return new PageImpl<>(null);
         }
     }
@@ -159,7 +160,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
             else
                 instance.setResponseDomainRevision(0);
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
         return instance;
