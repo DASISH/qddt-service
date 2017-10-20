@@ -124,8 +124,11 @@ class ConceptServiceImpl implements ConceptService {
 
     private void setChildChangeStatus(Concept concept){
         if (concept.getChangeKind() != AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT &&
-                concept.getChangeKind() != AbstractEntityAudit.ChangeKind.ARCHIVED )
+                concept.getChangeKind() != AbstractEntityAudit.ChangeKind.ARCHIVED ) {
+
             concept.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+            concept.setChangeComment("");
+        }
     }
 
     /*

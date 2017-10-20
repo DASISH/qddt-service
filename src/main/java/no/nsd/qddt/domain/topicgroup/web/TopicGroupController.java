@@ -91,6 +91,7 @@ public class TopicGroupController {
                     .collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
+            System.out.println(ex.getMessage());
             StackTraceFilter.println(ex.getStackTrace());
             return Collections.emptyList();
         }

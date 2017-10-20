@@ -246,6 +246,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 case IN_DEVELOPMENT:
                     ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
                     break;
+                case UPDATED_PARENT:
+                    ver.setVersionLabel("");
+                    break;
                 default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCHY_RELATION
                     ver.setVersionLabel("Changes in hierarchy");
                     break;
@@ -253,7 +256,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             version = ver;
         }catch (Exception ex){
             System.out.println("Exception in AbstractEntityAudit::onUpdate");
-            System.out.println(ex.getStackTrace()[0]);
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
             System.out.println(this);
         }
