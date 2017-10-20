@@ -184,6 +184,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     }
 
     public void setChangeKind(ChangeKind changeKind) {
+        if (this.changeKind == ChangeKind.IN_DEVELOPMENT &&
+                (changeKind == ChangeKind.UPDATED_HIERARCHY_RELATION ||
+                changeKind == ChangeKind.UPDATED_PARENT ||
+                changeKind == ChangeKind.UPDATED_CHILD ))
+        {
+            //BUGFIX https://github.com/DASISH/qddt-client/issues/546
+            return;
+        }
         this.changeKind = changeKind;
     }
 
