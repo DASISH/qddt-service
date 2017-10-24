@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram;
 
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
@@ -8,10 +10,6 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
-
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -144,13 +142,13 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
     @Override
     public void fillDoc(PdfReport pdfReport) throws IOException {
         Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph(this.getName()).setFont(pdfReport.getChapterFont()));
+        document.add(new Paragraph(this.getName()).addStyle(pdfReport.getStyle()));
+        pdfReport.addHeader(this);
         document.add(new Paragraph(this.getDescription()));
-
         for (Study study : getStudies()) {
             study.fillDoc(pdfReport);
         }
-        pdfReport.addFooter(this);
+
     }
 
     public boolean isArchived() {

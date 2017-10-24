@@ -290,11 +290,11 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     @Override
     public void fillDoc(PdfReport pdfReport) throws IOException {
         Document document =pdfReport.getTheDocument();
-
-        document.add(new Paragraph("Concept " + this.getName()).setFont(pdfReport.getChapterFont()));
+        document.add(new Paragraph(this.getName()).addStyle(pdfReport.getStyle()));
+        pdfReport.addHeader(this);
         document.add(new Paragraph("Description"));
         document.add(new Paragraph(this.getDescription()));
-        pdfReport.addFooter(this);
+
 
         for (Comment item : this.getComments().stream().filter(c->c.isPublic()).collect(Collectors.toList())) {
             item.fillDoc(pdfReport);

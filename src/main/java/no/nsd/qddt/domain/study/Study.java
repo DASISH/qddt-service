@@ -198,13 +198,24 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         document.add(new Paragraph()
                 .add("Name")
                 .add(new Tab())
-                .add(this.getName()));
+                .add(this.getName()).addStyle(pdfReport.getStyle()));
         document.add(new Paragraph(this.getDescription()));
-        for (TopicGroup topic : getTopicGroups()) {
+
+ /*       Paragraph headerParagraph = new Paragraph();
+        Text headerTitle = new Text("Title of PDF")
+                .setFontSize(20)
+                .setFontColor(new DeviceRgb(0, 128, 128));
+        Text headerDescription = new Text("Description")
+                .setFontSize(11);
+
+        headerParagraph.add(headerTitle);
+        headerParagraph.add(headerDescription);
+        document.add(headerParagraph);    */
+        pdfReport.addHeader(this);
+            for (TopicGroup topic : getTopicGroups()) {
             topic.fillDoc(pdfReport);
         }
-        pdfReport.addFooter(this);
-    }
+           }
 
     @PreRemove
     public void remove(){

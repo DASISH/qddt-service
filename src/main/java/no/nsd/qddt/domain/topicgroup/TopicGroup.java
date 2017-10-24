@@ -252,8 +252,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 //                .setFont(font);
 //        list.add(new ListItem(this.getName()));
 //        document.add(list);
-        document.add(new Paragraph(this.getName()));
+        document.add(new Paragraph(this.getName()).addStyle(pdfReport.getStyle()));
         document.add(new Paragraph(this.getAbstractDescription()));
+        pdfReport.addHeader(this);
         this.getTopicQuestionItems().forEach(q -> {
             try {
                 q.getQuestionItem().fillDoc(pdfReport);
@@ -265,7 +266,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         for (Concept concept : getConcepts()) {
             concept.fillDoc(pdfReport);
         }
-        pdfReport.addFooter(this);
+
     }
 
     @PreRemove

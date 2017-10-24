@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.pdf;
 
 import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -8,6 +9,7 @@ import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Tab;
 import com.itextpdf.layout.element.TabStop;
@@ -30,6 +32,7 @@ public class PdfReport extends PdfDocument {
     private PdfFont paragraphFont;
     private PdfFont font;
     private PdfFont bold;
+    private Style style;
     private final List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
     private Document document;
 
@@ -39,6 +42,8 @@ public class PdfReport extends PdfDocument {
             font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
             bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
             chapterFont = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLDOBLIQUE);
+            style = new Style();
+            style.setFont(chapterFont).setFontSize(12).setFontColor(Color.BLUE).setBackgroundColor(Color.LIGHT_GRAY);
             paragraphFont = PdfFontFactory.createFont(FontConstants.HELVETICA);
             getCatalog().setPageMode(PdfName.UseOutlines);
             document = new Document(this, PageSize.A4);
@@ -95,9 +100,11 @@ public class PdfReport extends PdfDocument {
         return document;
     }
 
-    public PdfFont getChapterFont() {
-        return chapterFont;
+    public Style getStyle() {
+        return style;
     }
+
+    public PdfFont getChapterFont() {   return chapterFont;    }
 
     public PdfFont getParagraphFont() {
         return paragraphFont;
@@ -118,9 +125,9 @@ public class PdfReport extends PdfDocument {
                 .addTabStops(tabstops)
                 .add("Version")
                 .add(new Tab())
-                .add("Modified")
+                .add("Last Saved")
                 .add(new Tab())
-                .add("ModifiedBy")
+                .add("Last Saved By")
                 .add(new Tab())
                 .add("Agency");
         document.add(p);
@@ -134,5 +141,28 @@ public class PdfReport extends PdfDocument {
                 .add(new Tab())
                 .add(element.getAgency().getName());
         document.add(p);
+    }
+    public void addHeader(AbstractEntityAudit element) {
+        Paragraph p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Version   " + element.getVersion().toString());
+        document.add(p);
+        p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Last Saved   " + element.getModified().toLocalDate().toString());
+        document.add(p);
+        p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Last Saved By   "+ element.getModifiedBy().getUsername());
+        document.add(p);
+        p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Agency   "+ element.getAgency().getName());
+        document.add(p);
+                       
     }
 }
