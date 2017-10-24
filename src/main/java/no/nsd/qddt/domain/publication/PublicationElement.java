@@ -88,7 +88,6 @@ public class PublicationElement  {
         this.elementKind = ElementKind.getEnum(elementDescription);
     }
 
-
     private void setElementEnum(ElementKind elementKind) {
         this.elementKind = elementKind;
     }

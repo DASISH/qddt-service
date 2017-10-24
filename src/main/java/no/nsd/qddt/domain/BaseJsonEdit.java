@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.UserJson;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
@@ -52,10 +53,7 @@ public class BaseJsonEdit implements Serializable {
     protected BaseJsonEdit(AbstractEntityAudit entity) {
         if (entity == null){
             System.out.println("BaseJsonEdit entity is null");
-            StackTraceElement[] stack =  Thread.currentThread().getStackTrace();
-            for (int i = 1; i < 6; i++) {
-                System.out.println(stack[i]);
-            }
+            StackTraceFilter.println(Thread.currentThread().getStackTrace());
             return;
         }
         setId(entity.getId());

@@ -87,7 +87,7 @@ public class TopicGroupController {
     public List<TopicGroupRevisionJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
             return service.findByStudyId(studyId).stream()
-                    .map(this::postLoad)
+                    .map(topicGroup-> new TopicGroupRevisionJson(topicGroup))
                     .collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
@@ -104,7 +104,8 @@ public class TopicGroupController {
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
         name = name.replace("*","%");
         Page<TopicGroupRevisionJson> items =
-                service.findByNameAndDescriptionPageable(name,name, pageable).map(this::postLoad);
+                service.findByNameAndDescriptionPageable(name,name, pageable)
+                        .map(topicGroup-> new TopicGroupRevisionJson(topicGroup));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
@@ -152,9 +153,6 @@ public class TopicGroupController {
         return service.findOne(id).makePdf().toByteArray();
     }
 
-    private TopicGroupRevisionJson postLoad(TopicGroup topicGroup){
-        return new TopicGroupRevisionJson(topicGroup);
-    }
 
 
     @ResponseStatus(value = HttpStatus.OK)

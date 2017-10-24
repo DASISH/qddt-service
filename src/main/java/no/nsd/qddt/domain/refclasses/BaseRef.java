@@ -42,6 +42,7 @@ abstract class BaseRef<T> implements Refs<T> {
         } catch (NullPointerException npe){
             System.out.println("BaseRef NullPointerException");
         } catch (Exception ex){
+            System.out.println(ex.getMessage());
             StackTraceFilter.println(ex.getStackTrace());
         }
     }

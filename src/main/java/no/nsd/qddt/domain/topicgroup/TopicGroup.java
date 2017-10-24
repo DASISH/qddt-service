@@ -123,6 +123,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     }
 
     public Set<Concept> getConcepts() {
+        System.out.println("Topic getConcepts " + concepts.size());
         return concepts;
     }
 

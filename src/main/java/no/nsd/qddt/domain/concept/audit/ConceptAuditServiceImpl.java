@@ -114,7 +114,6 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
 
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
-
         try{
             List<Comment> coms;
             if (showPrivateComments)
@@ -126,16 +125,17 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
                     .forEach(cqi-> cqi.setQuestionItem(
                             getQuestionItemLastOrRevision(cqi)));
 
-            instance.getChildren().stream().map(this::postLoadProcessing);
+            instance.getChildren().forEach(this::postLoadProcessing);
 
         } catch (Exception ex){
+            System.out.println("postLoadProcessing exception " + ex.getMessage());
             StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
         }
         return instance;
     }
 
     private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
+//        System.out.println("getQuestionItemLastOrRevision -> " + cqi.getQuestionItemRevision());
         return questionAuditService.getQuestionItemLastOrRevision(
                 cqi.getId().getQuestionItemId(),
                 cqi.getQuestionItemRevision()).getEntity();

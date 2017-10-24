@@ -104,21 +104,6 @@ public class PublicationServiceImpl implements PublicationService {
         repository.delete(instances);
     }
 
-
-    protected Publication prePersistProcessing(Publication instance) {
-        return instance;
-    }
-
-
-    private Publication postLoadProcessing(Publication instance) {
-        if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
-            showPrivate = false;
-
-        instance.getPublicationElements().forEach(this::fill);
-        return instance;
-    }
-
-
     @Override
     @Transactional(readOnly = true)
     public Page<Publication> findAllPageable(Pageable pageable) {
@@ -139,6 +124,19 @@ public class PublicationServiceImpl implements PublicationService {
         return fill(publicationElement);
     }
 
+
+    protected Publication prePersistProcessing(Publication instance) {
+        return instance;
+    }
+
+
+    private Publication postLoadProcessing(Publication instance) {
+        if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
+            showPrivate = false;
+
+        instance.getPublicationElements().forEach(this::fill);
+        return instance;
+    }
 
     private BaseServiceAudit getService(ElementKind elementKind){
          switch (elementKind) {
@@ -185,7 +183,7 @@ public class PublicationServiceImpl implements PublicationService {
             StackTraceFilter.println(ex.getStackTrace());
         }
 
-        if (element.getElement() != null){
+        if (element.getElementAsEntity() != null){
             element.setName(element.getElementAsEntity().getName());
             element.setVersion(element.getElementAsEntity().getVersion());
         }

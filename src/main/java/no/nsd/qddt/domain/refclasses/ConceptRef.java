@@ -15,7 +15,6 @@ public class ConceptRef extends BaseRef<ConceptRef> {
 
     public ConceptRef(Concept concept){
         super(concept);
-
         parent = concept.getTopicRef();
     }
 

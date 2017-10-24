@@ -119,17 +119,15 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
     }
 
     public QuestionItem getQuestionItem() {
-        if (questionItemLateBound != null) {
-            System.out.println("Get Concept QuestionItem (set concept ref)" + questionItemLateBound.getConceptRefs().size());
-            if (questionItem != null)
-                questionItem.setConceptRefs(questionItemLateBound.getConceptRefs());
-            else
-                System.out.println("questionItem was NULL");
+        if (questionItemLateBound != null && questionItem != null) {
+            questionItem.setConceptRefs(questionItemLateBound.getConceptRefs());
         }
         return questionItem;
     }
 
     public void setQuestionItem(QuestionItem questionItem) {
+        if (questionItem == null)
+            System.out.println("questionItem is null");
         this.getId().setQuestionItemId(questionItem.getId());
         if (questionItemRevision == null && questionItem.getVersion().getRevision() != null)
             setQuestionItemRevision(questionItem.getVersion().getRevision());

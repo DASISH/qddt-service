@@ -89,7 +89,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     /**
      *   a link to a category root/group (template)
      *   the managed representation is never reused (as was intended),
-     *   so we want to remove it when the responseDomain is removed.
+     *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
     @ManyToOne(cascade = { CascadeType.MERGE , CascadeType.REMOVE},fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")

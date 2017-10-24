@@ -8,13 +8,12 @@ import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
-import com.itextpdf.layout.element.TabStop;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.hyphenation.HyphenationConfig;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.exception.StackTraceFilter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.AbstractMap;
@@ -47,7 +46,7 @@ public class PdfReport extends PdfDocument {
                     .setFont(font)
                     .setFontSize(11);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
     }
 

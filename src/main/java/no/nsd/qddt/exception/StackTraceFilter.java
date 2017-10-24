@@ -10,9 +10,12 @@ import java.util.stream.Collectors;
 public class StackTraceFilter {
 
     public static List<StackTraceElement> filter(StackTraceElement[] stacktrace){
-        return Arrays.stream(stacktrace)
-           .filter(stackTraceElement -> stackTraceElement.getClassName().contains("nsd.no"))
-                .collect(Collectors.toList());
+        List<StackTraceElement> retval =
+            Arrays.stream(stacktrace)
+            .filter(stackTraceElement -> stackTraceElement.toString().contains("no.nsd"))
+            .collect(Collectors.toList());
+        retval.add(0,stacktrace[0]);
+        return retval;
     }
 
 

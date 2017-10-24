@@ -49,7 +49,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     private Concept parentReferenceOnly;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE})
     @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
@@ -63,6 +63,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "concept")
+    @AuditMappedBy(mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
 
@@ -94,6 +95,9 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     public Set<ConceptQuestionItem> getConceptQuestionItems() {
+//        conceptQuestionItems.forEach(
+//                c->System.out.print(c.getId().getQuestionItemId() + ","));
+//        System.out.println("...");
         return conceptQuestionItems;
     }
 
@@ -121,11 +125,9 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
             new ConceptQuestionItem(this,questionItem);
             System.out.println("New QuestionItem added to ConceptQuestionItems " + questionItem.getName() );
-            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
-);
+            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             questionItem.setChangeComment("Concept assosiation added");
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
-);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
         }
     }
@@ -134,11 +136,9 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         getConceptQuestionItems().stream().filter(q -> q.getId().getQuestionItemId().equals(qiId)).
             forEach(cq->{
                 System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
-                cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
-);
+                cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
                 cq.getQuestionItem().setChangeComment("Concept assosiation removed");
-                this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
-);
+                this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
                 this.setChangeComment("QuestionItem assosiation removed");
             });
         getConceptQuestionItems().removeIf(q -> q.getId().getQuestionItemId().equals(qiId));
@@ -154,8 +154,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
     public void addChildren(Concept concept){
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION
-);
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
         this.children.add(concept);
 
