@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -137,7 +138,7 @@ thus we need to populate some elements ourselves.
             instance.setComments(new HashSet<>(coms));
 
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
 

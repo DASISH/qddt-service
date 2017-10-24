@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -86,7 +87,7 @@ public class ControlConstructController {
             return service.findByQuestionItems(Collections.singletonList(secondId));
         } catch (Exception ex){
             System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             return  new ArrayList<>();
         }
     }
@@ -106,7 +107,7 @@ public class ControlConstructController {
 
 
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
-        // Change in frontEnd usage made it neccessary to distingwish
+        // Change in frontEnd usage made it necessary to distinguish
 
         Page<ConstructJson> controlConstructs =
                 service.findByNameLikeAndControlConstructKind(name,kind,pageable);

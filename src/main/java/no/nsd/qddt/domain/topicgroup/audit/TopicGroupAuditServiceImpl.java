@@ -11,6 +11,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -135,7 +136,7 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
         } catch (Exception ex){
             System.out.println(instance);
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return instance;
     }

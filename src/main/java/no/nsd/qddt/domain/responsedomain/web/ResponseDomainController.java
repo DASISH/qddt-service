@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.*;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 import no.nsd.qddt.exception.RequestAbortedException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,7 +97,7 @@ public class ResponseDomainController {
             }
 
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
 

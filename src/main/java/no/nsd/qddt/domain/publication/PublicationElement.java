@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -155,7 +156,7 @@ public class PublicationElement  {
                     break;
             }
         }catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return element;
     }

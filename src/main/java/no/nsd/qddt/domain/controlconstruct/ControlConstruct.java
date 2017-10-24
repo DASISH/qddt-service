@@ -16,6 +16,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.domain.universe.Universe;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
@@ -270,7 +271,7 @@ public class ControlConstruct extends AbstractEntityAudit {
             }
         }catch (Exception ex){
             System.out.println("harvestPostInstructions exception " + ex.getMessage());
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
     }
 

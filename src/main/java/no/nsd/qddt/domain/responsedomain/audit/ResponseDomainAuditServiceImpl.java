@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -91,7 +92,7 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
             instance.setComments(new HashSet<>(coms));
             instance.getManagedRepresentation();        //Lazy loading trick... (we want the MR when locking at a revision).
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
         return instance;

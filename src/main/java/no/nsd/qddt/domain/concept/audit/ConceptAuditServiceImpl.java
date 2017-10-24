@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -128,7 +129,7 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
             instance.getChildren().stream().map(this::postLoadProcessing);
 
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
         return instance;

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.refclasses;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.exception.StackTraceFilter;
 
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ abstract class BaseRef<T> implements Refs<T> {
         } catch (NullPointerException npe){
             System.out.println("BaseRef NullPointerException");
         } catch (Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
     }
 

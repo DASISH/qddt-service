@@ -14,6 +14,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
@@ -161,7 +162,7 @@ public class QuestionItem extends AbstractEntityAudit {
                         .collect(Collectors.toList());
             }
         } catch(Exception ex){
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
             return new ArrayList<>();
         }
         return conceptRefs;

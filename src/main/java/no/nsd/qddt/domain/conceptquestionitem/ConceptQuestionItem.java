@@ -106,7 +106,9 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
         this.id.setParentId(concept.getId());
     }
 
-
+    /*
+    current version of QI, usually we'id use early bound.
+     */
     public QuestionItem getQuestionItemLateBound() {
         return questionItemLateBound;
     }

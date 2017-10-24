@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
@@ -40,8 +41,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
         UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
         UPDATED_HIERARCHY_RELATION("Hierarchy Relation Updated","Element added to a collection, no changes to element itself"),
-        /* deprecated */
-        UPDATED_HIERARCY_RELATION("deprecated","deprecated"),
         IN_DEVELOPMENT("In Development","UnfinishedWork"),
         TYPO("NoMeaningChange","Typo or No Meaning Change"),
         CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
@@ -185,6 +184,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     }
 
     public void setChangeKind(ChangeKind changeKind) {
+        if (this.changeKind == ChangeKind.IN_DEVELOPMENT &&
+                (changeKind == ChangeKind.UPDATED_HIERARCHY_RELATION ||
+                changeKind == ChangeKind.UPDATED_PARENT ||
+                changeKind == ChangeKind.UPDATED_CHILD ))
+        {
+            //BUGFIX https://github.com/DASISH/qddt-client/issues/546
+            return;
+        }
         this.changeKind = changeKind;
     }
 
@@ -247,6 +254,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 case IN_DEVELOPMENT:
                     ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
                     break;
+                case UPDATED_PARENT:
+                    ver.setVersionLabel("");
+                    break;
                 default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCHY_RELATION
                     ver.setVersionLabel("Changes in hierarchy");
                     break;
@@ -254,7 +264,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             version = ver;
         }catch (Exception ex){
             System.out.println("Exception in AbstractEntityAudit::onUpdate");
-            System.out.println(ex.getStackTrace()[0]);
+            StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
             System.out.println(this);
         }
@@ -362,7 +372,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             fillDoc(pdf);
             pdf.createToc();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            StackTraceFilter.println(ex.getStackTrace());
         }
         return pdfOutputStream;
     }
