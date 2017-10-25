@@ -156,10 +156,10 @@ public class QuestionItem extends AbstractEntityAudit {
     public List<ConceptRef> getConceptRefs(){
         try {
             if (conceptRefs == null) {
-//                System.out.println("QI getConceptRefs...");
-                conceptRefs = conceptQuestionItems.stream().map(cq -> new ConceptRef(cq.getConcept()))
-                        .sorted(ConceptRef::compareTo)
-                        .collect(Collectors.toList());
+                conceptRefs = conceptQuestionItems.stream()
+                    .map(cq -> new ConceptRef(cq.getConcept()))
+                    .sorted(ConceptRef::compareTo)
+                    .collect(Collectors.toList());
             }
         } catch(Exception ex){
             StackTraceFilter.println(ex.getStackTrace());

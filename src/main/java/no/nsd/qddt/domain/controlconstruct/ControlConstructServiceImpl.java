@@ -11,18 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstruct;
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -73,8 +71,8 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Transactional()
     public ControlConstruct save(ControlConstruct instance) {
         return postLoadProcessing(
-                controlConstructRepository.save(
-                        prePersistProcessing(instance)));
+            controlConstructRepository.save(
+                prePersistProcessing(instance)));
     }
 
     @Override
@@ -107,10 +105,12 @@ class ControlConstructServiceImpl implements ControlConstructService {
         question = question.replace("*","%");
         PageRequest pageable = new PageRequest(0,25);
 
+
+
         return controlConstructRepository.findByQuery(
                 ControlConstructKind.QUESTION_CONSTRUCT.toString(),
                 null,question,question,
-                controlConstructSort(pageable,"question ASC","name ASC"))
+                defaultOrModifiedSort(pageable,"question ASC","name ASC"))
                 .map(qi-> mapConstruct(postLoadProcessing(qi))).getContent();
     }
 
@@ -120,7 +120,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         name = name.replace("*","%");
         return controlConstructRepository.findByQuery(
                 kind.toString(),name,name,name,
-                controlConstructSort(pageable,"name ASC","updated DESC"))
+                defaultOrModifiedSort(pageable,"name ASC","updated DESC"))
                 .map(qi-> mapConstruct(postLoadProcessing(qi)));
     }
 
@@ -170,29 +170,27 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
 
 
-    private PageRequest controlConstructSort(Pageable pageable, String... args){
-        Sort sort;
-        if (pageable.getSort() == null )
-            sort = defaultSort(args);
-        else
-            sort = controlConstructSort(pageable.getSort());
-
-        return  new PageRequest(pageable.getPageNumber()
-                ,pageable.getPageSize()
-                ,sort);
-    }
-
-    private  Sort controlConstructSort(Sort sort){
-        List<Sort.Order> orders = new LinkedList<>();
-        sort.forEach(o->{
-            if(o.getProperty().equals("modified")) {
-                orders.add(new Sort.Order(o.getDirection(), "updated"));
-            } else
-                orders.add(o);
-        });
-        return new Sort(orders);
-    }
-
-
+//    private PageRequest controlConstructSort1(Pageable pageable, String... args){
+//        Sort sort;
+//        if (pageable.getSort() == null )
+//            sort = defaultSort(args);
+//        else
+//            sort = controlConstructSort2(pageable.getSort());
+//
+//        return  new PageRequest(pageable.getPageNumber()
+//                ,pageable.getPageSize()
+//                ,sort);
+//    }
+//
+//    private  Sort controlConstructSort2(Sort sort){
+//        List<Sort.Order> orders = new LinkedList<>();
+//        sort.forEach(o->{
+//            if(o.getProperty().equals("modified")) {
+//                orders.add(new Sort.Order(o.getDirection(), "updated"));
+//            } else
+//                orders.add(o);
+//        });
+//        return new Sort(orders);
+//    }
 
 }

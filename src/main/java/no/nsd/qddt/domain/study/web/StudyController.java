@@ -20,16 +20,13 @@ public class StudyController {
 
     private final StudyService service;
     private final SurveyProgramService surveyProgramService;
-//    private InstrumentService instrumentService;
 
 
     @Autowired
     public StudyController(StudyService service, SurveyProgramService surveyProgramService
-//                            ,InstrumentService instrumentService
     ) {
         this.service = service;
         this.surveyProgramService = surveyProgramService;
-//        this.instrumentService = instrumentService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -59,7 +56,7 @@ public class StudyController {
     public Study create(@RequestBody Study instance, @PathVariable("surveyId")UUID surveyId) {
 
         if (instance.getSurveyProgram() == null){
-            instance.setSurveyProgram(surveyProgramService.findOne(surveyId));
+            surveyProgramService.findOne(surveyId).addStudy(instance);
         }
         if (instance.getTopicGroups() != null) {
             instance.getTopicGroups().forEach(c->{

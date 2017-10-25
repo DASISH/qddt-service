@@ -81,7 +81,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     private boolean isArchived;
 
     public Concept() {
-//        System.out.println("CSTR Concept");
     }
 
 
@@ -95,9 +94,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     public Set<ConceptQuestionItem> getConceptQuestionItems() {
-//        conceptQuestionItems.forEach(
-//                c->System.out.print(c.getId().getQuestionItemId() + ","));
-//        System.out.println("...");
         return conceptQuestionItems;
     }
 
@@ -203,8 +199,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         if (topicRef == null) {
             TopicGroup topicGroup = findTopicGroup2();
             if (topicGroup == null) {
-//                System.out.println("getTopicRef IsNull -> " + this.getName());
-                topicRef = new TopicRef();
+               topicRef = new TopicRef();
             } else
                 topicRef = new TopicRef(topicGroup);
         }
@@ -232,7 +227,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         getConceptQuestionItems().forEach(q-> q.setConcept(this));
         getChildren().forEach(c->c.makeNewCopy(revision));
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
-//            topicGroupId = getTopicRef().getId();
             System.out.println("infering topicgroup id " + getTopicRef().getId() );
         }
         getComments().clear();

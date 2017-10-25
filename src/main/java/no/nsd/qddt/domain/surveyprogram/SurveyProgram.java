@@ -98,6 +98,34 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
         this.studies = studies;
     }
 
+    public Study addStudy(Study study){
+        System.out.println("Study ["+ study.getName() + "] added to Survey [" + this.getName() +"]");
+        study.setSurveyProgram(this);
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        setChangeComment("Study ["+ study.getName() +"] added");
+        return study;
+    }
+
+    public void removeStudy(Study study) {
+
+    }
+
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+        if(archived) {
+            setChangeKind(ChangeKind.ARCHIVED);
+            Hibernate.initialize(this.getStudies());
+            for (Study study : getStudies()) {
+                if (!study.isArchived())
+                    study.setArchived(archived);
+            }
+        }
+    }
 
     @Override
     public void makeNewCopy(Integer revision){
@@ -133,8 +161,6 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
         return "SurveyProgram{" +
                 "studies=" + studies +
                 ", description='" + description + '\'' +
-//                ", authors='" + authors + '\'' +
-//                ", comments=" + comments +
                 "} " + super.toString();
     }
 
@@ -151,20 +177,4 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
 
     }
 
-    public boolean isArchived() {
-        return isArchived;
-    }
-
-    @Override
-    public void setArchived(boolean archived) {
-        isArchived = archived;
-        if(archived) {
-            setChangeKind(ChangeKind.ARCHIVED);
-            Hibernate.initialize(this.getStudies());
-            for (Study study : getStudies()) {
-                if (!study.isArchived())
-                    study.setArchived(archived);
-            }
-        }
-    }
 }

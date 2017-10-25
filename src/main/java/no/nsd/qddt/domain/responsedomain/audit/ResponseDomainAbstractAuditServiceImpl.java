@@ -1,32 +1,34 @@
 package no.nsd.qddt.domain.responsedomain.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("responseDomainAuditService")
-class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
+class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,ResponseDomain> implements ResponseDomainAuditService {
 
     private final ResponseDomainAuditRepository responseDomainAuditRepository;
     private final CommentService commentService;
     private boolean showPrivateComments;
 
     @Autowired
-    public ResponseDomainAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository,CommentService commentService) {
+    public ResponseDomainAbstractAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository, CommentService commentService) {
         this.responseDomainAuditRepository = responseDomainAuditRepository;
         this.commentService = commentService;
     }
@@ -49,10 +51,9 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
 
     @Override
     public Revision<Integer, ResponseDomain> findFirstChange(UUID uuid) {
-        return responseDomainAuditRepository.findRevisions(uuid).
-                getContent().stream()
-                .min(Comparator.comparing(Revision::getRevisionNumber))
-                .map(this::postLoadProcessing).orElse(null);
+        return postLoadProcessing(
+            responseDomainAuditRepository.findRevisions(uuid)
+                .reverse().getContent().get(0));
     }
 
     @Override
@@ -62,39 +63,25 @@ class ResponseDomainAuditServiceImpl implements ResponseDomainAuditService {
 
     @Override
     public Page<Revision<Integer, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                responseDomainAuditRepository.findRevisions(id).getContent().stream()
-                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
-                        .skip(skip)
-                        .limit(limit)
-                        .map(this::postLoadProcessing)
-                        .collect(Collectors.toList())
-        );
+        return getPage(responseDomainAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
-    private Revision<Integer, ResponseDomain> postLoadProcessing(Revision<Integer, ResponseDomain> instance) {
+    @Override
+    protected Revision<Integer, ResponseDomain> postLoadProcessing(Revision<Integer, ResponseDomain> instance) {
         assert  (instance != null);
-        postLoadProcessing(instance.getEntity());
-        return instance;
-    }
-
-    private ResponseDomain postLoadProcessing(ResponseDomain instance) {
-        assert  (instance != null);
-
         try{
             List<Comment> coms;
             if (showPrivateComments)
-                coms = commentService.findAllByOwnerId(instance.getId());
+                coms = commentService.findAllByOwnerId(instance.getEntity().getId());
             else
-                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
-            instance.setComments(new HashSet<>(coms));
-            instance.getManagedRepresentation();        //Lazy loading trick... (we want the MR when locking at a revision).
+                coms  =commentService.findAllByOwnerIdPublic(instance.getEntity().getId());
+            instance.getEntity().setComments(new HashSet<>(coms));
+            instance.getEntity().getManagedRepresentation();        //Lazy loading trick... (we want the MR when locking at a revision).
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
         }
         return instance;
     }
+
 }

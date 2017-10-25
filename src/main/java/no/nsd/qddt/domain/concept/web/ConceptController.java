@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -63,6 +62,7 @@ public class ConceptController {
     public ConceptJsonEdit addQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
+
             Concept concept = service.findOne(conceptId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
@@ -78,8 +78,8 @@ public class ConceptController {
         }
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "conceptid", "questionitemid"})
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "conceptid", "questionitemid"})
     public ConceptJsonEdit removeQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId) {
         Concept concept=null;
         try{

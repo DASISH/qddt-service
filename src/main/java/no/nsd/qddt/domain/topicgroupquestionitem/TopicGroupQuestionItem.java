@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -24,17 +25,17 @@ import java.sql.Timestamp;
         @AssociationOverride(name = "id.topicGroup", joinColumns = @JoinColumn(name = "PARENT_ID")),
         @AssociationOverride(name = "id.questionItem", joinColumns = @JoinColumn(name = "QUESTIONITEM_ID"))
 })
-@NamedNativeQuery(name="AuditTopicQuestionItem", query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +
-                "FROM question_item_aud " +
-                "WHERE id =:id and rev = :rev; ",
-                resultClass = QuestionItem.class)
+//@NamedNativeQuery(name="AuditTopicQuestionItem", query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +
+//                "FROM question_item_aud " +
+//                "WHERE id =:id and rev = :rev; ",
+//                resultClass = QuestionItem.class)
 public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Serializable {
 
-    private static final long serialVersionUID = -7261887559839337877L;
+    private static final long serialVersionUID = -7261887559139337877L;
 
     @EmbeddedId
+    @NotAudited
     private ParentQuestionItemId id = new ParentQuestionItemId();
-
 
 
     @JsonBackReference(value = "TopicQuestionItemConceptRef")
@@ -70,7 +71,6 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
 
     @Version
     @Column(name = "updated")
-//    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
     public TopicGroupQuestionItem() {
@@ -85,11 +85,6 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
         setTopicGroup(topicGroup);
         setQuestionItem(questionItem);
     }
-
-//    public TopicGroupQuestionItem(TopicGroup topicGroup, QuestionItem questionItem, Integer questionItemRevision) {
-//        this(topicGroup,questionItem);
-//        setQuestionItemRevision(questionItemRevision);
-//    }
 
 
     public ParentQuestionItemId getId() {
@@ -120,12 +115,8 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
     }
 
     public QuestionItem getQuestionItem() {
-        if (questionItemLateBound != null) {
-            System.out.println("Get Topic QuestionItem (set concept ref)" + questionItemLateBound.getConceptRefs().size());
-            if (questionItem != null)
-                questionItem.setConceptRefs(questionItemLateBound.getConceptRefs());
-            else
-                System.out.println("questionItem was NULL");
+        if (questionItemLateBound != null && questionItem != null) {
+            questionItem.setConceptRefs(questionItemLateBound.getConceptRefs());
         }
         return questionItem;
     }

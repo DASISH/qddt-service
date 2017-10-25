@@ -17,6 +17,7 @@ import com.itextpdf.layout.hyphenation.HyphenationConfig;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.exception.StackTraceFilter;
 
 import java.io.ByteArrayOutputStream;
@@ -35,6 +36,7 @@ public class PdfReport extends PdfDocument {
     private PdfFont bold;
     private final List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
     private Document document;
+    private Style style;
 
     public PdfReport(ByteArrayOutputStream outputStream) {
         super(new PdfWriter( outputStream));
@@ -137,5 +139,13 @@ public class PdfReport extends PdfDocument {
                 .add(new Tab())
                 .add(element.getAgency().getName());
         document.add(p);
+    }
+
+    public void addHeader(AbstractEntityAudit element) {
+
+    }
+
+    public Style getStyle() {
+        return style;
     }
 }

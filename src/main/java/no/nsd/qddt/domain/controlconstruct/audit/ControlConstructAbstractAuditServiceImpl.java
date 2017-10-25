@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
@@ -11,15 +12,16 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
@@ -27,7 +29,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
  * @author Dag Østgulen Heradstveit
  */
 @Service("instrumentAuditQuestionService")
-class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
+class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,ControlConstruct> implements ControlConstructAuditService {
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
     private final QuestionItemAuditService qiAuditService;
@@ -37,10 +39,10 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
 
     @Autowired
-    public ControlConstructAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
-            ,QuestionItemAuditService qAuditService
-            ,CommentService cService
-            ,OtherMaterialService oService) {
+    public ControlConstructAbstractAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
+            , QuestionItemAuditService qAuditService
+            , CommentService cService
+            , OtherMaterialService oService) {
         this.controlConstructAuditRepository = ccAuditRepository;
         this.qiAuditService = qAuditService;
         this.otherMaterialService = oService;
@@ -50,33 +52,28 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findLastChange(UUID id) {
-        Revision<Integer, ControlConstruct> rev =  controlConstructAuditRepository.findLastChangeRevision(id);
-        return new Revision<>(rev.getMetadata(), postLoadProcessing(rev.getEntity()));
+        return postLoadProcessing(controlConstructAuditRepository.findLastChangeRevision(id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findRevision(UUID id, Integer revision) {
-        Revision<Integer, ControlConstruct> rev =  controlConstructAuditRepository.findRevision(id, revision);
-        return new Revision<>(rev.getMetadata(), postLoadProcessing(rev.getEntity()));
+        return postLoadProcessing(controlConstructAuditRepository.findRevision(id, revision));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Revision<Integer, ControlConstruct>> findRevisions(UUID id, Pageable pageable) {
         return controlConstructAuditRepository.findRevisions(id,pageable)
-                .map(c-> new Revision<>(c.getMetadata(), postLoadProcessing(c.getEntity())));
+            .map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, ControlConstruct> findFirstChange(UUID uuid) {
         PageRequest pageable = new PageRequest(0,1);
-        Revision<Integer, ControlConstruct> rev =
+        return  postLoadProcessing(
                 controlConstructAuditRepository.findRevisions(uuid,
-                        defaultSort(pageable,"RevisionNumber DESC")).getContent().get(0);
-
-        postLoadProcessing(rev.getEntity());
-        return  new Revision<>(rev.getMetadata(), postLoadProcessing(rev.getEntity()));
+                defaultSort(pageable,"RevisionNumber DESC")).getContent().get(0));
     }
 
     @Override
@@ -86,23 +83,14 @@ class ControlConstructAuditServiceImpl implements ControlConstructAuditService {
 
     @Override
     public Page<Revision<Integer, ControlConstruct>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                controlConstructAuditRepository.findRevisions(id).getContent().stream()
-                        .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-                        .skip(skip)
-                        .limit(limit)
-                        .map(c->new Revision<>(c.getMetadata(), postLoadProcessing(c.getEntity())))
-                        .collect(Collectors.toList())
-        );
+        return getPage(controlConstructAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
 
     /*
-post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
-thus we need to populate some elements ourselves.
- */
+    post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
+    thus we need to populate some elements ourselves.
+     */
     private  ControlConstruct postLoadProcessing(ControlConstruct instance){
         assert  (instance != null);
         try{
@@ -145,10 +133,9 @@ thus we need to populate some elements ourselves.
         return instance;
     }
 
-    private List<ControlConstruct> postLoadProcessing(List<ControlConstruct>instances) {
-        return instances.stream().map(this::postLoadProcessing).collect(Collectors.toList());
+
+    @Override
+    protected Revision<Integer, ControlConstruct> postLoadProcessing(Revision<Integer, ControlConstruct> instance) {
+        return new Revision<>(instance.getMetadata(), postLoadProcessing(instance.getEntity()));
     }
-
-
-
 }

@@ -64,7 +64,8 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.5")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
     compile("postgresql:postgresql:9.1-901-1.jdbc4")
-    compile 'org.springframework.data:spring-data-envers:1.0.5.RELEASE'
+//    compile 'org.springframework.data:spring-data-envers:1.0.5.RELEASE'
+    compile 'org.springframework.data:spring-data-envers:1.1.8.RELEASE'
     compile("org.hibernate:hibernate-validator")
     compile("org.hibernate:hibernate-envers")
     compile("joda-time:joda-time")

@@ -8,8 +8,9 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.UUID;
+
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -39,35 +40,20 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
     @Override
     @Transactional(readOnly = true)
     public Page<Revision<Integer, Category>> findRevisions(UUID uuid, Pageable pageable) {
-        return categoryAuditRepository.findRevisions(uuid,pageable);
+        return categoryAuditRepository.findRevisions(uuid,defaultOrModifiedSort(pageable,"updated ASC"));
     }
 
     @Override
     public Revision<Integer, Category> findFirstChange(UUID uuid) {
-        return categoryAuditRepository.findRevisions(uuid).
-                getContent().stream().
-                min(Comparator.comparing(Revision::getRevisionNumber)).orElse(null);
+        return categoryAuditRepository.findRevisions(uuid)
+            .reverse().getContent().get(0);
     }
 
-    // we don't have an interface for editing instructions, hence we don't need to fetch comments that never are there...
+    // Categories most likely don't have discussions about them... and you are not often interested in old versions of a category,
+    // hence we don't need to fetch comments that never are there...
     @Override
     public void setShowPrivateComment(boolean showPrivate) {
         // no implementation
     }
 
-    // Categories most likely don't have discussions about them... and you are not often interested in old versions of a category,
-    // hence we don't need to fetch comments that never are there...
-
-//    protected Revision<Integer, Instruction> postLoadProcessing(Revision<Integer, Instruction> instance) {
-//        assert  (instance != null);
-//        postLoadProcessing(instance.getEntity());
-//        return instance;
-//    }
-//
-//    protected Instruction postLoadProcessing(Instruction instance) {
-//        assert  (instance != null);
-//        List<Comment> coms = commentService.findAllByOwnerId(instance.getId());
-//        instance.setComments(new HashSet<>(coms));
-//        return instance;
-//    }
 }

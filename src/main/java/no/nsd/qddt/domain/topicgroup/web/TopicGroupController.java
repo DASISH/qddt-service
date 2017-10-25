@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -64,8 +62,7 @@ public class TopicGroupController {
     public TopicGroup create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
 
         if(instance.getStudy() == null ){
-            instance.setStudy(studyService.findOne(studyId));
-            instance.getStudy().setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_HIERARCHY_RELATION);
+            studyService.findOne(studyId).addTopicGroup(instance);
         }
         try {
             instance = service.save(instance);
@@ -132,7 +129,7 @@ public class TopicGroupController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "topicid", "questionitemid"})
+    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "topicid", "questionitemid"})
     public TopicGroup removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
         TopicGroup topicGroup =null;
         try{

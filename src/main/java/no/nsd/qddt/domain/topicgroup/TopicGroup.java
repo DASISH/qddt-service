@@ -115,7 +115,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
 
     public Concept addConcept(Concept concept){
-        System.out.println("new concept added to TopicGroup [" + this.getId() +"] concept:"+ concept.getId());
+        System.out.println("Concept ["+ concept.getName()+"] added to TopicGroup [" + this.getId() +"]");
         concept.setTopicGroup(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");

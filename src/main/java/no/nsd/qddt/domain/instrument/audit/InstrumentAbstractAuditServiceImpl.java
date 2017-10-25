@@ -1,31 +1,33 @@
 package no.nsd.qddt.domain.instrument.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.instrument.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("instrumentAuditService")
-class InstrumentAuditServiceImpl implements InstrumentAuditService {
+class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Instrument> implements InstrumentAuditService {
 
     private final InstrumentAuditRepository instrumentAuditRepository;
     private final CommentService commentService;
     private boolean showPrivateComments;
 
     @Autowired
-    public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository, CommentService commentService) {
+    public InstrumentAbstractAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository, CommentService commentService) {
         this.instrumentAuditRepository = instrumentAuditRepository;
         this.commentService = commentService;
     }
@@ -48,11 +50,9 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
 
     @Override
     public Revision<Integer, Instrument> findFirstChange(UUID uuid) {
-        return instrumentAuditRepository.findRevisions(uuid).
-                getContent().stream().
-                min(Comparator.comparing(Revision::getRevisionNumber)).
-                map(this::postLoadProcessing).
-                orElse(null);
+        return postLoadProcessing(
+            instrumentAuditRepository.findRevisions(uuid)
+                .reverse().getContent().get(0));
     }
 
     @Override
@@ -62,33 +62,19 @@ class InstrumentAuditServiceImpl implements InstrumentAuditService {
 
     @Override
     public Page<Revision<Integer, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                instrumentAuditRepository.findRevisions(id).getContent().stream()
-                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
-                        .skip(skip)
-                        .limit(limit)
-                        .map(this::postLoadProcessing)
-                        .collect(Collectors.toList())
-        );
+        return getPage(instrumentAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
-
-    private Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
-        assert  (instance != null);
-        postLoadProcessing(instance.getEntity());
-        return instance;
-    }
-
-    private Instrument postLoadProcessing(Instrument instance) {
+    @Override
+    protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
         assert  (instance != null);
         List<Comment> coms;
         if (showPrivateComments)
-            coms = commentService.findAllByOwnerId(instance.getId());
+            coms = commentService.findAllByOwnerId(instance.getEntity().getId());
         else
-            coms  =commentService.findAllByOwnerIdPublic(instance.getId());
-        instance.setComments(new HashSet<>(coms));
+            coms  =commentService.findAllByOwnerIdPublic(instance.getEntity().getId());
+        instance.getEntity().setComments(new HashSet<>(coms));;
         return instance;
     }
+
 }

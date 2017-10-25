@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -22,16 +23,18 @@ import java.sql.Timestamp;
         @AssociationOverride(name = "id.concept", joinColumns = @JoinColumn(name = "PARENT_ID")),
         @AssociationOverride(name = "id.questionItem", joinColumns = @JoinColumn(name = "QUESTIONITEM_ID"))
 })
-@NamedNativeQuery(name="AuditQuestionItem", query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +
-                "FROM question_item_aud " +
-                "WHERE id =:id and rev = :rev; ",
-                resultClass = QuestionItem.class)
+//@NamedNativeQuery(name="AuditQuestionItem", query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +
+//                "FROM question_item_aud " +
+//                "WHERE id =:id and rev = :rev; ",
+//                resultClass = QuestionItem.class)
 public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializable {
 
     private static final long serialVersionUID = -7261887349839337877L;
 
     @EmbeddedId
+    @NotAudited
     private ParentQuestionItemId id = new ParentQuestionItemId();
+
 
     @JsonBackReference(value = "ConceptQuestionItemConceptRef")
     @ManyToOne
@@ -42,7 +45,7 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
 
     /*
     This is the reference to the current QuestionItem, it has to be here in order for the framework
-    to map the reference from and to Concept/ConceptQuestionItem/QuestionItem
+    to map the reference from and to Concept<->ConceptQuestionItem<->QuestionItem
      */
     @JsonIgnore
     @JsonBackReference(value = "ConceptQuestionItemQuestionItemRef")
@@ -66,7 +69,6 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
 
     @Version
     @Column(name = "updated")
-//    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
 
     public ConceptQuestionItem() {
@@ -126,8 +128,6 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
     }
 
     public void setQuestionItem(QuestionItem questionItem) {
-        if (questionItem == null)
-            System.out.println("questionItem is null");
         this.getId().setQuestionItemId(questionItem.getId());
         if (questionItemRevision == null && questionItem.getVersion().getRevision() != null)
             setQuestionItemRevision(questionItem.getVersion().getRevision());
@@ -152,6 +152,9 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
         return updated;
     }
 
+    public void setUpdated(Timestamp updated) {
+        this.updated = updated;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -160,13 +163,20 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
 
         ConceptQuestionItem that = (ConceptQuestionItem) o;
 
-        return id != null ? id.equals(that.id) : that.id == null;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (concept != null ? !concept.equals(that.concept) : that.concept != null) return false;
+        if (questionItemLateBound != null ? !questionItemLateBound.equals(that.questionItemLateBound) : that.questionItemLateBound != null)
+            return false;
+        if (questionItemRevision != null ? !questionItemRevision.equals(that.questionItemRevision) : that.questionItemRevision != null)
+            return false;
+        return updated != null ? updated.equals(that.updated) : that.updated == null;
     }
 
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
 
     @Override
     public String toString() {
@@ -179,14 +189,16 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
                 "}";
     }
 
+
+    @PreRemove
+    public void remove(){
+        System.out.println("ConceptQuestionItem pre remove (do nothing");
+        this.questionItem = null;
+    }
+
     public void makeNewCopy(Integer revision) {
      //TODO implement
     }
 
-    @PreRemove
-    public void remove(){
-        System.out.println("ConceptQuestionItem pre remove");
-        this.questionItem = null;
-    }
 
 }

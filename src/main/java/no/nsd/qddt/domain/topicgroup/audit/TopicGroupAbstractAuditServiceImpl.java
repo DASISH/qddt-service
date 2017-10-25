@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.topicgroup.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
@@ -14,20 +14,20 @@ import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("topicGroupAuditService")
-class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
+class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup> implements TopicGroupAuditService {
 
     private final TopicGroupAuditRepository topicGroupAuditRepository;
     private final QuestionItemAuditService  questionItemAuditService;
@@ -36,8 +36,8 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     private boolean showPrivateComments;
 
     @Autowired
-    public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,QuestionItemAuditService  questionItemAuditService
-                                      ,CommentService commentService,OtherMaterialService otherMaterialService) {
+    public TopicGroupAbstractAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository, QuestionItemAuditService  questionItemAuditService
+                                      , CommentService commentService, OtherMaterialService otherMaterialService) {
         this.topicGroupAuditRepository = topicGroupAuditRepository;
         this.questionItemAuditService = questionItemAuditService;
         this.commentService = commentService;
@@ -57,12 +57,13 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     @Override
     public Page<Revision<Integer, TopicGroup>> findRevisions(UUID uuid, Pageable pageable) {
         return topicGroupAuditRepository.findRevisions(uuid, pageable)
-                .map(this::postLoadProcessing);
+            .map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, TopicGroup> findFirstChange(UUID uuid) {
-        return postLoadProcessing(topicGroupAuditRepository.findRevisions(uuid).
+        return postLoadProcessing(
+            topicGroupAuditRepository.findRevisions(uuid).
                 getContent().get(0));
     }
 
@@ -73,40 +74,16 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
     @Override
     public Page<Revision<Integer, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-            topicGroupAuditRepository.findRevisions(id).reverse().getContent().stream()
-                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-                .skip(skip)
-                .limit(limit)
-                .map(this::postLoadProcessing)
-                .collect(Collectors.toList())
-        );
+        return getPage(topicGroupAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
     public Page<Revision<Integer, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                Stream.concat(
-                        Stream.of(topicGroupAuditRepository.findRevisions(id).getLatestRevision())
-                                .map(e->{
-                                    e.getEntity().getVersion().setVersionLabel("Latest version");
-                                    return e;
-                                }),
-                        topicGroupAuditRepository.findRevisions(id).reverse().getContent().stream()
-                                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-                )
-                        .skip(skip)
-                        .limit(limit)
-                        .map(this::postLoadProcessing)
-                        .collect(Collectors.toList())
-        );
+        return getPageIncLatest(topicGroupAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
-    private Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
+    @Override
+    protected Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
         assert  (instance != null);
         return new Revision<>(instance.getMetadata(),
                 postLoadProcessing(instance.getEntity()));
@@ -116,7 +93,6 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            System.out.println("postLoadProcessing TopicGroupAuditService " + instance.getName());
             if (instance.getConcepts().size()>-1)
                 instance.getConcepts()
                         .forEach(c-> {
@@ -135,6 +111,7 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
 
         } catch (Exception ex){
+//            System.out.println("postLoadProcessing TopicGroupAuditService Excetion " + instance.getName());
             System.out.println(instance);
             StackTraceFilter.println(ex.getStackTrace());
         }
@@ -153,7 +130,7 @@ class TopicGroupAuditServiceImpl implements TopicGroupAuditService {
 
     private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
         return questionItemAuditService.getQuestionItemLastOrRevision(
-                cqi.getId().getQuestionItemId(),
-                cqi.getQuestionItemRevision()).getEntity();
+            cqi.getId().getQuestionItemId(),
+            cqi.getQuestionItemRevision()).getEntity();
     }
 }

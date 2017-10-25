@@ -87,7 +87,6 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     }
 
 
-
     public String getDescription() {
         return description;
     }
@@ -119,8 +118,6 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         this.surveyProgram = surveyProgram;
     }
 
-
-
     private Set<Instrument> getInstruments() {
         if (instruments == null)
             instruments = new HashSet<>();
@@ -148,6 +145,14 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
 
     public void setTopicGroups(Set<TopicGroup> topicGroups) {
         this.topicGroups = topicGroups;
+    }
+
+    public TopicGroup addTopicGroup(TopicGroup topicGroup){
+        System.out.println("TopicGroup ["+ topicGroup.getName() + "] added to Study [" + this.getName() +"]");
+        topicGroup.setStudy(this);
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        setChangeComment("TopicGroup ["+ topicGroup.getName() +"] added");
+        return topicGroup;
     }
 
     @Override

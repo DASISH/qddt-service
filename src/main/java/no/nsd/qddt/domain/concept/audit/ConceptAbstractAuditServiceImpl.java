@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
@@ -10,21 +11,20 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
-import org.springframework.data.history.Revisions;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("conceptAuditService")
-class ConceptAuditServiceImpl implements ConceptAuditService {
+class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> implements ConceptAuditService  {
 
     private final ConceptAuditRepository conceptAuditRepository;
     private final QuestionItemAuditService questionAuditService;
@@ -32,17 +32,13 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
     private boolean showPrivateComments;
 
     @Autowired
-    ConceptAuditServiceImpl(ConceptAuditRepository conceptAuditRepository,
-                            QuestionItemAuditService questionAuditService,
-                            CommentService commentService
+    ConceptAbstractAuditServiceImpl(ConceptAuditRepository conceptAuditRepository,
+                                    QuestionItemAuditService questionAuditService,
+                                    CommentService commentService
     ){
         this.conceptAuditRepository = conceptAuditRepository;
         this.questionAuditService = questionAuditService;
         this.commentService = commentService;
-    }
-
-    private static int compare(Revision<Integer, Concept> f, Revision<Integer, Concept> g) {
-        return f.getRevisionNumber();
     }
 
     @Override
@@ -74,38 +70,16 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
 
     @Override
     public Page<Revision<Integer, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-            conceptAuditRepository.findRevisions(id).reverse().getContent().stream()
-                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-                .skip(skip)
-                .limit(limit)
-                .map(this::postLoadProcessing)
-                .collect(Collectors.toList()));
+        return getPage(conceptAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
     public Page<Revision<Integer, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                Stream.concat(
-                        Stream.of(conceptAuditRepository.findRevisions(id).getLatestRevision())
-                                .map(e->{
-                                    e.getEntity().getVersion().setVersionLabel("Latest version");
-                                    return e;
-                                }),
-                        conceptAuditRepository.findRevisions(id).reverse().getContent().stream()
-                                .filter(f->!changeKinds.contains(f.getEntity().getChangeKind()))
-                )
-                        .skip(skip)
-                        .limit(limit)
-                        .map(this::postLoadProcessing)
-                        .collect(Collectors.toList()));
-    }
+        return getPageIncLatest(conceptAuditRepository.findRevisions(id),changeKinds,pageable);
 
-    private Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
+    }
+    @Override
+    protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
         return new Revision<>(
                 instance.getMetadata(),
@@ -135,7 +109,6 @@ class ConceptAuditServiceImpl implements ConceptAuditService {
     }
 
     private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
-//        System.out.println("getQuestionItemLastOrRevision -> " + cqi.getQuestionItemRevision());
         return questionAuditService.getQuestionItemLastOrRevision(
                 cqi.getId().getQuestionItemId(),
                 cqi.getQuestionItemRevision()).getEntity();

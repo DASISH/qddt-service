@@ -1,26 +1,28 @@
 package no.nsd.qddt.domain.questionItem.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainAuditController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("questionItemAuditService")
-class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
+class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionItem> implements QuestionItemAuditService {
 
     private final QuestionItemAuditRepository questionItemAuditRepository;
     private final ResponseDomainAuditController rdAuditController;
@@ -28,8 +30,8 @@ class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
     private boolean showPrivateComments;
 
     @Autowired
-    public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository,ResponseDomainAuditController rdAuditController,
-                                            CommentService commentService) {
+    public QuestionItemAbstractAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditController rdAuditController,
+                                                CommentService commentService) {
         this.questionItemAuditRepository = questionItemAuditRepository;
         this.rdAuditController = rdAuditController;
         this.commentService = commentService;
@@ -47,19 +49,15 @@ class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
 
     @Override
     public Page<Revision<Integer, QuestionItem>> findRevisions(UUID uuid, Pageable pageable) {
-        return new PageImpl<>(questionItemAuditRepository.findRevisions(uuid,pageable).getContent().stream()
-                .map(this::postLoadProcessing)
-                .collect(Collectors.toList())
-        );
+        return questionItemAuditRepository.findRevisions(uuid, pageable).
+            map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, QuestionItem> findFirstChange(UUID uuid) {
-        return questionItemAuditRepository.findRevisions(uuid).
-                getContent().stream()
-                .min(Comparator.comparing(Revision::getRevisionNumber))
-                .map(this::postLoadProcessing)
-                .orElse(null);
+        return postLoadProcessing(
+            questionItemAuditRepository.findRevisions(uuid)
+                .reverse().getContent().get(0));
     }
 
     @Override
@@ -69,16 +67,7 @@ class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
 
     @Override
     public Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                questionItemAuditRepository.findRevisions(id).getContent().stream()
-                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
-                        .skip(skip)
-                        .limit(limit)
-                        .map(this::postLoadProcessing)
-                        .collect(Collectors.toList())
-        );
+        return getPage(questionItemAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
@@ -93,7 +82,8 @@ class QuestionItemAuditServiceImpl implements QuestionItemAuditService {
         return retval;
     }
 
-    private Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> rev){
+    @Override
+    protected Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> rev){
         if (rev.getEntity().getResponseDomainUUID() != null) {
             rev.getEntity().setResponseDomain(
                 rdAuditController.getByRevision(

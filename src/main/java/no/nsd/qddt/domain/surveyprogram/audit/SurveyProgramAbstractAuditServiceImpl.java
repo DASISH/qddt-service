@@ -1,33 +1,35 @@
 package no.nsd.qddt.domain.surveyprogram.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("surveyProgramAuditService")
-class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
+class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,SurveyProgram> implements SurveyProgramAuditService {
 
     private final SurveyProgramAuditRepository surveyProgramAuditRepository;
     private final CommentService commentService;
     private boolean showPrivateComments;
 
     @Autowired
-    public SurveyProgramAuditAuditServiceImpl(SurveyProgramAuditRepository surveyProgramAuditRepository,CommentService commentService) {
+    public SurveyProgramAbstractAuditServiceImpl(SurveyProgramAuditRepository surveyProgramAuditRepository, CommentService commentService) {
         this.surveyProgramAuditRepository = surveyProgramAuditRepository;
         this.commentService = commentService;
     }
@@ -47,19 +49,15 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
     @Override
     @Transactional(readOnly = true)
     public Page<Revision<Integer, SurveyProgram>> findRevisions(UUID uuid, Pageable pageable) {
-//        return surveyProgramAuditRepository.findRevisionsByIdAndChangeKindNotIn(uuid,
-//                Arrays.asList(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT),pageable);
         return surveyProgramAuditRepository.findRevisions(uuid,pageable)
-                .map(this::postLoadProcessing);
+            .map(this::postLoadProcessing);
     }
 
     @Override
     public Revision<Integer, SurveyProgram> findFirstChange(UUID uuid) {
-        return surveyProgramAuditRepository.findRevisions(uuid).
-                getContent().stream().
-                min(Comparator.comparing(Revision::getRevisionNumber))
-                .map(this::postLoadProcessing)
-                .orElse(null);
+        return postLoadProcessing(
+            surveyProgramAuditRepository.findRevisions(uuid)
+                .reverse().getContent().get(0));
     }
 
     @Override
@@ -69,19 +67,11 @@ class SurveyProgramAuditAuditServiceImpl implements SurveyProgramAuditService {
 
     @Override
     public Page<Revision<Integer, SurveyProgram>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                surveyProgramAuditRepository.findRevisions(id).getContent().stream()
-                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
-                        .skip(skip)
-                        .limit(limit)
-                        .map(this::postLoadProcessing)
-                        .collect(Collectors.toList())
-        );
+        return getPage(surveyProgramAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
-    private Revision<Integer, SurveyProgram> postLoadProcessing(Revision<Integer, SurveyProgram> instance) {
+    @Override
+    protected Revision<Integer, SurveyProgram> postLoadProcessing(Revision<Integer, SurveyProgram> instance) {
         assert  (instance != null);
         postLoadProcessing(instance.getEntity());
         return instance;

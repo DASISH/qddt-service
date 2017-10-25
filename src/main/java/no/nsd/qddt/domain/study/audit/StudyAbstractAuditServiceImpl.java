@@ -1,33 +1,35 @@
 package no.nsd.qddt.domain.study.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("studyAuditService")
-class StudyAuditServiceImpl implements StudyAuditService {
+class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implements StudyAuditService {
 
     private final StudyAuditRepository studyAuditRepository;
     private final CommentService commentService;
     private boolean showPrivateComments;
 
     @Autowired
-    public StudyAuditServiceImpl(StudyAuditRepository studyAuditRepository,CommentService commentService) {
+    public StudyAbstractAuditServiceImpl(StudyAuditRepository studyAuditRepository, CommentService commentService) {
         this.studyAuditRepository = studyAuditRepository;
         this.commentService = commentService;
     }
@@ -53,9 +55,9 @@ class StudyAuditServiceImpl implements StudyAuditService {
 
     @Override
     public Revision<Integer, Study> findFirstChange(UUID uuid) {
-        return studyAuditRepository.findRevisions(uuid).
-                getContent().stream().
-                min(Comparator.comparing(Revision::getRevisionNumber)).orElse(null);
+        return postLoadProcessing(
+            studyAuditRepository.findRevisions(uuid)
+                .reverse().getContent().get(0));
     }
 
     @Override
@@ -65,17 +67,10 @@ class StudyAuditServiceImpl implements StudyAuditService {
 
     @Override
     public Page<Revision<Integer, Study>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
-        int skip = pageable.getOffset();
-        int limit = pageable.getPageSize();
-        return new PageImpl<>(
-                studyAuditRepository.findRevisions(id).getContent().stream()
-                        .filter(f -> !changeKinds.contains(f.getEntity().getChangeKind()))
-                        .skip(skip)
-                        .limit(limit)
-                        .collect(Collectors.toList())
-        );
+        return getPage(studyAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
+    @Override
     protected Revision<Integer, Study> postLoadProcessing(Revision<Integer, Study> instance) {
         assert  (instance != null);
         postLoadProcessing(instance.getEntity());
