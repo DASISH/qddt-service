@@ -84,10 +84,10 @@ public class ConceptQuestionItem  implements ParentQuestionItem,java.io.Serializ
         setQuestionItem(questionItem);
     }
 
-    public ConceptQuestionItem(Concept concept, QuestionItem questionItem, Integer questionItemRevision) {
-        this(concept,questionItem);
-        setQuestionItemRevision(questionItemRevision);
-    }
+//    public ConceptQuestionItem(Concept concept, QuestionItem questionItem, Integer questionItemRevision) {
+//        this(concept,questionItem);
+//        setQuestionItemRevision(questionItemRevision);
+//    }
 
 
     public ParentQuestionItemId getId() {
