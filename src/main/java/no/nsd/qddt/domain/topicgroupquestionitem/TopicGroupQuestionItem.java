@@ -88,6 +88,8 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
 
 
     public ParentQuestionItemId getId() {
+        if (questionItemLateBound == null && questionItem != null)
+            id.setQuestionItemId(questionItem.getId());
         return id;
     }
 
@@ -106,6 +108,8 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
 
 
     public QuestionItem getQuestionItemLateBound() {
+        if (questionItemLateBound == null && questionItem != null)
+            id.setQuestionItemId(questionItem.getId());
         return questionItemLateBound;
     }
 
