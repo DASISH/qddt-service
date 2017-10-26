@@ -46,20 +46,20 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public TopicGroup get(@PathVariable("id") UUID id) {
-        return service.findOne(id);
+    public TopicGroupRevisionJson get(@PathVariable("id") UUID id) {
+        return new TopicGroupRevisionJson(service.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public TopicGroup update(@RequestBody TopicGroup instance) {
-        return service.save(instance);
+    public TopicGroupRevisionJson update(@RequestBody TopicGroup instance) {
+        return new TopicGroupRevisionJson(service.save(instance));
     }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
-    public TopicGroup create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
+    public TopicGroupRevisionJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
 
         if(instance.getStudy() == null ){
             studyService.findOne(studyId).addTopicGroup(instance);
@@ -69,7 +69,7 @@ public class TopicGroupController {
         }catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
         }
-        return instance;
+        return new TopicGroupRevisionJson(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -110,7 +110,7 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
-    public TopicGroup addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+    public TopicGroupRevisionJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             TopicGroup topicGroup = service.findOne(topicId);
@@ -120,7 +120,7 @@ public class TopicGroupController {
                     new TopicGroupQuestionItem(
                             new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.intValue()));
 
-            return service.save(topicGroup);
+            return new TopicGroupRevisionJson(service.save(topicGroup));
         }catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
@@ -130,17 +130,17 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "topicid", "questionitemid"})
-    public TopicGroup removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
+    public TopicGroupRevisionJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
         TopicGroup topicGroup =null;
         try{
             topicGroup = service.findOne(topicId);
             topicGroup.removeQuestionItem(questionItemId);
             cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
-            return service.save(topicGroup);
+            return new TopicGroupRevisionJson(service.save(topicGroup));
         } catch (Exception ex) {
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println( ex.getMessage());
-            return topicGroup;
+            return new TopicGroupRevisionJson(topicGroup);
         }
     }
 
