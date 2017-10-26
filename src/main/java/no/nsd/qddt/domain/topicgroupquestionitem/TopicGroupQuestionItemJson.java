@@ -24,7 +24,7 @@ public class TopicGroupQuestionItemJson {
 
     public TopicGroupQuestionItemJson(TopicGroupQuestionItem q) {
         if (q == null) {
-            System.out.println("ConceptQuestionItem is null");
+            System.out.println("TopicGroupQuestionItem is null");
             return;
         }
         setId(q.getId());

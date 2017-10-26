@@ -63,7 +63,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "concept")
-    @AuditMappedBy(mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
 
@@ -103,10 +102,11 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
     public void addConceptQuestionItem(ConceptQuestionItem conceptQuestionItem) {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->conceptQuestionItem.getId().equals(cqi.getId()))) {
-            if (conceptQuestionItem.getQuestionItem() != null){
-                conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                conceptQuestionItem.getQuestionItem().setChangeComment("Concept association added");
-            }
+// no update for QI when removing (it is bound to a revision anyway...).
+//            if (conceptQuestionItem.getQuestionItem() != null){
+//                conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+//                conceptQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
+//            }
             conceptQuestionItems.add(conceptQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
@@ -116,28 +116,18 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
 
-
     public void addQuestionItem(QuestionItem questionItem) {
-        if (this.conceptQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
-            new ConceptQuestionItem(this,questionItem);
-            System.out.println("New QuestionItem added to ConceptQuestionItems " + questionItem.getName() );
-            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            questionItem.setChangeComment("Concept assosiation added");
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation added");
-        }
+        addConceptQuestionItem(new ConceptQuestionItem(this,questionItem));
     }
 
+    // no update for QI when removing (it is bound to a revision anyway...).
     public  void removeQuestionItem(UUID qiId){
-        getConceptQuestionItems().stream().filter(q -> q.getId().getQuestionItemId().equals(qiId)).
-            forEach(cq->{
-                System.out.println("removing qi from Concept->" + cq.getQuestionItem().getId());
-                cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                cq.getQuestionItem().setChangeComment("Concept assosiation removed");
-                this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                this.setChangeComment("QuestionItem assosiation removed");
-            });
-        getConceptQuestionItems().removeIf(q -> q.getId().getQuestionItemId().equals(qiId));
+        int before = conceptQuestionItems.size();
+        conceptQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
+        if (before> conceptQuestionItems.size()){
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            this.setChangeComment("QuestionItem assosiation removed");
+        }
     }
 
 
@@ -224,7 +214,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q-> q.setConcept(this));
+        getConceptQuestionItems().forEach(q-> q.makeNewCopy(revision));
         getChildren().forEach(c->c.makeNewCopy(revision));
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
             System.out.println("infering topicgroup id " + getTopicRef().getId() );

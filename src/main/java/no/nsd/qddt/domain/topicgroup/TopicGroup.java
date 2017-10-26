@@ -159,10 +159,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
     public void addTopicQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
-            if (topicQuestionItem.getQuestionItem() != null){
-                topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                topicQuestionItem.getQuestionItem().setChangeComment("Topic assosiation added");
-            }
+// no update for QI when removing (it is bound to a revision anyway...).
+//            if (topicQuestionItem.getQuestionItem() != null){
+//                topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+//                topicQuestionItem.getQuestionItem().setChangeComment("Topic assosiation added");
+//            }
             topicQuestionItems.add(topicQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
@@ -172,25 +173,17 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     }
 
     public void addQuestionItem(QuestionItem questionItem) {
-        if (this.topicQuestionItems.stream().noneMatch(cqi->questionItem.getId().equals(cqi.getId().getQuestionItemId()))) {
-            new TopicGroupQuestionItem(this,questionItem);
-            questionItem.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            questionItem.setChangeComment("Concept assosiation added");
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation added");
-        }
+        addTopicQuestionItem(new TopicGroupQuestionItem(this,questionItem));
     }
 
-    //TODO: Is this correct? maybe no update for QI when removing (it is bound to a revision anyway...).
+    // no update for QI when removing (it is bound to a revision anyway...).
     public  void removeQuestionItem(UUID qiId){
-        topicQuestionItems.stream().filter(q -> q.getQuestionItem().getId().equals(qiId)).
-                forEach(cq->{
-                    cq.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                    cq.getQuestionItem().setChangeComment("Topic assosiation removed");
-                    this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-                    this.setChangeComment("QuestionItem assosiation removed");
-                });
+        int before = topicQuestionItems.size();
         topicQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
+        if (before> topicQuestionItems.size()){
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            this.setChangeComment("QuestionItem assosiation removed");
+        }
     }
 
 
