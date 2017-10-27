@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
@@ -65,6 +64,10 @@ public class QuestionItem extends AbstractEntityAudit {
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
+//    private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
+//
     @Transient
     @JsonSerialize
     private List<ConceptRef> conceptRefs;
@@ -152,6 +155,10 @@ public class QuestionItem extends AbstractEntityAudit {
     private void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
+
+//    public Set<TopicGroupQuestionItem> getTopicQuestionItems() {
+//        return topicQuestionItems;
+//    }
 
     public List<ConceptRef> getConceptRefs(){
         try {
