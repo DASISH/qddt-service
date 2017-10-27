@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,17 +31,23 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
 
     Page<ControlConstruct> findByNameLikeIgnoreCaseAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
 
-    @Query(value = "SELECT cc.* , cc.updated as modified FROM CONTROL_CONSTRUCT cc " +
-            "left join QUESTION_ITEM qi on qi.id = cc.questionItem_id " +
-            "left join QUESTION q on q.id = qi.question_id " +
-            "WHERE cc.control_construct_kind = ?1 and ( cc.name ILIKE ?2 or qi.name ILIKE ?3 or q.question ILIKE ?4 ) " +
-            "ORDER BY ?#{#pageable}",
-            countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
-            "left join QUESTION_ITEM qi on qi.id = cc.questionItem_id " +
-            "left join QUESTION q on q.id = qi.question_id " +
-            "WHERE cc.control_construct_kind = ?1 and ( cc.name ILIKE ?2 or qi.name ILIKE ?3 or q.question ILIKE ?4 )",
-            nativeQuery = true)
-    Page<ControlConstruct> findByQuery(String kind, String name, String questionName, String questionText, Pageable pageable);
+    @Query(value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc " +
+            "LEFT JOIN QUESTION_ITEM qi ON qi.id = cc.questionItem_id " +
+            "LEFT JOIN QUESTION q ON q.id = qi.question_id " +
+            "WHERE cc.control_construct_kind = :kind AND " +
+            "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or q.question ILIKE  '%'||:questionText||'%' ) "
+           + "ORDER BY ?#{#pageable}"
+            ,countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
+            "LEFT JOIN QUESTION_ITEM qi ON qi.id = cc.questionItem_id " +
+            "LEFT JOIN QUESTION q ON q.id = qi.question_id " +
+            "WHERE cc.control_construct_kind = :kind AND " +
+            "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or q.question ILIKE  '%'||:questionText||'%' ) "
+            ,nativeQuery = true)
+    Page<ControlConstruct> findByQuery(@Param("kind")String kind,
+                                       @Param("name")String name,
+                                       @Param("questionName")String questionName,
+                                       @Param("questionText")String questionText,
+                                       Pageable pageable);
     //findByControlConstructKind
     // AndNameLike
     // OrQuestionItemReferenceOnlyNameLike

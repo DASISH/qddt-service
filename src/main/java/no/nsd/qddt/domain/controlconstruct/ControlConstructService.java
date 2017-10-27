@@ -25,10 +25,7 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
     @Transactional(readOnly = true)
     List<ConstructJson> findTop25ByQuestionItemQuestion(String question);
 
-//    Page<ConstructJson> findByNameLikeOrQuestionLike(String name, String question, Pageable pageable);
 
-    Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
-
-//    Page<ConstructJson> findByNameLikeAndControlConstructKindOrQuestionItemQuestionLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
+    Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, String question, ControlConstructKind kind, Pageable pageable);
 
 }

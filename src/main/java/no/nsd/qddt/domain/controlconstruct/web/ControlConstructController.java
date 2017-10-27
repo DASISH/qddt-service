@@ -110,7 +110,7 @@ public class ControlConstructController {
         // Change in frontEnd usage made it necessary to distinguish
 
         Page<ConstructJson> controlConstructs =
-                service.findByNameLikeAndControlConstructKind(name,kind,pageable);
+                service.findByNameLikeAndControlConstructKind(name,question,kind,pageable);
 
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }

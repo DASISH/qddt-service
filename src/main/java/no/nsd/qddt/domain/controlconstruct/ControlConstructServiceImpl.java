@@ -102,26 +102,35 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     public List<ConstructJson> findTop25ByQuestionItemQuestion(String question) {
-        question = question.replace("*","%");
-        PageRequest pageable = new PageRequest(0,25);
-
-
-
-        return controlConstructRepository.findByQuery(
-                ControlConstructKind.QUESTION_CONSTRUCT.toString(),
-                null,question,question,
-                defaultOrModifiedSort(pageable,"question ASC","name ASC"))
-                .map(qi-> mapConstruct(postLoadProcessing(qi))).getContent();
+        try {
+            question = question.replace("*","%");
+            Pageable pageable = defaultOrModifiedSort(new PageRequest(0,25),"question ASC","name ASC");
+            return controlConstructRepository.findByQuery(
+                    ControlConstructKind.QUESTION_CONSTRUCT.toString(),
+                    "%","%",question,pageable)
+                    .map(qi-> mapConstruct(postLoadProcessing(qi))).getContent();
+        } catch (Exception e) {
+            StackTraceFilter.println(e.getStackTrace());
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
 
     @Override
-    public Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable) {
+    public Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, String question, ControlConstructKind kind, Pageable pageable) {
         name = name.replace("*","%");
-        return controlConstructRepository.findByQuery(
-                kind.toString(),name,name,name,
-                defaultOrModifiedSort(pageable,"name ASC","updated DESC"))
-                .map(qi-> mapConstruct(postLoadProcessing(qi)));
+        try {
+            pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
+            System.out.println(name + " - " + pageable);
+            return controlConstructRepository.findByQuery(
+                kind.toString(), name, name, question ,pageable)
+                .map(qi -> mapConstruct(postLoadProcessing(qi)));
+        } catch (Exception ex) {
+            StackTraceFilter.println(ex.getStackTrace());
+            System.out.println(ex.getMessage());
+            return null;
+        }
     }
 
     private ControlConstruct prePersistProcessing(ControlConstruct instance) {
@@ -155,10 +164,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         instance.getQuestionItemUUID(),
                         instance.getQuestionItemRevision());
                 instance.setQuestionItemRevision(rev.getRevisionNumber());
-//                System.out.println("CCS -> refs: " + rev.getEntity().getConceptRefs().size());
-
                 instance.setQuestionItem(rev.getEntity());
-
             }
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
