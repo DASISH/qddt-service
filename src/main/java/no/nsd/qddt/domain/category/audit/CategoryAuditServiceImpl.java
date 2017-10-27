@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.category.audit;
 
 import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,13 @@ class CategoryAuditServiceImpl implements CategoryAuditService {
     @Override
     @Transactional(readOnly = true)
     public Page<Revision<Integer, Category>> findRevisions(UUID uuid, Pageable pageable) {
-        return categoryAuditRepository.findRevisions(uuid,defaultOrModifiedSort(pageable,"updated ASC"));
+        try {
+            return categoryAuditRepository.findRevisions(uuid,defaultOrModifiedSort(pageable,"updated ASC"));
+        } catch (Exception e) {
+            StackTraceFilter.println(e.getStackTrace());
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     @Override
