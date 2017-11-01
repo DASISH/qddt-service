@@ -237,6 +237,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
     @Override
     public void fillDoc(PdfReport pdfReport) throws IOException {
+
         Document document =pdfReport.getTheDocument();
 //        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
 //        document.add(new Paragraph("Survey Toc:").setFont(font));
@@ -246,9 +247,10 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 //                .setFont(font);
 //        list.add(new ListItem(this.getName()));
 //        document.add(list);
-        document.add(new Paragraph(this.getName()).addStyle(pdfReport.getStyle()));
+
+        document.add(new Paragraph(this.getName()));
         document.add(new Paragraph(this.getAbstractDescription()));
-        pdfReport.addHeader(this);
+
         this.getTopicQuestionItems().forEach(q -> {
             try {
                 q.getQuestionItem().fillDoc(pdfReport);
@@ -260,7 +262,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         for (Concept concept : getConcepts()) {
             concept.fillDoc(pdfReport);
         }
-
+        pdfReport.addHeader(this);
     }
 
     @PreRemove
