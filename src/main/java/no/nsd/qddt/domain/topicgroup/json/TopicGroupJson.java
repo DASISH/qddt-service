@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class TopicGroupRevisionJson extends BaseJsonEdit {
+public class TopicGroupJson extends BaseJsonEdit {
 
     private String abstractDescription;
 
@@ -31,7 +31,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
-    public TopicGroupRevisionJson(TopicGroup topicGroup) {
+    public TopicGroupJson(TopicGroup topicGroup) {
         super(topicGroup);
         if (topicGroup == null) return;
         setAbstractDescription(topicGroup.getAbstractDescription());
@@ -40,7 +40,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         setOtherMaterials(topicGroup.getOtherMaterials());
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
-        setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
+//        setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
     }
 
     public String getAbstractDescription() {
@@ -95,9 +95,9 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TopicGroupRevisionJson)) return false;
+        if (!(o instanceof TopicGroupJson)) return false;
 
-        TopicGroupRevisionJson that = (TopicGroupRevisionJson) o;
+        TopicGroupJson that = (TopicGroupJson) o;
 
         if (abstractDescription != null ? !abstractDescription.equals(that.abstractDescription) : that.abstractDescription != null)
             return false;

@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
+import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemService;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -46,20 +46,20 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public TopicGroupRevisionJson get(@PathVariable("id") UUID id) {
-        return new TopicGroupRevisionJson(service.findOne(id));
+    public TopicGroupJson get(@PathVariable("id") UUID id) {
+        return new TopicGroupJson(service.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public TopicGroupRevisionJson update(@RequestBody TopicGroup instance) {
-        return new TopicGroupRevisionJson(service.save(instance));
+    public TopicGroupJson update(@RequestBody TopicGroup instance) {
+        return new TopicGroupJson(service.save(instance));
     }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
-    public TopicGroupRevisionJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
+    public TopicGroupJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
 
         if(instance.getStudy() == null ){
             studyService.findOne(studyId).addTopicGroup(instance);
@@ -69,7 +69,7 @@ public class TopicGroupController {
         }catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
         }
-        return new TopicGroupRevisionJson(instance);
+        return new TopicGroupJson(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -81,10 +81,10 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
-    public List<TopicGroupRevisionJson> findByStudy(@PathVariable("uuid") UUID studyId) {
+    public List<TopicGroupJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
             return service.findByStudyId(studyId).stream()
-                    .map(topicGroup-> new TopicGroupRevisionJson(topicGroup))
+                    .map(topicGroup-> new TopicGroupJson(topicGroup))
                     .collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
@@ -97,12 +97,12 @@ public class TopicGroupController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<TopicGroupRevisionJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<TopicGroupJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
         name = name.replace("*","%");
-        Page<TopicGroupRevisionJson> items =
+        Page<TopicGroupJson> items =
                 service.findByNameAndDescriptionPageable(name,name, pageable)
-                        .map(topicGroup-> new TopicGroupRevisionJson(topicGroup));
+                        .map(topicGroup-> new TopicGroupJson(topicGroup));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
@@ -110,7 +110,7 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
-    public TopicGroupRevisionJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+    public TopicGroupJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             TopicGroup topicGroup = service.findOne(topicId);
@@ -120,7 +120,7 @@ public class TopicGroupController {
                     new TopicGroupQuestionItem(
                             new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.intValue()));
 
-            return new TopicGroupRevisionJson(service.save(topicGroup));
+            return new TopicGroupJson(service.save(topicGroup));
         }catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
@@ -130,17 +130,17 @@ public class TopicGroupController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "topicid", "questionitemid"})
-    public TopicGroupRevisionJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
+    public TopicGroupJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
         TopicGroup topicGroup =null;
         try{
             topicGroup = service.findOne(topicId);
             topicGroup.removeQuestionItem(questionItemId);
             cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
-            return new TopicGroupRevisionJson(service.save(topicGroup));
+            return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println( ex.getMessage());
-            return new TopicGroupRevisionJson(topicGroup);
+            return new TopicGroupJson(topicGroup);
         }
     }
 

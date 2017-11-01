@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class FilterTool {
 
     public static PageRequest defaultSort(Pageable pageable, String... args){
+        assert pageable != null;
         Sort sort;
         if (pageable.getSort() == null )
             sort = defaultSort(args);
@@ -39,16 +40,19 @@ public class FilterTool {
     }
 
 
-    public static PageRequest defaultOrModifiedSort(Pageable pageable, String... args){
+    public static PageRequest defaultOrModifiedSort(Pageable pageable, String... args) throws Exception {
+        assert pageable != null;
         Sort sort;
         if (pageable.getSort() == null )
             sort = defaultSort(args);
         else
             sort = modifiedSort(pageable.getSort());
+        PageRequest pageRequest = new PageRequest(pageable.getPageNumber()
+                                            ,pageable.getPageSize()
+                                            ,sort);
 
-        return  new PageRequest(pageable.getPageNumber()
-                ,pageable.getPageSize()
-                ,sort);
+        if (pageRequest==null) throw new Exception("pageRequest is null");
+        return pageRequest;
     }
 
     private static Sort modifiedSort(Sort sort){
