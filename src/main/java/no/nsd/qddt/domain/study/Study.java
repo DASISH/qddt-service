@@ -199,11 +199,12 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
 
     @Override
     public void fillDoc(PdfReport pdfReport) throws IOException {
+        pdfReport.addHeader(this);
         Document document =pdfReport.getTheDocument();
         document.add(new Paragraph()
                 .add("Name")
                 .add(new Tab())
-                .add(this.getName()).addStyle(pdfReport.getStyle()));
+                .add(this.getName()));
         document.add(new Paragraph(this.getDescription()));
 
  /*       Paragraph headerParagraph = new Paragraph();
@@ -216,7 +217,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         headerParagraph.add(headerTitle);
         headerParagraph.add(headerDescription);
         document.add(headerParagraph);    */
-        pdfReport.addHeader(this);
+
             for (TopicGroup topic : getTopicGroups()) {
             topic.fillDoc(pdfReport);
         }

@@ -10,9 +10,8 @@ import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
-import com.itextpdf.layout.element.TabStop;
+import com.itextpdf.layout.border.Border;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.hyphenation.HyphenationConfig;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
@@ -43,6 +42,7 @@ public class PdfReport extends PdfDocument {
         try {
             font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
             bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
+            style = new Style();
             chapterFont = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLDOBLIQUE);
             paragraphFont = PdfFontFactory.createFont(FontConstants.HELVETICA);
             getCatalog().setPageMode(PdfName.UseOutlines);
@@ -112,9 +112,11 @@ public class PdfReport extends PdfDocument {
         return font;
     }
 
-    public PdfFont getBold() {
-        return bold;
-    }
+
+  /*  public PdfFont getStyle() {
+        return style;
+    }  */
+
 
     public void addFooter(AbstractEntityAudit element) {
         List<TabStop> tabstops = new ArrayList();
@@ -143,9 +145,51 @@ public class PdfReport extends PdfDocument {
 
     public void addHeader(AbstractEntityAudit element) {
 
-    }
+        Table table = new Table(8) ;
+        Paragraph header = new Paragraph(element.getName());
+        header.setFontColor(Color.BLUE).setFontSize(25);
+        Cell cell = new Cell(4,6).add(header).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER);
+        cell.add(new Paragraph("______________________________________________________________________").setFontColor(Color.BLUE));
+        table.addCell(cell);
+        cell = new Cell().add("Version").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        cell = new Cell().add(element.getVersion().toString()).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        cell = new Cell().add("Last Saved").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        cell = new Cell().add(element.getModified().toLocalDate().toString()).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        cell = new Cell().add("Last Saved By").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        cell = new Cell().add(element.getModifiedBy().getUsername()).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        cell = new Cell().add("Agency").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        cell = new Cell().add(element.getAgency().getName()).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER);
+        table.addCell(cell);
+        document.add(table);
+        
+        /*Paragraph p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Version   " + element.getVersion().toString());
+        document.add(p);
+        p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Last Saved   " + element.getModified().toLocalDate().toString());
+        document.add(p);
+        p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Last Saved By   "+ element.getModifiedBy().getUsername());
+        document.add(p);
+        p = new Paragraph();
+        p.add(new Tab());
+        p.addTabStops(new TabStop(1000, TabAlignment.RIGHT));
+        p.add("Agency   "+ element.getAgency().getName());
+        document.add(p);   */
+                      
 
-    public Style getStyle() {
-        return style;
     }
 }

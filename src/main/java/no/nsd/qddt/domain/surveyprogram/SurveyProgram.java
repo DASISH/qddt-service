@@ -46,7 +46,8 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "SURVEY_PROGRAM")
+@Table(name = "SURVEY_" +
+        "PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit implements Authorable,Archivable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
@@ -167,10 +168,11 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
 
     @Override
     public void fillDoc(PdfReport pdfReport) throws IOException {
-        Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph(this.getName()).addStyle(pdfReport.getStyle()));
         pdfReport.addHeader(this);
-        document.add(new Paragraph(this.getDescription()));
+
+        Document document =pdfReport.getTheDocument();
+        document.add(new Paragraph(this.getName()));
+               document.add(new Paragraph(this.getDescription()));
         for (Study study : getStudies()) {
             study.fillDoc(pdfReport);
         }
