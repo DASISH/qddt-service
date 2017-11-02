@@ -111,7 +111,7 @@ public class PdfReport extends PdfDocument {
 
 
     public Document addHeader(AbstractEntityAudit element, String header) {
-        addTocElement(new AbstractMap.SimpleEntry<String, AbstractMap.SimpleEntry<String, Integer>>(element.getName(),))
+//        addTocElement(new AbstractMap.SimpleEntry<String, AbstractMap.SimpleEntry<String, Integer>>(element.getName(),))
         Table table = new Table(5).setKeepTogether(true);
         table.addCell(
             new Cell(4,3).add(
