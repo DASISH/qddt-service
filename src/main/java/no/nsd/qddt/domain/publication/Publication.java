@@ -97,9 +97,9 @@ public class Publication extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         for (PublicationElement element:getPublicationElements()){
-            element.getElementAsEntity().fillDoc(pdfReport);
+            element.getElementAsEntity().fillDoc(pdfReport,counter);
         }
     }
 

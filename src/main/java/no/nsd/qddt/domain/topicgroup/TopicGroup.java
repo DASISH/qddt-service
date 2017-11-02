@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
@@ -236,33 +235,37 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
+    public void fillDoc(PdfReport pdfReport, String counter) throws IOException {
 
-        Document document =pdfReport.getTheDocument();
-//        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-//        document.add(new Paragraph("Survey Toc:").setFont(font));
-//        com.itextpdf.layout.element.List list = new com.itextpdf.layout.element.List()
-//                .setSymbolIndent(12)
-//                .setListSymbol("\u2022")
-//                .setFont(font);
-//        list.add(new ListItem(this.getName()));
-//        document.add(list);
+        pdfReport.addHeader(this,counter +  " Module")
+        .add(new Paragraph(this.getAbstractDescription())
+            .setWidthPercent(80)
+            .setPaddingBottom(30));
 
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph(this.getAbstractDescription()));
+        if(getComments().size()>0)
+            pdfReport.addParagraph("Comments");
+        pdfReport.addComments(getComments());
 
-        this.getTopicQuestionItems().forEach(q -> {
+
+        for(TopicGroupQuestionItem tgq: this.getTopicQuestionItems()) {
             try {
-                q.getQuestionItem().fillDoc(pdfReport);
-            } catch (IOException e) {
-                e.printStackTrace();
+                if (tgq.getQuestionItem() != null)
+                    tgq.getQuestionItem().fillDoc(pdfReport,"");
+                else
+                    tgq.getQuestionItemLateBound().fillDoc(pdfReport,"");
+            } catch (Exception e) {
+                System.out.println("error added QI to TG");
+                System.out.println(e.getMessage());
             }
-        });
-
-        for (Concept concept : getConcepts()) {
-            concept.fillDoc(pdfReport);
         }
-        pdfReport.addHeader(this);
+
+        int i = 0;
+        for (Concept concept : getConcepts()) {
+            concept.fillDoc(pdfReport ,counter+ "." + String.valueOf(++i));
+        }
+
+        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
+
     }
 
     @PreRemove

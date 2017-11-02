@@ -1,15 +1,11 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -140,21 +136,7 @@ public class Comment extends AbstractEntity  {
     }
 
 
-    public void fillDoc(PdfReport pdfReport) {
-        Document document =pdfReport.getTheDocument();
-        document.setLeftMargin(document.getLeftMargin()+5f);
-        document.add(new Paragraph(this.getComment()).setFont(pdfReport.getFont()));
-        document.add(new Paragraph()
-                .add(new Tab())
-                .add(getModifiedBy().toString())
-                .add(new Tab())
-                .add(getModified().toString()));
-
-        for (Comment item : this.getComments()) {
-            item.fillDoc(pdfReport);
-        }
-
-        document.setLeftMargin(document.getLeftMargin()-5f);
+    public void fillDoc(PdfReport pdfReport,String counter) {
     }
 
 }

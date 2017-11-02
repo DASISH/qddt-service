@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
@@ -167,16 +166,22 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
-        pdfReport.addHeader(this);
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+        pdfReport.addHeader(this,"1 Survey")
+            .add(new Paragraph(this.getDescription())
+            .setWidthPercent(80)
+            .setPaddingBottom(30));
 
-        Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph(this.getName()));
-               document.add(new Paragraph(this.getDescription()));
+        if(getComments().size()>0)
+            pdfReport.addParagraph("Comments");
+        pdfReport.addComments(getComments());
+
+        int i = 0;
         for (Study study : getStudies()) {
-            study.fillDoc(pdfReport);
+            study.fillDoc(pdfReport, "1." + String.valueOf(++i));
         }
 
+        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
     }
 
 }

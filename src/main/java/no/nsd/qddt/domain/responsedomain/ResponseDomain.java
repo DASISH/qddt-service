@@ -305,16 +305,14 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         Document document =pdfReport.getTheDocument();
         document.add(new Paragraph().setFont(pdfReport.getParagraphFont())
                 .add("Name")
                 .add(new Tab())
                 .add(getName()));
-        document.add(new Paragraph()
-                .add("ManagedRepresentation"));
-        getManagedRepresentation().fillDoc(pdfReport);
-        pdfReport.addFooter(this);
+        pdfReport.addParagraph("ManagedRepresentation");
+        getManagedRepresentation().fillDoc(pdfReport,counter);
 
     }
 

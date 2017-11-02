@@ -2,11 +2,8 @@ package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -223,22 +220,17 @@ public class QuestionItem extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
-        Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph()
-                .setFont(pdfReport.getParagraphFont())
-                .add(getName()));
-        document.add(new Paragraph()
-                .add(question.getQuestion()));
-        document.add(new Paragraph()
-                .add("ResponseDomain"));
-        this.getResponseDomain().fillDoc(pdfReport);
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+        pdfReport.addHeader(this,"QuestionItem");
+        pdfReport.addParagraph(this.question.getQuestion());
+        pdfReport.addParagraph("ResponseDomain");
+        this.getResponseDomain().fillDoc(pdfReport,"");
 //        question.getChildren().forEach(c-> finalP.add("Question: " +c.getQuestion()));
 
-        for (Comment item : this.getComments()) {
-            item.fillDoc(pdfReport);
-        }
-        pdfReport.addFooter(this);
+
+        if(getComments().size()>0)
+            pdfReport.addParagraph("Comments");
+        pdfReport.addComments(getComments());
 
     }
 

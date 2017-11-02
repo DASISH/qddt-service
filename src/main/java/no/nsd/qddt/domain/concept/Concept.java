@@ -2,11 +2,9 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -20,7 +18,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * <ul class="inheritance">
@@ -271,24 +268,33 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
-        pdfReport.addHeader(this);
-        Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph(this.getName()));
-        document.add(new Paragraph("Description"));
-        document.add(new Paragraph(this.getDescription()));
+    public void fillDoc(PdfReport pdfReport,String counter ) throws IOException {
+        try {
+            pdfReport.addHeader(this, counter + " Concept");
+            pdfReport.addParagraph(getDescription());
 
+            if (getComments().size() > 0)
+                pdfReport.addParagraph("Comments");
+            pdfReport.addComments(getComments());
 
-        for (Comment item : this.getComments().stream().filter(c->c.isPublic()).collect(Collectors.toList())) {
-            item.fillDoc(pdfReport);
+            if (getConceptQuestionItems().size() > 0)
+                pdfReport.addParagraph("QuestionItem(s)");
+            for (ConceptQuestionItem item : getConceptQuestionItems()) {
+                pdfReport.addParagraph(item.getQuestionItemLateBound().getName());
+                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
+//                item.getQuestionItem().fillDoc(pdfReport, "");
+            }
+
+            int i = 0;
+            for (Concept concept : getChildren()) {
+                concept.fillDoc(pdfReport, counter + "." + String.valueOf(++i));
+            }
+
+            pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
         }
-        document.add(new Paragraph()
-                .setFont(pdfReport.getParagraphFont())
-                .add("QuestionItem(s)"));
-        for (ConceptQuestionItem item : getConceptQuestionItems()) {
-            item.getQuestionItem().fillDoc(pdfReport);
-        }
-
     }
 
 }

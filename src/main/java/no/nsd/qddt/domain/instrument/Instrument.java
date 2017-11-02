@@ -143,7 +143,7 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         pdfReport.getTheDocument().add(new Paragraph()
                 .add("Instrument..."));
     }

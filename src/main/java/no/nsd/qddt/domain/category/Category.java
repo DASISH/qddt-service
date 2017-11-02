@@ -294,7 +294,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         Document document =pdfReport.getTheDocument();
         switch (getCategoryType()){
             case DATETIME:

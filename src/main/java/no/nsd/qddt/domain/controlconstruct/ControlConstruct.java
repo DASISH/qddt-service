@@ -6,15 +6,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parameter.CCParameter;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
@@ -399,28 +396,29 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
-        Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph()
-            .add("ControlConstruct (" + this.controlConstructKind.name() + ")"));
-        document.add(new Paragraph()
-                .add("Name")
-                .add(new Tab())
-                .add(getName()));
-        document.add(new Paragraph()
-                .add("Pre Instructions"));
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+        Document doc = pdfReport.addHeader(this, counter + " Control Construct");
+//            .add(new Paragraph(this.getDescription()))
+        if (getPreInstructions().size() > 0)
+            doc.add(new Paragraph("Pre Instructions"));
         for(Instruction pre:getPreInstructions()){
-            document.add(new Paragraph()
-                    .add(pre.getDescription()));
+            doc.add(new Paragraph(pre.getDescription()));
         }
-        getQuestionItem().fillDoc(pdfReport);
-        document.add(new Paragraph()
-                .add("Post Instructions"));
+
+        doc.add(new Paragraph("Question Item"))
+            .add(new Paragraph(getQuestionItem().getQuestion().getQuestion()));
+
+        if (getPostInstructions().size() > 0)
+        doc.add(new Paragraph("Post Instructions"));
         for(Instruction post:getPostInstructions()){
-            document.add(new Paragraph()
-                    .add(post.getDescription()));
+            doc.add(new Paragraph(post.getDescription()));
         }
-        pdfReport.addFooter(this);
+
+        if(getComments().size()>0)
+            pdfReport.addParagraph("Comments");
+        pdfReport.addComments(getComments());
+//        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
+
     }
 
     @Override

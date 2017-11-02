@@ -70,7 +70,7 @@ public class Universe extends AbstractEntityAudit {
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
 
     }
 }

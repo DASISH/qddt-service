@@ -364,12 +364,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     }
 
 
-    public abstract void fillDoc(PdfReport pdfReport) throws IOException;
+    public abstract void fillDoc(PdfReport pdfReport,String counter) throws IOException;
 
     public ByteArrayOutputStream makePdf() {
         ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
         try (PdfReport pdf = new PdfReport(pdfOutputStream)) {
-            fillDoc(pdf);
+            fillDoc(pdf,"1");
             pdf.createToc();
         } catch (Exception ex) {
             StackTraceFilter.println(ex.getStackTrace());

@@ -1,9 +1,7 @@
 package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
@@ -198,30 +196,24 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport) throws IOException {
-        pdfReport.addHeader(this);
-        Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph()
-                .add("Name")
-                .add(new Tab())
-                .add(this.getName()));
-        document.add(new Paragraph(this.getDescription()));
+    public void fillDoc(PdfReport pdfReport, String counter) throws IOException {
+        pdfReport.addHeader(this,counter +  " Study")
+        .add(new Paragraph(this.getDescription())
+                .setWidthPercent(80)
+                .setPaddingBottom(30));
 
- /*       Paragraph headerParagraph = new Paragraph();
-        Text headerTitle = new Text("Title of PDF")
-                .setFontSize(20)
-                .setFontColor(new DeviceRgb(0, 128, 128));
-        Text headerDescription = new Text("Description")
-                .setFontSize(11);
+        if(getComments().size()>0)
+            pdfReport.addParagraph("Comments");
+        pdfReport.addComments(getComments());
 
-        headerParagraph.add(headerTitle);
-        headerParagraph.add(headerDescription);
-        document.add(headerParagraph);    */
-
-            for (TopicGroup topic : getTopicGroups()) {
-            topic.fillDoc(pdfReport);
+        int i=0;
+        for (TopicGroup topic : getTopicGroups()) {
+            topic.fillDoc(pdfReport, counter+ "." + String.valueOf(++i));
         }
-           }
+
+        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
+
+    }
 
     @PreRemove
     public void remove(){

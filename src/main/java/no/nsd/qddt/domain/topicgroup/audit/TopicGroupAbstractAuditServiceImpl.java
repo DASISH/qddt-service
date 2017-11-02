@@ -93,13 +93,14 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            if (instance.getConcepts().size()>-1)
+//            if (instance.getConcepts().size()>-1)
+            System.out.println("postLoadProcessing " + instance.getName());
                 instance.getConcepts()
-                        .forEach(c-> {
-                            c.getConceptQuestionItems()
-                                    .forEach(cqi->cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi)));
-                            c.setComments(loadComments(c.getId()));
-                        });
+                    .forEach(c-> {
+                        c.getConceptQuestionItems()
+                            .forEach(cqi->cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi)));
+                        c.setComments(loadComments(c.getId()));
+                    });
 
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
                 cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi));
