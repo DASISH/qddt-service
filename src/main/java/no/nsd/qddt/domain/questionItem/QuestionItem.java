@@ -223,14 +223,15 @@ public class QuestionItem extends AbstractEntityAudit {
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         pdfReport.addHeader(this,"QuestionItem");
         pdfReport.addParagraph(this.question.getQuestion());
-        pdfReport.addParagraph("ResponseDomain");
+        pdfReport.addheader2("ResponseDomain");
         this.getResponseDomain().fillDoc(pdfReport,"");
 //        question.getChildren().forEach(c-> finalP.add("Question: " +c.getQuestion()));
 
 
         if(getComments().size()>0)
-            pdfReport.addParagraph("Comments");
+            pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
+        pdfReport.addPadding();
 
     }
 
