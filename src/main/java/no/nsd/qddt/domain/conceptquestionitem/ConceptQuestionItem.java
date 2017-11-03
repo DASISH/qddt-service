@@ -23,10 +23,66 @@ import java.sql.Timestamp;
         @AssociationOverride(name = "id.concept", joinColumns = @JoinColumn(name = "PARENT_ID")),
         @AssociationOverride(name = "id.questionItem", joinColumns = @JoinColumn(name = "QUESTIONITEM_ID"))
 })
-//@NamedNativeQuery(name="AuditConceptQuestionItem", query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +
-//                "FROM question_item_aud " +
-//                "WHERE id =:id and rev = :rev; ",
-//                resultClass = QuestionItem.class)
+//@SqlResultSetMapping(
+//    name="ConceptQuestionResult",
+//    entities ={
+//    @EntityResult(
+//        entityClass =ConceptQuestionItem.class,
+//        fields = {
+//            @FieldResult(name="id.parentId", column = "PARENT_ID"),
+//            @FieldResult(name="id.questionItemId", column = "QUESTIONITEM_ID"),
+//            @FieldResult(name="questionItemRevision", column = "QUESTIONITEM_REVISION"),
+//            @FieldResult(name="updated", column = "UPDATED")
+//        }),
+//    @EntityResult(
+//        entityClass = QuestionItem.class,
+//        fields = {
+//            @FieldResult(name="id", column = "QUESTIONITEM_ID"),
+//            @FieldResult(name="modified", column = "MODIFIED"),
+//            @FieldResult(name="basedOnObject", column = "BASED_ON_OBJECT"),
+//            @FieldResult(name="basedOnRevision", column = "BASED_ON_REVISION"),
+//            @FieldResult(name="changeComment", column = "CHANGE_COMMENT"),
+//            @FieldResult(name="changeKind", column = "CHANGE_KIND"),
+//            @FieldResult(name="name", column = "NAME"),
+//            @FieldResult(name="version.major", column = "MAJOR"),
+//            @FieldResult(name="version.minor", column = "MINOR"),
+//            @FieldResult(name="version.versionLabel", column = "VERSION_LABEL"),
+//            @FieldResult(name="version.revision", column = "QUESTIONITEM_REVISION"),
+//            @FieldResult(name="userId", column = "USER_ID"),
+//            @FieldResult(name="agencyId", column = "AGENCY_ID"),
+//            @FieldResult(name="responseDomainUUID", column = "RESPONSEDOMAIN_ID"),
+//            @FieldResult(name="responseDomainRevision", column = "RESPONSEDOMAIN_REVISION")
+//        }),
+//    @EntityResult(
+//            entityClass = Question.class,
+//            fields = {
+//                @FieldResult(name="id", column = "QUESTION_ID"),
+//                @FieldResult(name="modified", column = "question_modified"),
+//                @FieldResult(name="intent", column = "intent"),
+//                @FieldResult(name="question", column = "question"),
+//                @FieldResult(name="userId", column = "question_user_id"),
+//                @FieldResult(name="questionIdxRationale", column = "question_idx_rationale"),
+//                @FieldResult(name="question_idx", column = "question_idx"),
+//                @FieldResult(name="parentReferenceOnly", column = "question_parent_id")
+//            }
+//    )})
+//
+//@NamedNativeQueries({
+//    @NamedNativeQuery(name="AuditConceptQuestionItem",
+//        query = "SELECT id, updated, based_on_object, change_comment, change_kind, name, major, minor, version_label, responsedomain_revision, user_id, agency_id, question_id, responsedomain_id, based_on_revision " +
+//                "FROM question_item_aud WHERE id =:id and rev = :rev; ",
+//        resultClass = QuestionItem.class),
+//    @NamedNativeQuery(name = "GetConceptQuestionItem",
+//        query = "SELECT cqi.parent_id AS parent_id , cqi.questionitem_id, cqi.questionitem_revision, cqi.updated AS updated \n" +
+//                ", qia.updated AS modified, qia.based_on_object, qia.change_comment, qia.change_kind, qia.name, qia.major, qia.minor" +
+//                ", qia.version_label, qia.responsedomain_revision, qia.user_id as user_id, qia.agency_id, qia.question_id, qia.responsedomain_id, qia.based_on_revision \n" +
+//                ",qa.id as question_id ,  qa.updated AS question_modified, qa.intent, qa.question, qa.user_id AS question_user_id, qa.question_idx_rationale, qa.question_idx, qa.parent_id AS question_parent_id \n" +
+//                "FROM concept_question_item cqi \n" +
+//                "LEFT JOIN question_item_aud qia ON cqi.questionitem_id = qia.id AND cqi.questionitem_revision = qia.rev\n" +
+//                "LEFT JOIN vQuestionRev qr ON qia.question_id = qr.id AND qia.rev >= qr.rev AND (qia.rev < qr.nextRev OR qr.rev = qr.nextrev)\n" +
+//                "LEFT JOIN question_aud qa ON qr.id = qa.id AND qa.rev = qr.rev ",
+//        resultSetMapping = "ConceptQuestionResult")
+//})
 public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Serializable {
 
     private static final long serialVersionUID = -7261887559139337877L;
@@ -41,6 +97,8 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
     @MapsId("id")
     @JoinColumn(name = "PARENT_ID",insertable = false, updatable = false)
     private Concept concept;
+
+
 
 
     /*
