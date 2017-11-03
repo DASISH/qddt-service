@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
@@ -397,28 +395,28 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
-        Document doc = pdfReport.addHeader(this, counter + " Control Construct");
-//            .add(new Paragraph(this.getDescription()))
+        pdfReport.addHeader(this, "ControlConstruct " + counter);
+
         if (getPreInstructions().size() > 0)
-            doc.add(new Paragraph("Pre Instructions"));
+            pdfReport.addheader2("Pre Instructions");
         for(Instruction pre:getPreInstructions()){
-            doc.add(new Paragraph(pre.getDescription()));
+            pdfReport.addParagraph(pre.getDescription());
         }
 
-        doc.add(new Paragraph("Question Item"))
-            .add(new Paragraph(getQuestionItem().getQuestion().getQuestion()));
+        pdfReport.addheader2("Question Item");
+        pdfReport.addParagraph(getQuestionItem().getQuestion().getQuestion());
 
         if (getPostInstructions().size() > 0)
-        doc.add(new Paragraph("Post Instructions"));
+            pdfReport.addheader2("Post Instructions");
         for(Instruction post:getPostInstructions()){
-            doc.add(new Paragraph(post.getDescription()));
+            pdfReport.addParagraph(post.getDescription());
         }
 
         if(getComments().size()>0)
-            pdfReport.addParagraph("Comments");
+            pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-//        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
 
+        pdfReport.addPadding();
     }
 
     @Override

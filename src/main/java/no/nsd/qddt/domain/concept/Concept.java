@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
@@ -270,27 +269,31 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     @Override
     public void fillDoc(PdfReport pdfReport,String counter ) throws IOException {
         try {
-            pdfReport.addHeader(this, counter + " Concept");
+            pdfReport.addHeader(this, "Concept " + counter );
             pdfReport.addParagraph(getDescription());
 
             if (getComments().size() > 0)
-                pdfReport.addParagraph("Comments");
+                pdfReport.addheader2("Comments");
             pdfReport.addComments(getComments());
 
-            if (getConceptQuestionItems().size() > 0)
-                pdfReport.addParagraph("QuestionItem(s)");
+            if (getConceptQuestionItems().size() > 0) {
+                pdfReport.addPadding();
+                pdfReport.addheader2("QuestionItem(s)");
+            }
             for (ConceptQuestionItem item : getConceptQuestionItems()) {
-                pdfReport.addParagraph(item.getQuestionItemLateBound().getName());
-                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
-//                item.getQuestionItem().fillDoc(pdfReport, "");
+                pdfReport.addParagraph(item.getQuestionItem().getName());
+                pdfReport.addParagraph(item.getQuestionItem().getQuestion().getQuestion());
             }
 
             int i = 0;
             for (Concept concept : getChildren()) {
+                pdfReport.addPadding();
                 concept.fillDoc(pdfReport, counter + "." + String.valueOf(++i));
             }
 
-            pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
+            if (getChildren().size() == 0)
+                pdfReport.addPadding();
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             throw ex;

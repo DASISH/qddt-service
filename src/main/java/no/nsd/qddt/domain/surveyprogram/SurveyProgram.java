@@ -167,21 +167,21 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
-        pdfReport.addHeader(this,"1 Survey")
+        pdfReport.addHeader(this,"Survey 1")
             .add(new Paragraph(this.getDescription())
             .setWidthPercent(80)
             .setPaddingBottom(30));
 
         if(getComments().size()>0)
-            pdfReport.addParagraph("Comments");
+            pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
+
+        pdfReport.addPadding();
 
         int i = 0;
         for (Study study : getStudies()) {
             study.fillDoc(pdfReport, "1." + String.valueOf(++i));
         }
-
-        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
     }
 
 }

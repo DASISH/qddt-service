@@ -9,15 +9,20 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
+import com.itextpdf.kernel.pdf.navigation.PdfDestination;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.border.Border;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.hyphenation.HyphenationConfig;
+import com.itextpdf.layout.layout.LayoutContext;
+import com.itextpdf.layout.layout.LayoutResult;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.renderer.ParagraphRenderer;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.utils.StringTool;
 
 import java.io.ByteArrayOutputStream;
 import java.util.AbstractMap;
@@ -31,22 +36,18 @@ import java.util.stream.Collectors;
  */
 public class PdfReport extends PdfDocument {
 
-
-//    private PdfFont chapterFont;
     private PdfFont paragraphFont;
     private PdfFont font;
     private PdfFont bold;
+//    private  PdfDocument;
     private final List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
     private Document document;
-//    private Style style;
 
     public PdfReport(ByteArrayOutputStream outputStream) {
         super(new PdfWriter( outputStream));
         try {
             font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
             bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
-//            style = new Style();
-//            chapterFont = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLDOBLIQUE);
             paragraphFont = PdfFontFactory.createFont(FontConstants.HELVETICA);
             getCatalog().setPageMode(PdfName.UseOutlines);
             document = new Document(this, PageSize.A4);
@@ -60,14 +61,14 @@ public class PdfReport extends PdfDocument {
         }
     }
 
-
     public void createToc() {
         int startToc = getNumberOfPages();
+        document.add(new AreaBreak());
         Paragraph p = new Paragraph().setFont(bold)
                 .add("Table of Contents").setDestination("toc");
         document.add(p);
         toc.remove(0);
-        List<TabStop> tabstops = new ArrayList();
+        List<TabStop> tabstops = new ArrayList<>();
         tabstops.add(new TabStop(580, TabAlignment.RIGHT, new DottedLine()));
         for (AbstractMap.SimpleEntry<String, AbstractMap.SimpleEntry<String, Integer>> entry : toc) {
             AbstractMap.SimpleEntry<String, Integer> text = entry.getValue();
@@ -80,14 +81,15 @@ public class PdfReport extends PdfDocument {
             document.add(p);
         }
         int tocPages = getNumberOfPages() - startToc;
-
-        // reorder pages
-        PdfPage page;
-        for (int i = 0; i <= tocPages; i++) {
-            page = removePage(startToc + i);
-            addPage(i + 1, page);
+        try {
+            for (int i = 1; i <= tocPages; i++) {
+                addPage(i, removePage(startToc+i));
+            }
+//            copyPagesTo(startToc+1, getNumberOfPages(), this, 1);
+            } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            StackTraceFilter.println(ex.getStackTrace());
         }
-
         // add page labels
         getPage(1)
                 .setPageLabel(PageLabelNumberingStyleConstants.LOWERCASE_ROMAN_NUMERALS, null, 1);
@@ -96,22 +98,13 @@ public class PdfReport extends PdfDocument {
 
     }
 
-    public void addTocElement(AbstractMap.SimpleEntry<String, AbstractMap.SimpleEntry<String, Integer>> tocElement) {
-        this.toc.add(tocElement);
-    }
-
-
     public PdfFont getParagraphFont() {
         return paragraphFont;
     }
 
-    public PdfFont getFont() {
-        return font;
-    }
-
+    private PdfOutline outline = null;
 
     public Document addHeader(AbstractEntityAudit element, String header) {
-//        addTocElement(new AbstractMap.SimpleEntry<String, AbstractMap.SimpleEntry<String, Integer>>(element.getName(),))
         Table table = new Table(5).setKeepTogether(true);
         table.addCell(
             new Cell(4,3).add(
@@ -162,14 +155,29 @@ public class PdfReport extends PdfDocument {
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
         document.add(table);
-        return document.add(
-            new Paragraph(element.getName())
-            .setFontColor(Color.BLUE)
-            .setFontSize(14));
+        outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());
+        AbstractMap.SimpleEntry<String, Integer> titlePage
+                = new AbstractMap.SimpleEntry<>(
+                header.split(" ")[1] + "\t"  + StringTool.CapString(element.getName())
+                , getNumberOfPages());
+        Paragraph p =new Paragraph(element.getName()).setKeepTogether(true);
+        p.setFontColor(Color.BLUE)
+            .setFontSize(14)
+            .setKeepWithNext(true)
+            .setDestination(element.getId().toString())
+            .setNextRenderer(new UpdatePageRenderer(p, titlePage));
+        toc.add(new AbstractMap.SimpleEntry<>(element.getId().toString(),titlePage));
+        return document.add(p);
     }
 
     public Document getTheDocument() {
         return this.document;
+    }
+
+    public Document addheader2(String header){
+        return this.document.add(new Paragraph(header)
+            .setWidthPercent(80)
+            .setFontColor(Color.BLUE));
     }
 
     public Document addParagraph(String value){
@@ -184,29 +192,60 @@ public class PdfReport extends PdfDocument {
         return this.document.add(table);
     }
 
+    public Document addPadding() {
+        return document.add(new Paragraph().setPaddingBottom(30));
+    }
+
     private void addCommentRow(Table table,Comment comment, int level){
         table.setBackgroundColor(new DeviceRgb(245, 245, 245))
-            .addCell(new Cell(1,3)
-                .setWidthPercent(70)
-                .setPaddingBottom(10)
-                .setBorder(Border.NO_BORDER)
-                .add(comment.getComment()).setPaddingLeft(15*level))
-            .addCell(new Cell()
-                .setWidthPercent(15)
-                .setPaddingBottom(10)
-                .setBorder(Border.NO_BORDER)
-                .setTextAlignment(TextAlignment.RIGHT)
-                .add(comment.getModifiedBy().getUsername()))
-            .addCell(new Cell()
-                .setWidthPercent(15)
-                .setPaddingBottom(10)
-                .setBorder(Border.NO_BORDER)
-                .setTextAlignment(TextAlignment.RIGHT)
-                .add(comment.getModified().toLocalDate().toString()));
+                .addCell(new Cell(1,3)
+                        .setWidthPercent(70)
+                        .setPaddingBottom(10)
+                        .setBorder(Border.NO_BORDER)
+                        .add(comment.getComment()).setPaddingLeft(15*level))
+                .addCell(new Cell()
+                        .setWidthPercent(15)
+                        .setPaddingBottom(10)
+                        .setBorder(Border.NO_BORDER)
+                        .setTextAlignment(TextAlignment.RIGHT)
+                        .add(comment.getModifiedBy().getUsername()))
+                .addCell(new Cell()
+                        .setWidthPercent(15)
+                        .setPaddingBottom(10)
+                        .setBorder(Border.NO_BORDER)
+                        .setTextAlignment(TextAlignment.RIGHT)
+                        .add(comment.getModified().toLocalDate().toString()));
 
         for(Comment subcomment: comment.getComments().stream().filter(c->c.isPublic()).collect(Collectors.toList())){
             addCommentRow(table,subcomment,level+1);
         }
     }
 
+    private PdfOutline createOutline(PdfOutline outline,  String title, String key) {
+        if (outline ==  null) {
+            outline = getOutlines(false);
+            outline = outline.addOutline(title);
+            outline.addDestination(PdfDestination.makeDestination(new PdfString(key)));
+            return outline;
+        }
+        PdfOutline kid = outline.addOutline(title);
+        kid.addDestination(PdfDestination.makeDestination(new PdfString(key)));
+        return outline;
+    }
+
+    private class UpdatePageRenderer extends ParagraphRenderer {
+        protected AbstractMap.SimpleEntry<String, Integer> entry;
+
+        public UpdatePageRenderer(Paragraph modelElement, AbstractMap.SimpleEntry<String, Integer> entry) {
+            super(modelElement);
+            this.entry = entry;
+        }
+
+        @Override
+        public LayoutResult layout(LayoutContext layoutContext) {
+            LayoutResult result = super.layout(layoutContext);
+            entry.setValue(layoutContext.getArea().getPageNumber());
+            return result;
+        }
+    }
 }

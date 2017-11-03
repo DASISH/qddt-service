@@ -197,22 +197,20 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) throws IOException {
-        pdfReport.addHeader(this,counter +  " Study")
+        pdfReport.addHeader(this,"Study " + counter )
         .add(new Paragraph(this.getDescription())
                 .setWidthPercent(80)
                 .setPaddingBottom(30));
 
         if(getComments().size()>0)
-            pdfReport.addParagraph("Comments");
+            pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
+        pdfReport.addPadding();
 
         int i=0;
         for (TopicGroup topic : getTopicGroups()) {
             topic.fillDoc(pdfReport, counter+ "." + String.valueOf(++i));
         }
-
-        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
-
     }
 
     @PreRemove

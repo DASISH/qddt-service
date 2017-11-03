@@ -237,15 +237,15 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) throws IOException {
 
-        pdfReport.addHeader(this,counter +  " Module")
+        pdfReport.addHeader(this,"Module " + counter )
         .add(new Paragraph(this.getAbstractDescription())
             .setWidthPercent(80)
-            .setPaddingBottom(30));
+            .setPaddingBottom(15));
 
         if(getComments().size()>0)
-            pdfReport.addParagraph("Comments");
+            pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-
+        pdfReport.addPadding();
 
         for(TopicGroupQuestionItem tgq: this.getTopicQuestionItems()) {
             try {
@@ -258,14 +258,12 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
                 System.out.println(e.getMessage());
             }
         }
+        pdfReport.addPadding();
 
         int i = 0;
         for (Concept concept : getConcepts()) {
             concept.fillDoc(pdfReport ,counter+ "." + String.valueOf(++i));
         }
-
-        pdfReport.getTheDocument().add(new Paragraph().setPaddingBottom(30));
-
     }
 
     @PreRemove

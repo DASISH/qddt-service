@@ -101,6 +101,7 @@ public class Publication extends AbstractEntityAudit {
         for (PublicationElement element:getPublicationElements()){
             element.getElementAsEntity().fillDoc(pdfReport,counter);
         }
+        pdfReport.addPadding();
     }
 
 }
