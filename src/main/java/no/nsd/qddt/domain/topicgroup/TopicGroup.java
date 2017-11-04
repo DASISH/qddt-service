@@ -259,10 +259,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
             }
         }
         pdfReport.addPadding();
-
+        if (counter.length()>0)
+            counter = counter+".";
         int i = 0;
         for (Concept concept : getConcepts()) {
-            concept.fillDoc(pdfReport ,counter+ "." + String.valueOf(++i));
+            concept.fillDoc(pdfReport ,counter+ String.valueOf(++i));
         }
     }
 

@@ -99,8 +99,6 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
     private Concept concept;
 
 
-
-
     /*
     This is the reference to the current QuestionItem, it has to be here in order for the framework
     to map the reference from and to Concept/ConceptQuestionItem/QuestionItem

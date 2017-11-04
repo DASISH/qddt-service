@@ -207,9 +207,11 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         pdfReport.addComments(getComments());
         pdfReport.addPadding();
 
+        if (counter.length()>0)
+            counter = counter+".";
         int i=0;
         for (TopicGroup topic : getTopicGroups()) {
-            topic.fillDoc(pdfReport, counter+ "." + String.valueOf(++i));
+            topic.fillDoc(pdfReport, counter+ String.valueOf(++i));
         }
     }
 

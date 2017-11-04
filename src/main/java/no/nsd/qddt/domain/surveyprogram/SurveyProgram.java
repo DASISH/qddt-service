@@ -167,7 +167,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
-        pdfReport.addHeader(this,"Survey 1")
+        pdfReport.addHeader(this,"Survey")
             .add(new Paragraph(this.getDescription())
             .setWidthPercent(80)
             .setPaddingBottom(30));
@@ -180,7 +180,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
 
         int i = 0;
         for (Study study : getStudies()) {
-            study.fillDoc(pdfReport, "1." + String.valueOf(++i));
+            study.fillDoc(pdfReport, counter + String.valueOf(++i));
         }
     }
 

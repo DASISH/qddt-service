@@ -39,7 +39,6 @@ public class PdfReport extends PdfDocument {
     private PdfFont paragraphFont;
     private PdfFont font;
     private PdfFont bold;
-//    private  PdfDocument;
     private final List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
     private Document document;
 
@@ -65,7 +64,7 @@ public class PdfReport extends PdfDocument {
         int startToc = getNumberOfPages();
         document.add(new AreaBreak());
         Paragraph p = new Paragraph().setFont(bold)
-                .add("Table of Contents").setDestination("toc");
+                .add("Table of Content").setDestination("toc");
         document.add(p);
         toc.remove(0);
         List<TabStop> tabstops = new ArrayList<>();
@@ -156,9 +155,13 @@ public class PdfReport extends PdfDocument {
             .setBorder(Border.NO_BORDER));
         document.add(table);
         outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());
+        String[] values = header.split(" ");
+        String chapter = "";
+        if (values.length > 1)
+            chapter = values[1];
         AbstractMap.SimpleEntry<String, Integer> titlePage
                 = new AbstractMap.SimpleEntry<>(
-                header.split(" ")[1] + "\t"  + StringTool.CapString(element.getName())
+                chapter + "\t"  + StringTool.CapString(element.getName())
                 , getNumberOfPages());
         Paragraph p =new Paragraph(element.getName()).setKeepTogether(true);
         p.setFontColor(Color.BLUE)

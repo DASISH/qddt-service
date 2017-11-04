@@ -281,14 +281,16 @@ public class Concept extends AbstractEntityAudit implements Archivable {
                 pdfReport.addheader2("QuestionItem(s)");
             }
             for (ConceptQuestionItem item : getConceptQuestionItems()) {
-                pdfReport.addParagraph(item.getQuestionItem().getName());
-                pdfReport.addParagraph(item.getQuestionItem().getQuestion().getQuestion());
+                pdfReport.addParagraph(item.getQuestionItemLateBound().getName());
+                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
             }
 
+            if (counter.length()>0)
+                counter = counter+".";
             int i = 0;
             for (Concept concept : getChildren()) {
                 pdfReport.addPadding();
-                concept.fillDoc(pdfReport, counter + "." + String.valueOf(++i));
+                concept.fillDoc(pdfReport, counter + String.valueOf(++i));
             }
 
             if (getChildren().size() == 0)

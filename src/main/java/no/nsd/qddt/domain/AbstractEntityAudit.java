@@ -369,7 +369,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     public ByteArrayOutputStream makePdf() {
         ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
         try (PdfReport pdf = new PdfReport(pdfOutputStream)) {
-            fillDoc(pdf,"1");
+            fillDoc(pdf,"");
             pdf.createToc();
         } catch (Exception ex) {
             StackTraceFilter.println(ex.getStackTrace());
