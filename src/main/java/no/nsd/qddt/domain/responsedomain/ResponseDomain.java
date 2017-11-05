@@ -91,7 +91,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
-    @ManyToOne(cascade = { CascadeType.MERGE , CascadeType.REMOVE},fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 

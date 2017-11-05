@@ -240,9 +240,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Column(nullable = false)
     public String getName(){
         if (StringTool.IsNullOrTrimEmpty(super.getName()))
-            return StringTool.CapString(this.getLabel());
-        else
-            return super.getName();
+            super.setName(StringTool.CapString(this.getLabel()));
+        return super.getName();
     }
 
     @Override
