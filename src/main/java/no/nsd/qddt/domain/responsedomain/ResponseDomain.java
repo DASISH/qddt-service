@@ -3,9 +3,11 @@ package no.nsd.qddt.domain.responsedomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
+import com.itextpdf.kernel.color.Color;
+import com.itextpdf.layout.border.DottedBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
@@ -222,6 +224,14 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return managedRepresentation;
     }
 
+    private List<Category> getFlatManagedRepresentation(Category current){
+        List<Category> retval = new ArrayList<>();
+        if (current == null) return  retval;
+        retval.add(current);
+        current.getChildren().forEach(c->retval.addAll(getFlatManagedRepresentation(c)));
+        return  retval;
+    }
+
     public void setManagedRepresentation(Category managedRepresentation) {
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
@@ -254,8 +264,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
     public void setCodes(List<Code> codes) {
         this.codes = codes;
     }
-
-
 
 
 //    private Set<QuestionItemRef> questionItemRefs = new HashSet<>();
@@ -306,14 +314,37 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
-        Document document =pdfReport.getTheDocument();
-        document.add(new Paragraph().setFont(pdfReport.getParagraphFont())
-                .add("Name")
-                .add(new Tab())
-                .add(getName()));
-        pdfReport.addParagraph("ManagedRepresentation");
-        getManagedRepresentation().fillDoc(pdfReport,counter);
-
+        com.itextpdf.layout.element.Table table =
+            new com.itextpdf.layout.element.Table(UnitValue.createPercentArray(new float[]{15.0F,70.0F,15.0F}))
+                .setKeepTogether(true)
+                .setWidthPercent(80)
+                .setBorder(new DottedBorder(Color.GRAY,1))
+                .setFontSize(10);
+        table.addCell(new Cell(1,2)
+            .add(this.getName())
+            .setBorder(new DottedBorder(Color.GRAY,1)))
+            .addCell(new Cell()
+                .setTextAlignment(TextAlignment.RIGHT)
+                .add("Version " +this.getVersion().toString()));
+        for (Category cat: getFlatManagedRepresentation(getManagedRepresentation())) {
+            if (cat.getHierarchyLevel() == HierarchyLevel.ENTITY ){
+                table.addCell(new Cell()
+                        .setBorder(new DottedBorder(Color.GRAY,1)));
+                table.addCell(new Cell().add(cat.getLabel())
+                        .setBorder(new DottedBorder(Color.GRAY,1)));
+                table.addCell(new Cell()
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .add(cat.getCode()!=null ? cat.getCode().getCodeValue(): cat.getCategoryType().name())
+                    .setBorder(new DottedBorder(Color.GRAY,1)));
+            } else {
+                table.addCell(new Cell().add(cat.getCategoryType().name())
+                        .setBorder(new DottedBorder(Color.GRAY,1))
+                        );
+                table.addCell(new Cell(1,2).add(cat.getName())
+                    .setBorder(new DottedBorder(Color.GRAY,1)));
+            }
+        }
+        pdfReport.getTheDocument().add(table);
     }
 
     @Override
@@ -321,7 +352,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
         if (hasRun) return;
         super.makeNewCopy(revision);
         managedRepresentation.makeNewCopy(revision);
-
         getComments().clear();
     }
 }

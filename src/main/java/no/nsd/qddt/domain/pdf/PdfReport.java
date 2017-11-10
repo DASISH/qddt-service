@@ -18,11 +18,13 @@ import com.itextpdf.layout.layout.LayoutContext;
 import com.itextpdf.layout.layout.LayoutResult;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.renderer.ParagraphRenderer;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;
+import org.joda.time.DateTime;
 
 import java.io.ByteArrayOutputStream;
 import java.util.AbstractMap;
@@ -62,6 +64,23 @@ public class PdfReport extends PdfDocument {
 
     public void createToc() {
         int startToc = getNumberOfPages();
+        document.add(new AreaBreak());
+        document.add(new Paragraph()
+            .setFont(bold)
+            .setFontSize(24)
+            .setTextAlignment(TextAlignment.CENTER)
+            .add("QDDT pdf Report")
+            .setPaddingBottom(60).setKeepTogether(false))
+        .add(new Paragraph()
+            .setFont(font)
+            .setFontSize(18)
+            .setTextAlignment(TextAlignment.CENTER)
+            .add(toc.get(0).getValue().getKey().split("\t")[1])
+            .setPaddingBottom(60))
+        .add(new Paragraph()
+            .add("Generated " + DateTime.now().toLocalDateTime().toString("EEEE d MMMM YYYY HH:mm:SS"))
+            .setTextAlignment(TextAlignment.CENTER));
+
         document.add(new AreaBreak());
         Paragraph p = new Paragraph().setFont(bold)
                 .add("Table of Content").setDestination("toc");
@@ -104,7 +123,8 @@ public class PdfReport extends PdfDocument {
     private PdfOutline outline = null;
 
     public Document addHeader(AbstractEntityAudit element, String header) {
-        Table table = new Table(5).setKeepTogether(true);
+
+        Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F})).setKeepTogether(true);
         table.addCell(
             new Cell(4,3).add(
                 new Paragraph(header)
@@ -180,23 +200,27 @@ public class PdfReport extends PdfDocument {
     public Document addheader2(String header){
         return this.document.add(new Paragraph(header)
             .setWidthPercent(80)
-            .setFontColor(Color.BLUE));
+            .setFontColor(Color.BLUE)
+            .setKeepTogether(true));
     }
 
     public Document addParagraph(String value){
-        return this.document.add(new Paragraph(value).setWidthPercent(80));
+        return this.document.add(new Paragraph(value)
+            .setWidthPercent(80)
+            .setKeepTogether(true));
     }
 
     public Document addComments(Set<Comment> comments){
-        Table table = new Table(5).setKeepTogether(true).setWidthPercent(80).setPaddingBottom(30);
-        for(Comment comment: comments.stream().filter(c->c.isPublic()).collect(Collectors.toList())){
+        Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}))
+                .setKeepTogether(true).setWidthPercent(80).setPaddingBottom(30);
+        for(Comment comment: comments.stream().filter(Comment::isPublic).collect(Collectors.toList())){
             addCommentRow(table,comment,0);
         }
         return this.document.add(table);
     }
 
     public Document addPadding() {
-        return document.add(new Paragraph().setPaddingBottom(30));
+        return document.add(new Paragraph().setPaddingBottom(30).setKeepTogether(false));
     }
 
     private void addCommentRow(Table table,Comment comment, int level){
@@ -219,7 +243,7 @@ public class PdfReport extends PdfDocument {
                         .setTextAlignment(TextAlignment.RIGHT)
                         .add(comment.getModified().toLocalDate().toString()));
 
-        for(Comment subcomment: comment.getComments().stream().filter(c->c.isPublic()).collect(Collectors.toList())){
+        for(Comment subcomment: comment.getComments().stream().filter(Comment::isPublic).collect(Collectors.toList())){
             addCommentRow(table,subcomment,level+1);
         }
     }

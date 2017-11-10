@@ -32,14 +32,14 @@ idea {
     }
 }
 
-def baseName = 'QTTD';
-def version = '0.1.0';
+def baseName = 'QTTD'
+def version = '0.1.0'
 group = 'no.nsd'
 description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
 
 jar {
-    baseName = baseName;
-    version = version;
+    baseName = baseName
+    version = version
 }
 
 repositories {
@@ -64,14 +64,13 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.5")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
     compile("postgresql:postgresql:9.1-901-1.jdbc4")
-//    compile 'org.springframework.data:spring-data-envers:1.0.5.RELEASE'
     compile 'org.springframework.data:spring-data-envers:1.1.8.RELEASE'
     compile("org.hibernate:hibernate-validator")
     compile("org.hibernate:hibernate-envers")
     compile("joda-time:joda-time")
     compile("javax.json:javax.json-api:1.0")
     compile("org.glassfish:javax.json:1.0.4")
-    compile("com.itextpdf:itext7-core:7.0.2")
+    compile("com.itextpdf:itext7-core:7.0.4")
 
     testCompile(
             "junit:junit",

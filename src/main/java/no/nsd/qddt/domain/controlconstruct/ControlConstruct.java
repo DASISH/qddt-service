@@ -406,6 +406,8 @@ public class ControlConstruct extends AbstractEntityAudit {
         pdfReport.addheader2("Question Item");
         pdfReport.addParagraph(getQuestionItem().getQuestion().getQuestion());
 
+        getQuestionItem().getResponseDomain().fillDoc(pdfReport,"");
+
         if (getPostInstructions().size() > 0)
             pdfReport.addheader2("Post Instructions");
         for(Instruction post:getPostInstructions()){

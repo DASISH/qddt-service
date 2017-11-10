@@ -179,6 +179,9 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
         this.getId().setQuestionItemId(questionItem.getId());
         if (questionItemRevision == null && questionItem.getVersion().getRevision() != null)
             setQuestionItemRevision(questionItem.getVersion().getRevision());
+        if(questionItem.getVersion().getRevision() == null)
+            questionItem.getVersion().setRevision(questionItemRevision);
+        System.out.println("setQuestionItem " + questionItem.getName());
         this.questionItem = questionItem;
     }
 

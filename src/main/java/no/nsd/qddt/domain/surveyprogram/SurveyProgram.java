@@ -99,7 +99,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
     }
 
     public Study addStudy(Study study){
-        System.out.println("Study ["+ study.getName() + "] added to Survey [" + this.getName() +"]");
+//        System.out.println("Study ["+ study.getName() + "] added to Survey [" + this.getName() +"]");
         study.setSurveyProgram(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Study ["+ study.getName() +"] added");

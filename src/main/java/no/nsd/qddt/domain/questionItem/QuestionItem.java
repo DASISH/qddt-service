@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.concept.Concept;
@@ -11,6 +12,7 @@ import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
@@ -223,17 +225,28 @@ public class QuestionItem extends AbstractEntityAudit {
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         pdfReport.addHeader(this,"QuestionItem");
         pdfReport.addParagraph(this.question.getQuestion());
-        pdfReport.addheader2("ResponseDomain");
-        this.getResponseDomain().fillDoc(pdfReport,"");
-//        question.getChildren().forEach(c-> finalP.add("Question: " +c.getQuestion()));
-
+        if(!StringTool.IsNullOrTrimEmpty(this.question.getIntent())) {
+            pdfReport.addheader2("Intent")
+            .add(new Paragraph(this.question.getIntent()));
+        }
+        this.question.getChildren().forEach(q->{
+            pdfReport.addParagraph(this.question.getQuestion());
+            if(!StringTool.IsNullOrTrimEmpty(this.question.getIntent())) {
+                pdfReport.addheader2("Intent")
+                    .add(new Paragraph(this.question.getIntent()));
+            }
+        });
+        if (getResponseDomain() != null)
+            this.getResponseDomain().fillDoc(pdfReport,"");
+        pdfReport.addPadding();
 
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
         pdfReport.addPadding();
-
     }
+
+
 
 }
 

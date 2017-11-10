@@ -29,11 +29,11 @@ public enum CategoryType {
     /*
     Missing values: CategoryList/CodeList that are used as missingvalues.
      */
-    MISSING_GROUP("Missing values","CategoryList/CodeList that are used as missingvalues",""),
+    MISSING_GROUP("CodeList Missing values","CategoryList/CodeList that are used as missingvalues",""),
     /*
     List: CategoryList/CodeList                                 ,NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue
      */
-    LIST("List","CategoryList/CodeList","NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue"),
+    LIST("CodeList","CategoryList/CodeList","NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue"),
     /*
     CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs,NOT_IMPLEMENTED: blankIsMissingValue
      */

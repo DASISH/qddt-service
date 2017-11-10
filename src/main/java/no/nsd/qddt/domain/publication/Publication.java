@@ -98,10 +98,17 @@ public class Publication extends AbstractEntityAudit {
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
-        for (PublicationElement element:getPublicationElements()){
-            element.getElementAsEntity().fillDoc(pdfReport,counter);
-        }
+        pdfReport.addHeader(this,"Publication package");
+        pdfReport.addheader2("Purpose");
+        pdfReport.addParagraph(getPurpose());
+        pdfReport.addheader2("Publication status");
+        pdfReport.addParagraph(getStatus());
         pdfReport.addPadding();
+
+        int i=0;
+        for (PublicationElement element:getPublicationElements()){
+            element.getElementAsEntity().fillDoc(pdfReport,String.valueOf(++i));
+        }
     }
 
 }
