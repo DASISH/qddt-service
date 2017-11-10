@@ -84,7 +84,7 @@ public class TopicGroupController {
     public List<TopicGroupJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
             return service.findByStudyId(studyId).stream()
-                    .map(topicGroup-> new TopicGroupJson(topicGroup))
+                    .map(TopicGroupJson::new)
                     .collect(Collectors.toList());
         } catch (Exception ex){
             System.out.println("findByStudy Exception");
@@ -102,7 +102,7 @@ public class TopicGroupController {
         name = name.replace("*","%");
         Page<TopicGroupJson> items =
                 service.findByNameAndDescriptionPageable(name,name, pageable)
-                        .map(topicGroup-> new TopicGroupJson(topicGroup));
+                        .map(TopicGroupJson::new);
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.BaseRepository;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

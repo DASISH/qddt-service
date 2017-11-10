@@ -101,7 +101,7 @@ class ConceptServiceImpl implements ConceptService {
 
             // children are saved to hold revision info... i guess, these saves shouldn't
             instance.getChildren().stream()
-                    .forEach(c->setChildChangeStatus(c));
+                    .forEach(this::setChildChangeStatus);
 
             if (instance.getId() == null & instance.getTopicRef().getId() != null) {        // load if new/basedon copy
                 TopicGroup tg = topicGroupService.findOne(instance.getTopicRef().getId());

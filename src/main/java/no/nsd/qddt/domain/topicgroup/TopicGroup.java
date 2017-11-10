@@ -64,6 +64,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
 
     @JsonIgnore
+    @OrderBy(value = "name asc")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
     private Set<Concept> concepts = new HashSet<>();
 
@@ -114,7 +115,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
 
     public Concept addConcept(Concept concept){
-        System.out.println("Concept ["+ concept.getName()+"] added to TopicGroup [" + this.getId() +"]");
         concept.setTopicGroup(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");
@@ -122,7 +122,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     }
 
     public Set<Concept> getConcepts() {
-        System.out.println("Topic getConcepts " + concepts.size() + " " + this.getName() + " " + this.getVersion());
         return concepts;
     }
 
@@ -242,23 +241,23 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
             .setWidthPercent(80)
             .setPaddingBottom(15));
 
-        if(getComments().size()>0)
+        if(getComments().size()>0) {
             pdfReport.addheader2("Comments");
-        pdfReport.addComments(getComments());
-        pdfReport.addPadding();
+            pdfReport.addComments(getComments());
+            pdfReport.addPadding();
+        }
 
-        for(TopicGroupQuestionItem tgq: this.getTopicQuestionItems()) {
-            try {
-                if (tgq.getQuestionItem() != null)
-                    tgq.getQuestionItem().fillDoc(pdfReport,"");
-                else
-                    tgq.getQuestionItemLateBound().fillDoc(pdfReport,"");
-            } catch (Exception e) {
-                System.out.println("error added QI to TG");
-                System.out.println(e.getMessage());
+        if (getTopicQuestionItems().size() > 0) {
+            pdfReport.addheader2("QuestionItem(s)");
+            for (TopicGroupQuestionItem item : getTopicQuestionItems()) {
+                pdfReport.addheader2(item.getQuestionItemLateBound().getName());
+                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
+                if (item.getQuestionItemLateBound().getResponseDomain() != null)
+                    item.getQuestionItemLateBound().getResponseDomain().fillDoc(pdfReport, "");
+                pdfReport.addPadding();
             }
         }
-        pdfReport.addPadding();
+
         if (counter.length()>0)
             counter = counter+".";
         int i = 0;

@@ -6,10 +6,8 @@ import no.nsd.qddt.domain.concept.Concept;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
-import org.springframework.data.history.Revisions;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 /**

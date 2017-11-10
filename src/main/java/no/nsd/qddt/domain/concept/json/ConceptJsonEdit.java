@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.concept.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
-import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.refclasses.TopicRef;
-import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;

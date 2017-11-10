@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
@@ -106,6 +107,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             conceptQuestionItems.add(conceptQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
+//            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
         else
             System.out.println("ConceptQuestionItem not inserted, match found" );
@@ -139,7 +141,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
         this.children.add(concept);
-
     }
 
 
@@ -193,10 +194,14 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         return topicRef;
     }
 
+    protected Concept getParentRef(){
+        return this.parentReferenceOnly;
+    }
+
     private TopicGroup findTopicGroup2(){
         Concept current = this;
-        while(current.parentReferenceOnly !=  null){
-            current = current.parentReferenceOnly;
+        while(current.getParentRef() !=  null){
+            current = current.getParentRef();
         }
         return current.getTopicGroup();
     }
@@ -269,28 +274,35 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     @Override
     public void fillDoc(PdfReport pdfReport,String counter ) throws IOException {
         try {
-            pdfReport.addHeader(this, "Concept " + counter );
-            pdfReport.addParagraph(getDescription());
+            pdfReport.addHeader(this, "Concept " + counter )
+                .add(new Paragraph(this.getDescription())
+                    .setWidthPercent(80)
+                    .setPaddingBottom(15));
 
-            if (getComments().size() > 0)
+            if (getComments().size() > 0) {
                 pdfReport.addheader2("Comments");
-            pdfReport.addComments(getComments());
+                pdfReport.addComments(getComments());
+                pdfReport.addPadding();
+            }
 
             if (getConceptQuestionItems().size() > 0) {
                 pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
-            }
-            for (ConceptQuestionItem item : getConceptQuestionItems()) {
-                pdfReport.addParagraph(item.getQuestionItemLateBound().getName());
-                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
+                for (ConceptQuestionItem item : getConceptQuestionItems()) {
+                    pdfReport.addheader2(item.getQuestionItemLateBound().getName());
+                    pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
+                    if (item.getQuestionItemLateBound().getResponseDomain() != null)
+                        item.getQuestionItemLateBound().getResponseDomain().fillDoc(pdfReport, "");
+                    pdfReport.addPadding();
+                }
             }
 
             if (counter.length()>0)
                 counter = counter+".";
             int i = 0;
             for (Concept concept : getChildren()) {
-                pdfReport.addPadding();
                 concept.fillDoc(pdfReport, counter + String.valueOf(++i));
+                pdfReport.addPadding();
             }
 
             if (getChildren().size() == 0)

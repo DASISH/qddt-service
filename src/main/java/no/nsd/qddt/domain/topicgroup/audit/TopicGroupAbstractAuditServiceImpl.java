@@ -1,9 +1,10 @@
 package no.nsd.qddt.domain.topicgroup.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
@@ -93,14 +94,7 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-//            if (instance.getConcepts().size()>-1)
-            System.out.println("postLoadProcessing " + instance.getName());
-                instance.getConcepts()
-                    .forEach(c-> {
-                        c.getConceptQuestionItems()
-                            .forEach(cqi->cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi)));
-                        c.setComments(loadComments(c.getId()));
-                    });
+            instance.getConcepts().forEach(this::postLoadProcessing);
 
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
                 cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi));
@@ -110,14 +104,30 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
             instance.setOtherMaterials(new HashSet<>(oms));
             instance.setComments(loadComments(instance.getId()));
 
-
         } catch (Exception ex){
-//            System.out.println("postLoadProcessing TopicGroupAuditService Excetion " + instance.getName());
             System.out.println(instance);
             StackTraceFilter.println(ex.getStackTrace());
         }
         return instance;
     }
+
+    private Concept postLoadProcessing(Concept instance) {
+        assert  (instance != null);
+        try{
+            instance.setComments(loadComments(instance.getId()));
+            instance.getConceptQuestionItems()
+                .forEach(cqi-> cqi.setQuestionItem(
+                    getQuestionItemLastOrRevision(cqi)));
+
+            instance.getChildren().forEach(this::postLoadProcessing);
+
+        } catch (Exception ex){
+            System.out.println("postLoadProcessing exception " + ex.getMessage());
+            StackTraceFilter.println(ex.getStackTrace());
+        }
+        return instance;
+    }
+
 
     private HashSet<Comment> loadComments(UUID id){
         List<Comment> coms;

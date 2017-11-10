@@ -88,6 +88,7 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Conce
 
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
+//        System.out.println("Concept postLoadProcessing " + instance.getName());
         try{
             List<Comment> coms;
             if (showPrivateComments)
@@ -109,6 +110,8 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Conce
     }
 
     private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
+//        System.out.println("Fetching QI " + cqi.getId() + " " + cqi.getQuestionItemRevision());
+
         return questionAuditService.getQuestionItemLastOrRevision(
                 cqi.getId().getQuestionItemId(),
                 cqi.getQuestionItemRevision()).getEntity();
