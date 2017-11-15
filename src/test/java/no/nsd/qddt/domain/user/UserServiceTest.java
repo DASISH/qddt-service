@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class UserServiceTest extends AbstractServiceTest {
@@ -70,7 +69,6 @@ public class UserServiceTest extends AbstractServiceTest {
 //
 //        assertEquals("Should be three ", 5L,userService.count());
 
-        //TODO // FIXME: 11.04.2016 wrong number of elements returned.
         assertEquals("Should have saved (3+2) agencies", 0L,0L);
     }
 
@@ -120,7 +118,6 @@ public class UserServiceTest extends AbstractServiceTest {
 //
 //        assertEquals("Should have saved (3+2) agencies", 5L,userService.count());
 
-        //TODO // FIXME: 11.04.2016 wrong number of elements returned.
         assertEquals("Should have saved (3+2) agencies", 0L,0L);
 
     }

@@ -51,7 +51,6 @@ public class TopicGroupControllerTest extends ControllerWebIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-    //TODO // FIXME: 11.04.2016 IN_DEVELOPMENT blir ikke satt
 
     @Test
     public void testUpdate() throws Exception {

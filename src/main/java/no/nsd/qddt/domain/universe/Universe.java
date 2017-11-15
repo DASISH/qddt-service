@@ -19,11 +19,6 @@ import java.io.IOException;
 @Table(name = "UNIVERSE", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_universe_name")})
 public class Universe extends AbstractEntityAudit {
 
-//    //TODO ArrayList doesn't work with Enver
-//    @JsonBackReference(value = "controlConstructInstructionRef")
-//    @OneToMany(mappedBy = "instruction")
-//    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
-
     @Column(name = "description", length = 2000,nullable = false)
     private String description;
 

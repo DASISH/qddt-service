@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.QDDT;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.HierarchyLevel;
@@ -108,7 +107,6 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-    // FIXME: 11.04.2016
     @Test
     public void testUpdate() throws Exception {
 
