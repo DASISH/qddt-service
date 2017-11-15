@@ -181,7 +181,7 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
             setQuestionItemRevision(questionItem.getVersion().getRevision());
         if(questionItem.getVersion().getRevision() == null)
             questionItem.getVersion().setRevision(questionItemRevision);
-        System.out.println("setQuestionItem " + questionItem.getName());
+//        System.out.println("setQuestionItem " + questionItem.getName());
         this.questionItem = questionItem;
     }
 

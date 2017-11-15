@@ -88,6 +88,8 @@ public class CategoryController {
 
         Page<Category> categories;
         name = name.replace("*","%");
+        if(!name.endsWith("%"))
+            name += "%";
         if (level == null || level.isEmpty()) {
             if (category == null || category.isEmpty()) {
 

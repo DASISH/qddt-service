@@ -40,24 +40,24 @@ public class ResponseDomainController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseDomainJsonEdit get(@PathVariable("id") UUID id) {
-        return responseDomain2Json(service.findOne(id));
+    public ResponseDomain get(@PathVariable("id") UUID id) {
+        return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseDomainJsonEdit update(@RequestBody ResponseDomain responseDomain) {
-        return responseDomain2Json(service.save(responseDomain));
+    public ResponseDomain update(@RequestBody ResponseDomain responseDomain) {
+        return service.save(responseDomain);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseDomainJsonEdit create(@RequestBody ResponseDomain responseDomain) {
+    public ResponseDomain create(@RequestBody ResponseDomain responseDomain) {
         assert  responseDomain != null;
         responseDomain = service.save(responseDomain);
         //HACK -> after saving responsdomain, save managed representation one more time to correct name and version...
         categoryService.save(responseDomain.getManagedRepresentation());
-        return responseDomain2Json(responseDomain);
+        return responseDomain;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)

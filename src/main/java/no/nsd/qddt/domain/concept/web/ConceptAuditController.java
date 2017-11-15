@@ -48,7 +48,7 @@ public class ConceptAuditController {
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Concept>>> allProjects(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT") Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD") Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindNotIn(id,changekinds, pageable);
@@ -59,7 +59,7 @@ public class ConceptAuditController {
     @RequestMapping(value = "/{id}/allinclatest", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Concept>>> allIncludinglatest(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT") Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD") Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable);
