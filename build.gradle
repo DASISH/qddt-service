@@ -32,8 +32,8 @@ idea {
     }
 }
 
-def baseName = 'QTTD'
-def version = '0.1.0'
+def baseName = 'QDDT'
+def version = '0.9.0'
 group = 'no.nsd'
 description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
 
@@ -148,5 +148,5 @@ if(!org.gradle.internal.os.OperatingSystem.current().windows) {
     }
 }
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
+    gradleVersion = '4.2'
 }
