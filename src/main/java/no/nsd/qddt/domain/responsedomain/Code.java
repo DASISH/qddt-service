@@ -66,7 +66,7 @@ public class Code implements Comparable<Code> {
 
     @Override
     public String toString() {
-        return String.format("Code { %s }" ,getCodeValue());
+        return String.format("Code { %s, %s }" ,getCodeValue(),getAlignment());
     }
 
     @Override

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +41,7 @@ class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Page<Category> findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
+//        System.out.println("findBy " + hierarchyLevel + " " + categoryType + " " + name);
         return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,
                 defaultSort(pageable,"name","modified"));
     }
@@ -87,9 +87,7 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional()
     public Category save(Category instance) {
-        return postLoadProcessing(
-                categoryRepository.save(
-                        prePersistProcessing(instance)));
+        return postLoadProcessing(instance.getCode(), prePersistProcessing(instance));
     }
 
 
@@ -115,25 +113,20 @@ class CategoryServiceImpl implements CategoryService {
         // Category Save fails when there is a mix of new and existing children attached to a new element.
         // This code fixes that.
         try {
-            List<Category> tmplist = new LinkedList<>();
-
-            for (Category cat:instance.getChildren()) {
-                tmplist.add(save(cat));
-            }
-            instance.getChildren().clear();
-            instance.getChildren().addAll(tmplist);
+            instance.getChildren().forEach(c-> prePersistProcessing(c));
 
             if (!instance.isValid()) throw new InvalidObjectException(instance);
 
             Code c =  instance.getCode();
-
-            if (instance.getId() != null) {
+            if (instance.getId() == null)
+                instance = categoryRepository.save(instance);
+            else {
                 Category fromRepository = findOne(instance.getId());
-                if (instance.fieldCompare(fromRepository)) {
-                    instance = fromRepository;
-                    instance.setCode(c);
+                if (!instance.fieldCompare(fromRepository)) {
+                    instance = categoryRepository.save(instance);
                 }
             }
+            instance.setCode(c);
         }catch (Exception e) {
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
@@ -141,7 +134,10 @@ class CategoryServiceImpl implements CategoryService {
         return instance;
     }
 
-    private Category postLoadProcessing(Category instance) {
+    private Category postLoadProcessing(Code code, Category instance) {
+        instance.setCode(code);
+//        System.out.println("postLoadProcessing " + instance.getName() + " ->" + code);
         return instance;
     }
+
 }

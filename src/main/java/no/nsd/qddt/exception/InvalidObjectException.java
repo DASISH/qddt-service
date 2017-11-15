@@ -12,7 +12,7 @@ public class InvalidObjectException extends RuntimeException{
     private static final Logger logger = LoggerFactory.getLogger(InvalidObjectException.class);
 
     public InvalidObjectException(AbstractEntity object) {
-        super("Object was badly formed " + object.getClass().getName() + "'.");
+        super("Object was badly formed ->" + object );
         logger.error("Object was badly formed " + object.getClass().getName() + "'.");
     }
 }

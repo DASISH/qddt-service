@@ -39,7 +39,7 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
 
 //    private Code code;
 
-    private List<CategoryJsonView> children = new ArrayList<>();
+    private List<CategoryJsonEdit> children = new ArrayList<>();
 
 
     public ManagedRepresentationJsonEdit() {
@@ -47,7 +47,7 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
 
     public ManagedRepresentationJsonEdit(Category category) {
         super(category);
-        setChildren(category.getChildren().stream().map(CategoryJsonView::new).collect(Collectors.toList()));
+        setChildren(category.getChildren().stream().map(CategoryJsonEdit::new).collect(Collectors.toList()));
         setLabel(category.getLabel());
         setDescription(category.getDescription());
         setInputLimit(category.getInputLimit());
@@ -121,11 +121,11 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
         this.format = format;
     }
 
-    public List<CategoryJsonView> getChildren() {
+    public List<CategoryJsonEdit> getChildren() {
         return children;
     }
 
-    private void setChildren(List<CategoryJsonView> children) {
+    private void setChildren(List<CategoryJsonEdit> children) {
         this.children = children;
     }
 
