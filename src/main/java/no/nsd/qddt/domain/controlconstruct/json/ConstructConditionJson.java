@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.parameter.CCParameter;
+import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class ConstructConditionJson extends ConstructJson {
 
     private String condition;
 
-    private List<CCParameter> parameters = new ArrayList<>();
+    private List<ResponseReference> parameters = new ArrayList<>();
 
     public ConstructConditionJson(ControlConstruct construct) {
         super(construct);
@@ -29,11 +29,11 @@ public class ConstructConditionJson extends ConstructJson {
         this.condition = condition;
     }
 
-    public List<CCParameter> getParameters() {
+    public List<ResponseReference> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<CCParameter> parameters) {
+    public void setParameters(List<ResponseReference> parameters) {
         this.parameters = parameters;
     }
 }

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.parameter.CCParameter;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.universe.Universe;
@@ -127,9 +127,13 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     private String condition;
 
-    //TODO ArrayList dosn't work with Enver
-    @OneToMany
-    private List<CCParameter> parameters = new ArrayList<>();
+
+    @OrderColumn(name="controlconstruct_idx")
+    @OrderBy("control_construct_idx ASC")
+    @ElementCollection
+    @CollectionTable(name = "CONTROL_CONSTRUCT_PARAMETER",
+            joinColumns = @JoinColumn(name="controlconstruct_id"))
+    private List<ResponseReference> parameters = new ArrayList<>();
 
 
     @Transient
@@ -320,11 +324,11 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.condition = condition;
     }
 
-    public List<CCParameter> getParameters() {
+    public List<ResponseReference> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<CCParameter> parameters) {
+    public void setParameters(List<ResponseReference> parameters) {
         this.parameters = parameters;
     }
 

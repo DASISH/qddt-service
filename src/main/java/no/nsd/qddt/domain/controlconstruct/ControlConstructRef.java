@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.util.*;
 
 /**
+ *
  * @author Stig Norland
  */
 @Audited
@@ -38,7 +39,7 @@ public class ControlConstructRef implements java.io.Serializable {
     private Version version;
 
     /*
-        -if true, indicate that this node is not independent, but it part of
+        -if true, indicate that this node is not independent, but is part of
         an template/childnode of sequence.
      */
     private Boolean isVirtual;

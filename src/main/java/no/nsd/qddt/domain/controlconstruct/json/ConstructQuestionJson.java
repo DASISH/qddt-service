@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.json;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.parameter.CCParameter;
+import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
-    private List<CCParameter> parameters = new ArrayList<>();
+    private List<ResponseReference> parameters = new ArrayList<>();
 
     private List<Instruction> preInstructions =new ArrayList<>();
 
@@ -83,11 +83,11 @@ public class ConstructQuestionJson  extends ConstructJson {
         this.otherMaterials = otherMaterials;
     }
 
-    public List<CCParameter> getParameters() {
+    public List<ResponseReference> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<CCParameter> parameters) {
+    public void setParameters(List<ResponseReference> parameters) {
         this.parameters = parameters;
     }
 
