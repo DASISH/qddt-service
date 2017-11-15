@@ -20,18 +20,19 @@ public abstract class AbstractAuditFilter<N extends Number & Comparable<N>, T ex
     protected Page<Revision<N, T>> getPageIncLatest(Revisions<N, T> revisions, Collection<AbstractEntityAudit.ChangeKind> filter, Pageable pageable) {
         int skip = pageable.getOffset();
         int limit = pageable.getPageSize();
-        long totalsize = revisions.getContent().stream().filter(f -> !filter.contains(f.getEntity().getChangeKind())).count();
+        long totalsize = revisions.getContent().stream().filter(c -> !filter.contains(c.getEntity().getChangeKind())).count();
         return new PageImpl<>(
             Stream.concat(
                 Stream.of(revisions.getLatestRevision())
-                    .map(e -> {
-                        e.getEntity().getVersion().setVersionLabel("Latest version");
-                        return e;
+                    .map(c -> {
+                        c.getEntity().getVersion().setVersionLabel("Latest version");
+                        return c;
                     }),
                 revisions.reverse().getContent().stream()
                     .filter(f -> !filter.contains(f.getEntity().getChangeKind()))
             )
             .skip(skip)
+            .distinct()
             .limit(limit)
             .map(this::postLoadProcessing)
             .collect(Collectors.toList()), pageable,totalsize+1 );
@@ -43,7 +44,7 @@ public abstract class AbstractAuditFilter<N extends Number & Comparable<N>, T ex
         long totalsize = revisions.getContent().stream().filter(f -> !filter.contains(f.getEntity().getChangeKind())).count();
         return new PageImpl<>(
             revisions.reverse().getContent().stream()
-                .filter(f -> !filter.contains(f.getEntity().getChangeKind()))
+                .filter(c -> !filter.contains(c.getEntity().getChangeKind()))
                 .skip(skip)
                 .limit(limit)
                 .map(this::postLoadProcessing)
