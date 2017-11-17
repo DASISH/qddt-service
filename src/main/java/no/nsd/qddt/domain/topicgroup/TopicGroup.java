@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -12,7 +13,6 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
-import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -57,8 +57,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     @Column(name = "description", length = 10000)
     private String abstractDescription;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @JsonBackReference(value = "studyRef")
+    @ManyToOne()
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
@@ -66,7 +67,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     @JsonIgnore
     @OrderBy(value = "name asc")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
-    private Set<Concept> concepts = new HashSet<>();
+    private Set<Concept> concepts = new HashSet<>(0);
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE }, mappedBy = "topicGroup")
@@ -281,10 +282,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     @Override
     public void setArchived(boolean archived) {
         isArchived = archived;
+
         if (archived) {
+            System.out.println( getName() + " isArchived(" + getConcepts().size() +")" );
             setChangeKind(ChangeKind.ARCHIVED);
-            System.out.println("Topc archived " + getName());
-            Hibernate.initialize(this.getConcepts());
+//            Hibernate.initialize(this.getConcepts());
             for (Concept concept : getConcepts()) {
                 if (!concept.isArchived())
                     concept.setArchived(archived);

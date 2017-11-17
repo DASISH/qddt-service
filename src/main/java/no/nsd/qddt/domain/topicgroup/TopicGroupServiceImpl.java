@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
@@ -92,6 +93,12 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
+        if (instance.getChangeKind() == AbstractEntityAudit.ChangeKind.ARCHIVED) {
+            String changecomment =  instance.getChangeComment();
+            instance = findOne(instance.getId());
+            instance.setArchived(true);
+            instance.setChangeComment(changecomment);
+        }
         if (instance.isBasedOn()){
             Revision<Integer, TopicGroup> lastChange
                     = auditService.findLastChange(instance.getId());

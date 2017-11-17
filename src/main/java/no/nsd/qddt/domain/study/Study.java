@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.study;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
@@ -53,8 +53,9 @@ import java.util.Set;
 @Table(name = "STUDY")
 public class Study extends AbstractEntityAudit implements Authorable, Archivable {
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne()
+    @JsonBackReference(value = "surveyRef")
     @JoinColumn(name="survey_id",updatable = false)
     private SurveyProgram surveyProgram;
 
@@ -69,7 +70,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
 
     @OneToMany( cascade = {CascadeType.MERGE ,CascadeType.REMOVE}, mappedBy = "study", fetch = FetchType.LAZY)
     @OrderBy(value = "name ASC")
-    private Set<TopicGroup> topicGroups = new HashSet<>();
+    private Set<TopicGroup> topicGroups = new HashSet<>(0);
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "STUDY_AUTHORS",
@@ -126,16 +127,16 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         this.instruments = instruments;
     }
 
-    public void SetDefaultInstrument() {
-        if (instruments == null){
-            instruments = new HashSet<>();
-        }
-        if (getInstruments().size() ==0){
-            Instrument instr = new Instrument();
-            instr.setName("<Default>");
-            instruments.add(instr);
-        }
-    }
+//    public void SetDefaultInstrument() {
+//        if (instruments == null){
+//            instruments = new HashSet<>();
+//        }
+//        if (getInstruments().size() ==0){
+//            Instrument instr = new Instrument();
+//            instr.setName("<Default>");
+//            instruments.add(instr);
+//        }
+//    }
 
     public Set<TopicGroup> getTopicGroups() {
         return topicGroups;
@@ -237,7 +238,12 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
             isArchived = archived;
             if(archived) {
                 setChangeKind(ChangeKind.ARCHIVED);
-                Hibernate.initialize(this.getTopicGroups());
+
+                if (Hibernate.isInitialized(getTopicGroups()))
+                    System.out.println("getTopicGroups isInitialized. ");
+                else
+                    Hibernate.initialize(getTopicGroups());
+
                 for (TopicGroup topicGroup : getTopicGroups()) {
                     if (!topicGroup.isArchived())
                         topicGroup.setArchived(archived);
@@ -245,7 +251,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            System.out.println(ex.getStackTrace());
+            ex.printStackTrace();
         }
     }
 

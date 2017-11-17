@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.study.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
@@ -39,16 +38,7 @@ public class StudyController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Study update(@RequestBody Study instance) {
-        System.out.println("study update");
-
-        if (instance.getTopicGroups() != null & !instance.isArchived())
-            instance.getTopicGroups().forEach(c->{
-                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-                c.setChangeComment("");
-            });
-
         return service.save(instance);
-
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -58,19 +48,13 @@ public class StudyController {
         if (instance.getSurveyProgram() == null){
             surveyProgramService.findOne(surveyId).addStudy(instance);
         }
-        if (instance.getTopicGroups() != null) {
-            instance.getTopicGroups().forEach(c->{
-                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-                c.setChangeComment("");
-            });
-        }
-
         return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
+
         System.out.println("Study delete " + id);
         try {
             service.delete(id);

@@ -53,7 +53,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     private Set<Concept> children = new HashSet<>(0);
 
 
-    @JsonBackReference(value = "TopicGroupRef")
+    @JsonBackReference(value = "topicGroupRef")
     @ManyToOne()
     @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
@@ -172,7 +172,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     public void setArchived(boolean archived) {
         isArchived = archived;
         if (archived) {
-            System.out.println("Concept archived " + getName());
+            System.out.println( getName() + " isArchived (" + getChildren().size() +")" );
             setChangeKind(ChangeKind.ARCHIVED);
             for (Concept concept : getChildren()) {
                 if (!concept.isArchived())

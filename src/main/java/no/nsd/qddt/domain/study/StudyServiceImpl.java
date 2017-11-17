@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.study;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,8 +70,28 @@ class StudyServiceImpl implements StudyService {
     }
 
     private Study prePersistProcessing(Study instance) {
+        try {
+            if (instance.getChangeKind() == AbstractEntityAudit.ChangeKind.ARCHIVED) {
+                String changecomment =  instance.getChangeComment();
+                instance = findOne(instance.getId());
+                instance.setArchived(true);
+                instance.setChangeComment(changecomment);
+            }
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        if (instance.getTopicGroups() != null & !instance.isArchived())
+            instance.getTopicGroups().forEach(c->{
+                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+                c.setChangeComment("");
+            });
         return instance;
     }
+
+
+
 
     private Study postLoadProcessing(Study instance) {
         return instance;

@@ -106,27 +106,18 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     }
 
 
-    /*
-    Authors bidirectional relationship needs to be updated manually... FIX ME...
-     */
     private SurveyProgram checkSurvey(SurveyProgram entity){
-        entity.getAuthors().forEach(a->a.addSurvey(entity));
+//        entity.getAuthors().forEach(a->a.addSurvey(entity));
         return entity;
     }
 
-    /*
-    Authors bidirectional relationship needs to be updated manually... FIX ME...
-     */
     private Study checkStudy(Study entity){
-        entity.getAuthors().forEach(a->a.addStudy(entity));
+//        entity.getAuthors().forEach(a->a.addStudy(entity));
         return entity;
     }
 
-    /*
-    Authors bidirectional relationship needs to be updated manually... FIX ME...
-     */
     private TopicGroup checkTopic(TopicGroup entity){
-        entity.getAuthors().forEach(a->a.addTopic(entity));
+//        entity.getAuthors().forEach(a->a.addTopic(entity));
         return entity;
     }
 

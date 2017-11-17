@@ -129,8 +129,8 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     @OrderColumn(name="controlconstruct_idx")
-    @OrderBy("control_construct_idx ASC")
-    @ElementCollection
+    @OrderBy("controlconstruct_idx ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_PARAMETER",
             joinColumns = @JoinColumn(name="controlconstruct_id"))
     private List<ResponseReference> parameters = new ArrayList<>();
