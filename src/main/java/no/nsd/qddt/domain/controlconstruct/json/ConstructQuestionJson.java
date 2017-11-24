@@ -1,15 +1,18 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
+import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -110,24 +113,34 @@ public class ConstructQuestionJson  extends ConstructJson {
     public class QuestionItemSimpleJson {
         String name;
 
-        Question question;
+        SimpleQuestion question;
+
+        ResponseDomain responseDomain;
 
         public QuestionItemSimpleJson(QuestionItem questionItem) {
             if (questionItem == null)
                 return;
             name = questionItem.getName();
-            question = new Question(questionItem.getQuestion().getQuestion());
+            question = new SimpleQuestion(questionItem.getQuestion());
+            responseDomain = questionItem.getResponseDomain();
         }
 
-        public class Question {
+        public class SimpleQuestion {
             final String question;
+            final List<SimpleQuestion> children;
 
-            public Question(String question) {
-                this.question = question;
+            public SimpleQuestion(Question question) {
+                this.question = question.getQuestion();
+                this.children = question.getChildren().stream()
+                .map(SimpleQuestion::new).collect(Collectors.toList());
             }
 
             public String getQuestion() {
                 return question;
+            }
+
+            public List<SimpleQuestion> getChildren() {
+                return children;
             }
         }
 
@@ -135,8 +148,12 @@ public class ConstructQuestionJson  extends ConstructJson {
             return name;
         }
 
-        public Question getQuestion() {
+        public SimpleQuestion getQuestion() {
             return question;
+        }
+
+        public ResponseDomain getResponseDomain() {
+            return responseDomain;
         }
     }
 }

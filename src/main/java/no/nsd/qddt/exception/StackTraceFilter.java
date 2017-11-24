@@ -2,6 +2,7 @@ package no.nsd.qddt.exception;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -22,6 +23,15 @@ public class StackTraceFilter {
     public static void println(StackTraceElement[] stacktrace){
         filter(stacktrace)
         .forEach(System.out::println);
+    }
+
+    public static List<StackTraceElement> nsdStack() {
+        return filter(Thread.currentThread().getStackTrace());
+    }
+
+    public static boolean stackContains(String ...words) {
+        Predicate<StackTraceElement> ps = e-> Arrays.stream(words).anyMatch(w->e.getMethodName().contains(w));
+        return StackTraceFilter.nsdStack().stream().anyMatch(ps);
     }
 
 }
