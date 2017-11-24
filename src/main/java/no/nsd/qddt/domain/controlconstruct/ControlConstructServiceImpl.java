@@ -165,7 +165,9 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         instance.getQuestionItemRevision());
                 instance.setQuestionItemRevision(rev.getRevisionNumber());
                 instance.setQuestionItem(rev.getEntity());
+                System.out.println("postLoadProcessing fetching QI -> " + rev.getEntity().getName());
             }
+            instance.getChildren().forEach(this::postLoadProcessing);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
@@ -174,29 +176,5 @@ class ControlConstructServiceImpl implements ControlConstructService {
         return instance;
     }
 
-
-
-//    private PageRequest controlConstructSort1(Pageable pageable, String... args){
-//        Sort sort;
-//        if (pageable.getSort() == null )
-//            sort = defaultSort(args);
-//        else
-//            sort = controlConstructSort2(pageable.getSort());
-//
-//        return  new PageRequest(pageable.getPageNumber()
-//                ,pageable.getPageSize()
-//                ,sort);
-//    }
-//
-//    private  Sort controlConstructSort2(Sort sort){
-//        List<Sort.Order> orders = new LinkedList<>();
-//        sort.forEach(o->{
-//            if(o.getProperty().equals("modified")) {
-//                orders.add(new Sort.Order(o.getDirection(), "updated"));
-//            } else
-//                orders.add(o);
-//        });
-//        return new Sort(orders);
-//    }
 
 }
