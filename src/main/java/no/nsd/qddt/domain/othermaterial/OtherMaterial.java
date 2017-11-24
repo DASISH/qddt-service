@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntity;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ import java.util.UUID;
  *
  * @author Stig Norland
  */
-
+@Audited
 @Entity
 @Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntity {
