@@ -40,7 +40,7 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         setOtherMaterials(topicGroup.getOtherMaterials());
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
-        System.out.println("TopicGroupRevisionJson");
+//        System.out.println("TopicGroupRevisionJson");
         setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
 
     }

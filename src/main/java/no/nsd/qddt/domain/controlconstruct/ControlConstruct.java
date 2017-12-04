@@ -15,7 +15,6 @@ import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -110,9 +109,8 @@ public class ControlConstruct extends AbstractEntityAudit {
     private List<Universe> universe =new ArrayList<>(0);
 
 
-    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @NotAudited
+    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
+//    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
 
@@ -278,7 +276,7 @@ public class ControlConstruct extends AbstractEntityAudit {
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
-        System.out.println("populate Instructions " + getControlConstructInstructions().size());
+//        System.out.println("populate Instructions " + getControlConstructInstructions().size());
         setPreInstructions(getControlConstructInstructions().stream()
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
                 .map(ControlConstructInstruction::getInstruction)
@@ -288,7 +286,7 @@ public class ControlConstruct extends AbstractEntityAudit {
                 .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
                 .map(ControlConstructInstruction::getInstruction)
                 .collect(Collectors.toList()));
-        getControlConstructInstructions().stream().forEach(c-> System.out.println(c.getInstruction().getName()));
+//        getControlConstructInstructions().stream().forEach(c-> System.out.println(c.getInstruction().getName()));
     }
 
 
@@ -408,7 +406,7 @@ public class ControlConstruct extends AbstractEntityAudit {
         }
 
         pdfReport.addheader2("Question Item");
-        pdfReport.addParagraph(getQuestionItem().getQuestion().getQuestion());
+        pdfReport.addParagraph(getQuestionItem().getQuestion());
 
         getQuestionItem().getResponseDomain().fillDoc(pdfReport,"");
 

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
 import no.nsd.qddt.domain.user.UserJson;
@@ -21,7 +20,7 @@ import java.util.UUID;
  */
 public class QuestionItemListJson {
 
-    @Type(type="pg-uuid")
+    @Type(type = "pg-uuid")
     private UUID id;
 
     private String name;
@@ -35,15 +34,12 @@ public class QuestionItemListJson {
 
     private AgencyJsonView agency;
 
-//    @Type(type="pg-uuid")
-//    private UUID basedOnObject;
-//
-//    private  Integer basedOnRevision;
-
     @Embedded
     private Version version;
 
-    private Question question;
+    private String question;
+
+    private String intent;
 
     private ResponseDomainJsonView responseDomain;
 
@@ -56,14 +52,13 @@ public class QuestionItemListJson {
         id = entity.getId();
         name = entity.getName();
         agency = new AgencyJsonView(entity.getAgency());
-        version =entity.getVersion();
-//        basedOnObject = entity.getBasedOnObject();
-//        basedOnRevision = entity.getBasedOnRevision();
-        modified =entity.getModified();
-        modifiedBy =new UserJson(entity.getModifiedBy());
-        question =entity.getQuestion();
+        version = entity.getVersion();
+        modified = entity.getModified();
+        modifiedBy = new UserJson(entity.getModifiedBy());
+        question = entity.getQuestion();
+        intent = entity.getIntent();
         responseDomain = new ResponseDomainJsonView(entity.getResponseDomain());
-        Integer responseDomainRevision = entity.getResponseDomainRevision();
+        responseDomain.getVersion().setRevision(entity.getResponseDomainRevision());
     }
 
     public UUID getId() {
@@ -73,6 +68,16 @@ public class QuestionItemListJson {
 
     public String getName() {
         return name;
+    }
+
+
+    public String getQuestion() {
+        return question;
+    }
+
+
+    public String getIntent() {
+        return intent;
     }
 
 
@@ -91,14 +96,8 @@ public class QuestionItemListJson {
     }
 
 
-
     public Version getVersion() {
         return version;
-    }
-
-
-    public Question getQuestion() {
-        return question;
     }
 
 
@@ -106,42 +105,4 @@ public class QuestionItemListJson {
         return responseDomain;
     }
 
-    public void setResponseDomain(ResponseDomainJsonView responseDomain) {
-        this.responseDomain = responseDomain;
-    }
-
-//    private class ResponseDomainListJson {
-//
-//        private Version version;
-//
-//        private UUID id;
-//
-//        private String name;
-//
-//        public ResponseDomainListJson() {
-//        }
-//
-//        public ResponseDomainListJson(String name) {
-//            this.name = name;
-//        }
-//
-//        public ResponseDomainListJson(ResponseDomain responseDomain) {
-//            if (responseDomain != null)
-//                this.name = responseDomain.getName();
-//                this.id = responseDomain.getId();
-//                this.version = responseDomain.getVersion();
-//        }
-//
-//        public String getName() {
-//            return name;
-//        }
-//
-//        public UUID getId() {
-//            return id;
-//        }
-//
-//        public Version getVersion() {
-//            return version;
-//        }
-//    }
 }

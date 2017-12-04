@@ -122,7 +122,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         name = name.replace("*","%");
         try {
             pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-            System.out.println(name + " - " + pageable);
+//            System.out.println(name + " - " + pageable);
             return controlConstructRepository.findByQuery(
                 kind.toString(), name, name, question ,pageable)
                 .map(qi -> mapConstruct(postLoadProcessing(qi)));
@@ -165,7 +165,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         instance.getQuestionItemRevision());
                 instance.setQuestionItemRevision(rev.getRevisionNumber());
                 instance.setQuestionItem(rev.getEntity());
-                System.out.println("postLoadProcessing fetching QI -> " + rev.getEntity().getName());
+//                System.out.println("postLoadProcessing fetching QI -> " + rev.getEntity().getName());
             }
             instance.getChildren().forEach(this::postLoadProcessing);
         } catch (Exception ex){

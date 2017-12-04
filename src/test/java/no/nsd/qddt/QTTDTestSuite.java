@@ -18,7 +18,7 @@ import no.nsd.qddt.domain.instruction.InstructionServiceTest;
 import no.nsd.qddt.domain.instruction.audit.InstructionAuditServiceTest;
 import no.nsd.qddt.domain.instruction.web.InstructionControllerTest;
 import no.nsd.qddt.domain.instrument.InstrumentServiceTest;
-import no.nsd.qddt.domain.instrument.audit.InstrumentAuditServiceTest;
+import no.nsd.qddt.domain.instrument.audit.OthermaterialAuditServiceTest;
 import no.nsd.qddt.domain.instrument.web.InstrumentControllerTest;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialServiceTest;
 import no.nsd.qddt.domain.othermaterial.web.OtherMaterialControllerTest;
@@ -81,7 +81,7 @@ import org.springframework.test.context.ActiveProfiles;
 
         // ====== Instrument ======
         InstrumentServiceTest.class,
-        InstrumentAuditServiceTest.class,
+        OthermaterialAuditServiceTest.class,
         InstrumentControllerTest.class,
 
         // ====== InstrumentQuestion ======

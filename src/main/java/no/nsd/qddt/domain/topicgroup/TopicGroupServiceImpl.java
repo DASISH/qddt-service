@@ -14,6 +14,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PostLoad;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -111,6 +112,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return instance;
     }
 
+    @PostLoad void test(TopicGroup instance) {
+        System.out.println("Postload " + instance.getName());
+    }
 
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
@@ -123,6 +127,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
                     cqi.setQuestionItemRevision(rev.getRevisionNumber());
                 }
+            }
+            if (StackTraceFilter.stackContains("getPdf","getXml")) {
+                instance.getConcepts().size();
             }
         } catch (Exception ex){
             System.out.println("postLoadProcessing... " + instance.getName());

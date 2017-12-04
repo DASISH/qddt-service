@@ -37,13 +37,13 @@ public abstract class AbstractEntity {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    @Column(name = "updated")
+    @Column(name = "updated", nullable = false)
     @LastModifiedDate
     private LocalDateTime modified;
 
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @LastModifiedBy
     private User modifiedBy;
 

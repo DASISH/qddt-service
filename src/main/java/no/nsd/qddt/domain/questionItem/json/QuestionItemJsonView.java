@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.questionItem.json;
 
 import no.nsd.qddt.domain.BaseJsonEdit;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
 
@@ -10,27 +9,26 @@ import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
  */
 public class QuestionItemJsonView extends BaseJsonEdit{
 
-    private Question question;
+    private String question;
+
+    private String intent;
 
     private ResponseDomainJsonView responseDomain;
 
     public QuestionItemJsonView(QuestionItem questionItem) {
         super(questionItem);
         if (questionItem == null) return;
-        setQuestion(questionItem.getQuestion());
+        question = questionItem.getQuestion();
+        intent = questionItem.getIntent();
         setResponseDomain(new ResponseDomainJsonView(questionItem.getResponseDomain()));
     }
 
-
-    public Question getQuestion() {
+    public String getQuestion() {
         return question;
     }
 
-    private void setQuestion(Question question) {
-        if (question==null)
-            System.out.println("Question is null!");
-        else
-            this.question = question;
+    public String getIntent() {
+        return intent;
     }
 
     public ResponseDomainJsonView getResponseDomain() {

@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
@@ -48,10 +49,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         OTHER("OtherPurpose","Other Purpose"),
         //. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
         ADDED_CONTENT("AddContentElement","Add Content Element"),
-        /* deprecated */
-//        milestone status, this version is published.
-//        This was removed as publication is no longer part of the model, now uses list of published elements for each publication.
-        MILESTONE("Deprecated",""),
         BASED_ON("Based on","Based on copy"),
         NEW_COPY("New Copy","Copy new"),
         REFERENCED("Reference of","Concepts can be copied as a reference, to facilitate hierarchical revision trees"),
@@ -100,18 +97,18 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
      */
 
     @ManyToOne
-    @JoinColumn(name = "agency_id",updatable = false)
+    @JoinColumn(name = "agency_id",updatable = false, nullable = false)
     private Agency agency;
 
     @Column(name = "name")
     private String name;
 
 
-    @Column(name = "based_on_object",updatable = false)
+    @Column(name = "based_on_object",updatable = false, nullable = false)
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    @Column(name = "based_on_revision",updatable = false)
+    @Column(name = "based_on_revision",updatable = false, nullable = false)
     private Integer basedOnRevision;
 
 
@@ -119,9 +116,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     private Version version;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ChangeKind changeKind;
 
-    @Column(name = "change_comment")
+    @Column(name = "change_comment",nullable = false)
+    @ColumnDefault("")
     private String changeComment;
 
 
@@ -214,7 +213,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @PrePersist
     private void onInsert(){
-        System.out.println("PrePersist");
+//        System.out.println("PrePersist");
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
         changeKind = AbstractEntityAudit.ChangeKind.CREATED;

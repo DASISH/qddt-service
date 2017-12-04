@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -113,7 +111,7 @@ public class ConstructQuestionJson  extends ConstructJson {
     public class QuestionItemSimpleJson {
         String name;
 
-        SimpleQuestion question;
+        String question;
 
         ResponseDomain responseDomain;
 
@@ -121,34 +119,16 @@ public class ConstructQuestionJson  extends ConstructJson {
             if (questionItem == null)
                 return;
             name = questionItem.getName();
-            question = new SimpleQuestion(questionItem.getQuestion());
+            question = questionItem.getQuestion();
             responseDomain = questionItem.getResponseDomain();
         }
 
-        public class SimpleQuestion {
-            final String question;
-            final List<SimpleQuestion> children;
-
-            public SimpleQuestion(Question question) {
-                this.question = question.getQuestion();
-                this.children = question.getChildren().stream()
-                .map(SimpleQuestion::new).collect(Collectors.toList());
-            }
-
-            public String getQuestion() {
-                return question;
-            }
-
-            public List<SimpleQuestion> getChildren() {
-                return children;
-            }
-        }
 
         public String getName() {
             return name;
         }
 
-        public SimpleQuestion getQuestion() {
+        public String getQuestion() {
             return question;
         }
 

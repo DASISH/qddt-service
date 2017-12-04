@@ -8,7 +8,6 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -55,18 +54,16 @@ public class QuestionItem extends AbstractEntityAudit {
     @Column(name = "responsedomain_revision")
     private Integer responseDomainRevision;
 
-    @ManyToOne(cascade =  {CascadeType.MERGE,CascadeType.DETACH},optional = false)
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @Column(name = "question")
+    private String questionText;
+
+    @Column(name = "intent")
+    private String questionIntent;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
-//    @JsonIgnore
-//    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
-//    private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
-//
     @Transient
     @JsonSerialize
     private List<ConceptRef> conceptRefs;
@@ -137,14 +134,21 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
 
-    public Question getQuestion() {
-        return question;
+    public String getQuestion() {
+        return questionText;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestion(String questionText) {
+        this.questionText = questionText;
     }
 
+    public String getIntent() {
+        return questionIntent;
+    }
+
+    public void setIntent(String questionIntent) {
+        this.questionIntent = questionIntent;
+    }
 
     private Set<ConceptQuestionItem> getConceptQuestionItems() {
         return conceptQuestionItems;
@@ -155,9 +159,6 @@ public class QuestionItem extends AbstractEntityAudit {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
-//    public Set<TopicGroupQuestionItem> getTopicQuestionItems() {
-//        return topicQuestionItems;
-//    }
 
     public List<ConceptRef> getConceptRefs(){
         try {
@@ -184,26 +185,33 @@ public class QuestionItem extends AbstractEntityAudit {
         if (!(o instanceof QuestionItem)) return false;
         if (!super.equals(o)) return false;
 
-        QuestionItem questionItem = (QuestionItem) o;
+        QuestionItem that = (QuestionItem) o;
 
-        if (responseDomain != null ? !responseDomain.equals(questionItem.responseDomain) : questionItem.responseDomain != null)
+        if (responseDomainUUID != null ? !responseDomainUUID.equals(that.responseDomainUUID) : that.responseDomainUUID != null)
             return false;
-        return !(question != null ? !question.equals(questionItem.question) : questionItem.question != null);
-
+        if (responseDomainRevision != null ? !responseDomainRevision.equals(that.responseDomainRevision) : that.responseDomainRevision != null)
+            return false;
+        if (questionText != null ? !questionText.equals(that.questionText) : that.questionText != null) return false;
+        if (questionIntent != null ? !questionIntent.equals(that.questionIntent) : that.questionIntent != null)
+            return false;
+        return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responseDomain != null ? responseDomain.hashCode() : 0);
-        result = 31 * result + (question != null ? question.hashCode() : 0);
+        result = 31 * result + (responseDomainUUID != null ? responseDomainUUID.hashCode() : 0);
+        result = 31 * result + (responseDomainRevision != null ? responseDomainRevision.hashCode() : 0);
+        result = 31 * result + (questionText != null ? questionText.hashCode() : 0);
+        result = 31 * result + (questionIntent != null ? questionIntent.hashCode() : 0);
+        result = 31 * result + (conceptRefs != null ? conceptRefs.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "QuestionItem{" + super.toString() +
-                ", question='" + question.getQuestion() + '\'' +
+                ", question='" + questionText + '\'' +
                 ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
                 ", responseUUID=" + responseDomainUUID + '\'' +
                 ", responseRev" + responseDomainRevision  + '\'' +
@@ -214,7 +222,6 @@ public class QuestionItem extends AbstractEntityAudit {
     public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        setQuestion(question.newCopyOf());
         setConceptQuestionItems(null);
         getComments().clear();
         System.out.println("MADE NEW COPY...");
@@ -224,18 +231,11 @@ public class QuestionItem extends AbstractEntityAudit {
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         pdfReport.addHeader(this,"QuestionItem");
-        pdfReport.addParagraph(this.question.getQuestion());
-        if(!StringTool.IsNullOrTrimEmpty(this.question.getIntent())) {
+        pdfReport.addParagraph(this.getQuestion());
+        if(!StringTool.IsNullOrTrimEmpty(getIntent())) {
             pdfReport.addheader2("Intent")
-            .add(new Paragraph(this.question.getIntent()));
+            .add(new Paragraph(this.getIntent()));
         }
-        this.question.getChildren().forEach(q->{
-            pdfReport.addParagraph(this.question.getQuestion());
-            if(!StringTool.IsNullOrTrimEmpty(this.question.getIntent())) {
-                pdfReport.addheader2("Intent")
-                    .add(new Paragraph(this.question.getIntent()));
-            }
-        });
         if (getResponseDomain() != null)
             this.getResponseDomain().fillDoc(pdfReport,"");
         pdfReport.addPadding();

@@ -27,21 +27,19 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
 
     List<ControlConstruct> findByquestionItemReferenceOnlyIdIn(List<UUID> questionItemIds);
 
-    Page<ControlConstruct> findByNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionQuestionLikeIgnoreCase(String name, String question, Pageable pageable);
+    Page<ControlConstruct> findByNameLikeIgnoreCaseOrQuestionItemReferenceOnlyQuestionLikeIgnoreCase(String name, String question, Pageable pageable);
 
     Page<ControlConstruct> findByNameLikeIgnoreCaseAndControlConstructKind(String name, ControlConstructKind kind, Pageable pageable);
 
     @Query(value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc " +
             "LEFT JOIN QUESTION_ITEM qi ON qi.id = cc.questionItem_id " +
-            "LEFT JOIN QUESTION q ON q.id = qi.question_id " +
             "WHERE cc.control_construct_kind = :kind AND " +
-            "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or q.question ILIKE  '%'||:questionText||'%' ) "
+            "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or qi.question ILIKE  '%'||:questionText||'%' ) "
            + "ORDER BY ?#{#pageable}"
             ,countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
             "LEFT JOIN QUESTION_ITEM qi ON qi.id = cc.questionItem_id " +
-            "LEFT JOIN QUESTION q ON q.id = qi.question_id " +
             "WHERE cc.control_construct_kind = :kind AND " +
-            "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or q.question ILIKE  '%'||:questionText||'%' ) "
+            "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or qi.question ILIKE  '%'||:questionText||'%' ) "
             ,nativeQuery = true)
     Page<ControlConstruct> findByQuery(@Param("kind")String kind,
                                        @Param("name")String name,

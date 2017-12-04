@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
@@ -96,7 +96,7 @@ class ConceptServiceImpl implements ConceptService {
                     .forEach(cqi->{
                         Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange(cqi.getId().getQuestionItemId());
                         cqi.setQuestionItemRevision(rev.getRevisionNumber());
-                        System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItemRevision());
+//                        System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItemRevision());
             });
 
             // children are saved to hold revision info... i guess, these saves shouldn't
@@ -123,10 +123,10 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     private void setChildChangeStatus(Concept concept){
-        if (concept.getChangeKind() != AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT &&
-                concept.getChangeKind() != AbstractEntityAudit.ChangeKind.ARCHIVED ) {
+        if (concept.getChangeKind() != ChangeKind.IN_DEVELOPMENT &&
+                concept.getChangeKind() != ChangeKind.ARCHIVED ) {
 
-            concept.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+            concept.setChangeKind(ChangeKind.UPDATED_PARENT);
             concept.setChangeComment("");
         }
     }
@@ -135,7 +135,7 @@ class ConceptServiceImpl implements ConceptService {
         post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
         thus we need to populate some elements ourselves.
      */
-    private Concept postLoadProcessing(Concept instance) {
+    protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
             for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
@@ -145,7 +145,7 @@ class ConceptServiceImpl implements ConceptService {
                         cqi.getQuestionItemRevision());
                 cqi.setQuestionItem(rev.getEntity());
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
-                    System.out.println("ConceptService-> postLoadProcessing: MISSMATCH; wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
+//                    System.out.println("ConceptService-> postLoadProcessing: MISSMATCH; wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
                     cqi.setQuestionItemRevision(rev.getRevisionNumber());
                 }
             }
@@ -161,7 +161,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public Page<Concept> findAllPageable(Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name","name ASC"));
+        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -169,7 +169,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
-                defaultSort(pageable,"name","name ASC"));
+                defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -177,7 +177,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndBasedOnObjectIsNull(name,description,
-                defaultSort(pageable,"name","name ASC"));
+                defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }

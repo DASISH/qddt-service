@@ -14,7 +14,6 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -81,8 +80,8 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     private Set<Author> authors = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER )
-    @NotAudited
+    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
@@ -252,7 +251,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
             pdfReport.addheader2("QuestionItem(s)");
             for (TopicGroupQuestionItem item : getTopicQuestionItems()) {
                 pdfReport.addheader2(item.getQuestionItemLateBound().getName());
-                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
+                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion());
                 if (item.getQuestionItemLateBound().getResponseDomain() != null)
                     item.getQuestionItemLateBound().getResponseDomain().fillDoc(pdfReport, "");
                 pdfReport.addPadding();
@@ -273,6 +272,10 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         getAuthors().clear();
         getOtherMaterials().clear();
     }
+
+//    @PostLoad void test() {
+//        System.out.println("Postload in class " + getName());
+//    }
 
     @Override
     public boolean isArchived() {

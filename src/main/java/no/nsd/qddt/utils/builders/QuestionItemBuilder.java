@@ -1,6 +1,5 @@
 package no.nsd.qddt.utils.builders;
 
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 
@@ -9,10 +8,10 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
  */
 public class QuestionItemBuilder {
 
-    private Question question;
+    private String question;
     private ResponseDomain responseDomain;
 
-    public QuestionItemBuilder setQuestion(Question question) {
+    public QuestionItemBuilder setQuestion(String question) {
         this.question = question;
         return this;
     }

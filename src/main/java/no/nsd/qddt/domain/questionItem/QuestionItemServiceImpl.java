@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.questionItem;
 
-import no.nsd.qddt.domain.question.QuestionService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
@@ -30,16 +29,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private final QuestionItemRepository questionItemRepository;
     private final ResponseDomainAuditService rdAuditService;
     private final QuestionItemAuditService auditService;
-    private final QuestionService questionService;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
                                    ResponseDomainAuditService responseDomainAuditService,
-                                   QuestionService questionService,
                                    QuestionItemAuditService questionItemAuditService) {
         this.questionItemRepository = questionItemRepository;
         this.rdAuditService = responseDomainAuditService;
-        this.questionService = questionService;
         this.auditService = questionItemAuditService;
     }
 
@@ -83,7 +79,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Override
     public void delete(UUID uuid) {
         try {
-            System.out.println("delete question " + uuid);
+//            System.out.println("delete question " + uuid);
             questionItemRepository.delete(uuid);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
@@ -120,7 +116,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         question = question.replace("*","%");
         name = name.replace("*","%");
 
-        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionQuestionLikeIgnoreCase(name,question,
+        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionLikeIgnoreCase(name,question,
                 defaultSort(pageable,"name","question.question"))
                 .map(this::postLoadProcessing);
     }
@@ -129,7 +125,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public Page<QuestionItem> findByNameLikeOrQuestionLike(String searchString, Pageable pageable) {
         searchString = searchString.replace("*","%");
 
-        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionQuestionLikeIgnoreCase(searchString,searchString,
+        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionLikeIgnoreCase(searchString,searchString,
                 defaultSort(pageable,"name","question.question"))
                 .map(this::postLoadProcessing);
     }
@@ -146,7 +142,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(rev.getRevisionNumber());
                     instance.setResponseDomain(rev.getEntity());
-                    System.out.println("Latest RD fetched " + rev.getRevisionNumber());
+//                    System.out.println("Latest RD fetched " + rev.getRevisionNumber());
                 } else {
                     try {
                         ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
@@ -176,15 +172,14 @@ class QuestionItemServiceImpl implements QuestionItemService {
             instance.makeNewCopy(null);
         }
 
-        if (instance.getQuestion().getId() == null)
-            instance.setQuestion(questionService.save(instance.getQuestion()));
-
         if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
             if (instance.getResponseDomainUUID() == null) {
                 instance.setResponseDomainUUID(instance.getResponseDomain().getId());
             }
             if (instance.getResponseDomainRevision() <= 0) {
                 try {
+
+
                     Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(revnum.getRevisionNumber());
                 } catch (Exception ex) {

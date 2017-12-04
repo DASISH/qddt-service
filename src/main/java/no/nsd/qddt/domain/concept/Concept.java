@@ -290,7 +290,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
                 pdfReport.addheader2("QuestionItem(s)");
                 for (ConceptQuestionItem item : getConceptQuestionItems()) {
                     pdfReport.addheader2(item.getQuestionItemLateBound().getName());
-                    pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion().getQuestion());
+                    pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion());
                     if (item.getQuestionItemLateBound().getResponseDomain() != null)
                         item.getQuestionItemLateBound().getResponseDomain().fillDoc(pdfReport, "");
                     pdfReport.addPadding();

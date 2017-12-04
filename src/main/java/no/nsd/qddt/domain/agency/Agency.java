@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.agency;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
@@ -14,12 +13,17 @@ import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -35,7 +39,25 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "AGENCY")
-public class Agency extends AbstractEntity implements Comparable<Agency>{
+public class Agency implements Comparable<Agency>{
+
+
+    @Id
+    @Type(type="pg-uuid")
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
+    private UUID id;
+
+    @Column(name = "name", length = 50)
+    private String name;
+
+    @JsonIgnore
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    @Column(name = "updated", nullable = false)
+    @LastModifiedDate
+    private LocalDateTime modified;
+
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
@@ -82,11 +104,24 @@ public class Agency extends AbstractEntity implements Comparable<Agency>{
     @NotAudited
     private Set<PublicationStatus> statuses = new HashSet<>();
 
-    @Column(name = "name", length = 50)
-    private String name;
-
     public Agency(){
 
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getModified() {
+        return modified;
+    }
+
+    public void setModified(LocalDateTime modified) {
+        this.modified = modified;
     }
 
     public String getName() {
@@ -195,6 +230,11 @@ public class Agency extends AbstractEntity implements Comparable<Agency>{
         return !(name != null ? !name.equals(agency.name) : agency.name != null);
 
     }
+
+    public String toDDIXml(){
+        return "<ID type='ID'>" + getId().toString() + "</ID>";
+    }
+
 
     @Override
     public int hashCode() {

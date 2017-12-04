@@ -28,6 +28,7 @@ import java.util.UUID;
 public class OtherMaterial extends AbstractEntity {
 
     @Type(type="pg-uuid")
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private UUID owner;
 
     private String fileName;
