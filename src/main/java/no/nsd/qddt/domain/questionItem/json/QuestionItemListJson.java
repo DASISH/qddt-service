@@ -58,7 +58,7 @@ public class QuestionItemListJson {
         question = entity.getQuestion();
         intent = entity.getIntent();
         responseDomain = new ResponseDomainJsonView(entity.getResponseDomain());
-        responseDomain.getVersion().setRevision(entity.getResponseDomainRevision());
+//        responseDomain.getVersion().setRevision(entity.getResponseDomainRevision());
     }
 
     public UUID getId() {

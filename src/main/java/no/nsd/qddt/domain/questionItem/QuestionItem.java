@@ -55,10 +55,10 @@ public class QuestionItem extends AbstractEntityAudit {
     private Integer responseDomainRevision;
 
     @Column(name = "question")
-    private String questionText;
+    private String question;
 
     @Column(name = "intent")
-    private String questionIntent;
+    private String intent;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
@@ -135,19 +135,19 @@ public class QuestionItem extends AbstractEntityAudit {
 
 
     public String getQuestion() {
-        return questionText;
+        return question;
     }
 
-    public void setQuestion(String questionText) {
-        this.questionText = questionText;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
     public String getIntent() {
-        return questionIntent;
+        return intent;
     }
 
-    public void setIntent(String questionIntent) {
-        this.questionIntent = questionIntent;
+    public void setIntent(String intent) {
+        this.intent = intent;
     }
 
     private Set<ConceptQuestionItem> getConceptQuestionItems() {
@@ -191,8 +191,8 @@ public class QuestionItem extends AbstractEntityAudit {
             return false;
         if (responseDomainRevision != null ? !responseDomainRevision.equals(that.responseDomainRevision) : that.responseDomainRevision != null)
             return false;
-        if (questionText != null ? !questionText.equals(that.questionText) : that.questionText != null) return false;
-        if (questionIntent != null ? !questionIntent.equals(that.questionIntent) : that.questionIntent != null)
+        if (question != null ? !question.equals(that.question) : that.question != null) return false;
+        if (intent != null ? !intent.equals(that.intent) : that.intent != null)
             return false;
         return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
     }
@@ -202,8 +202,8 @@ public class QuestionItem extends AbstractEntityAudit {
         int result = super.hashCode();
         result = 31 * result + (responseDomainUUID != null ? responseDomainUUID.hashCode() : 0);
         result = 31 * result + (responseDomainRevision != null ? responseDomainRevision.hashCode() : 0);
-        result = 31 * result + (questionText != null ? questionText.hashCode() : 0);
-        result = 31 * result + (questionIntent != null ? questionIntent.hashCode() : 0);
+        result = 31 * result + (question != null ? question.hashCode() : 0);
+        result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (conceptRefs != null ? conceptRefs.hashCode() : 0);
         return result;
     }
@@ -211,7 +211,7 @@ public class QuestionItem extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "QuestionItem{" + super.toString() +
-                ", question='" + questionText + '\'' +
+                ", question='" + question + '\'' +
                 ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
                 ", responseUUID=" + responseDomainUUID + '\'' +
                 ", responseRev" + responseDomainRevision  + '\'' +

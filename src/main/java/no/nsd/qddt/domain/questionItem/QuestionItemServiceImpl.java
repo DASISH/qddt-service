@@ -95,7 +95,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Override
     public Page<QuestionItem> getHierarchy(Pageable pageable) {
         return  questionItemRepository.findAll(
-                defaultSort(pageable,"name", "questions.question"))
+                defaultSort(pageable,"name", "question"))
                 .map(this::postLoadProcessing);
     }
 
@@ -117,7 +117,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         name = name.replace("*","%");
 
         return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionLikeIgnoreCase(name,question,
-                defaultSort(pageable,"name","question.question"))
+                defaultSort(pageable,"name","question"))
                 .map(this::postLoadProcessing);
     }
 
@@ -126,7 +126,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         searchString = searchString.replace("*","%");
 
         return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionLikeIgnoreCase(searchString,searchString,
-                defaultSort(pageable,"name","question.question"))
+                defaultSort(pageable,"name","question"))
                 .map(this::postLoadProcessing);
     }
 
