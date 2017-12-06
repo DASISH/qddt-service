@@ -1,10 +1,9 @@
 package no.nsd.qddt.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.history.RevisionRepository;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 
@@ -15,7 +14,7 @@ import java.util.Optional;
  * @author Stig Norland
  */
 @NoRepositoryBean
-public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T,ID> ,JpaSpecificationExecutor<T> {
+public interface BaseRepository<T, ID> extends RevisionRepository<T, ID, Integer>, PagingAndSortingRepository<T, ID> {
 
     Optional<T> findById(ID id);
 

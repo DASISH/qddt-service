@@ -87,14 +87,6 @@ public class QuestionItem extends AbstractEntityAudit {
         this.setChangeComment("Concept reference removed");
     }
 
-    public void updateStatusQI(UUID conceptId) {
-        conceptQuestionItems.forEach(C->{
-            if (C.getConcept().getId().equals(conceptId)) {
-                updateStatusQI(C.getConcept());
-            }
-        });
-    }
-
     // End pre remove ----------------------------------------------
 
 

@@ -393,10 +393,33 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     }
 
-    @PrePersist
-    private void setDefaults(){
+    @Override
+    protected void beforeUpdate() {
+        System.out.println("Category beforeUpdate " + getName());
         if (inputLimit == null)
             setInputLimit("0","1");
+        beforeInsert();
+    }
+
+    @Override
+    protected void beforeInsert() {
+        System.out.println("Category beforeInsert " + getName());
+        if (getCategoryType() == null)
+            setCategoryType(CategoryType.CATEGORY);
+        switch (getCategoryType()) {
+            case DATETIME:
+            case TEXT:
+            case NUMERIC:
+            case CATEGORY:
+                setHierarchyLevel(HierarchyLevel.ENTITY);
+                break;
+            case MISSING_GROUP:
+            case LIST:
+            case SCALE:
+            case MIXED:
+                setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
+                break;
+        }
     }
 
     @Override

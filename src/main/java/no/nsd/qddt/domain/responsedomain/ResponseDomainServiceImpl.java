@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
-import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +72,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {
-        instance.populateCodes();
+        
+        if (instance.getManagedRepresentation().getId() == null) {
+            instance.beforeUpdate();
+            instance.setManagedRepresentation(
+                categoryService.save(
+                    instance.getManagedRepresentation()));
+        } else
+            instance.populateCodes();
 
         if(instance.isBasedOn()) {
             Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
@@ -109,27 +114,27 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
                 pageable);
     }
 
-    @Override
-    public ResponseDomain createMixed(UUID rdId, UUID missingId){
-        ResponseDomain old = findOne(rdId);
-        Category missing = categoryService.findOne(missingId);
-        Category mixedCa = new Category();
-
-        mixedCa.setName(old.getManagedRepresentation().getName() +" + " + missing.getName());
-        mixedCa.setCategoryType(CategoryType.MIXED);
-        mixedCa.addChild(old.getManagedRepresentation());
-        mixedCa.addChild(missing);
-
-        ResponseDomain mixedRd = new ResponseDomain();
-        mixedRd.setManagedRepresentation(mixedCa);
-        mixedRd.setName(old.getName() + " + " + missing.getName());
-        mixedRd.setDescription(old.getDescription() + System.lineSeparator() + missing.getDescription());
-        mixedRd.setResponseKind(ResponseKind.MIXED);
-        mixedRd.setDisplayLayout(old.getDisplayLayout());
-        mixedRd.setCodes(old.getCodes());
-
-        return  save(mixedRd);
-    }
+//    @Override
+//    public ResponseDomain createMixed(UUID rdId, UUID missingId){
+//        ResponseDomain old = findOne(rdId);
+//        Category missing = categoryService.findOne(missingId);
+//        Category mixedCa = new Category();
+//
+//        mixedCa.setName(old.getManagedRepresentation().getName() +" + " + missing.getName());
+//        mixedCa.setCategoryType(CategoryType.MIXED);
+//        mixedCa.addChild(old.getManagedRepresentation());
+//        mixedCa.addChild(missing);
+//
+//        ResponseDomain mixedRd = new ResponseDomain();
+//        mixedRd.setManagedRepresentation(mixedCa);
+//        mixedRd.setName(old.getName() + " + " + missing.getName());
+//        mixedRd.setDescription(old.getDescription() + System.lineSeparator() + missing.getDescription());
+//        mixedRd.setResponseKind(ResponseKind.MIXED);
+//        mixedRd.setDisplayLayout(old.getDisplayLayout());
+//        mixedRd.setCodes(old.getCodes());
+//
+//        return  save(mixedRd);
+//    }
 
 
     private String likeify(String value){

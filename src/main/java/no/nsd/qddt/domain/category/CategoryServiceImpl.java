@@ -120,12 +120,12 @@ class CategoryServiceImpl implements CategoryService {
             Code c =  instance.getCode();
             if (instance.getId() == null)
                 instance = categoryRepository.save(instance);
-            else {
-                Category fromRepository = findOne(instance.getId());
-                if (!instance.fieldCompare(fromRepository)) {
-                    instance = categoryRepository.save(instance);
-                }
-            }
+//            else {
+//                Category fromRepository = findOne(instance.getId());
+//                if (!instance.fieldCompare(fromRepository)) {
+//                    instance = categoryRepository.save(instance);
+//                }
+//            }
             instance.setCode(c);
         }catch (Exception e) {
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());

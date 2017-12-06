@@ -18,7 +18,7 @@ public abstract class AbstractAuditFilter<N extends Number & Comparable<N>, T ex
     protected abstract Revision<N, T> postLoadProcessing(Revision<N, T> instance);
 
     protected Page<Revision<N, T>> getPageIncLatest(Revisions<N, T> revisions, Collection<AbstractEntityAudit.ChangeKind> filter, Pageable pageable) {
-        int skip = pageable.getOffset();
+        long skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         long totalsize = revisions.getContent().stream().filter(c -> !filter.contains(c.getEntity().getChangeKind())).count();
         return new PageImpl<>(
@@ -39,7 +39,7 @@ public abstract class AbstractAuditFilter<N extends Number & Comparable<N>, T ex
     }
 
     protected Page<Revision<N, T>> getPage(Revisions<N, T> revisions, Collection<AbstractEntityAudit.ChangeKind> filter, Pageable pageable) {
-        int skip = pageable.getOffset();
+        long skip = pageable.getOffset();
         int limit = pageable.getPageSize();
         long totalsize = revisions.getContent().stream().filter(f -> !filter.contains(f.getEntity().getChangeKind())).count();
         return new PageImpl<>(

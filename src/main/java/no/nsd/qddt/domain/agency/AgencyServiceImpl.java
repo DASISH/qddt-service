@@ -28,7 +28,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return agencyRepository.exists(uuid);
+        return agencyRepository.existsById(uuid);
     }
 
     @Override
@@ -39,25 +39,28 @@ class AgencyServiceImpl implements AgencyService {
         );
     }
 
+//    @Override
+//    public List<Agency> save(List<Agency> instances) {
+//        List<Agency> target = new ArrayList<>();
+//        agencyRepository.saveAll(instances).forEach(target::add);
+//        return target;
+//    }
+
     @Override
     @Transactional()
     public Agency save(Agency instance) {
         return agencyRepository.save(instance);
     }
 
-    @Override
-    public List<Agency> save(List<Agency> instances) {
-        return agencyRepository.save(instances);
-    }
 
     @Override
     public void delete(UUID uuid) {
-        agencyRepository.delete(uuid);
+        agencyRepository.deleteById(uuid);
     }
 
     @Override
     public void delete(List<Agency> instances) {
-        agencyRepository.delete(instances);
+        agencyRepository.deleteAll(instances);
     }
 
     protected Agency prePersistProcessing(Agency instance) {

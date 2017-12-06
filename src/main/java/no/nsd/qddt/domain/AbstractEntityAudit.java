@@ -213,16 +213,18 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @PrePersist
     private void onInsert(){
-//        System.out.println("PrePersist");
+        System.out.println("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
         changeKind = AbstractEntityAudit.ChangeKind.CREATED;
         version = new Version(true);
+        beforeInsert();
     }
 
     @PreUpdate
     private void onUpdate(){
         try {
+            System.out.println("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
             AbstractEntityAudit.ChangeKind change = changeKind;
             if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
@@ -261,6 +263,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                     break;
             }
             version = ver;
+            beforeUpdate();
         }catch (Exception ex){
             System.out.println("Exception in AbstractEntityAudit::onUpdate");
             StackTraceFilter.println(ex.getStackTrace());
@@ -268,6 +271,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             System.out.println(this);
         }
     }
+
+    protected void beforeUpdate() {}
+
+    protected void beforeInsert() {}
+
 
     /**
      * None null field compare, (ignores null value when comparing)

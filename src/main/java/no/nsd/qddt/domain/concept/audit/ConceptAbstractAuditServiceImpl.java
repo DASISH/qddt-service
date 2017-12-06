@@ -43,12 +43,12 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Conce
 
     @Override
     public Revision<Integer, Concept> findLastChange(UUID uuid) {
-        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, Concept> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -81,9 +81,7 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Conce
     @Override
     protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
-        return new Revision<>(
-                instance.getMetadata(),
-                postLoadProcessing(instance.getEntity()));
+        return Revision.of(instance.getMetadata(),postLoadProcessing(instance.getEntity()));
     }
 
     private Concept postLoadProcessing(Concept instance) {

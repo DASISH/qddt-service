@@ -16,5 +16,5 @@ public interface ResponseDomainService extends BaseService<ResponseDomain,UUID> 
 
     Page<ResponseDomain> findByQuestion(ResponseKind responseKind, String question,  Pageable pageable);
 
-    ResponseDomain createMixed(UUID rdId, UUID missingId);
+//    ResponseDomain createMixed(UUID rdId, UUID missingId);
 }

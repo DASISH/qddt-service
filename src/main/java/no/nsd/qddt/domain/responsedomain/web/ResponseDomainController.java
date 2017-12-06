@@ -56,16 +56,16 @@ public class ResponseDomainController {
         assert  responseDomain != null;
         responseDomain = service.save(responseDomain);
         //HACK -> after saving responsdomain, save managed representation one more time to correct name and version...
-        categoryService.save(responseDomain.getManagedRepresentation());
+//        categoryService.save(responseDomain.getManagedRepresentation());
         return responseDomain;
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseDomainJsonEdit createMixed(@RequestParam("responseDomaindId") UUID rdId, @RequestParam("missingId") UUID missingId) {
-
-        return responseDomain2Json(service.createMixed(rdId,missingId));
-    }
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
+//    public ResponseDomainJsonEdit createMixed(@RequestParam("responseDomaindId") UUID rdId, @RequestParam("missingId") UUID missingId) {
+//
+//        return responseDomain2Json(service.createMixed(rdId,missingId));
+//    }
 
 
     @ResponseStatus(value = HttpStatus.OK)

@@ -233,14 +233,15 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     public void setManagedRepresentation(Category managedRepresentation) {
+        System.out.println("setManagedRepresentation");
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
         this.managedRepresentation = managedRepresentation;
-        setDefaultValues();
+//        beforeUpdate();
     }
 
-    @PrePersist
-    private void setDefaultValues() {
+    @Override
+    protected void beforeUpdate() {
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
@@ -252,7 +253,14 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 getDescription()));
         managedRepresentation.setChangeComment("");
         managedRepresentation.setChangeKind(getChangeKind());
+        if(!getVersion().isModified()) {
+            System.out.println("onUpdate not run yet ♣♣♣ ");
+//            onUpdate();
+        }
+
         managedRepresentation.setVersion(getVersion());
+        System.out.println("ResponseDomain PrePersist " + getName() + " - " + getVersion());
+
     }
 
     public List<Code> getCodes() {
@@ -266,20 +274,11 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
 
-//    private Set<QuestionItemRef> questionItemRefs = new HashSet<>();
-
     @Transient
     @JsonSerialize
     @JsonDeserialize
     public Set<QuestionItemRef> getQuestionRefs(){
         return  new HashSet<>();
-//        try {
-////        return questionItems.stream().collect(Collectors.toMap(p-> p.getId(), c-> new QuestionRef(c)));
-//            return questionItems.stream().map(qi -> new QuestionItemRef(qi)).collect(Collectors.toSet());
-//        } catch (Exception ex){
-//            System.out.println("getQuestionRefs->" + ex.getMessage());
-//            return  new HashSet<>();
-//        }
     }
 
     @Override

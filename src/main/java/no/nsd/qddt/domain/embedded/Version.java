@@ -76,6 +76,11 @@ public class Version implements Comparable<Version> {
         return isNew;
     }
 
+    @JsonIgnore
+    public boolean isModified() {
+        return isModified;
+    }
+
     public Version() {   }
 
     public Version(Integer major, Integer minor, Integer revision, String label) {
