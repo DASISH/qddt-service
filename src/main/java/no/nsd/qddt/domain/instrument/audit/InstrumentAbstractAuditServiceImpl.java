@@ -20,7 +20,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("instrumentAuditService")
-class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Instrument> implements InstrumentAuditService {
+class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Instrument> implements InstrumentAuditService {
 
     private final InstrumentAuditRepository instrumentAuditRepository;
     private final CommentService commentService;
@@ -33,23 +33,23 @@ class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Ins
     }
 
     @Override
-    public Revision<Integer, Instrument> findLastChange(UUID uuid) {
-        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid));
+    public Revision<Long, Instrument> findLastChange(UUID uuid) {
+        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
-    public Revision<Integer, Instrument> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision));
+    public Revision<Long, Instrument> findRevision(UUID uuid, Long revision) {
+        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
-    public Page<Revision<Integer, Instrument>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Long, Instrument>> findRevisions(UUID uuid, Pageable pageable) {
         return instrumentAuditRepository.findRevisions(uuid, pageable).
                 map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Integer, Instrument> findFirstChange(UUID uuid) {
+    public Revision<Long, Instrument> findFirstChange(UUID uuid) {
         return postLoadProcessing(
             instrumentAuditRepository.findRevisions(uuid)
                 .reverse().getContent().get(0));
@@ -61,12 +61,12 @@ class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Ins
     }
 
     @Override
-    public Page<Revision<Integer, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Long, Instrument>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(instrumentAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
+    protected Revision<Long, Instrument> postLoadProcessing(Revision<Long, Instrument> instance) {
         assert  (instance != null);
         List<Comment> coms;
         if (showPrivateComments)

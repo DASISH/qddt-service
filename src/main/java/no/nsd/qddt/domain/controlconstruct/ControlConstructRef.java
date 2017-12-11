@@ -31,7 +31,7 @@ public class ControlConstructRef implements java.io.Serializable {
     private UUID controlConstructId;
 
     @Column(name = "controlconstruct_revision")
-    private Integer controlConstructRevision;
+    private Long controlConstructRevision;
 
     private String name;
 
@@ -92,11 +92,11 @@ public class ControlConstructRef implements java.io.Serializable {
         this.controlConstructId = controlConstructId;
     }
 
-    public Integer getControlConstructRevision() {
+    public Long getControlConstructRevision() {
         return controlConstructRevision;
     }
 
-    public void setControlConstructRevision(Integer controlConstructRevision) {
+    public void setControlConstructRevision(Long controlConstructRevision) {
         this.controlConstructRevision = controlConstructRevision;
     }
 

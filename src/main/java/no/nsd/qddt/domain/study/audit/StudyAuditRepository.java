@@ -15,7 +15,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface StudyAuditRepository extends RevisionRepository<Study, UUID, Integer> {
+interface StudyAuditRepository extends RevisionRepository<Study, UUID, Long> {
 
-    Page<Revision<Integer,Study>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Long,Study>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }

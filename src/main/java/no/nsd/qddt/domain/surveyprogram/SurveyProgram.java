@@ -128,7 +128,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
     }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         getStudies().forEach(s->s.makeNewCopy(revision));

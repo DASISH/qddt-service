@@ -37,7 +37,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return responseDomainRepository.exists(uuid);
+        return responseDomainRepository.existsById(uuid);
     }
 
     @Override
@@ -54,25 +54,25 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
                         prePersistProcessing(instance)));
     }
 
-    @Override
-    public List<ResponseDomain> save(List<ResponseDomain> instances) {
-        instances.forEach(this::prePersistProcessing);
-        return responseDomainRepository.save(instances);
-    }
+//    @Override
+//    public List<ResponseDomain> save(List<ResponseDomain> instances) {
+//        instances.forEach(this::prePersistProcessing);
+//        return responseDomainRepository.save(instances);
+//    }
 
     @Override
     public void delete(UUID uuid) {
-        responseDomainRepository.delete(uuid);
+        responseDomainRepository.deleteById(uuid);
     }
 
     @Override
     public void delete(List<ResponseDomain> instances) {
-        responseDomainRepository.delete(instances);
+        responseDomainRepository.deleteAll(instances);
     }
 
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {
-        
+
         if (instance.getManagedRepresentation().getId() == null) {
             instance.beforeUpdate();
             instance.setManagedRepresentation(
@@ -82,7 +82,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
             instance.populateCodes();
 
         if(instance.isBasedOn()) {
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().get();
             instance.makeNewCopy(rev);
         } else if (instance.isNewCopy()) {
             instance.makeNewCopy(null);

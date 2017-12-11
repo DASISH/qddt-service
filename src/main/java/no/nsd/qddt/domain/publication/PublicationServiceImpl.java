@@ -67,13 +67,13 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return repository.exists(uuid);
+        return repository.existsById(uuid);
     }
 
 
     @Override
     public Publication findOne(UUID uuid) {
-        return postLoadProcessing(repository.findOne(uuid));
+        return postLoadProcessing(repository.findById(uuid).get());
     }
 
 
@@ -84,24 +84,24 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-    @Override
-    @Transactional()
-    public List<Publication> save(List<Publication> instances) {
-        return repository.save(instances);
-    }
+//    @Override
+//    @Transactional()
+//    public List<Publication> save(List<Publication> instances) {
+//        return repository.saveAll(instances);
+//    }
 
 
     @Override
     @Transactional()
     public void delete(UUID uuid) {
-        repository.delete(uuid);
+        repository.deleteById(uuid);
     }
 
 
     @Override
     @Transactional()
     public void delete(List<Publication> instances) {
-        repository.delete(instances);
+        repository.deleteAll(instances);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class PublicationServiceImpl implements PublicationService {
         } catch (RevisionDoesNotExistException e) {
             Revision rev = service.findLastChange(element.getId());
             element.setElement(rev.getEntity());
-            element.setRevisionNumber(rev.getRevisionNumber().intValue());
+            element.setRevisionNumber((Long)rev.getRevisionNumber().get());
         } catch (JpaSystemException se) {
             System.out.println("PublicationElement - JpaSystemException");
             System.out.println(se.getMessage());

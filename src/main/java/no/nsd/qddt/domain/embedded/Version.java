@@ -23,7 +23,7 @@ public class Version implements Comparable<Version> {
     @JsonSerialize
     @JsonDeserialize
     @Column(name ="rev")
-    private Integer revision;
+    private Long revision;
 
     @Transient
     private boolean isModified = false;
@@ -63,11 +63,11 @@ public class Version implements Comparable<Version> {
         this.versionLabel = versionLabel;
     }
 
-    public Integer getRevision() {
+    public Long getRevision() {
         return revision;
     }
 
-    public void setRevision(Integer revision) {
+    public void setRevision(Long revision) {
         this.revision = revision;
     }
 
@@ -83,7 +83,7 @@ public class Version implements Comparable<Version> {
 
     public Version() {   }
 
-    public Version(Integer major, Integer minor, Integer revision, String label) {
+    public Version(Integer major, Integer minor, Long revision, String label) {
         this.major = major;
         this.minor = minor;
         this.revision = revision;

@@ -16,7 +16,7 @@ public class TopicGroupQuestionItemJson {
 
     private QuestionItemJsonView questionItem;
 
-    private Integer questionItemRevision;
+    private Long questionItemRevision;
 
 //    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
@@ -49,11 +49,11 @@ public class TopicGroupQuestionItemJson {
         this.questionItem = questionItem;
     }
 
-    public Integer getQuestionItemRevision() {
+    public Long getQuestionItemRevision() {
         return questionItemRevision;
     }
 
-    private void setQuestionItemRevision(Integer questionItemRevision) {
+    private void setQuestionItemRevision(Long questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
 

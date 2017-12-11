@@ -19,7 +19,7 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private QuestionItemSimpleJson questionItem;
 
-    private Integer questionItemRevision;
+    private Long questionItemRevision;
 
     private String label;
 
@@ -52,11 +52,11 @@ public class ConstructQuestionJson  extends ConstructJson {
         this.questionItem = questionItem;
     }
 
-    public Integer getQuestionItemRevision() {
+    public Long getQuestionItemRevision() {
         return questionItemRevision;
     }
 
-    public void setQuestionItemRevision(Integer questionItemRevision) {
+    public void setQuestionItemRevision(Long questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
 

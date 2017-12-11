@@ -212,7 +212,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         getConceptQuestionItems().forEach(q-> q.makeNewCopy(revision));

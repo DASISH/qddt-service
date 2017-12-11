@@ -6,6 +6,6 @@ package no.nsd.qddt.domain.conceptquestionitem;
 public interface ParentQuestionItem {
 
     ParentQuestionItemId getId();
-    Integer getQuestionItemRevision();
+    Long getQuestionItemRevision();
 
 }

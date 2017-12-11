@@ -186,7 +186,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
 //        getConcepts().forEach(c->c.makeNewCopy(revision));

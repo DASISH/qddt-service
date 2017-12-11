@@ -52,7 +52,7 @@ public class QuestionItem extends AbstractEntityAudit {
     private UUID responseDomainUUID;
 
     @Column(name = "responsedomain_revision")
-    private Integer responseDomainRevision;
+    private Long responseDomainRevision;
 
     @Column(name = "question")
     private String question;
@@ -109,11 +109,11 @@ public class QuestionItem extends AbstractEntityAudit {
             this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
     }
 
-    public Integer getResponseDomainRevision() {
+    public Long getResponseDomainRevision() {
         return responseDomainRevision == null? 0:responseDomainRevision;
     }
 
-    public void setResponseDomainRevision(Integer responseDomainRevision) {
+    public void setResponseDomainRevision(Long responseDomainRevision) {
         this.responseDomainRevision = responseDomainRevision;
     }
 
@@ -211,7 +211,7 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         setConceptQuestionItems(null);

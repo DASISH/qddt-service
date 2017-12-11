@@ -67,7 +67,7 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
 
 
     @Column(name = "QUESTIONITEM_REVISION")
-    private Integer questionItemRevision;
+    private Long questionItemRevision;
 
     @Version
     @Column(name = "updated")
@@ -76,7 +76,7 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
     public TopicGroupQuestionItem() {
     }
 
-    public TopicGroupQuestionItem(ParentQuestionItemId id, Integer questionItemRevision){
+    public TopicGroupQuestionItem(ParentQuestionItemId id, Long questionItemRevision){
         setId(id);
         setQuestionItemRevision(questionItemRevision);
     }
@@ -133,13 +133,13 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
     }
 
 
-    public Integer getQuestionItemRevision() {
+    public Long getQuestionItemRevision() {
         if (questionItemRevision==null)
-            questionItemRevision=0;
+            questionItemRevision=0L;
         return questionItemRevision;
     }
 
-    public void setQuestionItemRevision(Integer questionItemRevision) {
+    public void setQuestionItemRevision(Long questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
         if  (getQuestionItem() != null)
             getQuestionItem().getVersion().setRevision(questionItemRevision);
@@ -190,7 +190,7 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
     }
 
 
-    public void makeNewCopy(Integer revision) {
+    public void makeNewCopy(Long revision) {
      //TODO implement
     }
 

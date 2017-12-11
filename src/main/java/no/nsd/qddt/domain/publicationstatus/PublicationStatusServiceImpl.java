@@ -27,12 +27,12 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
     @Override
     public boolean exists(Long id) {
-        return repository.exists(id);
+        return repository.existsById(id);
     }
 
     @Override
     public PublicationStatus findOne(Long id) {
-        return repository.findOne(id);
+        return repository.findById(id).get();
     }
 
     @Override
@@ -41,20 +41,20 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
                 prePersistProcessing(instance));
     }
 
-    @Override
-    public List<PublicationStatus> save(List<PublicationStatus> instances) {
-        instances.forEach(this::prePersistProcessing);
-        return repository.save(instances);
-    }
+//    @Override
+//    public List<PublicationStatus> save(List<PublicationStatus> instances) {
+//        instances.forEach(this::prePersistProcessing);
+//        return repository.save(instances);
+//    }
 
     @Override
     public void delete(Long id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
     @Override
     public void delete(List<PublicationStatus> instances) {
-        repository.delete(instances);
+        repository.deleteAll(instances);
     }
 
 

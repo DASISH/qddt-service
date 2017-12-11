@@ -108,7 +108,7 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
 
 
     @Column(name = "QUESTIONITEM_REVISION")
-    private Integer questionItemRevision;
+    private Long questionItemRevision;
 
     @Version
     @Column(name = "updated")
@@ -117,7 +117,7 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
     public ConceptQuestionItem() {
     }
 
-    public ConceptQuestionItem(ParentQuestionItemId id, Integer questionItemRevision){
+    public ConceptQuestionItem(ParentQuestionItemId id, Long questionItemRevision){
         setId(id);
         setQuestionItemRevision(questionItemRevision);
     }
@@ -173,13 +173,13 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
     }
 
 
-    public Integer getQuestionItemRevision() {
+    public Long getQuestionItemRevision() {
         if (questionItemRevision==null)
-            questionItemRevision=0;
+            questionItemRevision=0L;
         return questionItemRevision;
     }
 
-    public void setQuestionItemRevision(Integer questionItemRevision) {
+    public void setQuestionItemRevision(Long questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
         if  (getQuestionItem() != null)
             getQuestionItem().getVersion().setRevision(questionItemRevision);
@@ -230,7 +230,7 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
     }
 
 
-    public void makeNewCopy(Integer revision) {
+    public void makeNewCopy(Long revision) {
         // nothing needs to be done here, this should save correctly without any changes.
     }
 

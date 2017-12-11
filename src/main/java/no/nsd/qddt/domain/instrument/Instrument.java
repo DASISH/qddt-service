@@ -150,7 +150,7 @@ public class Instrument extends AbstractEntityAudit  {
 
 
 //    @Override
-//    public void makeNewCopy(Integer revision){
+//    public void makeNewCopy(Long revision){
 //        if (hasRun) return;
 //        super.makeNewCopy(revision);
 //        getControlConstructs().getChildren().forEach(c->c.makeNewCopy(revision));

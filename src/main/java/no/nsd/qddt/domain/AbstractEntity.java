@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.user.User;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -27,8 +26,8 @@ public abstract class AbstractEntity {
     @Id
     @Type(type="pg-uuid")
     @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
+//    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue
     private UUID id;
 
 

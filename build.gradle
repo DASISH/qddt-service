@@ -8,18 +8,18 @@ buildscript {
     }
     dependencies {
         classpath(
-                "org.springframework.boot:spring-boot-gradle-plugin:1.2.8.RELEASE",
                 "com.bmuschko:gradle-docker-plugin:3.0.3",
         )
     }
 }
 
 plugins {
+    id 'org.springframework.boot' version '1.5.2.RELEASE'
     id "org.asciidoctor.convert" version "1.5.2"
 }
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 //apply plugin: 'com.bmuschko.docker-remote-api'
 
 import com.bmuschko.gradle.docker.tasks.container.*
@@ -33,7 +33,7 @@ idea {
 }
 
 def baseName = 'QDDT'
-def version = '0.9.0'
+def version = '0.9.9'
 group = 'no.nsd'
 description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
 
@@ -46,6 +46,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url "http://repo.spring.io/libs-release" }
+    maven { url "http://repo.spring.io/milestone" }
 }
 
 dependencies {
@@ -53,29 +54,45 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
-    compile("org.springframework.boot:spring-boot-starter-jetty")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.hateoas:spring-hateoas")
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
-    compile("org.springframework.cloud:spring-cloud-security:1.0.2.RELEASE")
-    compile("org.jadira.usertype:usertype.extended:3.2.0.GA")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.5")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.5")
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    compile group: 'org.springframework.hateoas', name: 'spring-hateoas'
+    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-security' , version: '1.2.1.RELEASE'
+    compile("org.jadira.usertype:usertype.extended:5.0.0.GA")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.10")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.10")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
-    compile("postgresql:postgresql:9.1-901-1.jdbc4")
-    compile 'org.springframework.data:spring-data-envers:1.1.8.RELEASE'
-    compile("org.hibernate:hibernate-validator")
-    compile("org.hibernate:hibernate-envers")
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+
+    // https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api
+    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.0.Final'
+
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.12.Final'
+//    depricated, included in hibernate-code
+//    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.12.Final'
+    compile group: 'org.hibernate', name: 'hibernate-envers', version: '5.2.12.Final'
+
+//    compile("org.hibernate:hibernate-validator:5.2.4.Final")/
+
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.2.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version: '2.0.2.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-envers', version: '2.0.2.RELEASE'
+
     compile("joda-time:joda-time")
-    compile("javax.json:javax.json-api:1.0")
-    compile("org.glassfish:javax.json:1.0.4")
-    compile("com.itextpdf:itext7-core:7.0.4")
+//    compile("javax.json:javax.json-api:1.0")
+//    compile("org.glassfish:javax.json:1.0.4")
+    compile group: 'javax.json', name: 'javax.json-api', version: '1.1.2'
+    compile group: 'org.glassfish', name: 'javax.json', version: '1.1.2'
+
+    compile("com.itextpdf:itext7-core:7.0.5")
+
 
     testCompile(
             "junit:junit",
             "org.springframework.boot:spring-boot-starter-test",
-            "org.springframework.security:spring-security-test:4.0.2.RELEASE",
+            "org.springframework.security:spring-security-test",
             "com.jayway.jsonpath:json-path",
             "org.springframework.restdocs:spring-restdocs-mockmvc:1.0.0.RELEASE"
     )
@@ -148,5 +165,5 @@ if(!org.gradle.internal.os.OperatingSystem.current().windows) {
     }
 }
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2'
+    gradleVersion = '4.4'
 }

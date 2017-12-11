@@ -118,7 +118,7 @@ public class TopicGroupController {
                 questionItemRevision=0;
             topicGroup.addTopicQuestionItem(
                     new TopicGroupQuestionItem(
-                            new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.intValue()));
+                            new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.longValue()));
 
             return new TopicGroupJson(service.save(topicGroup));
         }catch (Exception ex){

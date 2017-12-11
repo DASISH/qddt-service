@@ -47,7 +47,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return topicGroupRepository.exists(uuid);
+        return topicGroupRepository.existsById(uuid);
     }
 
     @Override
@@ -73,23 +73,23 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return instance;
     }
 
-    @Override
-    @Transactional
-    public List<TopicGroup> save(List<TopicGroup> instances) {
-        return topicGroupRepository.save(instances);
-    }
+//    @Override
+//    @Transactional
+//    public List<TopicGroup> save(List<TopicGroup> instances) {
+//        return topicGroupRepository.saveAll(instances);
+//    }
 
 
     @Override
     @Transactional
     public void delete(UUID uuid) {
-        topicGroupRepository.delete(uuid);
+        topicGroupRepository.deleteById(uuid);
     }
 
     @Override
     @Transactional
     public void delete(List<TopicGroup> instances) {
-        topicGroupRepository.delete(instances);
+        topicGroupRepository.deleteAll(instances);
     }
 
 
@@ -101,9 +101,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
             instance.setChangeComment(changecomment);
         }
         if (instance.isBasedOn()){
-            Revision<Integer, TopicGroup> lastChange
+            Revision<Long, TopicGroup> lastChange
                     = auditService.findLastChange(instance.getId());
-            instance.makeNewCopy(lastChange.getRevisionNumber());
+            instance.makeNewCopy(lastChange.getRevisionNumber().get());
         }
 
         if( instance.isNewCopy()){
@@ -120,12 +120,12 @@ class TopicGroupServiceImpl implements TopicGroupService {
         assert  (instance != null);
         try{
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
-                Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
+                Revision<Long, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
                         cqi.getId().getQuestionItemId(),
                         cqi.getQuestionItemRevision());
                 cqi.setQuestionItem(rev.getEntity());
-                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
-                    cqi.setQuestionItemRevision(rev.getRevisionNumber());
+                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().get())) {
+                    cqi.setQuestionItemRevision(rev.getRevisionNumber().get());
                 }
             }
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
@@ -142,7 +142,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Transactional
     public void delete(TopicGroup instance) {
-        topicGroupRepository.delete(instance.getId());
+        topicGroupRepository.deleteById(instance.getId());
     }
 
     @Override

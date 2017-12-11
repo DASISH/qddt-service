@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.user;
 
 import no.nsd.qddt.domain.BaseService;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
@@ -8,7 +9,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-
+@Service
 public interface UserService extends BaseService<User,UUID> {
 
     /**

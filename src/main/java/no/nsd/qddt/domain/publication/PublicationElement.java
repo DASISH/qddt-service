@@ -29,7 +29,7 @@ public class PublicationElement  {
     private UUID id;
 
     @Column(name = "revision")
-    private Integer revisionNumber;
+    private Long revisionNumber;
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
@@ -52,7 +52,7 @@ public class PublicationElement  {
     public PublicationElement() {
     }
 
-    public PublicationElement(ElementKind kind,UUID id,Integer rev) {
+    public PublicationElement(ElementKind kind,UUID id,Long rev) {
         setElementEnum(kind);
         setId(id);
         setRevisionNumber(rev);
@@ -69,12 +69,12 @@ public class PublicationElement  {
     }
 
 
-    public Integer getRevisionNumber() {
+    public Long getRevisionNumber() {
         return revisionNumber;
     }
 
 
-    public void setRevisionNumber(Integer revisionNumber) {
+    public void setRevisionNumber(Long revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
 

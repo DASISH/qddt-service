@@ -10,7 +10,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface ConceptAuditRepository extends RevisionRepository<Concept, UUID, Integer> {
+interface ConceptAuditRepository extends RevisionRepository<Concept, UUID, Long> {
 
 
 }

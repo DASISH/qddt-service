@@ -15,8 +15,8 @@ import java.util.UUID;
  */
 
 
-@Service("userService")
-class UserServiceImpl implements UserService{
+@Service
+class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -33,7 +33,7 @@ class UserServiceImpl implements UserService{
 
     @Override
     public boolean exists(UUID uuid) {
-        return userRepository.exists(uuid);
+        return userRepository.existsById(uuid);
     }
 
     @Override
@@ -51,19 +51,19 @@ class UserServiceImpl implements UserService{
                         prePersistProcessing(user)));
     }
 
-    @Override
-    public List<User> save(List<User> instances) {
-        return userRepository.save(instances);
-    }
+//    @Override
+//    public List<User> save(List<User> instances) {
+//        return userRepository.save(instances);
+//    }
 
     @Override
     public void delete(UUID uuid) {
-        userRepository.delete(uuid);
+        userRepository.deleteById(uuid);
     }
 
     @Override
     public void delete(List<User> instances) {
-        userRepository.delete(instances);
+        userRepository.deleteAll(instances);
     }
 
 

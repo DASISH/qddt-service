@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, RevisionRepository<OtherMaterial, UUID, Integer> {
+interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, RevisionRepository<OtherMaterial, UUID, Long> {
 
     Optional<OtherMaterial> findByOwnerAndOriginalName(UUID owner, String name);
 

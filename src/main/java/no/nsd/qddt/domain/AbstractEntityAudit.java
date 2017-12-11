@@ -109,7 +109,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     private UUID basedOnObject;
 
     @Column(name = "based_on_revision",updatable = false, nullable = false)
-    private Integer basedOnRevision;
+    private Long basedOnRevision;
 
 
     @Embedded
@@ -152,11 +152,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         this.basedOnObject = basedOnObject;
     }
 
-    public Integer getBasedOnRevision() {
+    public Long getBasedOnRevision() {
         return basedOnRevision;
     }
 
-    private void setBasedOnRevision(Integer basedOnRevision) {
+    private void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
@@ -315,7 +315,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     This function should contain all copy code needed to make a complete copy of hierarchy under this element
     (an override should propagate downward and call makeNewCopy on it's children).
      */
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         if (revision != null) {
             setBasedOnObject(getId());

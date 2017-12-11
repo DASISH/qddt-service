@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -18,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 @EnableWebSecurity
-@EnableWebMvcSecurity
+//@EnableWebMvcSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -38,12 +37,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * @return application wide password encoder.
      */
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Configuration
-    protected static class AUthenticationConfiguration extends GlobalAuthenticationConfigurerAdapter {
+    protected static class AuthenticationConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
         @Autowired
         private QDDTUserDetailsService qddtUserDetailsService;
@@ -53,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Override
         public void init(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(this.qddtUserDetailsService).passwordEncoder(passwordEncoder);
+            auth.userDetailsService(qddtUserDetailsService).passwordEncoder(passwordEncoder);
         }
     }
 }

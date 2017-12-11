@@ -66,7 +66,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     @Column(name = "questionitem_revision")
-    private Integer questionItemRevision;
+    private Long questionItemRevision;
 
     //------------- End QuestionItem revision early bind "hack"------------------
 
@@ -175,11 +175,11 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.questionItem = question;
     }
 
-    public Integer getQuestionItemRevision() {
+    public Long getQuestionItemRevision() {
         return questionItemRevision;
     }
 
-    public void setQuestionItemRevision(Integer questionItemRevision) {
+    public void setQuestionItemRevision(Long questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
 
@@ -424,7 +424,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     @Override
-    public void makeNewCopy(Integer revision) {
+    public void makeNewCopy(Long revision) {
         if (hasRun) return;
         super.makeNewCopy(revision);
         getChildren().forEach(c->c.makeNewCopy(revision));

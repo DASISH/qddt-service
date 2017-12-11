@@ -32,7 +32,7 @@ class UniverseServiceImpl implements UniverseService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return universeRepository.exists(uuid);
+        return universeRepository.existsById(uuid);
     }
 
     @Override
@@ -48,22 +48,22 @@ class UniverseServiceImpl implements UniverseService {
         return universeRepository.save(universe);
     }
 
-    @Override
-    @Transactional()
-    public List<Universe> save(List<Universe> universes) {
-        return universeRepository.save(universes);
-    }
+//    @Override
+//    @Transactional()
+//    public List<Universe> save(List<Universe> universes) {
+//        return universeRepository.save(universes);
+//    }
 
     @Override
     @Transactional()
     public void delete(UUID uuid) {
-        universeRepository.delete(uuid);
+        universeRepository.deleteById(uuid);
     }
 
     @Override
     @Transactional()
     public void delete(List<Universe> universes) {
-        universeRepository.delete(universes);
+        universeRepository.deleteAll(universes);
     }
 
 

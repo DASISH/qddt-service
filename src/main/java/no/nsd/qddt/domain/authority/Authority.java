@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.authority;
 
 import no.nsd.qddt.domain.user.User;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -22,8 +21,8 @@ public class Authority {
     @Id
     @Type(type="pg-uuid")
     @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
+//    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue
     private UUID id;
 
     @Column(name = "name")

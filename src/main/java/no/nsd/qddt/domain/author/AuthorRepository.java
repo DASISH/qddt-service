@@ -15,5 +15,5 @@ import java.util.UUID;
 public interface AuthorRepository extends BaseRepository<Author,UUID> {
 
     @Override
-    Page<Revision<Integer, Author>> findRevisions(UUID uuid, Pageable pageable);
+    Page<Revision<Long, Author>> findRevisions(UUID uuid, Pageable pageable);
 }

@@ -67,7 +67,7 @@ public class ConceptController {
                 questionItemRevision=0;
             concept.addConceptQuestionItem(
                 new ConceptQuestionItem(
-                    new ParentQuestionItemId(conceptId,questionItemId),questionItemRevision.intValue()));
+                    new ParentQuestionItemId(conceptId,questionItemId),questionItemRevision.longValue()));
 
             return concept2Json(service.save(concept));
         }catch (Exception ex){

@@ -13,10 +13,10 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface ConceptAuditService extends BaseServiceAudit<Concept, UUID,Integer> {
+public interface ConceptAuditService extends BaseServiceAudit<Concept, UUID,Long> {
 
-    Page<Revision<Integer, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
-    Page<Revision<Integer, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Long, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Long, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
 
 }

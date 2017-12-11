@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.user;
 
-import no.nsd.qddt.domain.BaseRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,7 +10,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface UserRepository extends BaseRepository<User, UUID> {
+interface UserRepository extends CrudRepository<User, UUID> {
 
     /**
      * Return a user.

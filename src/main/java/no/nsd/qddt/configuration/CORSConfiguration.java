@@ -1,8 +1,7 @@
 package no.nsd.qddt.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ import java.io.IOException;
 public class CORSConfiguration {
 
     @Bean
-    public FilterRegistrationBean corsFilter(@Value("${api.origin:*}") String origin) {
+    public static FilterRegistrationBean corsFilter(@Value("${api.origin:*}") String origin) {
         return new FilterRegistrationBean(new Filter() {
 
             public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)

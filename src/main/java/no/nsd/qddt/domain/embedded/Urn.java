@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.embedded;
 
 import no.nsd.qddt.domain.agency.Agency;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -22,8 +21,8 @@ public class Urn {
     @Id
     @Type(type="pg-uuid")
     @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
+//    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue
     private UUID id;
 
     private Agency agency;

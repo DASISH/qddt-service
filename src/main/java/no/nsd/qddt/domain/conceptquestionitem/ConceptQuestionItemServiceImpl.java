@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -31,12 +30,12 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
 
     @Override
     public boolean exists(ParentQuestionItemId parentQuestionItemId) {
-        return repository.exists(parentQuestionItemId);
+        return repository.existsById(parentQuestionItemId);
     }
 
     @Override
     public ConceptQuestionItem findOne(ParentQuestionItemId parentQuestionItemId) {
-        return postLoadProcessing(repository.findOne(parentQuestionItemId));
+        return postLoadProcessing(repository.findById(parentQuestionItemId).get());
     }
 
     @Override
@@ -44,21 +43,21 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
         return postLoadProcessing(repository.save(instance));
     }
 
-    @Override
-    public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
-        return repository.save(instances).stream().
-                map(this::postLoadProcessing).
-                collect(Collectors.toList());
-    }
+//    @Override
+//    public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
+//        return repository.save(instances).stream().
+//                map(this::postLoadProcessing).
+//                collect(Collectors.toList());
+//    }
 
     @Override
     public void delete(ParentQuestionItemId parentQuestionItemId) throws RequestAbortedException {
-        repository.delete(parentQuestionItemId);
+        repository.deleteById(parentQuestionItemId);
     }
 
     @Override
     public void delete(List<ConceptQuestionItem> instances) {
-        repository.delete(instances);
+        repository.deleteAll(instances);
     }
 
 

@@ -72,7 +72,7 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return categoryRepository.exists(uuid);
+        return categoryRepository.existsById(uuid);
     }
 
     @Override
@@ -91,22 +91,22 @@ class CategoryServiceImpl implements CategoryService {
     }
 
 
-    @Override
-    @Transactional()
-    public List<Category> save(List<Category> instances) {
-        return categoryRepository.save(instances);
-    }
+//    @Override
+//    @Transactional()
+//    public List<Category> save(List<Category> instances) {
+//        return categoryRepository.saveAll(instances);
+//    }
 
 
     @Override
     public void delete(UUID uuid) {
-        categoryRepository.delete(uuid);
+        categoryRepository.deleteById(uuid);
     }
 
 
     @Override
     public void delete(List<Category> instances) {
-        categoryRepository.delete(instances);
+        categoryRepository.deleteAll(instances);
     }
 
     private Category prePersistProcessing(Category instance) {

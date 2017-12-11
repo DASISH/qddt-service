@@ -20,7 +20,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
  * @author Dag Østgulen Heradstveit
  */
 @Service("categoryAuditService")
-class CategoryAuditServiceImpl  extends AbstractAuditFilter<Integer,Category> implements CategoryAuditService {
+class CategoryAuditServiceImpl  extends AbstractAuditFilter<Long,Category> implements CategoryAuditService {
 
     private final CategoryAuditRepository categoryAuditRepository;
 
@@ -31,19 +31,19 @@ class CategoryAuditServiceImpl  extends AbstractAuditFilter<Integer,Category> im
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Category> findLastChange(UUID uuid) {
-        return categoryAuditRepository.findLastChangeRevision(uuid);
+    public Revision<Long, Category> findLastChange(UUID uuid) {
+        return categoryAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Category> findRevision(UUID uuid, Integer revision) {
-        return  categoryAuditRepository.findRevision(uuid, revision);
+    public Revision<Long, Category> findRevision(UUID uuid, Long revision) {
+        return  categoryAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Category>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Long, Category>> findRevisions(UUID uuid, Pageable pageable) {
         try {
             return categoryAuditRepository.findRevisions(uuid,defaultOrModifiedSort(pageable));
             //modified?
@@ -56,14 +56,14 @@ class CategoryAuditServiceImpl  extends AbstractAuditFilter<Integer,Category> im
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Category> findFirstChange(UUID uuid) {
+    public Revision<Long, Category> findFirstChange(UUID uuid) {
         return categoryAuditRepository.findRevisions(uuid)
             .reverse().getContent().get(0);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Category>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Long, Category>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(categoryAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
@@ -76,7 +76,7 @@ class CategoryAuditServiceImpl  extends AbstractAuditFilter<Integer,Category> im
     }
 
     @Override
-    protected Revision<Integer, Category> postLoadProcessing(Revision<Integer, Category> instance) {
+    protected Revision<Long, Category> postLoadProcessing(Revision<Long, Category> instance) {
         return instance;
     }
 }

@@ -32,7 +32,7 @@ class CommentServiceImpl  implements CommentService  {
 
     @Override
     public boolean exists(UUID uuid) {
-        return commentRepository.exists(uuid);
+        return commentRepository.existsById(uuid);
     }
 
     @Override
@@ -48,19 +48,19 @@ class CommentServiceImpl  implements CommentService  {
         return commentRepository.save(instance);
     }
 
-    @Override
-    public List<Comment> save(List<Comment> instances) {
-        return commentRepository.save(instances);
-    }
+//    @Override
+//    public List<Comment> save(List<Comment> instances) {
+//        return commentRepository.saveAll(instances);
+//    }
 
     @Override
     public void delete(UUID uuid) {
-        commentRepository.delete(uuid);
+        commentRepository.deleteById(uuid);
     }
 
     @Override
     public void delete(List<Comment> instances) {
-        commentRepository.delete(instances);
+        commentRepository.deleteAll(instances);
     }
 
 

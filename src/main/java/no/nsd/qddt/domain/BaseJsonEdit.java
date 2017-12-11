@@ -39,7 +39,7 @@ public class BaseJsonEdit implements Serializable {
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    private Integer basedOnRevision;
+    private Long basedOnRevision;
 
     @Embedded
     private Version version;
@@ -115,11 +115,11 @@ public class BaseJsonEdit implements Serializable {
         this.basedOnObject = basedOnObject;
     }
 
-    public Integer getBasedOnRevision() {
+    public Long getBasedOnRevision() {
         return basedOnRevision;
     }
 
-    public void setBasedOnRevision(Integer basedOnRevision) {
+    public void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 

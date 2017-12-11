@@ -31,7 +31,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return instrumentRepository.exists(uuid);
+        return instrumentRepository.existsById(uuid);
     }
 
     @Override
@@ -46,19 +46,19 @@ class InstrumentServiceImpl implements InstrumentService {
         return instrumentRepository.save(instance);
     }
 
-    @Override
-    public List<Instrument> save(List<Instrument> instances) {
-        return instrumentRepository.save(instances);
-    }
+//    @Override
+//    public List<Instrument> save(List<Instrument> instances) {
+//        return instrumentRepository.save(instances);
+//    }
 
     @Override
     public void delete(UUID uuid) {
-        instrumentRepository.delete(uuid);
+        instrumentRepository.deleteById(uuid);
     }
 
     @Override
     public void delete(List<Instrument> instances) {
-        instrumentRepository.delete(instances);
+        instrumentRepository.deleteAll(instances);
     }
 
     @Override

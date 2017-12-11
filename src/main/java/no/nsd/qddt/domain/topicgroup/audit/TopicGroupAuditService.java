@@ -13,10 +13,10 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface TopicGroupAuditService extends BaseServiceAudit<TopicGroup, UUID, Integer> {
+public interface TopicGroupAuditService extends BaseServiceAudit<TopicGroup, UUID, Long> {
 
-    Page<Revision<Integer, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
-    Page<Revision<Integer, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Long, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Long, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
 
 }

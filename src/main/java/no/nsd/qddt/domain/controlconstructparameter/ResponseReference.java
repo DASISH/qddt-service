@@ -31,7 +31,7 @@ public class ResponseReference implements java.io.Serializable {
     private UUID controlConstructRefId;
 
     @Column(name = "controlconstruct_ref_revision")
-    private Integer controlConstructRevision;
+    private Long controlConstructRevision;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "controlconstruct_ref_id",updatable = false,insertable = false)
@@ -54,11 +54,11 @@ public class ResponseReference implements java.io.Serializable {
         this.controlConstructRefId = controlConstructRefId;
     }
 
-    public Integer getControlConstructRevision() {
+    public Long getControlConstructRevision() {
         return controlConstructRevision;
     }
 
-    public void setControlConstructRevision(Integer controlConstructRevision) {
+    public void setControlConstructRevision(Long controlConstructRevision) {
         this.controlConstructRevision = controlConstructRevision;
     }
 

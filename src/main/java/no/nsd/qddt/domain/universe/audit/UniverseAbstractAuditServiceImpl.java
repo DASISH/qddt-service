@@ -16,7 +16,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("universeAuditService")
-class UniverseAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Universe> implements UniverseAuditService {
+class UniverseAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Universe> implements UniverseAuditService {
 
     private final UniverseAuditRepository universeAuditRepository;
 
@@ -26,29 +26,29 @@ class UniverseAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Unive
     }
 
     @Override
-    public Revision<Integer, Universe> findLastChange(UUID uuid) {
-        return universeAuditRepository.findLastChangeRevision(uuid);
+    public Revision<Long, Universe> findLastChange(UUID uuid) {
+        return universeAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
-    public Revision<Integer, Universe> findRevision(UUID uuid, Integer revision) {
-        return universeAuditRepository.findRevision(uuid, revision);
+    public Revision<Long, Universe> findRevision(UUID uuid, Long revision) {
+        return universeAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override
-    public Page<Revision<Integer, Universe>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Long, Universe>> findRevisions(UUID uuid, Pageable pageable) {
         return universeAuditRepository.findRevisions(uuid, pageable);
     }
 
     @Override
-    public Revision<Integer, Universe> findFirstChange(UUID uuid) {
+    public Revision<Long, Universe> findFirstChange(UUID uuid) {
         return postLoadProcessing(
             universeAuditRepository.findRevisions(uuid).
                 getContent().get(0));
     }
 
     @Override
-    public Page<Revision<Integer, Universe>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Long, Universe>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(universeAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
@@ -59,7 +59,7 @@ class UniverseAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Unive
     }
 
     @Override
-    protected Revision<Integer, Universe> postLoadProcessing(Revision<Integer, Universe> instance) {
+    protected Revision<Long, Universe> postLoadProcessing(Revision<Long, Universe> instance) {
         return instance;
     }
 

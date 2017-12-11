@@ -46,7 +46,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return questionItemRepository.exists(uuid);
+        return questionItemRepository.existsById(uuid);
     }
 
     @Override
@@ -71,7 +71,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         }
     }
 
-    @Override
+//    @Override
     public List<QuestionItem> save(List<QuestionItem> instances) {
         return instances.stream().map(this::save).collect(Collectors.toList());
     }
@@ -80,7 +80,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public void delete(UUID uuid) {
         try {
 //            System.out.println("delete question " + uuid);
-            questionItemRepository.delete(uuid);
+            questionItemRepository.deleteById(uuid);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             throw ex;
@@ -89,7 +89,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public void delete(List<QuestionItem> instances) {
-        questionItemRepository.delete(instances);
+        questionItemRepository.deleteAll(instances);
     }
 
     @Override
@@ -139,8 +139,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
-                    Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(rev.getRevisionNumber());
+                    Revision<Long, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
+                    instance.setResponseDomainRevision(rev.getRevisionNumber().get());
                     instance.setResponseDomain(rev.getEntity());
 //                    System.out.println("Latest RD fetched " + rev.getRevisionNumber());
                 } else {
@@ -149,12 +149,12 @@ class QuestionItemServiceImpl implements QuestionItemService {
                         instance.setResponseDomain(rd);
                     } catch (Exception ex){
                         System.out.println(ex.getMessage());
-                        instance.setResponseDomainRevision(0);
+                        instance.setResponseDomainRevision(0L);
                     }
                 }
             }
             else
-                instance.setResponseDomainRevision(0);
+                instance.setResponseDomainRevision(0L);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
@@ -166,7 +166,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private QuestionItem prePersistProcessing(QuestionItem instance){
 
         if(instance.isBasedOn()) {
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().get();
             instance.makeNewCopy(rev);
         } else if (instance.isNewCopy()){
             instance.makeNewCopy(null);
@@ -180,8 +180,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
                 try {
 
 
-                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
+                    Revision<Long, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
+                    instance.setResponseDomainRevision(revnum.getRevisionNumber().get());
                 } catch (Exception ex) {
                     System.out.println("Set default RevisionNumber failed");
                     System.out.println(ex.getMessage());
@@ -189,7 +189,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
             }
         }
         else {
-            instance.setResponseDomainRevision(0);
+            instance.setResponseDomainRevision(0L);
             System.out.println("no repsonsedomain returned from web");
         }
          return instance;

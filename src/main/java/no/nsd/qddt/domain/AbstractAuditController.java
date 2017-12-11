@@ -30,20 +30,20 @@
 //
 //
 //    @RequestMapping(value = "/audit/{id}", method = RequestMethod.GET)
-//    public Revision<Integer, T> getLastRevision(@PathVariable("id") ID id) {
+//    public Revision<long, T> getLastRevision(@PathVariable("id") ID id) {
 //        return service.findLastChange(id);
 //    }
 //
 //    @RequestMapping(value = "/audit/{id}/{revision}", method = RequestMethod.GET)
-//    public Revision<Integer, T> getByRevision(@PathVariable("id") ID id, @PathVariable("revision") Integer revision) {
+//    public Revision<long, T> getByRevision(@PathVariable("id") ID id, @PathVariable("revision") long revision) {
 //        return service.findEntityAtRevision(id, revision);
 //    }
 //
 //    @RequestMapping(value = "/audit/{id}/all", method = RequestMethod.GET)
-//    public HttpEntity<PagedResources<Revision<Integer, Study>>> getAllRevision(
+//    public HttpEntity<PagedResources<Revision<long, Study>>> getAllRevision(
 //            @PathVariable("id") ID id,Pageable pageable, PagedResourcesAssembler assembler){
 //
-//        Page<Revision<Integer, T>> studies = service.findAllRevisionsPageable(id, pageable);
+//        Page<Revision<long, T>> studies = service.findAllRevisionsPageable(id, pageable);
 //        return new ResponseEntity<>(assembler.toResource(studies), HttpStatus.OK);
 //    }
 //}
