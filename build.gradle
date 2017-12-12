@@ -1,26 +1,24 @@
 buildscript {
     repositories {
-        maven { url "http://repo.spring.io/libs-release" }
-        maven { url "https://plugins.gradle.org/m2/" }
-//        mavenLocal()
         mavenCentral()
         jcenter()
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
         classpath(
+//                "org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE",
                 "com.bmuschko:gradle-docker-plugin:3.0.3",
         )
     }
 }
 
 plugins {
-    id 'org.springframework.boot' version '1.5.2.RELEASE'
     id "org.asciidoctor.convert" version "1.5.2"
+    id "org.springframework.boot" version "1.5.9.RELEASE"
 }
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-//apply plugin: 'com.bmuschko.docker-remote-api'
+//apply plugin: 'org.springframework.boot'
 
 import com.bmuschko.gradle.docker.tasks.container.*
 
@@ -53,40 +51,61 @@ dependencies {
 
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
+        exclude module: "org.apache.tomcat.embed"
     }
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '5.0.0.RELEASE'
     compile group: 'org.springframework.hateoas', name: 'spring-hateoas'
-    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-security' , version: '1.2.1.RELEASE'
+    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.0.7.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-security', version: '1.2.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-aop', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-aspects', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-beans', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-expression', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-orm', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-test', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-tx', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-web', version: '5.0.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '5.0.2.RELEASE'
+
+    compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.0.0.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.0.0.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-test', version: '5.0.0.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.0.0.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-web', version: '4.2.1.RELEASE'
+
+
+
+//    compile group: 'org.springframework.data', name: 'spring-data-releasetrain', version: 'Hopper-SR11', ext: 'pom'
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.2.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version: '2.0.2.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-envers', version: '2.0.2.RELEASE'
+
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.1.10.Final'
+    compile group: 'org.hibernate', name: 'hibernate-envers', version: '5.1.10.Final'
+    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.0.Final'
+//    depricated, included in hibernate-code
+//    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.12.Final'
     compile("org.jadira.usertype:usertype.extended:5.0.0.GA")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.10")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.10")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
 
-    // https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api
-    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.0.Final'
-
-    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.12.Final'
-//    depricated, included in hibernate-code
-//    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.12.Final'
-    compile group: 'org.hibernate', name: 'hibernate-envers', version: '5.2.12.Final'
 
 //    compile("org.hibernate:hibernate-validator:5.2.4.Final")/
 
-    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.2.RELEASE'
-    compile group: 'org.springframework.data', name: 'spring-data-commons', version: '2.0.2.RELEASE'
-    compile group: 'org.springframework.data', name: 'spring-data-envers', version: '2.0.2.RELEASE'
 
     compile("joda-time:joda-time")
 //    compile("javax.json:javax.json-api:1.0")
 //    compile("org.glassfish:javax.json:1.0.4")
     compile group: 'javax.json', name: 'javax.json-api', version: '1.1.2'
     compile group: 'org.glassfish', name: 'javax.json', version: '1.1.2'
-
-    compile("com.itextpdf:itext7-core:7.0.5")
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+    compile group: 'com.itextpdf', name: 'itext7-core', version: '7.0.5'
 
 
     testCompile(
