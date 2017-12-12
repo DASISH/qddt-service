@@ -14,11 +14,11 @@ import java.util.UUID;
 @Repository
 interface ConceptRepository extends BaseRepository<Concept,UUID> {
 
-//    Page<Concept> findAll(Pageable pageable);
+    Page<Concept> findAll(Pageable pageable);
 
     Page<Concept> findByTopicGroupIdAndNameIsNotNull(UUID id, Pageable pageable);
 
     Page<Concept> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndBasedOnObjectIsNull(String name, String description, Pageable pageable);
 
-    List<Concept> findByConceptConceptQuestionItemsQuestionItemLateBound(UUID questionItemId);
+    List<Concept> findByConceptQuestionItemsIdQuestionItemId(UUID questionItemId);
 }

@@ -32,7 +32,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return surveyProgramRepository.existsById(uuid);
+        return surveyProgramRepository.exists(uuid);
     }
 
     @Override
@@ -58,20 +58,20 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         return retval;
     }
 
-//    @Override
-//    @Transactional()
-//    public List<SurveyProgram> save(List<SurveyProgram> instances) {
-//        return surveyProgramRepository.save(instances);
-//    }
+    @Override
+    @Transactional()
+    public List<SurveyProgram> save(List<SurveyProgram> instances) {
+        return surveyProgramRepository.save(instances);
+    }
 
     @Override
     public void delete(UUID uuid) {
-        surveyProgramRepository.deleteById(uuid);
+        surveyProgramRepository.delete(uuid);
     }
 
     @Override
     public void delete(List<SurveyProgram> instances) {
-        surveyProgramRepository.deleteAll(instances);
+        surveyProgramRepository.delete(instances);
     }
 
     private SurveyProgram prePersistProcessing(SurveyProgram instance) {

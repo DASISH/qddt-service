@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("studyAuditService")
-class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Study> implements StudyAuditService {
+class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implements StudyAuditService {
 
     private final StudyAuditRepository studyAuditRepository;
     private final CommentService commentService;
@@ -37,24 +37,24 @@ class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Study> impl
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Long, Study> findLastChange(UUID uuid) {
-        return studyAuditRepository.findLastChangeRevision(uuid).get();
+    public Revision<Integer, Study> findLastChange(UUID uuid) {
+        return studyAuditRepository.findLastChangeRevision(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Long, Study> findRevision(UUID uuid, Long revision) {
-        return studyAuditRepository.findRevision(uuid, revision).get();
+    public Revision<Integer, Study> findRevision(UUID uuid, Integer revision) {
+        return studyAuditRepository.findRevision(uuid, revision);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Long, Study>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Integer, Study>> findRevisions(UUID uuid, Pageable pageable) {
         return studyAuditRepository.findRevisions(uuid,pageable);
     }
 
     @Override
-    public Revision<Long, Study> findFirstChange(UUID uuid) {
+    public Revision<Integer, Study> findFirstChange(UUID uuid) {
         return postLoadProcessing(
             studyAuditRepository.findRevisions(uuid)
                 .reverse().getContent().get(0));
@@ -66,12 +66,12 @@ class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Study> impl
     }
 
     @Override
-    public Page<Revision<Long, Study>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, Study>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(studyAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    protected Revision<Long, Study> postLoadProcessing(Revision<Long, Study> instance) {
+    protected Revision<Integer, Study> postLoadProcessing(Revision<Integer, Study> instance) {
         assert  (instance != null);
         postLoadProcessing(instance.getEntity());
         return instance;

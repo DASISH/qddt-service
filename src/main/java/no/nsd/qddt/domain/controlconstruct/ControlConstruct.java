@@ -424,7 +424,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     @Override
-    public void makeNewCopy(Long revision) {
+    public void makeNewCopy(Integer revision) {
         if (hasRun) return;
         super.makeNewCopy(revision);
         getChildren().forEach(c->c.makeNewCopy(revision));

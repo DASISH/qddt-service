@@ -24,7 +24,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("conceptAuditService")
-class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Long, Concept> implements ConceptAuditService  {
+class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> implements ConceptAuditService  {
 
     private final ConceptAuditRepository conceptAuditRepository;
     private final QuestionItemAuditService questionAuditService;
@@ -42,23 +42,23 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Long, Concept>
     }
 
     @Override
-    public Revision<Long, Concept> findLastChange(UUID uuid) {
-        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, Concept> findLastChange(UUID uuid) {
+        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid));
     }
 
     @Override
-    public Revision<Long, Concept> findRevision(UUID uuid, Long revision) {
-        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, Concept> findRevision(UUID uuid, Integer revision) {
+        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision));
     }
 
     @Override
-    public Page<Revision<Long, Concept>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Integer, Concept>> findRevisions(UUID uuid, Pageable pageable) {
         return conceptAuditRepository.findRevisions(uuid, pageable).
                 map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Long, Concept> findFirstChange(UUID uuid) {
+    public Revision<Integer, Concept> findFirstChange(UUID uuid) {
         return postLoadProcessing(conceptAuditRepository.findRevisions(uuid).
             getContent().get(0));
     }
@@ -69,19 +69,21 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Long, Concept>
     }
 
     @Override
-    public Page<Revision<Long, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, Concept>> findRevisionsByChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(conceptAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    public Page<Revision<Long, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPageIncLatest(conceptAuditRepository.findRevisions(id),changeKinds,pageable);
 
     }
     @Override
-    protected Revision<Long, Concept> postLoadProcessing(Revision<Long, Concept> instance) {
+    protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
-        return Revision.of(instance.getMetadata(),postLoadProcessing(instance.getEntity()));
+        return new Revision<>(
+                instance.getMetadata(),
+                postLoadProcessing(instance.getEntity()));
     }
 
     private Concept postLoadProcessing(Concept instance) {
@@ -112,6 +114,6 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Long, Concept>
 
         return questionAuditService.getQuestionItemLastOrRevision(
                 cqi.getId().getQuestionItemId(),
-                cqi.getQuestionItemRevision()).getEntity();
+                cqi.getQuestionItemRevision().intValue()).getEntity();
     }
 }

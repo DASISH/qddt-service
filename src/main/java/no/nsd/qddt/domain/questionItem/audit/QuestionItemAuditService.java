@@ -14,10 +14,10 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface QuestionItemAuditService extends BaseServiceAudit<QuestionItem, UUID, Long> {
+public interface QuestionItemAuditService extends BaseServiceAudit<QuestionItem, UUID, Integer> {
 
-    Page<Revision<Long, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
-    Revision<Long, QuestionItem> getQuestionItemLastOrRevision(UUID id, Long revision);
+    Revision<Integer, QuestionItem> getQuestionItemLastOrRevision(UUID id, Integer revision);
 
 }

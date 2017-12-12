@@ -15,7 +15,7 @@ public class ConceptQuestionItemJson {
 
     private QuestionItemJsonView questionItem;
 
-    private Long questionItemRevision;
+    private Integer questionItemRevision;
 
 //    @JsonSerialize(using = JsonDateSerializer.class)
     private Timestamp updated;
@@ -28,7 +28,7 @@ public class ConceptQuestionItemJson {
         }
         setId(q.getId());
         setQuestionItem(new QuestionItemJsonView(q.getQuestionItem()));
-        setQuestionItemRevision(q.getQuestionItemRevision());
+        setQuestionItemRevision(q.getQuestionItemRevision().intValue());
         setUpdated(q.getUpdated());
     }
 
@@ -48,11 +48,11 @@ public class ConceptQuestionItemJson {
         this.questionItem = questionItem;
     }
 
-    public Long getQuestionItemRevision() {
+    public Integer getQuestionItemRevision() {
         return questionItemRevision;
     }
 
-    private void setQuestionItemRevision(Long questionItemRevision) {
+    private void setQuestionItemRevision(Integer questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
 

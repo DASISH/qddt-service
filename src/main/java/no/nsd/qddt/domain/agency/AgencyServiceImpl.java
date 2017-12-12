@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return agencyRepository.existsById(uuid);
+        return agencyRepository.exists(uuid);
     }
 
     @Override
@@ -39,12 +40,12 @@ class AgencyServiceImpl implements AgencyService {
         );
     }
 
-//    @Override
-//    public List<Agency> save(List<Agency> instances) {
-//        List<Agency> target = new ArrayList<>();
-//        agencyRepository.saveAll(instances).forEach(target::add);
-//        return target;
-//    }
+    @Override
+    public List<Agency> save(List<Agency> instances) {
+        List<Agency> target = new ArrayList<>();
+        agencyRepository.save(instances).forEach(target::add);
+        return target;
+    }
 
     @Override
     @Transactional()
@@ -55,12 +56,12 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public void delete(UUID uuid) {
-        agencyRepository.deleteById(uuid);
+        agencyRepository.delete(uuid);
     }
 
     @Override
     public void delete(List<Agency> instances) {
-        agencyRepository.deleteAll(instances);
+        agencyRepository.delete(instances);
     }
 
     protected Agency prePersistProcessing(Agency instance) {

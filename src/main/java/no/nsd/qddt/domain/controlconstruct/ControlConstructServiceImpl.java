@@ -54,7 +54,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return controlConstructRepository.existsById(uuid);
+        return controlConstructRepository.exists(uuid);
     }
 
     @Override
@@ -75,7 +75,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 prePersistProcessing(instance)));
     }
 
-//    @Override
+    @Override
     @Transactional()
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
         return  instances.stream().map(this::save).collect(Collectors.toList());
@@ -84,13 +84,13 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional()
     public void delete(UUID uuid) {
-        controlConstructRepository.deleteById(uuid);
+        controlConstructRepository.delete(uuid);
     }
 
     @Override
     @Transactional()
     public void delete(List<ControlConstruct> instances) {
-        controlConstructRepository.deleteAll(instances);
+        controlConstructRepository.delete(instances);
     }
 
     @Override
@@ -137,7 +137,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         instance.populateControlConstructInstructions();
 
         if(instance.isBasedOn()) {
-            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().get();
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
             instance.makeNewCopy(rev);
         } else if (instance.isNewCopy()) {
             instance.makeNewCopy(null);
@@ -160,10 +160,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
             if (instance.getQuestionItemUUID() == null)
                 instance.setQuestionItemRevision(0L);
             else {
-                Revision<Long, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
+                Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
                         instance.getQuestionItemUUID(),
-                        instance.getQuestionItemRevision());
-                instance.setQuestionItemRevision(rev.getRevisionNumber().get());
+                        instance.getQuestionItemRevision().intValue());
+                instance.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 instance.setQuestionItem(rev.getEntity());
 //                System.out.println("postLoadProcessing fetching QI -> " + rev.getEntity().getName());
             }

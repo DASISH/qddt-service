@@ -8,7 +8,6 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,13 +24,13 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private String description;
 
-    private Set<OtherMaterial> otherMaterials = new HashSet<>();
+    private Set<OtherMaterial> otherMaterials;
 
     private List<ResponseReference> parameters = new ArrayList<>();
 
-    private List<Instruction> preInstructions =new ArrayList<>();
+    private List<Instruction> preInstructions;
 
-    private List<Instruction> postInstructions =new ArrayList<>();
+    private List<Instruction> postInstructions;
 
     public ConstructQuestionJson(ControlConstruct construct) {
         super(construct);

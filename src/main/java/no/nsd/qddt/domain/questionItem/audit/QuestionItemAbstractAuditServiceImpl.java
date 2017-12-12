@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("questionItemAuditService")
-class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Long,QuestionItem> implements QuestionItemAuditService {
+class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionItem> implements QuestionItemAuditService {
 
     private final QuestionItemAuditRepository questionItemAuditRepository;
     private final ResponseDomainAuditController rdAuditController;
@@ -38,23 +38,23 @@ class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Ques
     }
 
     @Override
-    public Revision<Long, QuestionItem> findLastChange(UUID uuid) {
-        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, QuestionItem> findLastChange(UUID uuid) {
+        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid));
     }
 
     @Override
-    public Revision<Long, QuestionItem> findRevision(UUID uuid, Long revision) {
-        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, QuestionItem> findRevision(UUID uuid, Integer revision) {
+        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision));
     }
 
     @Override
-    public Page<Revision<Long, QuestionItem>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Integer, QuestionItem>> findRevisions(UUID uuid, Pageable pageable) {
         return questionItemAuditRepository.findRevisions(uuid, pageable).
             map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Long, QuestionItem> findFirstChange(UUID uuid) {
+    public Revision<Integer, QuestionItem> findFirstChange(UUID uuid) {
         return postLoadProcessing(
             questionItemAuditRepository.findRevisions(uuid)
                 .reverse().getContent().get(0));
@@ -66,13 +66,13 @@ class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Ques
     }
 
     @Override
-    public Page<Revision<Long, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, QuestionItem>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(questionItemAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    public Revision<Long, QuestionItem> getQuestionItemLastOrRevision(UUID id, Long revision) {
-        Revision<Long, QuestionItem> retval;
+    public Revision<Integer, QuestionItem> getQuestionItemLastOrRevision(UUID id, Integer revision) {
+        Revision<Integer, QuestionItem> retval;
         if (revision == null || revision <= 0)
             retval = findLastChange(id);
         else
@@ -83,12 +83,12 @@ class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Ques
     }
 
     @Override
-    protected Revision<Long, QuestionItem> postLoadProcessing(Revision<Long, QuestionItem> rev){
+    protected Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> rev){
         if (rev.getEntity().getResponseDomainUUID() != null) {
             rev.getEntity().setResponseDomain(
                 rdAuditController.getByRevision(
                     rev.getEntity().getResponseDomainUUID(),
-                    rev.getEntity().getResponseDomainRevision()).getEntity());
+                    rev.getEntity().getResponseDomainRevision().intValue()).getEntity());
         }
         List<Comment> coms;
         if (showPrivateComments)

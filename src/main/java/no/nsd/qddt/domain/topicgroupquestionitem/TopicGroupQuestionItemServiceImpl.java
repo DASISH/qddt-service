@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -31,12 +32,12 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
 
     @Override
     public boolean exists(ParentQuestionItemId parentQuestionItemId) {
-        return repository.existsById(parentQuestionItemId);
+        return repository.exists(parentQuestionItemId);
     }
 
     @Override
     public TopicGroupQuestionItem findOne(ParentQuestionItemId parentQuestionItemId) {
-        return postLoadProcessing(repository.findById(parentQuestionItemId).get());
+        return postLoadProcessing(repository.findOne(parentQuestionItemId));
     }
 
     @Override
@@ -44,21 +45,21 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
         return postLoadProcessing(repository.save(instance));
     }
 
-//    @Override
-//    public List<TopicGroupQuestionItem> save(List<TopicGroupQuestionItem> instances) {
-//        return repository.saveAll(instances).stream().
-//                map(this::postLoadProcessing).
-//                collect(Collectors.toList());
-//    }
+    @Override
+    public List<TopicGroupQuestionItem> save(List<TopicGroupQuestionItem> instances) {
+        return repository.save(instances).stream().
+                map(this::postLoadProcessing).
+                collect(Collectors.toList());
+    }
 
     @Override
     public void delete(ParentQuestionItemId parentQuestionItemId) throws RequestAbortedException {
-        repository.deleteById(parentQuestionItemId);
+        repository.delete(parentQuestionItemId);
     }
 
     @Override
     public void delete(List<TopicGroupQuestionItem> instances) {
-        repository.deleteAll(instances);
+        repository.delete(instances);
     }
 
 
@@ -70,7 +71,7 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
     private TopicGroupQuestionItem postLoadProcessing(TopicGroupQuestionItem instance) {
         instance.setQuestionItem(auditService.findRevision(
                 instance.getId().getQuestionItemId(),
-                instance.getQuestionItemRevision())
+                instance.getQuestionItemRevision().intValue())
                 .getEntity());
         return instance;
     }

@@ -46,7 +46,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return questionItemRepository.existsById(uuid);
+        return questionItemRepository.exists(uuid);
     }
 
     @Override
@@ -71,7 +71,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         }
     }
 
-//    @Override
+    @Override
     public List<QuestionItem> save(List<QuestionItem> instances) {
         return instances.stream().map(this::save).collect(Collectors.toList());
     }
@@ -80,7 +80,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public void delete(UUID uuid) {
         try {
 //            System.out.println("delete question " + uuid);
-            questionItemRepository.deleteById(uuid);
+            questionItemRepository.delete(uuid);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             throw ex;
@@ -89,7 +89,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public void delete(List<QuestionItem> instances) {
-        questionItemRepository.deleteAll(instances);
+        questionItemRepository.delete(instances);
     }
 
     @Override
@@ -139,13 +139,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try{
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
-                    Revision<Long, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(rev.getRevisionNumber().get());
+                    Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
+                    instance.setResponseDomainRevision(rev.getRevisionNumber().longValue());
                     instance.setResponseDomain(rev.getEntity());
 //                    System.out.println("Latest RD fetched " + rev.getRevisionNumber());
                 } else {
                     try {
-                        ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
+                        ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision().intValue()).getEntity();
                         instance.setResponseDomain(rd);
                     } catch (Exception ex){
                         System.out.println(ex.getMessage());
@@ -166,7 +166,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private QuestionItem prePersistProcessing(QuestionItem instance){
 
         if(instance.isBasedOn()) {
-            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().get();
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
             instance.makeNewCopy(rev);
         } else if (instance.isNewCopy()){
             instance.makeNewCopy(null);
@@ -180,8 +180,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
                 try {
 
 
-                    Revision<Long, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(revnum.getRevisionNumber().get());
+                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
+                    instance.setResponseDomainRevision(revnum.getRevisionNumber().longValue());
                 } catch (Exception ex) {
                     System.out.println("Set default RevisionNumber failed");
                     System.out.println(ex.getMessage());

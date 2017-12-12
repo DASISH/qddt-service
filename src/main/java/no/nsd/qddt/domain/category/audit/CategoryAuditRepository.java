@@ -15,15 +15,15 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface CategoryAuditRepository extends RevisionRepository<Category, UUID, Long> {
+interface CategoryAuditRepository extends RevisionRepository<Category, UUID, Integer> {
 
 
 //    @Query(value= "select distinct * from concept_aud " +
 //            "where id = :id and major = :major and minor = :minor " +
 //            "order by rev asc limit 1", nativeQuery = true)
-//    Revision<Long,Category> findVersion(@Param("id") UUID id, @Param("major") int major,@Param("minor") int minor);
+//    Revision<Integer,Category> findVersion(@Param("id") UUID id, @Param("major") int major,@Param("minor") int minor);
 
-    Page<Revision<Long,Category>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer,Category>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
-//    Revision<Long,Category> findByMajorAndMinor(UUID id, Long major, Long minor);
+//    Revision<Integer,Category> findByMajorAndMinor(UUID id, Integer major, Integer minor);
 }

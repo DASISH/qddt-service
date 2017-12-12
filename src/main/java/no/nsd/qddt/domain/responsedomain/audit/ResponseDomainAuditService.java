@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface ResponseDomainAuditService extends BaseServiceAudit<ResponseDomain,UUID, Long> {
+public interface ResponseDomainAuditService extends BaseServiceAudit<ResponseDomain,UUID, Integer> {
 
-    Page<Revision<Long, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }

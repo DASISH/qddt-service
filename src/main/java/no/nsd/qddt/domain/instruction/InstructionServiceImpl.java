@@ -32,7 +32,7 @@ class InstructionServiceImpl implements InstructionService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return instructionRepository.existsById(uuid);
+        return instructionRepository.exists(uuid);
     }
 
     @Override
@@ -48,22 +48,22 @@ class InstructionServiceImpl implements InstructionService {
         return instructionRepository.save(instruction);
     }
 
-//    @Override
-//    @Transactional()
-//    public List<Instruction> save(List<Instruction> instructions) {
-//        return instructionRepository.save(instructions);
-//    }
+    @Override
+    @Transactional()
+    public List<Instruction> save(List<Instruction> instructions) {
+        return instructionRepository.save(instructions);
+    }
 
     @Override
     @Transactional()
     public void delete(UUID uuid) {
-        instructionRepository.deleteById(uuid);
+        instructionRepository.delete(uuid);
     }
 
     @Override
     @Transactional()
     public void delete(List<Instruction> instructions) {
-        instructionRepository.deleteAll(instructions);
+        instructionRepository.delete(instructions);
     }
 
 

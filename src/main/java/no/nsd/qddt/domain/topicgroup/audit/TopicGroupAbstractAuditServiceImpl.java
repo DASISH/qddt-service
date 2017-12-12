@@ -28,7 +28,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("topicGroupAuditService")
-class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Long,TopicGroup> implements TopicGroupAuditService {
+class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup> implements TopicGroupAuditService {
 
     private final TopicGroupAuditRepository topicGroupAuditRepository;
     private final QuestionItemAuditService  questionItemAuditService;
@@ -46,23 +46,23 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Long,TopicG
     }
 
     @Override
-    public Revision<Long, TopicGroup> findLastChange(UUID uuid) {
-        return postLoadProcessing(topicGroupAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, TopicGroup> findLastChange(UUID uuid) {
+        return postLoadProcessing(topicGroupAuditRepository.findLastChangeRevision(uuid));
     }
 
     @Override
-    public Revision<Long, TopicGroup> findRevision(UUID uuid, Long revision) {
-        return  postLoadProcessing(topicGroupAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, TopicGroup> findRevision(UUID uuid, Integer revision) {
+        return  postLoadProcessing(topicGroupAuditRepository.findRevision(uuid, revision));
     }
 
     @Override
-    public Page<Revision<Long, TopicGroup>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Integer, TopicGroup>> findRevisions(UUID uuid, Pageable pageable) {
         return topicGroupAuditRepository.findRevisions(uuid, pageable)
             .map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Long, TopicGroup> findFirstChange(UUID uuid) {
+    public Revision<Integer, TopicGroup> findFirstChange(UUID uuid) {
         return postLoadProcessing(
             topicGroupAuditRepository.findRevisions(uuid).
                 getContent().get(0));
@@ -74,19 +74,20 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Long,TopicG
     }
 
     @Override
-    public Page<Revision<Long, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, TopicGroup>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(topicGroupAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    public Page<Revision<Long, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, TopicGroup>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPageIncLatest(topicGroupAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    protected Revision<Long, TopicGroup> postLoadProcessing(Revision<Long, TopicGroup> instance) {
+    protected Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
         assert  (instance != null);
-        return Revision.of(instance.getMetadata(),postLoadProcessing(instance.getEntity()));
+        return new Revision<>(instance.getMetadata(),
+                postLoadProcessing(instance.getEntity()));
 
     }
 
@@ -141,6 +142,6 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Long,TopicG
     private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
         return questionItemAuditService.getQuestionItemLastOrRevision(
             cqi.getId().getQuestionItemId(),
-            cqi.getQuestionItemRevision()).getEntity();
+            cqi.getQuestionItemRevision().intValue()).getEntity();
     }
 }

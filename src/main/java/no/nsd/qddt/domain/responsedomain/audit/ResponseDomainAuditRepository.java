@@ -10,9 +10,9 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface ResponseDomainAuditRepository extends RevisionRepository<ResponseDomain, UUID, Long> {
+interface ResponseDomainAuditRepository extends RevisionRepository<ResponseDomain, UUID, Integer> {
 
-//    Page<Revision<Long,ResponseDomain>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+//    Page<Revision<Integer,ResponseDomain>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
 
 }

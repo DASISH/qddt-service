@@ -29,7 +29,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return authorRepository.existsById(uuid);
+        return authorRepository.exists(uuid);
     }
 
     @Override
@@ -42,19 +42,19 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.save(instance);
     }
 
-//    @Override
-//    public List<Author> save(List<Author> instances) {
-//        return authorRepository.save(instances);
-//    }
+    @Override
+    public List<Author> save(List<Author> instances) {
+        return authorRepository.save(instances);
+    }
 
     @Override
     public void delete(UUID uuid) {
-        authorRepository.deleteById(uuid);
+        authorRepository.delete(uuid);
     }
 
     @Override
     public void delete(List<Author> instances) {
-        authorRepository.deleteAll(instances);
+        authorRepository.delete(instances);
     }
 
 

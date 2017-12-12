@@ -155,7 +155,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     }
 
     @Override
-    public void makeNewCopy(Long revision){
+    public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         getTopicGroups().forEach(t->t.makeNewCopy(revision));

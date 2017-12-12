@@ -52,10 +52,10 @@ public class PublicationElement  {
     public PublicationElement() {
     }
 
-    public PublicationElement(ElementKind kind,UUID id,Long rev) {
+    public PublicationElement(ElementKind kind,UUID id,Integer rev) {
         setElementEnum(kind);
         setId(id);
-        setRevisionNumber(rev);
+        setRevisionNumber(rev.longValue());
     }
 
 

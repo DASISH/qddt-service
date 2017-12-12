@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface InstructionAuditService extends BaseServiceAudit<Instruction, UUID, Long> {
+public interface InstructionAuditService extends BaseServiceAudit<Instruction, UUID, Integer> {
 
-    Page<Revision<Long, Instruction>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer, Instruction>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }

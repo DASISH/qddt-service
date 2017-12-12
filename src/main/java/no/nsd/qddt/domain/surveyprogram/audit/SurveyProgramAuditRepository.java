@@ -15,10 +15,10 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface SurveyProgramAuditRepository extends RevisionRepository<SurveyProgram, UUID, Long> {
+interface SurveyProgramAuditRepository extends RevisionRepository<SurveyProgram, UUID, Integer> {
 
 
-    Page<Revision<Long,SurveyProgram>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer,SurveyProgram>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
-//    Page<Revision<Long,SurveyProgram>> findChangeKindNotInRevision(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+//    Page<Revision<Integer,SurveyProgram>> findChangeKindNotInRevision(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }

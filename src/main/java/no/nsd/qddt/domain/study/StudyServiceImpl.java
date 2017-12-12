@@ -33,7 +33,7 @@ class StudyServiceImpl implements StudyService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return studyRepository.existsById(uuid);
+        return studyRepository.exists(uuid);
     }
 
     @Override
@@ -52,21 +52,21 @@ class StudyServiceImpl implements StudyService {
                         prePersistProcessing(instance)));
     }
 
-//    @Override
-//    public List<Study> save(List<Study> instances) {
-//        return studyRepository.save(instances);
-//    }
+    @Override
+    public List<Study> save(List<Study> instances) {
+        return studyRepository.save(instances);
+    }
 
     @Override
     @Transactional()
     public void delete(UUID uuid) {
 
-        studyRepository.deleteById(uuid);
+        studyRepository.delete(uuid);
     }
 
     @Override
     public void delete(List<Study> instances) {
-        studyRepository.deleteAll(instances);
+        studyRepository.delete(instances);
     }
 
     private Study prePersistProcessing(Study instance) {

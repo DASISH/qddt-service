@@ -190,7 +190,7 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
     }
 
 
-    public void makeNewCopy(Long revision) {
+    public void makeNewCopy(Integer revision) {
      //TODO implement
     }
 

@@ -13,6 +13,7 @@ import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -23,8 +24,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
-//import javax.persistence.*;
 
 
 /**
@@ -42,11 +41,12 @@ import java.util.UUID;
 @Table(name = "AGENCY")
 public class Agency implements Comparable<Agency>{
 
+
     @Id
     @Type(type="pg-uuid")
     @Column(name = "id")
-//    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
 
     @Column(name = "name", length = 50)

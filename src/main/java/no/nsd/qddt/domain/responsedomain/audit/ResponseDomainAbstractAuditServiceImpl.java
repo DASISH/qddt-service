@@ -21,7 +21,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("responseDomainAuditService")
-class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Long,ResponseDomain> implements ResponseDomainAuditService {
+class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,ResponseDomain> implements ResponseDomainAuditService {
 
     private final ResponseDomainAuditRepository responseDomainAuditRepository;
     private final CommentService commentService;
@@ -34,23 +34,23 @@ class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Re
     }
 
     @Override
-    public Revision<Long, ResponseDomain> findLastChange(UUID uuid) {
-        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
+        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(uuid));
     }
 
     @Override
-    public Revision<Long, ResponseDomain> findRevision(UUID uuid, Long revision) {
-        return postLoadProcessing(responseDomainAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, ResponseDomain> findRevision(UUID uuid, Integer revision) {
+        return postLoadProcessing(responseDomainAuditRepository.findRevision(uuid, revision));
     }
 
     @Override
-    public Page<Revision<Long, ResponseDomain>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Integer, ResponseDomain>> findRevisions(UUID uuid, Pageable pageable) {
         return responseDomainAuditRepository.findRevisions(uuid,pageable)
                 .map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Long, ResponseDomain> findFirstChange(UUID uuid) {
+    public Revision<Integer, ResponseDomain> findFirstChange(UUID uuid) {
         return postLoadProcessing(
             responseDomainAuditRepository.findRevisions(uuid)
                 .reverse().getContent().get(0));
@@ -62,12 +62,12 @@ class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Re
     }
 
     @Override
-    public Page<Revision<Long, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, ResponseDomain>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(responseDomainAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    protected Revision<Long, ResponseDomain> postLoadProcessing(Revision<Long, ResponseDomain> instance) {
+    protected Revision<Integer, ResponseDomain> postLoadProcessing(Revision<Integer, ResponseDomain> instance) {
         assert  (instance != null);
         try{
             List<Comment> coms;

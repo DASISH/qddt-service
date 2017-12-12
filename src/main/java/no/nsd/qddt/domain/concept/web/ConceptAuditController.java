@@ -36,33 +36,33 @@ public class ConceptAuditController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Revision<Long, Concept> getLastRevision(@PathVariable("id") UUID id) {
+    public Revision<Integer, Concept> getLastRevision(@PathVariable("id") UUID id) {
         return auditService.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Long, Concept> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Long revision) {
+    public Revision<Integer, Concept> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Long, Concept>>> allProjects(
+    public HttpEntity<PagedResources<Revision<Integer, Concept>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD") Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Revision<Long, Concept>> entities = auditService.findRevisionsByChangeKindNotIn(id,changekinds, pageable);
+        Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindNotIn(id,changekinds, pageable);
 
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/allinclatest", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Long, Concept>>> allIncludinglatest(
+    public HttpEntity<PagedResources<Revision<Integer, Concept>>> allIncludinglatest(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD") Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Revision<Long, Concept>> entities = auditService.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable);
+        Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable);
 
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }

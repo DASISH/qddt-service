@@ -230,7 +230,7 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
     }
 
 
-    public void makeNewCopy(Long revision) {
+    public void makeNewCopy(Integer revision) {
         // nothing needs to be done here, this should save correctly without any changes.
     }
 

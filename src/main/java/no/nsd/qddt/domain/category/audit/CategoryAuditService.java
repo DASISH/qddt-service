@@ -13,9 +13,9 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
-public interface CategoryAuditService extends BaseServiceAudit<Category, UUID, Long > {
+public interface CategoryAuditService extends BaseServiceAudit<Category, UUID, Integer > {
 
-    Page<Revision<Long, Category>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer, Category>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
-//    Revision<Long,Category> findVersion(UUID id, String version);
+//    Revision<Integer,Category> findVersion(UUID id, String version);
 }

@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("surveyProgramAuditService")
-class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Long,SurveyProgram> implements SurveyProgramAuditService {
+class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,SurveyProgram> implements SurveyProgramAuditService {
 
     private final SurveyProgramAuditRepository surveyProgramAuditRepository;
     private final CommentService commentService;
@@ -36,25 +36,25 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Sur
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Long, SurveyProgram> findLastChange(UUID uuid) {
-        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, SurveyProgram> findLastChange(UUID uuid) {
+        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(uuid));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Long, SurveyProgram> findRevision(UUID uuid, Long revision) {
-        return postLoadProcessing(surveyProgramAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, SurveyProgram> findRevision(UUID uuid, Integer revision) {
+        return postLoadProcessing(surveyProgramAuditRepository.findRevision(uuid, revision));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Long, SurveyProgram>> findRevisions(UUID uuid, Pageable pageable) {
+    public Page<Revision<Integer, SurveyProgram>> findRevisions(UUID uuid, Pageable pageable) {
         return surveyProgramAuditRepository.findRevisions(uuid,pageable)
             .map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Long, SurveyProgram> findFirstChange(UUID uuid) {
+    public Revision<Integer, SurveyProgram> findFirstChange(UUID uuid) {
         return postLoadProcessing(
             surveyProgramAuditRepository.findRevisions(uuid)
                 .reverse().getContent().get(0));
@@ -66,12 +66,12 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Long,Sur
     }
 
     @Override
-    public Page<Revision<Long, SurveyProgram>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
+    public Page<Revision<Integer, SurveyProgram>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPage(surveyProgramAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
     @Override
-    protected Revision<Long, SurveyProgram> postLoadProcessing(Revision<Long, SurveyProgram> instance) {
+    protected Revision<Integer, SurveyProgram> postLoadProcessing(Revision<Integer, SurveyProgram> instance) {
         assert  (instance != null);
         postLoadProcessing(instance.getEntity());
         return instance;

@@ -38,13 +38,13 @@ public interface BaseService<T,ID> {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     <S extends T> S save(S instance);
 
-//    /**
-//     * Store collection og objects Ts to backstore.
-//     * @param instances collection of objects to store
-//     * @return collection of saved objects returned from backstore.
-//     */
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
-//    List<T> save(List<T> instances);
+    /**
+     * Store collection og objects Ts to backstore.
+     * @param instances collection of objects to store
+     * @return collection of saved objects returned from backstore.
+     */
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    List<T> save(List<T> instances);
 
     /**
      * Deletes object with id ID from backstore, exception raised by failure.

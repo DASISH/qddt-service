@@ -315,11 +315,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     This function should contain all copy code needed to make a complete copy of hierarchy under this element
     (an override should propagate downward and call makeNewCopy on it's children).
      */
-    public void makeNewCopy(Long revision){
+    public void makeNewCopy(Integer revision){
         if (hasRun) return;
         if (revision != null) {
             setBasedOnObject(getId());
-            setBasedOnRevision(revision);
+            setBasedOnRevision(revision.longValue());
             version.setVersionLabel("COPY OF [" + getName() + "]");
         }
         setId(UUID.randomUUID());

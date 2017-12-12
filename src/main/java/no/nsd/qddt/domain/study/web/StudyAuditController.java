@@ -34,23 +34,23 @@ public class StudyAuditController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Revision<Long, Study> getLastRevision(@PathVariable("id") UUID id) {
+    public Revision<Integer, Study> getLastRevision(@PathVariable("id") UUID id) {
         return service.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Long, Study> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Long revision) {
+    public Revision<Integer, Study> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return service.findRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Long, Study>>> allProjects(
+    public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Revision<Long, Study>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
+        Page<Revision<Integer, Study>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 

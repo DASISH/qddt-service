@@ -52,7 +52,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return conceptRepository.existsById(uuid);
+        return conceptRepository.exists(uuid);
     }
 
     @Override
@@ -71,7 +71,7 @@ class ConceptServiceImpl implements ConceptService {
                         prePersistProcessing(instance)));
     }
 
-//    @Override
+    @Override
     @Transactional()
     public List<Concept> save(List<Concept> instances) {
         instances.forEach(this::save);
@@ -80,12 +80,12 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public void delete(UUID uuid) {
-        conceptRepository.deleteById(uuid);
+        conceptRepository.delete(uuid);
     }
 
     @Override
     public void delete(List<Concept> instances) {
-        conceptRepository.deleteAll(instances);
+        conceptRepository.delete(instances);
     }
 
 
@@ -94,8 +94,8 @@ class ConceptServiceImpl implements ConceptService {
             instance.getConceptQuestionItems().stream()
                     .filter(f->f.getQuestionItemRevision() == null)
                     .forEach(cqi->{
-                        Revision<Long, QuestionItem> rev = questionAuditService.findLastChange(cqi.getId().getQuestionItemId());
-                        cqi.setQuestionItemRevision(rev.getRevisionNumber().get());
+                        Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange(cqi.getId().getQuestionItemId());
+                        cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
 //                        System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItemRevision());
             });
 
@@ -109,9 +109,9 @@ class ConceptServiceImpl implements ConceptService {
             }
 
             if (instance.isBasedOn()) {
-                Revision<Long, Concept> lastChange
+                Revision<Integer, Concept> lastChange
                         = auditService.findLastChange(instance.getId());
-                instance.makeNewCopy(lastChange.getRevisionNumber().get());
+                instance.makeNewCopy(lastChange.getRevisionNumber());
             } else if (instance.isNewCopy()) {
                 instance.makeNewCopy(null);
             }
@@ -140,13 +140,13 @@ class ConceptServiceImpl implements ConceptService {
         try{
             for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
 
-                Revision<Long, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
+                Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
                         cqi.getId().getQuestionItemId(),
-                        cqi.getQuestionItemRevision());
+                        cqi.getQuestionItemRevision().intValue());
                 cqi.setQuestionItem(rev.getEntity());
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
 //                    System.out.println("ConceptService-> postLoadProcessing: MISSMATCH; wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
-                    cqi.setQuestionItemRevision(rev.getRevisionNumber().get());
+                    cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 }
             }
         } catch (Exception ex){
@@ -184,7 +184,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public List<Concept> findByQuestionItem(UUID id) {
-        return conceptRepository.findByConceptConceptQuestionItemsQuestionItemLateBound(id);
+        return conceptRepository.findByConceptQuestionItemsIdQuestionItemId(id);
     }
 
 

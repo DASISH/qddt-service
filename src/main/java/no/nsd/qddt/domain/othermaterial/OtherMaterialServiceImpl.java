@@ -41,7 +41,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return otherMaterialRepository.existsById(uuid);
+        return otherMaterialRepository.exists(uuid);
     }
 
 
@@ -59,12 +59,12 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         return otherMaterialRepository.save(instance);
     }
 
-//    @Override
-//    public List<OtherMaterial> save(List<OtherMaterial> instances) {
-//
-//        return otherMaterialRepository.save(instances);
-//
-//    }
+    @Override
+    public List<OtherMaterial> save(List<OtherMaterial> instances) {
+
+        return otherMaterialRepository.save(instances);
+
+    }
 
     @Override
     @Transactional()
@@ -92,7 +92,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     private void delete(OtherMaterial om) throws ReferenceInUseException{
 //        deleteFile(om);
-        otherMaterialRepository.deleteById(om.getId());
+        otherMaterialRepository.delete(om.getId());
     }
 
 

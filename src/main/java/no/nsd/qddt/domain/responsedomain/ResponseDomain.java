@@ -347,7 +347,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     @Override
-    public void makeNewCopy(Long revision){
+    public void makeNewCopy(Integer revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         managedRepresentation.makeNewCopy(revision);

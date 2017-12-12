@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -30,12 +31,12 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
 
     @Override
     public boolean exists(ParentQuestionItemId parentQuestionItemId) {
-        return repository.existsById(parentQuestionItemId);
+        return repository.exists(parentQuestionItemId);
     }
 
     @Override
     public ConceptQuestionItem findOne(ParentQuestionItemId parentQuestionItemId) {
-        return postLoadProcessing(repository.findById(parentQuestionItemId).get());
+        return postLoadProcessing(repository.findOne(parentQuestionItemId));
     }
 
     @Override
@@ -43,21 +44,21 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
         return postLoadProcessing(repository.save(instance));
     }
 
-//    @Override
-//    public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
-//        return repository.save(instances).stream().
-//                map(this::postLoadProcessing).
-//                collect(Collectors.toList());
-//    }
+    @Override
+    public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
+        return repository.save(instances).stream().
+                map(this::postLoadProcessing).
+                collect(Collectors.toList());
+    }
 
     @Override
     public void delete(ParentQuestionItemId parentQuestionItemId) throws RequestAbortedException {
-        repository.deleteById(parentQuestionItemId);
+        repository.delete(parentQuestionItemId);
     }
 
     @Override
     public void delete(List<ConceptQuestionItem> instances) {
-        repository.deleteAll(instances);
+        repository.delete(instances);
     }
 
 
@@ -69,7 +70,7 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     private ConceptQuestionItem postLoadProcessing(ConceptQuestionItem instance) {
         instance.setQuestionItem(auditService.findRevision(
                 instance.getId().getQuestionItemId(),
-                instance.getQuestionItemRevision())
+                instance.getQuestionItemRevision().intValue())
                 .getEntity());
         return instance;
     }

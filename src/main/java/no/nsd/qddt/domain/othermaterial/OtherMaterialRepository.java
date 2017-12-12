@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, RevisionRepository<OtherMaterial, UUID, Long> {
+interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, RevisionRepository<OtherMaterial, UUID, Integer> {
 
     Optional<OtherMaterial> findByOwnerAndOriginalName(UUID owner, String name);
 
@@ -31,7 +31,6 @@ interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, Re
 //                    " WHERE B.Guid = :guid";
 
 
-// TODO fix this query?
 //    /**
 //     * @param guid Is an UUID of an attachment that belongs to a module
 //     * @param pageable Pageable object

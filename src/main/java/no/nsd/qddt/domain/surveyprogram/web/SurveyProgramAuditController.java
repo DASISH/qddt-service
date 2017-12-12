@@ -33,28 +33,28 @@ public class SurveyProgramAuditController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Revision<Long, SurveyProgram> findLastRevisionById(@PathVariable("id") UUID id) {
+    public Revision<Integer, SurveyProgram> findLastRevisionById(@PathVariable("id") UUID id) {
         return service.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
-    public Revision<Long, SurveyProgram> findByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Long revision) {
+    public Revision<Integer, SurveyProgram> findByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return service.findRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpEntity<PagedResources<Revision<Long, SurveyProgram>>> allProjects(
+    public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Revision<Long, SurveyProgram>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
+        Page<Revision<Integer, SurveyProgram>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 
 //    @RequestMapping(value = "/{id}/filteredlist", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-//    public HttpEntity<PagedResources<Revision<Long, SurveyProgram>>> list(
+//    public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> list(
 //            @PathVariable("id") UUID id, @PathVariable("changeKinds") String[]changes, Pageable pageable, PagedResourcesAssembler assembler){
 //
 //        Collection<AbstractEntityAudit.ChangeKind> changeKinds = new ArrayList<>();
@@ -62,7 +62,7 @@ public class SurveyProgramAuditController {
 //            changeKinds.add(AbstractEntityAudit.ChangeKind.valueOf(change));
 //        }
 //
-//        Page<Revision<Long, SurveyProgram>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changeKinds , pageable);
+//        Page<Revision<Integer, SurveyProgram>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changeKinds , pageable);
 //        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
 //    }
 

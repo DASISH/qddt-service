@@ -67,13 +67,13 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return repository.existsById(uuid);
+        return repository.exists(uuid);
     }
 
 
     @Override
     public Publication findOne(UUID uuid) {
-        return postLoadProcessing(repository.findById(uuid).get());
+        return postLoadProcessing(repository.findOne(uuid));
     }
 
 
@@ -84,24 +84,24 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-//    @Override
-//    @Transactional()
-//    public List<Publication> save(List<Publication> instances) {
-//        return repository.saveAll(instances);
-//    }
+    @Override
+    @Transactional()
+    public List<Publication> save(List<Publication> instances) {
+        return repository.save(instances);
+    }
 
 
     @Override
     @Transactional()
     public void delete(UUID uuid) {
-        repository.deleteById(uuid);
+        repository.delete(uuid);
     }
 
 
     @Override
     @Transactional()
     public void delete(List<Publication> instances) {
-        repository.deleteAll(instances);
+        repository.delete(instances);
     }
 
     @Override
@@ -168,13 +168,13 @@ public class PublicationServiceImpl implements PublicationService {
         try {
             element.setElement(service.findRevision(
                     element.getId(),
-                    element.getRevisionNumber())
+                    element.getRevisionNumber().intValue())
                     .getEntity());
 
         } catch (RevisionDoesNotExistException e) {
             Revision rev = service.findLastChange(element.getId());
             element.setElement(rev.getEntity());
-            element.setRevisionNumber((Long)rev.getRevisionNumber().get());
+            element.setRevisionNumber(rev.getRevisionNumber().longValue());
         } catch (JpaSystemException se) {
             System.out.println("PublicationElement - JpaSystemException");
             System.out.println(se.getMessage());
