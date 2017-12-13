@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -141,12 +140,8 @@ super.setBaseRepositories(conceptRepository);
 
     @Test
     public void testAddQuestion() throws Exception {
-        Question question = new Question();
-        question.setQuestion("What???");
-
-
         QuestionItem questionItem = new QuestionItem();
-        questionItem.setQuestion(question);
+        questionItem.setQuestion("What???");
 
         Concept concept = new Concept();
         concept.setName("FIRST");

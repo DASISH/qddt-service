@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.questionitem;
 
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.question.Question;
+//import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemRepository;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
@@ -30,15 +30,15 @@ public class QuestionItemServiceTest  extends AbstractServiceTest {
     public void setup() {
         super.setup();
         QuestionItem qi = new QuestionItem();
-        qi.setQuestion(new Question("test question 1 ?"));
+        qi.setQuestion("test question 1 ?");
         service.save(qi);
 
         qi = new QuestionItem();
-        qi.setQuestion(new Question("test question 2 ?"));
+        qi.setQuestion("test question 2 ?");
         service.save(qi);
 
         qi = new QuestionItem();
-        qi.setQuestion(new Question("test question 3 ?"));
+        qi.setQuestion("test question 3 ?");
         service.save(qi);
 
         super.setBaseRepositories(repository);

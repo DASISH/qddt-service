@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
-import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -13,14 +12,14 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+//import no.nsd.qddt.domain.question.Question;
 
 /**
  * @author Stig Norland
@@ -114,7 +113,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
     public void testAddQuestion() throws Exception {
 
         QuestionItem question = new QuestionItem();
-        question.setQuestion(new Question("my precious"));
+        question.setQuestion("my precious");
 
         question = questionService.save(question);
 

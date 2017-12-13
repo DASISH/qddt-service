@@ -3,14 +3,14 @@ package no.nsd.qddt.domain.controlconstruct;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
-import no.nsd.qddt.domain.question.Question;
+//import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.utils.builders.InstrumentBuilder;
 import no.nsd.qddt.utils.builders.InstrumentQuestionItemBuilder;
-import no.nsd.qddt.utils.builders.QuestionBuilder;
+//import no.nsd.qddt.utils.builders.QuestionBuilder;
 import no.nsd.qddt.utils.builders.QuestionItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,6 @@ public class ControlConstructMetaTest {
     private ControlConstructService controlConstructService;
 
     private Instrument i1,i2;
-    private Question q1,q2;
     private QuestionItem qi1, qi2;
     private ResponseDomain r1;
 
@@ -54,13 +53,10 @@ public class ControlConstructMetaTest {
         i1 = instrumentService.save(new InstrumentBuilder().setName("Test Instrument 1").setChangeComment("Changed for tests.").createInstrument());
         i2 = instrumentService.save(new InstrumentBuilder().setName("Test Instrument 2").setChangeComment("Changed for more tests.").createInstrument());
 
-        q1 = new QuestionBuilder().setName("Male").setChangeComment("Changed typo").createQuestion();
-        q2 = new QuestionBuilder().setName("Female").setChangeComment("Changed changed another typo").createQuestion();
-
         r1 = responseDomainService.save(new ResponseDomain());
 
-        qi1 = questionItemService.save(new QuestionItemBuilder().setName("item1").setQuestion(q1).setResponseDomain(r1).createQuestionItem());
-        qi2 = questionItemService.save(new QuestionItemBuilder().setName("item2").setQuestion(q2).setResponseDomain(r1).createQuestionItem());
+        qi1 = questionItemService.save(new QuestionItemBuilder().setName("item1").setQuestion("Changed typo").setResponseDomain(r1).createQuestionItem());
+        qi2 = questionItemService.save(new QuestionItemBuilder().setName("item2").setQuestion("Changed changed another typo").setResponseDomain(r1).createQuestionItem());
 
         controlConstructService.save(new InstrumentQuestionItemBuilder().setName("A instrumentQuestion").setChangeComment("Changed because.")
                         .setQuestion(qi1).setInstrument(i1).createInstrument());
