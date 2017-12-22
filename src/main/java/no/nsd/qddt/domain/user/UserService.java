@@ -18,4 +18,5 @@ public interface UserService extends BaseService<User,UUID> {
      */
     User findByEmail(String email);
 
+    User findByName(String name);
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class UserServiceTest extends AbstractServiceTest {
+public class AuthorityServiceTest extends AbstractServiceTest {
 
     @Autowired
     private UserService userService;

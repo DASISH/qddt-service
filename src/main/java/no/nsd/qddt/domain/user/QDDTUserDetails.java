@@ -3,9 +3,9 @@ package no.nsd.qddt.domain.user;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -14,9 +14,10 @@ public class QDDTUserDetails implements UserDetails {
     private static final long serialVersionUID = -2985656388091941799L;
 
     private final User user;
-    private List<? extends GrantedAuthority> authorities = new ArrayList<>();
+    private List<? extends GrantedAuthority> authorities;
 
     public QDDTUserDetails(User user, List<? extends GrantedAuthority> authorities) {
+        System.out.println("QDDTUserDetails " +user.getEmail());
         this.user = user;
         this.authorities = authorities;
     }
@@ -24,6 +25,10 @@ public class QDDTUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public UUID getId() {
+        return user.getId();
     }
 
     public User getUser() {

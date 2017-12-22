@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.authority;
+package no.nsd.qddt.domain.role;
 
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;

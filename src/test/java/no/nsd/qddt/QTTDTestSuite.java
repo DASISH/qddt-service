@@ -34,16 +34,12 @@ import no.nsd.qddt.domain.surveyprogram.web.SurveyProgramControllerTest;
 import no.nsd.qddt.domain.topicgroup.TopicGroupServiceTest;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditServiceTest;
 import no.nsd.qddt.domain.topicgroup.web.TopicGroupControllerTest;
-import no.nsd.qddt.domain.user.UserServiceTest;
+import no.nsd.qddt.domain.user.AuthorityServiceTest;
 import no.nsd.qddt.utils.ExtractResourceIdFromExceptionTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.springframework.test.context.ActiveProfiles;
 
-//import no.nsd.qddt.domain.code.CodeHierarchyTest;
-//import no.nsd.qddt.domain.code.ResponseDomainCategoryServiceTest;
-//import no.nsd.qddt.domain.code.audit.ResponseDomainCategoryAuditServiceTest;
-//import no.nsd.qddt.domain.code.web.ResponseDomainCategoryControllerTest;
 
 @ActiveProfiles("test")
 @RunWith(Suite.class)
@@ -126,7 +122,7 @@ import org.springframework.test.context.ActiveProfiles;
         TopicGroupControllerTest.class,
 
         // ====== User ======
-        UserServiceTest.class,
+        AuthorityServiceTest.class,
 
         // ====== Misc ======
         ExtractResourceIdFromExceptionTest.class,

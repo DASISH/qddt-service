@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.user;
 
+import no.nsd.qddt.domain.role.AuthorityService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -16,13 +18,15 @@ import java.util.UUID;
 
 
 @Service("userService")
-class UserServiceImpl implements UserService{
+class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final AuthorityService authorityService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, AuthorityService authorityService) {
         this.userRepository = userRepository;
+        this.authorityService = authorityService;
     }
 
 
@@ -68,6 +72,11 @@ class UserServiceImpl implements UserService{
 
 
     private User prePersistProcessing(User instance) {
+        if (instance.getAuthorities().size() == 0) {
+            instance.setAuthorities(authorityService.findAll()
+                .stream().filter(i->i.getAuthority() == "ROLE_LIMITED")
+                .collect(Collectors.toSet()));
+        }
         return instance;
     }
 
@@ -84,4 +93,13 @@ class UserServiceImpl implements UserService{
                 () -> new UserNotFoundException(email)
         );
     }
+
+    @Override
+    public User findByName(String name) {
+        return userRepository.findByUsername(name).orElseThrow(
+                () -> new UserNotFoundException(name)
+        );
+    }
+
+
 }

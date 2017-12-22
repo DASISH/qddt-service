@@ -5,7 +5,7 @@ import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
-import no.nsd.qddt.domain.authorable.Authorable;
+import no.nsd.qddt.domain.author.Authorable;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;

@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.authority.Authority;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.concept.Concept;
@@ -12,6 +11,7 @@ import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -116,6 +116,12 @@ public class User {
     private Agency agency;
 
     public User() {
+    }
+
+    public User(String name, String email, String password) {
+        setUsername(name);
+        setEmail(email);
+        setPassword(password);
     }
 
     public UUID getId() {

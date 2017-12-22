@@ -62,13 +62,7 @@ public class ResponseReference implements java.io.Serializable {
         this.controlConstructRevision = controlConstructRevision;
     }
 
-//    public ControlConstruct getControlConstructRefInternal() {
-//        return controlConstructRefInternal;
-//    }
-//
-//    public void setControlConstructRefInternal(ControlConstruct controlConstructRefInternal) {
-//        this.controlConstructRefInternal = controlConstructRefInternal;
-//    }
+
 
     @Override
     public String toString() {
