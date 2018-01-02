@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath(
 //                "org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE",
-                "com.bmuschko:gradle-docker-plugin:3.0.3",
+                "com.bmuschko:gradle-docker-plugin:3.2.1",
         )
     }
 }
@@ -91,7 +91,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-test",
             "org.springframework.security:spring-security-test",
             "com.jayway.jsonpath:json-path",
-            "org.springframework.restdocs:spring-restdocs-mockmvc:1.2.1.RELEASE"
+            "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.0.RELEASE"
     )
 }
 if(!org.gradle.internal.os.OperatingSystem.current().windows) {
