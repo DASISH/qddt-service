@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +42,13 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public TopicGroupQuestionItem save(TopicGroupQuestionItem instance) {
         return postLoadProcessing(repository.save(instance));
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<TopicGroupQuestionItem> save(List<TopicGroupQuestionItem> instances) {
         return repository.save(instances).stream().
                 map(this::postLoadProcessing).
@@ -53,11 +56,13 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(ParentQuestionItemId parentQuestionItemId) throws RequestAbortedException {
         repository.delete(parentQuestionItemId);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(List<TopicGroupQuestionItem> instances) {
         repository.delete(instances);
     }

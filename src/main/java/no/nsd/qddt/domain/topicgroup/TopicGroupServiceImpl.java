@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,6 +63,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public TopicGroup save(TopicGroup instance) {
         try {
             instance = postLoadProcessing(
@@ -75,6 +77,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<TopicGroup> save(List<TopicGroup> instances) {
         return topicGroupRepository.save(instances);
     }
@@ -82,12 +85,14 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid) {
         topicGroupRepository.delete(uuid);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<TopicGroup> instances) {
         topicGroupRepository.delete(instances);
     }

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +80,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Publication save(Publication instance) {
         return repository.save(instance);
     }
@@ -86,6 +88,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<Publication> save(List<Publication> instances) {
         return repository.save(instances);
     }
@@ -93,6 +96,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid) {
         repository.delete(uuid);
     }
@@ -100,6 +104,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<Publication> instances) {
         repository.delete(instances);
     }

@@ -7,6 +7,7 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +87,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Category save(Category instance) {
         return postLoadProcessing(instance.getCode(), prePersistProcessing(instance));
     }
@@ -93,18 +95,21 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<Category> save(List<Category> instances) {
         return categoryRepository.save(instances);
     }
 
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid) {
         categoryRepository.delete(uuid);
     }
 
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<Category> instances) {
         categoryRepository.delete(instances);
     }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +60,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public QuestionItem save(QuestionItem instance) {
         try {
             return postLoadProcessing(
@@ -72,11 +74,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<QuestionItem> save(List<QuestionItem> instances) {
         return instances.stream().map(this::save).collect(Collectors.toList());
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid) {
         try {
 //            System.out.println("delete question " + uuid);
@@ -88,6 +92,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<QuestionItem> instances) {
         questionItemRepository.delete(instances);
     }

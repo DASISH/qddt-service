@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.author;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,11 +39,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public Author save(Author instance) {
         return authorRepository.save(instance);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public List<Author> save(List<Author> instances) {
         return authorRepository.save(instances);
     }

@@ -4,6 +4,7 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,24 +45,28 @@ class InstructionServiceImpl implements InstructionService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Instruction save(Instruction instruction) {
         return instructionRepository.save(instruction);
     }
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<Instruction> save(List<Instruction> instructions) {
         return instructionRepository.save(instructions);
     }
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid) {
         instructionRepository.delete(uuid);
     }
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<Instruction> instructions) {
         instructionRepository.delete(instructions);
     }

@@ -4,6 +4,7 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,21 +43,25 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Instrument save(Instrument instance) {
         return instrumentRepository.save(instance);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<Instrument> save(List<Instrument> instances) {
         return instrumentRepository.save(instances);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid) {
         instrumentRepository.delete(uuid);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<Instrument> instances) {
         instrumentRepository.delete(instances);
     }

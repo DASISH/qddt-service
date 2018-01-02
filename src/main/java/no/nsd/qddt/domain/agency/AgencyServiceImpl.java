@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.agency;
 
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,7 @@ class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public List<Agency> save(List<Agency> instances) {
         List<Agency> target = new ArrayList<>();
         agencyRepository.save(instances).forEach(target::add);
@@ -49,6 +51,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public Agency save(Agency instance) {
         return agencyRepository.save(instance);
     }

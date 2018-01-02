@@ -6,6 +6,7 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,19 +56,20 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public OtherMaterial save(OtherMaterial instance) {
         return otherMaterialRepository.save(instance);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<OtherMaterial> save(List<OtherMaterial> instances) {
-
         return otherMaterialRepository.save(instances);
-
     }
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid)  {
         try {
             delete(findOne(uuid));
@@ -78,6 +80,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<OtherMaterial> instances)  {
 
         instances.forEach(om -> {

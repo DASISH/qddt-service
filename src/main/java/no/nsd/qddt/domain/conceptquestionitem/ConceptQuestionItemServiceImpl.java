@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.conceptquestionitem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,11 +41,13 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public ConceptQuestionItem save(ConceptQuestionItem instance) {
         return postLoadProcessing(repository.save(instance));
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<ConceptQuestionItem> save(List<ConceptQuestionItem> instances) {
         return repository.save(instances).stream().
                 map(this::postLoadProcessing).
@@ -52,11 +55,13 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(ParentQuestionItemId parentQuestionItemId) throws RequestAbortedException {
         repository.delete(parentQuestionItemId);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(List<ConceptQuestionItem> instances) {
         repository.delete(instances);
     }

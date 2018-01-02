@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.role.AuthorityService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +50,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public User save(User user) {
         return postLoadProcessing(
                 userRepository.save(
@@ -56,16 +58,19 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public List<User> save(List<User> instances) {
         return userRepository.save(instances);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
         userRepository.delete(uuid);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(List<User> instances) {
         userRepository.delete(instances);
     }

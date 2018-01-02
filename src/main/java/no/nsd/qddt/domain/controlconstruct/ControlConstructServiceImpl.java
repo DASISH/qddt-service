@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +70,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public ControlConstruct save(ControlConstruct instance) {
         return postLoadProcessing(
             controlConstructRepository.save(
@@ -77,18 +79,21 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
         return  instances.stream().map(this::save).collect(Collectors.toList());
     }
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(UUID uuid) {
         controlConstructRepository.delete(uuid);
     }
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public void delete(List<ControlConstruct> instances) {
         controlConstructRepository.delete(instances);
     }

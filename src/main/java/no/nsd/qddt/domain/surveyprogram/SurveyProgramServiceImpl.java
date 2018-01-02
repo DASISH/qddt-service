@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.surveyprogram;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public SurveyProgram save(SurveyProgram instance) {
 
         SurveyProgram retval=null;
@@ -60,16 +62,19 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public List<SurveyProgram> save(List<SurveyProgram> instances) {
         return surveyProgramRepository.save(instances);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(UUID uuid) {
         surveyProgramRepository.delete(uuid);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(List<SurveyProgram> instances) {
         surveyProgramRepository.delete(instances);
     }

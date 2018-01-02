@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.publicationstatus;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,23 +37,27 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public PublicationStatus save(PublicationStatus instance) {
         return repository.save(
                 prePersistProcessing(instance));
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<PublicationStatus> save(List<PublicationStatus> instances) {
         instances.forEach(this::prePersistProcessing);
         return repository.save(instances);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(Long id) {
         repository.delete(id);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public void delete(List<PublicationStatus> instances) {
         repository.delete(instances);
     }
