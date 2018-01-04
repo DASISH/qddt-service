@@ -24,6 +24,8 @@ public class JwtUtil implements Serializable {
     private static final String CLAIM_KEY_ID = "id";
     private static final String CLAIM_KEY_ROLE = "role";
     private static final String CLAIM_KEY_CREATED = "created";
+    private static final String CLAIM_KEY_EMAIL = "email";
+
 
     @Value("${auth.secret}")
     private String secret;
@@ -104,6 +106,7 @@ public class JwtUtil implements Serializable {
         Map<String, Object> claims = new HashMap<>();
         QDDTUserDetails jwtUser = (QDDTUserDetails) userDetails;
         claims.put(CLAIM_KEY_ID, jwtUser.getId());
+        claims.put(CLAIM_KEY_EMAIL, jwtUser.getUser().getEmail());
         claims.put(CLAIM_KEY_USERNAME, jwtUser.getUsername());
         claims.put(CLAIM_KEY_ROLE, jwtUser.getAuthorities());
         claims.put(CLAIM_KEY_CREATED, new Date());
