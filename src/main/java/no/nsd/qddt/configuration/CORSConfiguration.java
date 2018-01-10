@@ -22,7 +22,7 @@ import java.io.IOException;
 public class CORSConfiguration {
 
     @Bean
-    public static FilterRegistrationBean corsFilter(@Value("${api.origin:*}") String origin) {
+    public static FilterRegistrationBean corsFilter(@Value("${api.origin}") String origin) {
         return new FilterRegistrationBean(new Filter() {
 
             public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -32,7 +32,7 @@ public class CORSConfiguration {
                 HttpServletResponse response = (HttpServletResponse) res;
                 String method = request.getMethod();
 
-                response.setHeader("Access-Control-Allow-Origin", "*");
+                response.setHeader("Access-Control-Allow-Origin", origin);
                 response.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
                 response.setHeader("Access-Control-Max-Age", Long.toString(60 * 60));
                 response.setHeader("Access-Control-Allow-Credentials", "true");

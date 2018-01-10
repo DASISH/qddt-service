@@ -53,6 +53,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    private boolean isEnabled;
+
+
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name="user_authority",
@@ -154,6 +157,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
     public Set<Authority> getAuthorities() {

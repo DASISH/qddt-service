@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.user;
 
+import org.joda.time.DateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,7 +18,7 @@ public class QDDTUserDetails implements UserDetails {
     private List<? extends GrantedAuthority> authorities;
 
     public QDDTUserDetails(User user, List<? extends GrantedAuthority> authorities) {
-        System.out.println("QDDTUserDetails " +user.getEmail());
+        System.out.println(DateTime.now() + " QDDTUserDetails " +user.getEmail());
         this.user = user;
         this.authorities = authorities;
     }
@@ -62,6 +63,6 @@ public class QDDTUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnabled();
     }
 }

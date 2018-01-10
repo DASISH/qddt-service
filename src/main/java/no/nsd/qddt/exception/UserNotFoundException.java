@@ -12,6 +12,7 @@ public class UserNotFoundException extends RuntimeException{
 
     public UserNotFoundException(String email) {
         super("Could not find User by email '" + email + "'.");
-        logger.error("Could not find user by email " + email + ".");
+        logger.error("[logger] Could not find user by email " + email + ".");
+        logger.debug(StackTraceFilter.nsdStack().toString());
     }
 }

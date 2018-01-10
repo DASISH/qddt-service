@@ -101,7 +101,7 @@ public class AuthController extends BaseController {
         final String name = authenticationRequest.getUsername();
         final String email = authenticationRequest.getEmail();
         final String password = authenticationRequest.getPassword();
-        LOG.info("[POST] CREATING TOKEN FOR User " + name);
+        LOG.info("createAuthenticationToken " + name);
 
         if(this.userService.findByName(name) != null) {
            throw new UserAlreadyExistsException(name);
@@ -145,13 +145,13 @@ public class AuthController extends BaseController {
 
         final String name = authenticationRequest.getUsername();
         final String password = authenticationRequest.getPassword();
-        LOG.info("[POST] GETTING TOKEN FOR User " + name);
+            LOG.info("getAuthenticationToken " + name);
         UserDetails userDetails;
 
         try {
             userDetails = userDetailsService.loadUserByUsername(name);
         } catch (UsernameNotFoundException | NoResultException ex) {
-            LOG.error(ex.getMessage());
+//            LOG.error(ex.getMessage());
             throw new UserNotFoundException(name);
         } catch (Exception ex) {
             LOG.error(ex.getMessage());
@@ -179,7 +179,7 @@ public class AuthController extends BaseController {
     @PostMapping(REFRESH_TOKEN_URL)
     public ResponseEntity refreshAuthenticationToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
-        LOG.info("[POST] REFRESHING TOKEN");
+        LOG.info("refreshAuthenticationToken");
         String refreshedToken = jwtUtil.refreshToken(token);
         return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
     }

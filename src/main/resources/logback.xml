@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
-    <logger name="org.springframework" level="INFO"/>
-
-    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <!-- remoteHost and port are optional (default values shown) -->
-        <remoteHost>127.0.0.1</remoteHost>
-        <port>4560</port>
-        <!-- encoder is required -->
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-    </appender>
-
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="LOG_FILE" value="./log/logback.log"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
     <root level="INFO">
-        <appender-ref ref="stash" />
+        <appender-ref ref="FILE" />
     </root>
-
 </configuration>
