@@ -33,6 +33,7 @@ import java.sql.Timestamp;
 //                resultClass = QuestionItem.class)
 public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Serializable {
 
+    @Transient
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private static final long serialVersionUID = -7261887559139337877L;
