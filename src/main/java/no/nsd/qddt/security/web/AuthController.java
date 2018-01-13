@@ -1,4 +1,4 @@
-package no.nsd.qddt.security;
+package no.nsd.qddt.security.web;
 
 import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.user.QDDTUserDetailsService;
@@ -7,6 +7,9 @@ import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.exception.InvalidPasswordException;
 import no.nsd.qddt.exception.UserAlreadyExistsException;
 import no.nsd.qddt.exception.UserNotFoundException;
+import no.nsd.qddt.security.JwtAuthenticationRequest;
+import no.nsd.qddt.security.JwtAuthenticationResponse;
+import no.nsd.qddt.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +24,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.NoResultException;
@@ -38,9 +42,9 @@ public class AuthController extends BaseController {
     @Value("${auth.header}")
     private String tokenHeader;
 
-    public final static String SIGNUP_URL = "/api/auth/signup";
-    public final static String SIGNIN_URL = "/api/auth/signin";
-    public final static String REFRESH_TOKEN_URL = "/api/auth/token/refresh";
+    public final static String SIGNUP_URL = "/auth/signup";
+    public final static String SIGNIN_URL = "/auth/signin";
+    public final static String REFRESH_TOKEN_URL = "/auth/token/refresh";
 
     private AuthenticationManager authenticationManager;
     private JwtUtil jwtUtil;
@@ -94,9 +98,8 @@ public class AuthController extends BaseController {
      * @return generated JWT
      * @throws AuthenticationException
      */
-    @PostMapping(SIGNUP_URL)
-    public ResponseEntity createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest)
-            throws AuthenticationException {
+    @RequestMapping(value = SIGNUP_URL, method = RequestMethod.POST)
+    public ResponseEntity createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest)             throws AuthenticationException {
 
         final String name = authenticationRequest.getUsername();
         final String email = authenticationRequest.getEmail();
@@ -139,20 +142,18 @@ public class AuthController extends BaseController {
      * @return generated JWT
      * @throws AuthenticationException
      */
-    @PostMapping(SIGNIN_URL)
-    public ResponseEntity getAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest)
-            throws AuthenticationException {
+    @RequestMapping(value = SIGNIN_URL, method = RequestMethod.POST)
+    public ResponseEntity getAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
 
-        final String name = authenticationRequest.getUsername();
+        final String email = authenticationRequest.getEmail();
         final String password = authenticationRequest.getPassword();
-            LOG.info("getAuthenticationToken " + name);
         UserDetails userDetails;
+        LOG.info("getAuthenticationToken " + email);
 
         try {
-            userDetails = userDetailsService.loadUserByUsername(name);
+            userDetails = userDetailsService.loadUserByEmail(email);
         } catch (UsernameNotFoundException | NoResultException ex) {
-//            LOG.error(ex.getMessage());
-            throw new UserNotFoundException(name);
+            throw new UserNotFoundException(email);
         } catch (Exception ex) {
             LOG.error(ex.getMessage());
             return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
@@ -163,7 +164,7 @@ public class AuthController extends BaseController {
         }
 
         final Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(name, password)
+            new UsernamePasswordAuthenticationToken(userDetails.getUsername(), password)
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -176,7 +177,7 @@ public class AuthController extends BaseController {
      * @param request with old JWT
      * @return Refreshed JWT
      */
-    @PostMapping(REFRESH_TOKEN_URL)
+    @RequestMapping(REFRESH_TOKEN_URL)
     public ResponseEntity refreshAuthenticationToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         LOG.info("refreshAuthenticationToken");

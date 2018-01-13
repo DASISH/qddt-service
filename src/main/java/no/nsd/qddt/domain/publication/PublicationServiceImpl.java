@@ -10,6 +10,8 @@ import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("selectableService")
 public class PublicationServiceImpl implements PublicationService {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final PublicationRepository repository;
     private final ConceptAuditService conceptService;
     private final ControlConstructAuditService controlConstructService;
@@ -181,11 +184,15 @@ public class PublicationServiceImpl implements PublicationService {
             element.setElement(rev.getEntity());
             element.setRevisionNumber(rev.getRevisionNumber().longValue());
         } catch (JpaSystemException se) {
-            System.out.println("PublicationElement - JpaSystemException");
-            System.out.println(se.getMessage());
+            LOG.error("PublicationElement - JpaSystemException",se);
+            StackTraceFilter.filter(se.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
         } catch (Exception ex) {
-            System.out.println("PublicationElement fill");
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("PublicationElement - fill",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
         }
 
         if (element.getElementAsEntity() != null){

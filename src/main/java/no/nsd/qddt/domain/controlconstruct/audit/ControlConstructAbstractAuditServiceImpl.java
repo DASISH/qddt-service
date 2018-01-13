@@ -10,6 +10,8 @@ import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
  */
 @Service("instrumentAuditQuestionService")
 class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,ControlConstruct> implements ControlConstructAuditService {
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
     private final QuestionItemAuditService qiAuditService;
@@ -126,8 +129,10 @@ class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integ
             instance.setComments(new HashSet<>(coms));
 
         } catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+            LOG.error("removeQuestionItem",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
         }
 
         return instance;

@@ -1,10 +1,10 @@
 package no.nsd.qddt.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import no.nsd.qddt.domain.user.QDDTUserDetails;
-import no.nsd.qddt.domain.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Common helper methods to work with JWT
@@ -22,8 +23,8 @@ public class JwtUtil implements Serializable {
 
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_ID = "id";
+    private static final String CLAIM_KEY_CREATED = "iat";
     private static final String CLAIM_KEY_ROLE = "role";
-    private static final String CLAIM_KEY_CREATED = "created";
     private static final String CLAIM_KEY_EMAIL = "email";
 
 
@@ -38,11 +39,11 @@ public class JwtUtil implements Serializable {
      * @param token JSON Web Token
      * @return user id
      */
-    public Long getUserIdFromToken(String token) {
-        Long id = null;
+    public UUID getUserIdFromToken(String token) {
+        UUID id = null;
         try {
             final Claims claims = getClaimsFromToken(token);
-            id = Long.valueOf((Integer) claims.get(CLAIM_KEY_ID));
+            id = UUID.fromString(claims.get(CLAIM_KEY_ID).toString());
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -64,6 +65,7 @@ public class JwtUtil implements Serializable {
         }
         return username;
     }
+
 
     /**
      * Returns creation date from given token
@@ -137,13 +139,17 @@ public class JwtUtil implements Serializable {
      * @return true if token valid else false
      */
     public Boolean validateToken(String token, UserDetails userDetails) {
-        User user = (User) userDetails;
+//        User user = (User) userDetails;
         final String username = getUsernameFromToken(token);
         if(username == null) {
             return false;
         } else {
-            return username.equals(user.getUsername()) && !isTokenExpired(token);
+            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
         }
+//        Better....
+//        username.equals(user.getUsername())
+//                && !isTokenExpired(token)
+//                && !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate()));
     }
 
     private Claims getClaimsFromToken(String token) {
@@ -153,7 +159,7 @@ public class JwtUtil implements Serializable {
                     .setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (Exception e) {
+        } catch (JwtException | ClassCastException e) {
             claims = null;
         }
         return claims;

@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.utils.SecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.PrePersist;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
  */
 @Configurable
 public class EntityCreatedModifiedDateAuditEventConfiguration {
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Run before persisting a new entity.
@@ -30,11 +33,11 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
-            System.out.println("Entity EventConfiguration CreateOrUpdate "+ entity.getClass().getSimpleName() + " - " +
+            LOG.debug("Entity EventConfiguration CreateOrUpdate "+ entity.getClass().getSimpleName() + " - " +
                     ((AbstractEntityAudit)entity).getName());
 
         } catch (Exception e){
-            System.out.println(e.getMessage());
+            LOG.error("Entity EventConfiguration", e);
         }
     }
 

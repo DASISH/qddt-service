@@ -6,6 +6,8 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainAuditController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ import java.util.UUID;
 @Service("questionItemAuditService")
 class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionItem> implements QuestionItemAuditService {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final QuestionItemAuditRepository questionItemAuditRepository;
     private final ResponseDomainAuditController rdAuditController;
     private final CommentService commentService;
@@ -78,7 +81,7 @@ class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Q
         else
             retval = findRevision(id, revision);
         if (retval == null)
-            System.out.println("getQuestionItemLastOrRevision returned with null (" + id + "," + revision + ")");
+            LOG.info("getQuestionItemLastOrRevision returned with null (" + id + "," + revision + ")");
         return retval;
     }
 

@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.domain.category.CategoryService;
-import no.nsd.qddt.domain.responsedomain.*;
+import no.nsd.qddt.domain.BaseController;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 import no.nsd.qddt.exception.RequestAbortedException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -26,15 +28,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/responsedomain")
-public class ResponseDomainController {
+public class ResponseDomainController extends BaseController {
 
     private final ResponseDomainService service;
-    private final CategoryService categoryService;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService service,CategoryService categoryService){
+    public ResponseDomainController(ResponseDomainService service){
         this.service = service;
-        this.categoryService = categoryService;
+//        CategoryService categoryService1 = categoryService;
 
     }
 
@@ -97,8 +98,11 @@ public class ResponseDomainController {
             }
 
         } catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+            LOG.error("getBy",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
+
         }
 
         return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);

@@ -9,6 +9,8 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.UserJson;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
@@ -21,6 +23,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 public class BaseJsonEdit implements Serializable {
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Type(type="pg-uuid")
     private UUID id;
@@ -52,8 +55,10 @@ public class BaseJsonEdit implements Serializable {
 
     protected BaseJsonEdit(AbstractEntityAudit entity) {
         if (entity == null){
-            System.out.println("BaseJsonEdit entity is null");
-            StackTraceFilter.println(Thread.currentThread().getStackTrace());
+            LOG.error("Entity is null");
+            StackTraceFilter.nsdStack().stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
             return;
         }
         setId(entity.getId());

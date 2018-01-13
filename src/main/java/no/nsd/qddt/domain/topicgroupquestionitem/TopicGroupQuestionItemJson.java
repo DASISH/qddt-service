@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.topicgroupquestionitem;
 
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EmbeddedId;
 import java.sql.Timestamp;
@@ -10,6 +12,8 @@ import java.sql.Timestamp;
  * @author Stig Norland
  */
 public class TopicGroupQuestionItemJson {
+
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @EmbeddedId
     private ParentQuestionItemId id = new ParentQuestionItemId();
@@ -24,7 +28,7 @@ public class TopicGroupQuestionItemJson {
 
     public TopicGroupQuestionItemJson(TopicGroupQuestionItem q) {
         if (q == null) {
-            System.out.println("TopicGroupQuestionItem is null");
+           LOG.info("TopicGroupQuestionItem is null");
             return;
         }
         setId(q.getId());

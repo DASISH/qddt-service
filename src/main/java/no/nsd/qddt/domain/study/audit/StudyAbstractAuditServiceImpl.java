@@ -6,6 +6,8 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,8 @@ import java.util.UUID;
  */
 @Service("studyAuditService")
 class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implements StudyAuditService {
+
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final StudyAuditRepository studyAuditRepository;
     private final CommentService commentService;
@@ -93,8 +97,11 @@ class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Study> i
             });
 
         } catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+            LOG.error("postLoadProcessing",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
+
         }
         return instance;
     }

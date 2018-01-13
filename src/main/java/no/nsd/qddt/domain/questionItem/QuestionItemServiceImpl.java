@@ -5,6 +5,8 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +28,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("questionItemService")
 class QuestionItemServiceImpl implements QuestionItemService {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final QuestionItemRepository questionItemRepository;
     private final ResponseDomainAuditService rdAuditService;
@@ -67,8 +70,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
                     questionItemRepository.save(
                             prePersistProcessing(instance)));
         } catch (Exception ex){
-            System.out.println("QI save ->"  + ex.getMessage());
-            StackTraceFilter.filter(ex.getStackTrace());
+            LOG.error("QI save ->",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
             throw ex;
         }
     }
@@ -153,7 +158,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
                         ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision().intValue()).getEntity();
                         instance.setResponseDomain(rd);
                     } catch (Exception ex){
-                        System.out.println(ex.getMessage());
+                        LOG.error(ex.getMessage());
                         instance.setResponseDomainRevision(0L);
                     }
                 }
@@ -188,14 +193,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
                     Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(revnum.getRevisionNumber().longValue());
                 } catch (Exception ex) {
-                    System.out.println("Set default RevisionNumber failed");
-                    System.out.println(ex.getMessage());
+                    LOG.error("Set default RevisionNumber failed",ex);
                 }
             }
         }
         else {
             instance.setResponseDomainRevision(0L);
-            System.out.println("no repsonsedomain returned from web");
+            LOG.info("no repsonsedomain returned from web");
         }
          return instance;
     }

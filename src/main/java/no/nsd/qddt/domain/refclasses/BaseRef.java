@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.refclasses;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -9,6 +11,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 abstract class BaseRef<T> implements Refs<T> {
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private String name;
     private UUID id;
@@ -40,10 +43,12 @@ abstract class BaseRef<T> implements Refs<T> {
             setName(entity.getName());
             setId(entity.getId());
         } catch (NullPointerException npe){
-            System.out.println("BaseRef NullPointerException");
+            LOG.error("BaseRef NullPointerException");
         } catch (Exception ex){
-            System.out.println(ex.getMessage());
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error(ex.getMessage());
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
     }
 

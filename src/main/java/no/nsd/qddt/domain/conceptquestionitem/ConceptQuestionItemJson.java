@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.conceptquestionitem;
 
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EmbeddedId;
 import java.sql.Timestamp;
@@ -9,6 +11,7 @@ import java.sql.Timestamp;
  * @author Stig Norland
  */
 public class ConceptQuestionItemJson {
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @EmbeddedId
     private ParentQuestionItemId id = new ParentQuestionItemId();
@@ -23,7 +26,7 @@ public class ConceptQuestionItemJson {
 
     public ConceptQuestionItemJson(ConceptQuestionItem q) {
         if (q == null) {
-            System.out.println("ConceptQuestionItem is null");
+            LOG.info("ConceptQuestionItem is null");
             return;
         }
         setId(q.getId());

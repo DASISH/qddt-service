@@ -8,6 +8,8 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +31,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 @Service("conceptService")
 class ConceptServiceImpl implements ConceptService {
-
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final ConceptRepository conceptRepository;
     private final ConceptAuditService auditService;
     private final QuestionItemAuditService questionAuditService;
@@ -60,7 +62,7 @@ class ConceptServiceImpl implements ConceptService {
     public Concept findOne(UUID uuid) {
         return conceptRepository.findById(uuid).map(this::postLoadProcessing).orElseThrow(
 //        return conceptRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Concept.class));
+            () -> new ResourceNotFoundException(uuid, Concept.class));
 
     }
 
@@ -69,8 +71,8 @@ class ConceptServiceImpl implements ConceptService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Concept save(Concept instance) {
         return postLoadProcessing(
-                conceptRepository.save(
-                        prePersistProcessing(instance)));
+            conceptRepository.save(
+                prePersistProcessing(instance)));
     }
 
     @Override
@@ -97,16 +99,16 @@ class ConceptServiceImpl implements ConceptService {
     private Concept prePersistProcessing(Concept instance) {
         try {
             instance.getConceptQuestionItems().stream()
-                    .filter(f->f.getQuestionItemRevision() == null)
-                    .forEach(cqi->{
-                        Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange(cqi.getId().getQuestionItemId());
-                        cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
-//                        System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItemRevision());
+                .filter(f->f.getQuestionItemRevision() == null)
+                .forEach(cqi->{
+                    Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange(cqi.getId().getQuestionItemId());
+                    cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
+    //                        System.out.println("QuestionItemRevision set to latest revision " + cqi.getQuestionItemRevision());
             });
 
             // children are saved to hold revision info... i guess, these saves shouldn't
             instance.getChildren().stream()
-                    .forEach(this::setChildChangeStatus);
+                .forEach(this::setChildChangeStatus);
 
             if (instance.getId() == null & instance.getTopicRef().getId() != null) {        // load if new/basedon copy
                 TopicGroup tg = topicGroupService.findOne(instance.getTopicRef().getId());
@@ -115,14 +117,16 @@ class ConceptServiceImpl implements ConceptService {
 
             if (instance.isBasedOn()) {
                 Revision<Integer, Concept> lastChange
-                        = auditService.findLastChange(instance.getId());
+                    = auditService.findLastChange(instance.getId());
                 instance.makeNewCopy(lastChange.getRevisionNumber());
             } else if (instance.isNewCopy()) {
                 instance.makeNewCopy(null);
             }
         } catch(Exception ex) {
-            System.out.println("ConceptService-> prePersistProcessing " + instance.getName());
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("ConceptService-> prePersistProcessing " + instance.getName(), ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
         return instance;
     }
@@ -150,14 +154,14 @@ class ConceptServiceImpl implements ConceptService {
                         cqi.getQuestionItemRevision().intValue());
                 cqi.setQuestionItem(rev.getEntity());
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
-//                    System.out.println("ConceptService-> postLoadProcessing: MISSMATCH; wanted" +cqi.getQuestionItemRevision() + " got->"  +rev.getRevisionNumber() );
                     cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 }
             }
         } catch (Exception ex){
-            System.out.println("postLoadProcessing... " + instance.getName());
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+            LOG.error("",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
         instance.getChildren().forEach(this::postLoadProcessing);
         return instance;

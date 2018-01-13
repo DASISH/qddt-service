@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
+import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
@@ -30,7 +31,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/controlconstruct")
-public class ControlConstructController {
+public class ControlConstructController extends BaseController {
 
     private final ControlConstructService service;
     private final OtherMaterialService omService;
@@ -86,8 +87,10 @@ public class ControlConstructController {
         try {
             return service.findByQuestionItems(Collections.singletonList(secondId));
         } catch (Exception ex){
-            System.out.println(ex.getMessage());
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("getBySecond",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
             return  new ArrayList<>();
         }
     }

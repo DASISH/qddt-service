@@ -12,6 +12,9 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 public class QDDTUserDetails implements UserDetails {
+
+//    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
     private static final long serialVersionUID = -2985656388091941799L;
 
     private final User user;

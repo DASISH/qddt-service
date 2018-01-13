@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.responsedomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.kernel.color.Color;
+import com.itextpdf.kernel.color.ColorConstants;
 import com.itextpdf.layout.border.DottedBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.property.TextAlignment;
@@ -206,9 +206,9 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 _Index++;
             } catch (IndexOutOfBoundsException iob){
                 current.setCode(new Code());
-            } catch(Exception e) {
-                System.out.println(DateTime.now().toDateTimeISO()+
-                        " populateCatCodes (catch & continue) " + e.getMessage()+ " - " +
+            } catch(Exception ex) {
+                LOG.error(DateTime.now().toDateTimeISO()+
+                        " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
                         current);
                 current.setCode(new Code());
             }
@@ -233,7 +233,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     public void setManagedRepresentation(Category managedRepresentation) {
-        System.out.println("setManagedRepresentation");
+        LOG.debug("setManagedRepresentation");
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
         this.managedRepresentation = managedRepresentation;
@@ -254,12 +254,12 @@ public class ResponseDomain extends AbstractEntityAudit  {
         managedRepresentation.setChangeComment("");
         managedRepresentation.setChangeKind(getChangeKind());
         if(!getVersion().isModified()) {
-            System.out.println("onUpdate not run yet ♣♣♣ ");
+            LOG.debug("onUpdate not run yet ♣♣♣ ");
 //            onUpdate();
         }
 
         managedRepresentation.setVersion(getVersion());
-        System.out.println("ResponseDomain PrePersist " + getName() + " - " + getVersion());
+            LOG.debug("ResponseDomain PrePersist " + getName() + " - " + getVersion());
 
     }
 
@@ -317,30 +317,30 @@ public class ResponseDomain extends AbstractEntityAudit  {
             new com.itextpdf.layout.element.Table(UnitValue.createPercentArray(new float[]{15.0F,70.0F,15.0F}))
                 .setKeepTogether(true)
                 .setWidthPercent(80)
-                .setBorder(new DottedBorder(Color.GRAY,1))
+                .setBorder(new DottedBorder(ColorConstants.GRAY,1))
                 .setFontSize(10);
         table.addCell(new Cell(1,2)
             .add(this.getName())
-            .setBorder(new DottedBorder(Color.GRAY,1)))
+            .setBorder(new DottedBorder(ColorConstants.GRAY,1)))
             .addCell(new Cell()
                 .setTextAlignment(TextAlignment.RIGHT)
                 .add("Version " +this.getVersion().toString()));
         for (Category cat: getFlatManagedRepresentation(getManagedRepresentation())) {
             if (cat.getHierarchyLevel() == HierarchyLevel.ENTITY ){
                 table.addCell(new Cell()
-                        .setBorder(new DottedBorder(Color.GRAY,1)));
+                        .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
                 table.addCell(new Cell().add(cat.getLabel())
-                        .setBorder(new DottedBorder(Color.GRAY,1)));
+                        .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
                 table.addCell(new Cell()
                     .setTextAlignment(TextAlignment.CENTER)
                     .add(cat.getCode()!=null ? cat.getCode().getCodeValue(): cat.getCategoryType().name())
-                    .setBorder(new DottedBorder(Color.GRAY,1)));
+                    .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
             } else {
                 table.addCell(new Cell().add(cat.getCategoryType().name())
-                        .setBorder(new DottedBorder(Color.GRAY,1))
+                        .setBorder(new DottedBorder(ColorConstants.GRAY,1))
                         );
                 table.addCell(new Cell(1,2).add(cat.getName())
-                    .setBorder(new DottedBorder(Color.GRAY,1)));
+                    .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
             }
         }
         pdfReport.getTheDocument().add(table);

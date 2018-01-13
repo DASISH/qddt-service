@@ -267,8 +267,10 @@ public class ControlConstruct extends AbstractEntityAudit {
                 this.getControlConstructInstructions().add(cci);
             }
         }catch (Exception ex){
-            System.out.println("harvestPostInstructions exception " + ex.getMessage());
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("harvestPostInstructions exception",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
     }
 
@@ -276,17 +278,15 @@ public class ControlConstruct extends AbstractEntityAudit {
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
-//        System.out.println("populate Instructions " + getControlConstructInstructions().size());
         setPreInstructions(getControlConstructInstructions().stream()
-                .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
-                .map(ControlConstructInstruction::getInstruction)
-                .collect(Collectors.toList()));
+            .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
+            .map(ControlConstructInstruction::getInstruction)
+            .collect(Collectors.toList()));
 
         setPostInstructions(getControlConstructInstructions().stream()
-                .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
-                .map(ControlConstructInstruction::getInstruction)
-                .collect(Collectors.toList()));
-//        getControlConstructInstructions().stream().forEach(c-> System.out.println(c.getInstruction().getName()));
+            .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
+            .map(ControlConstructInstruction::getInstruction)
+            .collect(Collectors.toList()));
     }
 
 

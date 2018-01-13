@@ -2,6 +2,9 @@ package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 @Service("surveyProgramService")
 class SurveyProgramServiceImpl implements SurveyProgramService {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final SurveyProgramRepository surveyProgramRepository;
 
     @Autowired
@@ -54,8 +58,11 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
             retval= postLoadProcessing(
                     surveyProgramRepository.save(
                             prePersistProcessing(instance)));
-        }catch (Exception e){
-            System.out.println("SAVING SURVEY FAILED ->" + e.getMessage());
+        }catch (Exception ex){
+            LOG.error("SAVING SURVEY FAILED ->",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
         return retval;
     }

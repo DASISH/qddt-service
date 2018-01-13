@@ -395,7 +395,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @Override
     protected void beforeUpdate() {
-        System.out.println("Category beforeUpdate " + getName());
+        LOG.debug("Category beforeUpdate " + getName());
         if (inputLimit == null)
             setInputLimit("0","1");
         beforeInsert();
@@ -403,7 +403,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @Override
     protected void beforeInsert() {
-        System.out.println("Category beforeInsert " + getName());
+        LOG.debug("Category beforeInsert " + getName());
         if (getCategoryType() == null)
             setCategoryType(CategoryType.CATEGORY);
         switch (getCategoryType()) {

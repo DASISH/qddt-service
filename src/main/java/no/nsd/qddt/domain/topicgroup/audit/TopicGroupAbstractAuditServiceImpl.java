@@ -13,6 +13,8 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,8 @@ import java.util.UUID;
  */
 @Service("topicGroupAuditService")
 class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup> implements TopicGroupAuditService {
+
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final TopicGroupAuditRepository topicGroupAuditRepository;
     private final QuestionItemAuditService  questionItemAuditService;
@@ -105,8 +109,10 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
             instance.setComments(loadComments(instance.getId()));
 
         } catch (Exception ex){
-            System.out.println(instance);
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("postLoadProcessing",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
         }
         return instance;
     }
@@ -122,8 +128,10 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
             instance.getChildren().forEach(this::postLoadProcessing);
 
         } catch (Exception ex){
-            System.out.println("postLoadProcessing exception " + ex.getMessage());
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("postLoadProcessing",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
         }
         return instance;
     }

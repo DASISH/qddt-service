@@ -110,7 +110,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 //            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
         else
-            System.out.println("ConceptQuestionItem not inserted, match found" );
+            LOG.debug("ConceptQuestionItem not inserted, match found" );
     }
 
 
@@ -172,7 +172,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     public void setArchived(boolean archived) {
         isArchived = archived;
         if (archived) {
-            System.out.println( getName() + " isArchived (" + getChildren().size() +")" );
+            LOG.debug( getName() + " isArchived (" + getChildren().size() +")" );
             setChangeKind(ChangeKind.ARCHIVED);
             for (Concept concept : getChildren()) {
                 if (!concept.isArchived())
@@ -218,7 +218,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         getConceptQuestionItems().forEach(q-> q.makeNewCopy(revision));
         getChildren().forEach(c->c.makeNewCopy(revision));
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
-            System.out.println("infering topicgroup id " + getTopicRef().getId() );
+            LOG.debug("infering topicgroup id " + getTopicRef().getId() );
         }
         getComments().clear();
     }
@@ -265,7 +265,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
     @PreRemove
     private void removeReferencesFromConcept(){
-        System.out.println("Concept pre remove");
+        LOG.debug("Concept pre remove");
 //        getConceptQuestionItems().clear();
 //        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
     }
@@ -309,7 +309,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
                 pdfReport.addPadding();
 
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            LOG.error(ex.getMessage());
             throw ex;
         }
     }

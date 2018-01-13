@@ -42,7 +42,6 @@ class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Page<Category> findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
-//        System.out.println("findBy " + hierarchyLevel + " " + categoryType + " " + name);
         return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,
                 defaultSort(pageable,"name","modified"));
     }
@@ -125,14 +124,9 @@ class CategoryServiceImpl implements CategoryService {
             Code c =  instance.getCode();
             if (instance.getId() == null)
                 instance = categoryRepository.save(instance);
-//            else {
-//                Category fromRepository = findOne(instance.getId());
-//                if (!instance.fieldCompare(fromRepository)) {
-//                    instance = categoryRepository.save(instance);
-//                }
-//            }
             instance.setCode(c);
         }catch (Exception e) {
+
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
         }
@@ -141,7 +135,6 @@ class CategoryServiceImpl implements CategoryService {
 
     private Category postLoadProcessing(Code code, Category instance) {
         instance.setCode(code);
-//        System.out.println("postLoadProcessing " + instance.getName() + " ->" + code);
         return instance;
     }
 

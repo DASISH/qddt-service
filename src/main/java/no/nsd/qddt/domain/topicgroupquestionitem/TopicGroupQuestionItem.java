@@ -10,6 +10,8 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -30,6 +32,8 @@ import java.sql.Timestamp;
 //                "WHERE id =:id and rev = :rev; ",
 //                resultClass = QuestionItem.class)
 public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Serializable {
+
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private static final long serialVersionUID = -7261887559139337877L;
 
@@ -185,7 +189,7 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
 
     @PreRemove
     public void remove(){
-        System.out.println("TopicGroupQuestionItem pre remove");
+        LOG.debug("TopicGroupQuestionItem pre remove");
         this.questionItem = null;
     }
 

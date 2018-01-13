@@ -14,7 +14,6 @@ import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -101,8 +100,7 @@ public class QuestionItem extends AbstractEntityAudit {
                 &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.NUMERIC
                 &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.TEXT)
             & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
-            System.out.println(DateTime.now() + "MISSING ManagedRepresentation "
-                    + responseDomain.getManagedRepresentation());
+            LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
         }
             this.responseDomain = responseDomain;
         if (this.responseDomain != null)
@@ -216,7 +214,7 @@ public class QuestionItem extends AbstractEntityAudit {
         super.makeNewCopy(revision);
         setConceptQuestionItems(null);
         getComments().clear();
-        System.out.println("MADE NEW COPY...");
+        LOG.debug("MADE NEW COPY...");
     }
 
 

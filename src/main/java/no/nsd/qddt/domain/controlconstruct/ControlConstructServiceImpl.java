@@ -7,6 +7,8 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 @Service("instrumentQuestionService")
 class ControlConstructServiceImpl implements ControlConstructService {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final ControlConstructRepository controlConstructRepository;
     private final ControlConstructAuditService auditService;
     private final InstructionService iService;
@@ -114,9 +117,11 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     ControlConstructKind.QUESTION_CONSTRUCT.toString(),
                     "%","%",question,pageable)
                     .map(qi-> mapConstruct(postLoadProcessing(qi))).getContent();
-        } catch (Exception e) {
-            StackTraceFilter.println(e.getStackTrace());
-            System.out.println(e.getMessage());
+        } catch (Exception ex) {
+            LOG.error("findTop25ByQuestionItemQuestion",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
             return null;
         }
     }
@@ -132,8 +137,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 kind.toString(), name, name, question ,pageable)
                 .map(qi -> mapConstruct(postLoadProcessing(qi)));
         } catch (Exception ex) {
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+            LOG.error("findByNameLikeAndControlConstructKind",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
             return null;
         }
     }
@@ -170,12 +177,13 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         instance.getQuestionItemRevision().intValue());
                 instance.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 instance.setQuestionItem(rev.getEntity());
-//                System.out.println("postLoadProcessing fetching QI -> " + rev.getEntity().getName());
             }
             instance.getChildren().forEach(this::postLoadProcessing);
         } catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+            LOG.error("postLoadProcessing",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
 
         return instance;

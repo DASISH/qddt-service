@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
@@ -147,7 +148,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     }
 
     public TopicGroup addTopicGroup(TopicGroup topicGroup){
-        System.out.println("TopicGroup ["+ topicGroup.getName() + "] added to Study [" + this.getName() +"]");
+        LOG.debug("TopicGroup ["+ topicGroup.getName() + "] added to Study [" + this.getName() +"]");
         topicGroup.setStudy(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("TopicGroup ["+ topicGroup.getName() +"] added");
@@ -218,9 +219,9 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
 
     @PreRemove
     public void remove(){
-        System.out.println(" Study pre remove");
+        LOG.debug(" Study pre remove");
         if (this.getSurveyProgram() != null) {
-            System.out.println(getSurveyProgram().getName());
+            LOG.debug(getSurveyProgram().getName());
             this.getSurveyProgram().getStudies().removeIf(p->p.getId() == this.getId());
         }
         this.getAuthors().clear();
@@ -240,7 +241,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
                 setChangeKind(ChangeKind.ARCHIVED);
 
                 if (Hibernate.isInitialized(getTopicGroups()))
-                    System.out.println("getTopicGroups isInitialized. ");
+                    LOG.debug("getTopicGroups isInitialized. ");
                 else
                     Hibernate.initialize(getTopicGroups());
 
@@ -250,8 +251,11 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
                 }
             }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            LOG.error("setArchived",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
+
         }
     }
 

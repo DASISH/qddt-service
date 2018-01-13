@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.refclasses.TopicRef;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -55,10 +56,12 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setConceptQuestionItems(
                     concept.getConceptQuestionItems().stream().map(ConceptQuestionItemJson::new).collect(Collectors.toSet()));
             setTopicRef(concept.getTopicRef());
-        }catch (Exception ex){
-            System.out.println("ConceptJsonEdit Exception");
-            System.out.println(ex.getMessage());
-            System.out.println(concept);
+        } catch (Exception ex) {
+//            System.out.println(concept);
+            LOG.error("ConceptJsonEdit exception",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
     }
 

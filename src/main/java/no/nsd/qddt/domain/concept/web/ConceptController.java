@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept.web;
 
+import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
@@ -30,7 +31,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/concept")
-public class ConceptController {
+public class ConceptController extends BaseController {
 
     private final ConceptService service;
     private final TopicGroupService topicGroupService;
@@ -53,7 +54,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ConceptJsonEdit update(@RequestBody Concept concept) {
-        System.out.println(concept);
+        LOG.debug(concept.toString());
         return concept2Json(service.save(concept));
     }
 
@@ -71,8 +72,10 @@ public class ConceptController {
 
             return concept2Json(service.save(concept));
         }catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+            LOG.error("addQuestionItem",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
             return null;
         }
     }
@@ -88,8 +91,10 @@ public class ConceptController {
             cqiService.delete(new ParentQuestionItemId(conceptId,questionItemId));
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println( ex.getMessage());
+            super.LOG.error("removeQuestionItem",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(super.LOG::info);
             return concept2Json(concept);
         }
     }
@@ -104,14 +109,15 @@ public class ConceptController {
         ConceptJsonEdit parentJson = concept2Json(service.save(parent));
 
         return parentJson.getChildren().stream()
-                .filter(c -> Objects.equals(c.getName(), concept.getName())).findFirst()
-                .orElseThrow( ()-> new ResourceNotFoundException(0, Concept.class));
+            .filter(c -> Objects.equals(c.getName(), concept.getName())).findFirst()
+            .orElseThrow( ()-> new ResourceNotFoundException(0, Concept.class));
     }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
     public ConceptJsonEdit createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
+
         topicGroupService.findOne(topicId).addConcept(concept);
         return concept2Json(service.save(concept));
     }
@@ -120,6 +126,7 @@ public class ConceptController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
+
         service.delete(id);
     }
 

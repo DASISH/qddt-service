@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/topicgroup")
-public class TopicGroupController {
+public class TopicGroupController extends BaseController {
 
     private final TopicGroupService service;
     private final StudyService studyService;
@@ -87,9 +88,10 @@ public class TopicGroupController {
                     .map(TopicGroupJson::new)
                     .collect(Collectors.toList());
         } catch (Exception ex){
-            System.out.println("findByStudy Exception");
-            System.out.println(ex.getMessage());
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("findByStudy",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
             return Collections.emptyList();
         }
     }
@@ -121,9 +123,12 @@ public class TopicGroupController {
                             new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.longValue()));
 
             return new TopicGroupJson(service.save(topicGroup));
-        }catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
+        } catch (Exception ex){
+            LOG.error("addQuestionItem",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
+
             return null;
         }
     }
@@ -138,8 +143,10 @@ public class TopicGroupController {
             cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println( ex.getMessage());
+            LOG.error("removeQuestionItem",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
             return new TopicGroupJson(topicGroup);
         }
     }

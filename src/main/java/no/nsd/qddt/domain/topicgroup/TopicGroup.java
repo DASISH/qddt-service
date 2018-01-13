@@ -167,7 +167,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
             this.setChangeComment("QuestionItem assosiation added");
         }
         else
-            System.out.println("ConceptQuestionItem not inserted, match found" );
+            LOG.debug("ConceptQuestionItem not inserted, match found" );
     }
 
     public void addQuestionItem(QuestionItem questionItem) {
@@ -268,7 +268,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
     @PreRemove
     public void preRemove(){
-        System.out.println("Topic pre remove");
+        LOG.debug("Topic pre remove");
         getAuthors().clear();
         getOtherMaterials().clear();
     }
@@ -287,7 +287,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         isArchived = archived;
 
         if (archived) {
-            System.out.println( getName() + " isArchived(" + getConcepts().size() +")" );
+            LOG.info( getName() + " isArchived(" + getConcepts().size() +")" );
             setChangeKind(ChangeKind.ARCHIVED);
 //            Hibernate.initialize(this.getConcepts());
             for (Concept concept : getConcepts()) {

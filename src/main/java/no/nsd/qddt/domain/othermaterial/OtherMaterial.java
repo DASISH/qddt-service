@@ -208,7 +208,7 @@ public class OtherMaterial extends AbstractEntity {
 
     @PreRemove
     private void cleanUp(){
-        System.out.println("Removal of file " + getOriginalName() +  ", on hold, due to revision concerns");
+        LOG.debug("Removal of file " + getOriginalName() +  ", on hold, due to revision concerns");
     }
 
 

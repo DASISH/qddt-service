@@ -213,7 +213,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     @PrePersist
     private void onInsert(){
-        System.out.println("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
+        LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
         changeKind = AbstractEntityAudit.ChangeKind.CREATED;
@@ -224,7 +224,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @PreUpdate
     private void onUpdate(){
         try {
-            System.out.println("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
+            LOG.debug("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
             AbstractEntityAudit.ChangeKind change = changeKind;
             if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
@@ -265,10 +265,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             version = ver;
             beforeUpdate();
         }catch (Exception ex){
-            System.out.println("Exception in AbstractEntityAudit::onUpdate");
-            StackTraceFilter.println(ex.getStackTrace());
-            System.out.println(ex.getMessage());
-            System.out.println(this);
+            LOG.error("AbstractEntityAudit::onUpdate",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
         }
     }
 

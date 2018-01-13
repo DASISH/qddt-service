@@ -6,6 +6,8 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import org.hibernate.annotations.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
@@ -16,6 +18,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 public class ResponseDomainJsonView {
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Type(type="pg-uuid")
     private UUID id;
@@ -41,7 +44,7 @@ public class ResponseDomainJsonView {
 
     public ResponseDomainJsonView(ResponseDomain responseDomain) {
         if (responseDomain == null){
-            System.out.println("ResponseDomainJsonView(NULL)");
+            LOG.info("ResponseDomainJsonView(NULL)");
             return;
         }
         setId(responseDomain.getId());

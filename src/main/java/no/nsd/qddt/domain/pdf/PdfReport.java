@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.pdf;
 
 import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.color.Color;
+import com.itextpdf.kernel.color.ColorConstants;
 import com.itextpdf.kernel.color.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -25,6 +25,8 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.AbstractMap;
@@ -37,6 +39,8 @@ import java.util.stream.Collectors;
  * @author Stig Norland
  */
 public class PdfReport extends PdfDocument {
+
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private PdfFont paragraphFont;
     private PdfFont font;
@@ -57,8 +61,10 @@ public class PdfReport extends PdfDocument {
                     .setFont(font)
                     .setFontSize(11);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("PdfReport()",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);
         }
     }
 
@@ -105,9 +111,10 @@ public class PdfReport extends PdfDocument {
             }
 //            copyPagesTo(startToc+1, getNumberOfPages(), this, 1);
             } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            StackTraceFilter.println(ex.getStackTrace());
-        }
+            LOG.error("createToc",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                    .map(a->a.toString())
+                    .forEach(LOG::info);         }
         // add page labels
         getPage(1)
                 .setPageLabel(PageLabelNumberingStyleConstants.LOWERCASE_ROMAN_NUMERALS, null, 1);
@@ -132,7 +139,7 @@ public class PdfReport extends PdfDocument {
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER)
             .add(new Paragraph("_______________________________________________________")
-            .setFontColor(Color.BLUE)));
+            .setFontColor(ColorConstants.BLUE)));
         table.addCell(
             new Cell().add("Version")
             .setFontSize(9)
@@ -184,7 +191,7 @@ public class PdfReport extends PdfDocument {
                 chapter + "\t"  + StringTool.CapString(element.getName())
                 , getNumberOfPages());
         Paragraph p =new Paragraph(element.getName()).setKeepTogether(true);
-        p.setFontColor(Color.BLUE)
+        p.setFontColor(ColorConstants.BLUE)
             .setFontSize(14)
             .setKeepWithNext(true)
             .setDestination(element.getId().toString())
@@ -200,7 +207,7 @@ public class PdfReport extends PdfDocument {
     public Document addheader2(String header){
         return this.document.add(new Paragraph(header)
             .setWidthPercent(80)
-            .setFontColor(Color.BLUE)
+            .setFontColor(ColorConstants.BLUE)
             .setKeepTogether(true));
     }
 

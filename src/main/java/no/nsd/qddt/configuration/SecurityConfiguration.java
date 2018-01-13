@@ -8,19 +8,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 /**
  * @author Dag Østgulen Heradstveit
  */
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity()
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -32,48 +36,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+            .userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder());
     }
 
-
-    @Bean
-    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationTokenFilter();
-    }
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .csrf().disable()
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()
-            .antMatchers(
-                HttpMethod.GET,
-                "/",
-                "/**/*.html",
-                "/**/*.{png,jpg,jpeg,svg.ico}",
-                "/**/*.css",
-                "/**/*.js"
-            ).permitAll()
-            .antMatchers("/api/auth/**").permitAll()
-            .anyRequest().authenticated();
-                // Disabled CSRF for now.
-        // INFO: http://en.wikipedia.org/wiki/Cross-site_request_forgery
-//        http
-//                .csrf().disable();
-//
-//        http.authorizeRequests()
-//            .antMatchers("/**").hasAnyRole("USER", "ADMIN")
-//            .and()
-//        .formLogin()
-//            .loginPage("/home")
-//            .and()
-//        .logout()
-//            .permitAll();
-    }
 
     /**
      * Default {@link org.springframework.security.crypto.password.PasswordEncoder} using the newer and
@@ -85,18 +51,32 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Configuration
-//    protected static class AuthenticationConfiguration extends GlobalAuthenticationConfigurerAdapter {
-//
-//        @Autowired
-//        private QDDTUserDetailsService qddtUserDetailsService;
-//
-//        @Autowired
-//        private PasswordEncoder passwordEncoder;
-//
-//        @Override
-//        public void init(AuthenticationManagerBuilder auth) throws Exception {
-//            auth.userDetailsService(qddtUserDetailsService).passwordEncoder(passwordEncoder);
-//        }
-//    }
+
+    @Bean
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() {
+        return new JwtAuthenticationTokenFilter();
+    }
+
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeRequests()
+
+            .antMatchers("/auth/signin").permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .anyRequest().authenticated().and()
+            .cors();
+
+        // Custom JWT based security filter
+        http
+                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+        // disable page caching
+        http
+            .headers().cacheControl();
+    }
+
 }
