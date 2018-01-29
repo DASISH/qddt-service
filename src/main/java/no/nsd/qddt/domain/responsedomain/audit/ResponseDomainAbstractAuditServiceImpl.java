@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,7 @@ class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Integer
             else
                 coms  =commentService.findAllByOwnerIdPublic(instance.getEntity().getId());
             instance.getEntity().setComments(new HashSet<>(coms));
-            instance.getEntity().getManagedRepresentation();        //Lazy loading trick... (we want the MR when locking at a revision).
+            Hibernate.initialize(instance.getEntity().getManagedRepresentation());  //Lazy loading trick... (we want the MRep when locking at a revision).
         } catch (Exception ex) {
             LOG.error("postLoadProcessing", ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()

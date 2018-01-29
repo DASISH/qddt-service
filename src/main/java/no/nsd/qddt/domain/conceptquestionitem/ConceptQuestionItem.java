@@ -72,7 +72,7 @@ import java.sql.Timestamp;
                 "LEFT JOIN vQuestionRev qr ON qia.question_id = qr.id AND qia.rev >= qr.rev AND (qia.rev < qr.nextRev OR qr.rev = qr.nextrev)\n",
         resultSetMapping = "ConceptQuestionResult")
 })
-public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Serializable {
+public class ConceptQuestionItem  implements Cloneable, ParentQuestionItem, java.io.Serializable {
 
     @Transient
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -86,7 +86,7 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
     @JsonBackReference(value = "ConceptQuestionItemConceptRef")
     @ManyToOne
     @MapsId("id")
-    @JoinColumn(name = "PARENT_ID",insertable = false, updatable = false)
+    @JoinColumn(name = "PARENT_ID",insertable = false)
     private Concept concept;
 
 
@@ -233,10 +233,9 @@ public class ConceptQuestionItem  implements ParentQuestionItem, java.io.Seriali
         this.questionItem = null;
     }
 
+    public void setParent(Concept newParent)  {
+        setConcept( newParent );
 
-    public void makeNewCopy(Integer revision) {
-        // nothing needs to be done here, this should save correctly without any changes.
     }
-
 
 }

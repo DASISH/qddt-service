@@ -72,6 +72,15 @@ public class TopicGroupController extends BaseController {
         }
         return new TopicGroupJson(instance);
     }
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
+    public TopicGroupJson copy(@PathVariable("uuid") UUID sourceId ,
+                                @PathVariable("rev") Long sourceRev,
+                                @PathVariable("parentUuid") UUID parentId) {
+        return new TopicGroupJson(
+                service.save(
+                        service.copy(sourceId,sourceRev,parentId)));
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)

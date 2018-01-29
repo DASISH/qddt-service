@@ -17,6 +17,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +82,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
 
     @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+//    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
@@ -131,7 +132,12 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
 
     public Set<OtherMaterial> getOtherMaterials() {
-        return otherMaterials;
+        try {
+            return otherMaterials;
+        } catch (Exception ex ){
+            LOG.error( ex.getMessage() );
+            return null;
+        }
     }
 
     public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
@@ -157,11 +163,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
     public void addTopicQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
-// no update for QI when removing (it is bound to a revision anyway...).
-//            if (topicQuestionItem.getQuestionItem() != null){
-//                topicQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-//                topicQuestionItem.getQuestionItem().setChangeComment("Topic assosiation added");
-//            }
             topicQuestionItems.add(topicQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
@@ -184,13 +185,31 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         }
     }
 
+    public void setParent(Study newParent) {
+        try {
+            Class<?> clazz = getClass();
+            Field field = clazz.getDeclaredField("study");
+            field.setAccessible(true);
+            field.set(this, newParent);
+        } catch (NoSuchFieldException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        } catch (IllegalAccessException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        }
+    }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-//        getConcepts().forEach(c->c.makeNewCopy(revision));
-        getOtherMaterials().forEach(m->m.makeNewCopy(getId()));
+        getConcepts().forEach(c-> {
+            c.makeNewCopy(revision);
+            c.setParentT( this );
+        });
+//        getOtherMaterials().forEach(m-> {
+//            m.makeNewCopy(revision);
+//            m.setParent( this.getId() );
+//        });
         getComments().clear();
     }
 
@@ -204,7 +223,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         TopicGroup that = (TopicGroup) o;
 
         if (study != null ? !study.equals(that.study) : that.study != null) return false;
-//        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
@@ -228,7 +246,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
                 "\"abstractDescription\":" + (abstractDescription == null ? "null" : "\"" + abstractDescription + "\"") +
                 "\"concepts\":" + (getConcepts() == null ? "null" : Arrays.toString(getConcepts().toArray())) + ", " +
                 "\"authors\":" + (authors == null ? "null" : Arrays.toString(authors.toArray())) + ", " +
-                "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
+//                "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
                 "}";
     }
 
@@ -272,10 +290,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         getAuthors().clear();
         getOtherMaterials().clear();
     }
-
-//    @PostLoad void test() {
-//        System.out.println("Postload in class " + getName());
-//    }
 
     @Override
     public boolean isArchived() {

@@ -216,7 +216,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
-        changeKind = AbstractEntityAudit.ChangeKind.CREATED;
+        if (changeKind != ChangeKind.BASED_ON)
+            changeKind = ChangeKind.CREATED;
         version = new Version(true);
         beforeInsert();
     }
@@ -226,9 +227,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         try {
             LOG.debug("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
-            AbstractEntityAudit.ChangeKind change = changeKind;
-            if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
-                change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+            ChangeKind change = changeKind;
+            if ( (change == ChangeKind.CREATED || change == ChangeKind.BASED_ON) & !ver.isNew()) {
+                change = ChangeKind.IN_DEVELOPMENT;
                 changeKind = change;
             }
             switch (change) {
@@ -253,7 +254,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 case CREATED:
                     break;
                 case IN_DEVELOPMENT:
-                    ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
+                    ver.setVersionLabel(ChangeKind.IN_DEVELOPMENT.getName());
                     break;
                 case UPDATED_PARENT:
                     ver.setVersionLabel("");
@@ -315,13 +316,17 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     This function should contain all copy code needed to make a complete copy of hierarchy under this element
     (an override should propagate downward and call makeNewCopy on it's children).
      */
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         if (revision != null) {
             setBasedOnObject(getId());
-            setBasedOnRevision(revision.longValue());
+            setBasedOnRevision(revision);
             version.setVersionLabel("COPY OF [" + getName() + "]");
+            setChangeKind( ChangeKind.BASED_ON );
+            setChangeComment("Based on " + getName() );
         }
+        if(this instanceof Archivable)
+            ((Archivable)this).setArchived(false);
         setId(UUID.randomUUID());
         hasRun = true;
     }

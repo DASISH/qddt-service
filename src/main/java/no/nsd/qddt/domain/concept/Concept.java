@@ -15,6 +15,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     private TopicGroup topicGroup;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "concept")
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE ,CascadeType.DETACH }, mappedBy = "concept")
     private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
 
 
@@ -75,6 +76,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     private TopicRef topicRef;
 
     private boolean isArchived;
+
 
     public Concept() {
     }
@@ -99,11 +101,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
     public void addConceptQuestionItem(ConceptQuestionItem conceptQuestionItem) {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->conceptQuestionItem.getId().equals(cqi.getId()))) {
-// no update for QI when removing (it is bound to a revision anyway...).
-//            if (conceptQuestionItem.getQuestionItem() != null){
-//                conceptQuestionItem.getQuestionItem().setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-//                conceptQuestionItem.getQuestionItem().setChangeComment("Concept assosiation added");
-//            }
+
             conceptQuestionItems.add(conceptQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
@@ -210,13 +208,41 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         this.topicRef = topicRef;
     }
 
+    public void setParentT(TopicGroup newParent) {
+        try {
+            Class<?> clazz = getClass();
+            Field field = clazz.getDeclaredField("topicGroup");
+            field.setAccessible(true);
+            field.set(this, newParent);
+        } catch (NoSuchFieldException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        } catch (IllegalAccessException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        }
+    }
+
+    protected void setParentC(Concept newParent)  {
+        try {
+            Class<?> clazz = getClass();
+            Field field = clazz.getDeclaredField("parentReferenceOnly");
+            field.setAccessible(true);
+            field.set(this, newParent);
+        } catch (NoSuchFieldException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        } catch (IllegalAccessException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        }
+    }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q-> q.makeNewCopy(revision));
-        getChildren().forEach(c->c.makeNewCopy(revision));
+        getConceptQuestionItems().forEach(q->  q.setParent(this));
+        getChildren().forEach(c-> {
+            c.makeNewCopy(revision);
+            c.setParentC( this );
+        });
         if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
             LOG.debug("infering topicgroup id " + getTopicRef().getId() );
         }

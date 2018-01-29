@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +47,15 @@ public class TopicGroupQuestionItemServiceImpl implements TopicGroupQuestionItem
     public TopicGroupQuestionItem save(TopicGroupQuestionItem instance) {
         return postLoadProcessing(repository.save(instance));
     }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    public Set<TopicGroupQuestionItem> save(Set<TopicGroupQuestionItem> instances) {
+        return repository.save(instances).stream().
+                map(this::postLoadProcessing).
+                collect(Collectors.toSet());
+    }
+
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")

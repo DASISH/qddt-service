@@ -217,11 +217,13 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     public List<Category> getChildren() {
-        if (categoryType == CategoryType.SCALE)
-            return  children.stream().filter(Objects::nonNull)
-                    .sorted(Comparator.comparing(Category::getCode))
-                    .collect(Collectors.toList());
-        else
+        if (categoryType == CategoryType.SCALE) {
+            if (children == null || children.size() == 0)
+                LOG.error("getChildren() is 0/NULL");
+            return children.stream().filter( Objects::nonNull )
+                    .sorted( Comparator.comparing( Category::getCode ) )
+                    .collect( Collectors.toList() );
+        } else
             return  children.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
@@ -423,7 +425,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         // Copying a simple Category doesn't make any sense... skipping...
         hasRun = (getHierarchyLevel() == HierarchyLevel.ENTITY);
         if (hasRun) return;

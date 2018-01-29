@@ -87,7 +87,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
             instance.populateCodes();
 
         if(instance.isBasedOn()) {
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
             instance.makeNewCopy(rev);
         } else if (instance.isNewCopy()) {
             instance.makeNewCopy(null);

@@ -81,8 +81,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @OrderColumn(name="responsedomain_idx")
     @OrderBy("responsedomain_idx ASC")
     @ElementCollection
-    @CollectionTable(name = "CODE",
-    joinColumns = @JoinColumn(name="responsedomain_id"))
+    @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id"))
     private List<Code> codes = new ArrayList<>();
 
     @Column(name = "description", length = 2000, nullable = false)
@@ -93,7 +92,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
-    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.EAGER)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
@@ -347,7 +346,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         managedRepresentation.makeNewCopy(revision);

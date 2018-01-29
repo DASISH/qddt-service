@@ -29,6 +29,7 @@ public class OtherMaterial extends AbstractEntity {
 
     @Type(type="pg-uuid")
 //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Column(name = "owner_id")
     private UUID owner;
 
     private String fileName;

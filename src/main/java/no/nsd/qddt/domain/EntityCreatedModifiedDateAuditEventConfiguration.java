@@ -33,8 +33,13 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
-            LOG.debug("Entity EventConfiguration CreateOrUpdate "+ entity.getClass().getSimpleName() + " - " +
+            if (entity instanceof AbstractEntityAudit )
+                LOG.debug("Entity EventConfiguration CreateOrUpdate "+ entity.getClass().getSimpleName() + " - " +
                     ((AbstractEntityAudit)entity).getName());
+            else
+                LOG.debug("Entity EventConfiguration CreateOrUpdate "+ entity.getClass().getSimpleName() + " - " +
+                        entity.toString());
+
 
         } catch (Exception e){
             LOG.error("Entity EventConfiguration", e);

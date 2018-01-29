@@ -104,6 +104,8 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Conce
                             getQuestionItemLastOrRevision(cqi)));
 
             instance.getChildren().forEach(this::postLoadProcessing);
+            if (instance.getChildren().size() > 0)
+                System.out.println("Concept children size " + instance.getChildren().size());
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing exception",ex);

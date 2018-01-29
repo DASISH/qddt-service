@@ -45,8 +45,7 @@ import java.util.Set;
 
 @Audited
 @Entity
-@Table(name = "SURVEY_" +
-        "PROGRAM")
+@Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit implements Authorable,Archivable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
@@ -128,7 +127,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
     }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         getStudies().forEach(s->s.makeNewCopy(revision));

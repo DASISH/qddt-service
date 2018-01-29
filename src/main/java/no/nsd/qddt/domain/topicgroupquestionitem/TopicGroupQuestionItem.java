@@ -194,10 +194,9 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
         this.questionItem = null;
     }
 
+    public void setParent(TopicGroup newParent)  {
+        setTopicGroup( newParent );
 
-    public void makeNewCopy(Integer revision) {
-     //TODO implement
     }
-
 
 }

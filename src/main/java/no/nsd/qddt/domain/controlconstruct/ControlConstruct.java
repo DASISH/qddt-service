@@ -18,6 +18,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
+    @Type(type="pg-uuid")
     @JoinColumn(name = "parent_id",updatable = false,insertable = false)
     private ControlConstruct parentReferenceOnly;
 
@@ -424,14 +426,33 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     @Override
-    public void makeNewCopy(Integer revision) {
+    public void makeNewCopy(Long revision) {
         if (hasRun) return;
-        super.makeNewCopy(revision);
-        getChildren().forEach(c->c.makeNewCopy(revision));
-        getOtherMaterials().forEach(o->o.makeNewCopy(this.getId()));
+        super.makeNewCopy( revision );
+        getChildren().forEach( c -> {
+            c.makeNewCopy( revision );
+            c.setParent( this );
+        } );
+//        getOtherMaterials().forEach( m -> {
+//            m.makeNewCopy( revision );
+//            m.setParent( this.getId() );
+//        } );
         getComments().clear();
     }
 
+
+    public void setParent(ControlConstruct newParent) {
+        try {
+            Class<?> clazz = getClass();
+            Field field = clazz.getDeclaredField("parentReferenceOnly");
+            field.setAccessible(true);
+            field.set(this, newParent);
+        } catch (NoSuchFieldException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        } catch (IllegalAccessException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        }
+    }
 }
 
 

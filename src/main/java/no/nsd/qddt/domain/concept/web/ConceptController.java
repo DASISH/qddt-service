@@ -76,7 +76,7 @@ public class ConceptController extends BaseController {
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                 .map(a->a.toString())
                 .forEach(LOG::info);
-            return null;
+            throw ex;
         }
     }
 
@@ -97,6 +97,16 @@ public class ConceptController extends BaseController {
                     .forEach(super.LOG::info);
             return concept2Json(concept);
         }
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
+    public ConceptJsonEdit copy(@PathVariable("uuid") UUID sourceId ,
+                                @PathVariable("rev") Long sourceRev,
+                                @PathVariable("parentUuid") UUID parentId) throws Exception {
+        return concept2Json(
+            service.save(
+                service.copy( sourceId, sourceRev, parentId ) ) );
     }
 
 

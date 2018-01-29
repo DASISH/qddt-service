@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +53,14 @@ public class ConceptQuestionItemServiceImpl implements ConceptQuestionItemServic
         return repository.save(instances).stream().
                 map(this::postLoadProcessing).
                 collect(Collectors.toList());
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    public Set<ConceptQuestionItem> save(Set<ConceptQuestionItem> instances) {
+        return repository.save(instances).stream().
+                map(this::postLoadProcessing).
+                collect(Collectors.toSet());
     }
 
     @Override

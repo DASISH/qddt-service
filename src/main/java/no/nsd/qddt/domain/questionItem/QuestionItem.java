@@ -209,7 +209,7 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     @Override
-    public void makeNewCopy(Integer revision){
+    public void makeNewCopy(Long revision){
         if (hasRun) return;
         super.makeNewCopy(revision);
         setConceptQuestionItems(null);
