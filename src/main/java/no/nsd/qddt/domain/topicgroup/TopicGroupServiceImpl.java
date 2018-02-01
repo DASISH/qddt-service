@@ -132,9 +132,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private Map<UUID,Set<TopicGroupQuestionItem>> copyAlltqi(TopicGroup source) {
         Map<UUID,Set<TopicGroupQuestionItem>> tgiRef = new HashMap<>();
         tgiRef.put(source.getId(),
-                source.getTopicQuestionItems().stream()
-                        .map( c -> new TopicGroupQuestionItem( c.getId(), c.getQuestionItemRevision() ))
-                        .collect( Collectors.toSet() ));
+            source.getTopicQuestionItems().stream()
+                .map( c -> new TopicGroupQuestionItem( c.getId(), c.getQuestionItemRevision() ))
+                .collect( Collectors.toSet() ));
         source.getTopicQuestionItems().clear();
         return  tgiRef;
     }
@@ -146,11 +146,10 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private void updateAlltgi(TopicGroup savedSource, Map<UUID,Set<TopicGroupQuestionItem>> tgiRef ){
 
         tgiRef.get(savedSource.getBasedOnObject()).stream()
-                .forEach( c->c.setParent( savedSource ) );
+            .forEach( c->c.setParent( savedSource ) );
 
         savedSource.setTopicQuestionItems(tqiService.save(  tgiRef.get(savedSource.getBasedOnObject() )));
     }
-
 
 
     @Override
@@ -174,9 +173,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
             instance = findOne(instance.getId());
             instance.setArchived(true);
             instance.setChangeComment(changecomment);
-        }
-        if( instance.isNewCopy()){
-            instance.makeNewCopy(null);
         }
         return instance;
     }

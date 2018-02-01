@@ -196,10 +196,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
             c.makeNewCopy(revision);
             c.setParentT( this );
         });
-//        getOtherMaterials().forEach(m-> {
-//            m.makeNewCopy(revision);
-//            m.setParent( this.getId() );
-//        });
+        getOtherMaterials().forEach(m-> m.makeNewCopy(this.getId()) );
         getComments().clear();
     }
 

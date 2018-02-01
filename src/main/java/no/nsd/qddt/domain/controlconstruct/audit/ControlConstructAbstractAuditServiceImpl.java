@@ -114,13 +114,6 @@ class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integ
             else
                 instance.setQuestionItemRevision(0L);
 
-            // Manually load none audited elements
-//
-//            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
-//            instance.setOtherMaterials(oms.stream()
-//                .map( c-> (OtherMaterialCC)c )
-//                .collect( Collectors.toSet() ) );
-
             List<Comment> coms;
             if (showPrivateComments)
                 coms = commentService.findAllByOwnerId(instance.getId());

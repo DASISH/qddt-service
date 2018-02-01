@@ -153,15 +153,6 @@ class ConceptServiceImpl implements ConceptService {
                 instance.setTopicGroup( tg );
             }
 
-//            if (instance.isBasedOn()) {
-//                cqiService.save(
-//                    instance.getConceptQuestionItems()
-//                        .stream().collect( Collectors.toList()));
-//            }
-//                Revision<Integer, Concept> lastChange
-//                    = auditService.findLastChange(instance.getId());
-//                instance.makeNewCopy(lastChange.getRevisionNumber().longValue());
-//            } else
             if (instance.isNewCopy()) {
                 instance.makeNewCopy( null );
             }
