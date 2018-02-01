@@ -15,7 +15,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -209,29 +208,11 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
     public void setParentT(TopicGroup newParent) {
-        try {
-            Class<?> clazz = getClass();
-            Field field = clazz.getDeclaredField("topicGroup");
-            field.setAccessible(true);
-            field.set(this, newParent);
-        } catch (NoSuchFieldException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        } catch (IllegalAccessException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        }
+        setField("topicGroup",newParent );
     }
 
     protected void setParentC(Concept newParent)  {
-        try {
-            Class<?> clazz = getClass();
-            Field field = clazz.getDeclaredField("parentReferenceOnly");
-            field.setAccessible(true);
-            field.set(this, newParent);
-        } catch (NoSuchFieldException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        } catch (IllegalAccessException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        }
+        setField("parentReferenceOnly",newParent );
     }
 
     @Override

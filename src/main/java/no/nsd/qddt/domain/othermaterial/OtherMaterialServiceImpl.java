@@ -112,7 +112,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     public OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException {
 
         String name = owner + " [" + filename + "]";
-        return otherMaterialRepository.findByOwnerAndOriginalName(owner,filename)
+        return otherMaterialRepository.findByOwnerIdAndOriginalName(owner,filename)
                 .orElseThrow(
                 () -> new ResourceNotFoundException(name , OtherMaterial.class)
         );
@@ -121,7 +121,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     public List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException {
-        return otherMaterialRepository.findByOwner(owner);
+        return otherMaterialRepository.findByOwnerId(owner);
     }
 
 
@@ -184,7 +184,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         if (om.getSource() != null)
             return getFile(om.getSource());
 
-        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getOriginalName()).toString();
+        String filepath = Paths.get(getFolder(om.getOwnerId().toString()), om.getOriginalName()).toString();
         return new File(filepath);
     }
 

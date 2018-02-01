@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -50,6 +52,7 @@ public abstract class AbstractEntity {
     public UUID getId() {
         return id;
     }
+
 
     public void setId(UUID id) {
         this.id = id;
@@ -122,5 +125,22 @@ public abstract class AbstractEntity {
     }
 
 
+    /*
+    Set Properties without notifying Hibernate, good for circumvent auto HiberFix hell.
+     */
+    @Transient
+    @JsonIgnore
+    protected void setField(String fieldname, Object value) {
+        try {
+            Class<?> clazz = getClass();
+            Field field = clazz.getDeclaredField(fieldname);
+            field.setAccessible(true);
+            field.set(this, value);
+        } catch (NoSuchFieldException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        } catch (IllegalAccessException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        }
+    }
 
 }

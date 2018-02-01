@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -104,8 +103,11 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
                 cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi));
             }
 
-            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
-            instance.setOtherMaterials(new HashSet<>(oms));
+//            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
+//            instance.setOtherMaterials(oms.stream()
+//                .map( c-> (OtherMaterialT)c )
+//                .collect( Collectors.toSet() ) );
+
             instance.setComments(loadComments(instance.getId()));
 
         } catch (Exception ex){

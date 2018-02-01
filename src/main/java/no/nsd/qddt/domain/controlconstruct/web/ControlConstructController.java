@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.instrument.InstrumentService;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -70,7 +71,7 @@ public class ControlConstructController extends BaseController {
         instance = service.save(instance);
         if (files != null && files.length > 0)
             for (MultipartFile multipartFile:files) {
-                instance.addOtherMaterials(omService.saveFile(multipartFile, instance.getId()));
+                instance.addOtherMaterials((OtherMaterialCC)omService.saveFile(multipartFile, instance.getId()));
             }
         return instance;
     }

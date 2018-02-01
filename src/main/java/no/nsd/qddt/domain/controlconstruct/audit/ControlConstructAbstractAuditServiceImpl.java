@@ -1,11 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -116,9 +115,11 @@ class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integ
                 instance.setQuestionItemRevision(0L);
 
             // Manually load none audited elements
-
-            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
-            instance.setOtherMaterials(new HashSet<>(oms));
+//
+//            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
+//            instance.setOtherMaterials(oms.stream()
+//                .map( c-> (OtherMaterialCC)c )
+//                .collect( Collectors.toSet() ) );
 
             List<Comment> coms;
             if (showPrivateComments)

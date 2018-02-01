@@ -14,9 +14,9 @@ import java.util.UUID;
 @Repository
 interface OtherMaterialRepository extends BaseRepository<OtherMaterial,UUID>, RevisionRepository<OtherMaterial, UUID, Integer> {
 
-    Optional<OtherMaterial> findByOwnerAndOriginalName(UUID owner, String name);
+    Optional<OtherMaterial> findByOwnerIdAndOriginalName(UUID owner, String name);
 
-    List<OtherMaterial> findByOwner(UUID owner);
+    List<OtherMaterial> findByOwnerId(UUID owner);
 
 
     // Tar denne med for å teste funksjonaliteten, den er strengt tatt unødvendig å ha med, da findAllByModule gir deg det du trenger.

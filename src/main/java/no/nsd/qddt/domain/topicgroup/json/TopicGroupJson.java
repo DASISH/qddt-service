@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.topicgroup.json;
 import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemJson;
 
@@ -22,7 +22,7 @@ public class TopicGroupJson extends BaseJsonEdit {
 
     private Set<Author> authors = new HashSet<>();
 
-    private Set<OtherMaterial> otherMaterials = new HashSet<>();
+    private Set<OtherMaterialT> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
 
@@ -63,11 +63,11 @@ public class TopicGroupJson extends BaseJsonEdit {
         this.authors = authors;
     }
 
-    public Set<OtherMaterial> getOtherMaterials() {
+    public Set<OtherMaterialT> getOtherMaterials() {
         return otherMaterials;
     }
 
-    private void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
+    private void setOtherMaterials(Set<OtherMaterialT> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 

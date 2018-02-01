@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
@@ -17,7 +17,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,7 +65,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
     @JsonIgnore
     @OrderBy(value = "name asc")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
     private Set<Concept> concepts = new HashSet<>(0);
 
 
@@ -81,9 +80,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     private Set<Author> authors = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
+    @OneToMany(mappedBy = "parent" ,fetch = FetchType.LAZY, cascade =CascadeType.REMOVE)
 //    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
-    private Set<OtherMaterial> otherMaterials = new HashSet<>();
+    private Set<OtherMaterialT> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
 
@@ -131,7 +130,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     }
 
 
-    public Set<OtherMaterial> getOtherMaterials() {
+    public Set<OtherMaterialT> getOtherMaterials() {
         try {
             return otherMaterials;
         } catch (Exception ex ){
@@ -140,7 +139,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         }
     }
 
-    public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
+    public void setOtherMaterials(Set<OtherMaterialT> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 
@@ -186,16 +185,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     }
 
     public void setParent(Study newParent) {
-        try {
-            Class<?> clazz = getClass();
-            Field field = clazz.getDeclaredField("study");
-            field.setAccessible(true);
-            field.set(this, newParent);
-        } catch (NoSuchFieldException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        } catch (IllegalAccessException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        }
+        setField( "study", newParent );
     }
 
     @Override

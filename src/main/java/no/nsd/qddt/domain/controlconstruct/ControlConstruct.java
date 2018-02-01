@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
 import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.universe.Universe;
@@ -18,7 +18,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -111,9 +110,9 @@ public class ControlConstruct extends AbstractEntityAudit {
     private List<Universe> universe =new ArrayList<>(0);
 
 
-    @OneToMany(mappedBy = "owner" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
+    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
 //    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
-    private Set<OtherMaterial> otherMaterials = new HashSet<>();
+    private Set<OtherMaterialCC> otherMaterials = new HashSet<>();
 
 
     @JsonIgnore
@@ -193,15 +192,15 @@ public class ControlConstruct extends AbstractEntityAudit {
         questionItemUUID = questionItem;
     }
 
-    public Set<OtherMaterial> getOtherMaterials() {
+    public Set<OtherMaterialCC> getOtherMaterials() {
         return otherMaterials;
     }
 
-    public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
+    public void setOtherMaterials(Set<OtherMaterialCC> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 
-    public void addOtherMaterials(OtherMaterial otherMaterial) {
+    public void addOtherMaterials(OtherMaterialCC otherMaterial) {
         getOtherMaterials().add(otherMaterial);
     }
 
@@ -442,17 +441,10 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     public void setParent(ControlConstruct newParent) {
-        try {
-            Class<?> clazz = getClass();
-            Field field = clazz.getDeclaredField("parentReferenceOnly");
-            field.setAccessible(true);
-            field.set(this, newParent);
-        } catch (NoSuchFieldException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        } catch (IllegalAccessException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        }
+        setField( "parentReferenceOnly", newParent );
     }
+
+
 }
 
 

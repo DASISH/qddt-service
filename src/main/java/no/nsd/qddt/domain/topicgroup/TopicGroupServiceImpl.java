@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,7 +199,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 }
             }
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
-                instance.getConcepts().size();
+                Hibernate.initialize(instance.getConcepts());
             }
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);

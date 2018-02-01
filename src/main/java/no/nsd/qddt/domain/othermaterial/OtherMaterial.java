@@ -24,13 +24,16 @@ import java.util.UUID;
  */
 @Audited
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "owner_type")
 @Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntity {
 
+
+
     @Type(type="pg-uuid")
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Column(name = "owner_id")
-    private UUID owner;
+    @Column(name = "owner_id", insertable = false, updatable = false)
+    private UUID ownerId;
 
     private String fileName;
 
@@ -67,7 +70,7 @@ public class OtherMaterial extends AbstractEntity {
     }
 
     public OtherMaterial(UUID owner, MultipartFile file){
-        setOwner(owner);
+        setField("ownerId",owner);
         setFileName(file.getName());
         setOriginalName(file.getOriginalFilename());
         setFileType(file.getContentType());
@@ -76,7 +79,7 @@ public class OtherMaterial extends AbstractEntity {
     }
 
     public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
-        setOwner(owner);
+        setField("ownerId",owner);
         setFileName(name);
         setOriginalName(name);
         setFileType(fileType);
@@ -92,15 +95,12 @@ public class OtherMaterial extends AbstractEntity {
         this.fileName = fileName;
     }
 
-    public UUID getOwner() {
-//        if (orgRef == null)
-            return owner;
-//        else
-//            return orgRef;
+    public UUID getOwnerId() {
+        return ownerId;
     }
 
-    private void setOwner(UUID owner) {
-        this.owner = owner;
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getFileType() {
@@ -173,11 +173,11 @@ public class OtherMaterial extends AbstractEntity {
     @Override
     public String toString() {
         return "OtherMaterial{" +
-                ", description='" + description + '\'' +
-                ", fileType='" + fileType + '\'' +
-                ", originalName='" + originalName + '\'' +
-                ", size=" + size +
-                "} " + super.toString();
+            ", description='" + description + '\'' +
+            ", fileType='" + fileType + '\'' +
+            ", originalName='" + originalName + '\'' +
+            ", size=" + size +
+            "} " + super.toString();
     }
 
 
@@ -185,7 +185,7 @@ public class OtherMaterial extends AbstractEntity {
     public int hashCode() {
 
         int result = super.hashCode();
-        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
         result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (fileType != null ? fileType.hashCode() : 0);
@@ -202,7 +202,7 @@ public class OtherMaterial extends AbstractEntity {
     public void makeNewCopy(UUID newOwner){
         if (hasRun) return;
         setOrgRef(getId());
-        setOwner(newOwner);
+        setField("ownerId",newOwner);
         setId(UUID.randomUUID());
         hasRun = true;
     }
