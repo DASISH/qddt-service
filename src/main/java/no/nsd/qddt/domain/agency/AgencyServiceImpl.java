@@ -42,6 +42,12 @@ class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Agency> getAll() {
+        return agencyRepository.findAll();
+    }
+
+    @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public List<Agency> save(List<Agency> instances) {
         List<Agency> target = new ArrayList<>();

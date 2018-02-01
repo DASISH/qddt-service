@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,6 +28,12 @@ public class AgencyController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Agency get(@PathVariable("id") UUID id) {
         return service.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public List<Agency> getAll()  {
+        return service.getAll();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
