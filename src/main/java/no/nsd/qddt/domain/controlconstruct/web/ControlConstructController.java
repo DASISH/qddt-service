@@ -1,10 +1,11 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.BaseController;
-import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
@@ -22,7 +23,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This controller relates to a meta storage, which has a rank,logic and Rankrationale property, and thus need control
@@ -68,12 +72,13 @@ public class ControlConstructController extends BaseController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") ControlConstruct instance) throws FileUploadException {
-        instance = service.save(instance);
+        if (instance.getChangeKind() == null || instance.getChangeKind()  == AbstractEntityAudit.ChangeKind.CREATED)
+            instance = service.save(instance);
         if (files != null && files.length > 0)
             for (MultipartFile multipartFile:files) {
-                instance.addOtherMaterials((OtherMaterialCC)omService.saveFile(multipartFile, instance.getId()));
+                instance.addOtherMaterial((OtherMaterialCC)omService.saveFile(multipartFile, instance.getId()));
             }
-        return instance;
+        return service.save(instance);
     }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)

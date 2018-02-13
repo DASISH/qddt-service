@@ -200,8 +200,9 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.otherMaterials = otherMaterials;
     }
 
-    public void addOtherMaterials(OtherMaterialCC otherMaterial) {
-        getOtherMaterials().add(otherMaterial);
+    public OtherMaterialCC addOtherMaterial(OtherMaterialCC otherMaterial) {
+        otherMaterial.setParent( this );
+        return  otherMaterial;
     }
 
     public String getLabel() {

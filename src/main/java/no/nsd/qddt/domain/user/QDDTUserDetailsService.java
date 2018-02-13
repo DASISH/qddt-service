@@ -35,7 +35,7 @@ public class QDDTUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-        User user = userService.findByEmail( email );
+        User user = userService.findByEmail( email.toLowerCase().trim() );
 
         List<GrantedAuthority> grantedAuthorities =
                 user.getAuthorities().stream().map( (authority) ->

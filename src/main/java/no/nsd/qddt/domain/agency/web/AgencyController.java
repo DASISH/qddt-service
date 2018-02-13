@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.agency.web;
 
+import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.agency.AgencyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/agency")
-public class AgencyController {
+public class AgencyController extends BaseController {
 
     private final AgencyService service;
 
@@ -33,6 +34,7 @@ public class AgencyController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<Agency> getAll()  {
+        super.LOG.info( "Agency get all" );
         return service.getAll();
     }
 

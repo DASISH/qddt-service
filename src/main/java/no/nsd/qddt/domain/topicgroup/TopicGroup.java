@@ -143,6 +143,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         this.otherMaterials = otherMaterials;
     }
 
+    public OtherMaterialT addOtherMaterial(OtherMaterialT otherMaterial) {
+        otherMaterial.setParent( this );
+        return  otherMaterial;
+    }
+
     public String getAbstractDescription() {
         return abstractDescription;
     }

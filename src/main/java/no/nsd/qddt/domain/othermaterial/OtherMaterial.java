@@ -32,7 +32,7 @@ public class OtherMaterial extends AbstractEntity {
 
 
     @Type(type="pg-uuid")
-    @Column(name = "owner_id", insertable = false, updatable = false)
+    @Column(name = "owner_id",  updatable = false)
     private UUID ownerId;
 
     private String fileName;
@@ -142,6 +142,7 @@ public class OtherMaterial extends AbstractEntity {
     private void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
     }
+
 
     @JsonIgnore
     public Set<OtherMaterial> getReferencesBy() {

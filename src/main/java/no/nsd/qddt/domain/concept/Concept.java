@@ -15,9 +15,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <ul class="inheritance">
@@ -104,7 +102,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             conceptQuestionItems.add(conceptQuestionItem);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
-//            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
+            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
         else
             LOG.debug("ConceptQuestionItem not inserted, match found" );
@@ -122,6 +120,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         if (before> conceptQuestionItems.size()){
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation removed");
+            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
     }
 
@@ -138,6 +137,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
         this.children.add(concept);
+        this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
     }
 
 
@@ -148,7 +148,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     public void setLabel(String label) {
         this.label = label;
     }
-
 
 
     public String getDescription() {
@@ -205,6 +204,17 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
     public void setTopicRef(TopicRef topicRef) {
         this.topicRef = topicRef;
+    }
+
+    protected List<AbstractEntityAudit> getParents() {
+        List<AbstractEntityAudit> retvals = new ArrayList<>( 1 );
+        Concept current = this;
+        while(current.getParentRef() !=  null){
+            current = current.getParentRef();
+            retvals.add( current );
+        }
+        retvals.add( current.getTopicGroup() );         //this will fail for Concepts that return from clients.
+        return retvals;
     }
 
     public void setParentT(TopicGroup newParent) {
