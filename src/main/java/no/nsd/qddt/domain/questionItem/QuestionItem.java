@@ -208,14 +208,14 @@ public class QuestionItem extends AbstractEntityAudit {
                 "} " + System.lineSeparator();
     }
 
-    @Override
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        setConceptQuestionItems(null);
-        getComments().clear();
-        LOG.debug("MADE NEW COPY...");
-    }
+//    @Override
+//    public void makeNewCopy(Long revision){
+//        if (hasRun) return;
+//        super.makeNewCopy(revision);
+//        setConceptQuestionItems(null);
+//        getComments().clear();
+//        LOG.debug("MADE NEW COPY...");
+//    }
 
 
     @Override

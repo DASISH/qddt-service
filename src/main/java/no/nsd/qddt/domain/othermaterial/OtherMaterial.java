@@ -9,6 +9,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -29,46 +30,22 @@ import java.util.UUID;
 @Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntity {
 
-    @Type(type="pg-uuid")
-    @Column(name = "owner_id", updatable = false)
     private UUID ownerId;
-
     private String fileName;
-
     private String description;
-
     private String fileType;
-
     private String originalName;
-
     private long size;
-
-
-//    @JsonIgnore
-    @Type(type="pg-uuid")
-    @Column(name="org_ref")
     private UUID orgRef;
-
-    @JsonIgnore
-    @JsonBackReference(value = "orgReferences")
-    @ManyToOne()
-    @JoinColumn(name = "org_ref",updatable = false,insertable = false)
     private OtherMaterial source;
-
-    @JsonIgnore
-    @JsonManagedReference(value = "orgReferences")
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
-    @JoinColumn(name = "org_ref")
-//    @AuditMappedBy(mappedBy = "source")
     private final Set<OtherMaterial> referencesBy = new HashSet<>(0);
-
 
     public OtherMaterial(){
 
     }
 
     public OtherMaterial(UUID owner, MultipartFile file){
-        setField("ownerId",owner);
+        setParentId(owner);
         setFileName(file.getName());
         setOriginalName(file.getOriginalFilename());
         setFileType(file.getContentType());
@@ -77,7 +54,7 @@ public class OtherMaterial extends AbstractEntity {
     }
 
     public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
-        setField("ownerId",owner);
+        setParentId(owner);
         setFileName(name);
         setOriginalName(name);
         setFileType(fileType);
@@ -85,70 +62,92 @@ public class OtherMaterial extends AbstractEntity {
         setDescription(description);
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
+    @Type(type="pg-uuid")
+    @Column(name = "owner_id", insertable = false, updatable = false)
     public UUID getOwnerId() {
         return ownerId;
     }
-
     public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
 
+    protected void setParentId( Object value) {
+        try {
+            Class<?> clazz = getClass().getSuperclass();
+            Field field = clazz.getDeclaredField("ownerId");
+            field.setAccessible(true);
+            field.set(this, value);
+        } catch (NoSuchFieldException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        } catch (IllegalAccessException e) {
+            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+        }
+    }
+
+
+    public String getFileName() {
+        return fileName;
+    }
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+
     public String getFileType() {
         return fileType;
     }
-
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
 
+
     public long getSize() {
         return size;
     }
-
     public void setSize(long size) {
         this.size = size;
     }
 
+
     public String getDescription() {
         return description;
     }
-
     private void setDescription(String description) {
         this.description = description;
     }
 
+
     public String getOriginalName() {
         return originalName;
     }
-
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
     }
 
+
+    @Type(type="pg-uuid")
+    @Column(name="org_ref")
     public UUID getOrgRef() {
         return orgRef;
     }
-
     private void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
     }
 
 
     @JsonIgnore
+    @JsonManagedReference(value = "orgReferences")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
+    @JoinColumn(name = "org_ref")
     public Set<OtherMaterial> getReferencesBy() {
         return referencesBy;
     }
 
 
     @JsonIgnore
+    @JsonBackReference(value = "orgReferences")
+    @ManyToOne()
+    @JoinColumn(name = "org_ref",updatable = false,insertable = false)
     public OtherMaterial getSource() {
         return source;
     }
@@ -196,7 +195,6 @@ public class OtherMaterial extends AbstractEntity {
     @JsonIgnore
     @Transient
     private boolean hasRun = false;
-
 
     public void makeNewCopy(UUID newOwner){
         if (hasRun) return;

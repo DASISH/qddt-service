@@ -19,24 +19,25 @@ import java.util.UUID;
 @DiscriminatorValue("T")
 public class OtherMaterialT extends OtherMaterial {
 
+    private TopicGroup parent;
+
     public OtherMaterialT() {
+        super();
     }
 
     public OtherMaterialT(UUID parentId, MultipartFile file) {
         super( parentId, file );
     }
 
+
     @ManyToOne()
     @JsonBackReference(value = "tref")
     @JoinColumn(name = "OWNER_ID")
-    private TopicGroup parent;
-
     public TopicGroup getParent() {
         return parent;
     }
-
     public void setParent(TopicGroup parent) {
         this.parent = parent;
-        setField("ownerId",parent.getId());
+      //  setField("ownerId",parent.getId());
     }
 }

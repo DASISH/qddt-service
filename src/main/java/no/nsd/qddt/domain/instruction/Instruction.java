@@ -19,7 +19,6 @@ import java.io.IOException;
 @Table(name = "INSTRUCTION", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_INSTRUCTION_NAME")})
 public class Instruction extends AbstractEntityAudit {
 
-    @Column(name = "description", length = 2000,nullable = false)
     private String description;
 
 
@@ -27,10 +26,10 @@ public class Instruction extends AbstractEntityAudit {
     }
 
 
+    @Column(name = "description", length = 2000,nullable = false)
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
 
         setName(description.toUpperCase().replace(' ','_').substring(0,description.length()>25?25:description.length()));

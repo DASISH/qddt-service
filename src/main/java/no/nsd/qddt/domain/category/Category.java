@@ -320,17 +320,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         document.add(new Paragraph(" " ));
     }
 
-    public boolean fieldCompare(Category o) {
-
-        if (children != null && !children.equals(o.children)) return false;
-        if (label != null && !label.equals(o.label)) return false;
-        if (description != null && !description.equals(o.description)) return false;
-        if (hierarchyLevel != null && !hierarchyLevel.equals(o.hierarchyLevel)) return false;
-        if (categoryType != null && !categoryType.equals(o.categoryType)) return false;
-
-        return super.fieldCompare(o);
-
-    }
 
     /*
     preRec for valid Categories

@@ -30,47 +30,41 @@ public abstract class AbstractEntity {
     @Transient
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
+    private UUID id;
+    private LocalDateTime modified;
+    private User modifiedBy;
+
+
     @Id
     @Type(type="pg-uuid")
     @Column(name = "id")
     @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
     @GeneratedValue(generator = "uuid-gen")
-    private UUID id;
+    public UUID getId() {
+        return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated", nullable = false)
-    private LocalDateTime modified;
-
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User modifiedBy;
-
-    public UUID getId() {
-        return id;
-    }
-
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public LocalDateTime getModified() {
         return modified;
     }
-
     public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     public User getModifiedBy() {
         return modifiedBy;
     }
-
     public void setModifiedBy(User modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
@@ -107,21 +101,6 @@ public abstract class AbstractEntity {
 
     public String toDDIXml(){
         return "<ID type='ID'>" + getId().toString() + "</ID>";
-    }
-
-
-    /**
-     * None null field compare, (ignores null value when comparing)
-     * @param o
-     * @return
-     */
-    public boolean fieldCompare(AbstractEntity o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        if (id != null ? !id.equals(o.id) : o.id != null) return false;
-        if (modified != null ? !modified.equals(o.modified) : o.modified != null) return false;
-        return modifiedBy != null ? modifiedBy.equals(o.modifiedBy) : o.modifiedBy == null;
     }
 
 

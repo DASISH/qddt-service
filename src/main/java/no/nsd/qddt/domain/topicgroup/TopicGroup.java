@@ -193,17 +193,17 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         setField( "study", newParent );
     }
 
-    @Override
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        getConcepts().forEach(c-> {
-            c.makeNewCopy(revision);
-            c.setParentT( this );
-        });
-        getOtherMaterials().forEach(m-> m.makeNewCopy(this.getId()) );
-        getComments().clear();
-    }
+//    @Override
+//    public void makeNewCopy(Long revision){
+//        if (hasRun) return;
+//        super.makeNewCopy(revision);
+//        getConcepts().forEach(c-> {
+//            c.makeNewCopy(revision);
+//            c.setParentT( this );
+//        });
+//        getOtherMaterials().forEach(m-> m.makeNewCopy(this.getId()) );
+//        getComments().clear();
+//    }
 
 
     @Override

@@ -29,7 +29,6 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class AbstractEntityAudit extends AbstractEntity  {
 
-
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
      * First entry will always be CREATED.
@@ -88,44 +87,19 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         }
     }
 
-
     /**
      * I am the beginning of the end, and the end of time and space.
      * I am essential to creation, and I surround every place.
      * What am I?
      */
 
-    @ManyToOne
-    @JoinColumn(name = "agency_id",updatable = false, nullable = false)
-    private Agency agency;
-
-    @Column(name = "name")
     private String name;
-
-
-    @Column(name = "based_on_object",updatable = false, nullable = false)
-    @Type(type="pg-uuid")
     private UUID basedOnObject;
-
-    @Column(name = "based_on_revision",updatable = false, nullable = false)
     private Long basedOnRevision;
-
-
-    @Embedded
     private Version version;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ChangeKind changeKind;
-
-    @Column(name = "change_comment",nullable = false)
-    @ColumnDefault("")
     private String changeComment;
-
-
-    @Where(clause = "is_hidden = 'false'")
-    @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
-    @NotAudited
+    private Agency agency;
     private Set<Comment> comments = new HashSet<>();
 
 
@@ -133,54 +107,58 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 //        isArchived = false;
     }
 
+    @Column(name = "name")
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 
+
+    @ManyToOne
+    @JoinColumn(name = "agency_id",updatable = false, nullable = false)
     public Agency getAgency() {
         return agency;
     }
-
     public void setAgency(Agency agency) {
         this.agency = agency;
     }
 
 
+    @Column(name = "based_on_object",updatable = false, nullable = false)
+    @Type(type="pg-uuid")
     public UUID getBasedOnObject() {
         return basedOnObject;
     }
-
     private void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
+    @Column(name = "based_on_revision",updatable = false, nullable = false)
     public Long getBasedOnRevision() {
         return basedOnRevision;
     }
-
     private void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
+    @Embedded
     public Version getVersion() {
         if (version == null)
             version = new Version(true);
         return version;
     }
-
     public void setVersion(Version version) {
         this.version = version;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     public ChangeKind getChangeKind() {
         return changeKind;
     }
-
     public void setChangeKind(ChangeKind changeKind) {
         if (this.changeKind == ChangeKind.IN_DEVELOPMENT &&
                 (changeKind == ChangeKind.UPDATED_HIERARCHY_RELATION ||
@@ -193,18 +171,21 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         this.changeKind = changeKind;
     }
 
+    @Column(name = "change_comment",nullable = false)
+    @ColumnDefault("")
     public String getChangeComment() {
         return changeComment;
     }
-
     public void setChangeComment(String changeComment) {
         this.changeComment = changeComment;
     }
 
+    @Where(clause = "is_hidden = 'false'")
+    @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
+    @NotAudited
     public Set<Comment> getComments() {
         return this.comments;
     }
-
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
@@ -275,6 +256,17 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         }
     }
 
+    /**
+     * override to add before update code to class
+     * */
+    protected void beforeUpdate() {}
+
+    /**
+     * override to add before insert code to class
+     * */
+    protected void beforeInsert() {}
+
+
     @JsonIgnore
     public boolean isOwnAgency() {
         if (agency == null) return  true;
@@ -282,28 +274,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         return SecurityContext.getUserDetails()
             .getUser()
             .getAgency().equals( this.agency );
-    }
-
-    protected void beforeUpdate() {}
-
-    protected void beforeInsert() {}
-
-
-    /**
-     * None null field compare, (ignores null value when comparing)
-     * @param o
-     * @return
-     */
-    public boolean fieldCompare(AbstractEntityAudit o){
-
-        if (agency != null && !agency.equals(o.agency)) return false;
-        if (name != null && !name.equals(o.name)) return false;
-        if (basedOnObject != null && !basedOnObject.equals(o.basedOnObject)) return false;
-        if (version != null && !version.equals(o.version)) return false;
-        if (changeKind != null && !changeKind.equals(o.changeKind)) return false;
-        if (changeComment != null && !changeComment.equals(o.changeComment)) return false;
-
-        return super.fieldCompare(o);
     }
 
     @JsonIgnore
@@ -322,25 +292,25 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Transient
     protected boolean hasRun = false;
 
-    @JsonIgnore
-    /*
-    This function should contain all copy code needed to make a complete copy of hierarchy under this element
-    (an override should propagate downward and call makeNewCopy on it's children).
-     */
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        if (revision != null) {
-            setBasedOnObject(getId());
-            setBasedOnRevision(revision);
-            version.setVersionLabel("COPY OF [" + getName() + "]");
-            setChangeKind( ChangeKind.BASED_ON );
-            setChangeComment("Based on " + getName() );
-        }
-        if(this instanceof Archivable)
-            ((Archivable)this).setArchived(false);
-        setId(UUID.randomUUID());
-        hasRun = true;
-    }
+//    @JsonIgnore
+//    /*
+//    This function should contain all copy code needed to make a complete copy of hierarchy under this element
+//    (an override should propagate downward and call makeNewCopy on it's children).
+//     */
+//    public void makeNewCopy(Long revision){
+//        if (hasRun) return;
+//        if (revision != null) {
+//            setBasedOnObject(getId());
+//            setBasedOnRevision(revision);
+//            version.setVersionLabel("COPY OF [" + getName() + "]");
+//            setChangeKind( ChangeKind.BASED_ON );
+//            setChangeComment("Based on " + getName() );
+//        }
+//        if(this instanceof Archivable)
+//            ((Archivable)this).setArchived(false);
+//        setId(UUID.randomUUID());
+//        hasRun = true;
+//    }
 
 
     @Override

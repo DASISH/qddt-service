@@ -85,7 +85,16 @@ public class PublicationServiceImpl implements PublicationService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Publication save(Publication instance) {
-        return repository.save(instance);
+        try {
+            return repository.save(instance);
+        } catch (Exception ex){
+            LOG.error("Publication save ->",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
+            throw ex;
+        }
+
     }
 
 
