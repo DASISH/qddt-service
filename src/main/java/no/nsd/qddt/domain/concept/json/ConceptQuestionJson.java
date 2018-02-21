@@ -1,47 +1,32 @@
-package no.nsd.qddt.domain.conceptquestionitem;
+package no.nsd.qddt.domain.concept.json;
 
-import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EmbeddedId;
-import java.sql.Timestamp;
+
+import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 
 /**
  * @author Stig Norland
  */
-public class ConceptQuestionItemJson {
+public class ConceptQuestionJson {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
-    @EmbeddedId
-    private ParentQuestionItemId id = new ParentQuestionItemId();
 
     private QuestionItemJsonView questionItem;
 
     private Integer questionItemRevision;
 
-//    @JsonSerialize(using = JsonDateSerializer.class)
-    private Timestamp updated;
-
-
-    public ConceptQuestionItemJson(ConceptQuestionItem q) {
+    public ConceptQuestionJson(ConceptQuestionItemRev q) {
         if (q == null) {
             LOG.info("ConceptQuestionItem is null");
             return;
         }
-        setId(q.getId());
         setQuestionItem(new QuestionItemJsonView(q.getQuestionItem()));
         setQuestionItemRevision(q.getQuestionItemRevision().intValue());
-        setUpdated(q.getUpdated());
+
     }
 
-    public ParentQuestionItemId getId() {
-        return id;
-    }
-
-    private void setId(ParentQuestionItemId id) {
-        this.id = id;
-    }
 
     public QuestionItemJsonView getQuestionItem() {
         return questionItem;
@@ -59,11 +44,4 @@ public class ConceptQuestionItemJson {
         this.questionItemRevision = questionItemRevision;
     }
 
-    public Timestamp getUpdated() {
-        return updated;
-    }
-
-    private void setUpdated(Timestamp updated) {
-        this.updated = updated;
-    }
 }

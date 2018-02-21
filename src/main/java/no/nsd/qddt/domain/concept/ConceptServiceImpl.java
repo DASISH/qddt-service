@@ -1,12 +1,8 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -19,11 +15,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -35,24 +29,20 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 @Service("conceptService")
 class ConceptServiceImpl implements ConceptService {
+
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
     private final ConceptRepository conceptRepository;
     private final ConceptAuditService auditService;
     private final QuestionItemAuditService questionAuditService;
-    private final TopicGroupService topicGroupService;
-    private final ConceptQuestionItemService cqiService;
 
     @Autowired
       ConceptServiceImpl(ConceptRepository conceptRepository
             , ConceptAuditService conceptAuditService
-            , TopicGroupService topicGroupService
-            , QuestionItemAuditService questionAuditService
-            , ConceptQuestionItemService conceptQuestionItemRepository){
+            , QuestionItemAuditService questionAuditService){
         this.conceptRepository = conceptRepository;
         this.auditService = conceptAuditService;
-        this.topicGroupService = topicGroupService;
         this.questionAuditService = questionAuditService;
-        this.cqiService = conceptQuestionItemRepository;
     }
 
     @Override
@@ -100,25 +90,12 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public Concept copy(UUID id, Long rev, UUID parentId) {
-        EntityManager entityManager = this.emf.createEntityManager();
         Concept source = auditService.findRevision(id,rev.intValue()).getEntity();
-        Map<UUID,Set<ConceptQuestionItem>> cgiTreeRefs  =  copyAllcqi(source);
 
-        try {
-            entityManager.detach( source );
-            TopicGroup parent = topicGroupService.findOne( parentId );
-            source.makeNewCopy( rev );
-            source.setParentT( parent );
-            entityManager.merge( source );
-        } finally {
-            if(entityManager != null)
-                entityManager.close();
-        }
-        // This is basically wrong, but it all work out nicely in the repository (next load from DB will be correct)
-        // remove wrong ref qi's, save instanse, set correct id's on qi's save them to db and attach again.
-        Concept finalSource = save( source );
-        updateAllCgi( finalSource,cgiTreeRefs );
-        return finalSource;
+        Concept target = new ConceptFactory().copy(source, rev);
+        target.setParentU(parentId);
+        return conceptRepository.save(target);
+
     }
 
 
@@ -140,22 +117,13 @@ class ConceptServiceImpl implements ConceptService {
             instance.getConceptQuestionItems().stream()
                 .filter( f -> f.getQuestionItemRevision() == null )
                 .forEach( cqi -> {
-                    Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange( cqi.getId().getQuestionItemId() );
+                    Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange( cqi.getQuestionId() );
                     cqi.setQuestionItemRevision( rev.getRevisionNumber().longValue() );
                 } );
 
             // children are saved to hold revision info... i guess, these saves shouldn't
             if (instance.isBasedOn() == false)
                 instance.getChildren().stream().forEach( this::setChildChangeStatus );
-
-            if (instance.getId() == null & instance.getTopicRef().getId() != null) {        // load if new/basedon copy
-                TopicGroup tg = topicGroupService.findOne( instance.getTopicRef().getId() );
-                instance.setTopicGroup( tg );
-            }
-
-            if (instance.isNewCopy()) {
-                instance.makeNewCopy( null );
-            }
         } catch (NullPointerException npe) {
             LOG.error("ConceptService-> prePersistProcessing " + npe);
             StackTraceFilter.filter(npe.getStackTrace()).stream()
@@ -186,13 +154,13 @@ class ConceptServiceImpl implements ConceptService {
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
-            for (ConceptQuestionItem cqi :instance.getConceptQuestionItems()) {
+            for (ConceptQuestionItemRev cqi :instance.getConceptQuestionItems()) {
 
                 Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
-                        cqi.getId().getQuestionItemId(),
+                        cqi.getQuestionId(),
                         cqi.getQuestionItemRevision().intValue());
                 cqi.setQuestionItem(rev.getEntity());
-                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
+                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().longValue())) {
                     cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 }
             }
@@ -232,26 +200,26 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public List<Concept> findByQuestionItem(UUID id) {
-        return conceptRepository.findByConceptQuestionItemsIdQuestionItemId(id);
+        return conceptRepository.findByConceptQuestionItemsQuestionId(id);
     }
 
 
-    private Map<UUID,Set<ConceptQuestionItem>> copyAllcqi(Concept source) {
+   /*  private Map<UUID,Set<ConceptQuestionItem>> copyAllcqi(Concept source) {
         Map<UUID,Set<ConceptQuestionItem>> cgiRef = new HashMap<>();
         cgiRef.put(source.getId(),
             source.getConceptQuestionItems().stream()
-                .map( c -> new ConceptQuestionItem( c.getId(), c.getQuestionItemRevision() ))
+                .map( c -> new ConceptQuestionItemRev( c.getId(), c.getQuestionItemRevision() ))
                 .collect( Collectors.toSet() ));
         source.getConceptQuestionItems().clear();
         source.getChildren().stream().forEach( c-> cgiRef.putAll( copyAllcqi( c ) ) );
         return  cgiRef;
-    }
+    } */
 
     /*
     This procedure expect to get a hierarchy of concepts that has been saved as basedon (and thus have a basedon ID)
     It will traverse the Hierarchy and save leaves first
      */
-    private void updateAllCgi(Concept savedSource, Map<UUID,Set<ConceptQuestionItem>> cgiRef ){
+/*     private void updateAllCgi(Concept savedSource, Map<UUID,Set<ConceptQuestionItem>> cgiRef ){
 
         cgiRef.get(savedSource.getBasedOnObject()).stream()
             .forEach( c->c.setParent( savedSource ) );
@@ -259,6 +227,6 @@ class ConceptServiceImpl implements ConceptService {
         savedSource.getChildren().stream().forEach( c-> updateAllCgi( c, cgiRef ) );
 
         savedSource.setConceptQuestionItems(cqiService.save( cgiRef.get(savedSource.getBasedOnObject() )));
-    }
+    } */
 
 }

@@ -6,13 +6,14 @@ import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
+import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -59,9 +60,13 @@ public class QuestionItem extends AbstractEntityAudit {
     @Column(name = "intent")
     private String intent;
 
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
-    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
+    @AuditMappedBy(mappedBy = "questionItemLateBound")
+    private Set<ConceptQuestionItemRev> conceptQuestionItems = new HashSet<>();
+
+
 
     @Transient
     @JsonSerialize
@@ -76,8 +81,8 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @PreRemove
     private void removeReferencesFromQi(){
-        getConceptQuestionItems().forEach( CQ-> updateStatusQI(CQ.getConcept()));
-        getConceptQuestionItems().clear();
+        //getConceptQuestionItems().forEach( CQ-> updateStatusQI(CQ.getConcept()));
+        //getConceptQuestionItems().clear();
         setResponseDomain(null);
     }
 
@@ -140,18 +145,18 @@ public class QuestionItem extends AbstractEntityAudit {
         this.intent = intent;
     }
 
-    private Set<ConceptQuestionItem> getConceptQuestionItems() {
+    private Set<ConceptQuestionItemRev> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
+    private void setConceptQuestionItems(Set<ConceptQuestionItemRev> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
 
     public List<ConceptRef> getConceptRefs(){
-        try {
+/*         try {
             if (conceptRefs == null) {
                 conceptRefs = conceptQuestionItems.stream()
                     .map(cq -> new ConceptRef(cq.getConcept()))
@@ -162,6 +167,7 @@ public class QuestionItem extends AbstractEntityAudit {
             StackTraceFilter.println(ex.getStackTrace());
             return new ArrayList<>();
         }
+ */        
         return conceptRefs;
     }
 
@@ -206,15 +212,6 @@ public class QuestionItem extends AbstractEntityAudit {
                 ", responseUUID=" + responseDomainUUID + '\'' +
                 ", responseRev" + responseDomainRevision  + '\'' +
                 "} " + System.lineSeparator();
-    }
-
-    @Override
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        setConceptQuestionItems(null);
-        getComments().clear();
-        LOG.debug("MADE NEW COPY...");
     }
 
 
