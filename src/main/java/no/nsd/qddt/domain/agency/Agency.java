@@ -41,181 +41,157 @@ import java.util.UUID;
 @Table(name = "AGENCY")
 public class Agency implements Comparable<Agency>{
 
-
-    @Id
-    @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
-
-    @Column(name = "name", length = 50)
     private String name;
-
-    @JsonIgnore
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    @Column(name = "updated", nullable = false)
-    @LastModifiedDate
     private LocalDateTime modified;
 
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Study>  studies = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Instrument> instruments = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Instruction> instructions = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<TopicGroup> topicGroups = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Concept> concepts = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<QuestionItem> questions = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<ResponseDomain> responses = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     private Set<User> users = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    @NotAudited
     private Set<PublicationStatus> statuses = new HashSet<>();
 
     public Agency(){
 
     }
 
+    @Id
+    @Type(type="pg-uuid")
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
 
-    public LocalDateTime getModified() {
-        return modified;
-    }
 
-    public void setModified(LocalDateTime modified) {
-        this.modified = modified;
-    }
-
+    @Column(name = "name", length = 50)
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
 
+
+    @JsonIgnore
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    @Column(name = "updated", nullable = false)
+    @LastModifiedDate
+    public LocalDateTime getModified() {
+        return modified;
+    }
+    public void setModified(LocalDateTime modified) {
+        this.modified = modified;
+    }
+
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<SurveyProgram> getSurveyPrograms() {
         return surveyPrograms;
     }
-
     public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
         this.surveyPrograms = surveyPrograms;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<Study> getStudies() {
         return studies;
     }
-
     public void setStudies(Set<Study> studies) {
         this.studies = studies;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<Instrument> getInstruments() {
         return instruments;
     }
-
     public void setInstruments(Set<Instrument> instruments) {
         this.instruments = instruments;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<Instruction> getInstructions() {
         return instructions;
     }
-
     public void setInstructions(Set<Instruction> instructions) {
         this.instructions = instructions;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<TopicGroup> getTopicGroups() {
         return topicGroups;
     }
-
     public void setTopicGroups(Set<TopicGroup> topicGroups) {
         this.topicGroups = topicGroups;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<Concept> getConcepts() {
         return concepts;
     }
-
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<QuestionItem> getQuestions() {
         return questions;
     }
-
     public void setQuestions(Set<QuestionItem> questions) {
         this.questions = questions;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<ResponseDomain> getResponses() {
         return responses;
     }
-
     public void setResponses(Set<ResponseDomain> responses) {
         this.responses = responses;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<Category> getCategories() {
         return categories;
     }
-
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
     }
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     public Set<User> getUsers() {
         return users;
     }
-
     public void setUsers(Set<User> users) {
         this.users = users;
     }
 
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
+    @NotAudited
     public Set<PublicationStatus> getStatuses() {
         return statuses;
     }
-
     public void setStatuses(Set<PublicationStatus> statuses) {
         this.statuses = statuses;
     }

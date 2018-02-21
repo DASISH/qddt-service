@@ -46,63 +46,15 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 @Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind","based_on_object"},name = "UNQ_CATEGORY_NAME_KIND")})
 public class Category extends AbstractEntityAudit  implements Comparable<Category> , Cloneable {
 
-
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private Code code;
-
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @OrderColumn(name="category_idx")
-    private List<Category> children = new ArrayList<>();
-
-
-    //name -> A description of a particular category or response.
-
-    /*
-    A display label for the category.
-    May be expressed in multiple languages.
-    Repeat for labels with different content, for example,
-    labels with differing length limitations or of different types or applications.
-     */
-    @Column(name = "label")
-    @OrderBy()
     private String label;
-
-    /*
-    A description of the content and purpose of the category.
-    May be expressed in multiple languages and supports the use of structured content.
-    Note that comparison of categories is done using the content of description.
-     */
-    @Column(name = "description", length = 2000)
     private String description;
-
-    /**
-     * This field is only used for categories that facilitates user input.
-     * like numeric range / text length /
-     */
-    @Column(name = "input_limit")
-    @Embedded
-    private ResponseCardinality inputLimit;
-
-
-    @Column(name = "classification_level")
-    @Enumerated(EnumType.STRING)
-    private CategoryRelationCodeType classificationLevel;
-
-    /**
-     * format is used by datetime, and other kinds if needed.
-     */
     private String format;
-
-
-    @Column(name = "Hierarchy_level",nullable = false)
-    @Enumerated(EnumType.STRING)
-    private HierarchyLevel hierarchyLevel;
-
-    @Column(name = "category_kind", nullable = false)
-    @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
+    private HierarchyLevel hierarchyLevel;
+    private CategoryRelationCodeType classificationLevel;
+    private ResponseCardinality inputLimit;
+    private Code code;
+    private List<Category> children = new ArrayList<>();
 
     public Category() {
         code = new Code();
@@ -122,12 +74,14 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         setLabel(label);
     }
 
+
+    @Column(name = "category_kind", nullable = false)
+    @Enumerated(EnumType.STRING)
     public CategoryType getCategoryType() {
         if (categoryType == null)
             setCategoryType(CategoryType.CATEGORY);
         return categoryType;
     }
-
     public void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
         if (classificationLevel == null) {
@@ -152,36 +106,54 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         }
     }
 
+
+    @Column(name = "Hierarchy_level",nullable = false)
+    @Enumerated(EnumType.STRING)
     public HierarchyLevel getHierarchyLevel() {
         return hierarchyLevel;
     }
-
     public void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
         this.hierarchyLevel = hierarchyLevel;
     }
 
+    /**
+    * A display label for the category.
+    * May be expressed in multiple languages.
+    * Repeat for labels with different content, for example,
+    * labels with differing length limitations or of different types or applications.
+    * */
+    @Column(name = "label")
+    @OrderBy()
     public String getLabel() {
         return SafeString(label);
     }
-
     public void setLabel(String label) {
         this.label = label;
         if (StringTool.IsNullOrTrimEmpty(getName()))
             setName(StringTool.CapString(label));
     }
 
+
+    /**
+     *   A description of the content and purpose of the category.
+     *   May be expressed in multiple languages and supports the use of structured content.
+     *   Note that comparison of categories is done using the content of description.
+     **/
+    @Column(name = "description", length = 2000)
     public String getDescription() {
         return StringTool.CapString(description);
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
     public Code getCode() {
         return code;
     }
-
     public void setCode(Code code) {
             this.code = code;
     }
@@ -192,30 +164,45 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         return inputLimit;
     }
 
+    /**
+     * This field is only used for categories that facilitates user input.
+     * like numeric range / text length /
+     */
+    @Column(name = "input_limit")
+    @Embedded
     public void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
-
     public void setInputLimit(String minimum, String maximum) {
         this.inputLimit = new ResponseCardinality(minimum,maximum) ;
     }
 
+    /**
+     * This field is only used for categories that facilitates user input.
+     * like numeric range / text length /
+     */
+    @Column(name = "input_limit")
+    @Embedded
     public CategoryRelationCodeType getClassificationLevel() {
         return classificationLevel;
     }
-
     private void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
         this.classificationLevel = classificationLevel;
     }
 
+    /**
+     * format is used by datetime, and other kinds if needed.
+     */
     public String getFormat() {
         return format;
     }
-
     public void setFormat(String format) {
         this.format = format;
     }
 
+
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OrderColumn(name="category_idx")
     public List<Category> getChildren() {
         if (categoryType == CategoryType.SCALE) {
             if (children == null || children.size() == 0)
@@ -226,13 +213,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         } else
             return  children.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
-
     public void setChildren(List<Category> children) {
         if (categoryType == CategoryType.SCALE)
             this.children = children.stream().sorted(Comparator.comparing(Category::getCode)).collect(Collectors.toList());
         this.children = children;
     }
-
     public void addChild(Category children) {
         this.children.add(children);
     }
@@ -245,6 +230,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             super.setName(StringTool.CapString(this.getLabel()));
         return super.getName();
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -262,6 +248,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         return getHierarchyLevel() == category.getHierarchyLevel();
 
     }
+
 
     @Override
     public int hashCode() {

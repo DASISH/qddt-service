@@ -171,7 +171,6 @@ public class ControlConstruct extends AbstractEntityAudit {
             questionItem.setConceptRefs(questionItemReferenceOnly.getConceptRefs());
         return questionItem;
     }
-
     public void setQuestionItem(QuestionItem question) {
         this.questionItem = question;
     }
@@ -179,7 +178,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public Long getQuestionItemRevision() {
         return questionItemRevision;
     }
-
     public void setQuestionItemRevision(Long questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
@@ -187,7 +185,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public UUID getQuestionItemUUID() {
         return questionItemUUID;
     }
-
     private void setQuestionItemUUID(UUID questionItem) {
         questionItemUUID = questionItem;
     }
@@ -195,11 +192,9 @@ public class ControlConstruct extends AbstractEntityAudit {
     public Set<OtherMaterialCC> getOtherMaterials() {
         return otherMaterials;
     }
-
     public void setOtherMaterials(Set<OtherMaterialCC> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
-
     public OtherMaterialCC addOtherMaterial(OtherMaterialCC otherMaterial) {
         otherMaterial.setParent( this );
         return  otherMaterial;
@@ -208,7 +203,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public String getLabel() {
         return label;
     }
-
     public void setLabel(String label) {
         this.label = label;
     }
@@ -216,7 +210,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -224,7 +217,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public List<Universe> getUniverse() {
         return universe;
     }
-
     public void setUniverse(List<Universe> universe) {
         this.universe = universe;
     }
@@ -232,7 +224,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public List<ControlConstruct> getChildren() {
         return children;
     }
-
     public void setChildren(List<ControlConstruct> children) {
         this.children = children;
     }
@@ -240,7 +231,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     public List<ControlConstructInstruction> getControlConstructInstructions() {
          return controlConstructInstructions;
     }
-
     public void setControlConstructInstructions(List<ControlConstructInstruction> controlConstructInstructions) {
         this.controlConstructInstructions = controlConstructInstructions;
     }

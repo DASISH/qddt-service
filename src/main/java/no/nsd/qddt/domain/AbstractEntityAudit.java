@@ -1,31 +1,6 @@
 package no.nsd.qddt.domain;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.Version;
@@ -33,6 +8,17 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
+import javax.persistence.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -68,22 +54,22 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         TRANSLATED("Translated","Translation of source"),
         ARCHIVED("Archived","READ ONLY");
 
+        private final String name;
+        private final String description;
+
         ChangeKind(String name, String description){
             this.name = name;
             this.description = description;
         }
 
-        private final String name;
-
-        private final String description;
 
         public String getName() {
             return name;
         }
-
         public String getDescription() {
             return description;
         }
+
 
         public static ChangeKind getEnum(String name) {
             if(name == null)
@@ -92,6 +78,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 if(name.equalsIgnoreCase(v.getName())) return v;
             throw new IllegalArgumentException();
         }
+
 
         @Override
         public String toString() {
@@ -147,7 +134,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public UUID getBasedOnObject() {
         return basedOnObject;
     }
-    private void setBasedOnObject(UUID basedOnObject) {
+    protected void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
@@ -155,7 +142,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public Long getBasedOnRevision() {
         return basedOnRevision;
     }
-    private void setBasedOnRevision(Long basedOnRevision) {
+    protected void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 

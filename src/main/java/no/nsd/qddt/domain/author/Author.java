@@ -22,101 +22,107 @@ import java.util.Set;
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class Author extends AbstractEntity {
 
-    @Column(name = "name", length = 70,nullable = false)
     private String name;
-
     private String email;
-
-    @Column(name = "about", length = 500)
     private String about;
-
     private URL homepage;
-
     private URL picture;
-
     private String authorsAffiliation;
 
-
-    @JsonBackReference(value = "surveyRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
-
-    @JsonBackReference(value = "studyRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     private Set<Study> studies = new HashSet<>();
+    private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @JsonBackReference(value = "topicRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
-    private final Set<TopicGroup> topicGroups = new HashSet<>();
-
+    @Column(name = "name", length = 70,nullable = false)
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
 
+
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
 
+
+    @Column(name = "about", length = 500)
     public String getAbout() {
         return about;
     }
-
     public void setAbout(String about) {
         this.about = about;
     }
 
+
     public URL getHomepage() {
         return homepage;
     }
-
     public void setHomepage(URL homepage) {
         this.homepage = homepage;
     }
 
+
     public URL getPicture() {
         return picture;
     }
-
     public void setPicture(URL picture) {
         this.picture = picture;
     }
 
+
+    public String getAuthorsAffiliation() {
+        return authorsAffiliation;
+    }
+    public void setAuthorsAffiliation(String authorsAffiliation) {
+        this.authorsAffiliation = authorsAffiliation;
+    }
+
+
+    @JsonBackReference(value = "surveyRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     public Set<SurveyProgram> getSurveyPrograms() {
         return surveyPrograms;
     }
-
     public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
         this.surveyPrograms = surveyPrograms;
     }
 
+
+    @JsonBackReference(value = "studyRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     public Set<Study> getStudies() {
         return studies;
     }
-
     public void setStudies(Set<Study> studies) {
         this.studies = studies;
     }
+
+
+    @JsonBackReference(value = "topicRef")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
+    public Set<TopicGroup> getTopicGroups() {
+        return topicGroups;
+    }
+    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+        this.topicGroups = topicGroups;
+    }
+
 
     public void addSurvey(SurveyProgram surveyProgram){
         if (!surveyPrograms.contains(surveyProgram)) {
             surveyPrograms.add(surveyProgram);
         }
     }
-
     public void addStudy(Study study){
         if (!studies.contains(study)) {
             this.studies.add(study);
         }
     }
-
     public void addTopic(TopicGroup topicGroup){
         if (!topicGroups.contains(topicGroup)) {
             this.topicGroups.add(topicGroup);
@@ -128,13 +134,11 @@ public class Author extends AbstractEntity {
         if (surveyPrograms.contains(surveyProgram))
             surveyPrograms.remove(surveyProgram);
     }
-
     public void removeStudy(Study study){
         if (studies.contains(study)) {
             this.studies.remove(study);
         }
     }
-
     public void removeTopic(TopicGroup topicGroup){
         if (topicGroups.contains(topicGroup)) {
             this.topicGroups.remove(topicGroup);
@@ -182,11 +186,4 @@ public class Author extends AbstractEntity {
                 "}";
     }
 
-    public String getAuthorsAffiliation() {
-        return authorsAffiliation;
-    }
-
-    public void setAuthorsAffiliation(String authorsAffiliation) {
-        this.authorsAffiliation = authorsAffiliation;
-    }
 }

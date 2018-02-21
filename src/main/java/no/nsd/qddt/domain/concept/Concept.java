@@ -37,72 +37,92 @@ import java.util.*;
 public class Concept extends AbstractEntityAudit implements Archivable {
 
 
-    @JsonBackReference(value = "parentRef")
-    @ManyToOne()
-    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
-    private Concept parentReferenceOnly;
+    private String label;
+    private String description;
+    private boolean isArchived;
 
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE})
-    @OrderBy(value = "name asc")
-    @JoinColumn(name = "parent_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly")
-    private Set<Concept> children = new HashSet<>(0);
-
-
-    @JsonBackReference(value = "topicGroupRef")
-    @ManyToOne()
-    @JoinColumn(name = "topicgroup_id",updatable = false)
+    private List<ConceptQuestionItemRev>  conceptQuestionItems = new ArrayList<>();
+    private UUID topicGroupId;
     private TopicGroup topicGroup;
+    private Concept parentReferenceOnly;
+    private Set<Concept> children = new HashSet<>(0);
+    private TopicRef topicRef;
+
+
+/*     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE ,CascadeType.DETACH }, mappedBy = "concept")
+    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0); */
+
+    public Concept() {
+    }
+
+
+    public String getLabel() {
+        return label;
+    }
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+
+    @Column(name = "description", length = 10000)
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    @Override
+    public boolean isArchived() {
+        return isArchived;
+    }
+    @Override
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+        if (archived) {
+            LOG.debug( getName() + " isArchived (" + getChildren().size() +")" );
+            setChangeKind(ChangeKind.ARCHIVED);
+            for (Concept concept : getChildren()) {
+                if (!concept.isArchived())
+                    concept.setArchived(archived);
+            }
+        }
+    }
+
 
     @Column(name = "topicgroup_id", insertable = false, updatable = false)
-    private UUID topicGroupId;
+    public UUID getTopicGroupId() {
+        return topicGroupId;
+    }
+    public void setTopicGroupId(UUID topicGroupId) {
+        this.topicGroupId = topicGroupId;
+    }
+
+
+    @ManyToOne()
+    @JsonBackReference(value = "topicGroupRef")
+    @JoinColumn(name = "topicgroup_id",updatable = false)
+    private TopicGroup getTopicGroup() {
+        return topicGroup;
+    }
+    public void setTopicGroup(TopicGroup topicGroup) {
+        this.topicGroup = topicGroup;
+    }
+
 
 
     @OrderColumn(name="parent_idx")
     @OrderBy("parent_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM",joinColumns = @JoinColumn(name="parent_id"))
-    private List<ConceptQuestionItemRev>  conceptQuestionItems = new ArrayList<>();
-
-
-/*     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE ,CascadeType.DETACH }, mappedBy = "concept")
-    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0); */
-
-
-    private String label;
-
-
-    @Column(name = "description", length = 10000)
-    private String description;
-
-
-    @Transient
-    @JsonDeserialize
-    private TopicRef topicRef;
-
-    private boolean isArchived;
-
-
-    public Concept() {
-    }
-
-
-    private TopicGroup getTopicGroup() {
-        return topicGroup;
-    }
-
-    public void setTopicGroup(TopicGroup topicGroup) {
-        this.topicGroup = topicGroup;
-    }
-
     public List<ConceptQuestionItemRev> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
-
     public void setConceptQuestionItems(List<ConceptQuestionItemRev> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
+
 
     // no update for QI when removing (it is bound to a revision anyway...).
     public void removeQuestionItem(UUID questionItemId) {
@@ -116,7 +136,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 	}
 
 
-/* 
+/**
     public Set<ConceptQuestionItem> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
@@ -151,17 +171,29 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             this.setChangeComment("QuestionItem assosiation removed");
             this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
-    } */
+    }
+    **/
 
+    @JsonBackReference(value = "parentRef")
+    @ManyToOne()
+    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    public Concept getParentReferenceOnly() {
+    return parentReferenceOnly;
+}
+    public void setParentReferenceOnly(Concept parentReferenceOnly) {
+        this.parentReferenceOnly = parentReferenceOnly;
+    }
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE})
+    @OrderBy(value = "name asc")
+    @JoinColumn(name = "parent_id")
+    @AuditMappedBy(mappedBy = "parentReferenceOnly")
     public Set<Concept> getChildren() {
         return children;
     }
-
     public void setChildren(Set<Concept> children) {
         this.children = children;
     }
-
     public void addChildren(Concept concept){
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
@@ -170,43 +202,8 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    @Override
-    public boolean isArchived() {
-        return isArchived;
-    }
-
-    @Override
-    public void setArchived(boolean archived) {
-        isArchived = archived;
-        if (archived) {
-            LOG.debug( getName() + " isArchived (" + getChildren().size() +")" );
-            setChangeKind(ChangeKind.ARCHIVED);
-            for (Concept concept : getChildren()) {
-                if (!concept.isArchived())
-                    concept.setArchived(archived);
-            }
-        }
-    }
-
-
+    @Transient
+    @JsonDeserialize
     public TopicRef getTopicRef() {
         if (topicRef == null) {
             TopicGroup topicGroup = findTopicGroup2();
@@ -218,6 +215,10 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
         return topicRef;
     }
+    public void setTopicRef(TopicRef topicRef) {
+        this.topicRef = topicRef;
+    }
+
 
     protected Concept getParentRef(){
         return this.parentReferenceOnly;
@@ -231,9 +232,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         return current.getTopicGroup();
     }
 
-    public void setTopicRef(TopicRef topicRef) {
-        this.topicRef = topicRef;
-    }
 
     protected List<AbstractEntityAudit> getParents() {
         List<AbstractEntityAudit> retvals = new ArrayList<>( 1 );
