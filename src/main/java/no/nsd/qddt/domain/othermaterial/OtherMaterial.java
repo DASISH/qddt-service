@@ -29,10 +29,8 @@ import java.util.UUID;
 @Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntity {
 
-
-
     @Type(type="pg-uuid")
-    @Column(name = "owner_id",  updatable = false)
+    @Column(name = "owner_id", updatable = false)
     private UUID ownerId;
 
     private String fileName;

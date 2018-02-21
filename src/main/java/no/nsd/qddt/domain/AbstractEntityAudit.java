@@ -30,7 +30,6 @@ import java.util.UUID;
 public abstract class AbstractEntityAudit extends AbstractEntity  {
 
 
-
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
      * First entry will always be CREATED.
@@ -227,6 +226,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         try {
             LOG.debug("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
+            if (!isOwnAgency()) {
+
+            }
             ChangeKind change = changeKind;
             if ( (change == ChangeKind.CREATED || change == ChangeKind.BASED_ON) & !ver.isNew()) {
                 change = ChangeKind.IN_DEVELOPMENT;
@@ -271,6 +273,15 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 .map(a->a.toString())
                 .forEach(LOG::info);
         }
+    }
+
+    @JsonIgnore
+    public boolean isOwnAgency() {
+        if (agency == null) return  true;
+
+        return SecurityContext.getUserDetails()
+            .getUser()
+            .getAgency().equals( this.agency );
     }
 
     protected void beforeUpdate() {}

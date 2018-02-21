@@ -19,9 +19,7 @@ import java.util.UUID;
 @DiscriminatorValue("CC")
 public class OtherMaterialCC extends OtherMaterial {
 
-    public OtherMaterialCC(ControlConstruct parent, MultipartFile file) {
-        super( parent.getId(), file );
-        this.parent = parent;
+    public OtherMaterialCC() {
     }
 
     public OtherMaterialCC(UUID parentId, MultipartFile file) {

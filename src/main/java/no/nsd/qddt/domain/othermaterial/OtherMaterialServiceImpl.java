@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -30,14 +29,11 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Value("${fileroot}")
     private String fileRoot;
     private final OtherMaterialRepository otherMaterialRepository;
-    private final TopicGroupService topicGroupService ;
-//    private final ControlConstructService controlConstructService;
 
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository, TopicGroupService topicGroupService){
+    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository){
         this.otherMaterialRepository = otherMaterialRepository;
-        this.topicGroupService = topicGroupService;
     }
 
     @Override
@@ -132,7 +128,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
-    public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId) throws FileUploadException {
+    public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId, String kind) throws FileUploadException {
 
         String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getOriginalFilename()).toString();
 
@@ -144,7 +140,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
         } catch (ResourceNotFoundException re){
-            if (topicGroupService.exists( ownerId ))
+            if (kind == "T")
                 om = new OtherMaterialT( ownerId,multipartFile);
             else
                 om = new OtherMaterialCC( ownerId,multipartFile);

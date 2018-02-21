@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.pdf;
 
 import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.color.ColorConstants;
 import com.itextpdf.kernel.color.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
@@ -16,10 +17,12 @@ import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.hyphenation.HyphenationConfig;
 import com.itextpdf.layout.layout.LayoutContext;
 import com.itextpdf.layout.layout.LayoutResult;
+import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.renderer.ParagraphRenderer;
+import net.logstash.logback.encoder.org.apache.commons.io.IOUtils;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -29,6 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,14 +73,19 @@ public class PdfReport extends PdfDocument {
         }
     }
 
-    public void createToc() {
+    public void createToc() throws IOException {
+
+        InputStream inputStream = getClass().getResourceAsStream("../../../../../qddt.png");
         int startToc = getNumberOfPages();
         document.add(new AreaBreak());
-        document.add(new Paragraph()
+        document.add(
+            new Image( ImageDataFactory.createPng( IOUtils.toByteArray(inputStream)))
+            .setHorizontalAlignment( HorizontalAlignment.CENTER ))
+        .add(new Paragraph()
             .setFont(bold)
             .setFontSize(24)
             .setTextAlignment(TextAlignment.CENTER)
-            .add("QDDT pdf Report")
+            .add("Pdf report")
             .setPaddingBottom(60).setKeepTogether(false))
         .add(new Paragraph()
             .setFont(font)

@@ -19,9 +19,7 @@ import java.util.UUID;
 @DiscriminatorValue("T")
 public class OtherMaterialT extends OtherMaterial {
 
-    public OtherMaterialT(TopicGroup parent, MultipartFile file) {
-        super( parent.getId(), file );
-        this.parent = parent;
+    public OtherMaterialT() {
     }
 
     public OtherMaterialT(UUID parentId, MultipartFile file) {
