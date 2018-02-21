@@ -10,3 +10,5 @@ gradle
 
 ## IntelliJ
 out/
+bin/
+log/
