@@ -1,9 +1,9 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.instrument.Instrument;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;

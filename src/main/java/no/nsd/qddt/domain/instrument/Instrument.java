@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.instrument;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;

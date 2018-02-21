@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
@@ -16,6 +14,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
+
 
 /**
  * <ul class="inheritance">
@@ -56,9 +55,19 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
+    @Column(name = "topicgroup_id", insertable = false, updatable = false)
+    private UUID topicGroupId;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE ,CascadeType.DETACH }, mappedBy = "concept")
-    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0);
+
+    @OrderColumn(name="parent_idx")
+    @OrderBy("parent_idx ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",joinColumns = @JoinColumn(name="parent_id"))
+    private List<ConceptQuestionItemRev>  conceptQuestionItems = new ArrayList<>();
+
+
+/*     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE ,CascadeType.DETACH }, mappedBy = "concept")
+    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0); */
 
 
     private String label;
@@ -87,7 +96,27 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         this.topicGroup = topicGroup;
     }
 
+    public List<ConceptQuestionItemRev> getConceptQuestionItems() {
+        return conceptQuestionItems;
+    }
 
+    public void setConceptQuestionItems(List<ConceptQuestionItemRev> conceptQuestionItems) {
+        this.conceptQuestionItems = conceptQuestionItems;
+    }
+
+    // no update for QI when removing (it is bound to a revision anyway...).
+    public void removeQuestionItem(UUID questionItemId) {
+        int before = conceptQuestionItems.size();
+        conceptQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(questionItemId));
+        if (before> conceptQuestionItems.size()){
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            this.setChangeComment("QuestionItem assosiation removed");
+            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
+        }
+	}
+
+
+/* 
     public Set<ConceptQuestionItem> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
@@ -122,7 +151,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             this.setChangeComment("QuestionItem assosiation removed");
             this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
-    }
+    } */
 
 
     public Set<Concept> getChildren() {
@@ -221,24 +250,14 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         setField("topicGroup",newParent );
     }
 
+    public void setParentU(UUID topicId) {
+        setField("topicGroupId",topicId );
+    }
+
     protected void setParentC(Concept newParent)  {
         setField("parentReferenceOnly",newParent );
     }
 
-    @Override
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        getConceptQuestionItems().forEach(q->  q.setParent(this));
-        getChildren().forEach(c-> {
-            c.makeNewCopy(revision);
-            c.setParentC( this );
-        });
-        if (parentReferenceOnly == null & topicGroup == null & topicRef != null) {
-            LOG.debug("infering topicgroup id " + getTopicRef().getId() );
-        }
-        getComments().clear();
-    }
 
 
     @Override
@@ -305,11 +324,11 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             if (getConceptQuestionItems().size() > 0) {
                 pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
-                for (ConceptQuestionItem item : getConceptQuestionItems()) {
-                    pdfReport.addheader2(item.getQuestionItemLateBound().getName());
-                    pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion());
-                    if (item.getQuestionItemLateBound().getResponseDomain() != null)
-                        item.getQuestionItemLateBound().getResponseDomain().fillDoc(pdfReport, "");
+                for (ConceptQuestionItemRev item : getConceptQuestionItems()) {
+                    pdfReport.addheader2(item.getQuestionItem().getName());
+                    pdfReport.addParagraph(item.getQuestionItem().getQuestion());
+                    if (item.getQuestionItem().getResponseDomain() != null)
+                        item.getQuestionItem().getResponseDomain().fillDoc(pdfReport, "");
                     pdfReport.addPadding();
                 }
             }
@@ -330,5 +349,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             throw ex;
         }
     }
+
 
 }

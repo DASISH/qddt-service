@@ -1,5 +1,4 @@
-package no.nsd.qddt.domain.conceptquestionitem;
-
+package no.nsd.qddt.domain.topicgroupquestionitem;
 /**
  * @author Stig Norland
  */

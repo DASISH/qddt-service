@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.topicgroupquestionitem;
 
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;

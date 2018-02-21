@@ -26,19 +26,11 @@ import java.util.UUID;
 public class AuthorController {
 
     private final AuthorService authorService;
-    private final SurveyProgramService surveyService;
-    private final StudyService studyService;
-    private final TopicGroupService topicService;
+
 
     @Autowired
-    public AuthorController(AuthorService authorService,
-                            SurveyProgramService surveyService,
-                            StudyService studyService,
-                            TopicGroupService topicService) {
+    public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
-        this.surveyService = surveyService;
-        this.studyService = studyService;
-        this.topicService = topicService;
     }
 
 
@@ -74,7 +66,7 @@ public class AuthorController {
         return new ResponseEntity<>(assembler.toResource(authors), HttpStatus.OK);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
+/*     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "authorId" })
     public Author addAuthor(@RequestParam("authorId") UUID authorId
                         ,@RequestParam("surveyId") UUID surveyId
@@ -92,10 +84,10 @@ public class AuthorController {
 //            author.addConcept(conceptService.findOne(conceptId));
 
         return authorService.save(author);
-    }
+    } */
 
 
-    @ResponseStatus(value = HttpStatus.OK)
+/*     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/decombine", method = RequestMethod.DELETE, params = { "authorId"})
     public Author removeQuestion(@RequestParam("authorId") UUID authorId
             ,@RequestParam("surveyId") UUID surveyId
@@ -116,6 +108,6 @@ public class AuthorController {
 //        else
 //            throw new Exception("Missing parameter");
         return authorService.save(author);
-    }
+    } */
 
 }

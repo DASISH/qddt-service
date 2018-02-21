@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
+import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -26,7 +26,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("conceptAuditService")
-class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> implements ConceptAuditService  {
+class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> implements ConceptAuditService  {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final ConceptAuditRepository conceptAuditRepository;
@@ -35,7 +35,7 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Conce
     private boolean showPrivateComments;
 
     @Autowired
-    ConceptAbstractAuditServiceImpl(ConceptAuditRepository conceptAuditRepository,
+    ConceptAuditServiceImpl(ConceptAuditRepository conceptAuditRepository,
                                     QuestionItemAuditService questionAuditService,
                                     CommentService commentService
     ){
@@ -116,11 +116,11 @@ class ConceptAbstractAuditServiceImpl extends AbstractAuditFilter<Integer, Conce
         return instance;
     }
 
-    private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
+    private QuestionItem getQuestionItemLastOrRevision(ConceptQuestionItemRev cqi){
 //        System.out.println("Fetching QI " + cqi.getId() + " " + cqi.getQuestionItemRevision());
 
         return questionAuditService.getQuestionItemLastOrRevision(
-                cqi.getId().getQuestionItemId(),
+                cqi.getQuestionId(),
                 cqi.getQuestionItemRevision().intValue()).getEntity();
     }
 }

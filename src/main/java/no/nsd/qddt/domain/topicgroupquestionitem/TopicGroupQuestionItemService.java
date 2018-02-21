@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.topicgroupquestionitem;
 
 import no.nsd.qddt.domain.BaseService;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 
 import java.util.Set;
 

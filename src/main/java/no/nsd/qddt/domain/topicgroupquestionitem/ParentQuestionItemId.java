@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.conceptquestionitem;
+package no.nsd.qddt.domain.topicgroupquestionitem;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.questionItem.QuestionItem;

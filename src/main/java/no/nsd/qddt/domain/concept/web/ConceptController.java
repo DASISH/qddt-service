@@ -2,11 +2,9 @@ package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItem;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemService;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -35,13 +33,11 @@ public class ConceptController extends BaseController {
 
     private final ConceptService service;
     private final TopicGroupService topicGroupService;
-    private final ConceptQuestionItemService cqiService;
 
     @Autowired
-    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService,ConceptQuestionItemService conceptQuestionItem) {
+    public ConceptController(ConceptService conceptService, TopicGroupService topicGroupService) {
         this.service = conceptService;
         this.topicGroupService = topicGroupService;
-        this.cqiService = conceptQuestionItem;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -66,9 +62,8 @@ public class ConceptController extends BaseController {
             Concept concept = service.findOne(conceptId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
-            concept.addConceptQuestionItem(
-                new ConceptQuestionItem(
-                    new ParentQuestionItemId(conceptId,questionItemId),questionItemRevision.longValue()));
+            concept.getConceptQuestionItems().add(
+                new ConceptQuestionItemRev(questionItemId,questionItemRevision.longValue()));
 
             return concept2Json(service.save(concept));
         }catch (Exception ex){
@@ -88,7 +83,6 @@ public class ConceptController extends BaseController {
         try{
             concept = service.findOne(conceptId);
             concept.removeQuestionItem(questionItemId);
-            cqiService.delete(new ParentQuestionItemId(conceptId,questionItemId));
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
             super.LOG.error("removeQuestionItem",ex);

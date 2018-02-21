@@ -3,12 +3,12 @@ package no.nsd.qddt.domain.concept.json;
 import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
-
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,7 +27,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private String description;
 
-    private Set<ConceptQuestionItemJson> conceptQuestionItems = new HashSet<>();
+    private List<ConceptQuestionJson> conceptQuestionItems = new ArrayList<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
@@ -51,13 +51,10 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
             setArchived(concept.isArchived());
-//            setAgency(new AgencyJsonView(concept.getAgency()));
-//            setModifiedBy(new UserJson(concept.getModifiedBy()));
             setConceptQuestionItems(
-                    concept.getConceptQuestionItems().stream().map(ConceptQuestionItemJson::new).collect(Collectors.toSet()));
+                    concept.getConceptQuestionItems().stream().map(ConceptQuestionJson::new).collect(Collectors.toList()));
             setTopicRef(concept.getTopicRef());
         } catch (Exception ex) {
-//            System.out.println(concept);
             LOG.error("ConceptJsonEdit exception",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                 .map(a->a.toString())
@@ -89,11 +86,11 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         this.children = children;
     }
 
-    public Set<ConceptQuestionItemJson> getConceptQuestionItems() {
+    public List<ConceptQuestionJson> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(Set<ConceptQuestionItemJson> conceptQuestionItems) {
+    private void setConceptQuestionItems(List<ConceptQuestionJson> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

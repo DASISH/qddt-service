@@ -425,20 +425,20 @@ public class ControlConstruct extends AbstractEntityAudit {
         pdfReport.addPadding();
     }
 
-//    @Override
-//    public void makeNewCopy(Long revision) {
-//        if (hasRun) return;
-//        super.makeNewCopy( revision );
-//        getChildren().forEach( c -> {
-//            c.makeNewCopy( revision );
-//            c.setParent( this );
+/*     @Override
+    public void makeNewCopy(Long revision) {
+        if (hasRun) return;
+        super.makeNewCopy( revision );
+        getChildren().forEach( c -> {
+            c.makeNewCopy( revision );
+            c.setParent( this );
+        } );
+//        getOtherMaterials().forEach( m -> {
+//            m.makeNewCopy( revision );
+//            m.setParent( this.getId() );
 //        } );
-////        getOtherMaterials().forEach( m -> {
-////            m.makeNewCopy( revision );
-////            m.setParent( this.getId() );
-////        } );
-//        getComments().clear();
-//    }
+        getComments().clear();
+    } */
 
 
     public void setParent(ControlConstruct newParent) {

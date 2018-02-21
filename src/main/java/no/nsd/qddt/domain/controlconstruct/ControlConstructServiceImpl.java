@@ -147,18 +147,19 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     private ControlConstruct prePersistProcessing(ControlConstruct instance) {
         instance.populateControlConstructInstructions();
-
-        if(instance.isBasedOn()) {
-            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
-            instance.makeNewCopy(rev);
-        } else if (instance.isNewCopy()) {
-            instance.makeNewCopy(null);
-        }
-
         instance.getControlConstructInstructions().forEach(cqi->{
             if (cqi.getInstruction().getId() == null)
                 cqi.setInstruction(iService.save(cqi.getInstruction()));
         });
+
+        ControlConstructFactory ccf= new ControlConstructFactory();
+        if(instance.isBasedOn()) {
+            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
+            instance = ccf.copy(instance, rev );
+        } else if (instance.isNewCopy()) {
+            instance = ccf.copy(instance, null);
+        }
+
         return instance;
     }
 

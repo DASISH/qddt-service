@@ -1,6 +1,31 @@
 package no.nsd.qddt.domain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.Version;
@@ -8,18 +33,6 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
-import javax.persistence.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -27,7 +40,9 @@ import java.util.UUID;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  {
+public abstract class AbstractEntityAudit extends AbstractEntity {
+
+
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -121,6 +136,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     public Agency getAgency() {
         return agency;
     }
+
     public void setAgency(Agency agency) {
         this.agency = agency;
     }
@@ -172,7 +188,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     }
 
     @Column(name = "change_comment",nullable = false)
-    @ColumnDefault("")
     public String getChangeComment() {
         return changeComment;
     }
@@ -196,8 +211,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
-        if (changeKind != ChangeKind.BASED_ON)
+        if (changeKind != ChangeKind.BASED_ON || changeKind != ChangeKind.NEW_COPY || changeKind != ChangeKind.TRANSLATED ) {
             changeKind = ChangeKind.CREATED;
+            changeComment = "Created";
+        }
         version = new Version(true);
         beforeInsert();
     }
@@ -287,30 +304,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                 | (getId() == null & getChangeKind() != null & getChangeKind()!= ChangeKind.CREATED)
                 | (!getVersion().isNew() & getId() == null );
     }
-
-    @JsonIgnore
-    @Transient
-    protected boolean hasRun = false;
-
-//    @JsonIgnore
-//    /*
-//    This function should contain all copy code needed to make a complete copy of hierarchy under this element
-//    (an override should propagate downward and call makeNewCopy on it's children).
-//     */
-//    public void makeNewCopy(Long revision){
-//        if (hasRun) return;
-//        if (revision != null) {
-//            setBasedOnObject(getId());
-//            setBasedOnRevision(revision);
-//            version.setVersionLabel("COPY OF [" + getName() + "]");
-//            setChangeKind( ChangeKind.BASED_ON );
-//            setChangeComment("Based on " + getName() );
-//        }
-//        if(this instanceof Archivable)
-//            ((Archivable)this).setArchived(false);
-//        setId(UUID.randomUUID());
-//        hasRun = true;
-//    }
 
 
     @Override

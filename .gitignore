@@ -10,3 +10,8 @@ gradle
 
 ## IntelliJ
 out/
+bin/
+log/
+build.log
+.project
+.settings/org.eclipse.buildship.core.prefs

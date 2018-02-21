@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ConceptQuestionItemJson;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.user.UserJson;
@@ -15,7 +14,9 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class ConceptJsonView {
     @Embedded
     private Version version;
 
-    private Set<ConceptQuestionItemJson> conceptQuestionItems = new HashSet<>();
+    private List<ConceptQuestionJson> conceptQuestionItems = new ArrayList<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
@@ -65,8 +66,8 @@ public class ConceptJsonView {
         modified = concept.getModified();
         version = concept.getVersion();
         setChildren(concept.getChildren().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
-        setConceptQuestionItems(concept.getConceptQuestionItems().stream().map(ConceptQuestionItemJson::new)
-                .collect(Collectors.toSet()));
+        setConceptQuestionItems(concept.getConceptQuestionItems().stream().map(ConceptQuestionJson::new)
+                .collect(Collectors.toList()));
         setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setTopicRef(concept.getTopicRef());
     }
@@ -118,14 +119,15 @@ public class ConceptJsonView {
     public AgencyJsonView getAgency() {
         return agency;
     }
-
-    public Set<ConceptQuestionItemJson> getConceptQuestionItems() {
+    
+    public List<ConceptQuestionJson> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(Set<ConceptQuestionItemJson> conceptQuestionItems) {
+    private void setConceptQuestionItems(List<ConceptQuestionJson> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
+
 
     public Set<CommentJsonEdit> getComments() {
         return comments;

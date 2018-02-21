@@ -107,9 +107,14 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public TopicGroup copy(UUID id, Long rev, UUID parentId) {
-        EntityManager entityManager = this.emf.createEntityManager();
+        //EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev.intValue() ).getEntity();
-        Map<UUID,Set<TopicGroupQuestionItem>> tgiRefs  =  copyAlltqi(source);
+
+        TopicGroup target = new TopicGroupFactory().copy(source, rev);
+        target.setParentU(parentId);
+        return topicGroupRepository.save(target);
+
+/*         Map<UUID,Set<TopicGroupQuestionItem>> tgiRefs  =  copyAlltqi(source);
 
         try {
             entityManager.detach( source );
@@ -124,8 +129,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
         // remove wrong ref qi's, save instanse, set correct id's on qi's save them to db and attach again.
         TopicGroup finalSource = save( source );
         updateAlltgi( finalSource,tgiRefs );
-        return finalSource;
-
+         return finalSource;
+*/
     }
 
 
@@ -190,7 +195,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                         cqi.getId().getQuestionItemId(),
                         cqi.getQuestionItemRevision().intValue());
                 cqi.setQuestionItem(rev.getEntity());
-                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber())) {
+                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().longValue())) {
                     cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 }
             }
