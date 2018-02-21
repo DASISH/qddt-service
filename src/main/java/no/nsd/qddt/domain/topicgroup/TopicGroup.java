@@ -62,6 +62,8 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
+    @Column(name = "study_id", insertable = false, updatable = false)
+    private UUID studyId;
 
     @JsonIgnore
     @OrderBy(value = "name asc")
@@ -193,18 +195,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         setField( "study", newParent );
     }
 
-    @Override
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        getConcepts().forEach(c-> {
-            c.makeNewCopy(revision);
-            c.setParentT( this );
-        });
-        getOtherMaterials().forEach(m-> m.makeNewCopy(this.getId()) );
-        getComments().clear();
+    public void setParentU(UUID studyId) {
+        setField("topicGroupId",studyId );
     }
-
 
     @Override
     public boolean equals(Object o) {

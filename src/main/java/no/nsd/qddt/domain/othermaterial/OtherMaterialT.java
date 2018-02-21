@@ -41,4 +41,9 @@ public class OtherMaterialT extends OtherMaterial {
         this.parent = parent;
         setField("ownerId",parent.getId());
     }
+
+    @Override
+    public OtherMaterialT clone() {
+        return (OtherMaterialT)super.clone();
+    }
 }

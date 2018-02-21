@@ -48,11 +48,6 @@ public class Author extends AbstractEntity {
     @JsonBackReference(value = "topicRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
     private final Set<TopicGroup> topicGroups = new HashSet<>();
-//
-//    @JsonBackReference(value = "conceptRef")
-//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
-//    private Set<Concept> concepts = new HashSet<>();
-
 
     public String getName() {
         return name;
@@ -127,12 +122,7 @@ public class Author extends AbstractEntity {
             this.topicGroups.add(topicGroup);
         }
     }
-
-//    public void addConcept(Concept concept){
-//        if (!concepts.contains(concept)) {
-//            this.concepts.add(concept);
-//        }
-//    }
+    
 
     public void removeSurvey(SurveyProgram surveyProgram){
         if (surveyPrograms.contains(surveyProgram))
@@ -151,12 +141,6 @@ public class Author extends AbstractEntity {
         }
     }
 
-//    public void removeConcept(Concept concept){
-//        System.out.println("Author->" + getName());
-//        if (concepts.contains(concept)) {
-//            this.concepts.remove(concept);
-//        }
-//    }
 
 
     @Override

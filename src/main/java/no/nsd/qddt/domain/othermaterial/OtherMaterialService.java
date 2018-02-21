@@ -20,7 +20,7 @@ public interface OtherMaterialService extends BaseService<OtherMaterial,UUID> {
 
 //    void deleteFile(OtherMaterial om) throws ReferenceInUseException;
 
-    OtherMaterial saveFile(MultipartFile multipartFile, UUID uuid) throws FileUploadException;
+    OtherMaterial saveFile(MultipartFile multipartFile, UUID uuid, String type) throws FileUploadException;
 
     File getFile(OtherMaterial om);
 

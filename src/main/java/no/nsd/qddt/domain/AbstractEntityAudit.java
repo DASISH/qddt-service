@@ -1,6 +1,31 @@
 package no.nsd.qddt.domain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.embedded.Version;
@@ -8,18 +33,6 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
-import javax.persistence.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -27,7 +40,7 @@ import java.util.UUID;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  {
+public abstract class AbstractEntityAudit extends AbstractEntity {
 
 
 
@@ -104,11 +117,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     private String name;
 
 
-    @Column(name = "based_on_object",updatable = false, nullable = false)
+    @Column(name = "based_on_object",updatable = false)
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    @Column(name = "based_on_revision",updatable = false, nullable = false)
+    @Column(name = "based_on_revision",updatable = false)
     private Long basedOnRevision;
 
 
@@ -119,8 +132,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     @Column(nullable = false)
     private ChangeKind changeKind;
 
-    @Column(name = "change_comment",nullable = false)
-    @ColumnDefault("")
+    @Column(name = "change_comment")
     private String changeComment;
 
 
@@ -148,7 +160,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         return basedOnObject;
     }
 
-    private void setBasedOnObject(UUID basedOnObject) {
+    protected void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
@@ -156,7 +168,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         return basedOnRevision;
     }
 
-    private void setBasedOnRevision(Long basedOnRevision) {
+    protected void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
@@ -216,8 +228,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
-        if (changeKind != ChangeKind.BASED_ON)
+        if (changeKind != ChangeKind.BASED_ON || changeKind != ChangeKind.NEW_COPY || changeKind != ChangeKind.TRANSLATED ) {
             changeKind = ChangeKind.CREATED;
+            changeComment = "Created";
+        }
         version = new Version(true);
         beforeInsert();
     }
@@ -277,24 +291,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
     protected void beforeInsert() {}
 
-
-    /**
-     * None null field compare, (ignores null value when comparing)
-     * @param o
-     * @return
-     */
-    public boolean fieldCompare(AbstractEntityAudit o){
-
-        if (agency != null && !agency.equals(o.agency)) return false;
-        if (name != null && !name.equals(o.name)) return false;
-        if (basedOnObject != null && !basedOnObject.equals(o.basedOnObject)) return false;
-        if (version != null && !version.equals(o.version)) return false;
-        if (changeKind != null && !changeKind.equals(o.changeKind)) return false;
-        if (changeComment != null && !changeComment.equals(o.changeComment)) return false;
-
-        return super.fieldCompare(o);
-    }
-
     @JsonIgnore
     public boolean isBasedOn(){
         return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
@@ -305,30 +301,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         return (getChangeKind() == ChangeKind.NEW_COPY )
                 | (getId() == null & getChangeKind() != null & getChangeKind()!= ChangeKind.CREATED)
                 | (!getVersion().isNew() & getId() == null );
-    }
-
-    @JsonIgnore
-    @Transient
-    protected boolean hasRun = false;
-
-    @JsonIgnore
-    /*
-    This function should contain all copy code needed to make a complete copy of hierarchy under this element
-    (an override should propagate downward and call makeNewCopy on it's children).
-     */
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        if (revision != null) {
-            setBasedOnObject(getId());
-            setBasedOnRevision(revision);
-            version.setVersionLabel("COPY OF [" + getName() + "]");
-            setChangeKind( ChangeKind.BASED_ON );
-            setChangeComment("Based on " + getName() );
-        }
-        if(this instanceof Archivable)
-            ((Archivable)this).setArchived(false);
-        setId(UUID.randomUUID());
-        hasRun = true;
     }
 
 

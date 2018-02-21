@@ -250,7 +250,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         managedRepresentation.setDescription(String.format("[%s] group - %s",
                 StringTool.CapString(managedRepresentation.getCategoryType().name().toLowerCase()),
                 getDescription()));
-        managedRepresentation.setChangeComment("");
+        managedRepresentation.setChangeComment(getChangeComment());
         managedRepresentation.setChangeKind(getChangeKind());
         if(!getVersion().isModified()) {
             LOG.debug("onUpdate not run yet ♣♣♣ ");
@@ -345,11 +345,5 @@ public class ResponseDomain extends AbstractEntityAudit  {
         pdfReport.getTheDocument().add(table);
     }
 
-    @Override
-    public void makeNewCopy(Long revision){
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        managedRepresentation.makeNewCopy(revision);
-        getComments().clear();
-    }
+
 }

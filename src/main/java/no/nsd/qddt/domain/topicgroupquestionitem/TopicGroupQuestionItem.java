@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.Audited;

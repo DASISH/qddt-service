@@ -76,7 +76,7 @@ public class ControlConstructController extends BaseController {
             instance = service.save(instance);
         if (files != null && files.length > 0)
             for (MultipartFile multipartFile:files) {
-                instance.addOtherMaterial((OtherMaterialCC)omService.saveFile(multipartFile, instance.getId()));
+                instance.addOtherMaterial((OtherMaterialCC)omService.saveFile(multipartFile, instance.getId(),"CC"));
             }
         return service.save(instance);
     }

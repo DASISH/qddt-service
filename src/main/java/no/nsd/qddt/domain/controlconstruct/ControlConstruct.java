@@ -425,7 +425,7 @@ public class ControlConstruct extends AbstractEntityAudit {
         pdfReport.addPadding();
     }
 
-    @Override
+/*     @Override
     public void makeNewCopy(Long revision) {
         if (hasRun) return;
         super.makeNewCopy( revision );
@@ -438,7 +438,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 //            m.setParent( this.getId() );
 //        } );
         getComments().clear();
-    }
+    } */
 
 
     public void setParent(ControlConstruct newParent) {

@@ -42,4 +42,9 @@ public class OtherMaterialCC extends OtherMaterial {
         this.parent = parent;
         setField("ownerId",parent.getId());
     }
+
+    @Override
+    public OtherMaterialCC clone() {
+        return (OtherMaterialCC)super.clone();
+    }
 }

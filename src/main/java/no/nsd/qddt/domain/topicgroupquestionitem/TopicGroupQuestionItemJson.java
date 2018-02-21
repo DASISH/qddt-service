@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.topicgroupquestionitem;
 
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

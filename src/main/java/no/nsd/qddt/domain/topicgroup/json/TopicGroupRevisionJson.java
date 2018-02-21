@@ -17,7 +17,9 @@ import java.util.stream.Collectors;
  */
 public class TopicGroupRevisionJson extends BaseJsonEdit {
 
-    private String abstractDescription;
+    private static final long serialVersionUID = 2435677656441L;
+
+	private String abstractDescription;
 
     private Set<TopicGroupQuestionItemJson> topicQuestionItems;
 

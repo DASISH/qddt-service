@@ -78,6 +78,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {
         
+        ResponseDomainFactory rdf= new ResponseDomainFactory();
+        if(instance.isBasedOn()) {
+            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
+            instance = rdf.copy(instance, rev );
+        } else if (instance.isNewCopy()) {
+            instance = rdf.copy(instance, null);
+        }
+
         if (instance.getManagedRepresentation().getId() == null) {
             instance.beforeUpdate();
             instance.setManagedRepresentation(
@@ -86,12 +94,13 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         } else
             instance.populateCodes();
 
-        if(instance.isBasedOn()) {
+        instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
+/*         if(instance.isBasedOn()) {
             Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
             instance.makeNewCopy(rev);
         } else if (instance.isNewCopy()) {
             instance.makeNewCopy(null);
-        }
+        } */
         return instance;
     }
 
@@ -118,28 +127,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
                 likeify(question),
                 pageable);
     }
-
-//    @Override
-//    public ResponseDomain createMixed(UUID rdId, UUID missingId){
-//        ResponseDomain old = findOne(rdId);
-//        Category missing = categoryService.findOne(missingId);
-//        Category mixedCa = new Category();
-//
-//        mixedCa.setName(old.getManagedRepresentation().getName() +" + " + missing.getName());
-//        mixedCa.setCategoryType(CategoryType.MIXED);
-//        mixedCa.addChild(old.getManagedRepresentation());
-//        mixedCa.addChild(missing);
-//
-//        ResponseDomain mixedRd = new ResponseDomain();
-//        mixedRd.setManagedRepresentation(mixedCa);
-//        mixedRd.setName(old.getName() + " + " + missing.getName());
-//        mixedRd.setDescription(old.getDescription() + System.lineSeparator() + missing.getDescription());
-//        mixedRd.setResponseKind(ResponseKind.MIXED);
-//        mixedRd.setDisplayLayout(old.getDisplayLayout());
-//        mixedRd.setCodes(old.getCodes());
-//
-//        return  save(mixedRd);
-//    }
 
 
     private String likeify(String value){

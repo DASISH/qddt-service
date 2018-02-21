@@ -44,7 +44,7 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 @Audited
 @Entity
 @Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind","based_on_object"},name = "UNQ_CATEGORY_NAME_KIND")})
-public class Category extends AbstractEntityAudit  implements Comparable<Category>{
+public class Category extends AbstractEntityAudit  implements Comparable<Category> , Cloneable {
 
 
     @Transient
@@ -257,8 +257,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         if (getLabel() != null ? !getLabel().equals(category.getLabel()) : category.getLabel() != null) return false;
         if (getDescription() != null ? !getDescription().equals(category.getDescription()) : category.getDescription() != null)
             return false;
-//        if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
-//            return false;
         return getHierarchyLevel() == category.getHierarchyLevel();
 
     }
@@ -320,17 +318,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         document.add(new Paragraph(" " ));
     }
 
-    public boolean fieldCompare(Category o) {
-
-        if (children != null && !children.equals(o.children)) return false;
-        if (label != null && !label.equals(o.label)) return false;
-        if (description != null && !description.equals(o.description)) return false;
-        if (hierarchyLevel != null && !hierarchyLevel.equals(o.hierarchyLevel)) return false;
-        if (categoryType != null && !categoryType.equals(o.categoryType)) return false;
-
-        return super.fieldCompare(o);
-
-    }
 
     /*
     preRec for valid Categories
@@ -424,12 +411,22 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         }
     }
 
+
     @Override
-    public void makeNewCopy(Long revision){
-        // Copying a simple Category doesn't make any sense... skipping...
-        hasRun = (getHierarchyLevel() == HierarchyLevel.ENTITY);
-        if (hasRun) return;
-        super.makeNewCopy(revision);
-        getChildren().forEach(c->c.makeNewCopy(revision));
+    public Category clone() {
+        Category clone = new Category(getName(),label);
+        clone.setCategoryType(categoryType);
+        clone.setClassificationLevel(classificationLevel);
+        clone.setChildren(children);
+        clone.setCode(code);
+        clone.setDescription(description);
+        clone.setFormat(format);
+        clone.setHierarchyLevel(hierarchyLevel);
+        clone.setInputLimit(inputLimit);
+        clone.setBasedOnObject(getId());
+        clone.setChangeKind(ChangeKind.NEW_COPY);
+        clone.setChangeComment("Copy of [" + getName() + "]");
+        return clone;
     }
+    
 }

@@ -27,12 +27,12 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "owner_type")
 @Table(name = "OTHER_MATERIAL")
-public class OtherMaterial extends AbstractEntity {
+public class OtherMaterial extends AbstractEntity implements Cloneable {
 
 
 
     @Type(type="pg-uuid")
-    @Column(name = "owner_id",  updatable = false)
+    @Column(name = "owner_id", insertable = false, updatable = false)
     private UUID ownerId;
 
     private String fileName;
@@ -123,7 +123,7 @@ public class OtherMaterial extends AbstractEntity {
         return description;
     }
 
-    private void setDescription(String description) {
+    protected void setDescription(String description) {
         this.description = description;
     }
 
@@ -139,7 +139,7 @@ public class OtherMaterial extends AbstractEntity {
         return orgRef;
     }
 
-    private void setOrgRef(UUID orgRef) {
+    protected void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
     }
 
@@ -195,17 +195,13 @@ public class OtherMaterial extends AbstractEntity {
         return result;
     }
 
-    @JsonIgnore
-    @Transient
-    private boolean hasRun = false;
 
-
-    public void makeNewCopy(UUID newOwner){
-        if (hasRun) return;
-        setOrgRef(getId());
-        setField("ownerId",newOwner);
-        setId(UUID.randomUUID());
-        hasRun = true;
+    @Override
+    public OtherMaterial clone() {
+        OtherMaterial retval = new OtherMaterial(ownerId,fileName,fileType, size, description);
+        retval.setOrgRef(getId());
+        retval.setId(UUID.randomUUID());
+        return retval;
     }
 
     @PreRemove

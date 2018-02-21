@@ -110,21 +110,6 @@ public abstract class AbstractEntity {
     }
 
 
-    /**
-     * None null field compare, (ignores null value when comparing)
-     * @param o
-     * @return
-     */
-    public boolean fieldCompare(AbstractEntity o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        if (id != null ? !id.equals(o.id) : o.id != null) return false;
-        if (modified != null ? !modified.equals(o.modified) : o.modified != null) return false;
-        return modifiedBy != null ? modifiedBy.equals(o.modifiedBy) : o.modifiedBy == null;
-    }
-
-
     /*
     Set Properties without notifying Hibernate, good for circumvent auto HiberFix hell.
      */

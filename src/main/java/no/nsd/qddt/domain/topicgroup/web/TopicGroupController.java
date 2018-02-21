@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
 import no.nsd.qddt.domain.BaseController;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
+import no.nsd.qddt.domain.topicgroupquestionitem.ParentQuestionItemId;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemService;
 import no.nsd.qddt.exception.StackTraceFilter;

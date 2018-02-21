@@ -175,12 +175,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem prePersistProcessing(QuestionItem instance){
 
+        QuestionItemFactory qif= new QuestionItemFactory();
         if(instance.isBasedOn()) {
             Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
-            instance.makeNewCopy(rev);
-        } else if (instance.isNewCopy()){
-            instance.makeNewCopy(null);
-        }
+            instance = qif.copy(instance, rev );
+        } else if (instance.isNewCopy()) {
+            instance = qif.copy(instance, null);
+        } 
 
         if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
             if (instance.getResponseDomainUUID() == null) {

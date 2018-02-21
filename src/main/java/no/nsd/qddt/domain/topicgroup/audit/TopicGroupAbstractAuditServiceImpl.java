@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.conceptquestionitem.ParentQuestionItem;
+import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -100,7 +100,9 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
             instance.getConcepts().forEach(this::postLoadProcessing);
 
             for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
-                cqi.setQuestionItem(getQuestionItemLastOrRevision(cqi));
+                cqi.setQuestionItem(getQuestionItemLastOrRevision(
+                    cqi.getId().getQuestionItemId(),
+                    cqi.getQuestionItemRevision().intValue()));
             }
 
 //            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
@@ -149,9 +151,13 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
     }
 
 
-    private QuestionItem getQuestionItemLastOrRevision(ParentQuestionItem cqi){
+    private QuestionItem getQuestionItemLastOrRevision(ConceptQuestionItemRev cqi){
         return questionItemAuditService.getQuestionItemLastOrRevision(
-            cqi.getId().getQuestionItemId(),
+            cqi.getQuestionId(),
             cqi.getQuestionItemRevision().intValue()).getEntity();
+    }
+
+    private QuestionItem getQuestionItemLastOrRevision(UUID id, Integer rev){
+        return questionItemAuditService.getQuestionItemLastOrRevision(id,rev).getEntity();
     }
 }
