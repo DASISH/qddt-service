@@ -19,21 +19,11 @@ import java.util.UUID;
 @Table(name = "AUTHORITY")
 public class Authority {
 
-    @Id
-    @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "authority")
     private String authority;
-
-    @ManyToMany(mappedBy = "authorities")
     private Set<User> users = new HashSet<>();
+
 
     public Authority() {
 
@@ -43,34 +33,41 @@ public class Authority {
         this.authority = authority;
     }
 
+    @Id
+    @Type(type="pg-uuid")
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
 
+
+    @Column(name = "name")
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
 
+
+    @Column(name = "authority")
     public String getAuthority() {
         return authority;
     }
-
     public void setAuthority(String authority) {
         this.authority = authority;
     }
 
+
+    @ManyToMany(mappedBy = "authorities")
     public Set<User> getUsers() {
         return users;
     }
-
     public void setUsers(Set<User> users) {
         this.users = users;
     }

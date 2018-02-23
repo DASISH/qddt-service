@@ -14,14 +14,12 @@ import java.util.stream.Collectors;
  */
 public class CommentJsonEdit {
 
-    @Type(type="pg-uuid")
     private UUID id;
 
     private LocalDateTime modified;
 
     private UserJson modifiedBy;
 
-    @Type(type="pg-uuid")
     private UUID ownerId;
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
@@ -41,12 +39,13 @@ public class CommentJsonEdit {
         setModifiedBy(new UserJson(comment.getModifiedBy()));
         setOwnerId(comment.getOwnerId());
         setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
-        setIsHidden(comment.getIsHidden());
-        setPublic(comment.isPublic());
+        setIsHidden(comment.getHidden());
+        setPublic(comment.getPublic());
         setComment(comment.getComment());
     }
 
 
+    @Type(type="pg-uuid")
     public UUID getId() {
         return id;
     }
@@ -71,6 +70,7 @@ public class CommentJsonEdit {
         this.modifiedBy = modifiedBy;
     }
 
+    @Type(type="pg-uuid")
     public UUID getOwnerId() {
         return ownerId;
     }

@@ -81,22 +81,22 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     @Transactional(readOnly = true)
     public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false, pageable);
+        return commentRepository.findAllByOwnerIdAndHiddenOrderByModifiedAsc(ownerId,false, pageable);
     }
 
     @Override
     public Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true, pageable);
+        return commentRepository.findAllByOwnerIdAndHiddenAndPublicOrderByModifiedAsc(ownerId,false,true, pageable);
     }
 
     @Override
     public List<Comment> findAllByOwnerId(UUID ownerId) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false);
+        return commentRepository.findAllByOwnerIdAndHiddenOrderByModifiedAsc(ownerId,false);
     }
 
     @Override
     public List<Comment> findAllByOwnerIdPublic(UUID ownerId) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true);
+        return commentRepository.findAllByOwnerIdAndHiddenAndPublicOrderByModifiedAsc(ownerId,false,true);
     }
 
 }

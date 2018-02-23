@@ -20,21 +20,14 @@ import java.util.Objects;
 public class Publication extends AbstractEntityAudit {
 
     private String purpose;
-
     private String status;
-
-    @OrderColumn(name="element_idx")
-    @OrderBy("element_idx ASC")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "PUBLICATION_ELEMENT",joinColumns = @JoinColumn(name="element_id"))
     private List<PublicationElement>  publicationElements = new ArrayList<>();
 
+    public Publication() { }
 
     public String getPurpose() {
         return purpose;
     }
-
-
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
@@ -43,13 +36,15 @@ public class Publication extends AbstractEntityAudit {
     public String getStatus() {
         return status;
     }
-
-
     public void setStatus(String status) {
         this.status = status;
     }
 
 
+    @OrderColumn(name="element_idx")
+    @OrderBy("element_idx ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "PUBLICATION_ELEMENT",joinColumns = @JoinColumn(name="element_id"))
     public List<PublicationElement> getPublicationElements() {
         try {
             return publicationElements;
@@ -58,8 +53,6 @@ public class Publication extends AbstractEntityAudit {
             return new ArrayList<>();
         }
     }
-
-
     public void setPublicationElements(List<PublicationElement> publicationElements) {
         this.publicationElements = publicationElements;
     }

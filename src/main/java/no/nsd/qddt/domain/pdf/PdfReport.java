@@ -230,7 +230,7 @@ public class PdfReport extends PdfDocument {
     public Document addComments(Set<Comment> comments){
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}))
                 .setKeepTogether(true).setWidthPercent(80).setPaddingBottom(30);
-        for(Comment comment: comments.stream().filter(Comment::isPublic).collect(Collectors.toList())){
+        for(Comment comment: comments.stream().filter(Comment::getPublic).collect(Collectors.toList())){
             addCommentRow(table,comment,0);
         }
         return this.document.add(table);
@@ -260,7 +260,7 @@ public class PdfReport extends PdfDocument {
                         .setTextAlignment(TextAlignment.RIGHT)
                         .add(comment.getModified().toLocalDate().toString()));
 
-        for(Comment subcomment: comment.getComments().stream().filter(Comment::isPublic).collect(Collectors.toList())){
+        for(Comment subcomment: comment.getComments().stream().filter(Comment::getPublic).collect(Collectors.toList())){
             addCommentRow(table,subcomment,level+1);
         }
     }

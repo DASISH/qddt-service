@@ -22,20 +22,10 @@ public class ControlConstructRef implements java.io.Serializable {
 
     private static final long serialVersionUID = -7261887349839337877L;
 
-    @Id
-    @GeneratedValue
     private Long id;
-
-    @Type(type="pg-uuid")
-    @Column(name="controlconstruct_id")
     private UUID controlConstructId;
-
-    @Column(name = "controlconstruct_revision")
     private Long controlConstructRevision;
-
     private String name;
-
-    @Embedded
     private Version version;
 
     /*
@@ -43,31 +33,13 @@ public class ControlConstructRef implements java.io.Serializable {
         an template/childnode of sequence.
      */
     private Boolean isVirtual;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "controlconstruct_id",updatable = false,insertable = false)
     private ControlConstruct controlConstructInternal;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="instrument_id",updatable = false)
     private Instrument instrument;
 
     //------------- Begin Child elements with "enver hack" ----------------------
 
-    @Column(insertable = false,updatable = false)
     private Integer index;
-
-    @JsonBackReference(value = "ccrParentRef")
-    @ManyToOne()
-    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
     private ControlConstructRef parentReferenceOnly;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
-    @JoinColumn(name = "parent_id")
-    @OrderColumn(name = "index")
-    // Ordered arrayList doesn't work with Enver FIX
-    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
     private List<ControlConstructRef> children = new ArrayList<>();
 
     //------------- End Child elements with "enver hack"  -----------------------
@@ -76,77 +48,112 @@ public class ControlConstructRef implements java.io.Serializable {
     public ControlConstructRef() {
     }
 
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
 
+
+    @Type(type="pg-uuid")
+    @Column(name="controlconstruct_id")
     public UUID getControlConstructId() {
         return controlConstructId;
     }
-
     public void setControlConstructId(UUID controlConstructId) {
         this.controlConstructId = controlConstructId;
     }
 
+
+    @Column(name = "controlconstruct_revision")
     public Long getControlConstructRevision() {
         return controlConstructRevision;
     }
-
     public void setControlConstructRevision(Long controlConstructRevision) {
         this.controlConstructRevision = controlConstructRevision;
     }
 
+
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
 
+    @Embedded
     public Version getVersion() {
         return version;
     }
-
     public void setVersion(Version version) {
         this.version = version;
     }
 
-    public Boolean getVirtual() {
+
+    @Column(name = "is_virtual")
+    public Boolean isVirtual() {
         return isVirtual;
     }
-
     public void setVirtual(Boolean virtual) {
         isVirtual = virtual;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "controlconstruct_id",updatable = false,insertable = false)
     public ControlConstruct getControlConstructInternal() {
         return controlConstructInternal;
     }
-
-    private void setControlConstructInternal(ControlConstruct controlConstructInternal) {
+    public void setControlConstructInternal(ControlConstruct controlConstructInternal) {
         this.controlConstructInternal = controlConstructInternal;
     }
 
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="instrument_id",updatable = false)
     public Instrument getInstrument() {
         return instrument;
     }
-
-    private void setInstrument(Instrument instrument) {
+    public void setInstrument(Instrument instrument) {
         this.instrument = instrument;
     }
 
+
+    //------------- Begin Child elements with "enver hack" ----------------------
+    @Column(insertable = false,updatable = false)
+    public Integer getIndex() {
+        return index;
+    }
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+    @JsonBackReference(value = "ccrParentRef")
+    @ManyToOne()
+    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    public ControlConstructRef getParentReferenceOnly() {
+        return parentReferenceOnly;
+    }
+    public void setParentReferenceOnly(ControlConstructRef parentReferenceOnly) {
+        this.parentReferenceOnly = parentReferenceOnly;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @JoinColumn(name = "parent_id")
+    @OrderColumn(name = "index")
+    // Ordered arrayList doesn't work with Enver FIX
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
     public List<ControlConstructRef> getChildren() {
         return children;
     }
-
     public void setChildren(List<ControlConstructRef> children) {
         this.children = children;
     }
+    //------------- End Child elements with "enver hack"  -----------------------
+
 
     @Override
     public boolean equals(Object o) {

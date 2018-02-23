@@ -13,26 +13,22 @@ import javax.persistence.*;
 @Embeddable
 public class ControlConstructInstruction {
 
+    private Instruction instruction;
+    private ControlConstructInstructionRank instructionRank;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "instruction_id")
-    private Instruction instruction;
-
-    @Enumerated(EnumType.STRING)
-    private ControlConstructInstructionRank instructionRank;
-
     public Instruction getInstruction() {
         return instruction;
     }
-
     public void setInstruction(Instruction instruction) {
         this.instruction = instruction;
     }
 
+    @Enumerated(EnumType.STRING)
     public ControlConstructInstructionRank getInstructionRank() {
         return instructionRank;
     }
-
     public void setInstructionRank(ControlConstructInstructionRank instructionRank) {
         this.instructionRank = instructionRank;
     }

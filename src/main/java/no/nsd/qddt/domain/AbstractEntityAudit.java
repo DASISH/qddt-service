@@ -123,7 +123,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public Agency getAgency() {
         return agency;
     }
-
     public void setAgency(Agency agency) {
         this.agency = agency;
     }
@@ -134,7 +133,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public UUID getBasedOnObject() {
         return basedOnObject;
     }
-    protected void setBasedOnObject(UUID basedOnObject) {
+    public void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
@@ -142,7 +141,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     public Long getBasedOnRevision() {
         return basedOnRevision;
     }
-    protected void setBasedOnRevision(Long basedOnRevision) {
+    public void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
@@ -272,6 +271,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 
 
     @JsonIgnore
+    @Transient
     public boolean isOwnAgency() {
         if (agency == null) return  true;
 
@@ -281,11 +281,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
     @JsonIgnore
+    @Transient
     public boolean isBasedOn(){
         return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
     }
 
     @JsonIgnore
+    @Transient
     public boolean isNewCopy(){
         return (getChangeKind() == ChangeKind.NEW_COPY )
                 | (getId() == null & getChangeKind() != null & getChangeKind()!= ChangeKind.CREATED)

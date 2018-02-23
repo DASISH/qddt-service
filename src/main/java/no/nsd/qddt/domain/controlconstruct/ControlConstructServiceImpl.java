@@ -1,10 +1,12 @@
 package no.nsd.qddt.domain.controlconstruct;
 
+import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -37,18 +39,21 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private final ControlConstructAuditService auditService;
     private final InstructionService iService;
     private final QuestionItemAuditService qiAuditService;
+    private final ConceptService conceptService;
 
 
     @Autowired
     public ControlConstructServiceImpl(ControlConstructRepository ccRepository,
                                        ControlConstructAuditService controlConstructAuditService,
                                        InstructionService iService,
-                                       QuestionItemAuditService questionAuditService
+                                       QuestionItemAuditService questionAuditService,
+                                       ConceptService conceptService
     ) {
         this.controlConstructRepository = ccRepository;
         this.auditService = controlConstructAuditService;
         this.iService = iService;
         this.qiAuditService = questionAuditService;
+        this.conceptService = conceptService;
     }
 
     @Override
@@ -146,7 +151,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     private ControlConstruct prePersistProcessing(ControlConstruct instance) {
-        instance.populateControlConstructInstructions();
+//        instance.populateControlConstructInstructions();
         instance.getControlConstructInstructions().forEach(cqi->{
             if (cqi.getInstruction().getId() == null)
                 cqi.setInstruction(iService.save(cqi.getInstruction()));
@@ -167,7 +172,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         assert  (instance != null);
         try{
             // instructions has to be unpacked into pre and post instructions
-            instance.populateInstructions();
+//            instance.populateInstructions();
 
             // before returning fetch correct version of QI...
             if (instance.getQuestionItemUUID() == null)
@@ -178,6 +183,9 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         instance.getQuestionItemRevision().intValue());
                 instance.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 instance.setQuestionItem(rev.getEntity());
+                instance.getQuestionItem().setConceptRefs(  conceptService.findByQuestionItem(instance.getQuestionItemUUID()).stream()
+                    .map( c -> new ConceptRef(c) )
+                    .collect( Collectors.toList()) );
             }
             instance.getChildren().forEach(this::postLoadProcessing);
         } catch (Exception ex){

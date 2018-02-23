@@ -67,46 +67,31 @@ import java.util.stream.Collectors;
  */
 @Audited
 @Entity
+/**
+ *   Can't have two responsedomain with the same template and the same name, unless they are based on.
+ *   This constraint isn't very likely to be put into effect, since we don't use managedrepresentations as templates anymore.
+ */
 @Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id","based_on_object"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
 public class ResponseDomain extends AbstractEntityAudit  {
-    /**
-    *   Can't have two responsedomain with the same template and the same name, unless they are based on
-    */
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain",cascade = {CascadeType.DETACH})
-    private Set<QuestionItem> questionItems = new HashSet<>();
 
-    
-    @JsonIgnore
-    @OrderColumn(name="responsedomain_idx")
-    @OrderBy("responsedomain_idx ASC")
-    @ElementCollection
-    @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id"))
-    private List<Code> codes = new ArrayList<>();
-
-    @Column(name = "description", length = 2000, nullable = false)
     private String description;
+    private String displayLayout;
+    private ResponseKind responseKind;
+
+    /**
+     * Allows the designation of the minimum and maximum number of responses allowed for this response domain.
+     */
+    private ResponseCardinality responseCardinality;
 
     /**
      *   a link to a category root/group (template)
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
-    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.EAGER)
-    @JoinColumn(name="category_id")
     private Category managedRepresentation;
+    private List<Code> codes = new ArrayList<>();
 
-    private String displayLayout;
-
-    @Enumerated(EnumType.STRING)
-    private ResponseKind responseKind;
-
-    /**
-     * Allows the designation of the minimum and maximum number of responses allowed for this response domain.
-     */
-    @Embedded
-    private ResponseCardinality responseCardinality;
-
+    private Set<QuestionItem> questionItems = new HashSet<>();
 
     public ResponseDomain(){
         description = "";
@@ -118,41 +103,15 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return StringTool.CapString(super.getName());
     }
 
+
+    @Column(name = "description", length = 2000, nullable = false)
     public String getDescription() {
         if (StringTool.IsNullOrEmpty(description))
             description= "";
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public ResponseKind getResponseKind() {
-        return responseKind;
-    }
-
-    public void setResponseKind(ResponseKind responseKind) {
-        this.responseKind = responseKind;
-    }
-
-    public ResponseCardinality getResponseCardinality() {
-        if (responseCardinality == null)
-            return new ResponseCardinality();
-        return responseCardinality;
-    }
-
-    private void setResponseCardinality(ResponseCardinality responseCardinality) {
-        this.responseCardinality = responseCardinality;
-    }
-
-
-    public Set<QuestionItem> getQuestionItems() {
-        return questionItems;
-    }
-
-    public void setQuestionItems(Set<QuestionItem> questionItems) {
-        this.questionItems = questionItems;
     }
 
     /**
@@ -162,19 +121,92 @@ public class ResponseDomain extends AbstractEntityAudit  {
     public String getDisplayLayout() {
         return displayLayout;
     }
-
     public void setDisplayLayout(String displayLayout) {
         this.displayLayout = displayLayout;
     }
 
-    /**
-    *    this is useful for populating codes before saving to DB
-    */
+    @Enumerated(EnumType.STRING)
+    public ResponseKind getResponseKind() {
+        return responseKind;
+    }
+    public void setResponseKind(ResponseKind responseKind) {
+        this.responseKind = responseKind;
+    }
+
+    @Embedded
+    public ResponseCardinality getResponseCardinality() {
+        if (responseCardinality == null)
+            return new ResponseCardinality();
+        return responseCardinality;
+    }
+    private void setResponseCardinality(ResponseCardinality responseCardinality) {
+        this.responseCardinality = responseCardinality;
+    }
+
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain",cascade = {CascadeType.DETACH})
+    public Set<QuestionItem> getQuestionItems() {
+        return questionItems;
+    }
+    public void setQuestionItems(Set<QuestionItem> questionItems) {
+        this.questionItems = questionItems;
+    }
+
+
+    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.EAGER)
+    @JoinColumn(name="category_id")
+    public Category getManagedRepresentation() {
+        assert managedRepresentation != null;
+        _Index = 0;
+        populateCatCodes(managedRepresentation);
+        return managedRepresentation;
+    }
+    private List<Category> getFlatManagedRepresentation(Category current){
+        List<Category> retval = new ArrayList<>();
+        if (current == null) return  retval;
+        retval.add(current);
+        current.getChildren().forEach(c->retval.addAll(getFlatManagedRepresentation(c)));
+        return  retval;
+    }
+    public void setManagedRepresentation(Category managedRepresentation) {
+        LOG.debug("setManagedRepresentation");
+        this.codes.clear();
+        harvestCatCodes(managedRepresentation);
+        this.managedRepresentation = managedRepresentation;
+    }
+
+
+    @JsonIgnore
+    @OrderColumn(name="responsedomain_idx")
+    @OrderBy("responsedomain_idx ASC")
+    @ElementCollection
+    @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id"))
+    public List<Code> getCodes() {
+        if (codes == null)
+            codes = new ArrayList<>();
+        return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+    public void setCodes(List<Code> codes) {
+        this.codes = codes;
+    }
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    public Set<QuestionItemRef> getQuestionRefs(){
+        return  new HashSet<>();
+    }
+
+
+    // /used to keep track of current item in the recursive call populateCatCodes
+    @Transient
+    private int _Index;
+    // this is useful for populating codes before saving to DB (used in the service)
     public void populateCodes() {
         this.codes.clear();
         harvestCatCodes(managedRepresentation);
     }
-
     private void harvestCatCodes(Category current){
         if (current == null) return;
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
@@ -189,13 +221,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         }
         current.getChildren().forEach(this::harvestCatCodes);
     }
-
-    @Transient
-    private int _Index;    // /used to keep track of current item in the recursive call populateCatCodes
-
-    /**
-     * this function is useful for populating managedRepresentation after loading from DB
-     */
+    // this function is useful for populating managedRepresentation after loading from DB
     private void populateCatCodes(Category current){
         assert current != null;
         if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
@@ -207,37 +233,14 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 current.setCode(new Code());
             } catch(Exception ex) {
                 LOG.error(DateTime.now().toDateTimeISO()+
-                        " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
-                        current);
+                    " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
+                    current);
                 current.setCode(new Code());
             }
         }
         current.getChildren().forEach(this::populateCatCodes);
     }
 
-
-    public Category getManagedRepresentation() {
-        assert managedRepresentation != null;
-        _Index = 0;
-        populateCatCodes(managedRepresentation);
-        return managedRepresentation;
-    }
-
-    private List<Category> getFlatManagedRepresentation(Category current){
-        List<Category> retval = new ArrayList<>();
-        if (current == null) return  retval;
-        retval.add(current);
-        current.getChildren().forEach(c->retval.addAll(getFlatManagedRepresentation(c)));
-        return  retval;
-    }
-
-    public void setManagedRepresentation(Category managedRepresentation) {
-        LOG.debug("setManagedRepresentation");
-        this.codes.clear();
-        harvestCatCodes(managedRepresentation);
-        this.managedRepresentation = managedRepresentation;
-//        beforeUpdate();
-    }
 
     @Override
     protected void beforeUpdate() {
@@ -262,23 +265,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     }
 
-    public List<Code> getCodes() {
-        if (codes == null)
-            codes = new ArrayList<>();
-        return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
-    }
-
-    public void setCodes(List<Code> codes) {
-        this.codes = codes;
-    }
-
-
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    public Set<QuestionItemRef> getQuestionRefs(){
-        return  new HashSet<>();
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -303,7 +289,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     @Override
     public String toString() {
-
         return MessageFormat.format("ResponseDomain { {0}, {1}, {2} } " ,
                 super.toString(),
                 getCodes(),

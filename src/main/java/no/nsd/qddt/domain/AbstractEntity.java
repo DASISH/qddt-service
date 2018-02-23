@@ -27,7 +27,6 @@ import java.util.UUID;
 @EntityListeners(EntityCreatedModifiedDateAuditEventConfiguration.class)
 public abstract class AbstractEntity {
 
-    @Transient
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private UUID id;

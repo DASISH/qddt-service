@@ -13,7 +13,7 @@ public class ConstructSequenceJson extends ConstructJson {
 
     private List<ConstructJson> children = new ArrayList<>();
 
-    private final String indexRationale;
+    private final String parentIdxRationale;
 
     private final String label;
 
@@ -21,7 +21,7 @@ public class ConstructSequenceJson extends ConstructJson {
 
     public ConstructSequenceJson(ControlConstruct construct) {
         super(construct);
-        indexRationale = construct.getIndexRationale();
+        parentIdxRationale = construct.getparentIdxRationale();
         label = construct.getLabel();
         description = construct.getDescription();
         children = construct.getChildren().stream().map(cc->{
@@ -44,8 +44,8 @@ public class ConstructSequenceJson extends ConstructJson {
         return children;
     }
 
-    public String getIndexRationale() {
-        return indexRationale;
+    public String getparentIdxRationale() {
+        return parentIdxRationale;
     }
 
     public String getLabel() {

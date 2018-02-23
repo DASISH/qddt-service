@@ -29,8 +29,8 @@ public class Comment extends AbstractEntity  {
 
     private UUID ownerId;
     private String comment;
-    private Boolean isHidden;
-    private Boolean isPublic;
+    private boolean isHidden;
+    private boolean isPublic;
     private Set<Comment> comments = new HashSet<>();
 
 
@@ -53,7 +53,6 @@ public class Comment extends AbstractEntity  {
     }
 
 
-
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     public Set<Comment> getComments() {
         return this.comments;
@@ -71,23 +70,25 @@ public class Comment extends AbstractEntity  {
         this.comment = comment;
     }
 
-    @Column(name = "is_hidden", columnDefinition = "boolean not null default false")
 
-    public boolean getIsHidden() {
-        return (isHidden == null)?true:isHidden;
+    @Column(name = "is_hidden", columnDefinition = "boolean not null default false")
+    public boolean getHidden() {
+        return isHidden;
     }
-    public void setIsHidden(boolean hidden) {
+    public void setHidden(boolean hidden) {
         isHidden = hidden;
     }
 
 
+
     @Column(name = "is_public", columnDefinition = "boolean not null default true")
-    public boolean isPublic() {
-        return (isPublic == null)?true:isPublic;
+    public boolean getPublic() {
+        return isPublic;
     }
     public void setPublic(boolean aPublic) {
         isPublic = aPublic;
     }
+
 
     @Transient
     @JsonSerialize()
@@ -99,23 +100,23 @@ public class Comment extends AbstractEntity  {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Comment)) return false;
-        if (!super.equals(o)) return false;
+        if (!super.equals( o )) return false;
 
         Comment comment1 = (Comment) o;
 
         if (isHidden != comment1.isHidden) return false;
         if (isPublic != comment1.isPublic) return false;
-        if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
-        return comment != null ? comment.equals(comment1.comment) : comment1.comment == null;
+        if (ownerId != null ? !ownerId.equals( comment1.ownerId ) : comment1.ownerId != null) return false;
+        return comment != null ? comment.equals( comment1.comment ) : comment1.comment == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (isHidden ? 1 : 0);
         result = 31 * result + (isPublic ? 1 : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }
 

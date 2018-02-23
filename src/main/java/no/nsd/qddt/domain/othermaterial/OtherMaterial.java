@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntity;
@@ -38,7 +37,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     private long size;
     private UUID orgRef;
     private OtherMaterial source;
-    private final Set<OtherMaterial> referencesBy = new HashSet<>(0);
+    private Set<OtherMaterial> referencesBy = new HashSet<>(0);
 
 
     public OtherMaterial(){
@@ -71,7 +70,8 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
-
+    @Transient
+    @JsonIgnore
     protected void setParentId( Object value) {
         try {
             Class<?> clazz = getClass().getSuperclass();
@@ -131,8 +131,19 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public UUID getOrgRef() {
         return orgRef;
     }
-    private void setOrgRef(UUID orgRef) {
+    public void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
+    }
+
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "org_ref",insertable = false,updatable = false)
+    public OtherMaterial getSource() {
+        return source;
+    }
+    public void setSource(OtherMaterial source) {
+        this.source = source;
     }
 
 
@@ -143,15 +154,12 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public Set<OtherMaterial> getReferencesBy() {
         return referencesBy;
     }
-
-
-    @JsonIgnore
-    @JsonBackReference(value = "orgReferences")
-    @ManyToOne()
-    @JoinColumn(name = "org_ref",updatable = false,insertable = false)
-    public OtherMaterial getSource() {
-        return source;
+    public void setReferencesBy(Set<OtherMaterial> referencesBy) {
+        this.referencesBy = referencesBy;
     }
+
+
+
 
 
     @Override

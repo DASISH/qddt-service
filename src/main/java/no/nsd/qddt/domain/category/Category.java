@@ -312,6 +312,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     preRec for valid Categories
      */
     @JsonIgnore
+    @Transient
     boolean isValid(){
         if (hierarchyLevel== HierarchyLevel.ENTITY)
             switch (categoryType) {
@@ -402,6 +403,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
 
     @Override
+    @JsonIgnore
+    @Transient
     public Category clone() {
         Category clone = new Category(getName(),label);
         clone.setCategoryType(categoryType);

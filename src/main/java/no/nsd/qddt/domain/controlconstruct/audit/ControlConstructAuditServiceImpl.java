@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -30,24 +29,21 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
  * @author Dag Østgulen Heradstveit
  */
 @Service("instrumentAuditQuestionService")
-class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,ControlConstruct> implements ControlConstructAuditService {
+class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,ControlConstruct> implements ControlConstructAuditService {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
     private final QuestionItemAuditService qiAuditService;
-    private final OtherMaterialService otherMaterialService;
     private final CommentService commentService;
     private boolean showPrivateComments;
 
 
     @Autowired
-    public ControlConstructAbstractAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
+    public ControlConstructAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
             , QuestionItemAuditService qAuditService
-            , CommentService cService
-            , OtherMaterialService oService) {
+            , CommentService cService) {
         this.controlConstructAuditRepository = ccAuditRepository;
         this.qiAuditService = qAuditService;
-        this.otherMaterialService = oService;
         this.commentService = cService;
     }
 
@@ -99,7 +95,7 @@ class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integ
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
 //            System.out.println("postLoadProcessing instruction -> " + instance.getControlConstructInstructions().size());
-            instance.populateInstructions();
+//            instance.populateInstructions();
 
             if(instance.getQuestionItemUUID() != null) {
                 if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
@@ -123,7 +119,7 @@ class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integ
             instance.setComments(new HashSet<>(coms));
 
         } catch (Exception ex){
-            LOG.error("removeQuestionItem",ex);
+            LOG.error("removeTopicQuestionItem",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                     .map(a->a.toString())
                     .forEach(LOG::info);

@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.concept;
 
-import java.util.stream.Collectors;
 import no.nsd.qddt.domain.IEntityFactory;
-import no.nsd.qddt.domain.concept.Concept;
+
+import java.util.stream.Collectors;
 
 public class ConceptFactory implements IEntityFactory<Concept> {
 

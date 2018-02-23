@@ -1,8 +1,9 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import java.util.stream.Collectors;
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
+
+import java.util.stream.Collectors;
 
 public class ControlConstructFactory implements IEntityFactory<ControlConstruct> {
 
@@ -16,7 +17,7 @@ public class ControlConstructFactory implements IEntityFactory<ControlConstruct>
         dest.setDescription(source.getDescription());
         dest.setLabel(source.getLabel());
         dest.setName(source.getName());
-        dest.setIndexRationale(source.getIndexRationale());
+        dest.setparentIdxRationale(source.getparentIdxRationale());
         dest.setCondition(source.getCondition());
         dest.setControlConstructKind(source.getControlConstructKind());
         dest.setSequenceEnum(source.getSequenceEnum());

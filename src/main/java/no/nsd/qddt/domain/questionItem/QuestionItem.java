@@ -10,16 +10,14 @@ import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
+
 /**
  * Question Item is a container for Question (text) and responsedomain
  * This entity introduce a breaking change into the model. it supports early binding of
@@ -36,42 +34,23 @@ import java.util.stream.Collectors;
 @Table(name = "QUESTION_ITEM")
 public class QuestionItem extends AbstractEntityAudit {
 
+    private String question;
+    private String intent;
+
     /**
      * This field will be populated with the correct version of a RD,  but should never be persisted.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     private ResponseDomain responseDomain;
 
     /**
      * This field must be available "raw" in order to set and query  responsedomain by ID
      */
-    @JsonIgnore
-    @Type(type="pg-uuid")
-    @Column(name="responsedomain_id")
     private UUID responseDomainUUID;
-
-    @Column(name = "responsedomain_revision")
     private Long responseDomainRevision;
 
-    @Column(name = "question")
-    private String question;
-
-    @Column(name = "intent")
-    private String intent;
-
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
-    @AuditMappedBy(mappedBy = "questionItemLateBound")
     private Set<ConceptQuestionItemRev> conceptQuestionItems = new HashSet<>();
 
-
-
-    @Transient
-    @JsonSerialize
-    private List<ConceptRef> conceptRefs;
-
+    private  List<ConceptRef> conceptRefs = new ArrayList<>( 0 );
 
     public QuestionItem() {
 
@@ -94,10 +73,11 @@ public class QuestionItem extends AbstractEntityAudit {
     // End pre remove ----------------------------------------------
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
     public ResponseDomain getResponseDomain() {
         return responseDomain;
     }
-
     public void setResponseDomain(ResponseDomain responseDomain) {
         if (responseDomain!=null && (responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.BOOLEAN
                 & responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
@@ -112,65 +92,51 @@ public class QuestionItem extends AbstractEntityAudit {
             this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
     }
 
+
+    @Column(name = "responsedomain_revision")
     public Long getResponseDomainRevision() {
         return responseDomainRevision == null? 0:responseDomainRevision;
     }
-
     public void setResponseDomainRevision(Long responseDomainRevision) {
         this.responseDomainRevision = responseDomainRevision;
     }
 
+
+    @JsonIgnore
+    @Type(type="pg-uuid")
+    @Column(name="responsedomain_id")
     public UUID getResponseDomainUUID() {
         return responseDomainUUID;
     }
-
     public void setResponseDomainUUID(UUID responseDomainUUID) {
         this.responseDomainUUID = responseDomainUUID;
     }
 
 
+
+    @Column(name = "question")
     public String getQuestion() {
         return question;
     }
-
     public void setQuestion(String question) {
         this.question = question;
     }
 
+
+    @Column(name = "intent")
     public String getIntent() {
         return intent;
     }
-
     public void setIntent(String intent) {
         this.intent = intent;
     }
 
-    private Set<ConceptQuestionItemRev> getConceptQuestionItems() {
-        return conceptQuestionItems;
-    }
 
-    @SuppressWarnings("SameParameterValue")
-    private void setConceptQuestionItems(Set<ConceptQuestionItemRev> conceptQuestionItems) {
-        this.conceptQuestionItems = conceptQuestionItems;
-    }
-
-
+    @Transient
+    @JsonSerialize
     public List<ConceptRef> getConceptRefs(){
-/*         try {
-            if (conceptRefs == null) {
-                conceptRefs = conceptQuestionItems.stream()
-                    .map(cq -> new ConceptRef(cq.getConcept()))
-                    .sorted(ConceptRef::compareTo)
-                    .collect(Collectors.toList());
-            }
-        } catch(Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            return new ArrayList<>();
-        }
- */
         return conceptRefs;
     }
-
     public void setConceptRefs(List<ConceptRef> conceptRefs) {
         this.conceptRefs = conceptRefs;
     }
@@ -179,28 +145,24 @@ public class QuestionItem extends AbstractEntityAudit {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof QuestionItem)) return false;
-        if (!super.equals(o)) return false;
+        if (!super.equals( o )) return false;
 
         QuestionItem that = (QuestionItem) o;
 
-        if (responseDomainUUID != null ? !responseDomainUUID.equals(that.responseDomainUUID) : that.responseDomainUUID != null)
+        if (question != null ? !question.equals( that.question ) : that.question != null) return false;
+        if (intent != null ? !intent.equals( that.intent ) : that.intent != null) return false;
+        if (responseDomainUUID != null ? !responseDomainUUID.equals( that.responseDomainUUID ) : that.responseDomainUUID != null)
             return false;
-        if (responseDomainRevision != null ? !responseDomainRevision.equals(that.responseDomainRevision) : that.responseDomainRevision != null)
-            return false;
-        if (question != null ? !question.equals(that.question) : that.question != null) return false;
-        if (intent != null ? !intent.equals(that.intent) : that.intent != null)
-            return false;
-        return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
+        return responseDomainRevision != null ? responseDomainRevision.equals( that.responseDomainRevision ) : that.responseDomainRevision == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responseDomainUUID != null ? responseDomainUUID.hashCode() : 0);
-        result = 31 * result + (responseDomainRevision != null ? responseDomainRevision.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
-        result = 31 * result + (conceptRefs != null ? conceptRefs.hashCode() : 0);
+        result = 31 * result + (responseDomainUUID != null ? responseDomainUUID.hashCode() : 0);
+        result = 31 * result + (responseDomainRevision != null ? responseDomainRevision.hashCode() : 0);
         return result;
     }
 

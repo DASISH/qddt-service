@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.concept;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -159,7 +161,14 @@ class ConceptServiceImpl implements ConceptService {
                 Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
                         cqi.getQuestionId(),
                         cqi.getQuestionItemRevision().intValue());
+
                 cqi.setQuestionItem(rev.getEntity());
+                cqi.getQuestionItem().setConceptRefs(
+                    conceptRepository.findByConceptQuestionItemsQuestionId(cqi.getQuestionId()).stream()
+                    .map( c -> new ConceptRef(c) )
+                    .collect( Collectors.toList())
+                );
+
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().longValue())) {
                     cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
                 }

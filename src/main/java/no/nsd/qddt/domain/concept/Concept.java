@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -36,17 +37,16 @@ import java.util.*;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements Archivable {
 
-
     private String label;
     private String description;
     private boolean isArchived;
 
+    private TopicRef topicRef;
     private List<ConceptQuestionItemRev>  conceptQuestionItems = new ArrayList<>();
+    private Set<Concept> children = new HashSet<>(0);
     private UUID topicGroupId;
     private TopicGroup topicGroup;
     private Concept parentReferenceOnly;
-    private Set<Concept> children = new HashSet<>(0);
-    private TopicRef topicRef;
 
 
 /*     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE ,CascadeType.DETACH }, mappedBy = "concept")
@@ -74,6 +74,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @Override
+    @Column(name = "is_archived")
     public boolean isArchived() {
         return isArchived;
     }
@@ -111,21 +112,18 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
 
-
     @OrderColumn(name="parent_idx")
     @OrderBy("parent_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",joinColumns = @JoinColumn(name="parent_id"))
+    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
+        joinColumns = @JoinColumn(name="parent_id" , referencedColumnName = "id"))
     public List<ConceptQuestionItemRev> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
     public void setConceptQuestionItems(List<ConceptQuestionItemRev> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
-
-
-    // no update for QI when removing (it is bound to a revision anyway...).
-    public void removeQuestionItem(UUID questionItemId) {
+    public void removeQuestionItem(UUID questionItemId) {       // no update for QI when removing (it is bound to a revision anyway...).
         int before = conceptQuestionItems.size();
         conceptQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(questionItemId));
         if (before> conceptQuestionItems.size()){
@@ -134,6 +132,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
 	}
+
 
 
 /**
@@ -163,7 +162,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
-    public  void removeQuestionItem(UUID qiId){
+    public  void removeTopicQuestionItem(UUID qiId){
         int before = conceptQuestionItems.size();
         conceptQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
         if (before> conceptQuestionItems.size()){
@@ -220,38 +219,42 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
 
-    protected Concept getParentRef(){
-        return this.parentReferenceOnly;
-    }
 
     private TopicGroup findTopicGroup2(){
         Concept current = this;
-        while(current.getParentRef() !=  null){
-            current = current.getParentRef();
+        while(current.getParentReferenceOnly() !=  null){
+            current = current.getParentReferenceOnly();
         }
         return current.getTopicGroup();
     }
 
-
+    @Transient
+    @JsonIgnore
     protected List<AbstractEntityAudit> getParents() {
         List<AbstractEntityAudit> retvals = new ArrayList<>( 1 );
         Concept current = this;
-        while(current.getParentRef() !=  null){
-            current = current.getParentRef();
+        while(current.getParentReferenceOnly() !=  null){
+            current = current.getParentReferenceOnly();
             retvals.add( current );
         }
         retvals.add( current.getTopicGroup() );         //this will fail for Concepts that return from clients.
         return retvals;
     }
 
+    @Transient
+    @JsonIgnore
     public void setParentT(TopicGroup newParent) {
         setField("topicGroup",newParent );
     }
 
+    @Transient
+    @JsonIgnore
     public void setParentU(UUID topicId) {
         setField("topicGroupId",topicId );
     }
 
+    @Transient
+    @JsonIgnore
     protected void setParentC(Concept newParent)  {
         setField("parentReferenceOnly",newParent );
     }

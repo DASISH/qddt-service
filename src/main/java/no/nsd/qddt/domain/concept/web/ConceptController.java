@@ -85,7 +85,7 @@ public class ConceptController extends BaseController {
             concept.removeQuestionItem(questionItemId);
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
-            super.LOG.error("removeQuestionItem",ex);
+            super.LOG.error("removeTopicQuestionItem",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                     .map(a->a.toString())
                     .forEach(super.LOG::info);

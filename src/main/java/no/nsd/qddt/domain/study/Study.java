@@ -54,32 +54,12 @@ import java.util.Set;
 @Table(name = "STUDY")
 public class Study extends AbstractEntityAudit implements Authorable, Archivable {
 
-//    @JsonIgnore
-    @ManyToOne()
-    @JsonBackReference(value = "surveyRef")
-    @JoinColumn(name="survey_id",updatable = false)
-    private SurveyProgram surveyProgram;
-
-    @Column(length = 10000)
     private String description;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH} , mappedBy = "study")
-//    @JoinTable(name = "STUDY_INSTRUMENTS",
-//            joinColumns = {@JoinColumn(name = "study_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
-
-    @OneToMany( cascade = {CascadeType.MERGE ,CascadeType.REMOVE}, mappedBy = "study", fetch = FetchType.LAZY)
-    @OrderBy(value = "name ASC")
-    private Set<TopicGroup> topicGroups = new HashSet<>(0);
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
-    @JoinTable(name = "STUDY_AUTHORS",
-            joinColumns = {@JoinColumn(name ="study_id")},
-            inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
-
     private boolean isArchived;
+    private Set<TopicGroup> topicGroups = new HashSet<>(0);
+    private SurveyProgram surveyProgram;
 
 
     public Study() {
@@ -87,14 +67,25 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     }
 
 
+    @Column(length = 10000)
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinTable(name = "STUDY_AUTHORS",
+        joinColumns = {@JoinColumn(name ="study_id")},
+        inverseJoinColumns = {@JoinColumn(name = "author_id")})
+    public Set<Author> getAuthors() {
+        return authors;
+    }
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
     @Override
     public void addAuthor(Author user) {
         //user.addStudy(this); would this work?
@@ -102,51 +93,58 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         user.addStudy(this);
     }
 
-    public Set<Author> getAuthors() {
-        return authors;
-    }
 
-    public void setAuthors(Set<Author> authors) {
-        this.authors = authors;
-    }
-
-    public SurveyProgram getSurveyProgram() {
-        return surveyProgram;
-    }
-
-    public void setSurveyProgram(SurveyProgram surveyProgram) {
-        this.surveyProgram = surveyProgram;
-    }
-
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH} , mappedBy = "study")
     private Set<Instrument> getInstruments() {
         if (instruments == null)
             instruments = new HashSet<>();
         return instruments;
     }
-
     public void setInstruments(Set<Instrument> instruments) {
         this.instruments = instruments;
     }
 
-//    public void SetDefaultInstrument() {
-//        if (instruments == null){
-//            instruments = new HashSet<>();
-//        }
-//        if (getInstruments().size() ==0){
-//            Instrument instr = new Instrument();
-//            instr.setName("<Default>");
-//            instruments.add(instr);
-//        }
-//    }
 
+    @Override
+    @Column(name = "is_archived")
+    public boolean isArchived() {
+        return isArchived;
+    }
+    @Override
+    public void setArchived(boolean archived) {
+        try {
+            isArchived = archived;
+            if(archived) {
+                setChangeKind(ChangeKind.ARCHIVED);
+
+                if (Hibernate.isInitialized(getTopicGroups()))
+                    LOG.debug("getTopicGroups isInitialized. ");
+                else
+                    Hibernate.initialize(getTopicGroups());
+
+                for (TopicGroup topicGroup : getTopicGroups()) {
+                    if (!topicGroup.isArchived())
+                        topicGroup.setArchived(archived);
+                }
+            }
+        } catch (Exception ex) {
+            LOG.error("setArchived",ex);
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
+
+        }
+    }
+
+
+    @OneToMany( cascade = {CascadeType.MERGE ,CascadeType.REMOVE}, mappedBy = "study", fetch = FetchType.LAZY)
+    @OrderBy(value = "name ASC")
     public Set<TopicGroup> getTopicGroups() {
         return topicGroups;
     }
-
     public void setTopicGroups(Set<TopicGroup> topicGroups) {
         this.topicGroups = topicGroups;
     }
-
     public TopicGroup addTopicGroup(TopicGroup topicGroup){
         LOG.debug("TopicGroup ["+ topicGroup.getName() + "] added to Study [" + this.getName() +"]");
         topicGroup.setStudy(this);
@@ -155,14 +153,16 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         return topicGroup;
     }
 
-//    @Override
-//    public void makeNewCopy(Long revision){
-//        if (hasRun) return;
-//        super.makeNewCopy(revision);
-//        getTopicGroups().forEach(t->t.makeNewCopy(revision));
-//        getInstruments().forEach(i->i.makeNewCopy(revision));
-//        getComments().clear();
-//    }
+    @ManyToOne()
+    @JsonBackReference(value = "surveyRef")
+    @JoinColumn(name="survey_id",updatable = false)
+    public SurveyProgram getSurveyProgram() {
+        return surveyProgram;
+    }
+    public void setSurveyProgram(SurveyProgram surveyProgram) {
+        this.surveyProgram = surveyProgram;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -228,35 +228,5 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         this.getInstruments().clear();
     }
 
-    @Override
-    public boolean isArchived() {
-        return isArchived;
-    }
-
-    @Override
-    public void setArchived(boolean archived) {
-        try {
-            isArchived = archived;
-            if(archived) {
-                setChangeKind(ChangeKind.ARCHIVED);
-
-                if (Hibernate.isInitialized(getTopicGroups()))
-                    LOG.debug("getTopicGroups isInitialized. ");
-                else
-                    Hibernate.initialize(getTopicGroups());
-
-                for (TopicGroup topicGroup : getTopicGroups()) {
-                    if (!topicGroup.isArchived())
-                        topicGroup.setArchived(archived);
-                }
-            }
-        } catch (Exception ex) {
-            LOG.error("setArchived",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
-
-        }
-    }
 
 }
