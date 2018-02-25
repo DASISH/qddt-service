@@ -20,7 +20,9 @@ import java.util.stream.Collectors;
  */
 public class CategoryJsonEdit extends BaseJsonEdit {
 
-    private String label;
+    private static final long serialVersionUID = 12343289572390423L;
+
+	private String label;
 
     private String description;
 

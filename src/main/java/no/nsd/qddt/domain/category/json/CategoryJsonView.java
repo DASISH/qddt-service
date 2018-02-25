@@ -10,6 +10,8 @@ import no.nsd.qddt.domain.responsedomain.Code;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +20,9 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class CategoryJsonView {
+public class CategoryJsonView implements Serializable {
+
+    private static final long serialVersionUID = 12343289572380423L;
 
     private UUID id;
 

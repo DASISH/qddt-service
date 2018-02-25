@@ -128,7 +128,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
     }
 
 
-    @Column(name = "based_on_object",updatable = false, nullable = false)
+    @Column(name = "based_on_object",updatable = false)
     @Type(type="pg-uuid")
     public UUID getBasedOnObject() {
         return basedOnObject;
@@ -137,7 +137,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.basedOnObject = basedOnObject;
     }
 
-    @Column(name = "based_on_revision",updatable = false, nullable = false)
+    @Column(name = "based_on_revision",updatable = false)
     public Long getBasedOnRevision() {
         return basedOnRevision;
     }

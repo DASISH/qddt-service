@@ -85,10 +85,16 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Category save(Category instance) {
-        return postLoadProcessing(instance.getCode(), prePersistProcessing(instance));
+        try {
+            return prePersistProcessing(instance,false);
+        } catch ( Exception ex ) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 
 
@@ -113,29 +119,33 @@ class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(instances);
     }
 
-    private Category prePersistProcessing(Category instance) {
+    private Category prePersistProcessing(Category instance, Boolean hasparent) {
         // Category Save fails when there is a mix of new and existing children attached to a new element.
         // This code fixes that.
         try {
-            instance.getChildren().forEach(c-> prePersistProcessing(c));
+            instance.getChildren().forEach(c-> prePersistProcessing(c, true));
 
             if (!instance.isValid()) throw new InvalidObjectException(instance);
 
             Code c =  instance.getCode();
-            if (instance.getId() == null)
+            if ( hasparent != true || (instance.getId() == null ) || instance.getHierarchyLevel() == HierarchyLevel.GROUP_ENTITY ) {
+                System.out.println("Saving category...");
                 instance = categoryRepository.save(instance);
+                System.out.println("Saved " + instance.getName() );
+            }
             instance.setCode(c);
-        }catch (Exception e) {
-
+        } catch (Exception e) {
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
         }
+        System.out.println(instance.toString());
+        
         return instance;
     }
 
-    private Category postLoadProcessing(Code code, Category instance) {
+/*     private Category postLoadProcessing(Code code, Category instance) {
         instance.setCode(code);
         return instance;
-    }
+    } */
 
 }

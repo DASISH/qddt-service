@@ -12,6 +12,7 @@ gradle
 out/
 bin/
 log/
+build/
 build.log
 .project
 .settings/org.eclipse.buildship.core.prefs

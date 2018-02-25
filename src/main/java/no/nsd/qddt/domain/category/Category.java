@@ -58,7 +58,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public Category() {
         code = new Code();
-        hierarchyLevel = HierarchyLevel.ENTITY;
         setCategoryType(CategoryType.CATEGORY);
         setInputLimit("0","1");
     }
@@ -107,7 +106,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
 
-    @Column(name = "Hierarchy_level",nullable = false)
+    @Column(name = "hierarchy_level",nullable = false)
     @Enumerated(EnumType.STRING)
     public HierarchyLevel getHierarchyLevel() {
         return hierarchyLevel;
@@ -122,7 +121,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     * Repeat for labels with different content, for example,
     * labels with differing length limitations or of different types or applications.
     * */
-    @Column(name = "label")
+    @Column(name = "label",nullable = false)
     @OrderBy()
     public String getLabel() {
         return SafeString(label);
@@ -158,18 +157,17 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             this.code = code;
     }
 
-    public ResponseCardinality getInputLimit() {
-        if (inputLimit == null)
-            setInputLimit("0","1");
-        return inputLimit;
-    }
-
     /**
      * This field is only used for categories that facilitates user input.
      * like numeric range / text length /
      */
     @Column(name = "input_limit")
     @Embedded
+    public ResponseCardinality getInputLimit() {
+        if (inputLimit == null)
+            setInputLimit("0","1");
+        return inputLimit;
+    }
     public void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
@@ -181,8 +179,9 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
      * This field is only used for categories that facilitates user input.
      * like numeric range / text length /
      */
-    @Column(name = "input_limit")
-    @Embedded
+
+    @Column(name = "classification_level")
+    @Enumerated(EnumType.STRING)
     public CategoryRelationCodeType getClassificationLevel() {
         return classificationLevel;
     }
@@ -243,8 +242,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         if (getLabel() != null ? !getLabel().equals(category.getLabel()) : category.getLabel() != null) return false;
         if (getDescription() != null ? !getDescription().equals(category.getDescription()) : category.getDescription() != null)
             return false;
-//        if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
-//            return false;
         return getHierarchyLevel() == category.getHierarchyLevel();
 
     }
@@ -263,7 +260,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{\"_class\":\"Category\", ");
-        sb.append(super.toString()).append(", ");
+        sb.append(super.toString());
         sb.append("\"label\":").append(label == null ? "null" : "\"" + label + "\"").append(", ");
         sb.append("\"description\":").append((description == null ? "null" : "\"" + description + "\"")).append(", ");
         if (categoryType == CategoryType.CATEGORY) {
@@ -271,12 +268,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             sb.append("\"format\":").append(format == null ? "null" : "\"" + format + "\"").append(", ");
         }
         else {
-            sb.append("\"categoryType\":").append((categoryType == null ? "null" : categoryType)).append(", ");
             sb.append("\"inputLimit\":").append((inputLimit == null ? "null" : inputLimit)).append(", ");
             sb.append("\"classificationLevel\":").append((classificationLevel == null ? "null" : classificationLevel)).append(", ");
-            sb.append("\"hierarchyLevel\":").append((hierarchyLevel == null ? "null" : hierarchyLevel)).append(", ");
             sb.append("\"children\":").append((children == null ? "null" : Arrays.toString(children.toArray()))).append(", ");
         }
+        sb.append("\"categoryType\":").append((categoryType == null ? "null" : categoryType)).append(", ");
+        sb.append("\"hierarchyLevel\":").append((hierarchyLevel == null ? "null" : hierarchyLevel)).append(", ");
         sb.append('}');
         return sb.toString();
     }
@@ -383,13 +380,13 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Override
     protected void beforeInsert() {
         LOG.debug("Category beforeInsert " + getName());
-        if (getCategoryType() == null)
-            setCategoryType(CategoryType.CATEGORY);
         switch (getCategoryType()) {
-            case DATETIME:
-            case TEXT:
-            case NUMERIC:
+            case BOOLEAN:
             case CATEGORY:
+            case DATETIME:
+            case NUMERIC:
+            case TEXT:
+            case URI:
                 setHierarchyLevel(HierarchyLevel.ENTITY);
                 break;
             case MISSING_GROUP:
