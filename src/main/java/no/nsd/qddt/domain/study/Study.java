@@ -80,9 +80,11 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     @JoinTable(name = "STUDY_AUTHORS",
         joinColumns = {@JoinColumn(name ="study_id")},
         inverseJoinColumns = {@JoinColumn(name = "author_id")})
+    @Override
     public Set<Author> getAuthors() {
         return authors;
     }
+    @Override
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
