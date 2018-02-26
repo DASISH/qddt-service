@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,12 +86,12 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    @SuppressWarnings("unchecked")
-    @Transactional()
+    @Transactional(noRollbackForClassName = "ClassCastException")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Category save(Category instance) {
         try {
-            return prePersistProcessing(instance,false);
+            return categoryRepository.save(
+                    prePersistProcessing(instance));
         } catch ( Exception ex ) {
             System.out.println(ex.getMessage());
             throw ex;
@@ -119,33 +120,25 @@ class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(instances);
     }
 
-    private Category prePersistProcessing(Category instance, Boolean hasparent) {
+    private List<Code> _codes = new ArrayList<>( 0 );
+
+    private Category prePersistProcessing(Category instance) {
         // Category Save fails when there is a mix of new and existing children attached to a new element.
-        // This code fixes that.
         try {
-            instance.getChildren().forEach(c-> prePersistProcessing(c, true));
 
             if (!instance.isValid()) throw new InvalidObjectException(instance);
+            _codes = instance.getCodes();
+            return instance;
 
-            Code c =  instance.getCode();
-            if ( hasparent != true || (instance.getId() == null ) || instance.getHierarchyLevel() == HierarchyLevel.GROUP_ENTITY ) {
-                System.out.println("Saving category...");
-                instance = categoryRepository.save(instance);
-                System.out.println("Saved " + instance.getName() );
-            }
-            instance.setCode(c);
         } catch (Exception e) {
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
         }
-        System.out.println(instance.toString());
-        
-        return instance;
     }
 
-/*     private Category postLoadProcessing(Code code, Category instance) {
-        instance.setCode(code);
+    private Category postLoadProcessing(Category instance) {
+        instance.setCodes(_codes);
         return instance;
-    } */
+    }
 
 }

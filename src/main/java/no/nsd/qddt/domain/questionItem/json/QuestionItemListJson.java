@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.questionItem.json;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
@@ -20,27 +18,14 @@ import java.util.UUID;
  */
 public class QuestionItemListJson {
 
-    @Type(type = "pg-uuid")
     private UUID id;
-
     private String name;
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     private LocalDateTime modified;
-
     private UserJson modifiedBy;
-
     private AgencyJsonView agency;
-
-    @Embedded
     private Version version;
-
     private String question;
-
     private String intent;
-
     private ResponseDomainJsonView responseDomain;
 
 
@@ -61,45 +46,41 @@ public class QuestionItemListJson {
 //        responseDomain.getVersion().setRevision(entity.getResponseDomainRevision());
     }
 
+    @Type(type = "pg-uuid")
     public UUID getId() {
         return id;
     }
-
 
     public String getName() {
         return name;
     }
 
-
     public String getQuestion() {
         return question;
     }
-
 
     public String getIntent() {
         return intent;
     }
 
-
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     public LocalDateTime getModified() {
         return modified;
     }
-
 
     public UserJson getModifiedBy() {
         return modifiedBy;
     }
 
-
     public AgencyJsonView getAgency() {
         return agency;
     }
 
-
+    @Embedded
     public Version getVersion() {
         return version;
     }
-
 
     public ResponseDomainJsonView getResponseDomain() {
         return responseDomain;

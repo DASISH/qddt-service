@@ -185,7 +185,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 instance.setQuestionItem(rev.getEntity());
                 instance.getQuestionItem().setConceptRefs(  conceptService.findByQuestionItem(instance.getQuestionItemUUID()).stream()
                     .map( c -> new ConceptRef(c) )
-                    .collect( Collectors.toList()) );
+                    .collect( Collectors.toSet()) );
             }
             instance.getChildren().forEach(this::postLoadProcessing);
         } catch (Exception ex){

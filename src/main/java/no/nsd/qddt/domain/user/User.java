@@ -130,6 +130,7 @@ public class User {
         this.authorities = authorities;
     }
 
+    @Column(name = "is_enabled")
     public boolean isEnabled() {
         return isEnabled;
     }

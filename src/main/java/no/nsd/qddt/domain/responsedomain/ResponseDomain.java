@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.kernel.color.ColorConstants;
 import com.itextpdf.layout.border.DottedBorder;
@@ -16,9 +15,9 @@ import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -77,12 +76,10 @@ public class ResponseDomain extends AbstractEntityAudit  {
     private String description;
     private String displayLayout;
     private ResponseKind responseKind;
-
     /**
      * Allows the designation of the minimum and maximum number of responses allowed for this response domain.
      */
     private ResponseCardinality responseCardinality;
-
     /**
      *   a link to a category root/group (template)
      *   the managed representation is never reused (as was intended),
@@ -90,8 +87,8 @@ public class ResponseDomain extends AbstractEntityAudit  {
      */
     private Category managedRepresentation;
     private List<Code> codes = new ArrayList<>();
-
     private Set<QuestionItem> questionItems = new HashSet<>();
+
 
     public ResponseDomain(){
         description = "";
@@ -158,9 +155,11 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @JoinColumn(name="category_id")
     public Category getManagedRepresentation() {
         assert managedRepresentation != null;
-        _Index = 0;
-        populateCatCodes(managedRepresentation);
         return managedRepresentation;
+    }
+    public void setManagedRepresentation(Category managedRepresentation) {
+        LOG.debug("setManagedRepresentation");
+        this.managedRepresentation = managedRepresentation;
     }
     private List<Category> getFlatManagedRepresentation(Category current){
         List<Category> retval = new ArrayList<>();
@@ -168,12 +167,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
         retval.add(current);
         current.getChildren().forEach(c->retval.addAll(getFlatManagedRepresentation(c)));
         return  retval;
-    }
-    public void setManagedRepresentation(Category managedRepresentation) {
-        LOG.debug("setManagedRepresentation");
-        this.codes.clear();
-        harvestCatCodes(managedRepresentation);
-        this.managedRepresentation = managedRepresentation;
     }
 
 
@@ -184,7 +177,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id"))
     public List<Code> getCodes() {
         if (codes == null)
-            codes = new ArrayList<>();
+            throw  new ResourceNotFoundException( "getcodes" ,this.getClass());
         return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
     public void setCodes(List<Code> codes) {
@@ -193,52 +186,14 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
     public Set<QuestionItemRef> getQuestionRefs(){
         return  new HashSet<>();
     }
 
 
-    // /used to keep track of current item in the recursive call populateCatCodes
-    @Transient
-    private int _Index;
     // this is useful for populating codes before saving to DB (used in the service)
     public void populateCodes() {
-        this.codes.clear();
-        harvestCatCodes(managedRepresentation);
-    }
-    private void harvestCatCodes(Category current){
-        if (current == null) return;
-        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
-
-            if (getId()== null && getResponseKind() == ResponseKind.MIXED) {
-                Code code = new Code(current.getCode().getCodeValue());
-                this.codes.add(code);
-            } else {
-                Code code = current.getCode();
-                this.codes.add(code);
-            }
-        }
-        current.getChildren().forEach(this::harvestCatCodes);
-    }
-    // this function is useful for populating managedRepresentation after loading from DB
-    private void populateCatCodes(Category current){
-        assert current != null;
-        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
-            try {
-                Code code = codes.get(_Index);
-                current.setCode(code);
-                _Index++;
-            } catch (IndexOutOfBoundsException iob){
-                current.setCode(new Code());
-            } catch(Exception ex) {
-                LOG.error(DateTime.now().toDateTimeISO()+
-                    " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
-                    current);
-                current.setCode(new Code());
-            }
-        }
-        current.getChildren().forEach(this::populateCatCodes);
+        this.codes = managedRepresentation.getCodes();
     }
 
 

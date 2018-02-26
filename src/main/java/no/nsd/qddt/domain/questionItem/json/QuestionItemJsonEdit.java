@@ -7,7 +7,6 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +25,7 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
 
         private Set<CommentJsonEdit> comments = new HashSet<>();
 
-        private List<ConceptRef> conceptRefs;
+        private Set<ConceptRef> conceptRefs;
 
 
     public QuestionItemJsonEdit() {
@@ -87,11 +86,11 @@ public class QuestionItemJsonEdit extends BaseJsonEdit {
         this.comments = comments;
     }
 
-    public List<ConceptRef> getConceptRefs() {
+    public Set<ConceptRef> getConceptRefs() {
         return conceptRefs;
     }
 
-    private void setConceptRefs(List<ConceptRef> conceptRefs) {
+    private void setConceptRefs(Set<ConceptRef> conceptRefs) {
         this.conceptRefs = conceptRefs;
     }
 }

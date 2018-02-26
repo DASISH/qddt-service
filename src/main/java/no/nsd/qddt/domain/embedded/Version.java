@@ -70,11 +70,11 @@ public class Version implements Comparable<Version> {
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
     @Column(name ="rev")
     public Long getRevision() {
         return revision;
     }
+    @JsonDeserialize
     public void setRevision(Long revision) {
         this.revision = revision;
     }

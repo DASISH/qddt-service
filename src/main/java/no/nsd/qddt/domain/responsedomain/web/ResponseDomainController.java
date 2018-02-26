@@ -35,14 +35,13 @@ public class ResponseDomainController extends BaseController {
     @Autowired
     public ResponseDomainController(ResponseDomainService service){
         this.service = service;
-//        CategoryService categoryService1 = categoryService;
 
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseDomain get(@PathVariable("id") UUID id) {
-        return service.findOne(id);
+    public ResponseDomainJsonEdit get(@PathVariable("id") UUID id) {
+        return  new ResponseDomainJsonEdit(service.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -56,17 +55,9 @@ public class ResponseDomainController extends BaseController {
     public ResponseDomain create(@RequestBody ResponseDomain responseDomain) {
         assert  responseDomain != null;
         responseDomain = service.save(responseDomain);
-        //HACK -> after saving responsdomain, save managed representation one more time to correct name and version...
-//        categoryService.save(responseDomain.getManagedRepresentation());
         return responseDomain;
     }
 
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-//    public ResponseDomainJsonEdit createMixed(@RequestParam("responseDomaindId") UUID rdId, @RequestParam("missingId") UUID missingId) {
-//
-//        return responseDomain2Json(service.createMixed(rdId,missingId));
-//    }
 
 
     @ResponseStatus(value = HttpStatus.OK)

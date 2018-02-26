@@ -48,12 +48,12 @@ public abstract class AbstractEntity {
 
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated", nullable = false)
     public LocalDateTime getModified() {
         return modified;
     }
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }

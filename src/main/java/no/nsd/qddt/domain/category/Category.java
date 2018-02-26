@@ -12,6 +12,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -53,8 +54,9 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     private HierarchyLevel hierarchyLevel;
     private CategoryRelationCodeType classificationLevel;
     private ResponseCardinality inputLimit;
+    @Transient
     private Code code;
-    private List<Category> children = new ArrayList<>();
+    private List<Category> children;
 
     public Category() {
         code = new Code();
@@ -146,13 +148,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.description = description;
     }
 
-
-    @Transient
     @JsonSerialize
-    @JsonDeserialize
     public Code getCode() {
-        return code;
+        return code == null? new Code(): code;
     }
+    @JsonDeserialize
     public void setCode(Code code) {
             this.code = code;
     }
@@ -210,15 +210,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
                     .sorted( Comparator.comparing( Category::getCode ) )
                     .collect( Collectors.toList() );
         } else
-            return  children.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            return  children; //.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
     public void setChildren(List<Category> children) {
-        if (categoryType == CategoryType.SCALE)
-            this.children = children.stream().sorted(Comparator.comparing(Category::getCode)).collect(Collectors.toList());
+//        if (categoryType == CategoryType.SCALE)
+//            this.children = children.stream().sorted(Comparator.comparing(Category::getCode)).collect(Collectors.toList());
         this.children = children;
-    }
-    public void addChild(Category children) {
-        this.children.add(children);
     }
 
 
@@ -339,6 +336,49 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
                     return false;
             }
     }
+
+    // /used to keep track of current item in the recursive call populateCatCodes
+    @Transient
+    private int _Index;
+    // this is useful for populating codes before saving to DB (used in the service)
+    @Transient
+    @JsonIgnore
+    public List<Code> getCodes() {
+        return harvestCatCodes(this);
+    }
+    public  void setCodes(List<Code> codes) {
+        _Index =0;
+        populateCatCodes( this, codes );
+    }
+
+    private List<Code> harvestCatCodes(Category current){
+        List<Code> tmplist = new ArrayList<>( 0);
+        if (current == null) return tmplist;
+        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
+            tmplist.add( current.getCode()==null ? new Code(""): current.getCode() );
+        }
+        current.getChildren().forEach(c->  tmplist.addAll(harvestCatCodes(c)));
+        return tmplist;
+    }
+    private void populateCatCodes(Category current,List<Code> codes){
+        assert current != null;
+        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
+            try {
+                Code code = codes.get(_Index);
+                current.setCode(code);
+                _Index++;
+            } catch (IndexOutOfBoundsException iob){
+                current.setCode(new Code());
+            } catch(Exception ex) {
+                LOG.error( DateTime.now().toDateTimeISO()+
+                    " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
+                    current);
+                current.setCode(new Code());
+            }
+        }
+        current.getChildren().forEach( c -> populateCatCodes( c, codes ) );
+    }
+
 
     @Override
     public int compareTo(Category o) {

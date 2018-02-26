@@ -166,7 +166,7 @@ class ConceptServiceImpl implements ConceptService {
                 cqi.getQuestionItem().setConceptRefs(
                     conceptRepository.findByConceptQuestionItemsQuestionId(cqi.getQuestionId()).stream()
                     .map( c -> new ConceptRef(c) )
-                    .collect( Collectors.toList())
+                    .collect( Collectors.toSet())
                 );
 
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().longValue())) {

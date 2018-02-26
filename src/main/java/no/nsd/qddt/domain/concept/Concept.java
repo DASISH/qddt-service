@@ -202,7 +202,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
 
     @Transient
-    @JsonDeserialize
     public TopicRef getTopicRef() {
         if (topicRef == null) {
             TopicGroup topicGroup = findTopicGroup2();
@@ -214,6 +213,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
 
         return topicRef;
     }
+    @JsonDeserialize
     public void setTopicRef(TopicRef topicRef) {
         this.topicRef = topicRef;
     }

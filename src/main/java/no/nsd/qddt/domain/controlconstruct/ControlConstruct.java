@@ -121,11 +121,11 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
     @Transient
-    @JsonDeserialize
     @JsonSerialize
     public String getSequenceKind() {
         return getSequenceEnum().getName();
     }
+    @JsonDeserialize
     public void setSequenceKind(String name) {
         this.sequenceKind = SequenceKind.getEnum(name);
     }
@@ -180,13 +180,13 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     @JsonSerialize
-    @JsonDeserialize
     @Transient
     public QuestionItem getQuestionItem() {
         if (questionItemReferenceOnly != null && questionItem != null)
             questionItem.setConceptRefs(questionItemReferenceOnly.getConceptRefs());
         return questionItem;
     }
+    @JsonDeserialize
     public void setQuestionItem(QuestionItem question) {
         this.questionItem = question;
     }
@@ -267,7 +267,6 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
     @OneToMany
     public List<Instruction> getPreInstructions() {
         return getControlConstructInstructions().stream()
@@ -275,13 +274,13 @@ public class ControlConstruct extends AbstractEntityAudit {
             .map(ControlConstructInstruction::getInstruction)
             .collect(Collectors.toList());
     }
+    @JsonDeserialize
     private void setPreInstructions(List<Instruction> preInstructions) {
         harvestInstructions( ControlConstructInstructionRank.PRE,preInstructions);
     }
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
     @OneToMany
     public List<Instruction> getPostInstructions() {
         return getControlConstructInstructions().stream()
@@ -289,6 +288,7 @@ public class ControlConstruct extends AbstractEntityAudit {
             .map(ControlConstructInstruction::getInstruction)
             .collect(Collectors.toList());
     }
+    @JsonDeserialize
     private void setPostInstructions(List<Instruction> postInstructions) {
         harvestInstructions( ControlConstructInstructionRank.POST,postInstructions);
     }

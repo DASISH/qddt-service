@@ -69,10 +69,10 @@ public class PublicationElement  {
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
     public String getElementKind() {
         return elementKind.getDescription();
     }
+    @JsonDeserialize
     public void setElementKind(String elementDescription) {
         this.elementKind = ElementKind.getEnum(elementDescription);
     }

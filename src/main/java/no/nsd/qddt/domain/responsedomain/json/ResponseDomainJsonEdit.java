@@ -20,17 +20,10 @@ import java.util.stream.Collectors;
 public class ResponseDomainJsonEdit  extends BaseJsonEdit {
 
     private String description;
-
     private ManagedRepresentationJsonEdit managedRepresentation;
-
     private String displayLayout;
-
     private Set<CommentJsonEdit> comments = new HashSet<>();
-
-    @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
-
-    @Embedded
     private ResponseCardinality responseCardinality;
 
     public ResponseDomainJsonEdit() {
@@ -50,7 +43,6 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
     public String getDescription() {
         return description;
     }
-
     private void setDescription(String description) {
         this.description = description;
     }
@@ -58,7 +50,6 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
     public ManagedRepresentationJsonEdit getManagedRepresentation() {
         return managedRepresentation;
     }
-
     private void setManagedRepresentation(ManagedRepresentationJsonEdit managedRepresentation) {
         this.managedRepresentation = managedRepresentation;
     }
@@ -66,7 +57,6 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
     public String getDisplayLayout() {
         return displayLayout;
     }
-
     private void setDisplayLayout(String displayLayout) {
         this.displayLayout = displayLayout;
     }
@@ -74,23 +64,24 @@ public class ResponseDomainJsonEdit  extends BaseJsonEdit {
     public Set<CommentJsonEdit> getComments() {
         return comments;
     }
-
     private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 
+
+    @Enumerated(EnumType.STRING)
     public ResponseKind getResponseKind() {
         return responseKind;
     }
-
     private void setResponseKind(ResponseKind responseKind) {
         this.responseKind = responseKind;
     }
 
+
+    @Embedded
     public ResponseCardinality getResponseCardinality() {
         return responseCardinality;
     }
-
     private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
     }

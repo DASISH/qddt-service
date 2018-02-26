@@ -20,28 +20,16 @@ import java.util.stream.Collectors;
  */
 public class CategoryJsonEdit extends BaseJsonEdit {
 
-    private static final long serialVersionUID = 12343289572390423L;
+    private static final long serialVersionUID = 343289572390423L;
 
-	private String label;
-
+	  private String label;
     private String description;
-
-    @Embedded
-    private ResponseCardinality inputLimit;
-
-    @Enumerated(EnumType.STRING)
-    private CategoryRelationCodeType classificationLevel;
-
-    @Enumerated(EnumType.STRING)
-    private HierarchyLevel hierarchyLevel;
-
-    @Enumerated(EnumType.STRING)
-    private CategoryType categoryType;
-
-    private Code code;
-
     private String format;
-
+    private Code code;
+    private ResponseCardinality inputLimit;
+    private CategoryRelationCodeType classificationLevel;
+    private HierarchyLevel hierarchyLevel;
+    private CategoryType categoryType;
     private List<CategoryJsonEdit> children = new ArrayList<>();
 
 
@@ -50,7 +38,6 @@ public class CategoryJsonEdit extends BaseJsonEdit {
 
     public CategoryJsonEdit(Category category) {
         super(category);
-        setChildren(category.getChildren().stream().map(CategoryJsonEdit::new).collect(Collectors.toList()));
         setLabel(category.getLabel());
         setDescription(category.getDescription());
         setInputLimit(category.getInputLimit());
@@ -59,76 +46,80 @@ public class CategoryJsonEdit extends BaseJsonEdit {
         setCategoryType(category.getCategoryType());
         setCode(category.getCode());
         setFormat(category.getFormat());
+        setChildren(category.getChildren().stream().map(CategoryJsonEdit::new).collect( Collectors.toList()));
     }
 
     public String getLabel() {
         return label;
     }
-
     private void setLabel(String label) {
         this.label = label;
     }
 
+
     public String getDescription() {
         return description;
     }
-
     private void setDescription(String description) {
         this.description = description;
     }
 
+
+    @Embedded
     public ResponseCardinality getInputLimit() {
         return inputLimit;
     }
-
     private void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
 
+
+    @Enumerated(EnumType.STRING)
     public CategoryRelationCodeType getClassificationLevel() {
         return classificationLevel;
     }
-
     private void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
         this.classificationLevel = classificationLevel;
     }
 
+
+    @Enumerated(EnumType.STRING)
     public HierarchyLevel getHierarchyLevel() {
         return hierarchyLevel;
     }
-
     private void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
         this.hierarchyLevel = hierarchyLevel;
     }
 
+
+    @Enumerated(EnumType.STRING)
     public CategoryType getCategoryType() {
         return categoryType;
     }
-
     private void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
     }
 
+
     public Code getCode() {
         return code;
     }
-
     private void setCode(Code code) {
         this.code = code;
     }
 
+
     public String getFormat() {
         return format;
     }
-
     public void setFormat(String format) {
         this.format = format;
     }
 
+
     public List<CategoryJsonEdit> getChildren() {
         return children;
     }
-
     private void setChildren(List<CategoryJsonEdit> children) {
         this.children = children;
     }

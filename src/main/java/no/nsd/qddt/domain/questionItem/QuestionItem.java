@@ -1,12 +1,11 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -16,7 +15,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Question Item is a container for Question (text) and responsedomain
@@ -36,42 +36,21 @@ public class QuestionItem extends AbstractEntityAudit {
 
     private String question;
     private String intent;
-
     /**
      * This field will be populated with the correct version of a RD,  but should never be persisted.
      */
     private ResponseDomain responseDomain;
-
     /**
      * This field must be available "raw" in order to set and query  responsedomain by ID
      */
     private UUID responseDomainUUID;
     private Long responseDomainRevision;
 
-    private Set<ConceptQuestionItemRev> conceptQuestionItems = new HashSet<>();
-
-    private  List<ConceptRef> conceptRefs = new ArrayList<>( 0 );
+    private  Set<ConceptRef> conceptRefs;
 
     public QuestionItem() {
-
+        //conceptRefs = new ArrayList<>( 0 );
     }
-
-    // Start pre remove ----------------------------------------------
-
-    @PreRemove
-    private void removeReferencesFromQi(){
-        //getConceptQuestionItems().forEach( CQ-> updateStatusQI(CQ.getConcept()));
-        //getConceptQuestionItems().clear();
-        setResponseDomain(null);
-    }
-
-    public void updateStatusQI(Concept concept) {
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-        this.setChangeComment("Concept reference removed");
-    }
-
-    // End pre remove ----------------------------------------------
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
@@ -131,13 +110,13 @@ public class QuestionItem extends AbstractEntityAudit {
         this.intent = intent;
     }
 
-
     @Transient
     @JsonSerialize
-    public List<ConceptRef> getConceptRefs(){
+    public Set<ConceptRef> getConceptRefs(){
         return conceptRefs;
     }
-    public void setConceptRefs(List<ConceptRef> conceptRefs) {
+    @JsonDeserialize
+    public void setConceptRefs(Set<ConceptRef> conceptRefs) {
         this.conceptRefs = conceptRefs;
     }
 
@@ -195,7 +174,19 @@ public class QuestionItem extends AbstractEntityAudit {
         pdfReport.addPadding();
     }
 
+    // Start pre remove ----------------------------------------------
 
+    @PreRemove
+    private void removeReferencesFromQi(){
+        setResponseDomain(null);
+    }
+
+    public void updateStatusQI() {
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        this.setChangeComment("Concept reference removed");
+    }
+
+    // End pre remove ----------------------------------------------
 
 }
 
