@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
@@ -26,7 +27,7 @@ import java.util.UUID;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity {
+public abstract class AbstractEntityAudit extends AbstractEntity  {
 
 
 
@@ -54,22 +55,22 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         TRANSLATED("Translated","Translation of source"),
         ARCHIVED("Archived","READ ONLY");
 
-        private final String name;
-        private final String description;
-
         ChangeKind(String name, String description){
             this.name = name;
             this.description = description;
         }
 
+        private final String name;
+
+        private final String description;
 
         public String getName() {
             return name;
         }
+
         public String getDescription() {
             return description;
         }
-
 
         public static ChangeKind getEnum(String name) {
             if(name == null)
@@ -78,7 +79,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 if(name.equalsIgnoreCase(v.getName())) return v;
             throw new IllegalArgumentException();
         }
-
 
         @Override
         public String toString() {
@@ -89,19 +89,44 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         }
     }
 
+
     /**
      * I am the beginning of the end, and the end of time and space.
      * I am essential to creation, and I surround every place.
      * What am I?
      */
 
-    private String name;
-    private UUID basedOnObject;
-    private Long basedOnRevision;
-    private Version version;
-    private ChangeKind changeKind;
-    private String changeComment;
+    @ManyToOne
+    @JoinColumn(name = "agency_id",updatable = false, nullable = false)
     private Agency agency;
+
+    @Column(name = "name")
+    private String name;
+
+
+    @Column(name = "based_on_object",updatable = false, nullable = false)
+    @Type(type="pg-uuid")
+    private UUID basedOnObject;
+
+    @Column(name = "based_on_revision",updatable = false, nullable = false)
+    private Long basedOnRevision;
+
+
+    @Embedded
+    private Version version;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ChangeKind changeKind;
+
+    @Column(name = "change_comment",nullable = false)
+    @ColumnDefault("")
+    private String changeComment;
+
+
+    @Where(clause = "is_hidden = 'false'")
+    @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
 
@@ -109,58 +134,54 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
 //        isArchived = false;
     }
 
-    @Column(name = "name")
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
 
-
-    @ManyToOne
-    @JoinColumn(name = "agency_id",updatable = false, nullable = false)
     public Agency getAgency() {
         return agency;
     }
+
     public void setAgency(Agency agency) {
         this.agency = agency;
     }
 
 
-    @Column(name = "based_on_object",updatable = false)
-    @Type(type="pg-uuid")
     public UUID getBasedOnObject() {
         return basedOnObject;
     }
-    public void setBasedOnObject(UUID basedOnObject) {
+
+    protected void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
 
-    @Column(name = "based_on_revision",updatable = false)
     public Long getBasedOnRevision() {
         return basedOnRevision;
     }
-    public void setBasedOnRevision(Long basedOnRevision) {
+
+    protected void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
-    @Embedded
     public Version getVersion() {
         if (version == null)
             version = new Version(true);
         return version;
     }
+
     public void setVersion(Version version) {
         this.version = version;
     }
 
+    public String getName() {
+        return name;
+    }
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public ChangeKind getChangeKind() {
         return changeKind;
     }
+
     public void setChangeKind(ChangeKind changeKind) {
         if (this.changeKind == ChangeKind.IN_DEVELOPMENT &&
                 (changeKind == ChangeKind.UPDATED_HIERARCHY_RELATION ||
@@ -173,20 +194,18 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         this.changeKind = changeKind;
     }
 
-    @Column(name = "change_comment",nullable = false)
     public String getChangeComment() {
         return changeComment;
     }
+
     public void setChangeComment(String changeComment) {
         this.changeComment = changeComment;
     }
 
-    @Where(clause = "is_hidden = 'false'")
-    @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
-    @NotAudited
     public Set<Comment> getComments() {
         return this.comments;
     }
+
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
@@ -197,10 +216,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
-        if (changeKind != ChangeKind.BASED_ON || changeKind != ChangeKind.NEW_COPY || changeKind != ChangeKind.TRANSLATED ) {
-            changeKind = ChangeKind.CREATED;
-            changeComment = "Created";
-        }
+        changeKind = AbstractEntityAudit.ChangeKind.CREATED;
         version = new Version(true);
         beforeInsert();
     }
@@ -210,12 +226,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         try {
             LOG.debug("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
-            if (!isOwnAgency()) {
-
-            }
-            ChangeKind change = changeKind;
-            if ( (change == ChangeKind.CREATED || change == ChangeKind.BASED_ON) & !ver.isNew()) {
-                change = ChangeKind.IN_DEVELOPMENT;
+            AbstractEntityAudit.ChangeKind change = changeKind;
+            if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
+                change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
                 changeKind = change;
             }
             switch (change) {
@@ -240,7 +253,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
                 case CREATED:
                     break;
                 case IN_DEVELOPMENT:
-                    ver.setVersionLabel(ChangeKind.IN_DEVELOPMENT.getName());
+                    ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
                     break;
                 case UPDATED_PARENT:
                     ver.setVersionLabel("");
@@ -259,39 +272,41 @@ public abstract class AbstractEntityAudit extends AbstractEntity {
         }
     }
 
-    /**
-     * override to add before update code to class
-     * */
     protected void beforeUpdate() {}
 
-    /**
-     * override to add before insert code to class
-     * */
     protected void beforeInsert() {}
 
 
     @JsonIgnore
-    @Transient
-    public boolean isOwnAgency() {
-        if (agency == null) return  true;
-
-        return SecurityContext.getUserDetails()
-            .getUser()
-            .getAgency().equals( this.agency );
-    }
-
-    @JsonIgnore
-    @Transient
     public boolean isBasedOn(){
         return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
     }
 
     @JsonIgnore
-    @Transient
     public boolean isNewCopy(){
         return (getChangeKind() == ChangeKind.NEW_COPY )
                 | (getId() == null & getChangeKind() != null & getChangeKind()!= ChangeKind.CREATED)
                 | (!getVersion().isNew() & getId() == null );
+    }
+
+    @JsonIgnore
+    @Transient
+    protected boolean hasRun = false;
+
+    @JsonIgnore
+    /*
+    This function should contain all copy code needed to make a complete copy of hierarchy under this element
+    (an override should propagate downward and call makeNewCopy on it's children).
+     */
+    public void makeNewCopy(Integer revision){
+        if (hasRun) return;
+        if (revision != null) {
+            setBasedOnObject(getId());
+            setBasedOnRevision(revision.longValue());
+            version.setVersionLabel("COPY OF [" + getName() + "]");
+        }
+        setId(UUID.randomUUID());
+        hasRun = true;
     }
 
 

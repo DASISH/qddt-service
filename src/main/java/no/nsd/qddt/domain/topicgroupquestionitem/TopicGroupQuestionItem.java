@@ -194,6 +194,7 @@ public class TopicGroupQuestionItem  implements ParentQuestionItem, java.io.Seri
 
     public void setParent(TopicGroup newParent)  {
         setTopicGroup( newParent );
+
     }
 
 }

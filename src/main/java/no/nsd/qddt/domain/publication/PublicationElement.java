@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
@@ -26,15 +25,27 @@ import java.util.UUID;
 @Embeddable
 public class PublicationElement  {
 
+    @Type(type="pg-uuid")
     private UUID id;
+
+    @Column(name = "revision")
     private Long revisionNumber;
+
+    @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
+
     private String name;
 
+    @JsonIgnore
     private Integer major;
+    @JsonIgnore
     private Integer minor;
-    private String versionLabel;
+    @JsonIgnore
+    private
+    String versionLabel;
 
+    @Transient
+    @JsonSerialize
     private Object element;
 
 
@@ -48,49 +59,51 @@ public class PublicationElement  {
     }
 
 
-    @Type(type="pg-uuid")
     public UUID getId() {
         return id;
     }
+
+
     private void setId(UUID id) {
         this.id = id;
     }
 
 
-
-    @Column(name = "revision")
     public Long getRevisionNumber() {
         return revisionNumber;
     }
+
+
     public void setRevisionNumber(Long revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
 
 
-    @Transient
-    @JsonSerialize
     public String getElementKind() {
         return elementKind.getDescription();
     }
-    @JsonDeserialize
+
+
     public void setElementKind(String elementDescription) {
         this.elementKind = ElementKind.getEnum(elementDescription);
     }
 
-    @JsonIgnore
-    @Enumerated(EnumType.STRING)
-    @Column(name = "element_kind")
-    public ElementKind getElementEnum(){
-        return elementKind;
-    }
     private void setElementEnum(ElementKind elementKind) {
         this.elementKind = elementKind;
+    }
+
+
+    @JsonIgnore
+    public ElementKind getElementEnum(){
+        return elementKind;
     }
 
 
     public String getName() {
         return name;
     }
+
+
     public void setName(String name) {
         this.name = name;
     }
@@ -99,13 +112,15 @@ public class PublicationElement  {
     private Version getVersion() {
         return new Version(major,minor,revisionNumber,versionLabel);
     }
+
+
     public void setVersion(Version version) {
         major = version.getMajor();
         minor = version.getMinor();
         versionLabel = version.getVersionLabel();
     }
 
-    @Transient
+
     @JsonSerialize
     public Object getElement() {
         try {
@@ -126,9 +141,13 @@ public class PublicationElement  {
                     break;
                 case INSTRUMENT:
                     break;
+                case PUBLICATION:
+                    break;
                 case QUESTION_ITEM:
                     if (element instanceof QuestionItem)
                         return new QuestionItemJsonView((QuestionItem) element);
+                    break;
+                case RESPONSEDOMAIN:
                     break;
                 case STUDY:
                     break;
@@ -144,15 +163,15 @@ public class PublicationElement  {
         }
         return element;
     }
-    public void setElement(Object element) {
-        this.element = element;
-    }
-
 
     @JsonIgnore
     @Transient
     public AbstractEntityAudit getElementAsEntity(){
         return (AbstractEntityAudit)element;
+    }
+
+    public void setElement(Object element) {
+        this.element = element;
     }
 
 

@@ -5,7 +5,10 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 /**
@@ -16,11 +19,7 @@ import java.util.UUID;
 @DiscriminatorValue("CC")
 public class OtherMaterialCC extends OtherMaterial {
 
-    private ControlConstruct parent;
-
-
     public OtherMaterialCC() {
-        super();
     }
 
     public OtherMaterialCC(UUID parentId, MultipartFile file) {
@@ -28,19 +27,22 @@ public class OtherMaterialCC extends OtherMaterial {
     }
 
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne()
     @JsonBackReference(value = "ccref")
     @JoinColumn(name = "OWNER_ID")
+    private ControlConstruct parent;
+
     public ControlConstruct getParent() {
         return parent;
     }
+
     public void setParent(ControlConstruct parent) {
         this.parent = parent;
-        //setField("ownerId",parent.getId());
+        setField("ownerId",parent.getId());
     }
 
     @Override
     public OtherMaterialCC clone() {
         return (OtherMaterialCC)super.clone();
-    }
+}
 }

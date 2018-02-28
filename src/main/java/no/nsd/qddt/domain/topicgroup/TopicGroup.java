@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.author.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import org.hibernate.envers.Audited;
@@ -52,48 +53,85 @@ import java.util.UUID;
 @Table(name = "TOPIC_GROUP")
 public class TopicGroup extends AbstractEntityAudit implements Authorable,Archivable {
 
+    @Column(name = "description", length = 10000)
     private String abstractDescription;
-    private Set<Author> authors = new HashSet<>();
-    private Set<OtherMaterialT> otherMaterials = new HashSet<>();
-    private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
-    private Set<Concept> concepts = new HashSet<>(0);
+
+//    @JsonIgnore
+    @JsonBackReference(value = "studyRef")
+    @ManyToOne()
+    @JoinColumn(name="study_id",updatable = false)
+    private Study study;
+
     @Column(name = "study_id", insertable = false, updatable = false)
     private UUID studyId;
-    private Study study;
-    private boolean isArchived;
 
+    @JsonIgnore
+    @OrderBy(value = "name asc")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<Concept> concepts = new HashSet<>(0);
+
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE }, mappedBy = "topicGroup")
+    private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
+    @JoinTable(name = "TOPIC_AUTHORS",
+            joinColumns = {@JoinColumn(name ="topic_id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id")})
+    private Set<Author> authors = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "parent" ,fetch = FetchType.LAZY, cascade =CascadeType.REMOVE)
+//    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
+    private Set<OtherMaterialT> otherMaterials = new HashSet<>();
+
+    private boolean isArchived;
 
     public TopicGroup() {
     }
 
-    @Column(name = "description", length = 10000)
-    public String getAbstractDescription() {
-        return abstractDescription;
-    }
-    public void setAbstractDescription(String abstractDescription) {
-        this.abstractDescription = abstractDescription;
-    }
-
-
-    @Override
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
-    @JoinTable(name = "TOPIC_AUTHORS",
-        joinColumns = {@JoinColumn(name ="topic_id")},
-        inverseJoinColumns = {@JoinColumn(name = "author_id")})
-    public Set<Author> getAuthors() {
-        return this.authors;
-    }
-    @Override
-    public void setAuthors(Set<Author> authors) {
-        this.authors = authors;
-    }
     @Override
     public void addAuthor(Author user) {
         authors.add(user);
     }
 
+    @Override
+    public Set<Author> getAuthors() {
+        return this.authors;
+    }
 
-    @OneToMany(mappedBy = "parent" ,fetch = FetchType.LAZY, cascade =CascadeType.REMOVE)
+    @Override
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
+
+
+    public Study getStudy() {
+        return study;
+    }
+
+    public void setStudy(Study study) {
+        this.study = study;
+    }
+
+
+    public Concept addConcept(Concept concept){
+        concept.setTopicGroup(this);
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        setChangeComment("Concept ["+ concept.getName() +"] added");
+        return concept;
+    }
+
+    public Set<Concept> getConcepts() {
+        return concepts;
+    }
+
+    public void setConcepts(Set<Concept> concepts) {
+        this.concepts = concepts;
+    }
+
+
     public Set<OtherMaterialT> getOtherMaterials() {
         try {
             return otherMaterials;
@@ -102,70 +140,33 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
             return null;
         }
     }
+
     public void setOtherMaterials(Set<OtherMaterialT> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
+
     public OtherMaterialT addOtherMaterial(OtherMaterialT otherMaterial) {
         otherMaterial.setParent( this );
         return  otherMaterial;
     }
 
-
-    @Column(name="study_id", insertable = false ,updatable = false)
-    public UUID getStudyId() {
-        return studyId;
-    }
-    public void setStudyId(UUID studyId) {
-        this.studyId = studyId;
+    public String getAbstractDescription() {
+        return abstractDescription;
     }
 
-    @JsonBackReference(value = "studyRef")
-    @ManyToOne()
-    @JoinColumn(name="study_id",updatable = false)
-    public Study getStudy() {
-        return study;
-    }
-    public void setStudy(Study study) {
-        this.study = study;
-    }
-
-    @Transient
-    @JsonIgnore
-    public void setParent(Study newParent) {
-        setField( "study", newParent );
-    }
-    @Transient
-    @JsonIgnore
-    public void setParentU(UUID studyId) {
-        setField("studyId",studyId );
+    public void setAbstractDescription(String abstractDescription) {
+        this.abstractDescription = abstractDescription;
     }
 
 
-    @JsonIgnore
-    @OrderBy(value = "name asc")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
-    public Set<Concept> getConcepts() {
-        return concepts;
-    }
-    public void setConcepts(Set<Concept> concepts) {
-        this.concepts = concepts;
-    }
-    public Concept addConcept(Concept concept){
-        concept.setTopicGroup(this);
-        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-        setChangeComment("Concept ["+ concept.getName() +"] added");
-        return concept;
-    }
-
-
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE }, mappedBy = "topicGroup")
     public Set<TopicGroupQuestionItem> getTopicQuestionItems() {
         return topicQuestionItems;
     }
+
     public void setTopicQuestionItems(Set<TopicGroupQuestionItem> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
+
     public void addTopicQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
             topicQuestionItems.add(topicQuestionItem);
@@ -175,7 +176,13 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         else
             LOG.debug("ConceptQuestionItem not inserted, match found" );
     }
-    public  void removeTopicQuestionItem(UUID qiId){     // no update for QI when removing (it is bound to a revision anyway...).
+
+    public void addQuestionItem(QuestionItem questionItem) {
+        addTopicQuestionItem(new TopicGroupQuestionItem(this,questionItem));
+    }
+
+    // no update for QI when removing (it is bound to a revision anyway...).
+    public  void removeQuestionItem(UUID qiId){
         int before = topicQuestionItems.size();
         topicQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
         if (before> topicQuestionItems.size()){
@@ -184,27 +191,13 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         }
     }
 
-
-    @Override
-    @Column(name = "is_archived")
-    public boolean isArchived() {
-        return isArchived;
-    }
-    @Override
-    public void setArchived(boolean archived) {
-        isArchived = archived;
-
-        if (archived) {
-            LOG.info( getName() + " isArchived(" + getConcepts().size() +")" );
-            setChangeKind(ChangeKind.ARCHIVED);
-//            Hibernate.initialize(this.getConcepts());
-            for (Concept concept : getConcepts()) {
-                if (!concept.isArchived())
-                    concept.setArchived(archived);
-            }
-        }
+    public void setParent(Study newParent) {
+        setField( "study", newParent );
     }
 
+    public void setParentU(UUID studyId) {
+        setField("topicGroupId",studyId );
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -283,6 +276,25 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         getOtherMaterials().clear();
     }
 
+    @Override
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    @Override
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+
+        if (archived) {
+            LOG.info( getName() + " isArchived(" + getConcepts().size() +")" );
+            setChangeKind(ChangeKind.ARCHIVED);
+//            Hibernate.initialize(this.getConcepts());
+            for (Concept concept : getConcepts()) {
+                if (!concept.isArchived())
+                    concept.setArchived(archived);
+            }
+        }
+    }
 
 
 

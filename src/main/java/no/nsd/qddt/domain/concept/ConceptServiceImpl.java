@@ -16,8 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,13 +80,13 @@ class ConceptServiceImpl implements ConceptService {
         return instances;
     }
 
-    private EntityManagerFactory emf;
+ /*    private EntityManagerFactory emf;
 
     @PersistenceUnit
     public void setEntityManagerFactory(EntityManagerFactory emf) {
         this.emf = emf;
     }
-
+ */
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
     public Concept copy(UUID id, Long rev, UUID parentId) {
@@ -166,7 +164,7 @@ class ConceptServiceImpl implements ConceptService {
                 cqi.getQuestionItem().setConceptRefs(
                     conceptRepository.findByConceptQuestionItemsQuestionId(cqi.getQuestionId()).stream()
                     .map( c -> new ConceptRef(c) )
-                    .collect( Collectors.toSet())
+                    .collect( Collectors.toList())
                 );
 
                 if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().longValue())) {
@@ -229,13 +227,11 @@ class ConceptServiceImpl implements ConceptService {
     It will traverse the Hierarchy and save leaves first
      */
 /*     private void updateAllCgi(Concept savedSource, Map<UUID,Set<ConceptQuestionItem>> cgiRef ){
-
         cgiRef.get(savedSource.getBasedOnObject()).stream()
             .forEach( c->c.setParent( savedSource ) );
-
         savedSource.getChildren().stream().forEach( c-> updateAllCgi( c, cgiRef ) );
-
         savedSource.setConceptQuestionItems(cqiService.save( cgiRef.get(savedSource.getBasedOnObject() )));
     } */
 
 }
+

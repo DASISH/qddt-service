@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
-import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -40,13 +39,13 @@ public class ControlConstructController extends BaseController {
 
     private final ControlConstructService service;
     private final OtherMaterialService omService;
-    private final InstrumentService iService;
+    //private final InstrumentService iService;
 
     @Autowired
-    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService, InstrumentService instrumentService){
+    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService){
         this.service = ccService;
         this.omService = otherMaterialService;
-        this.iService = instrumentService;
+      //  this.iService = instrumentService;
     }
 
 

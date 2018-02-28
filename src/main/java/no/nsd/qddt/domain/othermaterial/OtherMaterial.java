@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import no.nsd.qddt.domain.AbstractEntity;
@@ -8,7 +9,6 @@ import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -29,15 +29,38 @@ import java.util.UUID;
 @Table(name = "OTHER_MATERIAL")
 public class OtherMaterial extends AbstractEntity implements Cloneable {
 
+    @Type(type="pg-uuid")
+    @Column(name = "owner_id", updatable = false , insertable = false)
     private UUID ownerId;
+
     private String fileName;
+
     private String description;
+
     private String fileType;
+
     private String originalName;
+
     private long size;
+
+
+//    @JsonIgnore
+    @Type(type="pg-uuid")
+    @Column(name="org_ref")
     private UUID orgRef;
+
+    @JsonIgnore
+    @JsonBackReference(value = "orgReferences")
+    @ManyToOne()
+    @JoinColumn(name = "org_ref",updatable = false,insertable = false)
     private OtherMaterial source;
-    private Set<OtherMaterial> referencesBy = new HashSet<>(0);
+
+    @JsonIgnore
+    @JsonManagedReference(value = "orgReferences")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
+    @JoinColumn(name = "org_ref")
+//    @AuditMappedBy(mappedBy = "source")
+    private final Set<OtherMaterial> referencesBy = new HashSet<>(0);
 
 
     public OtherMaterial(){
@@ -45,7 +68,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     }
 
     public OtherMaterial(UUID owner, MultipartFile file){
-        setParentId(owner);
+        setField("ownerId",owner);
         setFileName(file.getName());
         setOriginalName(file.getOriginalFilename());
         setFileType(file.getContentType());
@@ -54,7 +77,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     }
 
     public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
-        setParentId(owner);
+        setField("ownerId",owner);
         setFileName(name);
         setOriginalName(name);
         setFileType(fileType);
@@ -62,104 +85,73 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
         setDescription(description);
     }
 
-    @Type(type="pg-uuid")
-    @Column(name = "owner_id", insertable = false, updatable = false)
-    public UUID getOwnerId() {
-        return ownerId;
-    }
-    public void setOwnerId(UUID ownerId) {
-        this.ownerId = ownerId;
-    }
-    @Transient
-    @JsonIgnore
-    protected void setParentId( Object value) {
-        try {
-            Class<?> clazz = getClass().getSuperclass();
-            Field field = clazz.getDeclaredField("ownerId");
-            field.setAccessible(true);
-            field.set(this, value);
-        } catch (NoSuchFieldException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        } catch (IllegalAccessException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
-        }
-    }
-
-
     public String getFileName() {
         return fileName;
     }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    public UUID getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
+    }
 
     public String getFileType() {
         return fileType;
     }
+
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
 
-
     public long getSize() {
         return size;
     }
+
     public void setSize(long size) {
         this.size = size;
     }
 
-
     public String getDescription() {
         return description;
     }
+
     private void setDescription(String description) {
         this.description = description;
     }
 
-
     public String getOriginalName() {
         return originalName;
     }
+
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
     }
 
-
-    @Type(type="pg-uuid")
-    @Column(name="org_ref")
     public UUID getOrgRef() {
         return orgRef;
     }
-    public void setOrgRef(UUID orgRef) {
+
+    private void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
     }
 
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "org_ref",insertable = false,updatable = false)
-    public OtherMaterial getSource() {
-        return source;
-    }
-    public void setSource(OtherMaterial source) {
-        this.source = source;
+    public Set<OtherMaterial> getReferencesBy() {
+        return referencesBy;
     }
 
 
     @JsonIgnore
-    @JsonManagedReference(value = "orgReferences")
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
-    @JoinColumn(name = "org_ref")
-    public Set<OtherMaterial> getReferencesBy() {
-        return referencesBy;
+    public OtherMaterial getSource() {
+        return source;
     }
-    public void setReferencesBy(Set<OtherMaterial> referencesBy) {
-        this.referencesBy = referencesBy;
-    }
-
-
-
 
 
     @Override
@@ -202,6 +194,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     }
 
 
+
     @Override
     public OtherMaterial clone() {
         OtherMaterial retval = new OtherMaterial(ownerId,fileName,fileType, size, description);
@@ -213,7 +206,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     @PreRemove
     private void cleanUp(){
         LOG.debug("Removal of file " + getOriginalName() +  ", on hold, due to revision concerns");
-    }
+}
 
 
 }

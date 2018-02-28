@@ -19,8 +19,13 @@ import java.util.UUID;
 @Embeddable
 public class Urn {
 
-
+    @Id
+    @Type(type="pg-uuid")
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
+
     private Agency agency;
 
     @Embedded
@@ -35,11 +40,6 @@ public class Urn {
     }
 
 
-    @Id
-    @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
     public UUID getId() {
         return id;
     }

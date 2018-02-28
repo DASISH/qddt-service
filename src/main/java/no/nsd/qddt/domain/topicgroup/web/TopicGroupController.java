@@ -148,11 +148,11 @@ public class TopicGroupController extends BaseController {
         TopicGroup topicGroup =null;
         try{
             topicGroup = service.findOne(topicId);
-            topicGroup.removeTopicQuestionItem(questionItemId);
+            topicGroup.removeQuestionItem(questionItemId);
             cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
-            LOG.error("removeTopicQuestionItem",ex);
+            LOG.error("removeQuestionItem",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                     .map(a->a.toString())
                     .forEach(LOG::info);

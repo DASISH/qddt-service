@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -79,23 +78,19 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public Category findOne(UUID uuid) {
-        return categoryRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Category.class)
+        return postLoadProcessing(categoryRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Category.class))
         );
     }
 
 
     @Override
-    @Transactional(noRollbackForClassName = "ClassCastException")
+    @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public Category save(Category instance) {
-        try {
-            return categoryRepository.save(
-                    prePersistProcessing(instance));
-        } catch ( Exception ex ) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        return postLoadProcessing( 
+            categoryRepository.save(
+                prePersistProcessing(instance)));
     }
 
 
@@ -120,6 +115,7 @@ class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(instances);
     }
 
+  
     private List<Code> _codes = new ArrayList<>( 0 );
 
     private Category prePersistProcessing(Category instance) {
@@ -139,6 +135,6 @@ class CategoryServiceImpl implements CategoryService {
     private Category postLoadProcessing(Category instance) {
         instance.setCodes(_codes);
         return instance;
-    }
+}
 
 }

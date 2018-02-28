@@ -20,13 +20,23 @@ import java.util.UUID;
 public class ResponseDomainJsonView {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
+    @Type(type="pg-uuid")
     private UUID id;
+
     private String name;
+
     private String description;
+
     private String displayLayout;
+
     private Version version;
+
+    @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
+
     private CategoryJsonView managedRepresentation;
+
+    @Embedded
     private ResponseCardinality responseCardinality;
 
     public ResponseDomainJsonView() {
@@ -47,10 +57,10 @@ public class ResponseDomainJsonView {
         setManagedRepresentation(new CategoryJsonView(responseDomain.getManagedRepresentation()));
     }
 
-    @Type(type="pg-uuid")
     public UUID getId() {
         return id;
     }
+
     private void setId(UUID id) {
         this.id = id;
     }
@@ -58,6 +68,7 @@ public class ResponseDomainJsonView {
     public String getName() {
         return name;
     }
+
     private void setName(String name) {
         this.name = name;
     }
@@ -65,6 +76,7 @@ public class ResponseDomainJsonView {
     public String getDescription() {
         return description;
     }
+
     private void setDescription(String description) {
         this.description = description;
     }
@@ -72,6 +84,7 @@ public class ResponseDomainJsonView {
     public String getDisplayLayout() {
         return displayLayout;
     }
+
     private void setDisplayLayout(String displayLayout) {
         this.displayLayout = displayLayout;
     }
@@ -79,24 +92,23 @@ public class ResponseDomainJsonView {
     public Version getVersion() {
         return version;
     }
+
     private void setVersion(Version version) {
         this.version = version;
     }
 
-
-    @Enumerated(EnumType.STRING)
     public ResponseKind getResponseKind() {
         return responseKind;
     }
+
     private void setResponseKind(ResponseKind responseKind) {
         this.responseKind = responseKind;
     }
 
-
-    @Embedded
     public ResponseCardinality getResponseCardinality() {
         return responseCardinality;
     }
+
     private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
     }
@@ -104,6 +116,7 @@ public class ResponseDomainJsonView {
     public CategoryJsonView getManagedRepresentation() {
         return managedRepresentation;
     }
+
     private void setManagedRepresentation(CategoryJsonView managedRepresentation) {
         this.managedRepresentation = managedRepresentation;
     }

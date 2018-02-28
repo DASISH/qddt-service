@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.kernel.color.ColorConstants;
 import com.itextpdf.layout.border.DottedBorder;
@@ -15,9 +16,9 @@ import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
-import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -66,28 +67,45 @@ import java.util.stream.Collectors;
  */
 @Audited
 @Entity
-/**
- *   Can't have two responsedomain with the same template and the same name, unless they are based on.
- *   This constraint isn't very likely to be put into effect, since we don't use managedrepresentations as templates anymore.
- */
 @Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id","based_on_object"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
 public class ResponseDomain extends AbstractEntityAudit  {
-
-    private String description;
-    private String displayLayout;
-    private ResponseKind responseKind;
     /**
-     * Allows the designation of the minimum and maximum number of responses allowed for this response domain.
-     */
-    private ResponseCardinality responseCardinality;
+    *   Can't have two responsedomain with the same template and the same name, unless they are based on
+    */
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain",cascade = {CascadeType.DETACH})
+    private Set<QuestionItem> questionItems = new HashSet<>();
+
+    
+    @JsonIgnore
+    @OrderColumn(name="responsedomain_idx")
+    @OrderBy("responsedomain_idx ASC")
+    @ElementCollection
+    @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id"))
+    private List<Code> codes = new ArrayList<>();
+
+    @Column(name = "description", length = 2000, nullable = false)
+    private String description;
+
     /**
      *   a link to a category root/group (template)
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
+    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.EAGER)
+    @JoinColumn(name="category_id")
     private Category managedRepresentation;
-    private List<Code> codes = new ArrayList<>();
-    private Set<QuestionItem> questionItems = new HashSet<>();
+
+    private String displayLayout;
+
+    @Enumerated(EnumType.STRING)
+    private ResponseKind responseKind;
+
+    /**
+     * Allows the designation of the minimum and maximum number of responses allowed for this response domain.
+     */
+    @Embedded
+    private ResponseCardinality responseCardinality;
 
 
     public ResponseDomain(){
@@ -100,15 +118,41 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return StringTool.CapString(super.getName());
     }
 
-
-    @Column(name = "description", length = 2000, nullable = false)
     public String getDescription() {
         if (StringTool.IsNullOrEmpty(description))
             description= "";
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public ResponseKind getResponseKind() {
+        return responseKind;
+    }
+
+    public void setResponseKind(ResponseKind responseKind) {
+        this.responseKind = responseKind;
+    }
+
+    public ResponseCardinality getResponseCardinality() {
+        if (responseCardinality == null)
+            return new ResponseCardinality();
+        return responseCardinality;
+    }
+
+    private void setResponseCardinality(ResponseCardinality responseCardinality) {
+        this.responseCardinality = responseCardinality;
+    }
+
+
+    public Set<QuestionItem> getQuestionItems() {
+        return questionItems;
+    }
+
+    public void setQuestionItems(Set<QuestionItem> questionItems) {
+        this.questionItems = questionItems;
     }
 
     /**
@@ -118,49 +162,67 @@ public class ResponseDomain extends AbstractEntityAudit  {
     public String getDisplayLayout() {
         return displayLayout;
     }
+
     public void setDisplayLayout(String displayLayout) {
         this.displayLayout = displayLayout;
     }
 
-    @Enumerated(EnumType.STRING)
-    public ResponseKind getResponseKind() {
-        return responseKind;
-    }
-    public void setResponseKind(ResponseKind responseKind) {
-        this.responseKind = responseKind;
-    }
-
-    @Embedded
-    public ResponseCardinality getResponseCardinality() {
-        if (responseCardinality == null)
-            return new ResponseCardinality();
-        return responseCardinality;
-    }
-    private void setResponseCardinality(ResponseCardinality responseCardinality) {
-        this.responseCardinality = responseCardinality;
+    /**
+    *    this is useful for populating codes before saving to DB
+    */
+    public void populateCodes() {
+        this.codes.clear();
+        harvestCatCodes(managedRepresentation);
     }
 
+    private void harvestCatCodes(Category current){
+        if (current == null) return;
+        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain",cascade = {CascadeType.DETACH})
-    public Set<QuestionItem> getQuestionItems() {
-        return questionItems;
+            if (getId()== null && getResponseKind() == ResponseKind.MIXED) {
+                Code code = new Code(current.getCode().getCodeValue());
+                this.codes.add(code);
+            } else {
+                Code code = current.getCode();
+                this.codes.add(code);
+            }
+        }
+        current.getChildren().forEach(this::harvestCatCodes);
     }
-    public void setQuestionItems(Set<QuestionItem> questionItems) {
-        this.questionItems = questionItems;
+
+    @Transient
+    private int _Index;    // /used to keep track of current item in the recursive call populateCatCodes
+
+    /**
+     * this function is useful for populating managedRepresentation after loading from DB
+     */
+    private void populateCatCodes(Category current){
+        assert current != null;
+        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
+            try {
+                Code code = codes.get(_Index);
+                current.setCode(code);
+                _Index++;
+            } catch (IndexOutOfBoundsException iob){
+                current.setCode(new Code());
+            } catch(Exception ex) {
+                LOG.error(DateTime.now().toDateTimeISO()+
+                        " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
+                        current);
+                current.setCode(new Code());
+            }
+        }
+        current.getChildren().forEach(this::populateCatCodes);
     }
 
 
-    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.EAGER)
-    @JoinColumn(name="category_id")
     public Category getManagedRepresentation() {
         assert managedRepresentation != null;
+        _Index = 0;
+        populateCatCodes(managedRepresentation);
         return managedRepresentation;
     }
-    public void setManagedRepresentation(Category managedRepresentation) {
-        LOG.debug("setManagedRepresentation");
-        this.managedRepresentation = managedRepresentation;
-    }
+
     private List<Category> getFlatManagedRepresentation(Category current){
         List<Category> retval = new ArrayList<>();
         if (current == null) return  retval;
@@ -169,33 +231,13 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return  retval;
     }
 
-
-    @JsonIgnore
-    @OrderColumn(name="responsedomain_idx")
-    @OrderBy("responsedomain_idx ASC")
-    @ElementCollection
-    @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id"))
-    public List<Code> getCodes() {
-        if (codes == null)
-            throw  new ResourceNotFoundException( "getcodes" ,this.getClass());
-        return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    public void setManagedRepresentation(Category managedRepresentation) {
+        LOG.debug("setManagedRepresentation");
+        this.codes.clear();
+        harvestCatCodes(managedRepresentation);
+        this.managedRepresentation = managedRepresentation;
+//        beforeUpdate();
     }
-    public void setCodes(List<Code> codes) {
-        this.codes = codes;
-    }
-
-    @Transient
-    @JsonSerialize
-    public Set<QuestionItemRef> getQuestionRefs(){
-        return  new HashSet<>();
-    }
-
-
-    // this is useful for populating codes before saving to DB (used in the service)
-    public void populateCodes() {
-        this.codes = managedRepresentation.getCodes();
-    }
-
 
     @Override
     protected void beforeUpdate() {
@@ -220,6 +262,23 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     }
 
+    public List<Code> getCodes() {
+        if (codes == null)
+            codes = new ArrayList<>();
+        return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public void setCodes(List<Code> codes) {
+        this.codes = codes;
+    }
+
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    public Set<QuestionItemRef> getQuestionRefs(){
+        return  new HashSet<>();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -244,6 +303,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     @Override
     public String toString() {
+
         return MessageFormat.format("ResponseDomain { {0}, {1}, {2} } " ,
                 super.toString(),
                 getCodes(),

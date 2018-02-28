@@ -26,70 +26,77 @@ import java.util.List;
 @Table(name = "INSTRUMENT")
 public class Instrument extends AbstractEntityAudit  {
 
-    private String label;
-    private String description;
-    private String instrumentType;
-    private String externalInstrumentLocation;
-
-    private Study study;
-    private List<ControlConstructRef> controlConstructs = new ArrayList<>();
-
-    public Instrument() {
-    }
-
-
-    public String getLabel() {
-        return label;
-    }
-    public void setLabel(String label) {
-        setName(label.toUpperCase());
-        this.label = label;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    @Column(name="instrument_kind")
-    public String getInstrumentType() {
-        return instrumentType;
-    }
-    public void setInstrumentType(String instrumentType) {
-        this.instrumentType = instrumentType;
-    }
-
-
-    public String getExternalInstrumentLocation() {
-        return externalInstrumentLocation;
-    }
-    public void setExternalInstrumentLocation(String externalInstrumentLocation) {
-        this.externalInstrumentLocation = externalInstrumentLocation;
-    }
-
 
     @JsonBackReference(value = "studyRef")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id",updatable = false)
-    public Study getStudy() {
-        return study;
-    }
-    public void setStudy(Study study) {
-        this.study = study;
-    }
+    private Study study;
 
 
     @OrderColumn(name="index")
     @OrderBy("instrument_idx ASC")
     @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "index")
     @OneToMany(mappedBy = "instrument",fetch = FetchType.EAGER)
+    private List<ControlConstructRef> controlConstructs = new ArrayList<>();
+
+    private String description;
+
+    private String label;
+
+    private String externalInstrumentLocation;
+
+    @Column(name="instrument_kind")
+    private String instrumentType;
+
+
+    public Instrument() {
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        setName(label.toUpperCase());
+        this.label = label;
+    }
+
+    public String getExternalInstrumentLocation() {
+        return externalInstrumentLocation;
+    }
+
+    public void setExternalInstrumentLocation(String externalInstrumentLocation) {
+        this.externalInstrumentLocation = externalInstrumentLocation;
+    }
+
+    public String getInstrumentType() {
+        return instrumentType;
+    }
+
+    public void setInstrumentType(String instrumentType) {
+        this.instrumentType = instrumentType;
+    }
+
+    public Study getStudy() {
+        return study;
+    }
+
+    public void setStudy(Study study) {
+        this.study = study;
+    }
+
     public List<ControlConstructRef> getControlConstructs() {
         return controlConstructs;
     }
+
     public void setControlConstructs(List<ControlConstructRef> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
@@ -102,6 +109,7 @@ public class Instrument extends AbstractEntityAudit  {
             return null;
         }
     }
+
 
 
     @Override
@@ -139,5 +147,13 @@ public class Instrument extends AbstractEntityAudit  {
                 .add("Instrument..."));
     }
 
+
+//    @Override
+//    public void makeNewCopy(Long revision){
+//        if (hasRun) return;
+//        super.makeNewCopy(revision);
+//        getControlConstructs().getChildren().forEach(c->c.makeNewCopy(revision));
+//        getComments().clear();
+//    }
 
 }

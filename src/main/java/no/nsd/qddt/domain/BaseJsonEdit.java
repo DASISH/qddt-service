@@ -1,9 +1,5 @@
 package no.nsd.qddt.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.user.UserJson;
@@ -16,23 +12,41 @@ import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
-public class BaseJsonEdit implements Serializable {
-    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+public  abstract class BaseJsonEdit implements Serializable {
 
+
+	protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
+    @Type(type="pg-uuid")
     private UUID id;
+
     private String name;
-    private LocalDateTime modified;
+
+/*     @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+ */
+    private Timestamp modified;
+
     private UserJson modifiedBy;
+
     private AgencyJsonView agency;
+
+    @Type(type="pg-uuid")
     private UUID basedOnObject;
+
     private Long basedOnRevision;
+
+    @Embedded
     private Version version;
+
+    @Enumerated(EnumType.STRING)
     private AbstractEntityAudit.ChangeKind changeKind;
 
     protected BaseJsonEdit() {
@@ -57,10 +71,10 @@ public class BaseJsonEdit implements Serializable {
         setChangeKind( entity.getChangeKind());
     }
 
-    @Type(type="pg-uuid")
     public UUID getId() {
         return id;
     }
+
     protected void setId(UUID id) {
         this.id = id;
     }
@@ -68,24 +82,23 @@ public class BaseJsonEdit implements Serializable {
     public String getName() {
         return name;
     }
+
     protected void setName(String name) {
         this.name = name;
     }
 
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    public LocalDateTime getModified() {
+    public Timestamp getModified() {
         return modified;
     }
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private void setModified(LocalDateTime modified) {
+
+    private void setModified(Timestamp modified) {
         this.modified = modified;
     }
 
     public UserJson getModifiedBy() {
         return modifiedBy;
     }
+
     protected void setModifiedBy(UserJson modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
@@ -93,15 +106,15 @@ public class BaseJsonEdit implements Serializable {
     public AgencyJsonView getAgency() {
         return agency;
     }
+
     protected void setAgency(AgencyJsonView agency) {
         this.agency = agency;
     }
 
-
-    @Type(type="pg-uuid")
     public UUID getBasedOnObject() {
         return basedOnObject;
     }
+
     private void setBasedOnObject(UUID basedOnObject) {
         this.basedOnObject = basedOnObject;
     }
@@ -109,24 +122,23 @@ public class BaseJsonEdit implements Serializable {
     public Long getBasedOnRevision() {
         return basedOnRevision;
     }
+
     public void setBasedOnRevision(Long basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
-
-    @Embedded
     public Version getVersion() {
         return version;
     }
+
     private void setVersion(Version version) {
         this.version = version;
     }
 
-
-    @Enumerated(EnumType.STRING)
     public AbstractEntityAudit.ChangeKind getChangeKind() {
         return changeKind;
     }
+
     private void setChangeKind(AbstractEntityAudit.ChangeKind changeKind) {
         this.changeKind = changeKind;
     }

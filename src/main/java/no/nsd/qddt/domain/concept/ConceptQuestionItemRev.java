@@ -1,12 +1,21 @@
+
 package no.nsd.qddt.domain.concept;
 
+import java.lang.reflect.Field;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import java.util.UUID;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 
 
 /**
@@ -16,9 +25,16 @@ import java.util.UUID;
 @Embeddable
 public class ConceptQuestionItemRev  {
 
+    @Column(name="QUESTIONITEM_ID")
     private UUID questionId;
-    private QuestionItem questionItem;
+
+    @Column(name = "QUESTIONITEM_REVISION")
     private Long questionItemRevision;
+
+    @Transient
+    @JsonSerialize
+    private QuestionItem questionItem;
+
 
     public ConceptQuestionItemRev() {
     }
@@ -28,37 +44,33 @@ public class ConceptQuestionItemRev  {
         setQuestionItemRevision(rev);
     }
 
-    @Type(type="pg-uuid")
-    @Column(name="QUESTIONITEM_ID", updatable = false,insertable = false)
     public UUID getQuestionId() {
         return questionId;
     }
-    public void setQuestionId(UUID questionId) {
-        this.questionId = questionId;
+
+    public void setQuestionId( UUID id) {
+        questionId = id;
     }
 
-
-    @Transient
-    @JsonSerialize
-    public QuestionItem getQuestionItem() {
-        return questionItem;
-    }
-    public void setQuestionItem(QuestionItem element) {
-        this.questionItem = element;
-    }
-
-    @Column(name = "QUESTIONITEM_REVISION")
     public Long getQuestionItemRevision() {
         if (questionItemRevision==null)
             questionItemRevision=0L;
         return questionItemRevision;
     }
+
     public void setQuestionItemRevision(Long questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
         if  (getQuestionItem() != null)
             getQuestionItem().getVersion().setRevision(questionItemRevision);
     }
 
+    public QuestionItem getQuestionItem() {
+        return questionItem;
+    }
+
+    public void setQuestionItem(QuestionItem questionItem) {
+        this.questionItem = questionItem;
+    }
 
 
     @Override
@@ -85,8 +97,5 @@ public class ConceptQuestionItemRev  {
                 "\"questionItemRevision\":" + (questionItemRevision == null ? "null" : "\"" + questionItemRevision + "\"") + 
                 "}";
     }
-
-
+   
 }
-
-    

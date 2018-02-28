@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -128,19 +125,12 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         return otherMaterialRepository.findByOwnerId(owner);
     }
 
-    private EntityManagerFactory emf;
-
-    @PersistenceUnit
-    public void setEntityManagerFactory(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
 
     @Override
     @Transactional()
     public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId, String kind) throws FileUploadException {
 
         String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getOriginalFilename()).toString();
-        EntityManager entityManager = this.emf.createEntityManager();
 
         OtherMaterial om;
         try{
@@ -154,15 +144,9 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
                 om = new OtherMaterialT( ownerId,multipartFile);
             else
                 om = new OtherMaterialCC( ownerId,multipartFile);
+
         }
-        try {
-            entityManager.detach( om );
-            om.setParentId(ownerId);
-            entityManager.merge( om );
-        } finally {
-            if(entityManager != null)
-                entityManager.close();
-        }
+
 
         try {
             Files.copy(multipartFile.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);

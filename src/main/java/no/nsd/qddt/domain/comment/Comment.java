@@ -27,11 +27,21 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity  {
 
+    @Column(name = "owner_id", updatable = false)
+    @Type(type="pg-uuid")
     private UUID ownerId;
-    private String comment;
-    private boolean isHidden;
-    private boolean isPublic;
+
+    @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
+
+    @Column(name = "is_hidden", columnDefinition = "boolean not null default false")
+    private Boolean isHidden;
+
+    @Column(name = "is_public", columnDefinition = "boolean not null default true")
+    private Boolean isPublic;
+
+    @Column(name = "comment",length = 2000)
+    private String comment;
 
 
     public Comment() {
@@ -43,52 +53,49 @@ public class Comment extends AbstractEntity  {
         setComment(comment);
     }
 
-    @Column(name = "owner_id", updatable = false)
-    @Type(type="pg-uuid")
     public UUID getOwnerId() {
         return ownerId;
     }
+
     public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
 
 
-    @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     public Set<Comment> getComments() {
         return this.comments;
     }
+
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
 
-    @Column(name = "comment",length = 2000)
     public String getComment() {
         return comment;
     }
+
     public void setComment(String comment) {
         this.comment = comment;
     }
 
 
-    @Column(name = "is_hidden", columnDefinition = "boolean not null default false")
-    public boolean getHidden() {
-        return isHidden;
+    public boolean getIsHidden() {
+        return (isHidden == null)?true:isHidden;
     }
-    public void setHidden(boolean hidden) {
+
+    public void setIsHidden(boolean hidden) {
         isHidden = hidden;
     }
 
 
-
-    @Column(name = "is_public", columnDefinition = "boolean not null default true")
-    public boolean getPublic() {
-        return isPublic;
+    public boolean isPublic() {
+        return (isPublic == null)?true:isPublic;
     }
+
     public void setPublic(boolean aPublic) {
         isPublic = aPublic;
     }
-
 
     @Transient
     @JsonSerialize()
@@ -100,23 +107,23 @@ public class Comment extends AbstractEntity  {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Comment)) return false;
-        if (!super.equals( o )) return false;
+        if (!super.equals(o)) return false;
 
         Comment comment1 = (Comment) o;
 
         if (isHidden != comment1.isHidden) return false;
         if (isPublic != comment1.isPublic) return false;
-        if (ownerId != null ? !ownerId.equals( comment1.ownerId ) : comment1.ownerId != null) return false;
-        return comment != null ? comment.equals( comment1.comment ) : comment1.comment == null;
+        if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
+        return comment != null ? comment.equals(comment1.comment) : comment1.comment == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (isHidden ? 1 : 0);
         result = 31 * result + (isPublic ? 1 : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }
 
@@ -127,6 +134,7 @@ public class Comment extends AbstractEntity  {
                 ", comment='" + comment + '\'' +
                 "} " + super.toString();
     }
+
 
     public void fillDoc(PdfReport pdfReport,String counter) {
     }

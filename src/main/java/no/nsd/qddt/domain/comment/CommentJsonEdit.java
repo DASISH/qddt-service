@@ -2,8 +2,7 @@ package no.nsd.qddt.domain.comment;
 
 import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
-
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -14,12 +13,14 @@ import java.util.stream.Collectors;
  */
 public class CommentJsonEdit {
 
+    @Type(type="pg-uuid")
     private UUID id;
 
-    private LocalDateTime modified;
+    private Timestamp modified;
 
     private UserJson modifiedBy;
 
+    @Type(type="pg-uuid")
     private UUID ownerId;
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
@@ -39,13 +40,12 @@ public class CommentJsonEdit {
         setModifiedBy(new UserJson(comment.getModifiedBy()));
         setOwnerId(comment.getOwnerId());
         setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
-        setIsHidden(comment.getHidden());
-        setPublic(comment.getPublic());
+        setIsHidden(comment.getIsHidden());
+        setPublic(comment.isPublic());
         setComment(comment.getComment());
     }
 
 
-    @Type(type="pg-uuid")
     public UUID getId() {
         return id;
     }
@@ -54,11 +54,11 @@ public class CommentJsonEdit {
         this.id = id;
     }
 
-    public LocalDateTime getModified() {
+    public Timestamp getModified() {
         return modified;
     }
 
-    private void setModified(LocalDateTime modified) {
+    private void setModified(Timestamp modified) {
         this.modified = modified;
     }
 
@@ -70,7 +70,6 @@ public class CommentJsonEdit {
         this.modifiedBy = modifiedBy;
     }
 
-    @Type(type="pg-uuid")
     public UUID getOwnerId() {
         return ownerId;
     }

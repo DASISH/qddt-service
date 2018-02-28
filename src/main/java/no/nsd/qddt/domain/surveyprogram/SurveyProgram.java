@@ -48,62 +48,71 @@ import java.util.Set;
 @Table(name = "SURVEY_PROGRAM")
 public class SurveyProgram extends AbstractEntityAudit implements Authorable,Archivable {
 
-    private String description;
-    private Set<Author> authors = new HashSet<>();
-    private boolean isArchived;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @OrderBy(value = "name ASC")
     private Set<Study> studies = new HashSet<>();
 
-
-    public SurveyProgram() {
-
-    }
-
-
     @Column(length = 10000)
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    private String description;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy(value = "name ASC")
     @JoinTable(name = "SURVEY_AUTHORS",
-        joinColumns = {@JoinColumn(name ="survey_id")},
-        inverseJoinColumns = {@JoinColumn(name = "author_id")})    public Set<Author> getAuthors() {
+            joinColumns = {@JoinColumn(name ="survey_id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id")})
+    private Set<Author> authors = new HashSet<>();
+
+    private boolean isArchived;
+
+    public SurveyProgram() {
+
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<Author> getAuthors() {
         return authors;
     }
+
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
+
     public void addAuthor(Author user){
         authors.add(user);
     }
 
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    @OrderBy(value = "name ASC")
     public Set<Study> getStudies() {
         return studies;
     }
+
     public void setStudies(Set<Study> studies) {
         this.studies = studies;
     }
+
     public Study addStudy(Study study){
+//        System.out.println("Study ["+ study.getName() + "] added to Survey [" + this.getName() +"]");
         study.setSurveyProgram(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Study ["+ study.getName() +"] added");
         return study;
     }
 
+    public void removeStudy(Study study) {
 
-    @Column(name = "is_archived")
-    @Override
+    }
+
     public boolean isArchived() {
         return isArchived;
     }
+
     @Override
     public void setArchived(boolean archived) {
         isArchived = archived;
@@ -116,6 +125,14 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
             }
         }
     }
+
+//    @Override
+//    public void makeNewCopy(Long revision){
+//        if (hasRun) return;
+//        super.makeNewCopy(revision);
+//        getStudies().forEach(s->s.makeNewCopy(revision));
+//        getComments().clear();
+//    }
 
 
     @Override

@@ -17,10 +17,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -41,157 +40,181 @@ import java.util.UUID;
 @Table(name = "AGENCY")
 public class Agency implements Comparable<Agency>{
 
-    private UUID id;
-    private String name;
-    private LocalDateTime modified;
-
-    private Set<SurveyProgram> surveyPrograms = new HashSet<>();
-    private Set<Study>  studies = new HashSet<>();
-    private Set<Instrument> instruments = new HashSet<>();
-    private Set<Instruction> instructions = new HashSet<>();
-    private Set<TopicGroup> topicGroups = new HashSet<>();
-    private Set<Concept> concepts = new HashSet<>();
-    private Set<QuestionItem> questions = new HashSet<>();
-    private Set<ResponseDomain> responses = new HashSet<>();
-    private Set<Category> categories = new HashSet<>();
-    private Set<User> users = new HashSet<>();
-    private Set<PublicationStatus> statuses = new HashSet<>();
-
-    public Agency(){
-
-    }
 
     @Id
     @Type(type="pg-uuid")
     @Column(name = "id")
     @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
     @GeneratedValue(generator = "uuid-gen")
-    public UUID getId() {
-        return id;
-    }
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
+    private UUID id;
 
     @Column(name = "name", length = 50)
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    private String name;
 
     @JsonIgnore
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    //@Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated", nullable = false)
-    @LastModifiedDate
-    public LocalDateTime getModified() {
-        return modified;
-    }
-    public void setModified(LocalDateTime modified) {
-        this.modified = modified;
-    }
+    @Version
+    private Timestamp modified;
 
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<SurveyProgram> getSurveyPrograms() {
-        return surveyPrograms;
-    }
-    public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
-        this.surveyPrograms = surveyPrograms;
-    }
+    private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<Study> getStudies() {
-        return studies;
-    }
-    public void setStudies(Set<Study> studies) {
-        this.studies = studies;
-    }
+    private Set<Study>  studies = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<Instrument> getInstruments() {
-        return instruments;
-    }
-    public void setInstruments(Set<Instrument> instruments) {
-        this.instruments = instruments;
-    }
+    private Set<Instrument> instruments = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<Instruction> getInstructions() {
-        return instructions;
-    }
-    public void setInstructions(Set<Instruction> instructions) {
-        this.instructions = instructions;
-    }
+    private Set<Instruction> instructions = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<TopicGroup> getTopicGroups() {
-        return topicGroups;
-    }
-    public void setTopicGroups(Set<TopicGroup> topicGroups) {
-        this.topicGroups = topicGroups;
-    }
+    private Set<TopicGroup> topicGroups = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<Concept> getConcepts() {
-        return concepts;
-    }
-    public void setConcepts(Set<Concept> concepts) {
-        this.concepts = concepts;
-    }
+    private Set<Concept> concepts = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<QuestionItem> getQuestions() {
-        return questions;
-    }
-    public void setQuestions(Set<QuestionItem> questions) {
-        this.questions = questions;
-    }
+    private Set<QuestionItem> questions = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<ResponseDomain> getResponses() {
-        return responses;
-    }
-    public void setResponses(Set<ResponseDomain> responses) {
-        this.responses = responses;
-    }
+    private Set<ResponseDomain> responses = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<Category> getCategories() {
-        return categories;
-    }
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
-    }
+    private Set<Category> categories = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
-    public Set<User> getUsers() {
-        return users;
-    }
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
+    private Set<User> users = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
     @NotAudited
+    private Set<PublicationStatus> statuses = new HashSet<>();
+
+    public Agency(){
+
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<SurveyProgram> getSurveyPrograms() {
+        return surveyPrograms;
+    }
+
+    public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
+        this.surveyPrograms = surveyPrograms;
+    }
+
+    public Set<Study> getStudies() {
+        return studies;
+    }
+
+    public void setStudies(Set<Study> studies) {
+        this.studies = studies;
+    }
+
+    public Set<Instrument> getInstruments() {
+        return instruments;
+    }
+
+    public void setInstruments(Set<Instrument> instruments) {
+        this.instruments = instruments;
+    }
+
+    public Set<Instruction> getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(Set<Instruction> instructions) {
+        this.instructions = instructions;
+    }
+
+    public Set<TopicGroup> getTopicGroups() {
+        return topicGroups;
+    }
+
+    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+        this.topicGroups = topicGroups;
+    }
+
+    public Set<Concept> getConcepts() {
+        return concepts;
+    }
+
+    public void setConcepts(Set<Concept> concepts) {
+        this.concepts = concepts;
+    }
+
+    public Set<QuestionItem> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<QuestionItem> questions) {
+        this.questions = questions;
+    }
+
+    public Set<ResponseDomain> getResponses() {
+        return responses;
+    }
+
+    public void setResponses(Set<ResponseDomain> responses) {
+        this.responses = responses;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
     public Set<PublicationStatus> getStatuses() {
         return statuses;
     }
+
     public void setStatuses(Set<PublicationStatus> statuses) {
         this.statuses = statuses;
     }

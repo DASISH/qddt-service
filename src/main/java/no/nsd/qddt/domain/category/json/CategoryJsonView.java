@@ -10,8 +10,6 @@ import no.nsd.qddt.domain.responsedomain.Code;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,19 +18,29 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class CategoryJsonView implements Serializable {
-
-    private static final long serialVersionUID = 12343289572380423L;
+public class CategoryJsonView {
 
     private UUID id;
+
     private String label;
+
     private String name;
+
     private Version version;
+
+    @Embedded
     private ResponseCardinality inputLimit;
+
+    @Enumerated(EnumType.STRING)
     private HierarchyLevel hierarchyLevel;
+
+    @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
+
     private Code code;
+
     private String format;
+
     private List<CategoryJsonView> children = new ArrayList<>();
 
 
@@ -55,6 +63,7 @@ public class CategoryJsonView implements Serializable {
     public UUID getId() {
         return id;
     }
+
     private void setId(UUID id) {
         this.id = id;
     }
@@ -62,6 +71,7 @@ public class CategoryJsonView implements Serializable {
     public String getLabel() {
         return label;
     }
+
     private void setLabel(String label) {
         this.label = label;
     }
@@ -69,41 +79,39 @@ public class CategoryJsonView implements Serializable {
     public String getName() {
         return name;
     }
+
     private void setName(String name) {
         this.name = name;
     }
 
-    @Embedded
     public Version getVersion() {
         return version;
     }
+
     public void setVersion(Version version) {
         this.version = version;
     }
 
-
-    @Embedded
     public ResponseCardinality getInputLimit() {
         return inputLimit;
     }
+
     private void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
 
-
-    @Enumerated(EnumType.STRING)
     public HierarchyLevel getHierarchyLevel() {
         return hierarchyLevel;
     }
+
     private void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
         this.hierarchyLevel = hierarchyLevel;
     }
 
-
-    @Enumerated(EnumType.STRING)
     public CategoryType getCategoryType() {
         return categoryType;
     }
+
     private void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
     }
@@ -111,6 +119,7 @@ public class CategoryJsonView implements Serializable {
     public Code getCode() {
         return code;
     }
+
     private void setCode(Code code) {
         this.code = code;
     }
@@ -118,6 +127,7 @@ public class CategoryJsonView implements Serializable {
     public String getFormat() {
         return format;
     }
+
     public void setFormat(String format) {
         this.format = format;
     }
@@ -125,6 +135,7 @@ public class CategoryJsonView implements Serializable {
     public List<CategoryJsonView> getChildren() {
         return children;
     }
+
     private void setChildren(List<CategoryJsonView> children) {
         this.children = children;
     }

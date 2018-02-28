@@ -36,28 +36,87 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 @Table(name = "USER_ACCOUNT")
 public class User {
 
+    @Id
+    @Type(type="pg-uuid")
+    @Column(name = "id")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     private UUID id;
+
+    @Column(name = "username")
     private String username;
+
+    @JsonIgnore
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "email")
     private String email;
-    private Agency agency;
-    private Set<Authority> authorities = new HashSet<>();
+
     private boolean isEnabled;
 
-    
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(name="user_authority",
+            joinColumns=@JoinColumn(name="user_id"),
+            inverseJoinColumns=@JoinColumn(name="authority_id"))
+    private Set<Authority> authorities = new HashSet<>();
+
+    @JsonIgnore
+	@OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<Study> studies = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @NotAudited
     private Set<Comment> comments = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<Instrument> instrument = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<ControlConstruct> controlConstructs = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<Instruction> instructions = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<QuestionItem> questions = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<TopicGroup> topicGroups = new HashSet<>();
+
+    @JsonIgnore
+    @NotAudited
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<Concept> concepts = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<ResponseDomain> responseDomains = new HashSet<>();
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<Category> categories = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "agency_id")
+    private Agency agency;
 
     public User() {
     }
@@ -68,183 +127,149 @@ public class User {
         setPassword(password);
     }
 
-    @Id
-    @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
     public UUID getId() {
         return id;
     }
+
     public void setId(UUID id) {
         this.id = id;
     }
 
-
-    @Column(name = "username")
     public String getUsername() {
         return SafeString(username);
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
 
-
-    @JsonIgnore
-    @Column(name = "password")
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-
-    @Column(name = "email")
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "agency_id")
-    public Agency getAgency() {
-        return agency;
-    }
-    public void setAgency(Agency agency) {
-        this.agency = agency;
-    }
-
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name="user_authority",
-        joinColumns=@JoinColumn(name="user_id"),
-        inverseJoinColumns=@JoinColumn(name="authority_id"))
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-    @Column(name = "is_enabled")
     public boolean isEnabled() {
         return isEnabled;
     }
+
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
     }
 
-    @NotAudited
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
-    public Set<Comment> getComments() {
-        return comments;
-    }
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
     public Set<SurveyProgram> getSurveyPrograms() {
         return surveyPrograms;
     }
+
     public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
         this.surveyPrograms = surveyPrograms;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<Study> getStudies() {
         return studies;
     }
+
     public void setStudies(Set<Study> studies) {
         this.studies = studies;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<Instrument> getInstrument() {
         return instrument;
     }
+
     public void setInstrument(Set<Instrument> instrument) {
         this.instrument = instrument;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<ControlConstruct> getControlConstructs() {
         return controlConstructs;
     }
+
     public void setControlConstructs(Set<ControlConstruct> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<Instruction> getInstructions() {
         return instructions;
     }
+
     public void setInstructions(Set<Instruction> instructions) {
         this.instructions = instructions;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<QuestionItem> getQuestions() {
         return questions;
     }
+
     public void setQuestions(Set<QuestionItem> questions) {
         this.questions = questions;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<TopicGroup> getTopicGroups() {
         return topicGroups;
     }
+
     public void setTopicGroups(Set<TopicGroup> topicGroups) {
         this.topicGroups = topicGroups;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
     }
+
     public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<Concept> getConcepts() {
         return concepts;
     }
+
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     public Set<ResponseDomain> getResponseDomains() {
         return responseDomains;
     }
+
     public void setResponseDomains(Set<ResponseDomain> responseDomains) {
         this.responseDomains = responseDomains;
     }
 
-    @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+
     public Set<Category> getCategories() {
         return categories;
     }
+
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
     @Override

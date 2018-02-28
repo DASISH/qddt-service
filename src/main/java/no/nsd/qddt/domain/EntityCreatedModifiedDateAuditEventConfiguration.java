@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import java.time.LocalDateTime;
+
 
 /**
  * Creates and updates entities based on global rules
@@ -30,7 +30,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void createOrUpdate(AbstractEntity entity) {
         try {
-            entity.setModified(LocalDateTime.now());
+//            entity.setModified(LocalDateTime.now());
             entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
 
             if (entity instanceof AbstractEntityAudit )

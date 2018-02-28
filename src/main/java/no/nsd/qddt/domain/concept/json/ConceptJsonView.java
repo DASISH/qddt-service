@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.concept.json;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
@@ -11,8 +9,12 @@ import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -20,17 +22,33 @@ import java.util.stream.Collectors;
  */
 public class ConceptJsonView {
 
+    @Type(type="pg-uuid")
     private UUID id;
+
     private String name;
+
     private String label;
+
     private String description;
-    private LocalDateTime modified;
+
+    // @JsonSerialize(using = LocalDateTimeSerializer.class)
+    // @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    // @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+    private Timestamp modified;
+
     private UserJson modifiedBy;
+
     private AgencyJsonView agency;
+
+    @Embedded
     private Version version;
+
     private List<ConceptQuestionJson> conceptQuestionItems = new ArrayList<>();
+
     private Set<CommentJsonEdit> comments = new HashSet<>();
+
     private Set<ConceptJsonView> children = new HashSet<>();
+
     private TopicRef topicRef;
 
 
@@ -50,10 +68,10 @@ public class ConceptJsonView {
         setTopicRef(concept.getTopicRef());
     }
 
-    @Type(type="pg-uuid")
     public UUID getId() {
         return id;
     }
+
     private void setId(UUID id) {
         this.id = id;
     }
@@ -61,6 +79,7 @@ public class ConceptJsonView {
     public String getName() {
         return name;
     }
+
     private void setName(String name) {
         this.name = name;
     }
@@ -68,6 +87,7 @@ public class ConceptJsonView {
     public String getLabel() {
         return label;
     }
+
     private void setLabel(String label) {
         this.label = label;
     }
@@ -75,19 +95,15 @@ public class ConceptJsonView {
     public String getDescription() {
         return description;
     }
+
     private void setDescription(String description) {
         this.description = description;
     }
 
-
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    public LocalDateTime getModified() {
+    public Timestamp getModified() {
         return modified;
     }
 
-    @Embedded
     public Version getVersion() {
         return version;
     }
@@ -103,6 +119,7 @@ public class ConceptJsonView {
     public List<ConceptQuestionJson> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
+
     private void setConceptQuestionItems(List<ConceptQuestionJson> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }

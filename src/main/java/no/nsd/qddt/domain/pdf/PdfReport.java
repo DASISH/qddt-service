@@ -45,7 +45,9 @@ import java.util.stream.Collectors;
  */
 public class PdfReport extends PdfDocument {
 
-    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private static final long serialVersionUID = 1345354324653452L;
+
+	protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private PdfFont paragraphFont;
     private PdfFont font;
@@ -166,7 +168,7 @@ public class PdfReport extends PdfDocument {
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(element.getModified().toLocalDate().toString())
+            new Cell().add(element.getModified().toLocalDateTime().toString())
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
@@ -230,7 +232,7 @@ public class PdfReport extends PdfDocument {
     public Document addComments(Set<Comment> comments){
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}))
                 .setKeepTogether(true).setWidthPercent(80).setPaddingBottom(30);
-        for(Comment comment: comments.stream().filter(Comment::getPublic).collect(Collectors.toList())){
+        for(Comment comment: comments.stream().filter(Comment::isPublic).collect(Collectors.toList())){
             addCommentRow(table,comment,0);
         }
         return this.document.add(table);
@@ -258,9 +260,9 @@ public class PdfReport extends PdfDocument {
                         .setPaddingBottom(10)
                         .setBorder(Border.NO_BORDER)
                         .setTextAlignment(TextAlignment.RIGHT)
-                        .add(comment.getModified().toLocalDate().toString()));
+                        .add(comment.getModified().toLocalDateTime().toString()));
 
-        for(Comment subcomment: comment.getComments().stream().filter(Comment::getPublic).collect(Collectors.toList())){
+        for(Comment subcomment: comment.getComments().stream().filter(Comment::isPublic).collect(Collectors.toList())){
             addCommentRow(table,subcomment,level+1);
         }
     }

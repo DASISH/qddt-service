@@ -1,10 +1,5 @@
 package no.nsd.qddt.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -13,8 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
@@ -27,43 +25,48 @@ import java.util.UUID;
 @EntityListeners(EntityCreatedModifiedDateAuditEventConfiguration.class)
 public abstract class AbstractEntity {
 
+    @Transient
+    @JsonIgnore
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
-    private UUID id;
-    private LocalDateTime modified;
-    private User modifiedBy;
-
 
     @Id
     @Type(type="pg-uuid")
     @Column(name = "id")
     @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
     @GeneratedValue(generator = "uuid-gen")
-    public UUID getId() {
-        return id;
-    }
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    private UUID id;
 
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated", nullable = false)
-    public LocalDateTime getModified() {
-        return modified;
-    }
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    public void setModified(LocalDateTime modified) {
-        this.modified = modified;
-    }
+    @Version()
+    private Timestamp modified;
 
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    private User modifiedBy;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
+    }
+
+
     public User getModifiedBy() {
         return modifiedBy;
     }
+
     public void setModifiedBy(User modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
@@ -106,8 +109,6 @@ public abstract class AbstractEntity {
     /*
     Set Properties without notifying Hibernate, good for circumvent auto HiberFix hell.
      */
-    @Transient
-    @JsonIgnore
     protected void setField(String fieldname, Object value) {
         try {
             Class<?> clazz = getClass();
@@ -120,5 +121,6 @@ public abstract class AbstractEntity {
             LOG.error("IMPOSSIBLE! ", e.getMessage() );
         }
     }
+
 
 }

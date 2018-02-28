@@ -18,28 +18,24 @@ public class Version implements Comparable<Version> {
     private Integer major=1;
     private Integer minor=0;
     private String versionLabel="";
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    @Column(name ="rev")
     private Long revision;
 
+    @Transient
     private boolean isModified = false;
+
+    @Transient
     private boolean isNew = false;
-
-
-    public Version() {   }
-
-    public Version(Integer major, Integer minor, Long revision, String label) {
-        this.major = major;
-        this.minor = minor;
-        this.revision = revision;
-        this.versionLabel = label;
-    }
 
 
     public Integer getMajor() {
         return major;
     }
-    public void setMajor(Integer major) {
-        this.major = major;
-    }
+
     public void incMajor() {
         if (! isModified) {
             this.major++;
@@ -51,9 +47,7 @@ public class Version implements Comparable<Version> {
     public Integer getMinor() {
         return minor;
     }
-    public void setMinor(Integer minor) {
-        this.minor = minor;
-    }
+
     public void incMinor() {
         if (!isModified) {
             this.minor++;
@@ -64,33 +58,37 @@ public class Version implements Comparable<Version> {
     public String getVersionLabel() {
         return versionLabel;
     }
+
     public void setVersionLabel(String versionLabel) {
         this.versionLabel = versionLabel;
     }
 
-    @Transient
-    @JsonSerialize
-    @Column(name ="rev")
     public Long getRevision() {
         return revision;
     }
-    @JsonDeserialize
+
     public void setRevision(Long revision) {
         this.revision = revision;
     }
 
     @JsonIgnore
-    @Transient
     public boolean isNew() {
         return isNew;
     }
 
     @JsonIgnore
-    @Transient
     public boolean isModified() {
         return isModified;
     }
 
+    public Version() {   }
+
+    public Version(Integer major, Integer minor, Long revision, String label) {
+        this.major = major;
+        this.minor = minor;
+        this.revision = revision;
+        this.versionLabel = label;
+    }
 
     @SuppressWarnings("SameParameterValue")
     public Version(boolean isNew) {

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -44,8 +43,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public ResponseDomain findOne(UUID uuid) {
-        return postLoadProcessing(responseDomainRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, ResponseDomain.class)));
+        return responseDomainRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, ResponseDomain.class));
     }
 
     @Override
@@ -61,8 +60,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public List<ResponseDomain> save(List<ResponseDomain> instances) {
         instances.forEach(this::prePersistProcessing);
-        instances =  responseDomainRepository.save(instances);
-        return instances.stream().map( c-> postLoadProcessing( c ) ).collect( Collectors.toList());
+        return responseDomainRepository.save(instances);
     }
 
     @Override
@@ -79,9 +77,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {
-
-        instance.populateCodes();
-
+        
         ResponseDomainFactory rdf= new ResponseDomainFactory();
         if(instance.isBasedOn()) {
             Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
@@ -94,15 +90,22 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
             instance.beforeUpdate();
             instance.setManagedRepresentation(
                 categoryService.save(
-                    instance.getManagedRepresentation() ) );
-        }
+                    instance.getManagedRepresentation()));
+        } else
+            instance.populateCodes();
+
         instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
+/*         if(instance.isBasedOn()) {
+            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
+            instance.makeNewCopy(rev);
+        } else if (instance.isNewCopy()) {
+            instance.makeNewCopy(null);
+        } */
         return instance;
     }
 
 
     private ResponseDomain postLoadProcessing(ResponseDomain instance) {
-        instance.getManagedRepresentation().setCodes( instance.getCodes() );
         return instance;
     }
 
@@ -113,7 +116,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
                 responseKind,
                 likeify(name),
                 likeify(description),
-                pageable).map( c-> postLoadProcessing( c ) );
+                pageable);
     }
 
     @Override
@@ -122,7 +125,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
             responseDomainRepository.findByResponseKindAndNameLikeOrQuestionItemsQuestionLike(
                 responseKind,
                 likeify(question),
-                pageable).map( c-> postLoadProcessing( c ) );
+                pageable);
     }
 
 

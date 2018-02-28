@@ -13,7 +13,6 @@ import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
-
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
@@ -47,19 +46,67 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 @Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind","based_on_object"},name = "UNQ_CATEGORY_NAME_KIND")})
 public class Category extends AbstractEntityAudit  implements Comparable<Category> , Cloneable {
 
-    private String label;
-    private String description;
-    private String format;
-    private CategoryType categoryType;
-    private HierarchyLevel hierarchyLevel;
-    private CategoryRelationCodeType classificationLevel;
-    private ResponseCardinality inputLimit;
+
     @Transient
+    @JsonSerialize
+    @JsonDeserialize
     private Code code;
-    private List<Category> children;
+
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OrderColumn(name="category_idx")
+    private List<Category> children = new ArrayList<>();
+
+
+    //name -> A description of a particular category or response.
+
+    /*
+    A display label for the category.
+    May be expressed in multiple languages.
+    Repeat for labels with different content, for example,
+    labels with differing length limitations or of different types or applications.
+     */
+    @Column(name = "label")
+    @OrderBy()
+    private String label;
+
+    /*
+    A description of the content and purpose of the category.
+    May be expressed in multiple languages and supports the use of structured content.
+    Note that comparison of categories is done using the content of description.
+     */
+    @Column(name = "description", length = 2000)
+    private String description;
+
+    /**
+     * This field is only used for categories that facilitates user input.
+     * like numeric range / text length /
+     */
+    @Column(name = "input_limit")
+    @Embedded
+    private ResponseCardinality inputLimit;
+
+
+    @Column(name = "classification_level")
+    @Enumerated(EnumType.STRING)
+    private CategoryRelationCodeType classificationLevel;
+
+    /**
+     * format is used by datetime, and other kinds if needed.
+     */
+    private String format;
+
+
+    @Column(name = "Hierarchy_level",nullable = false)
+    @Enumerated(EnumType.STRING)
+    private HierarchyLevel hierarchyLevel;
+
+    @Column(name = "category_kind", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CategoryType categoryType;
 
     public Category() {
         code = new Code();
+        hierarchyLevel = HierarchyLevel.ENTITY;
         setCategoryType(CategoryType.CATEGORY);
         setInputLimit("0","1");
     }
@@ -75,14 +122,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         setLabel(label);
     }
 
-
-    @Column(name = "category_kind", nullable = false)
-    @Enumerated(EnumType.STRING)
     public CategoryType getCategoryType() {
         if (categoryType == null)
             setCategoryType(CategoryType.CATEGORY);
         return categoryType;
     }
+
     public void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
         if (classificationLevel == null) {
@@ -107,101 +152,70 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         }
     }
 
-
-    @Column(name = "hierarchy_level",nullable = false)
-    @Enumerated(EnumType.STRING)
     public HierarchyLevel getHierarchyLevel() {
         return hierarchyLevel;
     }
+
     public void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
         this.hierarchyLevel = hierarchyLevel;
     }
 
-    /**
-    * A display label for the category.
-    * May be expressed in multiple languages.
-    * Repeat for labels with different content, for example,
-    * labels with differing length limitations or of different types or applications.
-    * */
-    @Column(name = "label",nullable = false)
-    @OrderBy()
     public String getLabel() {
         return SafeString(label);
     }
+
     public void setLabel(String label) {
         this.label = label;
         if (StringTool.IsNullOrTrimEmpty(getName()))
             setName(StringTool.CapString(label));
     }
 
-
-    /**
-     *   A description of the content and purpose of the category.
-     *   May be expressed in multiple languages and supports the use of structured content.
-     *   Note that comparison of categories is done using the content of description.
-     **/
-    @Column(name = "description", length = 2000)
     public String getDescription() {
         return StringTool.CapString(description);
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @JsonSerialize
     public Code getCode() {
-        return code == null? new Code(): code;
+        return code;
     }
-    @JsonDeserialize
+
     public void setCode(Code code) {
             this.code = code;
     }
 
-    /**
-     * This field is only used for categories that facilitates user input.
-     * like numeric range / text length /
-     */
-    @Column(name = "input_limit")
-    @Embedded
     public ResponseCardinality getInputLimit() {
         if (inputLimit == null)
             setInputLimit("0","1");
         return inputLimit;
     }
+
     public void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
+
     public void setInputLimit(String minimum, String maximum) {
         this.inputLimit = new ResponseCardinality(minimum,maximum) ;
     }
 
-    /**
-     * This field is only used for categories that facilitates user input.
-     * like numeric range / text length /
-     */
-
-    @Column(name = "classification_level")
-    @Enumerated(EnumType.STRING)
     public CategoryRelationCodeType getClassificationLevel() {
         return classificationLevel;
     }
+
     private void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
         this.classificationLevel = classificationLevel;
     }
 
-    /**
-     * format is used by datetime, and other kinds if needed.
-     */
     public String getFormat() {
         return format;
     }
+
     public void setFormat(String format) {
         this.format = format;
     }
 
-
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @OrderColumn(name="category_idx")
     public List<Category> getChildren() {
         if (categoryType == CategoryType.SCALE) {
             if (children == null || children.size() == 0)
@@ -210,12 +224,17 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
                     .sorted( Comparator.comparing( Category::getCode ) )
                     .collect( Collectors.toList() );
         } else
-            return  children; //.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            return  children.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
+
     public void setChildren(List<Category> children) {
-//        if (categoryType == CategoryType.SCALE)
-//            this.children = children.stream().sorted(Comparator.comparing(Category::getCode)).collect(Collectors.toList());
+        if (categoryType == CategoryType.SCALE)
+            this.children = children.stream().sorted(Comparator.comparing(Category::getCode)).collect(Collectors.toList());
         this.children = children;
+    }
+
+    public void addChild(Category children) {
+        this.children.add(children);
     }
 
 
@@ -226,7 +245,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             super.setName(StringTool.CapString(this.getLabel()));
         return super.getName();
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -239,10 +257,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         if (getLabel() != null ? !getLabel().equals(category.getLabel()) : category.getLabel() != null) return false;
         if (getDescription() != null ? !getDescription().equals(category.getDescription()) : category.getDescription() != null)
             return false;
+//        if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
+//            return false;
         return getHierarchyLevel() == category.getHierarchyLevel();
 
     }
-
 
     @Override
     public int hashCode() {
@@ -257,7 +276,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{\"_class\":\"Category\", ");
-        sb.append(super.toString());
+        sb.append(super.toString()).append(", ");
         sb.append("\"label\":").append(label == null ? "null" : "\"" + label + "\"").append(", ");
         sb.append("\"description\":").append((description == null ? "null" : "\"" + description + "\"")).append(", ");
         if (categoryType == CategoryType.CATEGORY) {
@@ -265,12 +284,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             sb.append("\"format\":").append(format == null ? "null" : "\"" + format + "\"").append(", ");
         }
         else {
+            sb.append("\"categoryType\":").append((categoryType == null ? "null" : categoryType)).append(", ");
             sb.append("\"inputLimit\":").append((inputLimit == null ? "null" : inputLimit)).append(", ");
             sb.append("\"classificationLevel\":").append((classificationLevel == null ? "null" : classificationLevel)).append(", ");
+            sb.append("\"hierarchyLevel\":").append((hierarchyLevel == null ? "null" : hierarchyLevel)).append(", ");
             sb.append("\"children\":").append((children == null ? "null" : Arrays.toString(children.toArray()))).append(", ");
         }
-        sb.append("\"categoryType\":").append((categoryType == null ? "null" : categoryType)).append(", ");
-        sb.append("\"hierarchyLevel\":").append((hierarchyLevel == null ? "null" : hierarchyLevel)).append(", ");
         sb.append('}');
         return sb.toString();
     }
@@ -306,7 +325,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     preRec for valid Categories
      */
     @JsonIgnore
-    @Transient
     boolean isValid(){
         if (hierarchyLevel== HierarchyLevel.ENTITY)
             switch (categoryType) {
@@ -336,49 +354,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
                     return false;
             }
     }
-
-    // /used to keep track of current item in the recursive call populateCatCodes
-    @Transient
-    private int _Index;
-    // this is useful for populating codes before saving to DB (used in the service)
-    @Transient
-    @JsonIgnore
-    public List<Code> getCodes() {
-        return harvestCatCodes(this);
-    }
-    public  void setCodes(List<Code> codes) {
-        _Index =0;
-        populateCatCodes( this, codes );
-    }
-
-    private List<Code> harvestCatCodes(Category current){
-        List<Code> tmplist = new ArrayList<>( 0);
-        if (current == null) return tmplist;
-        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
-            tmplist.add( current.getCode()==null ? new Code(""): current.getCode() );
-        }
-        current.getChildren().forEach(c->  tmplist.addAll(harvestCatCodes(c)));
-        return tmplist;
-    }
-    private void populateCatCodes(Category current,List<Code> codes){
-        assert current != null;
-        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
-            try {
-                Code code = codes.get(_Index);
-                current.setCode(code);
-                _Index++;
-            } catch (IndexOutOfBoundsException iob){
-                current.setCode(new Code());
-            } catch(Exception ex) {
-                LOG.error( DateTime.now().toDateTimeISO()+
-                    " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
-                    current);
-                current.setCode(new Code());
-            }
-        }
-        current.getChildren().forEach( c -> populateCatCodes( c, codes ) );
-    }
-
 
     @Override
     public int compareTo(Category o) {
@@ -420,13 +395,15 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Override
     protected void beforeInsert() {
         LOG.debug("Category beforeInsert " + getName());
+        if (getCategoryType() == null)
+            setCategoryType(CategoryType.CATEGORY);
         switch (getCategoryType()) {
-            case BOOLEAN:
-            case CATEGORY:
             case DATETIME:
-            case NUMERIC:
-            case TEXT:
+            case BOOLEAN:
             case URI:
+            case TEXT:
+            case NUMERIC:
+            case CATEGORY:
                 setHierarchyLevel(HierarchyLevel.ENTITY);
                 break;
             case MISSING_GROUP:
@@ -438,10 +415,49 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         }
     }
 
+ // /used to keep track of current item in the recursive call populateCatCodes
+ @Transient
+ private int _Index;
+ // this is useful for populating codes before saving to DB (used in the service)
+ @JsonIgnore
+ public List<Code> getCodes() {
+     return harvestCatCodes(this);
+ }
+ public  void setCodes(List<Code> codes) {
+     _Index =0;
+     populateCatCodes( this, codes );
+ }
+
+ private List<Code> harvestCatCodes(Category current){
+     List<Code> tmplist = new ArrayList<>( 0);
+     if (current == null) return tmplist;
+     if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
+         tmplist.add( current.getCode()==null ? new Code(""): current.getCode() );
+     }
+     current.getChildren().forEach(c->  tmplist.addAll(harvestCatCodes(c)));
+     return tmplist;
+ }
+ private void populateCatCodes(Category current,List<Code> codes){
+     assert current != null;
+     if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
+         try {
+             Code code = codes.get(_Index);
+             current.setCode(code);
+             _Index++;
+         } catch (IndexOutOfBoundsException iob){
+             current.setCode(new Code());
+         } catch(Exception ex) {
+             LOG.error( DateTime.now().toDateTimeISO()+
+                 " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
+                 current);
+             current.setCode(new Code());
+         }
+     }
+     current.getChildren().forEach( c -> populateCatCodes( c, codes ) );
+ }
+
 
     @Override
-    @JsonIgnore
-    @Transient
     public Category clone() {
         Category clone = new Category(getName(),label);
         clone.setCategoryType(categoryType);

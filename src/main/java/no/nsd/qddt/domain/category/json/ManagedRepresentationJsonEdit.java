@@ -20,12 +20,25 @@ import java.util.stream.Collectors;
 public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
 
     private String label;
+
     private String description;
+
+    @Embedded
     private ResponseCardinality inputLimit;
+
+    @Enumerated(EnumType.STRING)
     private CategoryRelationCodeType classificationLevel;
+
+    @Enumerated(EnumType.STRING)
     private HierarchyLevel hierarchyLevel;
+
+    @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
+
     private String format;
+
+//    private Code code;
+
     private List<CategoryJsonEdit> children = new ArrayList<>();
 
 
@@ -42,11 +55,13 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
         setHierarchyLevel(category.getHierarchyLevel());
         setCategoryType(category.getCategoryType());
         setFormat(category.getFormat());
+//        setCode(category.getCode());
     }
 
     public String getLabel() {
         return label;
     }
+
     private void setLabel(String label) {
         this.label = label;
     }
@@ -54,49 +69,54 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
     public String getDescription() {
         return description;
     }
+
     private void setDescription(String description) {
         this.description = description;
     }
 
-
-    @Embedded
     public ResponseCardinality getInputLimit() {
         return inputLimit;
     }
+
     private void setInputLimit(ResponseCardinality inputLimit) {
         this.inputLimit = inputLimit;
     }
 
-
-    @Enumerated(EnumType.STRING)
     public CategoryRelationCodeType getClassificationLevel() {
         return classificationLevel;
     }
+
     private void setClassificationLevel(CategoryRelationCodeType classificationLevel) {
         this.classificationLevel = classificationLevel;
     }
 
-
-    @Enumerated(EnumType.STRING)
     public HierarchyLevel getHierarchyLevel() {
         return hierarchyLevel;
     }
+
     private void setHierarchyLevel(HierarchyLevel hierarchyLevel) {
         this.hierarchyLevel = hierarchyLevel;
     }
 
-
-    @Enumerated(EnumType.STRING)
     public CategoryType getCategoryType() {
         return categoryType;
     }
+
     private void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
     }
 
+//    public Code getCode() {
+//        return code;
+//    }
+//
+//    private void setCode(Code code) {
+//        this.code = code;
+//    }
     public String getFormat() {
         return format;
     }
+
     public void setFormat(String format) {
         this.format = format;
     }
@@ -104,6 +124,7 @@ public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
     public List<CategoryJsonEdit> getChildren() {
         return children;
     }
+
     private void setChildren(List<CategoryJsonEdit> children) {
         this.children = children;
     }

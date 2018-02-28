@@ -19,6 +19,7 @@ public class ResponseCardinality {
     public String getMinimum() {
         return minimum;
     }
+
     private void setMinimum(String minimum) {
         this.minimum = minimum;
     }
@@ -26,6 +27,7 @@ public class ResponseCardinality {
     public String getMaximum() {
         return maximum;
     }
+
     private void setMaximum(String maximum) {
         this.maximum = maximum;
     }
