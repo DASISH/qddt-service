@@ -8,7 +8,6 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
@@ -120,7 +119,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     private ChangeKind changeKind;
 
     @Column(name = "change_comment",nullable = false)
-    @ColumnDefault("")
     private String changeComment;
 
 
