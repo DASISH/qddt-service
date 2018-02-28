@@ -30,7 +30,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
  * @author Dag Østgulen Heradstveit
  */
 @Service("instrumentAuditQuestionService")
-class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,ControlConstruct> implements ControlConstructAuditService {
+class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,ControlConstruct> implements ControlConstructAuditService {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
@@ -41,7 +41,7 @@ class ControlConstructAbstractAuditServiceImpl extends AbstractAuditFilter<Integ
 
 
     @Autowired
-    public ControlConstructAbstractAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
+    public ControlConstructAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
             , QuestionItemAuditService qAuditService
             , CommentService cService
             , OtherMaterialService oService) {
