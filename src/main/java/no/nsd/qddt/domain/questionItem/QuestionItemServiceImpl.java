@@ -66,9 +66,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
     public QuestionItem save(QuestionItem instance) {
         try {
-            return postLoadProcessing(
-                    questionItemRepository.save(
-                            prePersistProcessing(instance)));
+            QuestionItem qi =  questionItemRepository.save(
+                prePersistProcessing(instance));
+            return  qi;
+//            return postLoadProcessing(qi);
         } catch (Exception ex){
             LOG.error("QI save ->",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()

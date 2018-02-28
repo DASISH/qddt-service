@@ -189,4 +189,5 @@ public class Author extends AbstractEntity {
     public void setAuthorsAffiliation(String authorsAffiliation) {
         this.authorsAffiliation = authorsAffiliation;
     }
+
 }

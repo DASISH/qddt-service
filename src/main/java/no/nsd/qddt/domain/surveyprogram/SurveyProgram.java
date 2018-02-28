@@ -183,4 +183,9 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
         }
     }
 
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
+
 }

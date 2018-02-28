@@ -429,6 +429,10 @@ public class ControlConstruct extends AbstractEntityAudit {
         setField( "parentReferenceOnly", newParent );
     }
 
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
 
 }
 

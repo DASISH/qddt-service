@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.agency;
 
 import org.hibernate.annotations.Type;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
@@ -14,6 +15,8 @@ public class AgencyJsonView {
 
     private String name;
 
+    private Timestamp modified;
+
     public AgencyJsonView() {
     }
 
@@ -21,6 +24,7 @@ public class AgencyJsonView {
         if (agency == null) return;
         setId(agency.getId());
         setName(agency.getName());
+        setModified( agency.getModified() );
     }
 
     public UUID getId() {
@@ -37,5 +41,13 @@ public class AgencyJsonView {
 
     private void setName(String name) {
         this.name = name;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
     }
 }

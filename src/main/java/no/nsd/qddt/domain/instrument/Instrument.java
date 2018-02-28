@@ -147,13 +147,10 @@ public class Instrument extends AbstractEntityAudit  {
                 .add("Instrument..."));
     }
 
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
 
-//    @Override
-//    public void makeNewCopy(Long revision){
-//        if (hasRun) return;
-//        super.makeNewCopy(revision);
-//        getControlConstructs().getChildren().forEach(c->c.makeNewCopy(revision));
-//        getComments().clear();
-//    }
 
 }

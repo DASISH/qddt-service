@@ -51,8 +51,6 @@ public class Agency implements Comparable<Agency>{
     @Column(name = "name", length = 50)
     private String name;
 
-    @JsonIgnore
-    //@Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
     @Column(name = "updated", nullable = false)
     @Version
     private Timestamp modified;

@@ -348,6 +348,10 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             throw ex;
         }
     }
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
 
 
 }

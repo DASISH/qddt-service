@@ -206,7 +206,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     @PreRemove
     private void cleanUp(){
         LOG.debug("Removal of file " + getOriginalName() +  ", on hold, due to revision concerns");
-}
-
+    }
 
 }

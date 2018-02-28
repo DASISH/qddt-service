@@ -52,7 +52,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @JsonDeserialize
     private Code code;
 
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE }, fetch = FetchType.EAGER)
     @OrderColumn(name="category_idx")
     private List<Category> children = new ArrayList<>();
 
@@ -233,10 +233,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.children = children;
     }
 
-    public void addChild(Category children) {
-        this.children.add(children);
-    }
-
 
     @Override
     @Column(nullable = false)
@@ -257,8 +253,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         if (getLabel() != null ? !getLabel().equals(category.getLabel()) : category.getLabel() != null) return false;
         if (getDescription() != null ? !getDescription().equals(category.getDescription()) : category.getDescription() != null)
             return false;
-//        if (getConceptReference() != null ? !getConceptReference().equals(category.getConceptReference()) : category.getConceptReference() != null)
-//            return false;
         return getHierarchyLevel() == category.getHierarchyLevel();
 
     }
@@ -397,22 +391,23 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         LOG.debug("Category beforeInsert " + getName());
         if (getCategoryType() == null)
             setCategoryType(CategoryType.CATEGORY);
-        switch (getCategoryType()) {
-            case DATETIME:
-            case BOOLEAN:
-            case URI:
-            case TEXT:
-            case NUMERIC:
-            case CATEGORY:
-                setHierarchyLevel(HierarchyLevel.ENTITY);
-                break;
-            case MISSING_GROUP:
-            case LIST:
-            case SCALE:
-            case MIXED:
-                setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
-                break;
-        }
+        if (getHierarchyLevel() == null)
+            switch (getCategoryType()) {
+                case DATETIME:
+                case BOOLEAN:
+                case URI:
+                case TEXT:
+                case NUMERIC:
+                case CATEGORY:
+                    setHierarchyLevel(HierarchyLevel.ENTITY);
+                    break;
+                case MISSING_GROUP:
+                case LIST:
+                case SCALE:
+                case MIXED:
+                    setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
+                    break;
+            }
     }
 
  // /used to keep track of current item in the recursive call populateCatCodes
@@ -431,18 +426,18 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
  private List<Code> harvestCatCodes(Category current){
      List<Code> tmplist = new ArrayList<>( 0);
      if (current == null) return tmplist;
-     if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
+     if (current.getHierarchyLevel() == HierarchyLevel.ENTITY && current.getCode()!=null) {
          tmplist.add( current.getCode()==null ? new Code(""): current.getCode() );
      }
      current.getChildren().forEach(c->  tmplist.addAll(harvestCatCodes(c)));
      return tmplist;
  }
+
  private void populateCatCodes(Category current,List<Code> codes){
      assert current != null;
      if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
          try {
-             Code code = codes.get(_Index);
-             current.setCode(code);
+             current.setCode(codes.get(_Index));
              _Index++;
          } catch (IndexOutOfBoundsException iob){
              current.setCode(new Code());

@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,12 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     private final ResponseDomainRepository responseDomainRepository;
     private final ResponseDomainAuditService auditService;
-    private final CategoryService categoryService;
+//    private final CategoryService categoryService;
 
     @Autowired
-    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, CategoryService categoryService,ResponseDomainAuditService responseDomainAuditService) {
+    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, ResponseDomainAuditService responseDomainAuditService) {
         this.responseDomainRepository = responseDomainRepository;
-        this.categoryService = categoryService;
+//        this.categoryService = categoryService;
         this.auditService = responseDomainAuditService;
     }
 
@@ -85,22 +84,21 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         } else if (instance.isNewCopy()) {
             instance = rdf.copy(instance, null);
         }
-
-        if (instance.getManagedRepresentation().getId() == null) {
-            instance.beforeUpdate();
-            instance.setManagedRepresentation(
-                categoryService.save(
-                    instance.getManagedRepresentation()));
-        } else
+        // read the codes from the MR, into the RD
+        if (instance.getCodes().size() == 0)
             instance.populateCodes();
 
-        instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
-/*         if(instance.isBasedOn()) {
-            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
-            instance.makeNewCopy(rev);
-        } else if (instance.isNewCopy()) {
-            instance.makeNewCopy(null);
-        } */
+
+
+//        if (instance.getManagedRepresentation().getId() == null) {
+//            instance.beforeUpdate();
+//            instance.setManagedRepresentation(
+//                categoryService.save(
+//                    instance.getManagedRepresentation()));
+//        } else
+
+        //instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
+
         return instance;
     }
 

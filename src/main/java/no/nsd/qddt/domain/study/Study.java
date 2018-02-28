@@ -242,5 +242,9 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
         this.getInstruments().clear();
     }
 
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
 
 }

@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.responsedomain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -79,4 +81,10 @@ public class Code implements Comparable<Code> {
             return codeValue.compareTo(o.getCodeValue());
         }
     }
+
+    @JsonIgnore
+    public boolean isEmpty() {
+        return StringTool.IsNullOrTrimEmpty( getCodeValue() ) &&
+            StringTool.IsNullOrTrimEmpty( getAlignment() );
+     }
 }

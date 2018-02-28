@@ -296,6 +296,9 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
         }
     }
 
-
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
 
 }

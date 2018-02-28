@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -8,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -42,7 +40,7 @@ public abstract class AbstractEntity {
     private Timestamp modified;
 
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "user_id", nullable = false)
     private User modifiedBy;
 
@@ -95,8 +93,8 @@ public abstract class AbstractEntity {
 
     @Override
     public String toString() {
-        return "\"id\":" + (id == null ? "null" : id) + ", " +
-                "\"modified\":" + (modified == null ? "null" : modified) + ", " +
+        return "\"id\": \"" + (id == null ? "null" : id) + "\", " +
+                "\"modified\":\"" + (modified == null ? "null" : modified) + "\", " +
                 "\"modifiedBy\":" + (modifiedBy == null ? "null" : modifiedBy)+ ", ";
 
     }

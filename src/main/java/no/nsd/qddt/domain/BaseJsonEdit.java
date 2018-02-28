@@ -21,17 +21,13 @@ import java.util.UUID;
 public  abstract class BaseJsonEdit implements Serializable {
 
 
-	protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	  protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Type(type="pg-uuid")
     private UUID id;
 
     private String name;
 
-/*     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
- */
     private Timestamp modified;
 
     private UserJson modifiedBy;

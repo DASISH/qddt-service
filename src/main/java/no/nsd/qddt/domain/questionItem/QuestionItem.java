@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -15,7 +14,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Question Item is a container for Question (text) and responsedomain
@@ -83,7 +83,7 @@ public class QuestionItem extends AbstractEntityAudit {
         setResponseDomain(null);
     }
 
-    public void updateStatusQI(Concept concept) {
+    public void updateStatusQI() {
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         this.setChangeComment("Concept reference removed");
     }
@@ -217,6 +217,10 @@ public class QuestionItem extends AbstractEntityAudit {
         pdfReport.addPadding();
     }
 
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
 
 
 }

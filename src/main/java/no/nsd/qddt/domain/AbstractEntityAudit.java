@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
@@ -38,6 +39,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
      */
     public enum ChangeKind {
         CREATED("Created","New element status"),
+        BASED_ON("Based on","Based on copy"),
+        NEW_COPY("New Copy","Copy new"),
+        TRANSLATED("Translated","Translation of source"),
+        REFERENCED("Reference of","Concepts can be copied as a reference, to facilitate hierarchical revision trees"),
         UPDATED_PARENT("Parent Updated","ChildSaved as part of parent save"),
         UPDATED_CHILD("Child Updated","ParentSaved as part of child save"),
         UPDATED_HIERARCHY_RELATION("Hierarchy Relation Updated","Element added to a collection, no changes to element itself"),
@@ -46,12 +51,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         CONCEPTUAL("ConceptualImprovement","Conceptual Improvement"),
         EXTERNAL("RealLifeChange","Real Life Change"),
         OTHER("OtherPurpose","Other Purpose"),
-        //. when you discover that you didn't completely fill inn the fields when creating an element, and then add this information later on.
-        ADDED_CONTENT("AddContentElement","Add Content Element"),
-        BASED_ON("Based on","Based on copy"),
-        NEW_COPY("New Copy","Copy new"),
-        REFERENCED("Reference of","Concepts can be copied as a reference, to facilitate hierarchical revision trees"),
-        TRANSLATED("Translated","Translation of source"),
+        ADDED_CONTENT("AddContentElement","Added content later on"),
         ARCHIVED("Archived","READ ONLY");
 
         ChangeKind(String name, String description){
@@ -81,9 +81,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
 
         @Override
         public String toString() {
-            return "{\"_class\":\"ChangeKind\", " +
-                    "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
-                    "\"description\":" + (description == null ? "null" : "\"" + description + "\"") +
+            return "{ " +
+                    "\"ChangeKind\": " + (name == null ? "null" : "\"" + name + "\"") +
                     "}";
         }
     }
@@ -103,11 +102,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
     private String name;
 
 
-    @Column(name = "based_on_object",updatable = false, nullable = false)
+    @Column(name = "based_on_object",updatable = false)
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
-    @Column(name = "based_on_revision",updatable = false, nullable = false)
+    @Column(name = "based_on_revision",updatable = false)
     private Long basedOnRevision;
 
 
@@ -214,7 +213,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
-        changeKind = AbstractEntityAudit.ChangeKind.CREATED;
+        changeKind = ChangeKind.CREATED;
+        changeComment = ChangeKind.CREATED.description;
         version = new Version(true);
         beforeInsert();
     }
@@ -224,11 +224,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         try {
             LOG.debug("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
-            AbstractEntityAudit.ChangeKind change = changeKind;
-            if (change == AbstractEntityAudit.ChangeKind.CREATED & !ver.isNew()) {
-                change = AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT;
+            ChangeKind change = changeKind;
+
+            if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() & !ver.isNew()) {
+                change = ChangeKind.IN_DEVELOPMENT;
                 changeKind = change;
             }
+            if (StringTool.IsNullOrTrimEmpty(changeComment))
+                changeComment = change.description;
             switch (change) {
                 case BASED_ON:
                 case TRANSLATED:
@@ -270,9 +273,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
         }
     }
 
-    protected void beforeUpdate() {}
+    protected abstract void beforeUpdate();
 
-    protected void beforeInsert() {}
+    protected abstract void beforeInsert();
 
 
     @JsonIgnore

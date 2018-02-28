@@ -110,5 +110,9 @@ public class Publication extends AbstractEntityAudit {
             element.getElementAsEntity().fillDoc(pdfReport,String.valueOf(++i));
         }
     }
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
 
 }

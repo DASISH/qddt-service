@@ -18,7 +18,6 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -80,7 +79,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @JsonIgnore
     @OrderColumn(name="responsedomain_idx")
     @OrderBy("responsedomain_idx ASC")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id"))
     private List<Code> codes = new ArrayList<>();
 
@@ -92,7 +91,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
-    @ManyToOne(cascade = { CascadeType.MERGE ,  CascadeType.REMOVE},fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {  CascadeType.REMOVE } ,fetch = FetchType.EAGER)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
@@ -171,55 +170,13 @@ public class ResponseDomain extends AbstractEntityAudit  {
     *    this is useful for populating codes before saving to DB
     */
     public void populateCodes() {
-        this.codes.clear();
-        harvestCatCodes(managedRepresentation);
+        this.codes =  managedRepresentation.getCodes();
     }
-
-    private void harvestCatCodes(Category current){
-        if (current == null) return;
-        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
-
-            if (getId()== null && getResponseKind() == ResponseKind.MIXED) {
-                Code code = new Code(current.getCode().getCodeValue());
-                this.codes.add(code);
-            } else {
-                Code code = current.getCode();
-                this.codes.add(code);
-            }
-        }
-        current.getChildren().forEach(this::harvestCatCodes);
-    }
-
-    @Transient
-    private int _Index;    // /used to keep track of current item in the recursive call populateCatCodes
-
-    /**
-     * this function is useful for populating managedRepresentation after loading from DB
-     */
-    private void populateCatCodes(Category current){
-        assert current != null;
-        if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
-            try {
-                Code code = codes.get(_Index);
-                current.setCode(code);
-                _Index++;
-            } catch (IndexOutOfBoundsException iob){
-                current.setCode(new Code());
-            } catch(Exception ex) {
-                LOG.error(DateTime.now().toDateTimeISO()+
-                        " populateCatCodes (catch & continue) " + ex.getMessage()+ " - " +
-                        current);
-                current.setCode(new Code());
-            }
-        }
-        current.getChildren().forEach(this::populateCatCodes);
-    }
-
 
     public Category getManagedRepresentation() {
         assert managedRepresentation != null;
-        _Index = 0;
-        populateCatCodes(managedRepresentation);
+        if (getCodes().size() > 0)
+            managedRepresentation.setCodes( getCodes() );
         return managedRepresentation;
     }
 
@@ -233,11 +190,12 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     public void setManagedRepresentation(Category managedRepresentation) {
         LOG.debug("setManagedRepresentation");
-        this.codes.clear();
-        harvestCatCodes(managedRepresentation);
+        setCodes( managedRepresentation.getCodes());
         this.managedRepresentation = managedRepresentation;
-//        beforeUpdate();
     }
+
+    @Override
+    protected void beforeInsert() {}
 
     @Override
     protected void beforeUpdate() {
@@ -254,9 +212,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         managedRepresentation.setChangeKind(getChangeKind());
         if(!getVersion().isModified()) {
             LOG.debug("onUpdate not run yet ♣♣♣ ");
-//            onUpdate();
         }
-
         managedRepresentation.setVersion(getVersion());
             LOG.debug("ResponseDomain PrePersist " + getName() + " - " + getVersion());
 
@@ -265,11 +221,12 @@ public class ResponseDomain extends AbstractEntityAudit  {
     public List<Code> getCodes() {
         if (codes == null)
             codes = new ArrayList<>();
-        return codes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        return codes.stream().filter(c-> !c.isEmpty()).collect(Collectors.toList());
     }
 
     public void setCodes(List<Code> codes) {
-        this.codes = codes;
+        if (codes.stream().filter(c-> !c.isEmpty()).count() > 0)
+            this.codes = codes;
     }
 
 
@@ -304,9 +261,8 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @Override
     public String toString() {
 
-        return MessageFormat.format("ResponseDomain { {0}, {1}, {2} } " ,
+        return MessageFormat.format("ResponseDomain { {0}, {2} } " ,
                 super.toString(),
-                getCodes(),
                 getManagedRepresentation().toString());
     }
 

@@ -64,28 +64,28 @@ public class User {
     private Set<Authority> authorities = new HashSet<>();
 
     @JsonIgnore
-	@OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+	  @OneToMany(mappedBy="modifiedBy")
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<Study> studies = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     @NotAudited
+    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
     private Set<Comment> comments = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<Instrument> instrument = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<ControlConstruct> controlConstructs = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<Instruction> instructions = new HashSet<>();
 
     @JsonIgnore
@@ -93,28 +93,31 @@ public class User {
     private Set<QuestionItem> questions = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
     @JsonIgnore
     @NotAudited
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<Concept> concepts = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @NotAudited
+    @OneToMany(mappedBy="modifiedBy")
     private Set<ResponseDomain> responseDomains = new HashSet<>();
 
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @NotAudited
+    @OneToMany(mappedBy="modifiedBy")
     private Set<Category> categories = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @NotAudited
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
@@ -296,6 +299,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{ " + username + "@" + agency.getName() + " }";
+        return " \"User \" { \"name\" : \"" + username + "@" + agency==null? "?": agency.getName() + "\" } ";
     }
 }
