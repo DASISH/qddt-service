@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -100,7 +100,7 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
                 coms  =commentService.findAllByOwnerIdPublic(instance.getId());
             instance.setComments(new HashSet<>(coms));
             instance.getConceptQuestionItems()
-                    .forEach(cqi-> cqi.setQuestionItem(
+                    .forEach(cqi-> cqi.setElement(
                             getQuestionItemLastOrRevision(cqi)));
 
             instance.getChildren().forEach(this::postLoadProcessing);
@@ -116,11 +116,11 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
         return instance;
     }
 
-    private QuestionItem getQuestionItemLastOrRevision(ConceptQuestionItemRev cqi){
+    private QuestionItem getQuestionItemLastOrRevision(ElementRef cqi){
 //        System.out.println("Fetching QI " + cqi.getId() + " " + cqi.getQuestionItemRevision());
 
         return questionAuditService.getQuestionItemLastOrRevision(
-                cqi.getQuestionId(),
-                cqi.getQuestionItemRevision().intValue()).getEntity();
+                cqi.getId(),
+                cqi.getRevisionNumber().intValue()).getEntity();
     }
 }

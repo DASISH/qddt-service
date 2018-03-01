@@ -2,8 +2,7 @@ package no.nsd.qddt.domain.pdf;
 
 import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.color.ColorConstants;
-import com.itextpdf.kernel.color.DeviceRgb;
+import com.itextpdf.kernel.colors.*;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -12,7 +11,7 @@ import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.kernel.pdf.navigation.PdfDestination;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.border.Border;
+import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.hyphenation.HyphenationConfig;
 import com.itextpdf.layout.layout.LayoutContext;
@@ -47,7 +46,8 @@ public class PdfReport extends PdfDocument {
 
     private static final long serialVersionUID = 1345354324653452L;
 
-	protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	  protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    public final float width100 =  PageSize.A4.getWidth();
 
     private PdfFont paragraphFont;
     private PdfFont font;
@@ -119,7 +119,8 @@ public class PdfReport extends PdfDocument {
         int tocPages = getNumberOfPages() - startToc;
         try {
             for (int i = 1; i <= tocPages; i++) {
-                addPage(i, removePage(startToc+i));
+                movePage(startToc+i, i );
+//                addPage(i, removePage());
             }
 //            copyPagesTo(startToc+1, getNumberOfPages(), this, 1);
             } catch (Exception ex) {
@@ -129,9 +130,9 @@ public class PdfReport extends PdfDocument {
                     .forEach(LOG::info);         }
         // add page labels
         getPage(1)
-                .setPageLabel(PageLabelNumberingStyleConstants.LOWERCASE_ROMAN_NUMERALS, null, 1);
+                .setPageLabel(PageLabelNumberingStyle.LOWERCASE_ROMAN_NUMERALS, null, 1);
         getPage(2 + tocPages)
-                .setPageLabel(PageLabelNumberingStyleConstants.DECIMAL_ARABIC_NUMERALS, null, 1);
+                .setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, null, 1);
 
     }
 
@@ -149,46 +150,46 @@ public class PdfReport extends PdfDocument {
                 new Paragraph(header)
                 .setFontSize(25))
             .setTextAlignment(TextAlignment.LEFT)
-            .setBorder(Border.NO_BORDER)
+            .setBorder( Border.NO_BORDER)
             .add(new Paragraph("_______________________________________________________")
             .setFontColor(ColorConstants.BLUE)));
         table.addCell(
-            new Cell().add("Version")
+            new Cell().add(new Paragraph( "Version"))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(element.getVersion().toString())
+            new Cell().add(new Paragraph( element.getVersion().toString()))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add("Last Saved")
+            new Cell().add(new Paragraph("Last Saved"))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(element.getModified().toLocalDateTime().toString())
+            new Cell().add(new Paragraph(element.getModified().toLocalDateTime().toString()))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add("Last Saved By")
+            new Cell().add(new Paragraph("Last Saved By"))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(element.getModifiedBy().getUsername())
+            new Cell().add(new Paragraph(element.getModifiedBy().getUsername()))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add("Agency")
+            new Cell().add(new Paragraph("Agency"))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(element.getAgency().getName())
+            new Cell().add(new Paragraph(element.getAgency().getName()))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
@@ -218,20 +219,22 @@ public class PdfReport extends PdfDocument {
 
     public Document addheader2(String header){
         return this.document.add(new Paragraph(header)
-            .setWidthPercent(80)
+            .setMaxWidth(width100*0.8F)
             .setFontColor(ColorConstants.BLUE)
             .setKeepTogether(true));
     }
 
     public Document addParagraph(String value){
         return this.document.add(new Paragraph(value)
-            .setWidthPercent(80)
+            .setWidth(width100*0.8F)
             .setKeepTogether(true));
     }
 
     public Document addComments(Set<Comment> comments){
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}))
-                .setKeepTogether(true).setWidthPercent(80).setPaddingBottom(30);
+            .setKeepTogether(true)
+            .setWidth(width100*0.8F)
+            .setPaddingBottom(30);
         for(Comment comment: comments.stream().filter(Comment::isPublic).collect(Collectors.toList())){
             addCommentRow(table,comment,0);
         }
@@ -244,23 +247,23 @@ public class PdfReport extends PdfDocument {
 
     private void addCommentRow(Table table,Comment comment, int level){
         table.setBackgroundColor(new DeviceRgb(245, 245, 245))
-                .addCell(new Cell(1,3)
-                        .setWidthPercent(70)
-                        .setPaddingBottom(10)
-                        .setBorder(Border.NO_BORDER)
-                        .add(comment.getComment()).setPaddingLeft(15*level))
-                .addCell(new Cell()
-                        .setWidthPercent(15)
-                        .setPaddingBottom(10)
-                        .setBorder(Border.NO_BORDER)
-                        .setTextAlignment(TextAlignment.RIGHT)
-                        .add(comment.getModifiedBy().getUsername()))
-                .addCell(new Cell()
-                        .setWidthPercent(15)
-                        .setPaddingBottom(10)
-                        .setBorder(Border.NO_BORDER)
-                        .setTextAlignment(TextAlignment.RIGHT)
-                        .add(comment.getModified().toLocalDateTime().toString()));
+            .addCell(new Cell(1,3)
+                .setWidth(width100*0.7F)
+                .setPaddingBottom(10)
+                .setBorder(Border.NO_BORDER)
+                .add(new Paragraph( comment.getComment()).setPaddingLeft(15*level)))
+            .addCell(new Cell()
+                .setWidth(width100*0.15F)
+                .setPaddingBottom(10)
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.RIGHT)
+                .add(new Paragraph( comment.getModifiedBy().getUsername())))
+            .addCell(new Cell()
+                .setWidth(width100*0.15F)
+                .setPaddingBottom(10)
+                .setBorder(Border.NO_BORDER)
+                .setTextAlignment(TextAlignment.RIGHT)
+                .add(new Paragraph( comment.getModified().toLocalDateTime().toString())));
 
         for(Comment subcomment: comment.getComments().stream().filter(Comment::isPublic).collect(Collectors.toList())){
             addCommentRow(table,subcomment,level+1);

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.ArchivableService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface ConceptService  extends BaseService<Concept, UUID> {
+public interface ConceptService  extends ArchivableService<Concept> {
 
     Page<Concept> findAllPageable(Pageable pageable);
 

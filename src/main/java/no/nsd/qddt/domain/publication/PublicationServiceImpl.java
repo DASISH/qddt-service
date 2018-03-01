@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.BaseServiceAudit;
+import no.nsd.qddt.domain.embedded.ElementKind;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
@@ -97,7 +99,6 @@ public class PublicationServiceImpl implements PublicationService {
 
     }
 
-
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
@@ -137,7 +138,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional(readOnly = true)
-    public PublicationElement getDetail(PublicationElement publicationElement) {
+    public ElementRef getDetail(ElementRef publicationElement) {
         return fill(publicationElement);
     }
 
@@ -179,8 +180,8 @@ public class PublicationServiceImpl implements PublicationService {
         return null;
     }
 
-    private PublicationElement fill(PublicationElement element) {
-        BaseServiceAudit service = getService(element.getElementEnum());
+    private ElementRef fill(ElementRef element) {
+        BaseServiceAudit service = getService(element.getElementKind());
         service.setShowPrivateComment(showPrivate);
         try {
             element.setElement(service.findRevision(
@@ -204,10 +205,6 @@ public class PublicationServiceImpl implements PublicationService {
                     .forEach(LOG::info);
         }
 
-        if (element.getElementAsEntity() != null){
-            element.setName(element.getElementAsEntity().getName());
-            element.setVersion(element.getElementAsEntity().getVersion());
-        }
         return element;
     }
 

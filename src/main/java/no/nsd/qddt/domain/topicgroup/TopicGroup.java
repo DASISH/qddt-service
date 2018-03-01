@@ -8,19 +8,17 @@ import no.nsd.qddt.domain.Archivable;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.Authorable;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.embedded.ElementKind;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -71,8 +69,12 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     private Set<Concept> concepts = new HashSet<>(0);
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE }, mappedBy = "topicGroup")
-    private Set<TopicGroupQuestionItem> topicQuestionItems = new HashSet<>(0);
+    @OrderColumn(name="element_idx")
+    @OrderBy("element_idx ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "TOPIC_QUESTION_ITEM",joinColumns = @JoinColumn(name="element_id"))
+    private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>();
+
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -159,36 +161,38 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     }
 
 
-    public Set<TopicGroupQuestionItem> getTopicQuestionItems() {
+    public List<ElementRef<QuestionItem>> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(Set<TopicGroupQuestionItem> topicQuestionItems) {
-        this.topicQuestionItems = topicQuestionItems;
-    }
-
-    public void addTopicQuestionItem(TopicGroupQuestionItem topicQuestionItem) {
-        if (this.topicQuestionItems.stream().noneMatch(cqi->topicQuestionItem.getId().equals(cqi.getId()))) {
-            topicQuestionItems.add(topicQuestionItem);
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation added");
-        }
-        else
-            LOG.debug("ConceptQuestionItem not inserted, match found" );
-    }
-
-    public void addQuestionItem(QuestionItem questionItem) {
-        addTopicQuestionItem(new TopicGroupQuestionItem(this,questionItem));
+    public void setTopicQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+        this.topicQuestionItems = conceptQuestionItems;
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
-    public  void removeQuestionItem(UUID qiId){
-        int before = topicQuestionItems.size();
-        topicQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
-        if (before> topicQuestionItems.size()){
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation removed");
+    public void removeQuestionItem(UUID questionItemId, Long rev) {
+        ElementRef toDelete = new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev );
+        if (topicQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
+            this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
+            this.setChangeComment( "QuestionItem assosiation removed" );
+//            this.getParents().forEach( p -> p.setChangeKind( ChangeKind.UPDATED_CHILD ) );
         }
+    }
+
+    public void addQuestionItem(UUID questionItemId, Long rev) {
+        addQuestionItem( new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
+    }
+
+    public void addQuestionItem(ElementRef qef) {
+        if (this.topicQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
+
+            topicQuestionItems.add(qef);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            this.setChangeComment("QuestionItem assosiation added");
+//            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
+        }
+        else
+            LOG.debug("ConceptQuestionItem not inserted, match found" );
     }
 
     public void setParent(Study newParent) {
@@ -241,7 +245,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
         pdfReport.addHeader(this,"Module " + counter )
         .add(new Paragraph(this.getAbstractDescription())
-            .setWidthPercent(80)
+            .setWidth(pdfReport.width100*0.8F)
             .setPaddingBottom(15));
 
         if(getComments().size()>0) {
@@ -252,11 +256,11 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
-            for (TopicGroupQuestionItem item : getTopicQuestionItems()) {
-                pdfReport.addheader2(item.getQuestionItemLateBound().getName());
-                pdfReport.addParagraph(item.getQuestionItemLateBound().getQuestion());
-                if (item.getQuestionItemLateBound().getResponseDomain() != null)
-                    item.getQuestionItemLateBound().getResponseDomain().fillDoc(pdfReport, "");
+            for (ElementRef<QuestionItem> item : getTopicQuestionItems()) {
+                pdfReport.addheader2(item.getName());
+                pdfReport.addParagraph(item.getElementAs().getQuestion());
+                if (item.getElementAs().getResponseDomain() != null)
+                    item.getElementAs().getResponseDomain().fillDoc(pdfReport, "");
                 pdfReport.addPadding();
             }
         }

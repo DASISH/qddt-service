@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.embedded.ElementKind;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
 import org.junit.Before;
@@ -58,10 +60,10 @@ public class PublicationServiceTest extends AbstractServiceTest {
         publication.setName("TEST");
         publication.setPurpose("TEST PURPOSE");
         publication.setStatus(pubstat.get(2).getName());
-        List<PublicationElement> pubelements = new ArrayList<>();
-        pubelements.add(new PublicationElement(ElementKind.QUESTION_ITEM, UUID.fromString("fe107534-b071-41d3-bafc-71cf5cf716d6"),420));
-        pubelements.add(new PublicationElement(ElementKind.QUESTION_ITEM, UUID.fromString("635e2eac-91c2-4f1a-b6cf-3478621194c6"),418));
-        pubelements.add(new PublicationElement(ElementKind.QUESTION_ITEM, UUID.fromString("081bb8ff-b800-416a-b851-612ee7c04b32"),417));
+        List<ElementRef> pubelements = new ArrayList<>();
+        pubelements.add(new ElementRef( ElementKind.QUESTION_ITEM, UUID.fromString("fe107534-b071-41d3-bafc-71cf5cf716d6"),420));
+        pubelements.add(new ElementRef(ElementKind.QUESTION_ITEM, UUID.fromString("635e2eac-91c2-4f1a-b6cf-3478621194c6"),418));
+        pubelements.add(new ElementRef(ElementKind.QUESTION_ITEM, UUID.fromString("081bb8ff-b800-416a-b851-612ee7c04b32"),417));
         publication.setPublicationElements(pubelements);
         service.save(publication);
 

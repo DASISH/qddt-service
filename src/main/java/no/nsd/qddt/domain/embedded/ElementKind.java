@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.publication;
+package no.nsd.qddt.domain.embedded;
 
 /**
  * @author Stig Norland

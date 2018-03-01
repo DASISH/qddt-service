@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.Archivable;
+import no.nsd.qddt.domain.embedded.ElementKind;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.hibernate.envers.AuditMappedBy;
@@ -58,23 +61,16 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     @Column(name = "topicgroup_id", insertable = false, updatable = false)
     private UUID topicGroupId;
 
-    @OrderColumn(name="parent_idx")
-    @OrderBy("parent_idx ASC")
+    @OrderColumn(name="element_idx")
+    @OrderBy("element_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",joinColumns = @JoinColumn(name="parent_id"))
-    private List<ConceptQuestionItemRev>  conceptQuestionItems = new ArrayList<>();
-
-
-/*     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE ,CascadeType.DETACH }, mappedBy = "concept")
-    private Set<ConceptQuestionItem> conceptQuestionItems = new HashSet<>(0); */
-
+    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",joinColumns = @JoinColumn(name="element_id"))
+    private List<ElementRef<QuestionItem>>  conceptQuestionItems = new ArrayList<>();
 
     private String label;
 
-
     @Column(name = "description", length = 10000)
     private String description;
-
 
     @Transient
     @JsonDeserialize
@@ -95,24 +91,39 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         this.topicGroup = topicGroup;
     }
 
-    public List<ConceptQuestionItemRev> getConceptQuestionItems() {
+    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ConceptQuestionItemRev> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
-    public void removeQuestionItem(UUID questionItemId) {
-        int before = conceptQuestionItems.size();
-        conceptQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(questionItemId));
-        if (before> conceptQuestionItems.size()){
+    public void removeQuestionItem(UUID questionItemId, Long rev) {
+        ElementRef toDelete = new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev );
+        if (conceptQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
+            this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
+            this.setChangeComment( "QuestionItem assosiation removed" );
+            this.getParents().forEach( p -> p.setChangeKind( ChangeKind.UPDATED_CHILD ) );
+        }
+    }
+
+    public void addQuestionItem(UUID questionItemId, Long rev) {
+        addQuestionItem( new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
+    }
+
+    public void addQuestionItem(ElementRef qef) {
+        if (this.conceptQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
+
+            conceptQuestionItems.add(qef);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation removed");
+            this.setChangeComment("QuestionItem assosiation added");
             this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
-	}
+        else
+            LOG.debug("ConceptQuestionItem not inserted, match found" );
+    }
 
 
 /* 
@@ -258,7 +269,6 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     }
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -311,7 +321,7 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         try {
             pdfReport.addHeader(this, "Concept " + counter )
                 .add(new Paragraph(this.getDescription())
-                    .setWidthPercent(80)
+                    .setWidth(pdfReport.width100*0.8F)
                     .setPaddingBottom(15));
 
             if (getComments().size() > 0) {
@@ -323,11 +333,11 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             if (getConceptQuestionItems().size() > 0) {
                 pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
-                for (ConceptQuestionItemRev item : getConceptQuestionItems()) {
-                    pdfReport.addheader2(item.getQuestionItem().getName());
-                    pdfReport.addParagraph(item.getQuestionItem().getQuestion());
-                    if (item.getQuestionItem().getResponseDomain() != null)
-                        item.getQuestionItem().getResponseDomain().fillDoc(pdfReport, "");
+                for (ElementRef<QuestionItem> item : getConceptQuestionItems()) {
+                    pdfReport.addheader2(item.getName());
+                    pdfReport.addParagraph(item.getElementAs().getQuestion());
+                    if (item.getElementAs().getResponseDomain() != null)
+                        item.getElementAs().getResponseDomain().fillDoc(pdfReport, "");
                     pdfReport.addPadding();
                 }
             }

@@ -64,10 +64,12 @@ public class User {
     private Set<Authority> authorities = new HashSet<>();
 
     @JsonIgnore
+    @NotAudited
 	  @OneToMany(mappedBy="modifiedBy")
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @JsonIgnore
+    @NotAudited
     @OneToMany(mappedBy="modifiedBy")
     private Set<Study> studies = new HashSet<>();
 
@@ -117,7 +119,6 @@ public class User {
     private Set<Category> categories = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @NotAudited
     @JoinColumn(name = "agency_id")
     private Agency agency;
 

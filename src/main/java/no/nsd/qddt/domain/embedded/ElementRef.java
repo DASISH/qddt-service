@@ -1,16 +1,16 @@
-package no.nsd.qddt.domain.publication;
+package no.nsd.qddt.domain.embedded;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
-import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.annotations.Parent;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -23,7 +23,16 @@ import java.util.UUID;
  */
 @Audited
 @Embeddable
-public class PublicationElement  {
+public class ElementRef<T> implements Cloneable {
+
+    @Parent
+    private UUID elementId;
+
+    @Column(name = "element_idx" , insertable = false, updatable = false)
+    private Integer elementIdx;
+
+    @Enumerated(EnumType.STRING)
+    private ElementKind elementKind;
 
     @Type(type="pg-uuid")
     private UUID id;
@@ -31,29 +40,27 @@ public class PublicationElement  {
     @Column(name = "revision")
     private Long revisionNumber;
 
-    @Enumerated(EnumType.STRING)
-    private ElementKind elementKind;
-
     private String name;
 
-    @JsonIgnore
-    private Integer major;
-    @JsonIgnore
-    private Integer minor;
-    @JsonIgnore
-    private
-    String versionLabel;
+    @Embedded
+    private Version version;
 
     @Transient
     @JsonSerialize
     private Object element;
 
 
-    public PublicationElement() {
+    public ElementRef() {
     }
 
-    public PublicationElement(ElementKind kind,UUID id,Integer rev) {
-        setElementEnum(kind);
+    public ElementRef(ElementKind kind, UUID id, Long rev) {
+        setElementKind(kind);
+        setId(id);
+        setRevisionNumber(rev);
+    }
+
+    public ElementRef(ElementKind kind, UUID id, Integer rev) {
+        setElementKind(kind);
         setId(id);
         setRevisionNumber(rev.longValue());
     }
@@ -62,7 +69,6 @@ public class PublicationElement  {
     public UUID getId() {
         return id;
     }
-
 
     private void setId(UUID id) {
         this.id = id;
@@ -73,29 +79,17 @@ public class PublicationElement  {
         return revisionNumber;
     }
 
-
     public void setRevisionNumber(Long revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
 
 
-    public String getElementKind() {
-        return elementKind.getDescription();
-    }
-
-
-    public void setElementKind(String elementDescription) {
-        this.elementKind = ElementKind.getEnum(elementDescription);
-    }
-
-    private void setElementEnum(ElementKind elementKind) {
-        this.elementKind = elementKind;
-    }
-
-
-    @JsonIgnore
-    public ElementKind getElementEnum(){
+    public ElementKind getElementKind(){
         return elementKind;
+    }
+
+    private void setElementKind(ElementKind elementKind) {
+        this.elementKind = elementKind;
     }
 
 
@@ -103,21 +97,21 @@ public class PublicationElement  {
         return name;
     }
 
-
     public void setName(String name) {
         this.name = name;
     }
 
 
     private Version getVersion() {
-        return new Version(major,minor,revisionNumber,versionLabel);
+        return version;
+//        return new Version(major,minor,revisionNumber,versionLabel);
     }
 
-
     public void setVersion(Version version) {
-        major = version.getMajor();
-        minor = version.getMinor();
-        versionLabel = version.getVersionLabel();
+        this.version = version;
+//        major = version.getMajor();
+//        minor = version.getMinor();
+//        versionLabel = version.getVersionLabel();
     }
 
 
@@ -164,39 +158,48 @@ public class PublicationElement  {
         return element;
     }
 
+    public void setElement(Object element) {
+        this.element = element;
+        setName( ((AbstractEntityAudit)element).getName() );
+        setVersion( ((AbstractEntityAudit)element).getVersion() );
+    }
+
+
+    @JsonIgnore
+    @Transient
+    public T getElementAs(){
+        return (T)element;
+    }
+
     @JsonIgnore
     @Transient
     public AbstractEntityAudit getElementAsEntity(){
         return (AbstractEntityAudit)element;
     }
 
-    public void setElement(Object element) {
-        this.element = element;
-    }
 
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PublicationElement)) return false;
+        if (!(o instanceof ElementRef)) return false;
 
-        PublicationElement that = (PublicationElement) o;
+        ElementRef<?> that = (ElementRef<?>) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (revisionNumber != null ? !revisionNumber.equals(that.revisionNumber) : that.revisionNumber != null)
-            return false;
-        return elementKind == that.elementKind;
+//        if (elementId != null ? !elementId.equals( that.elementId ) : that.elementId != null) return false;
+        if (elementKind != that.elementKind) return false;
+        if (id != null ? !id.equals( that.id ) : that.id != null) return false;
+        return revisionNumber != null ? revisionNumber.equals( that.revisionNumber ) : that.revisionNumber == null;
     }
-
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (revisionNumber != null ? revisionNumber.hashCode() : 0);
+        int result = elementId != null ? elementId.hashCode() : 0;
         result = 31 * result + (elementKind != null ? elementKind.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (revisionNumber != null ? revisionNumber.hashCode() : 0);
         return result;
     }
-
 
     @Override
     public String toString() {
@@ -208,5 +211,13 @@ public class PublicationElement  {
                 ", Version =" + getVersion() + '\'' +
                 ", element=" + element +
                 '}';
+    }
+
+    @Override
+    public ElementRef<T> clone() {
+        ElementRef retval = new ElementRef<T>(getElementKind(), getId(),getRevisionNumber());
+        retval.setVersion( getVersion() );
+        retval.setName( getName() );
+        return retval;
     }
 }

@@ -75,17 +75,8 @@ class StudyServiceImpl implements StudyService {
     }
 
     private Study prePersistProcessing(Study instance) {
-        try {
-            if (instance.getChangeKind() == AbstractEntityAudit.ChangeKind.ARCHIVED) {
-                String changecomment =  instance.getChangeComment();
-                instance = findOne(instance.getId());
-                instance.setArchived(true);
-                instance.setChangeComment(changecomment);
-            }
-        } catch (Exception ex){
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
+
+        instance = doArchive( instance ) ;
 
         if (instance.getTopicGroups() != null & !instance.isArchived())
             instance.getTopicGroups().forEach(c->{

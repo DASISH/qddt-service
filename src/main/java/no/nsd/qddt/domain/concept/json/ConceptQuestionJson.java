@@ -1,11 +1,10 @@
 package no.nsd.qddt.domain.concept.json;
 
+import no.nsd.qddt.domain.embedded.ElementRef;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
-import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 
 /**
  * @author Stig Norland
@@ -17,13 +16,13 @@ public class ConceptQuestionJson {
 
     private Integer questionItemRevision;
 
-    public ConceptQuestionJson(ConceptQuestionItemRev q) {
+    public ConceptQuestionJson(ElementRef<QuestionItem> q) {
         if (q == null) {
             LOG.info("ConceptQuestionItem is null");
             return;
         }
-        setQuestionItem(new QuestionItemJsonView(q.getQuestionItem()));
-        setQuestionItemRevision(q.getQuestionItemRevision().intValue());
+        setQuestionItem(new QuestionItemJsonView(q.getElementAs()));
+        setQuestionItemRevision(q.getRevisionNumber().intValue());
 
     }
 

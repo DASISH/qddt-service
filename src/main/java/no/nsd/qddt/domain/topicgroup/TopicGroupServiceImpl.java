@@ -1,12 +1,11 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
-import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
-import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -20,11 +19,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.PostLoad;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -35,23 +34,21 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    private final StudyService studyService;
     private final TopicGroupRepository topicGroupRepository;
     private final TopicGroupAuditService auditService;
+    private final ConceptService conceptService;
     private final QuestionItemAuditService questionAuditService;
-    private final TopicGroupQuestionItemService tqiService;
 
     @Autowired
-    public TopicGroupServiceImpl(StudyService studyService,
-                                 TopicGroupRepository topicGroupRepository,
+    public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository,
                                  TopicGroupAuditService topicGroupAuditService,
-                                 QuestionItemAuditService questionItemAuditService,
-                                 TopicGroupQuestionItemService topicGroupQuestionItemService) {
-        this.studyService = studyService;
+                                 ConceptService conceptService,
+                                 QuestionItemAuditService questionItemAuditService) {
+
         this.topicGroupRepository = topicGroupRepository;
         this.auditService = topicGroupAuditService;
         this.questionAuditService = questionItemAuditService;
-        this.tqiService = topicGroupQuestionItemService;
+        this.conceptService  = conceptService;
     }
 
     @Override
@@ -134,29 +131,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
 
-    private Map<UUID,Set<TopicGroupQuestionItem>> copyAlltqi(TopicGroup source) {
-        Map<UUID,Set<TopicGroupQuestionItem>> tgiRef = new HashMap<>();
-        tgiRef.put(source.getId(),
-            source.getTopicQuestionItems().stream()
-                .map( c -> new TopicGroupQuestionItem( c.getId(), c.getQuestionItemRevision() ))
-                .collect( Collectors.toSet() ));
-        source.getTopicQuestionItems().clear();
-        return  tgiRef;
-    }
-
-    /*
-    This procedure expect to get a hierarchy of concepts that has been saved as basedon (and thus have a basedon ID)
-    It will traverse the Hierarchy and save leaves first
-     */
-    private void updateAlltgi(TopicGroup savedSource, Map<UUID,Set<TopicGroupQuestionItem>> tgiRef ){
-
-        tgiRef.get(savedSource.getBasedOnObject()).stream()
-            .forEach( c->c.setParent( savedSource ) );
-
-        savedSource.setTopicQuestionItems(tqiService.save(  tgiRef.get(savedSource.getBasedOnObject() )));
-    }
-
-
     @Override
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
@@ -173,13 +147,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
-        if (instance.getChangeKind() == AbstractEntityAudit.ChangeKind.ARCHIVED) {
-            String changecomment =  instance.getChangeComment();
-            instance = findOne(instance.getId());
-            instance.setArchived(true);
-            instance.setChangeComment(changecomment);
-        }
-        return instance;
+        return doArchive( instance ) ;
     }
 
     @PostLoad
@@ -190,17 +158,30 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
+            for (ElementRef<QuestionItem> cqi :instance.getTopicQuestionItems()) {
+
                 Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
-                        cqi.getId().getQuestionItemId(),
-                        cqi.getQuestionItemRevision().intValue());
-                cqi.setQuestionItem(rev.getEntity());
-                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().longValue())) {
-                    cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
+                    cqi.getId(),
+                    cqi.getRevisionNumber().intValue());
+
+                cqi.setElement(rev.getEntity());
+                cqi.getElementAs().setConceptRefs(
+                    conceptService.findByQuestionItem(cqi.getId()).stream()
+                        .map( c -> new ConceptRef(c) )
+                        .collect( Collectors.toList())
+                );
+
+                if (!cqi.getRevisionNumber().equals(rev.getRevisionNumber().longValue())) {
+                    cqi.setRevisionNumber(rev.getRevisionNumber().longValue());
                 }
             }
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 Hibernate.initialize(instance.getConcepts());
+                instance.getConcepts().forEach( concept ->
+                    concept.getConceptQuestionItems().forEach( cqi ->
+                        cqi.setElement(questionAuditService.getQuestionItemLastOrRevision(
+                            cqi.getId(),
+                            cqi.getRevisionNumber().intValue()).getEntity()) ) );
             }
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);

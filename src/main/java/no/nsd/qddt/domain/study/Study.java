@@ -215,7 +215,7 @@ public class Study extends AbstractEntityAudit implements Authorable, Archivable
     public void fillDoc(PdfReport pdfReport, String counter) throws IOException {
         pdfReport.addHeader(this,"Study " + counter )
         .add(new Paragraph(this.getDescription())
-                .setWidthPercent(80)
+                .setWidth(pdfReport.width100*0.8F)
                 .setPaddingBottom(30));
 
         if(getComments().size()>0)

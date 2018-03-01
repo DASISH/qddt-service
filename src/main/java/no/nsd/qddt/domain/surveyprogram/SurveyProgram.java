@@ -168,7 +168,7 @@ public class SurveyProgram extends AbstractEntityAudit implements Authorable,Arc
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
         pdfReport.addHeader(this,"Survey")
             .add(new Paragraph(this.getDescription())
-            .setWidthPercent(80)
+            .setWidth(pdfReport.width100*0.8F)
             .setPaddingBottom(30));
 
         if(getComments().size()>0)

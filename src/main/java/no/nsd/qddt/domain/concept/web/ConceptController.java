@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept.web;
 
 import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -62,8 +61,7 @@ public class ConceptController extends BaseController {
             Concept concept = service.findOne(conceptId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
-            concept.getConceptQuestionItems().add(
-                new ConceptQuestionItemRev(questionItemId,questionItemRevision.longValue()));
+            concept.addQuestionItem(questionItemId, questionItemRevision.longValue()  );
 
             return concept2Json(service.save(concept));
         }catch (Exception ex){
@@ -82,7 +80,7 @@ public class ConceptController extends BaseController {
         Concept concept=null;
         try{
             concept = service.findOne(conceptId);
-            concept.removeQuestionItem(questionItemId);
+            concept.removeQuestionItem(questionItemId,null);
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
             super.LOG.error("removeQuestionItem",ex);

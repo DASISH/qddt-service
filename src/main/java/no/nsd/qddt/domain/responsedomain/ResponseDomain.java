@@ -3,9 +3,10 @@ package no.nsd.qddt.domain.responsedomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.itextpdf.kernel.color.ColorConstants;
-import com.itextpdf.layout.border.DottedBorder;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.layout.borders.DottedBorder;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -20,9 +21,11 @@ import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -267,34 +270,34 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) {
         com.itextpdf.layout.element.Table table =
             new com.itextpdf.layout.element.Table(UnitValue.createPercentArray(new float[]{15.0F,70.0F,15.0F}))
                 .setKeepTogether(true)
-                .setWidthPercent(80)
-                .setBorder(new DottedBorder(ColorConstants.GRAY,1))
+                .setWidth(pdfReport.width100*0.8F)
+                .setBorder(new DottedBorder( ColorConstants.GRAY,1))
                 .setFontSize(10);
         table.addCell(new Cell(1,2)
-            .add(this.getName())
+            .add(new Paragraph( this.getName()))
             .setBorder(new DottedBorder(ColorConstants.GRAY,1)))
             .addCell(new Cell()
                 .setTextAlignment(TextAlignment.RIGHT)
-                .add("Version " +this.getVersion().toString()));
+                .add(new Paragraph("Version " +this.getVersion().toString())));
         for (Category cat: getFlatManagedRepresentation(getManagedRepresentation())) {
             if (cat.getHierarchyLevel() == HierarchyLevel.ENTITY ){
                 table.addCell(new Cell()
                         .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
-                table.addCell(new Cell().add(cat.getLabel())
+                table.addCell(new Cell().add(new Paragraph(cat.getLabel()))
                         .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
                 table.addCell(new Cell()
                     .setTextAlignment(TextAlignment.CENTER)
-                    .add(cat.getCode()!=null ? cat.getCode().getCodeValue(): cat.getCategoryType().name())
+                    .add(new Paragraph(cat.getCode()!=null ? cat.getCode().getCodeValue(): cat.getCategoryType().name()))
                     .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
             } else {
-                table.addCell(new Cell().add(cat.getCategoryType().name())
+                table.addCell(new Cell().add(new Paragraph(cat.getCategoryType().name()))
                         .setBorder(new DottedBorder(ColorConstants.GRAY,1))
                         );
-                table.addCell(new Cell(1,2).add(cat.getName())
+                table.addCell(new Cell(1,2).add(new Paragraph(cat.getName()))
                     .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
             }
         }

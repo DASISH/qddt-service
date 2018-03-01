@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
@@ -115,10 +116,10 @@ class ConceptServiceImpl implements ConceptService {
     private Concept prePersistProcessing(Concept instance) {
         try {
             instance.getConceptQuestionItems().stream()
-                .filter( f -> f.getQuestionItemRevision() == null )
+                .filter( f -> f.getRevisionNumber() == null )
                 .forEach( cqi -> {
-                    Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange( cqi.getQuestionId() );
-                    cqi.setQuestionItemRevision( rev.getRevisionNumber().longValue() );
+                    Revision<Integer, QuestionItem> rev = questionAuditService.findLastChange( cqi.getId() );
+                    cqi.setRevisionNumber( rev.getRevisionNumber().longValue() );
                 } );
 
             // children are saved to hold revision info... i guess, these saves shouldn't
@@ -143,7 +144,7 @@ class ConceptServiceImpl implements ConceptService {
                 concept.getChangeKind() != ChangeKind.ARCHIVED ) {
 
             concept.setChangeKind(ChangeKind.UPDATED_PARENT);
-            concept.setChangeComment("");
+            concept.setChangeComment("Touched to save...");
         }
     }
 
@@ -154,21 +155,21 @@ class ConceptServiceImpl implements ConceptService {
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
-            for (ConceptQuestionItemRev cqi :instance.getConceptQuestionItems()) {
+            for (ElementRef<QuestionItem> cqi :instance.getConceptQuestionItems()) {
 
                 Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
-                        cqi.getQuestionId(),
-                        cqi.getQuestionItemRevision().intValue());
+                        cqi.getId(),
+                        cqi.getRevisionNumber().intValue());
 
-                cqi.setQuestionItem(rev.getEntity());
-                cqi.getQuestionItem().setConceptRefs(
-                    conceptRepository.findByConceptQuestionItemsQuestionId(cqi.getQuestionId()).stream()
+                cqi.setElement(rev.getEntity());
+                cqi.getElementAs().setConceptRefs(
+                    conceptRepository.findByConceptQuestionItemsQuestionId(cqi.getId()).stream()
                     .map( c -> new ConceptRef(c) )
                     .collect( Collectors.toList())
                 );
 
-                if (!cqi.getQuestionItemRevision().equals(rev.getRevisionNumber().longValue())) {
-                    cqi.setQuestionItemRevision(rev.getRevisionNumber().longValue());
+                if (!cqi.getRevisionNumber().equals(rev.getRevisionNumber().longValue())) {
+                    cqi.setRevisionNumber(rev.getRevisionNumber().longValue());
                 }
             }
         } catch (Exception ex){
@@ -210,28 +211,6 @@ class ConceptServiceImpl implements ConceptService {
         return conceptRepository.findByConceptQuestionItemsQuestionId(id);
     }
 
-
-   /*  private Map<UUID,Set<ConceptQuestionItem>> copyAllcqi(Concept source) {
-        Map<UUID,Set<ConceptQuestionItem>> cgiRef = new HashMap<>();
-        cgiRef.put(source.getId(),
-            source.getConceptQuestionItems().stream()
-                .map( c -> new ConceptQuestionItemRev( c.getId(), c.getQuestionItemRevision() ))
-                .collect( Collectors.toSet() ));
-        source.getConceptQuestionItems().clear();
-        source.getChildren().stream().forEach( c-> cgiRef.putAll( copyAllcqi( c ) ) );
-        return  cgiRef;
-    } */
-
-    /*
-    This procedure expect to get a hierarchy of concepts that has been saved as basedon (and thus have a basedon ID)
-    It will traverse the Hierarchy and save leaves first
-     */
-/*     private void updateAllCgi(Concept savedSource, Map<UUID,Set<ConceptQuestionItem>> cgiRef ){
-        cgiRef.get(savedSource.getBasedOnObject()).stream()
-            .forEach( c->c.setParent( savedSource ) );
-        savedSource.getChildren().stream().forEach( c-> updateAllCgi( c, cgiRef ) );
-        savedSource.setConceptQuestionItems(cqiService.save( cgiRef.get(savedSource.getBasedOnObject() )));
-    } */
 
 }
 

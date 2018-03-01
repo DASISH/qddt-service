@@ -87,7 +87,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     private SurveyProgram prePersistProcessing(SurveyProgram instance) {
-        return instance;
+        return  doArchive( instance ) ;
     }
 
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {

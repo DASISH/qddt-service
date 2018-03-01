@@ -1,12 +1,13 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptFactory;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
-import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 
@@ -32,14 +33,11 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
             .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
             .collect(Collectors.toSet()));
 
-        dest.setTopicQuestionItems( source.getTopicQuestionItems().stream()
-            .map(mapper -> {
-                TopicGroupQuestionItem ret = new TopicGroupQuestionItem(mapper.getId(), mapper.getQuestionItemRevision());
-                ret.setParent(dest);
-                return ret;
-            })
-            .collect(Collectors.toSet()));
-        return dest;
+      dest.setTopicQuestionItems( source.getTopicQuestionItems().stream()
+          .map( ElementRef::clone )
+          .collect(Collectors.toList()));
+
+      return dest;
 	}
 
 	private Stream<Concept> extracted(TopicGroup source) {

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.embedded.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
@@ -27,7 +28,7 @@ public class Publication extends AbstractEntityAudit {
     @OrderBy("element_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PUBLICATION_ELEMENT",joinColumns = @JoinColumn(name="element_id"))
-    private List<PublicationElement>  publicationElements = new ArrayList<>();
+    private List<ElementRef>  publicationElements = new ArrayList<>();
 
 
     public String getPurpose() {
@@ -50,7 +51,7 @@ public class Publication extends AbstractEntityAudit {
     }
 
 
-    public List<PublicationElement> getPublicationElements() {
+    public List<ElementRef> getPublicationElements() {
         try {
             return publicationElements;
         }catch (Exception ex){
@@ -60,7 +61,7 @@ public class Publication extends AbstractEntityAudit {
     }
 
 
-    public void setPublicationElements(List<PublicationElement> publicationElements) {
+    public void setPublicationElements(List<ElementRef> publicationElements) {
         this.publicationElements = publicationElements;
     }
 
@@ -106,7 +107,7 @@ public class Publication extends AbstractEntityAudit {
         pdfReport.addPadding();
 
         int i=0;
-        for (PublicationElement element:getPublicationElements()){
+        for (ElementRef element:getPublicationElements()){
             element.getElementAsEntity().fillDoc(pdfReport,String.valueOf(++i));
         }
     }
