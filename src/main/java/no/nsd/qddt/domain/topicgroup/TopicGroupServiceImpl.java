@@ -1,7 +1,8 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.ConceptService;
-import no.nsd.qddt.domain.embedded.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private final TopicGroupRepository topicGroupRepository;
     private final TopicGroupAuditService auditService;
     private final ConceptService conceptService;
-    private final QuestionItemAuditService questionAuditService;
+    private final ElementLoader<QuestionItem> qiLoader;
 
     @Autowired
     public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository,
@@ -47,8 +47,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
         this.topicGroupRepository = topicGroupRepository;
         this.auditService = topicGroupAuditService;
-        this.questionAuditService = questionItemAuditService;
         this.conceptService  = conceptService;
+        this.qiLoader = new ElementLoader<>( questionItemAuditService );
     }
 
     @Override
@@ -65,6 +65,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public TopicGroup findOne(UUID uuid) {
         return topicGroupRepository.findById(uuid)
             .map(this::postLoadProcessing).orElseThrow(
@@ -75,7 +76,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public TopicGroup save(TopicGroup instance) {
         try {
             instance = postLoadProcessing(
@@ -89,7 +90,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public List<TopicGroup> save(List<TopicGroup> instances) {
         return topicGroupRepository.save(instances);
     }
@@ -102,7 +103,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public TopicGroup copy(UUID id, Long rev, UUID parentId) {
         //EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev.intValue() ).getEntity();
@@ -110,49 +111,59 @@ class TopicGroupServiceImpl implements TopicGroupService {
         TopicGroup target = new TopicGroupFactory().copy(source, rev);
         target.setParentU(parentId);
         return topicGroupRepository.save(target);
-
-/*         Map<UUID,Set<TopicGroupQuestionItem>> tgiRefs  =  copyAlltqi(source);
-
-        try {
-            entityManager.detach( source );
-            source.makeNewCopy( rev );
-            source.setParent( studyService.findOne( parentId ) );
-            entityManager.merge( source );
-        } finally {
-            if(entityManager != null)
-                entityManager.close();
-        }
-        // This is basically wrong, but it all work out nicely in the repository (next load from DB will be correct)
-        // remove wrong ref qi's, save instanse, set correct id's on qi's save them to db and attach again.
-        TopicGroup finalSource = save( source );
-        updateAlltgi( finalSource,tgiRefs );
-         return finalSource;
-*/
     }
 
 
     @Override
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         topicGroupRepository.delete(uuid);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<TopicGroup> instances) {
         topicGroupRepository.delete(instances);
     }
 
 
-    private TopicGroup prePersistProcessing(TopicGroup instance) {
-        return doArchive( instance ) ;
+    @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    public void delete(TopicGroup instance) {
+        topicGroupRepository.delete(instance.getId());
     }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public List<TopicGroup> findByStudyId(UUID id) {
+        return topicGroupRepository.findByStudyId(id).stream()
+                .map(this::postLoadProcessing).collect(Collectors.toList());
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public Page<TopicGroup> findAllPageable(Pageable pageable) {
+        return topicGroupRepository.findAll(pageable)
+                .map(this::postLoadProcessing);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        return topicGroupRepository.findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(name,description,pageable)
+                .map(this::postLoadProcessing);
+    }
+
 
     @PostLoad
     void test(TopicGroup instance) {
         LOG.debug("Postload " + instance.getName());
+    }
+
+    private TopicGroup prePersistProcessing(TopicGroup instance) {
+        return doArchive( instance ) ;
     }
 
     private TopicGroup postLoadProcessing(TopicGroup instance) {
@@ -160,60 +171,27 @@ class TopicGroupServiceImpl implements TopicGroupService {
         try{
             for (ElementRef<QuestionItem> cqi :instance.getTopicQuestionItems()) {
 
-                Revision<Integer, QuestionItem> rev = questionAuditService.getQuestionItemLastOrRevision(
-                    cqi.getId(),
-                    cqi.getRevisionNumber().intValue());
-
-                cqi.setElement(rev.getEntity());
+                cqi = qiLoader.fill( cqi );
                 cqi.getElementAs().setConceptRefs(
                     conceptService.findByQuestionItem(cqi.getId()).stream()
-                        .map( c -> new ConceptRef(c) )
+                        .map( ConceptRef::new )
                         .collect( Collectors.toList())
                 );
 
-                if (!cqi.getRevisionNumber().equals(rev.getRevisionNumber().longValue())) {
-                    cqi.setRevisionNumber(rev.getRevisionNumber().longValue());
-                }
             }
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( concept ->
-                    concept.getConceptQuestionItems().forEach( cqi ->
-                        cqi.setElement(questionAuditService.getQuestionItemLastOrRevision(
-                            cqi.getId(),
-                            cqi.getRevisionNumber().intValue()).getEntity()) ) );
+                    concept.getConceptQuestionItems().forEach( qiLoader::fill ) );
             }
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
+                .map( StackTraceElement::toString )
                 .forEach(LOG::info);
-            }
+        }
         return instance;
     }
 
-
-    @Transactional
-    public void delete(TopicGroup instance) {
-        topicGroupRepository.delete(instance.getId());
-    }
-
-    @Override
-    public List<TopicGroup> findByStudyId(UUID id) {
-        return topicGroupRepository.findByStudyId(id).stream()
-                .map(this::postLoadProcessing).collect(Collectors.toList());
-    }
-
-    @Override
-    public Page<TopicGroup> findAllPageable(Pageable pageable) {
-        return topicGroupRepository.findAll(pageable)
-                .map(this::postLoadProcessing);
-    }
-
-    @Override
-    public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        return topicGroupRepository.findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(name,description,pageable)
-                .map(this::postLoadProcessing);
-    }
 
 }

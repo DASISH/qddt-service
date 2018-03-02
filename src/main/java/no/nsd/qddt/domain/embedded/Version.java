@@ -25,15 +25,21 @@ public class Version implements Comparable<Version> {
     @Column(name ="rev")
     private Long revision;
 
+    @JsonIgnore
     @Transient
     private boolean isModified = false;
 
+    @JsonIgnore
     @Transient
     private boolean isNew = false;
 
 
     public Integer getMajor() {
         return major;
+    }
+
+    public void setMajor(Integer major) {
+        this.major = major;
     }
 
     public void incMajor() {
@@ -46,6 +52,10 @@ public class Version implements Comparable<Version> {
 
     public Integer getMinor() {
         return minor;
+    }
+
+    public void setMinor(Integer minor) {
+        this.minor = minor;
     }
 
     public void incMinor() {
@@ -71,14 +81,20 @@ public class Version implements Comparable<Version> {
         this.revision = revision;
     }
 
-    @JsonIgnore
     public boolean isNew() {
         return isNew;
     }
 
-    @JsonIgnore
+    private void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
     public boolean isModified() {
         return isModified;
+    }
+
+    private void setModified(boolean modified) {
+        isModified = modified;
     }
 
     public Version() {   }

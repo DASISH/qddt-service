@@ -1,24 +1,14 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.BaseServiceAudit;
-import no.nsd.qddt.domain.embedded.ElementKind;
-import no.nsd.qddt.domain.embedded.ElementRef;
-import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
-import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
-import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.study.audit.StudyAuditService;
-import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
-import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.exception.StackTraceFilter;
-import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,33 +26,16 @@ public class PublicationServiceImpl implements PublicationService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final PublicationRepository repository;
-    private final ConceptAuditService conceptService;
-    private final ControlConstructAuditService controlConstructService;
-    private final InstrumentAuditService instrumentService;
-    private final QuestionItemAuditService questionItemService;
-    private final StudyAuditService studyService;
-    private final SurveyProgramAuditService surveyProgramService;
-    private final TopicGroupAuditService topicGroupService;
+
     private boolean showPrivate= true;
 
     @Autowired
-    public PublicationServiceImpl(PublicationRepository repository,
-                                  ConceptAuditService conceptService,
-                                  ControlConstructAuditService controlConstructService,
-                                  InstrumentAuditService instrumentService,
-                                  QuestionItemAuditService questionItemService,
-                                  StudyAuditService studyService,
-                                  SurveyProgramAuditService surveyProgramService,
-                                  TopicGroupAuditService topicGroupService)
-        {
+    ElementServiceLoader serviceLoader;
+
+    @Autowired
+    public PublicationServiceImpl(PublicationRepository repository)
+    {
         this.repository = repository;
-        this.conceptService = conceptService;
-        this.controlConstructService = controlConstructService;
-        this.instrumentService = instrumentService;
-        this.questionItemService = questionItemService;
-        this.studyService = studyService;
-        this.surveyProgramService = surveyProgramService;
-        this.topicGroupService = topicGroupService;
     }
 
     @Override
@@ -78,6 +51,7 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public Publication findOne(UUID uuid) {
         return postLoadProcessing(repository.findOne(uuid));
     }
@@ -85,7 +59,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and #instance.agency == authentication.agency")
     public Publication save(Publication instance) {
         try {
             return repository.save(instance);
@@ -101,7 +75,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<Publication> save(List<Publication> instances) {
         return repository.save(instances);
     }
@@ -109,7 +83,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         repository.delete(uuid);
     }
@@ -117,13 +91,14 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Publication> instances) {
         repository.delete(instances);
     }
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public Page<Publication> findAllPageable(Pageable pageable) {
         return repository.findAll(defaultSort(pageable,"name","modified"));
     }
@@ -131,6 +106,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable) {
         return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
                 defaultSort(pageable,"name","modified"));
@@ -138,8 +114,12 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public ElementRef getDetail(ElementRef publicationElement) {
-        return fill(publicationElement);
+        return new ElementLoader(
+            serviceLoader.getService(
+                publicationElement.getElementKind() ))
+            .fill( publicationElement );
     }
 
 
@@ -147,66 +127,15 @@ public class PublicationServiceImpl implements PublicationService {
         return instance;
     }
 
-
     private Publication postLoadProcessing(Publication instance) {
         if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
             showPrivate = false;
 
-        instance.getPublicationElements().forEach(this::fill);
+        instance.getPublicationElements().forEach(e-> new ElementLoader( serviceLoader.getService( e.getElementKind() ))
+                .fill( e ));
         return instance;
     }
 
-    private BaseServiceAudit getService(ElementKind elementKind){
-         switch (elementKind) {
-            case CONCEPT:
-                return conceptService;
-            case CONTROL_CONSTRUCT:
-            case QUESTION_CONSTRUCT:
-            case STATEMENT_CONSTRUCT:
-            case SEQUENCE_CONSTRUCT:
-            case CONDITION_CONSTRUCT:
-                return controlConstructService;
-            case INSTRUMENT:
-                return instrumentService;
-            case QUESTION_ITEM:
-                return questionItemService;
-            case STUDY:
-                return studyService;
-            case SURVEY_PROGRAM:
-                return surveyProgramService;
-            case TOPIC_GROUP:
-                return topicGroupService;
-        }
-        return null;
-    }
-
-    private ElementRef fill(ElementRef element) {
-        BaseServiceAudit service = getService(element.getElementKind());
-        service.setShowPrivateComment(showPrivate);
-        try {
-            element.setElement(service.findRevision(
-                    element.getId(),
-                    element.getRevisionNumber().intValue())
-                    .getEntity());
-
-        } catch (RevisionDoesNotExistException e) {
-            Revision rev = service.findLastChange(element.getId());
-            element.setElement(rev.getEntity());
-            element.setRevisionNumber(rev.getRevisionNumber().longValue());
-        } catch (JpaSystemException se) {
-            LOG.error("PublicationElement - JpaSystemException",se);
-            StackTraceFilter.filter(se.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
-        } catch (Exception ex) {
-            LOG.error("PublicationElement - fill",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
-        }
-
-        return element;
-    }
 
 
 

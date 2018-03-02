@@ -410,20 +410,20 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             }
     }
 
- // /used to keep track of current item in the recursive call populateCatCodes
- @Transient
- private int _Index;
- // this is useful for populating codes before saving to DB (used in the service)
- @JsonIgnore
- public List<Code> getCodes() {
+    // /used to keep track of current item in the recursive call populateCatCodes
+    @Transient
+    private int _Index;
+    // this is useful for populating codes before saving to DB (used in the service)
+    @JsonIgnore
+    public List<Code> getCodes() {
      return harvestCatCodes(this);
- }
- public  void setCodes(List<Code> codes) {
+    }
+    public  void setCodes(List<Code> codes) {
      _Index =0;
      populateCatCodes( this, codes );
- }
+    }
 
- private List<Code> harvestCatCodes(Category current){
+    private List<Code> harvestCatCodes(Category current){
      List<Code> tmplist = new ArrayList<>( 0);
      if (current == null) return tmplist;
      if (current.getHierarchyLevel() == HierarchyLevel.ENTITY && current.getCode()!=null) {
@@ -431,9 +431,9 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
      }
      current.getChildren().forEach(c->  tmplist.addAll(harvestCatCodes(c)));
      return tmplist;
- }
+    }
 
- private void populateCatCodes(Category current,List<Code> codes){
+    private void populateCatCodes(Category current,List<Code> codes){
      assert current != null;
      if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
          try {

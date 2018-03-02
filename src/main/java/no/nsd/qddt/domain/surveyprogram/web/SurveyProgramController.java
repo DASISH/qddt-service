@@ -43,7 +43,7 @@ public class SurveyProgramController {
 
         instance.getStudies().forEach(c->{
             c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
-            c.setChangeComment("");
+            c.setChangeComment("touched me to stay in sync...");
         });
         return service.save(instance);
     }

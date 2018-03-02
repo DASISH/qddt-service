@@ -32,6 +32,7 @@ class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Category> findByNameLike(String name, Pageable pageable) {
         return categoryRepository.findByNameIgnoreCaseLike(name,defaultSort(pageable,"name","modified"));
     }
@@ -41,6 +42,7 @@ class CategoryServiceImpl implements CategoryService {
      Name (support whildcard searches)
      */
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Category> findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
         return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,
                 defaultSort(pageable,"name","modified"));
@@ -52,12 +54,14 @@ class CategoryServiceImpl implements CategoryService {
         regardless of HierarchyLevel.
          */
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable) {
         return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name,
                 defaultSort(pageable,"name","modified"));
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Category> findByHierarchyAndNameLike(HierarchyLevel level, String name, Pageable pageable) {
         return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name,
                 defaultSort(pageable,"name","modified"));
@@ -77,6 +81,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Category findOne(UUID uuid) {
         return postLoadProcessing(categoryRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Category.class))
@@ -86,7 +91,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Category save(Category instance) {
         return postLoadProcessing( 
             categoryRepository.save(
@@ -96,21 +101,21 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<Category> save(List<Category> instances) {
         return categoryRepository.save(instances);
     }
 
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         categoryRepository.delete(uuid);
     }
 
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Category> instances) {
         categoryRepository.delete(instances);
     }
@@ -135,6 +140,6 @@ class CategoryServiceImpl implements CategoryService {
     private Category postLoadProcessing(Category instance) {
         instance.setCodes(_codes);
         return instance;
-}
+    }
 
 }

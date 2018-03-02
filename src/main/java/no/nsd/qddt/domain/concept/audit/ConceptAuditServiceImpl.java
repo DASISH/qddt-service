@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.concept.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.embedded.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -30,8 +30,9 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final ConceptAuditRepository conceptAuditRepository;
-    private final QuestionItemAuditService questionAuditService;
     private final CommentService commentService;
+    private final ElementLoader<QuestionItem> qiLoader;
+
     private boolean showPrivateComments;
 
     @Autowired
@@ -40,8 +41,8 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
                                     CommentService commentService
     ){
         this.conceptAuditRepository = conceptAuditRepository;
-        this.questionAuditService = questionAuditService;
         this.commentService = commentService;
+        this.qiLoader = new ElementLoader<>( questionAuditService );
     }
 
     @Override
@@ -91,21 +92,22 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
 
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
-//        System.out.println("Concept postLoadProcessing " + instance.getName());
         try{
             List<Comment> coms;
             if (showPrivateComments)
                 coms = commentService.findAllByOwnerId(instance.getId());
             else
                 coms  =commentService.findAllByOwnerIdPublic(instance.getId());
-            instance.setComments(new HashSet<>(coms));
-            instance.getConceptQuestionItems()
-                    .forEach(cqi-> cqi.setElement(
-                            getQuestionItemLastOrRevision(cqi)));
 
+            instance.setComments(new HashSet<>(coms));
+            instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             instance.getChildren().forEach(this::postLoadProcessing);
-            if (instance.getChildren().size() > 0)
-                System.out.println("Concept children size " + instance.getChildren().size());
+
+//                cqi.getElementAs().setConceptRefs(
+//                    findByQuestionItem(cqi.getId()).stream()
+//                        .map( ConceptRef::new )
+//                        .collect( Collectors.toList())
+//                );
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing exception",ex);
@@ -116,11 +118,4 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
         return instance;
     }
 
-    private QuestionItem getQuestionItemLastOrRevision(ElementRef cqi){
-//        System.out.println("Fetching QI " + cqi.getId() + " " + cqi.getQuestionItemRevision());
-
-        return questionAuditService.getQuestionItemLastOrRevision(
-                cqi.getId(),
-                cqi.getRevisionNumber().intValue()).getEntity();
-    }
 }

@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.concept.json;
 import no.nsd.qddt.domain.BaseJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
@@ -27,7 +29,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private String description;
 
-    private List<ConceptQuestionJson> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
@@ -51,8 +53,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
             setArchived(concept.isArchived());
-            setConceptQuestionItems(
-                    concept.getConceptQuestionItems().stream().map(ConceptQuestionJson::new).collect(Collectors.toList()));
+            setConceptQuestionItems(concept.getConceptQuestionItems());
             setTopicRef(concept.getTopicRef());
         } catch (Exception ex) {
             LOG.error("ConceptJsonEdit exception",ex);
@@ -86,11 +87,11 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         this.children = children;
     }
 
-    public List<ConceptQuestionJson> getConceptQuestionItems() {
+    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(List<ConceptQuestionJson> conceptQuestionItems) {
+    private void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

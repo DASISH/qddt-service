@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.embedded.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;

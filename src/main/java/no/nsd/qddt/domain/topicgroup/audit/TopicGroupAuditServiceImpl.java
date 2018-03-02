@@ -5,12 +5,13 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptQuestionItemRev;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
+import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,28 +25,32 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
  */
 @Service("topicGroupAuditService")
-class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup> implements TopicGroupAuditService {
+class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup> implements TopicGroupAuditService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final TopicGroupAuditRepository topicGroupAuditRepository;
-    private final QuestionItemAuditService  questionItemAuditService;
+    private final ConceptService conceptService;
     private final CommentService commentService;
-    private final OtherMaterialService otherMaterialService;
+    private final ElementLoader<QuestionItem> qiLoader;
     private boolean showPrivateComments;
 
+
     @Autowired
-    public TopicGroupAbstractAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository, QuestionItemAuditService  questionItemAuditService
-                                      , CommentService commentService, OtherMaterialService otherMaterialService) {
+    public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,
+                                      QuestionItemAuditService  questionItemAuditService,
+                                      ConceptService conceptService,
+                                      CommentService commentService ) {
         this.topicGroupAuditRepository = topicGroupAuditRepository;
-        this.questionItemAuditService = questionItemAuditService;
         this.commentService = commentService;
-        this.otherMaterialService = otherMaterialService;
+        this.conceptService = conceptService;
+        this.qiLoader = new ElementLoader<>( questionItemAuditService );
     }
 
     @Override
@@ -97,25 +102,25 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            instance.getConcepts().forEach(this::postLoadProcessing);
+            for (ElementRef<QuestionItem> cqi :instance.getTopicQuestionItems()) {
 
-            for (TopicGroupQuestionItem cqi :instance.getTopicQuestionItems()) {
-                cqi.setQuestionItem(getQuestionItemLastOrRevision(
-                    cqi.getId().getQuestionItemId(),
-                    cqi.getQuestionItemRevision().intValue()));
+                cqi = qiLoader.fill( cqi );
+
+                cqi.getElementAs().setConceptRefs(
+                    conceptService.findByQuestionItem(cqi.getId()).stream()
+                        .map( ConceptRef::new )
+                        .collect( Collectors.toList())
+                );
+
             }
 
-//            List<OtherMaterial> oms = otherMaterialService.findBy(instance.getId());
-//            instance.setOtherMaterials(oms.stream()
-//                .map( c-> (OtherMaterialT)c )
-//                .collect( Collectors.toSet() ) );
-
+            instance.getConcepts().forEach(this::postLoadProcessing);
             instance.setComments(loadComments(instance.getId()));
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
+                    .map( StackTraceElement::toString )
                     .forEach(LOG::info);
         }
         return instance;
@@ -126,15 +131,14 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
         try{
             instance.setComments(loadComments(instance.getId()));
             instance.getConceptQuestionItems()
-                .forEach(cqi-> cqi.setQuestionItem(
-                    getQuestionItemLastOrRevision(cqi)));
+                .forEach( qiLoader::fill );
 
             instance.getChildren().forEach(this::postLoadProcessing);
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
+                    .map( StackTraceElement::toString )
                     .forEach(LOG::info);
         }
         return instance;
@@ -150,14 +154,4 @@ class TopicGroupAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Top
         return new HashSet<>(coms);
     }
 
-
-    private QuestionItem getQuestionItemLastOrRevision(ConceptQuestionItemRev cqi){
-        return questionItemAuditService.getQuestionItemLastOrRevision(
-            cqi.getQuestionId(),
-            cqi.getQuestionItemRevision().intValue()).getEntity();
-    }
-
-    private QuestionItem getQuestionItemLastOrRevision(UUID id, Integer rev){
-        return questionItemAuditService.getQuestionItemLastOrRevision(id,rev).getEntity();
-    }
 }

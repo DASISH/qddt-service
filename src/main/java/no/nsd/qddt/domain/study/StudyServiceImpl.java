@@ -39,6 +39,7 @@ class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Study findOne(UUID uuid) {
         return studyRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Study.class)
@@ -47,7 +48,7 @@ class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Study save(Study instance) {
         return postLoadProcessing(
                 studyRepository.save(
@@ -55,21 +56,21 @@ class StudyServiceImpl implements StudyService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<Study> save(List<Study> instances) {
         return studyRepository.save(instances);
     }
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
 
         studyRepository.delete(uuid);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(List<Study> instances) {
         studyRepository.delete(instances);
     }

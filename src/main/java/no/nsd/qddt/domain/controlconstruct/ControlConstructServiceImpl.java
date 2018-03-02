@@ -63,6 +63,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public ControlConstruct findOne(UUID id) {
 
         ControlConstruct instance = controlConstructRepository.findById(id)
@@ -73,7 +74,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public ControlConstruct save(ControlConstruct instance) {
         return postLoadProcessing(
             controlConstructRepository.save(
@@ -82,26 +83,27 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
         return  instances.stream().map(this::save).collect(Collectors.toList());
     }
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         controlConstructRepository.delete(uuid);
     }
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<ControlConstruct> instances) {
         controlConstructRepository.delete(instances);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<ConstructJson> findByQuestionItems(List<UUID> questionItemIds) {
         assert (questionItemIds.size() > 0);
         return controlConstructRepository.findByquestionItemUUID(questionItemIds.get(0))
@@ -109,6 +111,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<ConstructJson> findTop25ByQuestionItemQuestion(String question) {
         try {
             question = question.replace("*","%");
@@ -128,14 +131,15 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, String question, ControlConstructKind kind, Pageable pageable) {
         name = name.replace("*","%");
         try {
             pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-//            System.out.println(name + " - " + pageable);
             return controlConstructRepository.findByQuery(
                 kind.toString(), name, name, question ,pageable)
                 .map(qi -> mapConstruct(postLoadProcessing(qi)));
+
         } catch (Exception ex) {
             LOG.error("findByNameLikeAndControlConstructKind",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
@@ -152,12 +156,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 cqi.setInstruction(iService.save(cqi.getInstruction()));
         });
 
-        ControlConstructFactory ccf= new ControlConstructFactory();
-        if(instance.isBasedOn()) {
+        if(instance.isBasedOn() || instance.isNewCopy()) {
+            ControlConstructFactory ccf= new ControlConstructFactory();
             Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
             instance = ccf.copy(instance, rev );
-        } else if (instance.isNewCopy()) {
-            instance = ccf.copy(instance, null);
         }
 
         return instance;

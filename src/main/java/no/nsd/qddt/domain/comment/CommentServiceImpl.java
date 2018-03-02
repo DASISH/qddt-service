@@ -37,6 +37,7 @@ class CommentServiceImpl  implements CommentService  {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Comment findOne(UUID uuid) {
         return commentRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Comment.class)
@@ -45,25 +46,25 @@ class CommentServiceImpl  implements CommentService  {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Comment save(Comment instance) {
         return commentRepository.save(instance);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public List<Comment> save(List<Comment> instances) {
         return commentRepository.save(instances);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public void delete(UUID uuid) {
         commentRepository.delete(uuid);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public void delete(List<Comment> instances) {
         commentRepository.delete(instances);
     }
@@ -80,21 +81,25 @@ class CommentServiceImpl  implements CommentService  {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable) {
         return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false, pageable);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable) {
         return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true, pageable);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Comment> findAllByOwnerId(UUID ownerId) {
         return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Comment> findAllByOwnerIdPublic(UUID ownerId) {
         return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true);
     }

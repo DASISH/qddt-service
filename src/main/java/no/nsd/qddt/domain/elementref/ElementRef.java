@@ -1,16 +1,16 @@
-package no.nsd.qddt.domain.embedded;
+package no.nsd.qddt.domain.elementref;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
+import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.json.QuestionItemJsonView;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import no.nsd.qddt.exception.StackTraceFilter;
-import org.hibernate.annotations.Parent;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -25,11 +25,13 @@ import java.util.UUID;
 @Embeddable
 public class ElementRef<T> implements Cloneable {
 
-    @Parent
-    private UUID elementId;
-
-    @Column(name = "element_idx" , insertable = false, updatable = false)
-    private Integer elementIdx;
+//    @Parent
+//    @JsonIgnore
+//    private UUID elementId;
+//
+//    @Column(name = "element_idx" , insertable = false, updatable = false)
+//    @JsonIgnore
+//    private Integer elementIdx;
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
@@ -39,19 +41,16 @@ public class ElementRef<T> implements Cloneable {
 
     @Column(name = "revision")
     private Long revisionNumber;
-
     private String name;
+    private Integer major;
+    private Integer minor;
+    private String versionLabel;
 
-    @Embedded
-    private Version version;
 
     @Transient
     @JsonSerialize
     private Object element;
 
-
-    public ElementRef() {
-    }
 
     public ElementRef(ElementKind kind, UUID id, Long rev) {
         setElementKind(kind);
@@ -65,6 +64,22 @@ public class ElementRef<T> implements Cloneable {
         setRevisionNumber(rev.longValue());
     }
 
+//
+//    public UUID getElementId() {
+//        return elementId;
+//    }
+//
+//    public void setElementId(UUID elementId) {
+//        this.elementId = elementId;
+//    }
+//
+//    public Integer getElementIdx() {
+//        return elementIdx;
+//    }
+//
+//    public void setElementIdx(Integer elementIdx) {
+//        this.elementIdx = elementIdx;
+//    }
 
     public UUID getId() {
         return id;
@@ -103,15 +118,13 @@ public class ElementRef<T> implements Cloneable {
 
 
     private Version getVersion() {
-        return version;
-//        return new Version(major,minor,revisionNumber,versionLabel);
+        return new Version(major,minor,revisionNumber,versionLabel);
     }
 
     public void setVersion(Version version) {
-        this.version = version;
-//        major = version.getMajor();
-//        minor = version.getMinor();
-//        versionLabel = version.getVersionLabel();
+        major = version.getMajor();
+        minor = version.getMinor();
+        versionLabel = version.getVersionLabel();
     }
 
 
@@ -194,8 +207,7 @@ public class ElementRef<T> implements Cloneable {
 
     @Override
     public int hashCode() {
-        int result = elementId != null ? elementId.hashCode() : 0;
-        result = 31 * result + (elementKind != null ? elementKind.hashCode() : 0);
+        int result = (elementKind != null ? elementKind.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (revisionNumber != null ? revisionNumber.hashCode() : 0);
         return result;

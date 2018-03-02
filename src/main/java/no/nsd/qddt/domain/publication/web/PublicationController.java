@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.publication.web;
 
 import no.nsd.qddt.domain.publication.Publication;
-import no.nsd.qddt.domain.embedded.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.publication.PublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

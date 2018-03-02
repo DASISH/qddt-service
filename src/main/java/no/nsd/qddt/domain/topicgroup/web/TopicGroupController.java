@@ -5,9 +5,6 @@ import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
-import no.nsd.qddt.domain.topicgroupquestionitem.ParentQuestionItemId;
-import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItem;
-import no.nsd.qddt.domain.topicgroupquestionitem.TopicGroupQuestionItemService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,14 +32,12 @@ public class TopicGroupController extends BaseController {
 
     private final TopicGroupService service;
     private final StudyService studyService;
-    private final TopicGroupQuestionItemService cqiService;
 
 
     @Autowired
-    public TopicGroupController(TopicGroupService service, StudyService studyService, TopicGroupQuestionItemService topicGroupQuestionItemService) {
+    public TopicGroupController(TopicGroupService service, StudyService studyService) {
         this.service = service;
         this.studyService = studyService;
-        this.cqiService = topicGroupQuestionItemService;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -127,9 +122,7 @@ public class TopicGroupController extends BaseController {
             TopicGroup topicGroup = service.findOne(topicId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
-            topicGroup.addTopicQuestionItem(
-                    new TopicGroupQuestionItem(
-                            new ParentQuestionItemId(topicId,questionItemId),questionItemRevision.longValue()));
+            topicGroup.addQuestionItem(questionItemId,questionItemRevision.longValue());
 
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex){
@@ -148,8 +141,7 @@ public class TopicGroupController extends BaseController {
         TopicGroup topicGroup =null;
         try{
             topicGroup = service.findOne(topicId);
-            topicGroup.removeQuestionItem(questionItemId);
-            cqiService.delete(new ParentQuestionItemId(topicId,questionItemId));
+            topicGroup.removeQuestionItem(questionItemId,null);
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
             LOG.error("removeQuestionItem",ex);

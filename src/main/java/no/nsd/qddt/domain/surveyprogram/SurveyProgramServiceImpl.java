@@ -41,6 +41,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public SurveyProgram findOne(UUID uuid) {
         return surveyProgramRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, SurveyProgram.class)
@@ -50,12 +51,10 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public SurveyProgram save(SurveyProgram instance) {
-
-        SurveyProgram retval=null;
         try {
-            retval= postLoadProcessing(
+            return postLoadProcessing(
                     surveyProgramRepository.save(
                             prePersistProcessing(instance)));
         }catch (Exception ex){
@@ -63,46 +62,49 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                 .map(a->a.toString())
                 .forEach(LOG::info);
+            throw ex;
         }
-        return retval;
     }
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<SurveyProgram> save(List<SurveyProgram> instances) {
         return surveyProgramRepository.save(instances);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
         surveyProgramRepository.delete(uuid);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(List<SurveyProgram> instances) {
         surveyProgramRepository.delete(instances);
     }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public List<SurveyProgram> findByModifiedBy(User user) {
+        return surveyProgramRepository.findByModifiedByOrderByModifiedAsc(user);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public List<SurveyProgram> findByAgency(User user) {
+        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency())
+                .stream().map(this::postLoadProcessing).collect(Collectors.toList());
+    }
+
 
     private SurveyProgram prePersistProcessing(SurveyProgram instance) {
         return  doArchive( instance ) ;
     }
 
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {
-//        System.out.println("comments : " + instance.getComments().size());
         return instance;
     }
 
-    @Override
-    public List<SurveyProgram> findByModifiedBy(User user) {
-        return surveyProgramRepository.findByModifiedByOrderByModifiedAsc(user);
-    }
-
-    @Override
-    public List<SurveyProgram> findByAgency(User user) {
-        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency())
-                .stream().map(this::postLoadProcessing).collect(Collectors.toList());
-    }
 }

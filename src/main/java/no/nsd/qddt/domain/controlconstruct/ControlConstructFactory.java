@@ -1,8 +1,9 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import java.util.stream.Collectors;
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
+
+import java.util.stream.Collectors;
 
 public class ControlConstructFactory implements IEntityFactory<ControlConstruct> {
 

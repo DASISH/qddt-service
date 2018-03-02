@@ -16,12 +16,12 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("publicationAuditService")
-class PublicationAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Publication> implements PublicationAuditService {
+class PublicationAuditServiceImpl extends AbstractAuditFilter<Integer,Publication> implements PublicationAuditService {
 
     private final PublicationAuditRepository publicationAuditRepository;
 
     @Autowired
-    public PublicationAbstractAuditServiceImpl(PublicationAuditRepository instrumentRepository) {
+    public PublicationAuditServiceImpl(PublicationAuditRepository instrumentRepository) {
         this.publicationAuditRepository = instrumentRepository;
     }
 

@@ -36,6 +36,7 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Instrument findOne(UUID uuid) {
         return instrumentRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Instrument.class));
@@ -43,40 +44,43 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Instrument save(Instrument instance) {
         return instrumentRepository.save(instance);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<Instrument> save(List<Instrument> instances) {
         return instrumentRepository.save(instances);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         instrumentRepository.delete(uuid);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Instrument> instances) {
         instrumentRepository.delete(instances);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Instrument> findByStudy(UUID studyId) {
         return instrumentRepository.findByStudy(studyId);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Instrument> findAllPageable(Pageable pageable) {
         return instrumentRepository.findAll(pageable);
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
     }

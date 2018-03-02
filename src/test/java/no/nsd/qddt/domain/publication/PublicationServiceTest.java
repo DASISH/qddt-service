@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.embedded.ElementKind;
-import no.nsd.qddt.domain.embedded.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
 import org.junit.Before;

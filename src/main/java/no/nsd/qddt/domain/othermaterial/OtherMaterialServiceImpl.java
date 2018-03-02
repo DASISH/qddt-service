@@ -48,6 +48,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public OtherMaterial findOne(UUID uuid) {
         return otherMaterialRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException(uuid, OtherMaterial.class)
@@ -57,20 +58,20 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public OtherMaterial save(OtherMaterial instance) {
         return otherMaterialRepository.save(instance);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<OtherMaterial> save(List<OtherMaterial> instances) {
         return otherMaterialRepository.save(instances);
     }
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public void delete(UUID uuid)  {
         try {
             delete(findOne(uuid));
@@ -81,7 +82,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public void delete(List<OtherMaterial> instances)  {
 
         instances.forEach(om -> {
@@ -100,27 +101,20 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
 
-    protected OtherMaterial prePersistProcessing(OtherMaterial instance) {
-        return instance;
-    }
-
-
-    protected OtherMaterial postLoadProcessing(OtherMaterial instance) {
-        return instance;
-    }
-
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException {
 
-        String name = owner + " [" + filename + "]";
         return otherMaterialRepository.findByOwnerIdAndOriginalName(owner,filename)
-                .orElseThrow(
-                () -> new ResourceNotFoundException(name , OtherMaterial.class)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format( "%s [%s]", owner, filename ),
+                        OtherMaterial.class)
         );
 
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException {
         return otherMaterialRepository.findByOwnerId(owner);
     }
@@ -128,6 +122,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId, String kind) throws FileUploadException {
 
         String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getOriginalFilename()).toString();
@@ -159,19 +154,19 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         }
     }
 
-//    @Override
-//    @Deprecated
-//    public void deleteFile(OtherMaterial om) throws ReferenceInUseException {
-//        // maybe this is wrong, files should be accessible to revision system forever...
-//        if (om.getReferencesBy().size() > 0) throw  new ReferenceInUseException(om.getFileName());
-//
-//        String filepath = Paths.get(getFolder(om.getOwner().toString()), om.getFileName()).toString();
-//        new File(filepath).delete();
-//
-//    }
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public File getFile(OtherMaterial om){
+        if (om.getSource() != null)
+            return getFile(om.getSource());
+
+        String filepath = Paths.get(getFolder(om.getOwnerId().toString()), om.getOriginalName()).toString();
+        return new File(filepath);
+    }
+
 
     /*
-    return absolute path to save folder, creates folder if not exists
+        return absolute path to save folder, creates folder if not exists
      */
     private String getFolder(String ownerId) {
 
@@ -184,13 +179,15 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     }
 
-    @Override
-    public File getFile(OtherMaterial om){
-        if (om.getSource() != null)
-            return getFile(om.getSource());
 
-        String filepath = Paths.get(getFolder(om.getOwnerId().toString()), om.getOriginalName()).toString();
-        return new File(filepath);
+    protected OtherMaterial prePersistProcessing(OtherMaterial instance) {
+        return instance;
     }
+
+
+    protected OtherMaterial postLoadProcessing(OtherMaterial instance) {
+        return instance;
+    }
+
 
 }

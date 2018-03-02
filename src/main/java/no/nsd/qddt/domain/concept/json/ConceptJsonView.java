@@ -3,7 +3,9 @@ package no.nsd.qddt.domain.concept.json;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
@@ -43,7 +45,7 @@ public class ConceptJsonView {
     @Embedded
     private Version version;
 
-    private List<ConceptQuestionJson> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
@@ -62,8 +64,7 @@ public class ConceptJsonView {
         modified = concept.getModified();
         version = concept.getVersion();
         setChildren(concept.getChildren().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
-        setConceptQuestionItems(concept.getConceptQuestionItems().stream().map(ConceptQuestionJson::new)
-                .collect(Collectors.toList()));
+        setConceptQuestionItems(concept.getConceptQuestionItems());
         setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setTopicRef(concept.getTopicRef());
     }
@@ -116,11 +117,11 @@ public class ConceptJsonView {
         return agency;
     }
     
-    public List<ConceptQuestionJson> getConceptQuestionItems() {
+    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(List<ConceptQuestionJson> conceptQuestionItems) {
+    private void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

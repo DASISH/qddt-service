@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.embedded;
+package no.nsd.qddt.domain.elementref;
 
 /**
  * @author Stig Norland

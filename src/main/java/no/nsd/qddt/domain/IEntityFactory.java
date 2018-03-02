@@ -5,11 +5,15 @@ import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 
 public interface IEntityFactory<T extends AbstractEntityAudit> {
 
-     T create();
 
-     T copyBody(T source, T dest);
+    T create();
+
+    T copyBody(T source, T dest);
 
     default T copy(T source,  Long revision) {
+        if (source.isNewCopy())
+            revision = null;
+
         return copyBody(source, 
             makeNewCopy(source, revision));
     }
