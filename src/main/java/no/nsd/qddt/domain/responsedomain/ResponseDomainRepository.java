@@ -13,7 +13,6 @@ import java.util.UUID;
 @Repository
 interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
 
-    Page<ResponseDomain> findByResponseKindAndNameLikeOrQuestionItemsQuestionLike(ResponseKind responseKind, String question, Pageable pageable);
 
     Page<ResponseDomain> findByResponseKindAndNameIgnoreCaseLikeAndDescriptionIgnoreCaseLike(ResponseKind responseKind, String name, String description, Pageable pageable);
 }

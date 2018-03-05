@@ -9,6 +9,8 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+
+import org.hibernate.annotations.SourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,7 +148,7 @@ class ConceptServiceImpl implements ConceptService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Concept> findByQuestionItem(UUID id) {
         Integer rev = null;
-        return conceptRepository.findByConceptQuestionItemsLike( new ElementRef<>( ElementKind.QUESTION_ITEM,id,rev) );
+        return conceptRepository.findByConceptQuestionItemsId(id );
 //        return conceptRepository.findByConceptQuestionItemsQuestionId(id);
     }
 
@@ -162,9 +164,11 @@ class ConceptServiceImpl implements ConceptService {
 
     private Concept prePersistProcessing(Concept instance) {
         try {
+            instance.setConceptQuestionItems(
             instance.getConceptQuestionItems().stream()
-                .filter( f -> f.getRevisionNumber() == null )
-                .forEach( cqi -> qiLoader.fill( cqi ));
+                .filter( f -> f.getName().isEmpty() )
+                .map( cqi -> qiLoader.fill( cqi ))
+                .collect(Collectors.toList()));
 
             // children are saved to hold revision info... i guess, these saves shouldn't
             if (instance.isBasedOn() == false)
@@ -190,14 +194,18 @@ class ConceptServiceImpl implements ConceptService {
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
-            for (ElementRef<QuestionItem> cqi :instance.getConceptQuestionItems()) {
-                cqi = qiLoader.fill( cqi );
-                cqi.getElementAs().setConceptRefs(
+            instance.getConceptQuestionItems().stream()
+            .forEach(cqi -> qiLoader.fill( cqi ) );
+/*             for (ElementRef<QuestionItem> cqi :instance.getConceptQuestionItems()) {
+                LOG.info(cqi.toString());
+                cqi =;
+                LOG.info(cqi.toString());
+                  cqi.getElementAs().setConceptRefs(
                     findByQuestionItem(cqi.getId()).stream()
                         .map( ConceptRef::new )
                         .collect( Collectors.toList())
                 );
-            }
+                } */ 
         } catch (Exception ex){
             LOG.error("ConceptService.postLoadProcessing",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()

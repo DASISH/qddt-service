@@ -117,9 +117,9 @@ public class PublicationServiceImpl implements PublicationService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public ElementRef getDetail(ElementRef publicationElement) {
         return new ElementLoader(
-            serviceLoader.getService(
-                publicationElement.getElementKind() ))
-            .fill( publicationElement );
+                serviceLoader.getService(
+                    publicationElement.getElementKind() 
+                )).fill( publicationElement );
     }
 
 
@@ -131,9 +131,10 @@ public class PublicationServiceImpl implements PublicationService {
         if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
             showPrivate = false;
 
-        instance.getPublicationElements().forEach(e-> new ElementLoader( serviceLoader.getService( e.getElementKind() ))
-                .fill( e ));
-        return instance;
+        instance.getPublicationElements().forEach(e-> 
+            new ElementLoader(serviceLoader.getService( e.getElementKind())).fill( e ));
+
+            return instance;
     }
 
 

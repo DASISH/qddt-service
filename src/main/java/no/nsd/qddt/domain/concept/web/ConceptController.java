@@ -76,11 +76,12 @@ public class ConceptController extends BaseController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "conceptid", "questionitemid"})
-    public ConceptJsonEdit removeQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId) {
+    public ConceptJsonEdit removeQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
+                                               @RequestParam("questionitemrevision") Number questionItemRevision) {
         Concept concept=null;
         try{
             concept = service.findOne(conceptId);
-            concept.removeQuestionItem(questionItemId,null);
+            concept.removeQuestionItem(questionItemId,questionItemRevision.longValue());
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
             super.LOG.error("removeQuestionItem",ex);

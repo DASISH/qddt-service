@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.questionItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -33,11 +34,10 @@ import java.util.UUID;
 @Table(name = "QUESTION_ITEM")
 public class QuestionItem extends AbstractEntityAudit {
 
-    /**
-     * This field will be populated with the correct version of a RD,  but should never be persisted.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "responsedomain_id",insertable = false,updatable = false)
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
     private ResponseDomain responseDomain;
 
     /**
@@ -56,13 +56,6 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @Column(name = "intent")
     private String intent;
-
-
-/*     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "questionItemLateBound") //cascade = {CascadeType.MERGE,CascadeType.DETACH},
-    @AuditMappedBy(mappedBy = "questionItemLateBound")
-    private List<ConceptQuestionItemRev> conceptQuestionItems = new ArrayList<>(); */
-
 
 
     @Transient
@@ -142,14 +135,6 @@ public class QuestionItem extends AbstractEntityAudit {
         this.intent = intent;
     }
 
-/*     private List<ConceptQuestionItemRev> getConceptQuestionItems() {
-        return conceptQuestionItems;
-    }
-
-    private void setConceptQuestionItems(List<ConceptQuestionItemRev> conceptQuestionItems) {
-        this.conceptQuestionItems = conceptQuestionItems;
-    }
- */
 
     public List<ConceptRef> getConceptRefs(){
         return conceptRefs;

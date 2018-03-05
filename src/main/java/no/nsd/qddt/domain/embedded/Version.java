@@ -33,14 +33,25 @@ public class Version implements Comparable<Version> {
     @Transient
     private boolean isNew = false;
 
+    public Version() {   }
+
+    public Version(Integer major, Integer minor, Long revision, String label) {
+        this.major = major;
+        this.minor = minor;
+        this.revision = revision;
+        this.versionLabel = label;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    public Version(boolean isNew) {
+        this.isNew = isNew;
+    }
+
 
     public Integer getMajor() {
         return major;
     }
 
-    public void setMajor(Integer major) {
-        this.major = major;
-    }
 
     public void incMajor() {
         if (! isModified) {
@@ -54,9 +65,6 @@ public class Version implements Comparable<Version> {
         return minor;
     }
 
-    public void setMinor(Integer minor) {
-        this.minor = minor;
-    }
 
     public void incMinor() {
         if (!isModified) {
@@ -81,35 +89,16 @@ public class Version implements Comparable<Version> {
         this.revision = revision;
     }
 
+    @JsonIgnore
     public boolean isNew() {
         return isNew;
     }
 
-    private void setNew(boolean aNew) {
-        isNew = aNew;
-    }
-
+    @JsonIgnore
     public boolean isModified() {
         return isModified;
     }
 
-    private void setModified(boolean modified) {
-        isModified = modified;
-    }
-
-    public Version() {   }
-
-    public Version(Integer major, Integer minor, Long revision, String label) {
-        this.major = major;
-        this.minor = minor;
-        this.revision = revision;
-        this.versionLabel = label;
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    public Version(boolean isNew) {
-        this.isNew = isNew;
-    }
 
     @Override
     public boolean equals(Object o) {

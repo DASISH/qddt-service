@@ -117,14 +117,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
                 pageable);
     }
 
-    @Override
-    public Page<ResponseDomain> findByQuestion(ResponseKind responseKind,  String question, Pageable pageable) {
-        return
-            responseDomainRepository.findByResponseKindAndNameLikeOrQuestionItemsQuestionLike(
-                responseKind,
-                likeify(question),
-                pageable);
-    }
+
 
 
     private String likeify(String value){

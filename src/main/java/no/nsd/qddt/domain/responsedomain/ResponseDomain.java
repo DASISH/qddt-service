@@ -74,9 +74,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
     /**
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responseDomain",cascade = {CascadeType.DETACH})
-    private Set<QuestionItem> questionItems = new HashSet<>();
 
     
     @JsonIgnore
@@ -146,15 +143,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
-    }
-
-
-    public Set<QuestionItem> getQuestionItems() {
-        return questionItems;
-    }
-
-    public void setQuestionItems(Set<QuestionItem> questionItems) {
-        this.questionItems = questionItems;
     }
 
     /**

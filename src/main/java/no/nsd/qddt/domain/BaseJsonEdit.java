@@ -30,6 +30,8 @@ public  abstract class BaseJsonEdit implements Serializable {
 
     private Timestamp modified;
 
+    private Long timestamp;
+
     private UserJson modifiedBy;
 
     private AgencyJsonView agency;
@@ -65,6 +67,7 @@ public  abstract class BaseJsonEdit implements Serializable {
         setModifiedBy(new UserJson(entity.getModifiedBy()));
         setVersion(entity.getVersion());
         setChangeKind( entity.getChangeKind());
+        setTimestamp(entity.getTimestamp());
     }
 
     public UUID getId() {
@@ -90,6 +93,15 @@ public  abstract class BaseJsonEdit implements Serializable {
     private void setModified(Timestamp modified) {
         this.modified = modified;
     }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
 
     public UserJson getModifiedBy() {
         return modifiedBy;

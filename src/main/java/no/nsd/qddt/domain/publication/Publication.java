@@ -108,7 +108,7 @@ public class Publication extends AbstractEntityAudit {
 
         int i=0;
         for (ElementRef element:getPublicationElements()){
-            element.getElementAsEntity().fillDoc(pdfReport,String.valueOf(++i));
+            element.getElementAs().fillDoc(pdfReport,String.valueOf(++i));
         }
     }
     @Override

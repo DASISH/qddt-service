@@ -68,8 +68,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try {
             QuestionItem qi =  questionItemRepository.save(
                 prePersistProcessing(instance));
-            return  qi;
-//            return postLoadProcessing(qi);
+//            return  qi;
+            return postLoadProcessing(qi);
         } catch (Exception ex){
             LOG.error("QI save ->",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
@@ -153,7 +153,6 @@ class QuestionItemServiceImpl implements QuestionItemService {
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(rev.getRevisionNumber().longValue());
                     instance.setResponseDomain(rev.getEntity());
-//                    System.out.println("Latest RD fetched " + rev.getRevisionNumber());
                 } else {
                     try {
                         ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision().intValue()).getEntity();

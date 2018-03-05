@@ -91,11 +91,7 @@ public class ResponseDomainController extends BaseController {
 
         Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
-            if (question == null || question.isEmpty()) {
-                responseDomains = service.findBy(response, name, description, pageable).map(this::responseDomain2Json);
-            } else {
-                responseDomains = service.findByQuestion(response,  question, pageable).map(this::responseDomain2Json);
-            }
+            responseDomains = service.findBy(response, name, description, pageable).map(this::responseDomain2Json);
 
         } catch (Exception ex){
             LOG.error("getBy",ex);

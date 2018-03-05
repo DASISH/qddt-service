@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +37,12 @@ public abstract class AbstractEntity {
 
 
     @Column(name = "updated", nullable = false)
-    @Version()
+    @UpdateTimestamp
     private Timestamp modified;
+
+
+    @Version()
+    private Long timestamp;
 
 
     @ManyToOne()
@@ -60,6 +65,13 @@ public abstract class AbstractEntity {
         this.modified = modified;
     }
 
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public User getModifiedBy() {
         return modifiedBy;

@@ -23,21 +23,15 @@ public class ElementLoader<T extends AbstractEntityAudit> {
         this.serviceAudit = serviceAudit;
     }
 
-    public ElementRef<T> fill(ElementRef element) {
-        return fill( element.getElementKind(),element.getId(),element.getRevisionNumber().intValue() );
-    }
-
-    public ElementRef<T> fill(ElementKind kind, UUID id, Integer rev) {
-
-        ElementRef<T> element = new ElementRef<>( kind, id, rev );
+    public ElementRef<T> fill(ElementRef<T> element) {
         try {
-
-            Revision revision = serviceAudit.findRevision(id,rev);
+            Revision<Integer,T> revision = serviceAudit.findRevision(element.getId(),element.getRevisionNumber().intValue());
             element.setElement( revision.getEntity() );
+            LOG.info(element.toString());    
 
         } catch (RevisionDoesNotExistException e) {
-
-            Revision revision = serviceAudit.findLastChange(element.getId());
+            LOG.error("PublicationElement - RevisionDoesNotExistException ", e);
+            Revision<Integer,T> revision = serviceAudit.findLastChange(element.getId());
             element.setElement(revision.getEntity());
             element.setRevisionNumber(revision.getRevisionNumber().longValue());
 
@@ -57,6 +51,10 @@ public class ElementLoader<T extends AbstractEntityAudit> {
 
         }
         return element;
+    }
+
+    public ElementRef<T> fill(ElementKind kind, UUID id, Integer rev) {
+        return fill( new ElementRef<>( kind, id, rev ));
     }
 
 }

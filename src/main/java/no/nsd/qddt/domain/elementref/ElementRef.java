@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 @Audited
 @Embeddable
-public class ElementRef<T> implements Cloneable {
+public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
 
 //    @Parent
 //    @JsonIgnore
@@ -49,8 +49,9 @@ public class ElementRef<T> implements Cloneable {
 
     @Transient
     @JsonSerialize
-    private Object element;
+    private T element;
 
+    public ElementRef() {}
 
     public ElementRef(ElementKind kind, UUID id, Long rev) {
         setElementKind(kind);
@@ -61,7 +62,7 @@ public class ElementRef<T> implements Cloneable {
     public ElementRef(ElementKind kind, UUID id, Integer rev) {
         setElementKind(kind);
         setId(id);
-        setRevisionNumber(rev.longValue());
+        setRevisionNumber(rev==null?null:rev.longValue());
     }
 
 //
@@ -116,8 +117,7 @@ public class ElementRef<T> implements Cloneable {
         this.name = name;
     }
 
-
-    private Version getVersion() {
+    public Version getVersion() {
         return new Version(major,minor,revisionNumber,versionLabel);
     }
 
@@ -171,10 +171,10 @@ public class ElementRef<T> implements Cloneable {
         return element;
     }
 
-    public void setElement(Object element) {
+    public void setElement(T element) {
         this.element = element;
-        setName( ((AbstractEntityAudit)element).getName() );
-        setVersion( ((AbstractEntityAudit)element).getVersion() );
+        setName( element.getName() );
+        setVersion( element.getVersion() );
     }
 
 
@@ -184,13 +184,6 @@ public class ElementRef<T> implements Cloneable {
         return (T)element;
     }
 
-    @JsonIgnore
-    @Transient
-    public AbstractEntityAudit getElementAsEntity(){
-        return (AbstractEntityAudit)element;
-    }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -198,8 +191,6 @@ public class ElementRef<T> implements Cloneable {
         if (!(o instanceof ElementRef)) return false;
 
         ElementRef<?> that = (ElementRef<?>) o;
-
-//        if (elementId != null ? !elementId.equals( that.elementId ) : that.elementId != null) return false;
         if (elementKind != that.elementKind) return false;
         if (id != null ? !id.equals( that.id ) : that.id != null) return false;
         return revisionNumber != null ? revisionNumber.equals( that.revisionNumber ) : that.revisionNumber == null;
@@ -227,7 +218,7 @@ public class ElementRef<T> implements Cloneable {
 
     @Override
     public ElementRef<T> clone() {
-        ElementRef retval = new ElementRef<T>(getElementKind(), getId(),getRevisionNumber());
+        ElementRef<T> retval = new ElementRef<T>(getElementKind(), getId(),getRevisionNumber());
         retval.setVersion( getVersion() );
         retval.setName( getName() );
         return retval;
