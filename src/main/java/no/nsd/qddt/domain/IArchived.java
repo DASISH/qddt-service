@@ -3,7 +3,7 @@ package no.nsd.qddt.domain;
 /**
  * @author Stig Norland
  */
-public interface Archivable {
+public interface IArchived {
 
     boolean isArchived();
 

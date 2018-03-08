@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public  abstract class BaseJsonEdit implements Serializable {
+public  abstract class AbstractJsonEdit implements Serializable {
 
 
 	  protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -47,10 +47,10 @@ public  abstract class BaseJsonEdit implements Serializable {
     @Enumerated(EnumType.STRING)
     private AbstractEntityAudit.ChangeKind changeKind;
 
-    protected BaseJsonEdit() {
+    protected AbstractJsonEdit() {
     }
 
-    protected BaseJsonEdit(AbstractEntityAudit entity) {
+    protected AbstractJsonEdit(AbstractEntityAudit entity) {
         if (entity == null){
             LOG.error("Entity is null");
             StackTraceFilter.nsdStack().stream()
