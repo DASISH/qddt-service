@@ -20,6 +20,7 @@ public enum ElementKind {
 
 
     private final String description;
+
     ElementKind(String description) {
         this.description = description;
     }

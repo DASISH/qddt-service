@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.study;
 
-import no.nsd.qddt.domain.ArchivableService;
+import no.nsd.qddt.domain.BaseArchivedService;
 
 /**
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-public interface StudyService extends ArchivableService<Study> {
+public interface StudyService extends BaseArchivedService<Study> {
 
 }

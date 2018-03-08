@@ -1,11 +1,7 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -19,8 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.PostLoad;
 import java.util.List;
 import java.util.UUID;
@@ -34,21 +28,18 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
+    private final ElementLoader qiLoader;
     private final TopicGroupRepository topicGroupRepository;
     private final TopicGroupAuditService auditService;
-    private final ConceptService conceptService;
-    private final ElementLoader<QuestionItem> qiLoader;
 
     @Autowired
     public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository,
                                  TopicGroupAuditService topicGroupAuditService,
-                                 ConceptService conceptService,
                                  QuestionItemAuditService questionItemAuditService) {
 
+        this.qiLoader = new ElementLoader( questionItemAuditService );
         this.topicGroupRepository = topicGroupRepository;
         this.auditService = topicGroupAuditService;
-        this.conceptService  = conceptService;
-        this.qiLoader = new ElementLoader<>( questionItemAuditService );
     }
 
     @Override
@@ -95,12 +86,12 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return topicGroupRepository.save(instances);
     }
 
-    private EntityManagerFactory emf;
-
-    @PersistenceUnit
-    public void setEntityManagerFactory(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
+//    private EntityManagerFactory emf;
+//
+//    @PersistenceUnit
+//    public void setEntityManagerFactory(EntityManagerFactory emf) {
+//        this.emf = emf;
+//    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
@@ -169,20 +160,20 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            for (ElementRef<QuestionItem> cqi :instance.getTopicQuestionItems()) {
-
-                cqi = qiLoader.fill( cqi );
-                cqi.getElementAs().setConceptRefs(
-                    conceptService.findByQuestionItem(cqi.getId()).stream()
-                        .map( ConceptRef::new )
-                        .collect( Collectors.toList())
-                );
-
-            }
+//            for (ElementRefTyped<QuestionItem> cqi :instance.getTopicQuestionItemsT()) {
+            instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
+//                cqi.getElementAs().setConceptRefs(
+//                    conceptService.findByQuestionItem(cqi.getId(),null).stream()
+//                        .map( ConceptRef::new )
+//                        .collect( Collectors.toList())
+//                );
+//            });
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
+                LOG.debug("PDF -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( concept ->
                     concept.getConceptQuestionItems().forEach( qiLoader::fill ) );
+                // when we print hierarchy we don't need qi concept reference....
             }
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);

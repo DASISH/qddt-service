@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.publication;
 
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
+import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +61,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and #instance.agency == authentication.agency")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Publication save(Publication instance) {
         try {
             return repository.save(instance);
@@ -131,14 +133,33 @@ public class PublicationServiceImpl implements PublicationService {
         if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
             showPrivate = false;
 
-        instance.getPublicationElements().forEach(e-> 
-            new ElementLoader(serviceLoader.getService( e.getElementKind())).fill( e ));
+        instance.getPublicationElements().forEach(e-> postLoadProcessing(e));
 
-            return instance;
+        return instance;
     }
 
-
-
+    ElementRef postLoadProcessing(ElementRef instanse) {
+        instanse = new ElementLoader(serviceLoader.getService( instanse.getElementKind())).fill( instanse );
+        switch (instanse.getElementKind()) {
+            case TOPIC_GROUP:
+                ((TopicGroupRevisionJson)instanse.getElement()).getTopicQuestionItems()
+                    .forEach(e-> postLoadProcessing(e));
+                ((TopicGroupRevisionJson)instanse.getElement()).getConcepts()
+                    .forEach( c->c.getConceptQuestionItems()
+                        .forEach( e-> postLoadProcessing(e) ) );
+                break;
+            case CONCEPT:
+                ((ConceptJsonEdit)instanse.getElement()).getConceptQuestionItems()
+                    .forEach(e-> postLoadProcessing(e));
+                break;
+            case CONTROL_CONSTRUCT:
+            case QUESTION_CONSTRUCT:
+                break;
+            default:
+                // do nothing
+        }
+        return instanse;
+    }
 
 
 }

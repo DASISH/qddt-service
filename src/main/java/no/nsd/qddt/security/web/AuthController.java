@@ -1,6 +1,6 @@
 package no.nsd.qddt.security.web;
 
-import no.nsd.qddt.domain.BaseController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.user.QDDTUserDetailsService;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserService;
@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author saka7
  */
 @RestController
-public class AuthController extends BaseController {
+public class AuthController extends AbstractController {
 
     @Value("${auth.header}")
     private String tokenHeader;

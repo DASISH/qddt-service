@@ -1,11 +1,10 @@
 package no.nsd.qddt.domain.topicgroup.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 import java.util.HashSet;
@@ -16,11 +15,11 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class TopicGroupJson extends BaseJsonEdit {
+public class TopicGroupJson extends AbstractJsonEdit {
 
     private String abstractDescription;
 
-    private List<ElementRef<QuestionItem>> topicQuestionItems;
+    private List<ElementRef> topicQuestionItems;
 
     private Set<Author> authors = new HashSet<>();
 
@@ -34,7 +33,7 @@ public class TopicGroupJson extends BaseJsonEdit {
         super(topicGroup);
         if (topicGroup == null) return;
         setAbstractDescription(topicGroup.getAbstractDescription());
-        setTopicQuestionItems( topicGroup.getTopicQuestionItems());
+        setTopicQuestionItems(topicGroup.getTopicQuestionItems());
         setAuthors(topicGroup.getAuthors());
         setOtherMaterials(topicGroup.getOtherMaterials());
         setArchived(topicGroup.isArchived());
@@ -49,11 +48,11 @@ public class TopicGroupJson extends BaseJsonEdit {
         this.abstractDescription = abstractDescription;
     }
 
-    public List<ElementRef<QuestionItem>> getTopicQuestionItems() {
+    public List<ElementRef> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRef<QuestionItem>> topicQuestionItems) {
+    public void setTopicQuestionItems(List<ElementRef> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
 

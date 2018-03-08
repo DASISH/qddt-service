@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
+import no.nsd.qddt.domain.instrumentcontrolconstruct.InstrumentParameter;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -26,7 +26,7 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private Set<OtherMaterialCC> otherMaterials;
 
-    private List<ResponseReference> parameters = new ArrayList<>();
+    private List<InstrumentParameter> parameters = new ArrayList<>();
 
     private List<Instruction> preInstructions;
 
@@ -83,11 +83,11 @@ public class ConstructQuestionJson  extends ConstructJson {
         this.otherMaterials = otherMaterials;
     }
 
-    public List<ResponseReference> getParameters() {
+    public List<InstrumentParameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<ResponseReference> parameters) {
+    public void setParameters(List<InstrumentParameter> parameters) {
         this.parameters = parameters;
     }
 

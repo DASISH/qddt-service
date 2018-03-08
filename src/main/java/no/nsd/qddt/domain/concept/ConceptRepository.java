@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -20,5 +21,5 @@ interface ConceptRepository extends BaseRepository<Concept,UUID> {
 
     Page<Concept> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndBasedOnObjectIsNull(String name, String description, Pageable pageable);
 
-    List<Concept> findByConceptQuestionItemsId(UUID id);
+    List<Concept> findByConceptQuestionItemsId(ElementRef id);
 }

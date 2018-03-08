@@ -33,7 +33,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
             .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
             .collect(Collectors.toSet()));
 
-      dest.setTopicQuestionItems( source.getTopicQuestionItems().stream()
+      dest.setTopicQuestionItems( source.getTopicQuestionItemsT().stream()
           .map( ElementRef::clone )
           .collect(Collectors.toList()));
 

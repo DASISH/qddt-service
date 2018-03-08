@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstructparameter.ResponseReference;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -74,7 +73,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     //------------- Begin Child elements with "enver hack" ----------------------
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @JoinColumn(name = "parent_id")
     @OrderColumn(name = "parent_idx")
     // Ordered arrayList doesn't work with Enver FIX
@@ -125,14 +124,6 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     private String condition;
-
-
-    @OrderColumn(name="controlconstruct_idx")
-    @OrderBy("controlconstruct_idx ASC")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "CONTROL_CONSTRUCT_PARAMETER",
-            joinColumns = @JoinColumn(name="controlconstruct_id"))
-    private List<ResponseReference> parameters = new ArrayList<>();
 
 
     @Transient
@@ -324,14 +315,6 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.condition = condition;
     }
 
-    public List<ResponseReference> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(List<ResponseReference> parameters) {
-        this.parameters = parameters;
-    }
-
     public ControlConstructKind getControlConstructKind() {
         return controlConstructKind;
     }
@@ -387,15 +370,19 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Override
     public String toString() {
-        return "ControlConstruct{" +
-                "Kind=" + getControlConstructKind() +'\'' +
-                ", question=" + questionItem +'\'' +
-                ", indexRationale='" + indexRationale + '\'' +
-                ", condition='" + condition + '\'' +
-                ", pre#=" + getPreInstructions().size() + '\'' +
-                ", post#=" + getPostInstructions().size() + '\'' +
-                '}';
+        return String.format(
+            "ControlConstruct (questionItem=%s, label=%s, description=%s, universe=%s,  condition=%s, preInstructions=%s, postInstructions=%s)",
+            this.questionItem.getQuestion(),
+            this.label,
+            this.description,
+            this.universe,
+            this.condition,
+            this.preInstructions.stream().map(Object::toString)
+                .collect(Collectors.joining(", ")),
+            this.postInstructions .stream().map(Object::toString)
+                .collect(Collectors.joining(", ")));
     }
+
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) throws IOException {

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Archivable;
+import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
-import no.nsd.qddt.domain.author.Authorable;
+import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -19,6 +20,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -49,7 +51,7 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements Authorable,Archivable {
+public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived {
 
     @Column(name = "description", length = 10000)
     private String abstractDescription;
@@ -72,13 +74,13 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     @OrderColumn(name="element_idx")
     @OrderBy("element_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TOPIC_QUESTION_ITEM",joinColumns = @JoinColumn(name="element_id"))
-    private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>();
+    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="element_id"))
+    private List<ElementRef>  topicQuestionItems = new ArrayList<>();
 
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
-    @JoinTable(name = "TOPIC_AUTHORS",
+    @JoinTable(name = "TOPIC_GROUP_AUTHORS",
             joinColumns = {@JoinColumn(name ="topic_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
@@ -128,7 +130,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     public Set<Concept> getConcepts() {
         return concepts;
     }
-
     public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
@@ -146,7 +147,6 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     public void setOtherMaterials(Set<OtherMaterialT> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
-
     public OtherMaterialT addOtherMaterial(OtherMaterialT otherMaterial) {
         otherMaterial.setParent( this );
         return  otherMaterial;
@@ -155,17 +155,22 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
     public String getAbstractDescription() {
         return abstractDescription;
     }
-
     public void setAbstractDescription(String abstractDescription) {
         this.abstractDescription = abstractDescription;
     }
 
+    @JsonIgnore
+    public List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
+        return topicQuestionItems.stream()
+            .map(c-> new ElementRefTyped<QuestionItem>(c) )
+            .collect( Collectors.toList() );
+    }
 
-    public List<ElementRef<QuestionItem>> getTopicQuestionItems() {
+    public List<ElementRef> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+    public void setTopicQuestionItems(List<ElementRef> conceptQuestionItems) {
         this.topicQuestionItems = conceptQuestionItems;
     }
 
@@ -256,7 +261,7 @@ public class TopicGroup extends AbstractEntityAudit implements Authorable,Archiv
 
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
-            for (ElementRef<QuestionItem> item : getTopicQuestionItems()) {
+            for (ElementRefTyped<QuestionItem> item : getTopicQuestionItemsT()) {
                 pdfReport.addheader2(item.getName());
                 pdfReport.addParagraph(item.getElementAs().getQuestion());
                 if (item.getElementAs().getResponseDomain() != null)

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.ArchivableService;
+import no.nsd.qddt.domain.BaseArchivedService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface TopicGroupService extends ArchivableService<TopicGroup> {
+public interface TopicGroupService extends BaseArchivedService<TopicGroup> {
 
     List<TopicGroup> findByStudyId(UUID id);
 

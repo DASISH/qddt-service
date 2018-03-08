@@ -4,12 +4,15 @@ import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.exception.InvalidObjectException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +27,7 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 @Service("categoryService")
 class CategoryServiceImpl implements CategoryService {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final CategoryRepository categoryRepository;
 
     @Autowired
@@ -93,6 +97,8 @@ class CategoryServiceImpl implements CategoryService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Category save(Category instance) {
+        if (_codes.size() >0)
+            LOG.error( "_codes not intilaized empty" );
         return postLoadProcessing( 
             categoryRepository.save(
                 prePersistProcessing(instance)));
@@ -126,12 +132,22 @@ class CategoryServiceImpl implements CategoryService {
     private Category prePersistProcessing(Category instance) {
         // Category Save fails when there is a mix of new and existing children attached to a new element.
         try {
-
             if (!instance.isValid()) throw new InvalidObjectException(instance);
-            _codes = instance.getCodes();
-            return instance;
 
-        } catch (Exception e) {
+            if (_codes.size()==0)
+                _codes.addAll( instance.getCodes() );
+
+            instance.getChildren().forEach(c-> prePersistProcessing(c));
+
+
+            if (instance.getId() == null) {
+                Code c = instance.getCode();
+                instance = categoryRepository.save( instance );
+                instance.setCode( c );
+            }
+            return instance;
+        }catch (Exception e) {
+
             System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
         }

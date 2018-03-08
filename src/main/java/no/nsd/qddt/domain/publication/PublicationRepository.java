@@ -11,7 +11,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-public interface PublicationRepository extends BaseRepository<Publication,UUID>{
+public interface PublicationRepository extends BaseRepository<Publication,UUID> {
 
     Page<Publication> findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(String status, String name, String purpose,Pageable pageable);
 }

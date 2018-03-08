@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.study.web;
 
-import no.nsd.qddt.domain.BaseController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/study")
-public class StudyController extends BaseController {
+public class StudyController extends AbstractController {
 
     private final StudyService service;
     private final SurveyProgramService surveyProgramService;

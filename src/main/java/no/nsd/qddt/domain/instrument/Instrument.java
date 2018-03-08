@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.instrument;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.instrumentcontrolconstruct.InstrumentControlConstruct;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
@@ -33,11 +34,11 @@ public class Instrument extends AbstractEntityAudit  {
     private Study study;
 
 
-    @OrderColumn(name="index")
-    @OrderBy("instrument_idx ASC")
-    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "index")
+    @OrderColumn(name="parent_idx")
+    @OrderBy("parent_idx ASC")
+    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "parent_idx")
     @OneToMany(mappedBy = "instrument",fetch = FetchType.EAGER)
-    private List<ControlConstructRef> controlConstructs = new ArrayList<>();
+    private List<InstrumentControlConstruct> controlConstructs = new ArrayList<>();
 
     private String description;
 
@@ -51,6 +52,8 @@ public class Instrument extends AbstractEntityAudit  {
 
     public Instrument() {
     }
+
+
 
     public String getDescription() {
         return description;
@@ -93,11 +96,11 @@ public class Instrument extends AbstractEntityAudit  {
         this.study = study;
     }
 
-    public List<ControlConstructRef> getControlConstructs() {
+    public List<InstrumentControlConstruct> getControlConstructs() {
         return controlConstructs;
     }
 
-    public void setControlConstructs(List<ControlConstructRef> controlConstructs) {
+    public void setControlConstructs(List<InstrumentControlConstruct> controlConstructs) {
         this.controlConstructs = controlConstructs;
     }
 
@@ -148,9 +151,13 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
     @Override
-    protected void beforeUpdate() {}
-    @Override
-    protected void beforeInsert() {}
+    protected void beforeUpdate() {
 
+    }
+
+    @Override
+    protected void beforeInsert() {
+
+    }
 
 }

@@ -58,9 +58,8 @@ public class Instruction extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "Instruction{" +
-                ", description='" + description + '\'' +
-                ", id ='" + getId() + '\'' +
-                "}";
+                "  id =\'" + getId() + '\'' +
+                ", description=\'" + description + "\' }";
     }
 
     @Override

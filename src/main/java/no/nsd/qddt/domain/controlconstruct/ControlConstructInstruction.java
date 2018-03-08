@@ -11,8 +11,9 @@ import javax.persistence.*;
 
 @Audited
 @Embeddable
-public class ControlConstructInstruction {
+public class ControlConstructInstruction implements java.io.Serializable {
 
+    private static final long serialVersionUID = -7261847559839337877L;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "instruction_id")
@@ -35,6 +36,9 @@ public class ControlConstructInstruction {
 
     public void setInstructionRank(ControlConstructInstructionRank instructionRank) {
         this.instructionRank = instructionRank;
+    }
+
+    public ControlConstructInstruction() {
     }
 
     @Override

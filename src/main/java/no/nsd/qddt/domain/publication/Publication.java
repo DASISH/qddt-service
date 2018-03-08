@@ -35,7 +35,6 @@ public class Publication extends AbstractEntityAudit {
         return purpose;
     }
 
-
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
@@ -44,7 +43,6 @@ public class Publication extends AbstractEntityAudit {
     public String getStatus() {
         return status;
     }
-
 
     public void setStatus(String status) {
         this.status = status;
@@ -59,7 +57,6 @@ public class Publication extends AbstractEntityAudit {
             return new ArrayList<>();
         }
     }
-
 
     public void setPublicationElements(List<ElementRef> publicationElements) {
         this.publicationElements = publicationElements;
@@ -107,10 +104,11 @@ public class Publication extends AbstractEntityAudit {
         pdfReport.addPadding();
 
         int i=0;
-        for (ElementRef element:getPublicationElements()){
-            element.getElementAs().fillDoc(pdfReport,String.valueOf(++i));
+        for (ElementRef element:getPublicationElements()) {
+            ((AbstractEntityAudit) element.getElement()).fillDoc(pdfReport,String.valueOf(++i));
         }
     }
+
     @Override
     protected void beforeUpdate() {}
     @Override

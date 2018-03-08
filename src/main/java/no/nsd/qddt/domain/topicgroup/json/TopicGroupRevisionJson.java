@@ -1,12 +1,11 @@
 package no.nsd.qddt.domain.topicgroup.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.json.ConceptJsonView;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 import java.util.HashSet;
@@ -17,13 +16,13 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class TopicGroupRevisionJson extends BaseJsonEdit {
+public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
     private static final long serialVersionUID = 2435677656441L;
 
 	  private String abstractDescription;
 
-    private List<ElementRef<QuestionItem>> topicQuestionItems;
+    private List<ElementRef> topicQuestionItems;
 
     private Set<ConceptJsonView> concepts = new HashSet<>();
 
@@ -57,11 +56,11 @@ public class TopicGroupRevisionJson extends BaseJsonEdit {
         this.abstractDescription = abstractDescription;
     }
 
-    public List<ElementRef<QuestionItem>> getTopicQuestionItems() {
+    public List<ElementRef> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRef<QuestionItem>> topicQuestionItems) {
+    public void setTopicQuestionItems(List<ElementRef> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
 

@@ -55,13 +55,14 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         );
     }
 
-
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public OtherMaterial save(OtherMaterial instance) {
+    public <S extends OtherMaterial> S save(S instance) {
         return otherMaterialRepository.save(instance);
     }
+
+
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")

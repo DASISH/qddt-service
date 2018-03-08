@@ -5,18 +5,13 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,7 +40,7 @@ public class ConceptJsonView {
     @Embedded
     private Version version;
 
-    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef> conceptQuestionItems = new ArrayList<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
@@ -117,11 +112,11 @@ public class ConceptJsonView {
         return agency;
     }
     
-    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRef> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+    private void setConceptQuestionItems(List<ElementRef> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

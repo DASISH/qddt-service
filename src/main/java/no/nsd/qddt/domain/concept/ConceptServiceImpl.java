@@ -4,13 +4,9 @@ import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
-
-import org.hibernate.annotations.SourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -39,7 +34,7 @@ class ConceptServiceImpl implements ConceptService {
 
     private final ConceptRepository conceptRepository;
     private final ConceptAuditService auditService;
-    private final ElementLoader<QuestionItem> qiLoader;
+    private final ElementLoader qiLoader;
 
     @Autowired
       ConceptServiceImpl(ConceptRepository conceptRepository
@@ -47,7 +42,7 @@ class ConceptServiceImpl implements ConceptService {
             , QuestionItemAuditService questionAuditService){
         this.conceptRepository = conceptRepository;
         this.auditService = conceptAuditService;
-        this.qiLoader = new ElementLoader<>( questionAuditService );
+        this.qiLoader = new ElementLoader( questionAuditService );
     }
 
     @Override
@@ -73,9 +68,8 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Concept save(Concept instance) {
-        return postLoadProcessing(
-            conceptRepository.save(
-                prePersistProcessing(instance)));
+        instance = conceptRepository.save( prePersistProcessing( instance ) );
+        return postLoadProcessing(instance);
     }
 
     @Override
@@ -146,9 +140,8 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public List<Concept> findByQuestionItem(UUID id) {
-        Integer rev = null;
-        return conceptRepository.findByConceptQuestionItemsId(id );
+    public List<Concept> findByQuestionItem(UUID id, Integer rev) {
+        return conceptRepository.findByConceptQuestionItemsId(new ElementRef( ElementKind.QUESTION_ITEM, id,rev ));
 //        return conceptRepository.findByConceptQuestionItemsQuestionId(id);
     }
 
@@ -164,11 +157,12 @@ class ConceptServiceImpl implements ConceptService {
 
     private Concept prePersistProcessing(Concept instance) {
         try {
-            instance.setConceptQuestionItems(
-            instance.getConceptQuestionItems().stream()
-                .filter( f -> f.getName().isEmpty() )
-                .map( cqi -> qiLoader.fill( cqi ))
-                .collect(Collectors.toList()));
+            for (ElementRef element: instance.getConceptQuestionItems()) {
+                if (element.getName() == null) {
+                    qiLoader.fill( element );
+                }
+            }
+
 
             // children are saved to hold revision info... i guess, these saves shouldn't
             if (instance.isBasedOn() == false)
@@ -194,9 +188,18 @@ class ConceptServiceImpl implements ConceptService {
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
-            instance.getConceptQuestionItems().stream()
-            .forEach(cqi -> qiLoader.fill( cqi ) );
-/*             for (ElementRef<QuestionItem> cqi :instance.getConceptQuestionItems()) {
+            instance.getConceptQuestionItems().forEach( cqi -> {
+                if (cqi.getElement() == null)
+                    cqi = qiLoader.fill( cqi );
+
+//                cqi.getElementAs().setConceptRefs(
+//                    findByQuestionItem(cqi.getId(),null).stream()
+//                        .map( ConceptRef::new )
+//                        .collect( Collectors.toList())
+//                );
+            } );
+
+            /*             for (ElementRefT<QuestionItem> cqi :instance.getConceptQuestionItems()) {
                 LOG.info(cqi.toString());
                 cqi =;
                 LOG.info(cqi.toString());

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import no.nsd.qddt.domain.BaseController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/topicgroup")
-public class TopicGroupController extends BaseController {
+public class TopicGroupController extends AbstractController {
 
     private final TopicGroupService service;
     private final StudyService studyService;

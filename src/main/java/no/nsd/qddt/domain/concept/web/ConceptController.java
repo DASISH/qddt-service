@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept.web;
 
-import no.nsd.qddt.domain.BaseController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
@@ -28,7 +28,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/concept")
-public class ConceptController extends BaseController {
+public class ConceptController extends AbstractController {
 
     private final ConceptService service;
     private final TopicGroupService topicGroupService;
@@ -166,7 +166,7 @@ public class ConceptController extends BaseController {
     @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
     @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Concept> getByQuestionItemId(@PathVariable("qiId") UUID id) {
-        return  service.findByQuestionItem(id);
+        return  service.findByQuestionItem(id,null);
     }
 
 
@@ -180,7 +180,9 @@ public class ConceptController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
     public byte[] getPdf(@PathVariable("id") UUID id) {
-        return service.findOne(id).makePdf().toByteArray();
+        Concept concept = service.findOne(id);
+
+        return concept.makePdf().toByteArray();
     }
 
     private ConceptJsonEdit concept2Json(Concept concept){

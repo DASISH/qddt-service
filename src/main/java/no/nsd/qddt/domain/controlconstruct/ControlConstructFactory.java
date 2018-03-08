@@ -34,7 +34,7 @@ public class ControlConstructFactory implements IEntityFactory<ControlConstruct>
         
         dest.setUniverse(source.getUniverse());
         dest.setControlConstructInstructions(source.getControlConstructInstructions());
-        dest.setParameters(source.getParameters());
+//        dest.setParameters(source.getParameters());
 
         dest.setChildren(source.getChildren().stream()
             .map(mapper -> copy(mapper, dest.getBasedOnRevision()))

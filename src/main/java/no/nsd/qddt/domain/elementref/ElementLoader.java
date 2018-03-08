@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.elementref;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.BaseServiceAudit;
+import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.slf4j.Logger;
@@ -14,47 +14,71 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class ElementLoader<T extends AbstractEntityAudit> {
+public class ElementLoader{
 
     protected final Logger LOG = LoggerFactory.getLogger( this.getClass() );
-    private BaseServiceAudit<T, UUID, Integer> serviceAudit;
 
-    public ElementLoader(BaseServiceAudit<T, UUID,Integer> serviceAudit) {
+//    @Autowired
+//    private ElementServiceLoader serviceLoader;
+
+    protected BaseServiceAudit serviceAudit;
+
+    public ElementLoader() {
+    }
+
+    public ElementLoader(BaseServiceAudit serviceAudit) {
         this.serviceAudit = serviceAudit;
     }
 
-    public ElementRef<T> fill(ElementRef<T> element) {
+    public ElementRef fill(ElementKind kind, UUID id, Integer rev) {
+        return fill( new ElementRef( kind, id, rev ));
+    }
+
+    public ElementRefTyped fill(ElementRefTyped element) {
+        Integer rev = element.getRevisionNumber().intValue();
+        element.setElement(get(element.getId(), rev ));
+        element.setRevisionNumber( rev.longValue() );
+        return  element;
+    }
+
+    public ElementRef fill(ElementRef element) {
+        Integer rev = element.getRevisionNumber().intValue();
+        element.setElement(get(element.getId(), rev ));
+        element.setRevisionNumber( rev.longValue() );
+        return  element;
+    }
+
+
+    private Object get(UUID id, Integer rev){
         try {
-            Revision<Integer,T> revision = serviceAudit.findRevision(element.getId(),element.getRevisionNumber().intValue());
-            element.setElement( revision.getEntity() );
-            LOG.info(element.toString());    
+
+            Revision revision = serviceAudit.findRevision( id, rev );
+            return revision.getEntity();
 
         } catch (RevisionDoesNotExistException e) {
-            LOG.error("PublicationElement - RevisionDoesNotExistException ", e);
-            Revision<Integer,T> revision = serviceAudit.findLastChange(element.getId());
-            element.setElement(revision.getEntity());
-            element.setRevisionNumber(revision.getRevisionNumber().longValue());
+            LOG.info( "ElementLoader - RevisionDoesNotExistException ", e );
+            Revision revision = serviceAudit.findLastChange( id );
+            rev = revision.getRevisionNumber().intValue();
+            return revision.getEntity();
 
         } catch (JpaSystemException se) {
 
-            LOG.error("PublicationElement - JpaSystemException",se);
-            StackTraceFilter.filter(se.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
+            LOG.error( "ElementLoader - JpaSystemException", se );
+            StackTraceFilter.filter( se.getStackTrace() ).stream()
+                .map( a -> a.toString() )
+                .forEach( LOG::debug );
 
         } catch (Exception ex) {
 
-            LOG.error( "PublicationElement - fill", ex );
+            LOG.error( "ElementLoader - fill", ex );
             StackTraceFilter.filter( ex.getStackTrace() ).stream()
                 .map( a -> a.toString() )
-                .forEach( LOG::info );
+                .forEach( LOG::debug );
 
         }
-        return element;
+        return null;
     }
 
-    public ElementRef<T> fill(ElementKind kind, UUID id, Integer rev) {
-        return fill( new ElementRef<>( kind, id, rev ));
-    }
+
 
 }

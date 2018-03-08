@@ -1,9 +1,12 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instrumentcontrolconstruct;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.instrument.Instrument;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
@@ -17,8 +20,8 @@ import java.util.*;
  */
 @Audited
 @Entity
-@Table(name = "INSTRUMENT_CONTROL_CONSTRUCT_REF")
-public class ControlConstructRef implements java.io.Serializable {
+@Table(name = "INSTRUMENT_CONTROL_CONSTRUCT")
+public class InstrumentControlConstruct implements java.io.Serializable {
 
     private static final long serialVersionUID = -7261887349839337877L;
 
@@ -44,8 +47,16 @@ public class ControlConstructRef implements java.io.Serializable {
      */
     private Boolean isVirtual;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "controlconstruct_id",updatable = false,insertable = false)
+    @OrderColumn(name="instrument_control_construct_idx")
+    @OrderBy("instrument_control_construct_idx ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "INSTRUMENT_CONTROL_CONSTRUCT_PARAMETER",joinColumns = @JoinColumn(name="instrument_control_construct_id") )
+    private List<InstrumentParameter> parameters = new ArrayList<>();
+
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
     private ControlConstruct controlConstructInternal;
 
     @JsonIgnore
@@ -55,25 +66,26 @@ public class ControlConstructRef implements java.io.Serializable {
 
     //------------- Begin Child elements with "enver hack" ----------------------
 
+    // Ordered arrayList doesn't work with Enver FIX
     @Column(insertable = false,updatable = false)
-    private Integer index;
+    private Integer parent_idx;
 
     @JsonBackReference(value = "ccrParentRef")
     @ManyToOne()
     @JoinColumn(name = "parent_id",updatable = false,insertable = false)
-    private ControlConstructRef parentReferenceOnly;
+    private InstrumentControlConstruct parentReferenceOnly;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH})
     @JoinColumn(name = "parent_id")
-    @OrderColumn(name = "index")
+    @OrderColumn(name = "parent_idx")
     // Ordered arrayList doesn't work with Enver FIX
-    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
-    private List<ControlConstructRef> children = new ArrayList<>();
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "parent_idx")
+    private List<InstrumentControlConstruct> children = new ArrayList<>();
 
     //------------- End Child elements with "enver hack"  -----------------------
 
 
-    public ControlConstructRef() {
+    public InstrumentControlConstruct() {
     }
 
     public Long getId() {
@@ -124,11 +136,19 @@ public class ControlConstructRef implements java.io.Serializable {
         isVirtual = virtual;
     }
 
-    public ControlConstruct getControlConstructInternal() {
+    public List<InstrumentParameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<InstrumentParameter> parameters) {
+        this.parameters = parameters;
+    }
+
+    public ControlConstruct getControlConstruct() {
         return controlConstructInternal;
     }
 
-    private void setControlConstructInternal(ControlConstruct controlConstructInternal) {
+    protected void setControlConstruct(ControlConstruct controlConstructInternal) {
         this.controlConstructInternal = controlConstructInternal;
     }
 
@@ -140,20 +160,22 @@ public class ControlConstructRef implements java.io.Serializable {
         this.instrument = instrument;
     }
 
-    public List<ControlConstructRef> getChildren() {
+
+
+    public List<InstrumentControlConstruct> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ControlConstructRef> children) {
+    public void setChildren(List<InstrumentControlConstruct> children) {
         this.children = children;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ControlConstructRef)) return false;
+        if (!(o instanceof InstrumentControlConstruct)) return false;
 
-        ControlConstructRef that = (ControlConstructRef) o;
+        InstrumentControlConstruct that = (InstrumentControlConstruct) o;
 
         if (controlConstructId != null ? !controlConstructId.equals(that.controlConstructId) : that.controlConstructId != null)
             return false;
@@ -165,7 +187,7 @@ public class ControlConstructRef implements java.io.Serializable {
         if (controlConstructInternal != null ? !controlConstructInternal.equals(that.controlConstructInternal) : that.controlConstructInternal != null)
             return false;
         if (instrument != null ? !instrument.equals(that.instrument) : that.instrument != null) return false;
-        if (index != null ? !index.equals(that.index) : that.index != null) return false;
+        if (parent_idx != null ? !parent_idx.equals(that.parent_idx) : that.parent_idx != null) return false;
         if (parentReferenceOnly != null ? !parentReferenceOnly.equals(that.parentReferenceOnly) : that.parentReferenceOnly != null)
             return false;
         return children != null ? children.equals(that.children) : that.children == null;
@@ -180,7 +202,7 @@ public class ControlConstructRef implements java.io.Serializable {
         result = 31 * result + (isVirtual != null ? isVirtual.hashCode() : 0);
         result = 31 * result + (controlConstructInternal != null ? controlConstructInternal.hashCode() : 0);
         result = 31 * result + (instrument != null ? instrument.hashCode() : 0);
-        result = 31 * result + (index != null ? index.hashCode() : 0);
+        result = 31 * result + (parent_idx != null ? parent_idx.hashCode() : 0);
         result = 31 * result + (parentReferenceOnly != null ? parentReferenceOnly.hashCode() : 0);
         result = 31 * result + (children != null ? children.hashCode() : 0);
         return result;
@@ -191,7 +213,7 @@ public class ControlConstructRef implements java.io.Serializable {
         return String.format(
                 "ControlConstructRef (id=%s, rev=%s, name=%s, version=%s, isVirtual=%s, parent_idx=%s, children=%s)",
                 this.controlConstructId, this.controlConstructRevision, this.name, this.version, this.isVirtual,
-                this.index, (this.children != null)?this.children.size():0);
+                this.parent_idx, (this.children != null)?this.children.size():0);
     }
 
 

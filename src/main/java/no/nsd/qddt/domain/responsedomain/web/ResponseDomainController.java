@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.domain.BaseController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/responsedomain")
-public class ResponseDomainController extends BaseController {
+public class ResponseDomainController extends AbstractController {
 
     private final ResponseDomainService service;
 

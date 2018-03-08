@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram;
 
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -21,11 +23,16 @@ import java.util.stream.Collectors;
 @Service("surveyProgramService")
 class SurveyProgramServiceImpl implements SurveyProgramService {
 
+
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
+    private final ElementLoader qiLoader;
     private final SurveyProgramRepository surveyProgramRepository;
 
     @Autowired
-    public SurveyProgramServiceImpl(SurveyProgramRepository surveyProgramRepository) {
+    public SurveyProgramServiceImpl(SurveyProgramRepository surveyProgramRepository,
+                                    QuestionItemAuditService questionItemAuditService) {
+        this.qiLoader = new ElementLoader( questionItemAuditService );
         this.surveyProgramRepository = surveyProgramRepository;
     }
 

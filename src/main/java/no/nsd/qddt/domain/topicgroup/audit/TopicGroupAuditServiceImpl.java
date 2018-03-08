@@ -8,9 +8,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -25,7 +23,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -38,7 +35,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     private final TopicGroupAuditRepository topicGroupAuditRepository;
     private final ConceptService conceptService;
     private final CommentService commentService;
-    private final ElementLoader<QuestionItem> qiLoader;
+    private final ElementLoader qiLoader;
     private boolean showPrivateComments;
 
 
@@ -50,7 +47,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
         this.topicGroupAuditRepository = topicGroupAuditRepository;
         this.commentService = commentService;
         this.conceptService = conceptService;
-        this.qiLoader = new ElementLoader<>( questionItemAuditService );
+        this.qiLoader = new ElementLoader( questionItemAuditService );
     }
 
     @Override
@@ -102,15 +99,15 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            for (ElementRef<QuestionItem> cqi :instance.getTopicQuestionItems()) {
+            for (ElementRef cqi :instance.getTopicQuestionItems()) {
 
                 cqi = qiLoader.fill( cqi );
 
-                cqi.getElementAs().setConceptRefs(
-                    conceptService.findByQuestionItem(cqi.getId()).stream()
-                        .map( ConceptRef::new )
-                        .collect( Collectors.toList())
-                );
+//                cqi.getElementAs().setConceptRefs(
+//                    conceptService.findByQuestionItem(cqi.getId(),null).stream()
+//                        .map( ConceptRef::new )
+//                        .collect( Collectors.toList())
+//                );
 
             }
 

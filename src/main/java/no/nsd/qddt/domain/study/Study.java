@@ -3,9 +3,9 @@ package no.nsd.qddt.domain.study;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Archivable;
+import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
-import no.nsd.qddt.domain.author.Authorable;
+import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -52,7 +52,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements Authorable, Archivable {
+public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
 //    @JsonIgnore
     @ManyToOne()

@@ -1,12 +1,14 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.Archivable;
+import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
@@ -17,6 +19,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -37,7 +40,7 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements Archivable {
+public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     @JsonBackReference(value = "parentRef")
@@ -64,8 +67,9 @@ public class Concept extends AbstractEntityAudit implements Archivable {
     @OrderColumn(name="element_idx")
     @OrderBy("element_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",joinColumns = @JoinColumn(name="element_id"))
-    private List<ElementRef<QuestionItem>>  conceptQuestionItems = new ArrayList<>();
+    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
+        joinColumns = @JoinColumn(name="element_id", referencedColumnName = "id"))
+    private List<ElementRef>  conceptQuestionItems = new ArrayList<>();
 
     private String label;
 
@@ -91,11 +95,18 @@ public class Concept extends AbstractEntityAudit implements Archivable {
         this.topicGroup = topicGroup;
     }
 
-    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
+    @JsonIgnore
+    public List<ElementRefTyped<QuestionItem>> getConceptQuestionItemsT() {
+        return conceptQuestionItems.stream()
+            .map(c-> new ElementRefTyped<QuestionItem>(c) )
+            .collect( Collectors.toList() );
+    }
+
+    public List<ElementRef> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRef> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
@@ -333,7 +344,9 @@ public class Concept extends AbstractEntityAudit implements Archivable {
             if (getConceptQuestionItems().size() > 0) {
                 pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
-                for (ElementRef<QuestionItem> item : getConceptQuestionItems()) {
+                for (ElementRefTyped<QuestionItem> item : getConceptQuestionItems()
+                        .stream().map(c-> new ElementRefTyped<QuestionItem>(c) ).collect( Collectors.toList() )) {
+
                     pdfReport.addheader2(item.getName());
                     pdfReport.addParagraph(item.getElementAs().getQuestion());
                     if (item.getElementAs().getResponseDomain() != null)

@@ -59,6 +59,7 @@ public class QuestionItemController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<QuestionItemListJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+
         Page<QuestionItemListJson> questionitems =
                 service.findAllPageable(pageable).map(QuestionItemListJson::new);
         return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
@@ -70,13 +71,14 @@ public class QuestionItemController {
                                                                    @RequestParam(value = "question",defaultValue = "%") String question,
                                                                    Pageable pageable, PagedResourcesAssembler assembler) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
-        Page<QuestionItemListJson> questionitems = null;
         try {
-            questionitems = service.findByNameLikeOrQuestionLike(question, pageable).map(QuestionItemListJson::new);
+            Page<QuestionItemListJson> questionitems
+                = service.findByNameLikeOrQuestionLike(question, pageable).map(QuestionItemListJson::new);
+            return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
+            throw ex;
         }
-        return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
     }
 
     private QuestionItemJsonEdit question2Json(QuestionItem questionItem){

@@ -1,7 +1,13 @@
 package no.nsd.qddt.domain.study;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -17,10 +23,16 @@ import java.util.UUID;
 @Service("studyService")
 class StudyServiceImpl implements StudyService {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
+    private final ElementLoader qiLoader;
+
     private final StudyRepository studyRepository;
 
     @Autowired
-    public StudyServiceImpl(StudyRepository studyRepository) {
+    public StudyServiceImpl(StudyRepository studyRepository,
+                            QuestionItemAuditService questionItemAuditService) {
+        this.qiLoader = new ElementLoader( questionItemAuditService );
         this.studyRepository = studyRepository;
     }
 
@@ -91,6 +103,23 @@ class StudyServiceImpl implements StudyService {
 
 
     private Study postLoadProcessing(Study instance) {
+        if (StackTraceFilter.stackContains("getPdf","getXml")) {
+            LOG.debug("PDF -> fetching  concepts ");
+            Hibernate.initialize(instance.getTopicGroups());
+            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
+
+            instance.getTopicGroups().forEach(t-> {
+                t.getTopicQuestionItems().forEach( qiLoader::fill );
+                t.getConcepts().forEach( c-> {
+                    c.getConceptQuestionItems().forEach( qiLoader::fill  );
+                    c.getChildren().forEach(
+                       cc-> cc.getConceptQuestionItems().forEach( qiLoader::fill  )
+                    );
+                } );
+            });
+
+            // when we print hierarchy we don't need qi concept reference....
+        }
         return instance;
     }
 }

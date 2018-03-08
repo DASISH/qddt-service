@@ -1,24 +1,20 @@
 package no.nsd.qddt.domain.concept.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
  */
-public class ConceptJsonEdit extends BaseJsonEdit {
+public class ConceptJsonEdit extends AbstractJsonEdit {
 
     @Type(type="pg-uuid")
     private UUID id;
@@ -29,7 +25,7 @@ public class ConceptJsonEdit extends BaseJsonEdit {
 
     private String description;
 
-    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef> conceptQuestionItems = new ArrayList<>();
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
@@ -87,11 +83,11 @@ public class ConceptJsonEdit extends BaseJsonEdit {
         this.children = children;
     }
 
-    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRef> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+    private void setConceptQuestionItems(List<ElementRef> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

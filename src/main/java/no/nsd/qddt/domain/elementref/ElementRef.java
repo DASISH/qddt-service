@@ -1,8 +1,11 @@
 package no.nsd.qddt.domain.elementref;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.embedded.Version;
@@ -23,33 +26,26 @@ import java.util.UUID;
  */
 @Audited
 @Embeddable
-public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
+public class ElementRef implements Cloneable {
 
-//    @Parent
-//    @JsonIgnore
-//    private UUID elementId;
-//
-//    @Column(name = "element_idx" , insertable = false, updatable = false)
-//    @JsonIgnore
-//    private Integer elementIdx;
 
     @Enumerated(EnumType.STRING)
-    private ElementKind elementKind;
+    protected ElementKind elementKind;
 
     @Type(type="pg-uuid")
-    private UUID id;
+    protected UUID id;
 
     @Column(name = "revision")
-    private Long revisionNumber;
-    private String name;
-    private Integer major;
-    private Integer minor;
-    private String versionLabel;
+    protected Long revisionNumber;
+    protected String name;
+    protected Integer major;
+    protected Integer minor;
+    protected String versionLabel;
 
 
     @Transient
     @JsonSerialize
-    private T element;
+    protected Object element;
 
     public ElementRef() {}
 
@@ -59,33 +55,17 @@ public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
         setRevisionNumber(rev);
     }
 
-    public ElementRef(ElementKind kind, UUID id, Integer rev) {
+    @JsonCreator
+    public ElementRef(@JsonProperty("elementKind")ElementKind kind, @JsonProperty("id")UUID id, @JsonProperty("revisionNumber")Integer rev) {
         setElementKind(kind);
         setId(id);
         setRevisionNumber(rev==null?null:rev.longValue());
     }
 
-//
-//    public UUID getElementId() {
-//        return elementId;
-//    }
-//
-//    public void setElementId(UUID elementId) {
-//        this.elementId = elementId;
-//    }
-//
-//    public Integer getElementIdx() {
-//        return elementIdx;
-//    }
-//
-//    public void setElementIdx(Integer elementIdx) {
-//        this.elementIdx = elementIdx;
-//    }
 
     public UUID getId() {
         return id;
     }
-
     private void setId(UUID id) {
         this.id = id;
     }
@@ -94,7 +74,6 @@ public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
     public Long getRevisionNumber() {
         return revisionNumber;
     }
-
     public void setRevisionNumber(Long revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
@@ -103,8 +82,7 @@ public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
     public ElementKind getElementKind(){
         return elementKind;
     }
-
-    private void setElementKind(ElementKind elementKind) {
+    protected void setElementKind(ElementKind elementKind) {
         this.elementKind = elementKind;
     }
 
@@ -112,7 +90,6 @@ public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -120,7 +97,6 @@ public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
     public Version getVersion() {
         return new Version(major,minor,revisionNumber,versionLabel);
     }
-
     public void setVersion(Version version) {
         major = version.getMajor();
         minor = version.getMinor();
@@ -170,27 +146,28 @@ public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
         }
         return element;
     }
-
-    public void setElement(T element) {
+    public void setElement(Object element) {
         this.element = element;
-        setName( element.getName() );
-        setVersion( element.getVersion() );
+        if (element instanceof IElementRefType ) {
+            setName( ((IElementRefType) element).getName() );
+            setVersion( ((IElementRefType) element).getVersion() );
+        }
     }
-
 
     @JsonIgnore
     @Transient
-    public T getElementAs(){
-        return (T)element;
+    public AbstractEntityAudit getElementAs(){
+        if (element instanceof AbstractEntityAudit)
+            return (AbstractEntityAudit) element;
+        return null;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ElementRef)) return false;
 
-        ElementRef<?> that = (ElementRef<?>) o;
+        ElementRef that = (ElementRef) o;
         if (elementKind != that.elementKind) return false;
         if (id != null ? !id.equals( that.id ) : that.id != null) return false;
         return revisionNumber != null ? revisionNumber.equals( that.revisionNumber ) : that.revisionNumber == null;
@@ -217,8 +194,8 @@ public class ElementRef<T extends AbstractEntityAudit> implements Cloneable {
     }
 
     @Override
-    public ElementRef<T> clone() {
-        ElementRef<T> retval = new ElementRef<T>(getElementKind(), getId(),getRevisionNumber());
+    public ElementRef clone() {
+        ElementRef retval = new ElementRef(getElementKind(), getId(),getRevisionNumber());
         retval.setVersion( getVersion() );
         retval.setName( getName() );
         return retval;

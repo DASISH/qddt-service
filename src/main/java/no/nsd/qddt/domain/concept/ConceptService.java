@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.ArchivableService;
+import no.nsd.qddt.domain.BaseArchivedService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface ConceptService  extends ArchivableService<Concept> {
+public interface ConceptService  extends BaseArchivedService<Concept> {
 
     Page<Concept> findAllPageable(Pageable pageable);
 
@@ -18,7 +18,7 @@ public interface ConceptService  extends ArchivableService<Concept> {
 
     Page<Concept> findByNameAndDescriptionPageable(String name, String name1, Pageable pageable);
 
-    List<Concept> findByQuestionItem(UUID id);
+    List<Concept> findByQuestionItem(UUID id, Integer rev);
 
     Concept copy(UUID id, Long rev, UUID parentId);
 }
