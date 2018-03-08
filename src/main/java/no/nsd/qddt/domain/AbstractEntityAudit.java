@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -27,7 +28,7 @@ import java.util.UUID;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  {
+public abstract class AbstractEntityAudit extends AbstractEntity  implements IElementRefType {
 
 
 
@@ -249,7 +250,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
                     ver.setVersionLabel("");
                     break;
                 case ARCHIVED:
-                    ((Archivable)this).setArchived(true);
+                    ((IArchived)this).setArchived(true);
                     ver.setVersionLabel("");
                 case CREATED:
                     break;
@@ -363,7 +364,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  {
             fillDoc(pdf,"");
             pdf.createToc();
         } catch (Exception ex) {
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error( "makePDF",ex );
+            LOG.debug(
+                StackTraceFilter.filter(
+                    ex.getStackTrace() ).stream()
+                    .map( e->e.toString() )
+                    .collect( Collectors.joining(",")
+                )
+            );
         }
         return pdfOutputStream;
     }
