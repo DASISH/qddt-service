@@ -1,13 +1,13 @@
 package no.nsd.qddt.domain.questionItem.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
 
 /**
  * @author Stig Norland
  */
-public class QuestionItemJsonView extends BaseJsonEdit{
+public class QuestionItemJsonView extends AbstractJsonEdit {
 
     private String question;
 

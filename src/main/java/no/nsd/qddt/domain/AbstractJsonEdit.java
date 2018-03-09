@@ -25,20 +25,13 @@ public  abstract class AbstractJsonEdit implements Serializable {
 
     @Type(type="pg-uuid")
     private UUID id;
-
     private String name;
-
     private Timestamp modified;
-
-    private Long timestamp;
-
     private UserJson modifiedBy;
-
     private AgencyJsonView agency;
 
     @Type(type="pg-uuid")
     private UUID basedOnObject;
-
     private Long basedOnRevision;
 
     @Embedded
@@ -67,7 +60,6 @@ public  abstract class AbstractJsonEdit implements Serializable {
         setModifiedBy(new UserJson(entity.getModifiedBy()));
         setVersion(entity.getVersion());
         setChangeKind( entity.getChangeKind());
-        setTimestamp(entity.getTimestamp());
     }
 
     public UUID getId() {
@@ -93,15 +85,6 @@ public  abstract class AbstractJsonEdit implements Serializable {
     private void setModified(Timestamp modified) {
         this.modified = modified;
     }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
 
     public UserJson getModifiedBy() {
         return modifiedBy;

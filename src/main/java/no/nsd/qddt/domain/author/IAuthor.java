@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * @author Stig Norland
  */
-public interface Authorable {
+public interface IAuthor {
     /**
      * Add a {@link Author} to a {@link Set} of authors.
      * @param user added author.

@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
+import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     private final ResponseDomainRepository responseDomainRepository;
     private final ResponseDomainAuditService auditService;
-//    private final CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository, ResponseDomainAuditService responseDomainAuditService) {
+    public ResponseDomainServiceImpl(ResponseDomainRepository responseDomainRepository,
+                                     CategoryService categoryService,
+                                     ResponseDomainAuditService responseDomainAuditService) {
         this.responseDomainRepository = responseDomainRepository;
-//        this.categoryService = categoryService;
+        this.categoryService = categoryService;
         this.auditService = responseDomainAuditService;
     }
 
@@ -90,14 +93,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
 
 
-//        if (instance.getManagedRepresentation().getId() == null) {
-//            instance.beforeUpdate();
-//            instance.setManagedRepresentation(
-//                categoryService.save(
-//                    instance.getManagedRepresentation()));
-//        } else
+        if (instance.getManagedRepresentation().getId() == null) {
+            instance.beforeUpdate();
+            instance.setManagedRepresentation(
+                categoryService.save(
+                    instance.getManagedRepresentation()));
+        } else
 
-        //instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
+        instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
 
         return instance;
     }

@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.BaseRepository;
-import no.nsd.qddt.domain.elementref.ElementRef;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -21,5 +20,5 @@ interface TopicGroupRepository extends BaseRepository<TopicGroup,UUID> {
 
     Page<TopicGroup> findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(String name, String description, Pageable pageable);
 
-    List<TopicGroup> findByTopicQuestionItemsId(ElementRef id);
+    List<TopicGroup> findByTopicQuestionItemsId(UUID id);
 }

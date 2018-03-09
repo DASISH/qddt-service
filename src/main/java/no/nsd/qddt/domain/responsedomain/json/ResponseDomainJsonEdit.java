@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class ResponseDomainJsonEdit  extends BaseJsonEdit {
+public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
 
     private String description;
 

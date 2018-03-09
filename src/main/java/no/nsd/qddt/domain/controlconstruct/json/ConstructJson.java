@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.SequenceKind;
@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.controlconstruct.SequenceKind;
 /**
  * @author Stig Norland
  */
-public class ConstructJson  extends BaseJsonEdit {
+public class ConstructJson  extends AbstractJsonEdit {
 
     private ControlConstructKind controlConstructKind;
 

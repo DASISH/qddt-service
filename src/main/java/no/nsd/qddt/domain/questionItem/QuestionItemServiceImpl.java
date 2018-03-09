@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.questionItem;
 
+import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -33,14 +35,17 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private final QuestionItemRepository questionItemRepository;
     private final ResponseDomainAuditService rdAuditService;
     private final QuestionItemAuditService auditService;
+    private final ConceptService conceptService;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
                                    ResponseDomainAuditService responseDomainAuditService,
+                                   ConceptService conceptService,
                                    QuestionItemAuditService questionItemAuditService) {
         this.questionItemRepository = questionItemRepository;
         this.rdAuditService = responseDomainAuditService;
         this.auditService = questionItemAuditService;
+        this.conceptService = conceptService;
     }
 
     @Override
@@ -165,6 +170,11 @@ class QuestionItemServiceImpl implements QuestionItemService {
             }
             else
                 instance.setResponseDomainRevision(0L);
+
+            instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
+                    .map( ConceptRef::new )
+                    .collect( Collectors.toList()) );
+
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());
@@ -175,13 +185,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem prePersistProcessing(QuestionItem instance){
 
-        QuestionItemFactory qif= new QuestionItemFactory();
-        if(instance.isBasedOn()) {
-            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
-            instance = qif.copy(instance, rev );
-        } else if (instance.isNewCopy()) {
-            instance = qif.copy(instance, null);
-        } 
+        Long rev = null;
+        if(instance.isBasedOn())
+            rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
+
+        if (instance.isBasedOn() || instance.isNewCopy())
+            instance = new QuestionItemFactory().copy(instance, rev );
+
 
         if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
             if (instance.getResponseDomainUUID() == null) {
@@ -189,8 +199,6 @@ class QuestionItemServiceImpl implements QuestionItemService {
             }
             if (instance.getResponseDomainRevision() <= 0) {
                 try {
-
-
                     Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
                     instance.setResponseDomainRevision(revnum.getRevisionNumber().longValue());
                 } catch (Exception ex) {

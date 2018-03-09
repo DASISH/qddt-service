@@ -89,7 +89,7 @@ public class Agency implements Comparable<Agency>{
     private Set<ResponseDomain> responses = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
     private Set<Category> categories = new HashSet<>();
 
     @JsonIgnore

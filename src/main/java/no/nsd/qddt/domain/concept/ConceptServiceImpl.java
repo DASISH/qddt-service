@@ -1,10 +1,11 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
-import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -141,7 +143,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Concept> findByQuestionItem(UUID id, Integer rev) {
-        return conceptRepository.findByConceptQuestionItemsId(new ElementRef( ElementKind.QUESTION_ITEM, id,rev ));
+        return conceptRepository.findByConceptQuestionItemsId(id);
 //        return conceptRepository.findByConceptQuestionItemsQuestionId(id);
     }
 
@@ -192,23 +194,11 @@ class ConceptServiceImpl implements ConceptService {
                 if (cqi.getElement() == null)
                     cqi = qiLoader.fill( cqi );
 
-//                cqi.getElementAs().setConceptRefs(
-//                    findByQuestionItem(cqi.getId(),null).stream()
-//                        .map( ConceptRef::new )
-//                        .collect( Collectors.toList())
-//                );
-            } );
-
-            /*             for (ElementRefT<QuestionItem> cqi :instance.getConceptQuestionItems()) {
-                LOG.info(cqi.toString());
-                cqi =;
-                LOG.info(cqi.toString());
-                  cqi.getElementAs().setConceptRefs(
-                    findByQuestionItem(cqi.getId()).stream()
+                ((QuestionItem) cqi.getElementAs())
+                    .setConceptRefs(findByQuestionItem(cqi.getId(),null).stream()
                         .map( ConceptRef::new )
-                        .collect( Collectors.toList())
-                );
-                } */ 
+                        .collect( Collectors.toList()) );
+            } );
         } catch (Exception ex){
             LOG.error("ConceptService.postLoadProcessing",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()

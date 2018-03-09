@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.category.json;
 
-import no.nsd.qddt.domain.BaseJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryRelationCodeType;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class ManagedRepresentationJsonEdit extends BaseJsonEdit {
+public class ManagedRepresentationJsonEdit extends AbstractJsonEdit {
 
     private String label;
 

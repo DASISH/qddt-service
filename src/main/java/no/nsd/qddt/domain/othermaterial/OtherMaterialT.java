@@ -28,7 +28,7 @@ public class OtherMaterialT extends OtherMaterial {
 
     @ManyToOne()
     @JsonBackReference(value = "tref")
-    @JoinColumn(name = "OWNER_ID")
+    @JoinColumn(name = "OWNER_ID",insertable = false, updatable = false)
     private TopicGroup parent;
 
     public TopicGroup getParent() {

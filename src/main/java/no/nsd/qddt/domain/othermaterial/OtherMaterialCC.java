@@ -29,7 +29,7 @@ public class OtherMaterialCC extends OtherMaterial {
 
     @ManyToOne()
     @JsonBackReference(value = "ccref")
-    @JoinColumn(name = "OWNER_ID")
+    @JoinColumn(name = "OWNER_ID",insertable = false, updatable = false)
     private ControlConstruct parent;
 
     public ControlConstruct getParent() {
@@ -38,7 +38,8 @@ public class OtherMaterialCC extends OtherMaterial {
 
     public void setParent(ControlConstruct parent) {
         this.parent = parent;
-        setField("ownerId",parent.getId());
+        this.setOwnerId( parent.getId() );
+//        setField("ownerId",parent.getId());
     }
 
     @Override

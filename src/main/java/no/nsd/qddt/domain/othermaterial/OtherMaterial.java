@@ -30,7 +30,7 @@ import java.util.UUID;
 public class OtherMaterial extends AbstractEntity implements Cloneable {
 
     @Type(type="pg-uuid")
-    @Column(name = "owner_id", updatable = false , insertable = false)
+    @Column(name = "OWNER_ID", updatable = false)
     private UUID ownerId;
 
     private String fileName;
@@ -88,7 +88,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public String getFileName() {
         return fileName;
     }
-
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
@@ -96,7 +95,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public UUID getOwnerId() {
         return ownerId;
     }
-
     public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
@@ -104,7 +102,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public String getFileType() {
         return fileType;
     }
-
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
@@ -112,7 +109,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public long getSize() {
         return size;
     }
-
     public void setSize(long size) {
         this.size = size;
     }
@@ -120,7 +116,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public String getDescription() {
         return description;
     }
-
     private void setDescription(String description) {
         this.description = description;
     }
@@ -128,7 +123,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public String getOriginalName() {
         return originalName;
     }
-
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
     }
@@ -136,7 +130,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public UUID getOrgRef() {
         return orgRef;
     }
-
     private void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
     }

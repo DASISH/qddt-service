@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.PostLoad;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -147,10 +146,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 .map(this::postLoadProcessing);
     }
 
-
-    @PostLoad
-    void test(TopicGroup instance) {
-        LOG.debug("Postload " + instance.getName());
+    @Override
+    public List<TopicGroup> findByQuestionItem(UUID id, Integer rev) {
+        return null;
     }
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
@@ -160,14 +158,12 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-//            for (ElementRefTyped<QuestionItem> cqi :instance.getTopicQuestionItemsT()) {
             instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
-//                cqi.getElementAs().setConceptRefs(
-//                    conceptService.findByQuestionItem(cqi.getId(),null).stream()
-//                        .map( ConceptRef::new )
-//                        .collect( Collectors.toList())
-//                );
-//            });
+
+//            instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
+//                .map( ConceptRef::new )
+//                .collect( Collectors.toList()) );
+
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 LOG.debug("PDF -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());

@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.BaseController;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
@@ -35,14 +35,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/controlconstruct")
-public class ControlConstructController extends BaseController {
+public class ControlConstructController extends AbstractController {
 
     private final ControlConstructService service;
     private final OtherMaterialService omService;
     //private final InstrumentService iService;
 
     @Autowired
-    public ControlConstructController(ControlConstructService ccService,OtherMaterialService otherMaterialService){
+    public ControlConstructController(ControlConstructService ccService, OtherMaterialService otherMaterialService){
         this.service = ccService;
         this.omService = otherMaterialService;
       //  this.iService = instrumentService;

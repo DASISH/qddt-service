@@ -18,6 +18,8 @@ public interface TopicGroupService extends BaseArchivedService<TopicGroup> {
 
     Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable);
 
+    List<TopicGroup> findByQuestionItem(UUID id, Integer rev);
+
     TopicGroup copy(UUID id, Long rev, UUID parentId);
 
 }
