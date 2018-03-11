@@ -155,6 +155,7 @@ class CategoryServiceImpl implements CategoryService {
 
     private Category postLoadProcessing(Category instance) {
         instance.setCodes(_codes);
+        _codes.clear();
         return instance;
     }
 
