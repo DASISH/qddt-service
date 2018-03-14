@@ -1,6 +1,6 @@
 package no.nsd.qddt.exception;
 
-import no.nsd.qddt.utils.ExtractResourceIdFromException;
+import no.nsd.qddt.utils.ExtractFromException;
 
 /**
  * Default error message object. Can be used anywhere in the application where
@@ -16,9 +16,9 @@ public class ControllerAdviceExceptionMessage {
     private String exceptionMessage;
 
     public ControllerAdviceExceptionMessage(String url, String exceptionMessage) {
-        this.id = ExtractResourceIdFromException.extract(exceptionMessage);
+        this.id = ExtractFromException.extractId(exceptionMessage);
         this.url = url;
-        this.exceptionMessage = exceptionMessage;
+        this.exceptionMessage  = ExtractFromException.extractMessage( exceptionMessage);
     }
 
     public String getId() {

@@ -4,36 +4,42 @@ package no.nsd.qddt.domain.elementref;
  * @author Stig Norland
  */
 public enum ElementKind {
-    SURVEY_PROGRAM("Survey"),
-    STUDY("Study"),
-    TOPIC_GROUP("Module"),
-    CONCEPT("Concept"),
-    QUESTION_ITEM("QuestionItem"),
-    RESPONSEDOMAIN("ResponseDomain"),
-    INSTRUMENT("Instrument"),
-    PUBLICATION("Publication"),
-    CONTROL_CONSTRUCT("ControlConstruct"),
-    QUESTION_CONSTRUCT("QuestionConstruct"),
-    STATEMENT_CONSTRUCT("Statement"),
-    CONDITION_CONSTRUCT("Condition"),
-    SEQUENCE_CONSTRUCT("Sequence");
+    SURVEY_PROGRAM("Survey","SurveyProgram"),
+    STUDY("Study","Study"),
+    TOPIC_GROUP("Module","TopicGroup"),
+    CONCEPT("Concept","Concept"),
+    QUESTION_ITEM("QuestionItem","QuestionItem"),
+    RESPONSEDOMAIN("ResponseDomain","ResponseDomain"),
+    INSTRUMENT("Instrument","Instrument"),
+    PUBLICATION("Publication","Publication"),
+    CONTROL_CONSTRUCT("ControlConstruct","ControlConstruct"),
+    QUESTION_CONSTRUCT("QuestionConstruct","ControlConstruct"),
+    STATEMENT_CONSTRUCT("Statement","ControlConstruct"),
+    CONDITION_CONSTRUCT("Condition","ControlConstruct"),
+    SEQUENCE_CONSTRUCT("Sequence","ControlConstruct");
 
 
     private final String description;
+    private final String className;
 
-    ElementKind(String description) {
+    ElementKind(String description, String className) {
         this.description = description;
+        this.className = className;
     }
 
     public String getDescription() {
         return this.description;
     }
 
-    public static ElementKind getEnum(String description) {
-        if(description == null)
+    public String getClassName() {
+        return className;
+    }
+
+    public static ElementKind getEnum(String className) {
+        if(className == null)
             throw new IllegalArgumentException();
         for(ElementKind v : values())
-            if(description.equalsIgnoreCase(v.getDescription())) return v;
+            if(className.equalsIgnoreCase(v.getClassName())) return v;
         throw new IllegalArgumentException();
     }
 }

@@ -32,7 +32,7 @@ public  abstract class AbstractJsonEdit implements Serializable {
 
     @Type(type="pg-uuid")
     private UUID basedOnObject;
-    private Long basedOnRevision;
+    private Integer basedOnRevision;
 
     @Embedded
     private Version version;
@@ -110,11 +110,11 @@ public  abstract class AbstractJsonEdit implements Serializable {
         this.basedOnObject = basedOnObject;
     }
 
-    public Long getBasedOnRevision() {
+    public Integer getBasedOnRevision() {
         return basedOnRevision;
     }
 
-    public void setBasedOnRevision(Long basedOnRevision) {
+    public void setBasedOnRevision(Integer basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 

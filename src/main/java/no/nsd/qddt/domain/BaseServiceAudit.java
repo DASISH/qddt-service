@@ -28,7 +28,7 @@ public interface BaseServiceAudit<T,ID, N extends Number & Comparable<N>> {
      * @param revision number of the entity
      * @return {@link org.springframework.data.history.Revision} at the given revision
      */
-    Revision<N, T> findRevision(ID id, Integer revision);
+    Revision<N, T> findRevision(ID id, N revision);
 
     /**
      * Find all revisions and return in a pageable view

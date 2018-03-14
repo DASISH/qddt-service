@@ -50,7 +50,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public User save(User user) {
         return postLoadProcessing(
                 userRepository.save(
@@ -58,7 +58,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<User> save(List<User> instances) {
         return userRepository.save(instances);
     }

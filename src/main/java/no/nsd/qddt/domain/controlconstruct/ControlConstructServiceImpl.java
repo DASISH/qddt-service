@@ -158,7 +158,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
         if(instance.isBasedOn() || instance.isNewCopy()) {
             ControlConstructFactory ccf= new ControlConstructFactory();
-            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
             instance = ccf.copy(instance, rev );
         }
 
@@ -173,12 +173,12 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
             // before returning fetch correct version of QI...
             if (instance.getQuestionItemUUID() == null)
-                instance.setQuestionItemRevision(0L);
+                instance.setQuestionItemRevision(0);
             else {
                 Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
                         instance.getQuestionItemUUID(),
-                        instance.getQuestionItemRevision().intValue());
-                instance.setQuestionItemRevision(rev.getRevisionNumber().longValue());
+                        instance.getQuestionItemRevision());
+                instance.setQuestionItemRevision(rev.getRevisionNumber());
                 instance.setQuestionItem(rev.getEntity());
             }
             instance.getChildren().forEach(this::postLoadProcessing);

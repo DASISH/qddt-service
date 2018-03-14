@@ -17,13 +17,11 @@ import java.util.UUID;
 @Repository
 interface CategoryAuditRepository extends RevisionRepository<Category, UUID, Integer> {
 
-
-//    @Query(value= "select distinct * from concept_aud " +
+    //    @Query(value= "select distinct * from concept_aud " +
 //            "where id = :id and major = :major and minor = :minor " +
 //            "order by rev asc limit 1", nativeQuery = true)
 //    Revision<Integer,Category> findVersion(@Param("id") UUID id, @Param("major") int major,@Param("minor") int minor);
 
     Page<Revision<Integer,Category>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
-//    Revision<Integer,Category> findByMajorAndMinor(UUID id, Integer major, Integer minor);
 }

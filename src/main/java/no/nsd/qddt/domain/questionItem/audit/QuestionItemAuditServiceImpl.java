@@ -24,7 +24,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("questionItemAuditService")
-class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionItem> implements QuestionItemAuditService {
+class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionItem> implements QuestionItemAuditService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final QuestionItemAuditRepository questionItemAuditRepository;
@@ -33,8 +33,8 @@ class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Q
     private boolean showPrivateComments;
 
     @Autowired
-    public QuestionItemAbstractAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditController rdAuditController,
-                                                CommentService commentService) {
+    public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditController rdAuditController,
+                                        CommentService commentService) {
         this.questionItemAuditRepository = questionItemAuditRepository;
         this.rdAuditController = rdAuditController;
         this.commentService = commentService;
@@ -91,7 +91,7 @@ class QuestionItemAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Q
             rev.getEntity().setResponseDomain(
                 rdAuditController.getByRevision(
                     rev.getEntity().getResponseDomainUUID(),
-                    rev.getEntity().getResponseDomainRevision().intValue()).getEntity());
+                    rev.getEntity().getResponseDomainRevision()).getEntity());
         }
         List<Comment> coms;
         if (showPrivateComments)

@@ -34,7 +34,7 @@ public interface BaseService<T,ID> {
      * @param instance object T
      * @return saved instance T (may have fields updated by backstore)
      */
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     <S extends T> S save(S instance);
 
     /**
@@ -42,7 +42,7 @@ public interface BaseService<T,ID> {
      * @param instances collection of objects to store
      * @return collection of saved objects returned from backstore.
      */
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     List<T> save(List<T> instances);
 
     /**

@@ -36,7 +36,7 @@ public class ElementRef implements Cloneable {
     protected UUID id;
 
     @Column(name = "revision")
-    protected Long revisionNumber;
+    protected Integer revisionNumber;
     protected String name;
     protected Integer major;
     protected Integer minor;
@@ -49,17 +49,11 @@ public class ElementRef implements Cloneable {
 
     public ElementRef() {}
 
-    public ElementRef(ElementKind kind, UUID id, Long rev) {
-        setElementKind(kind);
-        setId(id);
-        setRevisionNumber(rev);
-    }
-
     @JsonCreator
     public ElementRef(@JsonProperty("elementKind")ElementKind kind, @JsonProperty("id")UUID id, @JsonProperty("revisionNumber")Integer rev) {
         setElementKind(kind);
         setId(id);
-        setRevisionNumber(rev==null?null:rev.longValue());
+        setRevisionNumber(rev);
     }
 
 
@@ -71,10 +65,10 @@ public class ElementRef implements Cloneable {
     }
 
 
-    public Long getRevisionNumber() {
+    public Integer getRevisionNumber() {
         return revisionNumber;
     }
-    public void setRevisionNumber(Long revisionNumber) {
+    public void setRevisionNumber(Integer revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
 
@@ -151,6 +145,8 @@ public class ElementRef implements Cloneable {
         if (element instanceof IElementRefType ) {
             setName( ((IElementRefType) element).getName() );
             setVersion( ((IElementRefType) element).getVersion() );
+            setId( ((IElementRefType) element).getId() );
+            setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
         }
     }
 

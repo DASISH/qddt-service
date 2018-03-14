@@ -1,8 +1,9 @@
 package no.nsd.qddt.domain.pdf;
 
-import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.colors.*;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -47,22 +48,25 @@ public class PdfReport extends PdfDocument {
     private static final long serialVersionUID = 1345354324653452L;
 
 	  protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
-    public final float width100 =  PageSize.A4.getWidth();
+    private final List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
+
+    public float width100;
 
     private PdfFont paragraphFont;
     private PdfFont font;
     private PdfFont bold;
-    private final List<AbstractMap.SimpleEntry<String,AbstractMap.SimpleEntry<String, Integer>>> toc = new ArrayList<>();
     private Document document;
 
     public PdfReport(ByteArrayOutputStream outputStream) {
         super(new PdfWriter( outputStream));
         try {
-            font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-            bold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
-            paragraphFont = PdfFontFactory.createFont(FontConstants.HELVETICA);
+
+            font = PdfFontFactory.createFont( StandardFonts.TIMES_ROMAN);
+            bold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            paragraphFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
             getCatalog().setPageMode(PdfName.UseOutlines);
             document = new Document(this, PageSize.A4);
+            width100 = PageSize.A4.getWidth() - document.getLeftMargin() - document.getRightMargin();
             document.setTextAlignment(TextAlignment.JUSTIFIED)
                     .setHyphenation(new HyphenationConfig("en", "uk", 3, 3))
                     .setFont(font)
@@ -218,9 +222,17 @@ public class PdfReport extends PdfDocument {
     }
 
     public Document addheader2(String header){
+        return addheader2( header,null );
+    }
+
+    public Document addheader2(String header, String rev){
+        rev = rev==null?"":rev;
         return this.document.add(new Paragraph(header)
             .setMaxWidth(width100*0.8F)
             .setFontColor(ColorConstants.BLUE)
+            .addTabStops(  new TabStop(width100*0.80F, TabAlignment.RIGHT ) )
+            .add( new Tab())
+            .add(  rev  )
             .setKeepTogether(true));
     }
 

@@ -15,7 +15,6 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
@@ -252,7 +251,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @Override
     public String toString() {
 
-        return MessageFormat.format("ResponseDomain { {0}, {2} } " ,
+        return MessageFormat.format("ResponseDomain { {0}, {1} } " ,
                 super.toString(),
                 getManagedRepresentation().toString());
     }

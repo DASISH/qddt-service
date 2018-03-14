@@ -104,15 +104,15 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             if(instance.getQuestionItemUUID() != null) {
                 if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
                     Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
-                    instance.setQuestionItemRevision(rev.getRevisionNumber().longValue());
+                    instance.setQuestionItemRevision(rev.getRevisionNumber());
                     instance.setQuestionItem(rev.getEntity());
                 } else {
-                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision().intValue()).getEntity();
+                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision()).getEntity();
                     instance.setQuestionItem(qi);
                 }
             }
             else
-                instance.setQuestionItemRevision(0L);
+                instance.setQuestionItemRevision(0);
 
             List<Comment> coms;
             if (showPrivateComments)

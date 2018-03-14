@@ -94,9 +94,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public TopicGroup copy(UUID id, Long rev, UUID parentId) {
+    public TopicGroup copy(UUID id, Integer rev, UUID parentId) {
         //EntityManager entityManager = this.emf.createEntityManager();
-        TopicGroup source = auditService.findRevision( id, rev.intValue() ).getEntity();
+        TopicGroup source = auditService.findRevision( id, rev ).getEntity();
 
         TopicGroup target = new TopicGroupFactory().copy(source, rev);
         target.setParentU(parentId);

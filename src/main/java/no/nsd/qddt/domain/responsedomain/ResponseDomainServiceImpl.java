@@ -51,7 +51,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public ResponseDomain save(ResponseDomain instance) {
         return postLoadProcessing(
                 responseDomainRepository.save(
@@ -59,20 +59,20 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<ResponseDomain> save(List<ResponseDomain> instances) {
         instances.forEach(this::prePersistProcessing);
         return responseDomainRepository.save(instances);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         responseDomainRepository.delete(uuid);
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<ResponseDomain> instances) {
         responseDomainRepository.delete(instances);
     }
@@ -82,7 +82,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         
         ResponseDomainFactory rdf= new ResponseDomainFactory();
         if(instance.isBasedOn()) {
-            Long rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
             instance = rdf.copy(instance, rev );
         } else if (instance.isNewCopy()) {
             instance = rdf.copy(instance, null);

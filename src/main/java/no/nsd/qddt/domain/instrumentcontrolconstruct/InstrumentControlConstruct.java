@@ -34,7 +34,7 @@ public class InstrumentControlConstruct implements java.io.Serializable {
     private UUID controlConstructId;
 
     @Column(name = "controlconstruct_revision")
-    private Long controlConstructRevision;
+    private Integer controlConstructRevision;
 
     private String name;
 
@@ -104,11 +104,11 @@ public class InstrumentControlConstruct implements java.io.Serializable {
         this.controlConstructId = controlConstructId;
     }
 
-    public Long getControlConstructRevision() {
+    public Integer getControlConstructRevision() {
         return controlConstructRevision;
     }
 
-    public void setControlConstructRevision(Long controlConstructRevision) {
+    public void setControlConstructRevision(Integer controlConstructRevision) {
         this.controlConstructRevision = controlConstructRevision;
     }
 

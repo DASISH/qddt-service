@@ -53,11 +53,12 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @JsonIgnore
     private boolean isEnabled;
 
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="user_authority",
             joinColumns=@JoinColumn(name="user_id"),
             inverseJoinColumns=@JoinColumn(name="authority_id"))
@@ -91,7 +92,7 @@ public class User {
     private Set<Instruction> instructions = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy="modifiedBy", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="modifiedBy")
     private Set<QuestionItem> questions = new HashSet<>();
 
     @JsonIgnore

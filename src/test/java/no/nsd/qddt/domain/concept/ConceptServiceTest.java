@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -146,7 +147,9 @@ super.setBaseRepositories(conceptRepository);
         Concept concept = new Concept();
         concept.setName("FIRST");
         concept = conceptService.save(concept);
-        concept.addQuestionItem(questionItem);
+        ElementRef ref = new ElementRef();
+        ref.setElement( questionItem);
+        concept.addQuestionItem(ref);
 
         Concept savedConcept = conceptService.save(concept);
 

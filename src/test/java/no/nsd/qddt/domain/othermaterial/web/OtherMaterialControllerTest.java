@@ -89,7 +89,7 @@ public class OtherMaterialControllerTest  extends ControllerWebIntegrationTest {
                 MediaType.APPLICATION_OCTET_STREAM_VALUE,
                 "\1\2\3\4\5".getBytes());
 
-         entityService.saveFile(file,entity.getId());
+         entityService.saveFile(file,entity.getId(),"CC");
 
 
         mvc.perform(get("/othermaterial/files/{id}",entity.getId()))

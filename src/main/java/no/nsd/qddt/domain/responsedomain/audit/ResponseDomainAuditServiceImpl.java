@@ -24,7 +24,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("responseDomainAuditService")
-class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,ResponseDomain> implements ResponseDomainAuditService {
+class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,ResponseDomain> implements ResponseDomainAuditService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -33,7 +33,7 @@ class ResponseDomainAbstractAuditServiceImpl extends AbstractAuditFilter<Integer
     private boolean showPrivateComments;
 
     @Autowired
-    public ResponseDomainAbstractAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository, CommentService commentService) {
+    public ResponseDomainAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository, CommentService commentService) {
         this.responseDomainAuditRepository = responseDomainAuditRepository;
         this.commentService = commentService;
     }

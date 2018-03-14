@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
@@ -33,7 +32,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final TopicGroupAuditRepository topicGroupAuditRepository;
-    private final ConceptService conceptService;
+//    private final ConceptService conceptService;
     private final CommentService commentService;
     private final ElementLoader qiLoader;
     private boolean showPrivateComments;
@@ -42,11 +41,11 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     @Autowired
     public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,
                                       QuestionItemAuditService  questionItemAuditService,
-                                      ConceptService conceptService,
+//                                      ConceptService conceptService,
                                       CommentService commentService ) {
         this.topicGroupAuditRepository = topicGroupAuditRepository;
         this.commentService = commentService;
-        this.conceptService = conceptService;
+//        this.conceptService = conceptService;
         this.qiLoader = new ElementLoader( questionItemAuditService );
     }
 

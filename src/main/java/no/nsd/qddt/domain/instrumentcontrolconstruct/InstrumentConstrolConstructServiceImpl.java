@@ -81,7 +81,7 @@ public class InstrumentConstrolConstructServiceImpl implements InstrumentConstro
         if (instance.getControlConstruct() == null ) {
             ElementRef retval = ccaLoader.fill( ElementKind.CONDITION_CONSTRUCT,
                 instance.getControlConstructId(),
-                instance.getControlConstructRevision().intValue() );
+                instance.getControlConstructRevision() );
 
             List<String> params = fetchParam(retval.getElement().toString()  );
             instance.setParameters( params.stream()
@@ -98,7 +98,7 @@ public class InstrumentConstrolConstructServiceImpl implements InstrumentConstro
                 instance.setControlConstruct(
                     (ControlConstruct) ccaLoader.fill( ElementKind.CONDITION_CONSTRUCT,
                         instance.getControlConstructId(),
-                        instance.getControlConstructRevision().intValue())
+                        instance.getControlConstructRevision())
                     .getElement() );
             }
             instance.getChildren().forEach(this::postLoadProcessing);

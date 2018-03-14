@@ -70,7 +70,7 @@ public class TopicGroupController extends AbstractController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
     public TopicGroupJson copy(@PathVariable("uuid") UUID sourceId ,
-                                @PathVariable("rev") Long sourceRev,
+                                @PathVariable("rev") Integer sourceRev,
                                 @PathVariable("parentUuid") UUID parentId) {
         return new TopicGroupJson(
                 service.save(
@@ -122,7 +122,7 @@ public class TopicGroupController extends AbstractController {
             TopicGroup topicGroup = service.findOne(topicId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
-            topicGroup.addQuestionItem(questionItemId,questionItemRevision.longValue());
+            topicGroup.addQuestionItem(questionItemId,questionItemRevision.intValue());
 
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex){

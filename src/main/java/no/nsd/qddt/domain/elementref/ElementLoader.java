@@ -2,12 +2,10 @@ package no.nsd.qddt.domain.elementref;
 
 import no.nsd.qddt.domain.BaseServiceAudit;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.history.Revision;
-import org.springframework.orm.jpa.JpaSystemException;
 
 import java.util.UUID;
 
@@ -35,50 +33,39 @@ public class ElementLoader{
     }
 
     public ElementRefTyped fill(ElementRefTyped element) {
-        Integer rev = element.getRevisionNumber().intValue();
-        element.setElement(get(element.getId(), rev ));
-        element.setRevisionNumber( rev.longValue() );
+        Revision<Integer,UUID> revision = get(element.getId(), element.getRevisionNumber() );
+        element.setElement(revision.getEntity());
+        element.setRevisionNumber( revision.getRevisionNumber() );
         return  element;
     }
 
     public ElementRef fill(ElementRef element) {
-        Integer rev = element.getRevisionNumber().intValue();
-        element.setElement(get(element.getId(), rev ));
-        element.setRevisionNumber( rev.longValue() );
+        Revision<Integer,UUID> revision = get(element.getId(), element.getRevisionNumber() );
+        element.setElement(revision.getEntity());
+        element.setRevisionNumber( revision.getRevisionNumber() );
         return  element;
     }
 
 
-    private Object get(UUID id, Integer rev){
+    // uses rev Object to facilitate by rev by reference
+    private Revision get(UUID id,  Integer rev){
         try {
-
-            Revision revision = serviceAudit.findRevision( id, rev );
-            return revision.getEntity();
+            if (rev == null) {
+                return serviceAudit.findLastChange( id );
+            } else
+                return serviceAudit.findRevision( id,rev );
 
         } catch (RevisionDoesNotExistException e) {
-            LOG.info( "ElementLoader - RevisionDoesNotExistException ", e );
-            Revision revision = serviceAudit.findLastChange( id );
-            rev = revision.getRevisionNumber().intValue();
-            return revision.getEntity();
-
-        } catch (JpaSystemException se) {
-
-            LOG.error( "ElementLoader - JpaSystemException", se );
-            StackTraceFilter.filter( se.getStackTrace() ).stream()
-                .map( a -> a.toString() )
-                .forEach( LOG::debug );
+            if (rev != null)
+                return get(id, null);
+            LOG.error( "ElementLoader - RevisionDoesNotExistException ", e );
 
         } catch (Exception ex) {
 
             LOG.error( "ElementLoader - fill", ex );
-            StackTraceFilter.filter( ex.getStackTrace() ).stream()
-                .map( a -> a.toString() )
-                .forEach( LOG::debug );
 
         }
         return null;
     }
-
-
 
 }

@@ -14,7 +14,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +48,7 @@ public class QuestionItem extends AbstractEntityAudit {
     private UUID responseDomainUUID;
 
     @Column(name = "responsedomain_revision")
-    private Long responseDomainRevision;
+    private Integer responseDomainRevision;
 
     @Column(name = "question")
     private String question;
@@ -89,7 +88,8 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     public void setResponseDomain(ResponseDomain responseDomain) {
-        if (responseDomain!=null && (responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.BOOLEAN
+        if (responseDomain!=null && (
+                responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.BOOLEAN
                 & responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
                 &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.DATETIME
                 &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.NUMERIC
@@ -102,11 +102,11 @@ public class QuestionItem extends AbstractEntityAudit {
             this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
     }
 
-    public Long getResponseDomainRevision() {
+    public Integer getResponseDomainRevision() {
         return responseDomainRevision == null? 0:responseDomainRevision;
     }
 
-    public void setResponseDomainRevision(Long responseDomainRevision) {
+    public void setResponseDomainRevision(Integer responseDomainRevision) {
         this.responseDomainRevision = responseDomainRevision;
     }
 
@@ -185,7 +185,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter)  {
         pdfReport.addHeader(this,"QuestionItem");
         pdfReport.addParagraph(this.getQuestion());
         if(!StringTool.IsNullOrTrimEmpty(getIntent())) {

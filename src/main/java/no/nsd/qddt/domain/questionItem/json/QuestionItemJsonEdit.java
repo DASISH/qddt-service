@@ -18,7 +18,7 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
 
         private ResponseDomainJsonEdit responseDomain;
 
-        private Long responseDomainRevision;
+        private Integer responseDomainRevision;
 
         private String question;
 
@@ -55,11 +55,11 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
         this.responseDomain = responseDomain;
     }
 
-    public Long getResponseDomainRevision() {
+    public Integer getResponseDomainRevision() {
         return responseDomainRevision;
     }
 
-    private void setResponseDomainRevision(Long responseDomainRevision) {
+    private void setResponseDomainRevision(Integer responseDomainRevision) {
         this.responseDomainRevision = responseDomainRevision;
     }
 

@@ -64,36 +64,36 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory();
                 group.setInputLimit("1","5");
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Very Happy").createCategory());
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Happy").createCategory());
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Inbetween").createCategory());
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("UnHappy").createCategory());
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Very Unhappy").createCategory());
 
         group = categoryService.save(group);
         groupId = group.getId().toString();
 
-        rootCategory.addChild(group);
+        rootCategory.getChildren().add(group);
 
         group = new CategoryBuilder().setLabel("NO-ANSWER")
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.MISSING_GROUP)
                 .createCategory();
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("N/A").createCategory());
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Don't know").createCategory());
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Don't want to").createCategory());
         group= categoryService.save(group);
         missingId = group.getId().toString();
 
-        rootCategory.addChild(group);
+        rootCategory.getChildren().add(group);
         saved = categoryService.save(rootCategory);
 
         rootId = saved.getId().toString();

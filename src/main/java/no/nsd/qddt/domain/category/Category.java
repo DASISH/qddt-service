@@ -13,8 +13,8 @@ import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
+
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -289,7 +289,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) {
         Document document =pdfReport.getTheDocument();
         switch (getCategoryType()){
             case DATETIME:

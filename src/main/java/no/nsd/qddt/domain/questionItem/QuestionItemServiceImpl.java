@@ -68,7 +68,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public QuestionItem save(QuestionItem instance) {
         try {
             QuestionItem qi =  questionItemRepository.save(
@@ -85,13 +85,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER','ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<QuestionItem> save(List<QuestionItem> instances) {
         return instances.stream().map(this::save).collect(Collectors.toList());
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         try {
 //            System.out.println("delete question " + uuid);
@@ -103,7 +103,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<QuestionItem> instances) {
         questionItemRepository.delete(instances);
     }
@@ -156,20 +156,20 @@ class QuestionItemServiceImpl implements QuestionItemService {
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(rev.getRevisionNumber().longValue());
+                    instance.setResponseDomainRevision(rev.getRevisionNumber());
                     instance.setResponseDomain(rev.getEntity());
                 } else {
                     try {
-                        ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision().intValue()).getEntity();
+                        ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
                         instance.setResponseDomain(rd);
                     } catch (Exception ex){
                         LOG.error(ex.getMessage());
-                        instance.setResponseDomainRevision(0L);
+                        instance.setResponseDomainRevision(0);
                     }
                 }
             }
             else
-                instance.setResponseDomainRevision(0L);
+                instance.setResponseDomainRevision(0);
 
             instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
                     .map( ConceptRef::new )
@@ -185,9 +185,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem prePersistProcessing(QuestionItem instance){
 
-        Long rev = null;
+        Integer rev = null;
         if(instance.isBasedOn())
-            rev= auditService.findLastChange(instance.getId()).getRevisionNumber().longValue();
+            rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
 
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new QuestionItemFactory().copy(instance, rev );
@@ -200,14 +200,14 @@ class QuestionItemServiceImpl implements QuestionItemService {
             if (instance.getResponseDomainRevision() <= 0) {
                 try {
                     Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(revnum.getRevisionNumber().longValue());
+                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
                 } catch (Exception ex) {
                     LOG.error("Set default RevisionNumber failed",ex);
                 }
             }
         }
         else {
-            instance.setResponseDomainRevision(0L);
+            instance.setResponseDomainRevision(0);
             LOG.info("no repsonsedomain returned from web");
         }
          return instance;

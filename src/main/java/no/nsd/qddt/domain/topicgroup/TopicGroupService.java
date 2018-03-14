@@ -20,6 +20,6 @@ public interface TopicGroupService extends BaseArchivedService<TopicGroup> {
 
     List<TopicGroup> findByQuestionItem(UUID id, Integer rev);
 
-    TopicGroup copy(UUID id, Long rev, UUID parentId);
+    TopicGroup copy(UUID id, Integer rev, UUID parentId);
 
 }

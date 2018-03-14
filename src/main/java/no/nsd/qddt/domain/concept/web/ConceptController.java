@@ -61,7 +61,7 @@ public class ConceptController extends AbstractController {
             Concept concept = service.findOne(conceptId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
-            concept.addQuestionItem(questionItemId, questionItemRevision.longValue()  );
+            concept.addQuestionItem(questionItemId, questionItemRevision.intValue()  );
 
             return concept2Json(service.save(concept));
         }catch (Exception ex){
@@ -81,7 +81,7 @@ public class ConceptController extends AbstractController {
         Concept concept=null;
         try{
             concept = service.findOne(conceptId);
-            concept.removeQuestionItem(questionItemId,questionItemRevision.longValue());
+            concept.removeQuestionItem(questionItemId,questionItemRevision.intValue());
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
             super.LOG.error("removeQuestionItem",ex);
@@ -95,7 +95,7 @@ public class ConceptController extends AbstractController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
     public ConceptJsonEdit copy(@PathVariable("uuid") UUID sourceId ,
-                                @PathVariable("rev") Long sourceRev,
+                                @PathVariable("rev") Integer sourceRev,
                                 @PathVariable("parentUuid") UUID parentId) throws Exception {
         return concept2Json(
             service.save(

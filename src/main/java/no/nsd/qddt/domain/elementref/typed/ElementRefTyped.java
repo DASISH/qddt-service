@@ -20,10 +20,6 @@ public class ElementRefTyped<T extends AbstractEntityAudit> extends ElementRef {
         setElement( source.getElementAs() );
     }
 
-    public ElementRefTyped(ElementKind kind, UUID id, Long rev) {
-        super( kind, id, rev );
-    }
-
     public ElementRefTyped(ElementKind kind, UUID id, Integer rev) {
         super( kind, id, rev );
     }
@@ -37,12 +33,7 @@ public class ElementRefTyped<T extends AbstractEntityAudit> extends ElementRef {
 
     @Override
     public ElementRefTyped<T> clone() {
-        return (ElementRefTyped<T>)super.clone();
-
+        return new ElementRefTyped<>(super.clone());
     }
-
-//    ElementKind getKind() {
-//        getElementAs().getClass().getCanonicalName()
-//    }
 
 }

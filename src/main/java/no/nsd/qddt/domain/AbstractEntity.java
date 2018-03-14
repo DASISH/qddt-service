@@ -35,7 +35,7 @@ public abstract class AbstractEntity {
     private UUID id;
 
 
-    @Column(name = "updated", nullable = false)
+    @Column(name = "updated")
     @Version()
     private Timestamp modified;
 

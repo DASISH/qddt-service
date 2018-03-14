@@ -48,7 +48,7 @@ class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<Agency> save(List<Agency> instances) {
         List<Agency> target = new ArrayList<>();
         agencyRepository.save(instances).forEach(target::add);
@@ -57,7 +57,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Agency save(Agency instance) {
         return agencyRepository.save(instance);
     }

@@ -108,7 +108,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     private UUID basedOnObject;
 
     @Column(name = "based_on_revision",updatable = false)
-    private Long basedOnRevision;
+    private Integer basedOnRevision;
 
 
     @Embedded
@@ -150,11 +150,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         this.basedOnObject = basedOnObject;
     }
 
-    public Long getBasedOnRevision() {
+    public Integer getBasedOnRevision() {
         return basedOnRevision;
     }
 
-    protected void setBasedOnRevision(Long basedOnRevision) {
+    protected void setBasedOnRevision(Integer basedOnRevision) {
         this.basedOnRevision = basedOnRevision;
     }
 
@@ -306,7 +306,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         if (hasRun) return;
         if (revision != null) {
             setBasedOnObject(getId());
-            setBasedOnRevision(revision.longValue());
+            setBasedOnRevision(revision);
             version.setVersionLabel("COPY OF [" + getName() + "]");
         }
         setId(UUID.randomUUID());

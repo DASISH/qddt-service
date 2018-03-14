@@ -10,7 +10,7 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
 
     T copyBody(T source, T dest);
 
-    default T copy(T source,  Long revision) {
+    default T copy(T source,  Integer revision) {
         if (source.isNewCopy())
             revision = null;
 
@@ -18,7 +18,7 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
             makeNewCopy(source, revision));
     }
 
-    default T makeNewCopy(T source, Long revision)
+    default T makeNewCopy(T source, Integer revision)
     {
         T retval = create();
         if (revision != null) {

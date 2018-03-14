@@ -9,7 +9,6 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.utils.builders.CategoryBuilder;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -103,11 +102,10 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
                 .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory();
                 group.setInputLimit("1","5");
-        group.addChild(new CategoryBuilder()
-
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Very Happy").createCategory());
-        group.addChild(categoryService.findOne(UUID.fromString("37894d7a-65d0-11e5-9d70-feff819cdc9f")));
-        group.addChild(new CategoryBuilder()
+        group.getChildren().add(categoryService.findOne(UUID.fromString("37894d7a-65d0-11e5-9d70-feff819cdc9f")));
+        group.getChildren().add(new CategoryBuilder()
                 .setLabel("Very Unhappy").createCategory());
 
         ResultActions action = mvc.perform(post("/category/create").header("Authorization", "Bearer " + accessToken)

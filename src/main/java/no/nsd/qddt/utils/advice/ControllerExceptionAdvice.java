@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,6 +66,28 @@ public class ControllerExceptionAdvice {
     }
 
     /**
+     * Handle all exceptions of type {@link  org.springframework.dao.OptimisticLockingFailureException}
+     * when they occur from methods executed from the controller.
+     * @param req servlet request
+     * @param e general exception
+     * @return a {@link no.nsd.qddt.exception.ControllerAdviceExceptionMessage} object
+     */
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    @ResponseBody public ControllerAdviceExceptionMessage handleConcurencyCheckedFailed(HttpServletRequest req, Exception e) {
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
+            req.getRequestURL().toString(),
+            ((ObjectOptimisticLockingFailureException) e).getMostSpecificCause().getMessage()
+        );
+
+        logger.error("ConcurencyCheckedFailed: " + e);
+
+        return message;
+    }
+
+
+
+    /**
      * Default exception handler.
      * Will catch all bad requests, but will not provide further details of the error.
      * @param req servlet request
@@ -79,7 +102,7 @@ public class ControllerExceptionAdvice {
                 e.getLocalizedMessage()
         );
 
-        logger.error("Generic error: " + message.toString());
+        logger.error(e.getClass().getSimpleName(),e);
 
         return message;
     }

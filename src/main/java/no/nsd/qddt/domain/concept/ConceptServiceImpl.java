@@ -91,8 +91,8 @@ class ConceptServiceImpl implements ConceptService {
  */
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-    public Concept copy(UUID id, Long rev, UUID parentId) {
-        Concept source = auditService.findRevision(id,rev.intValue()).getEntity();
+    public Concept copy(UUID id, Integer rev, UUID parentId) {
+        Concept source = auditService.findRevision(id,rev).getEntity();
 
         Concept target = new ConceptFactory().copy(source, rev);
         target.setParentU(parentId);
