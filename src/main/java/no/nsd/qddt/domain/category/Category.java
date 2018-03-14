@@ -421,6 +421,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     public  void setCodes(List<Code> codes) {
      _Index =0;
      populateCatCodes( this, codes );
+     //codes.clear();
     }
 
     private List<Code> harvestCatCodes(Category current){
