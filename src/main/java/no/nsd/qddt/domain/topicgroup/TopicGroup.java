@@ -175,7 +175,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
-    public void removeQuestionItem(UUID questionItemId, Long rev) {
+    public void removeQuestionItem(UUID questionItemId, Integer rev) {
         ElementRef toDelete = new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev );
         if (topicQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
@@ -184,7 +184,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         }
     }
 
-    public void addQuestionItem(UUID questionItemId, Long rev) {
+    public void addQuestionItem(UUID questionItemId, Integer rev) {
         addQuestionItem( new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
     }
 
@@ -262,7 +262,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
             for (ElementRefTyped<QuestionItem> item : getTopicQuestionItemsT()) {
-                pdfReport.addheader2(item.getName());
+                pdfReport.addheader2(item.getName(), String.format("Version %s",item.getVersion()));
                 pdfReport.addParagraph(item.getElementAs().getQuestion());
                 if (item.getElementAs().getResponseDomain() != null)
                     item.getElementAs().getResponseDomain().fillDoc(pdfReport, "");

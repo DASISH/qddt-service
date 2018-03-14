@@ -111,7 +111,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
-    public void removeQuestionItem(UUID questionItemId, Long rev) {
+    public void removeQuestionItem(UUID questionItemId, Integer rev) {
         ElementRef toDelete = new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev );
         if (conceptQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
@@ -120,7 +120,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         }
     }
 
-    public void addQuestionItem(UUID questionItemId, Long rev) {
+    public void addQuestionItem(UUID questionItemId, Integer rev) {
         addQuestionItem( new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
     }
 
@@ -347,7 +347,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                 for (ElementRefTyped<QuestionItem> item : getConceptQuestionItems()
                         .stream().map(c-> new ElementRefTyped<QuestionItem>(c) ).collect( Collectors.toList() )) {
 
-                    pdfReport.addheader2(item.getName());
+                    pdfReport.addheader2(item.getName(), String.format("Version %s",item.getVersion()));
                     pdfReport.addParagraph(item.getElementAs().getQuestion());
                     if (item.getElementAs().getResponseDomain() != null)
                         item.getElementAs().getResponseDomain().fillDoc(pdfReport, "");
