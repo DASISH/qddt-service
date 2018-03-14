@@ -214,8 +214,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         agency = user.getAgency();
-        changeKind = ChangeKind.CREATED;
-        changeComment = ChangeKind.CREATED.description;
+        if (changeKind == null || changeKind.ordinal() > ChangeKind.REFERENCED.ordinal()) {
+            changeKind = ChangeKind.CREATED;
+            changeComment = ChangeKind.CREATED.description;
+        }
         version = new Version(true);
         beforeInsert();
     }
