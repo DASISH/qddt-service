@@ -16,7 +16,6 @@ import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,7 +64,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     @Column(name = "questionitem_revision")
-    private Long questionItemRevision;
+    private Integer questionItemRevision;
 
     //------------- End QuestionItem revision early bind "hack"------------------
 
@@ -167,11 +166,11 @@ public class ControlConstruct extends AbstractEntityAudit {
         this.questionItem = question;
     }
 
-    public Long getQuestionItemRevision() {
+    public Integer getQuestionItemRevision() {
         return questionItemRevision;
     }
 
-    public void setQuestionItemRevision(Long questionItemRevision) {
+    public void setQuestionItemRevision(Integer questionItemRevision) {
         this.questionItemRevision = questionItemRevision;
     }
 
@@ -385,8 +384,14 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter)  {
         pdfReport.addHeader(this, "ControlConstruct " + counter);
+
+        if (getUniverse().size() > 0)
+            pdfReport.addheader2("Universe");
+        for(Universe uni:getUniverse()){
+            pdfReport.addParagraph(uni.getDescription());
+        }
 
         if (getPreInstructions().size() > 0)
             pdfReport.addheader2("Pre Instructions");
