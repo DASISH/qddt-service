@@ -93,6 +93,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private boolean isArchived;
 
     public TopicGroup() {
+        super();
     }
 
     @Override

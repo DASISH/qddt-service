@@ -84,6 +84,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     public Concept() {
+        super();
     }
 
 

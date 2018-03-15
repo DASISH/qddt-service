@@ -63,7 +63,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
 
     public QuestionItem() {
-
+        super();
     }
 
     // Start pre remove ----------------------------------------------

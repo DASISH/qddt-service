@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -35,7 +34,6 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
     private final QuestionItemAuditService qiAuditService;
-    private final OtherMaterialService otherMaterialService;
     private final CommentService commentService;
     private boolean showPrivateComments;
 
@@ -43,11 +41,9 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
     @Autowired
     public ControlConstructAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
             , QuestionItemAuditService qAuditService
-            , CommentService cService
-            , OtherMaterialService oService) {
+            , CommentService cService) {
         this.controlConstructAuditRepository = ccAuditRepository;
         this.qiAuditService = qAuditService;
-        this.otherMaterialService = oService;
         this.commentService = cService;
     }
 
@@ -100,6 +96,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             // https://github.com/DASISH/qddt-client/issues/350
 //            System.out.println("postLoadProcessing instruction -> " + instance.getControlConstructInstructions().size());
             instance.populateInstructions();
+//            LOG.debug("Audit -> getControlConstructInstructions ", instance.getControlConstructInstructions().size() );
 
             if(instance.getQuestionItemUUID() != null) {
                 if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
@@ -121,6 +118,8 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
                 coms  =commentService.findAllByOwnerIdPublic(instance.getId());
 
             instance.setComments(new HashSet<>(coms));
+
+            instance.setClassKind( instance.getControlConstructKind().toString() );
 
         } catch (Exception ex){
             LOG.error("removeQuestionItem",ex);

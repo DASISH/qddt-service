@@ -1,8 +1,11 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
@@ -128,10 +131,26 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     private Set<Comment> comments = new HashSet<>();
 
 
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private String classKind;
+
     protected AbstractEntityAudit() {
-//        isArchived = false;
+        try {
+            classKind =ElementKind.getEnum( this.getClass().getSimpleName() ).toString();
+        } catch (Exception e) {
+            classKind = this.getClass().getSimpleName();
+        }
     }
 
+    public String getClassKind() {
+        return classKind;
+    }
+
+    public void setClassKind(String classKind) {
+        this.classKind = classKind;
+    }
 
     public Agency getAgency() {
         return agency;

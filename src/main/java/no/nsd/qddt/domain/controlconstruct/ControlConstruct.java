@@ -138,6 +138,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OneToMany
     private List<Instruction> postInstructions =new ArrayList<>();
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private ControlConstructKind controlConstructKind;
 
@@ -145,16 +146,27 @@ public class ControlConstruct extends AbstractEntityAudit {
     private SequenceKind sequenceKind;
 
     public ControlConstruct() {
+        super();
     }
 
     @PrePersist
     @PreUpdate
     private void setDefaults(){
-        if (controlConstructKind==null)
-            controlConstructKind = ControlConstructKind.QUESTION_CONSTRUCT;
+        if (controlConstructKind==null) {
+            if ( !getClassKind().isEmpty())
+                setControlConstructKind( ControlConstructKind.valueOf( getClassKind() ) );
+            else
+                setControlConstructKind(ControlConstructKind.QUESTION_CONSTRUCT);
+        }
         if (sequenceKind == null)
             sequenceKind = SequenceKind.NA;
     }
+
+    @PostLoad
+    private void setDefault(){
+        setClassKind( getControlConstructKind().toString() );
+    }
+
 
     public QuestionItem getQuestionItem() {
         if (questionItemReferenceOnly != null && questionItem != null)
@@ -320,6 +332,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     public void setControlConstructKind(ControlConstructKind controlConstructKind) {
         this.controlConstructKind = controlConstructKind;
+        this.setClassKind(controlConstructKind.toString());
     }
 
     public String getSequenceKind() {

@@ -40,6 +40,8 @@ public  abstract class AbstractJsonEdit implements Serializable {
     @Enumerated(EnumType.STRING)
     private AbstractEntityAudit.ChangeKind changeKind;
 
+    private String classKind;
+
     protected AbstractJsonEdit() {
     }
 
@@ -60,6 +62,7 @@ public  abstract class AbstractJsonEdit implements Serializable {
         setModifiedBy(new UserJson(entity.getModifiedBy()));
         setVersion(entity.getVersion());
         setChangeKind( entity.getChangeKind());
+        setClassKind( entity.getClassKind() );
     }
 
     public UUID getId() {
@@ -132,5 +135,13 @@ public  abstract class AbstractJsonEdit implements Serializable {
 
     private void setChangeKind(AbstractEntityAudit.ChangeKind changeKind) {
         this.changeKind = changeKind;
+    }
+
+    public String getClassKind() {
+        return classKind;
+    }
+
+    public void setClassKind(String classKind) {
+        this.classKind = classKind;
     }
 }

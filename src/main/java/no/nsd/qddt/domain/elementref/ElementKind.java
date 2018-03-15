@@ -10,13 +10,14 @@ public enum ElementKind {
     CONCEPT("Concept","Concept"),
     QUESTION_ITEM("QuestionItem","QuestionItem"),
     RESPONSEDOMAIN("ResponseDomain","ResponseDomain"),
+    CATEGORY("Category","Category"),
     INSTRUMENT("Instrument","Instrument"),
     PUBLICATION("Publication","Publication"),
     CONTROL_CONSTRUCT("ControlConstruct","ControlConstruct"),
-    QUESTION_CONSTRUCT("QuestionConstruct","ControlConstruct"),
-    STATEMENT_CONSTRUCT("Statement","ControlConstruct"),
-    CONDITION_CONSTRUCT("Condition","ControlConstruct"),
-    SEQUENCE_CONSTRUCT("Sequence","ControlConstruct");
+    QUESTION_CONSTRUCT("QuestionConstruct","QuestionConstruct"),
+    STATEMENT_CONSTRUCT("Statement","StatementConstruct"),
+    CONDITION_CONSTRUCT("Condition","ConditionConstruct"),
+    SEQUENCE_CONSTRUCT("Sequence","SequenceConstruct");
 
 
     private final String description;

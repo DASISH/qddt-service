@@ -107,6 +107,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
 
     public ResponseDomain(){
+        super();
         description = "";
     }
 

@@ -85,7 +85,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
 
     public Study() {
-
+        super();
     }
 
 

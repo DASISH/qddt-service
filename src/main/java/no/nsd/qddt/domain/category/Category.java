@@ -105,6 +105,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     private CategoryType categoryType;
 
     public Category() {
+        super();
+//        setClassKind( "CATEGORY" );
         code = new Code();
         hierarchyLevel = HierarchyLevel.ENTITY;
         setCategoryType(CategoryType.CATEGORY);

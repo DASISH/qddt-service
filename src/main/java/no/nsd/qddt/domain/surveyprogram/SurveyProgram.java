@@ -66,7 +66,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
     private boolean isArchived;
 
     public SurveyProgram() {
-
+        super();
     }
 
     public String getDescription() {
