@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +51,10 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public SurveyProgram findOne(UUID uuid) {
-        return surveyProgramRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, SurveyProgram.class)
+        return postLoadProcessing(surveyProgramRepository.findById(uuid)
+            .orElseThrow(() -> new ResourceNotFoundException(uuid, SurveyProgram.class))
         );
+
     }
 
 
@@ -77,7 +79,8 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<SurveyProgram> save(List<SurveyProgram> instances) {
-        return surveyProgramRepository.save(instances);
+        return surveyProgramRepository.save(instances)
+            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
     @Override
@@ -95,7 +98,8 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<SurveyProgram> findByModifiedBy(User user) {
-        return surveyProgramRepository.findByModifiedByOrderByModifiedAsc(user);
+        return surveyProgramRepository.findByModifiedByOrderByModifiedAsc(user)
+            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
     @Override
@@ -111,6 +115,22 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {
+        assert  (instance != null);
+        try{
+
+            if (StackTraceFilter.stackContains("getPdf","getXml")) {
+                instance.getStudies().forEach(  study ->
+                    study.getTopicGroups().forEach( topic -> {
+                        topic.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
+                        Hibernate.initialize(topic.getConcepts());
+                        topic.getConcepts().forEach( concept ->
+                            concept.getConceptQuestionItems().forEach( qiLoader::fill ) );
+                    } ) );
+                LOG.debug("PDF -> fetching  concepts ");
+            }
+        } catch (Exception ex){
+            LOG.error("postLoadProcessing",ex);
+        }
         return instance;
     }
 
