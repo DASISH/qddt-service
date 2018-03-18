@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
@@ -82,20 +86,23 @@ class ConceptServiceImpl implements ConceptService {
         return instances;
     }
 
- /*    private EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
     @PersistenceUnit
     public void setEntityManagerFactory(EntityManagerFactory emf) {
         this.emf = emf;
     }
- */
+ 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Concept copy(UUID id, Integer rev, UUID parentId) {
-        Concept source = auditService.findRevision(id,rev).getEntity();
+        EntityManager manager =  emf.createEntityManager();
 
+        Concept source = auditService.findRevision(id,rev).getEntity();
         Concept target = new ConceptFactory().copy(source, rev);
+        manager.detach(target);
         target.setParentU(parentId);
+        manager.merge(target);
         return conceptRepository.save(target);
 
     }

@@ -33,7 +33,9 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
             .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
             .collect(Collectors.toSet()));
 
-      dest.setTopicQuestionItems( source.getTopicQuestionItemsT().stream()
+        dest.getConcepts().forEach(concept -> concept.setParentT(dest));
+
+        dest.setTopicQuestionItems( source.getTopicQuestionItemsT().stream()
           .map( ElementRef::clone )
           .collect(Collectors.toList()));
 

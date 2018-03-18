@@ -33,6 +33,9 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     @Column(name = "OWNER_ID", updatable = false)
     private UUID ownerId;
 
+    @Column(name = "OWNER_TYPE",  insertable=false, updatable = false)
+    private String ownerType;
+
     private String fileName;
 
     private String description;
@@ -75,6 +78,13 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
         setSize(file.getSize());
         setDescription(null);
     }
+
+    public OtherMaterial(UUID owner,String ownerType,  MultipartFile file){
+        this(owner, file);
+        setField("ownerType", ownerType);
+    }
+
+
 
     public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
         setField("ownerId",owner);

@@ -136,11 +136,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
         } catch (ResourceNotFoundException re){
-            if (kind == "T")
+            om = new OtherMaterial(ownerId,kind,multipartFile);
+            //om.setOwnerId(ownerId);
+/*             if (kind == "T")
                 om = new OtherMaterialT( ownerId,multipartFile);
             else
                 om = new OtherMaterialCC( ownerId,multipartFile);
-
+ */
         }
 
 
