@@ -39,7 +39,6 @@ public class OtherMaterialCC extends OtherMaterial {
     public void setParent(ControlConstruct parent) {
         this.parent = parent;
         this.setOwnerId( parent.getId() );
-//        setField("ownerId",parent.getId());
     }
 
     @Override

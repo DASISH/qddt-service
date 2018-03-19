@@ -1,5 +1,9 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -29,11 +33,18 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Value("${fileroot}")
     private String fileRoot;
     private final OtherMaterialRepository otherMaterialRepository;
+    private final TopicGroupService topicGroupService;
+    private final ControlConstructService controlConstructService;
 
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository){
+    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository
+                            ,TopicGroupService topicGroupService
+                            ,ControlConstructService controlConstructService
+                            ){
         this.otherMaterialRepository = otherMaterialRepository;
+        this.topicGroupService = topicGroupService;
+        this.controlConstructService = controlConstructService;
     }
 
     @Override
@@ -129,20 +140,25 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getOriginalFilename()).toString();
 
         OtherMaterial om;
-        try{
+        try {
             om = findBy(ownerId,multipartFile.getOriginalFilename());
             om.setSize(multipartFile.getSize());
             om.setFileType(multipartFile.getContentType());
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
+    
         } catch (ResourceNotFoundException re){
-            om = new OtherMaterial(ownerId,kind,multipartFile);
-            //om.setOwnerId(ownerId);
-/*             if (kind == "T")
-                om = new OtherMaterialT( ownerId,multipartFile);
-            else
-                om = new OtherMaterialCC( ownerId,multipartFile);
- */
+             if (kind.equals("T")) {
+
+                TopicGroup tg = topicGroupService.findOne(ownerId);
+                om =  tg.addOtherMaterial(new OtherMaterialT( ownerId,multipartFile));
+
+             } else {
+
+                ControlConstruct cc = controlConstructService.findOne(ownerId);
+                om = cc.addOtherMaterial(new OtherMaterialCC( ownerId,multipartFile));
+
+             }
         }
 
 

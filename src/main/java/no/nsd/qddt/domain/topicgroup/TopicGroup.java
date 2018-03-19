@@ -150,6 +150,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
     public OtherMaterialT addOtherMaterial(OtherMaterialT otherMaterial) {
         otherMaterial.setParent( this );
+        otherMaterial.setParent(this);
         return  otherMaterial;
     }
 

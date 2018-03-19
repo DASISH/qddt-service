@@ -37,7 +37,8 @@ public class OtherMaterialT extends OtherMaterial {
 
     public void setParent(TopicGroup parent) {
         this.parent = parent;
-        setField("ownerId",parent.getId());
+        setOwnerId(parent.getId());
+
     }
 
     @Override
