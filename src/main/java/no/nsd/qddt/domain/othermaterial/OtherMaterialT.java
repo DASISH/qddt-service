@@ -54,6 +54,6 @@ public class OtherMaterialT extends OtherMaterial {
 
     @Override
     public OtherMaterialT clone() {
-        return new OtherMaterialT(super.clone());
+        return (OtherMaterialT)super.clone();
 }
 }

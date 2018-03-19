@@ -138,12 +138,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getOriginalFilename()).toString();
 
         OtherMaterial om;
-        try{
+        try {
             om = findBy(ownerId,multipartFile.getOriginalFilename());
             om.setSize(multipartFile.getSize());
             om.setFileType(multipartFile.getContentType());
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
+
         } catch (ResourceNotFoundException re){
             if (kind.equals( "T" )) {
                 TopicGroup topic = topicGroupService.findOne( ownerId );
