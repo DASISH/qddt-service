@@ -2,6 +2,8 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 
+import java.util.UUID;
+
 
 public interface IEntityFactory<T extends AbstractEntityAudit> {
 
@@ -33,7 +35,7 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
         retval.getVersion().setVersionLabel("COPY OF [" + source.getName() + "]");
         if(source instanceof IArchived)
             ((IArchived)retval).setArchived(false);
-        //retval.setId(UUID.randomUUID());
+        retval.setId( UUID.randomUUID());
         return retval;
     }
 

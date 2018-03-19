@@ -130,7 +130,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     public UUID getOrgRef() {
         return orgRef;
     }
-    private void setOrgRef(UUID orgRef) {
+    protected void setOrgRef(UUID orgRef) {
         this.orgRef = orgRef;
     }
 

@@ -1,5 +1,9 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -29,11 +33,16 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Value("${fileroot}")
     private String fileRoot;
     private final OtherMaterialRepository otherMaterialRepository;
-
+    private final ControlConstructService controlConstructService;
+    private final TopicGroupService topicGroupService;
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository){
+    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository,
+                             ControlConstructService controlConstructService,
+                             TopicGroupService topicGroupService){
         this.otherMaterialRepository = otherMaterialRepository;
+        this.topicGroupService = topicGroupService;
+        this.controlConstructService = controlConstructService;
     }
 
     @Override
@@ -136,11 +145,13 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setOriginalName(multipartFile.getOriginalFilename());
             om.setFileName(multipartFile.getName());
         } catch (ResourceNotFoundException re){
-            if (kind == "T")
-                om = new OtherMaterialT( ownerId,multipartFile);
-            else
-                om = new OtherMaterialCC( ownerId,multipartFile);
-
+            if (kind.equals( "T" )) {
+                TopicGroup topic = topicGroupService.findOne( ownerId );
+                om = topic.addOtherMaterial(new OtherMaterialT( ownerId, multipartFile ) );
+            } else {
+                ControlConstruct ctrl = controlConstructService.findOne( ownerId );
+                om = ctrl.addOtherMaterial( new OtherMaterialCC( ownerId, multipartFile ) );
+            }
         }
 
 

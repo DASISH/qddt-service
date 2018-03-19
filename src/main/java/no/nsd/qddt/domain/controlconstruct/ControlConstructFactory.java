@@ -19,7 +19,7 @@ public class ControlConstructFactory implements IEntityFactory<ControlConstruct>
         dest.setName(source.getName());
         dest.setIndexRationale(source.getIndexRationale());
         dest.setCondition(source.getCondition());
-        dest.setControlConstructKind(source.getControlConstructKind());
+        dest.setControlConstructKind(ControlConstructKind.valueOf( source.getClassKind() ) );
         dest.setSequenceEnum(source.getSequenceEnum());
         dest.setQuestionItem(source.getQuestionItem());
         dest.setQuestionItemRevision(source.getQuestionItemRevision());

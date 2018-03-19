@@ -5,17 +5,14 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
-@Audited
 @Entity
+@Audited
 @DiscriminatorValue("CC")
 public class OtherMaterialCC extends OtherMaterial {
 
@@ -25,6 +22,19 @@ public class OtherMaterialCC extends OtherMaterial {
     public OtherMaterialCC(UUID parentId, MultipartFile file) {
         super( parentId, file );
     }
+
+    public  OtherMaterialCC(OtherMaterial om) {
+        setOwnerId( om.getOwnerId() );
+        setFileName( om.getFileName() );
+        setFileType( om.getFileType() );
+        setOriginalName( om.getOriginalName() );
+        setSize( om.getSize() );
+        setId( om.getId() );
+        setOrgRef( om.getOrgRef() );
+        setModified( om.getModified() );
+        setModifiedBy( om.getModifiedBy() );
+    }
+
 
 
     @ManyToOne()
@@ -39,11 +49,10 @@ public class OtherMaterialCC extends OtherMaterial {
     public void setParent(ControlConstruct parent) {
         this.parent = parent;
         this.setOwnerId( parent.getId() );
-//        setField("ownerId",parent.getId());
     }
 
     @Override
     public OtherMaterialCC clone() {
-        return (OtherMaterialCC)super.clone();
+        return new OtherMaterialCC(super.clone());
 }
 }

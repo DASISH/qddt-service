@@ -26,6 +26,18 @@ public class OtherMaterialT extends OtherMaterial {
         super( parentId, file );
     }
 
+    public OtherMaterialT(OtherMaterial om) {
+        setOwnerId( om.getOwnerId() );
+        setFileName( om.getFileName() );
+        setFileType( om.getFileType() );
+        setOriginalName( om.getOriginalName() );
+        setSize( om.getSize() );
+        setId( om.getId() );
+        setOrgRef( om.getOrgRef() );
+        setModified( om.getModified() );
+        setModifiedBy( om.getModifiedBy() );
+    }
+
     @ManyToOne()
     @JsonBackReference(value = "tref")
     @JoinColumn(name = "OWNER_ID",insertable = false, updatable = false)
@@ -37,11 +49,11 @@ public class OtherMaterialT extends OtherMaterial {
 
     public void setParent(TopicGroup parent) {
         this.parent = parent;
-        setField("ownerId",parent.getId());
+        this.setOwnerId( parent.getId() );
     }
 
     @Override
     public OtherMaterialT clone() {
-        return (OtherMaterialT)super.clone();
+        return new OtherMaterialT(super.clone());
 }
 }

@@ -15,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -85,21 +87,22 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return topicGroupRepository.save(instances);
     }
 
-//    private EntityManagerFactory emf;
-//
-//    @PersistenceUnit
-//    public void setEntityManagerFactory(EntityManagerFactory emf) {
-//        this.emf = emf;
-//    }
+    private EntityManagerFactory emf;
+
+    @PersistenceUnit
+    public void setEntityManagerFactory(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public TopicGroup copy(UUID id, Integer rev, UUID parentId) {
-        //EntityManager entityManager = this.emf.createEntityManager();
+//        EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev ).getEntity();
-
         TopicGroup target = new TopicGroupFactory().copy(source, rev);
+//        entityManager.detach( target );
         target.setParentU(parentId);
+//        entityManager.merge( target );
         return topicGroupRepository.save(target);
     }
 
@@ -159,10 +162,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
         assert  (instance != null);
         try{
             instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
-
-//            instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
-//                .map( ConceptRef::new )
-//                .collect( Collectors.toList()) );
 
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 LOG.debug("PDF -> fetching  concepts ");
