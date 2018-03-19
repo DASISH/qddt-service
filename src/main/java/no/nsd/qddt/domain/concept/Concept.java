@@ -49,7 +49,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     private Concept parentReferenceOnly;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")

@@ -73,13 +73,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
         try {
             QuestionItem qi =  questionItemRepository.save(
                 prePersistProcessing(instance));
-//            return  qi;
             return postLoadProcessing(qi);
         } catch (Exception ex){
             LOG.error("QI save ->",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
             throw ex;
         }
     }
@@ -94,10 +90,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         try {
-//            System.out.println("delete question " + uuid);
             questionItemRepository.delete(uuid);
         } catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
+            LOG.error("QI delete ->",ex);
             throw ex;
         }
     }
@@ -111,18 +106,18 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Override
     public Page<QuestionItem> getHierarchy(Pageable pageable) {
         return  questionItemRepository.findAll(
-                defaultSort(pageable,"name", "question"))
-                .map(this::postLoadProcessing);
+                defaultSort(pageable,"name", "question"));
+//                .map(this::postLoadProcessing);
     }
 
     @Override
     public Page<QuestionItem> findAllPageable(Pageable pageable){
         try {
             return questionItemRepository.findAll(
-                    defaultSort(pageable,"name"))
-                    .map(this::postLoadProcessing);
-        }catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
+                    defaultSort(pageable,"name"));
+//                    .map(this::postLoadProcessing);
+        } catch (Exception ex) {
+            LOG.error("QI catch & continue ->",ex);
             return new PageImpl<>(null);
         }
     }
@@ -133,17 +128,16 @@ class QuestionItemServiceImpl implements QuestionItemService {
         name = name.replace("*","%");
 
         return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionLikeIgnoreCase(name,question,
-                defaultSort(pageable,"name","question"))
-                .map(this::postLoadProcessing);
+                defaultSort(pageable,"name","question"));
+//                .map(this::postLoadProcessing);
     }
 
     @Override
     public Page<QuestionItem> findByNameLikeOrQuestionLike(String searchString, Pageable pageable) {
         searchString = searchString.replace("*","%");
-
         return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionLikeIgnoreCase(searchString,searchString,
-                defaultSort(pageable,"name","question"))
-                .map(this::postLoadProcessing);
+                defaultSort(pageable,"name","question"));
+//                .map(this::postLoadProcessing);
     }
 
     /*

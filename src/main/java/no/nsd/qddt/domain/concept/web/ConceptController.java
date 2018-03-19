@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,11 +63,8 @@ public class ConceptController extends AbstractController {
             concept.addQuestionItem(questionItemId, questionItemRevision.intValue()  );
 
             return concept2Json(service.save(concept));
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LOG.error("addQuestionItem",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
             throw ex;
         }
     }
@@ -84,10 +80,7 @@ public class ConceptController extends AbstractController {
             concept.removeQuestionItem(questionItemId,questionItemRevision.intValue());
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
-            super.LOG.error("removeQuestionItem",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(super.LOG::info);
+            LOG.error("removeQuestionItem",ex);
             return concept2Json(concept);
         }
     }
@@ -131,6 +124,7 @@ public class ConceptController extends AbstractController {
     public void delete(@PathVariable("id") UUID id) {
 
         service.delete(id);
+
     }
 
 
@@ -180,9 +174,7 @@ public class ConceptController extends AbstractController {
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
     public byte[] getPdf(@PathVariable("id") UUID id) {
-        Concept concept = service.findOne(id);
-
-        return concept.makePdf().toByteArray();
+        return service.findOne(id).makePdf().toByteArray();
     }
 
     private ConceptJsonEdit concept2Json(Concept concept){

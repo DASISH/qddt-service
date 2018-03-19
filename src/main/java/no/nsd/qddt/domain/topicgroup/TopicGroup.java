@@ -67,7 +67,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
     @JsonIgnore
     @OrderBy(value = "name asc")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })
     private Set<Concept> concepts = new HashSet<>(0);
 
 
@@ -86,7 +86,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Author> authors = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "parent" ,fetch = FetchType.LAZY, cascade =CascadeType.REMOVE)
+    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
 //    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
     private Set<OtherMaterialT> otherMaterials = new HashSet<>();
 

@@ -63,13 +63,13 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     @Column(length = 10000)
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH} , mappedBy = "study")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.DETACH } , mappedBy = "study")
 //    @JoinTable(name = "STUDY_INSTRUMENTS",
 //            joinColumns = {@JoinColumn(name = "study_id")},
 //            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany( cascade = {CascadeType.MERGE ,CascadeType.REMOVE}, mappedBy = "study", fetch = FetchType.LAZY)
+    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "study", fetch = FetchType.LAZY)
     @OrderBy(value = "name ASC")
     private Set<TopicGroup> topicGroups = new HashSet<>(0);
 

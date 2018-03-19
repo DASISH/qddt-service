@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.questionItem.json;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
 import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
 
@@ -38,7 +37,9 @@ public class QuestionItemListJson {
 
     private String intent;
 
-    private ResponseDomainJsonView responseDomain;
+    private String responseDomainName;
+
+//    private ResponseDomainJsonView responseDomain;
 
 
     public QuestionItemListJson() {
@@ -54,7 +55,8 @@ public class QuestionItemListJson {
         modifiedBy = new UserJson(entity.getModifiedBy());
         question = entity.getQuestion();
         intent = entity.getIntent();
-        responseDomain = new ResponseDomainJsonView(entity.getResponseDomain());
+        responseDomainName = entity.getResponseDomainName();
+//        responseDomain = new ResponseDomainJsonView(entity.getResponseDomain());
 //        responseDomain.getVersion().setRevision(entity.getResponseDomainRevision());
     }
 
@@ -77,6 +79,9 @@ public class QuestionItemListJson {
         return intent;
     }
 
+    public String getResponseDomainName() {
+        return responseDomainName;
+    }
 
     public Timestamp getModified() {
         return modified;
@@ -98,8 +103,8 @@ public class QuestionItemListJson {
     }
 
 
-    public ResponseDomainJsonView getResponseDomain() {
-        return responseDomain;
-    }
+//    public ResponseDomainJsonView getResponseDomain() {
+//        return responseDomain;
+//    }
 
 }

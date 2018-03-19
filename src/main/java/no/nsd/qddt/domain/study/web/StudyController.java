@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -57,15 +56,11 @@ public class StudyController extends AbstractController {
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
 
-        LOG.debug("Study delete " + id);
         try {
             service.delete(id);
-        }catch (Exception ex) {
-            LOG.error("delete",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
-
+        } catch (Exception ex) {
+            LOG.error("Delete failed for Study " + id,ex);
+            throw  ex;
         }
     }
 

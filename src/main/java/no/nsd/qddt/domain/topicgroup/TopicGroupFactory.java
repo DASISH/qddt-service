@@ -1,13 +1,11 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.IEntityFactory;
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptFactory;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 
@@ -17,35 +15,32 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 	}
 
 	@Override
-	public TopicGroup copyBody(TopicGroup source, TopicGroup dest) {
-        dest.setAbstractDescription(source.getAbstractDescription());
-        dest.setName(source.getName());
-        dest.setOtherMaterials(source.getOtherMaterials().stream()
-            .map( m -> {
-                OtherMaterialT om = m.clone();
-                om.setOwnerId(dest.getId());
-                return om;
-            })
-            .collect(Collectors.toSet()) );  
+  public TopicGroup copyBody(TopicGroup source, TopicGroup dest) {
+	    dest.setAbstractDescription(source.getAbstractDescription());
+      dest.setName(source.getName());
+      dest.setOtherMaterials(source.getOtherMaterials().stream()
+          .map( m -> {
+              OtherMaterialT om = m.clone();
+              om.setOwnerId(dest.getId());
+              return om;
+          })
+          .collect(Collectors.toSet()) );
 
-        ConceptFactory cf = new ConceptFactory();
-        dest.setConcepts(source.getConcepts().stream()
-            .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
-            .collect(Collectors.toSet()));
-        dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );
+      ConceptFactory cf = new ConceptFactory();
+
+      dest.setConcepts(source.getConcepts().stream()
+          .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
+          .collect(Collectors.toSet()));
+
+      dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );
+//      dest.getConcepts().forEach(concept -> concept.setParentT(dest));
+
       dest.setTopicQuestionItems( source.getTopicQuestionItemsT().stream()
-
-        dest.getConcepts().forEach(concept -> concept.setParentT(dest));
-
-        dest.setTopicQuestionItems( source.getTopicQuestionItemsT().stream()
           .map( ElementRef::clone )
           .collect(Collectors.toList()));
 
       return dest;
 	}
 
-	private Stream<Concept> extracted(TopicGroup source) {
-		return source.getConcepts().stream();
-	}
-    
+
 }

@@ -112,9 +112,9 @@ public abstract class AbstractEntity {
             field.setAccessible(true);
             field.set(this, value);
         } catch (NoSuchFieldException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+            LOG.error("IMPOSSIBLE! ", e );
         } catch (IllegalAccessException e) {
-            LOG.error("IMPOSSIBLE! ", e.getMessage() );
+            LOG.error("IMPOSSIBLE! ", e );
         }
     }
 

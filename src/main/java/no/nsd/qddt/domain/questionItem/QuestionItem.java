@@ -50,6 +50,10 @@ public class QuestionItem extends AbstractEntityAudit {
     @Column(name = "responsedomain_revision")
     private Integer responseDomainRevision;
 
+    @Column(name = "responsedomain_name")
+    private String responseDomainName;
+
+
     @Column(name = "question")
     private String question;
 
@@ -98,6 +102,7 @@ public class QuestionItem extends AbstractEntityAudit {
             LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
         }
             this.responseDomain = responseDomain;
+        setResponseDomainName( responseDomain.getName() );
         if (this.responseDomain != null)
             this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
     }
@@ -118,6 +123,16 @@ public class QuestionItem extends AbstractEntityAudit {
         this.responseDomainUUID = responseDomainUUID;
     }
 
+    public String getResponseDomainName() {
+        if (responseDomainName == null && responseDomain != null ) {
+            responseDomainName = responseDomain.getName();
+        }
+        return responseDomainName;
+    }
+
+    public void setResponseDomainName(String responseDomainName) {
+        this.responseDomainName = responseDomainName;
+    }
 
     public String getQuestion() {
         return question;

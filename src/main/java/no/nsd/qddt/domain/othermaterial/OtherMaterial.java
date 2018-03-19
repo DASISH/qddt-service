@@ -71,7 +71,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     }
 
     public OtherMaterial(UUID owner, MultipartFile file){
-        setField("ownerId",owner);
+        setOwnerId( owner );
         setFileName(file.getName());
         setOriginalName(file.getOriginalFilename());
         setFileType(file.getContentType());
@@ -87,7 +87,7 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
 
 
     public OtherMaterial(UUID owner, String name, String fileType, long size, String description) {
-        setField("ownerId",owner);
+        setOwnerId( owner );
         setFileName(name);
         setOriginalName(name);
         setFileType(fileType);
