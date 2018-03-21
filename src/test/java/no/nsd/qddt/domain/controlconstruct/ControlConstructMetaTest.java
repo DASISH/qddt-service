@@ -1,16 +1,14 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
-//import no.nsd.qddt.domain.question.Question;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.QuestionItemService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.utils.builders.InstrumentBuilder;
 import no.nsd.qddt.utils.builders.InstrumentQuestionItemBuilder;
-//import no.nsd.qddt.utils.builders.QuestionBuilder;
 import no.nsd.qddt.utils.builders.QuestionItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +21,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+//import no.nsd.qddt.domain.question.Question;
+//import no.nsd.qddt.utils.builders.QuestionBuilder;
 ;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -73,8 +73,8 @@ public class ControlConstructMetaTest {
      * @throws Exception
      */
     @Test
-    public void findByQuestionTest() throws Exception {
-        List<ConstructJson> iqs = controlConstructService.findByQuestionItems(Arrays.asList(qi1.getId()));
+    public void findByQuestionTest()  {
+        List<ConstructQuestionJson> iqs = controlConstructService.findByQuestionItems(Arrays.asList(qi1.getId()));
         assertEquals("Expected two elements!", iqs.size(), 2);
     }
 }

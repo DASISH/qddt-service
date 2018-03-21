@@ -11,7 +11,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -165,7 +164,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) {
         pdfReport.addHeader(this,"Survey")
             .add(new Paragraph(this.getDescription())
             .setWidth(pdfReport.width100*0.8F)

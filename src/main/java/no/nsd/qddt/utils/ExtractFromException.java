@@ -17,15 +17,14 @@ public class ExtractFromException {
      * @param exceptionMessage from the exception caster
      * @return a formatted version.
      */
-    public static String extractId(String exceptionMessage) {
+    public static String extractUUID(String exceptionMessage) {
 
         Matcher patternMatcher = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}").matcher(exceptionMessage);
         if(patternMatcher.find()) {
             return patternMatcher.group();
         }
 
-        return "";
-//        return exceptionMessage.substring(exceptionMessage.lastIndexOf("#")+1);
+        return "NA";
 
     }
 
@@ -41,7 +40,6 @@ public class ExtractFromException {
         if(patternMatcher.find()) {
             return patternMatcher.group();
         }
-
         return exceptionMessage.substring(exceptionMessage.lastIndexOf(":")+1);
 
     }

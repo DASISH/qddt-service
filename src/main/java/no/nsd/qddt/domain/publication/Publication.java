@@ -7,7 +7,6 @@ import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,10 +23,10 @@ public class Publication extends AbstractEntityAudit {
 
     private String status;
 
-    @OrderColumn(name="element_idx")
-    @OrderBy("element_idx ASC")
+    @OrderColumn(name="parent_idx")
+    @OrderBy("parent_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "PUBLICATION_ELEMENT",joinColumns = @JoinColumn(name="element_id"))
+    @CollectionTable(name = "PUBLICATION_ELEMENT",joinColumns = @JoinColumn(name="parent_id"))
     private List<ElementRef>  publicationElements = new ArrayList<>();
 
 
@@ -95,7 +94,7 @@ public class Publication extends AbstractEntityAudit {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter) {
         pdfReport.addHeader(this,"Publication package");
         pdfReport.addheader2("Purpose");
         pdfReport.addParagraph(getPurpose());

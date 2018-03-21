@@ -1,7 +1,7 @@
-package no.nsd.qddt.domain.othermaterial;
+package no.nsd.qddt.domain.othermaterial.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,16 +14,16 @@ import java.util.UUID;
 @Entity
 @Audited
 @DiscriminatorValue("CC")
-public class OtherMaterialCC extends OtherMaterial {
+public class OtherMaterialCtrlCtor extends OtherMaterial {
 
-    public OtherMaterialCC() {
+    public OtherMaterialCtrlCtor() {
     }
 
-    public OtherMaterialCC(UUID parentId, MultipartFile file) {
+    public OtherMaterialCtrlCtor(UUID parentId, MultipartFile file) {
         super( parentId, file );
     }
 
-    public  OtherMaterialCC(OtherMaterial om) {
+    public OtherMaterialCtrlCtor(OtherMaterial om) {
         setOwnerId( om.getOwnerId() );
         setFileName( om.getFileName() );
         setFileType( om.getFileType() );
@@ -52,7 +52,7 @@ public class OtherMaterialCC extends OtherMaterial {
     }
 
     @Override
-    public OtherMaterialCC clone() {
-        return new OtherMaterialCC(super.clone());
+    public OtherMaterialCtrlCtor clone() {
+        return new OtherMaterialCtrlCtor(super.clone());
 }
 }

@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import org.junit.Before;
 import org.junit.Test;

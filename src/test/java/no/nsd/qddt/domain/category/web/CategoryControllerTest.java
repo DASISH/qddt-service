@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.category.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;

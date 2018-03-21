@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.othermaterial;
+package no.nsd.qddt.domain.othermaterial.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -17,16 +17,16 @@ import java.util.UUID;
 @Entity
 @Audited
 @DiscriminatorValue("T")
-public class OtherMaterialT extends OtherMaterial {
+public class OtherMaterialTopic extends OtherMaterial {
 
-    public OtherMaterialT() {
+    public OtherMaterialTopic() {
     }
 
-    public OtherMaterialT(UUID parentId, MultipartFile file) {
+    public OtherMaterialTopic(UUID parentId, MultipartFile file) {
         super( parentId, file );
     }
 
-    public OtherMaterialT(OtherMaterial om) {
+    public OtherMaterialTopic(OtherMaterial om) {
         setOwnerId( om.getOwnerId() );
         setFileName( om.getFileName() );
         setFileType( om.getFileType() );
@@ -53,7 +53,7 @@ public class OtherMaterialT extends OtherMaterial {
     }
 
     @Override
-    public OtherMaterialT clone() {
-        return (OtherMaterialT)super.clone();
+    public OtherMaterialTopic clone() {
+        return (OtherMaterialTopic)super.clone();
 }
 }

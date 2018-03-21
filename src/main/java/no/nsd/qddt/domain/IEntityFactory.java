@@ -35,6 +35,8 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
         retval.getVersion().setVersionLabel("COPY OF [" + source.getName() + "]");
         if(source instanceof IArchived)
             ((IArchived)retval).setArchived(false);
+        retval.setClassKind( source.getClassKind() );
+        retval.setName( source.getName() );
         retval.setId( UUID.randomUUID());
         return retval;
     }

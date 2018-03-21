@@ -1,15 +1,11 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.instrumentcontrolconstruct.InstrumentParameter;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Stig Norland
@@ -20,25 +16,14 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private Integer questionItemRevision;
 
-    private String label;
-
-    private String description;
-
-    private Set<OtherMaterialCC> otherMaterials;
-
-    private List<InstrumentParameter> parameters = new ArrayList<>();
-
     private List<Instruction> preInstructions;
 
     private List<Instruction> postInstructions;
 
-    public ConstructQuestionJson(ControlConstruct construct) {
+    public ConstructQuestionJson(QuestionConstruct construct) {
         super(construct);
         questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
         questionItemRevision = construct.getQuestionItemRevision();
-        label = construct.getLabel();
-        description = construct.getDescription();
-        otherMaterials = construct.getOtherMaterials();
         preInstructions = construct.getPreInstructions();
         postInstructions = construct.getPostInstructions();
     }
@@ -59,37 +44,6 @@ public class ConstructQuestionJson  extends ConstructJson {
         this.questionItemRevision = questionItemRevision;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<OtherMaterialCC> getOtherMaterials() {
-        return otherMaterials;
-    }
-
-    public void setOtherMaterials(Set<OtherMaterialCC> otherMaterials) {
-        this.otherMaterials = otherMaterials;
-    }
-
-    public List<InstrumentParameter> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(List<InstrumentParameter> parameters) {
-        this.parameters = parameters;
-    }
 
     public List<Instruction> getPreInstructions() {
         return preInstructions;

@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.category;
 
-import no.nsd.qddt.domain.HierarchyLevel;
 import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.exception.InvalidObjectException;
 import no.nsd.qddt.exception.ResourceNotFoundException;

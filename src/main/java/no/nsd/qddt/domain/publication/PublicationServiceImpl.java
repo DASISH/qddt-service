@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +66,8 @@ public class PublicationServiceImpl implements PublicationService {
             return repository.save(instance);
         } catch (Exception ex){
             LOG.error("Publication save ->",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
             throw ex;
         }
-
     }
 
     @Override
@@ -138,18 +133,18 @@ public class PublicationServiceImpl implements PublicationService {
         return instance;
     }
 
-    ElementRef postLoadProcessing(ElementRef instanse) {
-        instanse = new ElementLoader(serviceLoader.getService( instanse.getElementKind())).fill( instanse );
-        switch (instanse.getElementKind()) {
+    ElementRef postLoadProcessing(ElementRef instance) {
+        instance = new ElementLoader(serviceLoader.getService( instance.getElementKind())).fill( instance );
+        switch (instance.getElementKind()) {
             case TOPIC_GROUP:
-                ((TopicGroupRevisionJson)instanse.getElement()).getTopicQuestionItems()
+                ((TopicGroupRevisionJson)instance.getElement()).getTopicQuestionItems()
                     .forEach(e-> postLoadProcessing(e));
-                ((TopicGroupRevisionJson)instanse.getElement()).getConcepts()
+                ((TopicGroupRevisionJson)instance.getElement()).getConcepts()
                     .forEach( c->c.getConceptQuestionItems()
                         .forEach( e-> postLoadProcessing(e) ) );
                 break;
             case CONCEPT:
-                ((ConceptJsonEdit)instanse.getElement()).getConceptQuestionItems()
+                ((ConceptJsonEdit)instance.getElement()).getConceptQuestionItems()
                     .forEach(e-> postLoadProcessing(e));
                 break;
             case CONTROL_CONSTRUCT:
@@ -158,7 +153,7 @@ public class PublicationServiceImpl implements PublicationService {
             default:
                 // do nothing
         }
-        return instanse;
+        return instance;
     }
 
 

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+
+import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 
 /**
  * @author Stig Norland
@@ -10,7 +11,7 @@ public class ConstructConditionJson extends ConstructJson {
     private String condition;
 
 
-    public ConstructConditionJson(ControlConstruct construct) {
+    public ConstructConditionJson(ConditionConstruct construct) {
         super(construct);
         condition = construct.getCondition();
     }
@@ -22,5 +23,29 @@ public class ConstructConditionJson extends ConstructJson {
     public void setCondition(String condition) {
         this.condition = condition;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ConstructConditionJson)) return false;
+
+        ConstructConditionJson that = (ConstructConditionJson) o;
+
+        return condition != null ? condition.equals( that.condition ) : that.condition == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return condition != null ? condition.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"ConstructConditionJson\":"
+            + super.toString()
+            + ", \"condition\":\"" + condition + "\""
+            + "}";
+    }
+
 
 }

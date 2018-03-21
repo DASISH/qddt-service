@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.othermaterial.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

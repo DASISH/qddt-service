@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.*;
 
 /**
  * @author Stig Norland
@@ -8,18 +8,18 @@ import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 public  class Converter {
 
 
-    public static ConstructJson mapConstruct(ControlConstruct construct){
-        switch (construct.getControlConstructKind()) {
-            case QUESTION_CONSTRUCT:
-                return new ConstructQuestionJson(construct);
-            case STATEMENT_CONSTRUCT:
-                return new ConstructStatementJson(construct);
-            case CONDITION_CONSTRUCT:
-                return new ConstructConditionJson(construct);
-            case SEQUENCE_CONSTRUCT:
-                return new ConstructSequenceJson(construct);
+    public static <S extends ConstructJson> S mapConstruct(ControlConstruct construct){
+        switch (construct.getClassKind()) {
+            case "QUESTION_CONSTRUCT":
+                return (S)new ConstructQuestionJson((QuestionConstruct) construct);
+            case "STATEMENT_CONSTRUCT":
+                return (S)new ConstructStatementJson((StatementItem) construct);
+            case "CONDITION_CONSTRUCT":
+                return (S)new ConstructConditionJson((ConditionConstruct) construct);
+            case "SEQUENCE_CONSTRUCT":
+                return (S)new ConstructSequenceJson((Sequence) construct);
             default:
-                return new ConstructJson(construct);
+                return (S)new ConstructJson(construct);
         }
     }
 

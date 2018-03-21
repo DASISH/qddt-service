@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.BaseService;
-import no.nsd.qddt.domain.HierarchyLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

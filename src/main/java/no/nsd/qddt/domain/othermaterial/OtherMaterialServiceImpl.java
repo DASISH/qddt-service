@@ -1,7 +1,10 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialCtrlCtor;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ReferenceInUseException;
@@ -148,10 +151,10 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
         } catch (ResourceNotFoundException re){
             if (kind.equals( "T" )) {
                 TopicGroup topic = topicGroupService.findOne( ownerId );
-                om = topic.addOtherMaterial(new OtherMaterialT( ownerId, multipartFile ) );
+                om = topic.addOtherMaterial(new OtherMaterialTopic( ownerId, multipartFile ) );
             } else {
                 ControlConstruct ctrl = controlConstructService.findOne( ownerId );
-                om = ctrl.addOtherMaterial( new OtherMaterialCC( ownerId, multipartFile ) );
+                om = ctrl.addOtherMaterial( new OtherMaterialCtrlCtor( ownerId, multipartFile ) );
             }
         }
 

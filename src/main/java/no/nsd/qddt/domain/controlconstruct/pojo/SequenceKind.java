@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.controlconstruct.pojo;
 
 /**
  * @author Stig Norland

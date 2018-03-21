@@ -2,11 +2,11 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialCC;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialCtrlCtor;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -75,7 +75,7 @@ public class ControlConstructController extends AbstractController {
             instance = service.save(instance);
         if (files != null && files.length > 0)
             for (MultipartFile multipartFile:files) {
-                instance.addOtherMaterial((OtherMaterialCC)omService.saveFile(multipartFile, instance.getId(),"CC"));
+                instance.addOtherMaterial((OtherMaterialCtrlCtor)omService.saveFile(multipartFile, instance.getId(),"CC"));
             }
         return service.save(instance);
     }
@@ -88,7 +88,7 @@ public class ControlConstructController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
-    public List<ConstructJson> getBySecond(@PathVariable("uuid") UUID secondId) {
+    public List<ConstructQuestionJson> getBySecond(@PathVariable("uuid") UUID secondId) {
         try {
             return service.findByQuestionItems(Collections.singletonList(secondId));
         } catch (Exception ex){
@@ -102,7 +102,7 @@ public class ControlConstructController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list/by-questiontext/{question}", method = RequestMethod.GET)
-    public List<ConstructJson> getTop25ByQuestionText(@PathVariable("question") String questionText) {
+    public List<ConstructQuestionJson> getTop25ByQuestionText(@PathVariable("question") String questionText) {
         return service.findTop25ByQuestionItemQuestion(questionText);
     }
 
@@ -110,7 +110,7 @@ public class ControlConstructController extends AbstractController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConstructJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                               @RequestParam(value = "questiontext",defaultValue = "%") String question,
-                                                              @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") ControlConstructKind kind,
+                                                              @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") String kind,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
 
 

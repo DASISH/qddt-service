@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.othermaterial;
+package no.nsd.qddt.domain.othermaterial.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;

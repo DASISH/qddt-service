@@ -1,7 +1,10 @@
 package no.nsd.qddt.domain.elementref.typed;
 
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
+import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.publication.Publication;
@@ -36,10 +39,13 @@ public class TypedRef {
                 return  (ElementRefTyped<Publication>)element;
             case CONTROL_CONSTRUCT:
             case QUESTION_CONSTRUCT:
+                return  (ElementRefTyped<QuestionConstruct>)element;
             case STATEMENT_CONSTRUCT:
+                return  (ElementRefTyped<StatementItem>)element;
             case CONDITION_CONSTRUCT:
+                return  (ElementRefTyped<ConditionConstruct>)element;
             case SEQUENCE_CONSTRUCT:
-                return  (ElementRefTyped<ControlConstruct>)element;
+                return  (ElementRefTyped<Sequence>)element;
             default:
                 return null;
         }

@@ -17,7 +17,6 @@ import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,11 +63,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @Column(name = "topicgroup_id", insertable = false, updatable = false)
     private UUID topicGroupId;
 
-    @OrderColumn(name="element_idx")
-    @OrderBy("element_idx ASC")
+    @OrderColumn(name="concept_idx")
+    @OrderBy("concept_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
-        joinColumns = @JoinColumn(name="element_id", referencedColumnName = "id"))
+        joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
     private List<ElementRef>  conceptQuestionItems = new ArrayList<>();
 
     private String label;
@@ -329,7 +328,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter ) throws IOException {
+    public void fillDoc(PdfReport pdfReport,String counter ) {
         try {
             pdfReport.addHeader(this, "Concept " + counter )
                 .add(new Paragraph(this.getDescription())

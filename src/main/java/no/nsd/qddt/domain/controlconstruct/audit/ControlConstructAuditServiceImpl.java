@@ -4,10 +4,10 @@ import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,14 +89,12 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
      */
-    private  ControlConstruct postLoadProcessing(ControlConstruct instance){
+    private QuestionConstruct postLoadProcessing(QuestionConstruct instance) {
         assert  (instance != null);
         try{
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
-//            System.out.println("postLoadProcessing instruction -> " + instance.getControlConstructInstructions().size());
             instance.populateInstructions();
-//            LOG.debug("Audit -> getControlConstructInstructions ", instance.getControlConstructInstructions().size() );
 
             if(instance.getQuestionItemUUID() != null) {
                 if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
@@ -111,24 +109,24 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             else
                 instance.setQuestionItemRevision(0);
 
-            List<Comment> coms;
-            if (showPrivateComments)
-                coms = commentService.findAllByOwnerId(instance.getId());
-            else
-                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
-
-            instance.setComments(new HashSet<>(coms));
-
-            instance.setClassKind( instance.getControlConstructKind().toString() );
-
         } catch (Exception ex){
             LOG.error("removeQuestionItem",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
         }
-
         return instance;
+    }
+
+
+    private ControlConstruct postLoadProcessing(ControlConstruct instance) {
+        assert  (instance != null);
+        List<Comment> coms;
+        if (showPrivateComments)
+            coms = commentService.findAllByOwnerId(instance.getId());
+        else
+            coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+
+        instance.setComments(new HashSet<>(coms));
+
+        return  instance.getClassKind().equals("QUESTION_CONSTRUCT")?postLoadProcessing( (QuestionConstruct) instance ): instance;
     }
 
 

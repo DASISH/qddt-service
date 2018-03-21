@@ -19,7 +19,6 @@ import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -377,7 +376,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     }
 
 
-    public abstract void fillDoc(PdfReport pdfReport,String counter) throws IOException;
+    public abstract void fillDoc(PdfReport pdfReport,String counter);
 
     public ByteArrayOutputStream makePdf() {
         ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();

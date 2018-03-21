@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;

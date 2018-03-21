@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.othermaterial;
 
 import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.web.multipart.MultipartFile;

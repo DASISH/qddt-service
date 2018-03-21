@@ -14,9 +14,11 @@ public class ControllerAdviceExceptionMessage {
     private String id;
     private String url;
     private String exceptionMessage;
+    private String userfriendlyMessage;
+
 
     public ControllerAdviceExceptionMessage(String url, String exceptionMessage) {
-        this.id = ExtractFromException.extractId(exceptionMessage);
+        this.id = ExtractFromException.extractUUID(exceptionMessage);
         this.url = url;
         this.exceptionMessage  = ExtractFromException.extractMessage( exceptionMessage);
     }
@@ -41,14 +43,21 @@ public class ControllerAdviceExceptionMessage {
         return exceptionMessage;
     }
 
-    public void setExceptionMessage(String exceptionMessage) {
-        this.exceptionMessage = exceptionMessage;
+    public String getUserfriendlyMessage() {
+        return userfriendlyMessage;
+    }
+
+    public void setUserfriendlyMessage(String userfriendlyMessage) {
+        this.userfriendlyMessage = userfriendlyMessage;
     }
 
     @Override
     public String toString() {
-        return  " id='" + id + '\'' +
-                ", url='" + url + '\'' +
-                ", exceptionMessage='" + exceptionMessage;
+        return "{\"ControllerAdviceExceptionMessage\":{"
+            + "\"id\":\"" + id + "\""
+            + ", \"url\":\"" + url + "\""
+            + ", \"exceptionMessage\":\"" + exceptionMessage + "\""
+            + ", \"userfriendlyMessage\":\"" + userfriendlyMessage + "\""
+            + "}}";
     }
 }

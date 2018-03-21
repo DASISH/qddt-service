@@ -4,6 +4,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,12 +20,23 @@ public class FilterTool {
         Sort sort;
         if (pageable.getSort() == null )
             sort = defaultSort(args);
-        else
-            sort = pageable.getSort();
-//        System.out.println(sort);
+        else {
+            sort = filterSort(pageable.getSort(),"responseDomain.name");
+        }
         return  new PageRequest(pageable.getPageNumber()
             ,pageable.getPageSize()
             ,sort);
+    }
+
+    public static Sort filterSort(Sort source, String... args){
+        List<String> filterwords = Arrays.asList( args );
+        List<Sort.Order> orders = new ArrayList<>( 0 );
+        source.iterator().forEachRemaining( o -> {
+            if (!filterwords.contains( o.getProperty() ))
+                orders.add( o );
+        });
+
+        return new Sort( orders);
     }
 
 
@@ -40,19 +52,18 @@ public class FilterTool {
     }
 
 
-    public static PageRequest defaultOrModifiedSort(Pageable pageable, String... args) throws Exception {
+    public static PageRequest defaultOrModifiedSort(Pageable pageable, String... args) {
         assert pageable != null;
         Sort sort;
         if (pageable.getSort() == null )
             sort = defaultSort(args);
         else
             sort = modifiedSort(pageable.getSort());
-        PageRequest pageRequest = new PageRequest(pageable.getPageNumber()
-                                            ,pageable.getPageSize()
-                                            ,sort);
+        return new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),sort);
+
 //        System.out.println(pageRequest.toString());
-        if (pageRequest==null) throw new Exception("pageRequest is null");
-        return pageRequest;
+//        if (pageRequest==null) throw new Exception("pageRequest is null");
+//        return pageRequest;
     }
 
     private static Sort modifiedSort(Sort sort){

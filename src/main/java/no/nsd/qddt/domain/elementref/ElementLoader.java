@@ -16,31 +16,32 @@ public class ElementLoader{
 
     protected final Logger LOG = LoggerFactory.getLogger( this.getClass() );
 
-//    @Autowired
-//    private ElementServiceLoader serviceLoader;
-
     protected BaseServiceAudit serviceAudit;
-
-    public ElementLoader() {
-    }
 
     public ElementLoader(BaseServiceAudit serviceAudit) {
         this.serviceAudit = serviceAudit;
     }
 
-    public ElementRef fill(ElementKind kind, UUID id, Integer rev) {
+    public IElementRef fill(ElementKind kind, UUID id, Integer rev) {
         return fill( new ElementRef( kind, id, rev ));
     }
 
     public ElementRefTyped fill(ElementRefTyped element) {
-        Revision<Integer,UUID> revision = get(element.getId(), element.getRevisionNumber() );
+        Revision<Integer,UUID> revision = get(element.getRefId(), element.getRevisionNumber() );
         element.setElement(revision.getEntity());
         element.setRevisionNumber( revision.getRevisionNumber() );
         return  element;
     }
 
     public ElementRef fill(ElementRef element) {
-        Revision<Integer,UUID> revision = get(element.getId(), element.getRevisionNumber() );
+        Revision<Integer,UUID> revision = get(element.getRefId(), element.getRevisionNumber() );
+        element.setElement(revision.getEntity());
+        element.setRevisionNumber( revision.getRevisionNumber() );
+        return  element;
+    }
+
+    public IElementRef fill(IElementRef element) {
+        Revision<Integer,UUID> revision = get(element.getRefId(), element.getRevisionNumber() );
         element.setElement(revision.getEntity());
         element.setRevisionNumber( revision.getRevisionNumber() );
         return  element;
@@ -56,9 +57,9 @@ public class ElementLoader{
                 return serviceAudit.findRevision( id,rev );
 
         } catch (RevisionDoesNotExistException e) {
+            LOG.error( "ElementLoader - RevisionDoesNotExistException ", e );
             if (rev != null)
                 return get(id, null);
-            LOG.error( "ElementLoader - RevisionDoesNotExistException ", e );
 
         } catch (Exception ex) {
 

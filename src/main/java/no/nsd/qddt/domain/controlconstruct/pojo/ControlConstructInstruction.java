@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.controlconstruct;
+package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.instruction.Instruction;
 import org.hibernate.envers.Audited;

@@ -10,7 +10,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.HierarchyLevel;
+import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;

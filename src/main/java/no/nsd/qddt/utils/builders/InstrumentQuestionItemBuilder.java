@@ -1,7 +1,7 @@
 package no.nsd.qddt.utils.builders;
 
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 
 /**
@@ -35,8 +35,8 @@ public class InstrumentQuestionItemBuilder {
         return this;
     }
 
-    public ControlConstruct createInstrument() {
-        ControlConstruct controlConstruct = new ControlConstruct();
+    public QuestionConstruct createInstrument() {
+        QuestionConstruct controlConstruct = new QuestionConstruct();
         controlConstruct.setName(this.name);
         controlConstruct.setChangeComment(this.changeComment);
 //        controlConstruct.addInstruments(this.instrument);

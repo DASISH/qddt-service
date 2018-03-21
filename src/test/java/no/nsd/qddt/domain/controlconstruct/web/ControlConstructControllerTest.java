@@ -2,13 +2,12 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.core.Is.is;
@@ -25,7 +24,7 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
     @Autowired
     private ControlConstructService entityService;
 
-    private ControlConstruct entity;
+    private QuestionConstruct entity;
 
     @Override
     public void setup() {
@@ -33,7 +32,7 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
 
         super.getBeforeSecurityContext().createSecurityContext();
 
-        entity = new ControlConstruct();
+        entity = new QuestionConstruct();
         QuestionItem item = new QuestionItem();
         entity.setQuestionItem(item);
         entity.setName("A test entity");
@@ -64,7 +63,7 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
 
     @Test
     public void testCreate() throws Exception {
-        ControlConstruct aEntity = new ControlConstruct();
+        QuestionConstruct aEntity = new QuestionConstruct();
         QuestionItem item = new QuestionItem();
         aEntity.setName("Posted entity");
         aEntity.setQuestionItem(item);

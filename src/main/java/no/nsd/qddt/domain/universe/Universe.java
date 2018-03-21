@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.io.IOException;
 
 /**
  * @author Stig Norland
@@ -65,7 +64,7 @@ public class Universe extends AbstractEntityAudit {
     }
 
     @Override
-    public void fillDoc(PdfReport pdfReport,String counter) throws IOException {}
+    public void fillDoc(PdfReport pdfReport,String counter) {}
 
     @Override
     protected void beforeUpdate() {}

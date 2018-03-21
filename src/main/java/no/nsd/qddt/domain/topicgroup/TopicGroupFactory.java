@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.topicgroup;
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.concept.ConceptFactory;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
 
 import java.util.stream.Collectors;
 
@@ -20,7 +20,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
       dest.setName(source.getName());
       dest.setOtherMaterials(source.getOtherMaterials().stream()
           .map( m -> {
-              OtherMaterialT om = m.clone();
+              OtherMaterialTopic om = m.clone();
               om.setOwnerId(dest.getId());
               return om;
           })

@@ -15,7 +15,7 @@ public class ExtractResourceIdFromExceptionTest {
     @Test
     public void extractResourceIdTest() throws Exception {
         String data = "Could not find resource with id 2451d21a-27f1-4b35-82df-80cea1d0b4d6 ";
-        String output = ExtractFromException.extractId(data);
+        String output = ExtractFromException.extractUUID(data);
 
         assertEquals("Expected id 2451d21a-27f1-4b35-82df-80cea1d0b4d6", output, "2451d21a-27f1-4b35-82df-80cea1d0b4d6");
     }

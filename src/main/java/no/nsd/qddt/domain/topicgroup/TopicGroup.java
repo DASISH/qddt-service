@@ -11,14 +11,13 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,10 +70,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Concept> concepts = new HashSet<>(0);
 
 
-    @OrderColumn(name="element_idx")
-    @OrderBy("element_idx ASC")
+    @OrderColumn(name="parent_idx")
+    @OrderBy("parent_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="element_id"))
+    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="parent_id"))
     private List<ElementRef>  topicQuestionItems = new ArrayList<>();
 
 
@@ -88,7 +87,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
     @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
 //    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
-    private Set<OtherMaterialT> otherMaterials = new HashSet<>();
+    private Set<OtherMaterialTopic> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
 
@@ -136,7 +135,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
 
 
-    public Set<OtherMaterialT> getOtherMaterials() {
+    public Set<OtherMaterialTopic> getOtherMaterials() {
         try {
             return otherMaterials;
         } catch (Exception ex ){
@@ -145,10 +144,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         }
     }
 
-    public void setOtherMaterials(Set<OtherMaterialT> otherMaterials) {
+    public void setOtherMaterials(Set<OtherMaterialTopic> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
-    public OtherMaterialT addOtherMaterial(OtherMaterialT otherMaterial) {
+    public OtherMaterialTopic addOtherMaterial(OtherMaterialTopic otherMaterial) {
         otherMaterial.setParent( this );
         otherMaterial.setParent(this);
         return  otherMaterial;
@@ -248,7 +247,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport, String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport, String counter) {
 
         pdfReport.addHeader(this,"Module " + counter )
         .add(new Paragraph(this.getAbstractDescription())

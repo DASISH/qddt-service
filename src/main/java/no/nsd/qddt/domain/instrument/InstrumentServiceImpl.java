@@ -1,5 +1,12 @@
 package no.nsd.qddt.domain.instrument;
 
+import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
+import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
+import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.IElementRef;
+import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +26,13 @@ import java.util.UUID;
 class InstrumentServiceImpl implements InstrumentService {
 
     private final InstrumentRepository instrumentRepository;
+    private final ElementLoader ccLoader;
 
     @Autowired
-    public InstrumentServiceImpl(InstrumentRepository instrumentRepository) {
+    public InstrumentServiceImpl(InstrumentRepository instrumentRepository
+                                ,ControlConstructAuditService controlConstructService) {
         this.instrumentRepository = instrumentRepository;
+        this.ccLoader = new ElementLoader( controlConstructService );
     }
 
     @Override
@@ -37,15 +47,15 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Instrument findOne(UUID uuid) {
-        return instrumentRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Instrument.class));
+        return postLoadProcessing( instrumentRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Instrument.class)));
     }
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Instrument save(Instrument instance) {
-        return instrumentRepository.save(instance);
+        return instrumentRepository.save( prePersistProcessing( instance) );
     }
 
     @Override
@@ -81,13 +91,37 @@ class InstrumentServiceImpl implements InstrumentService {
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
+    public ElementRef getDetail(ElementRef element) {
+        return ccLoader.fill( element );
+    }
+
+    public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {
+        sequence.getElementAs().getSequence().stream().forEach( ccLoader::fill );
+        return sequence.getElementAs().getSequence();
+    }
 
     protected Instrument prePersistProcessing(Instrument instance) {
+        instance.getSequence().stream()
+            .filter( s-> s.getName().isEmpty() )
+            .forEach( s-> ccLoader.fill( s ) );
         return instance;
     }
 
 
     protected Instrument postLoadProcessing(Instrument instance) {
+        instance.getSequence().forEach( s -> postLoadProcessing( s ) );
+        return instance;
+    }
+
+
+    IElementRef postLoadProcessing(IElementRef instance) {
+
+        if (instance.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT)
+            return ccLoader.fill( instance );
+
         return instance;
     }
 }

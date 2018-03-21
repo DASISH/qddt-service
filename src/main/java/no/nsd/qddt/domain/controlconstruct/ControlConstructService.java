@@ -2,9 +2,10 @@ package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.BaseService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,17 +16,13 @@ import java.util.UUID;
 public interface ControlConstructService extends BaseService<ControlConstruct, UUID> {
 
     /**
-     *
      * @param questionItemIds
      * @return
      */
-    List<ConstructJson> findByQuestionItems(List<UUID> questionItemIds);
+    List<ConstructQuestionJson> findByQuestionItems(List<UUID> questionItemIds);
 
+    List<ConstructQuestionJson> findTop25ByQuestionItemQuestion(String question);
 
-    @Transactional(readOnly = true)
-    List<ConstructJson> findTop25ByQuestionItemQuestion(String question);
-
-
-    Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, String question, ControlConstructKind kind, Pageable pageable);
+    Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable);
 
 }

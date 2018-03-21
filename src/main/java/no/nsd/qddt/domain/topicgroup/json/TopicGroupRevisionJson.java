@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.json.ConceptJsonView;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialT;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
     private Set<Author> authors = new HashSet<>();
 
-    private Set<OtherMaterialT> otherMaterials = new HashSet<>();
+    private Set<OtherMaterialTopic> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
 
@@ -80,11 +80,11 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
         this.authors = authors;
     }
 
-    public Set<OtherMaterialT> getOtherMaterials() {
+    public Set<OtherMaterialTopic> getOtherMaterials() {
         return otherMaterials;
     }
 
-    private void setOtherMaterials(Set<OtherMaterialT> otherMaterials) {
+    private void setOtherMaterials(Set<OtherMaterialTopic> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 

@@ -1,39 +1,54 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
-import no.nsd.qddt.domain.controlconstruct.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructKind;
-import no.nsd.qddt.domain.controlconstruct.SequenceKind;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialCtrlCtor;
+
+import java.util.Set;
 
 /**
  * @author Stig Norland
  */
 public class ConstructJson  extends AbstractJsonEdit {
 
-    private ControlConstructKind controlConstructKind;
+    private String label;
 
-    private SequenceKind sequenceKind;
+    private String description;
+
+    private Set<OtherMaterialCtrlCtor> otherMaterials;
+
+
 
     public ConstructJson(ControlConstruct construct){
         super(construct);
-        controlConstructKind = construct.getControlConstructKind();
-        sequenceKind = construct.getSequenceEnum();
+        label = construct.getLabel();
+        otherMaterials = construct.getOtherMaterials();
     }
 
-    public ControlConstructKind getControlConstructKind() {
-        return controlConstructKind;
+    public String getLabel() {
+        return label;
     }
 
-    public void setControlConstructKind(ControlConstructKind controlConstructKind) {
-        this.controlConstructKind = controlConstructKind;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public String getSequenceKind() {
-        return sequenceKind.getName();
+
+    public String getDescription() {
+        return description;
     }
 
-    public void setSequenceKind(String sequence) {
-         this.sequenceKind= SequenceKind.getEnum(sequence);
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    public Set<OtherMaterialCtrlCtor> getOtherMaterials() {
+        return otherMaterials;
+    }
+
+    public void setOtherMaterials(Set<OtherMaterialCtrlCtor> otherMaterials) {
+        this.otherMaterials = otherMaterials;
     }
 
     @Override
@@ -43,21 +58,24 @@ public class ConstructJson  extends AbstractJsonEdit {
 
         ConstructJson that = (ConstructJson) o;
 
-        return controlConstructKind == that.controlConstructKind && sequenceKind == that.sequenceKind;
+        if (label != null ? !label.equals( that.label ) : that.label != null) return false;
+        return description != null ? description.equals( that.description ) : that.description == null;
     }
 
     @Override
     public int hashCode() {
-        int result = controlConstructKind != null ? controlConstructKind.hashCode() : 0;
-        result = 31 * result + (sequenceKind != null ? sequenceKind.hashCode() : 0);
+        int result = label != null ? label.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "{" + super.toString() +
-                ", controlConstructKind=" + controlConstructKind +
-                ", sequenceKind=" + sequenceKind +
-                "} " ;
+        return "{\"ConstructJson\":"
+            + super.toString()
+            + ", \"label\":\"" + label + "\""
+            + ", \"description\":\"" + description + "\""
+            + "}";
     }
+
 }

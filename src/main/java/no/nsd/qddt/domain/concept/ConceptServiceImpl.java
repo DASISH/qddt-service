@@ -154,7 +154,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Concept> findByQuestionItem(UUID id, Integer rev) {
-        return conceptRepository.findByConceptQuestionItemsId(id);
+        return conceptRepository.findByConceptQuestionItemsRefId(id);
 //        return conceptRepository.findByConceptQuestionItemsQuestionId(id);
     }
 
@@ -205,8 +205,8 @@ class ConceptServiceImpl implements ConceptService {
                 if (cqi.getElement() == null)
                     cqi = qiLoader.fill( cqi );
 
-                ((QuestionItem) cqi.getElementAs())
-                    .setConceptRefs(findByQuestionItem(cqi.getId(),null).stream()
+                ((QuestionItem) cqi.getElement())
+                    .setConceptRefs(findByQuestionItem(cqi.getRefId(),null).stream()
                         .map( ConceptRef::new )
                         .collect( Collectors.toList()) );
             } );

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static net.logstash.logback.encoder.org.apache.commons.lang.exception.ExceptionUtils.getRootCauseMessage;
+
 /**
  * Controller-advice to handle exception casted by any requests coming from
  * controllers. This will not interfere with the service layer, but it shares
@@ -45,6 +47,7 @@ public class ControllerExceptionAdvice {
         return message;
     }
 
+
     /**
      * Handle all exceptions of type {@link no.nsd.qddt.exception.UserNotFoundException}
      * when they occur from methods executed from the controller.
@@ -64,6 +67,7 @@ public class ControllerExceptionAdvice {
 
         return message;
     }
+
 
     /**
      * Handle all exceptions of type {@link  org.springframework.dao.OptimisticLockingFailureException}
@@ -86,7 +90,6 @@ public class ControllerExceptionAdvice {
     }
 
 
-
     /**
      * Default exception handler.
      * Will catch all bad requests, but will not provide further details of the error.
@@ -94,16 +97,20 @@ public class ControllerExceptionAdvice {
      * @param e general exception
      * @return a {@link no.nsd.qddt.exception.ControllerAdviceExceptionMessage} object
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
-    @ResponseBody public ControllerAdviceExceptionMessage defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+    @ResponseBody public ControllerAdviceExceptionMessage defaultErrorHandler(HttpServletRequest req, Exception e)  {
         ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
                 req.getRequestURL().toString(),
                 e.getLocalizedMessage()
         );
 
+        message.setUserfriendlyMessage( getRootCauseMessage(e.getCause()));
         logger.error(e.getClass().getSimpleName(),e);
 
         return message;
     }
+
+
+
 }

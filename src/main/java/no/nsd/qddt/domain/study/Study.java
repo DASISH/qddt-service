@@ -15,7 +15,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -212,7 +211,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
 
     @Override
-    public void fillDoc(PdfReport pdfReport, String counter) throws IOException {
+    public void fillDoc(PdfReport pdfReport, String counter) {
         pdfReport.addHeader(this,"Study " + counter )
         .add(new Paragraph(this.getDescription())
                 .setWidth(pdfReport.width100*0.8F)

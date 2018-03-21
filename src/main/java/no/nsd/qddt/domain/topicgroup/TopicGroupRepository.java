@@ -20,5 +20,5 @@ interface TopicGroupRepository extends BaseRepository<TopicGroup,UUID> {
 
     Page<TopicGroup> findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(String name, String description, Pageable pageable);
 
-    List<TopicGroup> findByTopicQuestionItemsId(UUID id);
+    List<TopicGroup> findByTopicQuestionItemsRefId(UUID id);
 }
