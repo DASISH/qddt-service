@@ -27,7 +27,7 @@ public interface BaseService<T,ID> {
      * @param id ID
      * @return Entity
      */
-    T findOne(ID id);
+    <S extends T> S findOne(ID id);
 
     /**
      * Store object T to backstore

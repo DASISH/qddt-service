@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
@@ -95,12 +94,12 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         this.topicGroup = topicGroup;
     }
 
-    @JsonIgnore
-    public List<ElementRefTyped<QuestionItem>> getConceptQuestionItemsT() {
-        return conceptQuestionItems.stream()
-            .map(c-> new ElementRefTyped<QuestionItem>(c) )
-            .collect( Collectors.toList() );
-    }
+//    @JsonIgnore
+//    public List<ElementRefTyped<QuestionItem>> getConceptQuestionItemsT() {
+//        return conceptQuestionItems.stream()
+//            .map(c-> new ElementRefTyped<QuestionItem>(c) )
+//            .collect( Collectors.toList() );
+//    }
 
     public List<ElementRef> getConceptQuestionItems() {
         return conceptQuestionItems;

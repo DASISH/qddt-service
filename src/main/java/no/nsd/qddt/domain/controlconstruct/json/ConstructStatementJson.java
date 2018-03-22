@@ -11,15 +11,13 @@ public class ConstructStatementJson extends ConstructJson {
 
     public ConstructStatementJson(StatementItem construct){
         super(construct);
+        statement = construct.getStatement();
     }
 
     public String getStatement() {
         return statement;
     }
 
-    public void setStatement(String statement) {
-        this.statement = statement;
-    }
 
     @Override
     public boolean equals(Object o) {

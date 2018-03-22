@@ -23,6 +23,6 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
 
     List<ConstructQuestionJson> findTop25ByQuestionItemQuestion(String question);
 
-    Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable);
+    <S extends ConstructJson> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable);
 
 }

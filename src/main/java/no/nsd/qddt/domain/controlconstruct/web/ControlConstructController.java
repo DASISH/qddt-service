@@ -5,8 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
-import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialCtrlCtor;
+import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -39,10 +38,9 @@ public class ControlConstructController extends AbstractController {
 
     private final ControlConstructService service;
     private final OtherMaterialService omService;
-    //private final InstrumentService iService;
 
     @Autowired
-    public ControlConstructController(ControlConstructService ccService, OtherMaterialService otherMaterialService){
+    public ControlConstructController(ControlConstructService ccService, OtherMaterialService otherMaterialService) {
         this.service = ccService;
         this.omService = otherMaterialService;
       //  this.iService = instrumentService;
@@ -51,22 +49,56 @@ public class ControlConstructController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ControlConstruct get(@PathVariable("id") UUID id) {
+    public <S extends ControlConstruct> S get(@PathVariable("id") UUID id) {
         return service.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ControlConstruct update(@RequestBody ControlConstruct instance) {
+    @RequestMapping(value = "/updatecondition", method = RequestMethod.POST)
+    public ConditionConstruct update(@RequestBody ConditionConstruct instance) {
+        return service.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/updatequestion", method = RequestMethod.POST)
+    public QuestionConstruct update(@RequestBody QuestionConstruct instance) {
+        return service.save(instance);
+    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/updatesequence", method = RequestMethod.POST)
+    public Sequence update(@RequestBody Sequence instance) {
+        return service.save(instance);
+    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "updatestatement", method = RequestMethod.POST)
+    public StatementItem update(@RequestBody StatementItem instance) {
+        return service.save(instance);
+    }
+
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/createcondition", method = RequestMethod.POST)
+    public ConditionConstruct createCC(@RequestBody ConditionConstruct instance) {
         return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ControlConstruct create(@RequestBody ControlConstruct instance) {
+    @RequestMapping(value = "/createquestion", method = RequestMethod.POST)
+    public QuestionConstruct createQC(@RequestBody QuestionConstruct instance) {
         return service.save(instance);
     }
 
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/createsequence", method = RequestMethod.POST)
+    public Sequence createSC(@RequestBody Sequence instance) {
+        return service.save(instance);
+    }
+
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/createstatement", method = RequestMethod.POST)
+    public StatementItem createSI(@RequestBody StatementItem instance) {
+        return service.save(instance);
+    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
@@ -75,7 +107,7 @@ public class ControlConstructController extends AbstractController {
             instance = service.save(instance);
         if (files != null && files.length > 0)
             for (MultipartFile multipartFile:files) {
-                instance.addOtherMaterial((OtherMaterialCtrlCtor)omService.saveFile(multipartFile, instance.getId(),"CC"));
+                instance.addOtherMaterial(omService.saveFile(multipartFile, instance.getId(),"CC"));
             }
         return service.save(instance);
     }
@@ -106,8 +138,8 @@ public class ControlConstructController extends AbstractController {
         return service.findTop25ByQuestionItemQuestion(questionText);
     }
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+//    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE })
     public HttpEntity<PagedResources<ConstructJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                               @RequestParam(value = "questiontext",defaultValue = "%") String question,
                                                               @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") String kind,
@@ -118,7 +150,7 @@ public class ControlConstructController extends AbstractController {
         // Change in frontEnd usage made it necessary to distinguish
 
         Page<ConstructJson> controlConstructs =
-                service.findByNameLikeAndControlConstructKind(name,question,kind,pageable);
+                service.findByNameLikeAndControlConstructKind(name,question,kind,pageable); //.map( source -> Converter.mapConstruct( source ));
 
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }

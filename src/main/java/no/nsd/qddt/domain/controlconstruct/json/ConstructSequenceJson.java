@@ -14,14 +14,20 @@ public class ConstructSequenceJson extends ConstructJson {
 
     private List<ElementRef> sequence = new ArrayList<>();
 
+    private String description;
+
     private SequenceKind sequenceKind;
 
     public ConstructSequenceJson(Sequence construct) {
         super( construct );
         sequenceKind =  construct.getSequenceKind();
         sequence = construct.getSequence();
+        description = construct.getDescription();
     }
 
+    public String getDescription() {
+        return description;
+    }
 
     public SequenceKind getSequenceKind() {
         return sequenceKind;

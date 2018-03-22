@@ -130,13 +130,13 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<ConstructJson> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable) {
-
+    public <S extends ConstructJson> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable) {
         name = name.replace("*","%");
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
         return controlConstructRepository.findByQuery(kind, name, question , question, pageable)
             .map(qi -> mapConstruct(postLoadProcessing(qi)));
     }
+
 
 
     private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
@@ -153,7 +153,8 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         QuestionConstructFactory ccf = new QuestionConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = ccf.copy(instance, rev );
+
+//                        instance = ccf.copy((QuestionConstruct)instance, rev );
                     }
                 }
                 break;
@@ -162,7 +163,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         SequenceConstructFactory ccf= new SequenceConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = ccf.copy(instance, rev );
+//                        instance = ccf.copy(instance, rev );
                     }
                 }
                 break;
@@ -171,7 +172,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         ConditionConstructFactory ccf= new ConditionConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  ccf.copy(instance, rev );
+//                        instance =  ccf.copy(instance, rev );
                     }
                 }       
                 break; 
@@ -180,7 +181,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         StatementConstructFactory ccf= new StatementConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  ccf.copy(instance, rev );
+//                        instance =  ccf.copy(instance, rev );
                     }   
                 }
                 break;

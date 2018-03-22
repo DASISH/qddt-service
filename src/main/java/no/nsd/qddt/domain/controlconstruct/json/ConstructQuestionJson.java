@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -20,12 +21,15 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private List<Instruction> postInstructions;
 
+    private String universe;
+
     public ConstructQuestionJson(QuestionConstruct construct) {
         super(construct);
         questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
         questionItemRevision = construct.getQuestionItemRevision();
         preInstructions = construct.getPreInstructions();
         postInstructions = construct.getPostInstructions();
+        universe =  construct.getUniverse().stream().map( s -> s.getDescription() ).collect( Collectors.joining("/ ") );
     }
 
     public QuestionItemSimpleJson getQuestionItem() {
@@ -44,7 +48,6 @@ public class ConstructQuestionJson  extends ConstructJson {
         this.questionItemRevision = questionItemRevision;
     }
 
-
     public List<Instruction> getPreInstructions() {
         return preInstructions;
     }
@@ -59,6 +62,10 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     public void setPostInstructions(List<Instruction> postInstructions) {
         this.postInstructions = postInstructions;
+    }
+
+    public String getUniverse() {
+        return universe;
     }
 
     public class QuestionItemSimpleJson {

@@ -102,9 +102,10 @@ public class QuestionItem extends AbstractEntityAudit {
             LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
         }
             this.responseDomain = responseDomain;
-        setResponseDomainName( responseDomain.getName() );
-        if (this.responseDomain != null)
+        if (this.responseDomain != null) {
+            setResponseDomainName( responseDomain.getName() );
             this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
+        }
     }
 
     public Integer getResponseDomainRevision() {

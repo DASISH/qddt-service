@@ -24,7 +24,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("studyAuditService")
-class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implements StudyAuditService {
+class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implements StudyAuditService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -33,7 +33,7 @@ class StudyAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Study> i
     private boolean showPrivateComments;
 
     @Autowired
-    public StudyAbstractAuditServiceImpl(StudyAuditRepository studyAuditRepository, CommentService commentService) {
+    public StudyAuditServiceImpl(StudyAuditRepository studyAuditRepository, CommentService commentService) {
         this.studyAuditRepository = studyAuditRepository;
         this.commentService = commentService;
     }

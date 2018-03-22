@@ -37,7 +37,7 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
             "WHERE cc.control_construct_kind = :kind AND " +
             "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or qi.question ILIKE  '%'||:questionText||'%' ) "
             ,nativeQuery = true)
-    Page<QuestionConstruct> findByQuery(@Param("kind")String kind,
+    <S extends ControlConstruct> Page<S> findByQuery(@Param("kind")String kind,
                                        @Param("name")String name,
                                        @Param("questionName")String questionName,
                                        @Param("questionText")String questionText,

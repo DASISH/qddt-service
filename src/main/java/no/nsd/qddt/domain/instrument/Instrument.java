@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.instrument;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.instrumentelement.InstrumentElement;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
@@ -30,13 +31,14 @@ public class Instrument extends AbstractEntityAudit  {
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
-
-    @OrderColumn(name="instrument_idx")
     @OrderBy("instrument_idx ASC")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
-        joinColumns = @JoinColumn(name="instrument_id", referencedColumnName = "id"))
+    @OrderColumn(name="instrument_idx")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "instrument", cascade = { CascadeType.ALL })
     private List<InstrumentElement> sequence = new ArrayList<>();
+
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
+//        joinColumns = @JoinColumn(name="instrument_id", referencedColumnName = "id"))
 
 
     private String description;
