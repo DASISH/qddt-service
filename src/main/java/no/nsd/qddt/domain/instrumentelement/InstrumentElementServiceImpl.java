@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.instrumentelement;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
@@ -34,8 +36,15 @@ class InstrumentElementServiceImpl implements InstrumentElementService  {
 
     @Override
     @Transactional(readOnly = true)
-    public ElementRef getDetail(ElementRef element) {
-        return ccLoader.fill( element );
+    public InstrumentElement getDetail(InstrumentElement element) {
+        
+         element.setElement(ccLoader.fill( element.getElement() ));
+
+         if ( element.getElement().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
+           String question = ((QuestionConstruct) element.getElement()).getQuestionItem().getQuestion();
+           question.
+         }
+
     }
 
     public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {

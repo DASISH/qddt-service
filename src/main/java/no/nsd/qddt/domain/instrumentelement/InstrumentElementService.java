@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 public interface InstrumentElementService extends BaseService<InstrumentElement, UUID> {
 
-    ElementRef getDetail(ElementRef element);
+    InstrumentElement getDetail(InstrumentElement element);
 
     List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence);
 }

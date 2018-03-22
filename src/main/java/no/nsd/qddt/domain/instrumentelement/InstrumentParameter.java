@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.instrumentelement;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;
-import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -14,10 +13,8 @@ public class InstrumentParameter {
 
     private String name;
 
-    private UUID parameterId;
-
-    private Integer parameterIdx;
-
+    private String path;
+    
     public String getName() {
         return name;
     }
@@ -26,21 +23,14 @@ public class InstrumentParameter {
         this.name = name;
     }
 
-    public UUID getParameterId() {
-        return parameterId;
+    public String getPath() {
+        return path;
     }
 
-    public void setParameterId(UUID parameterId) {
-        this.parameterId = parameterId;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public Integer getParameterIdx() {
-        return parameterIdx;
-    }
-
-    public void setParameterIdx(Integer parameterIdx) {
-        this.parameterIdx = parameterIdx;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -50,15 +40,13 @@ public class InstrumentParameter {
         InstrumentParameter that = (InstrumentParameter) o;
 
         if (name != null ? !name.equals( that.name ) : that.name != null) return false;
-        if (parameterId != null ? !parameterId.equals( that.parameterId ) : that.parameterId != null) return false;
-        return parameterIdx != null ? parameterIdx.equals( that.parameterIdx ) : that.parameterIdx == null;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (parameterId != null ? parameterId.hashCode() : 0);
-        result = 31 * result + (parameterIdx != null ? parameterIdx.hashCode() : 0);
         return result;
     }
 
@@ -66,8 +54,6 @@ public class InstrumentParameter {
     public String toString() {
         return "{\"ElementParameter\":{"
             + "\"name\":\"" + name + "\""
-            + ", \"parameterId\":" + parameterId
-            + ", \"parameterIdx\":\"" + parameterIdx + "\""
             + "}}";
     }
 
