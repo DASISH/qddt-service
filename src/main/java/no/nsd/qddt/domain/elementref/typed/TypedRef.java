@@ -22,30 +22,30 @@ public class TypedRef {
     public static ElementRefTyped<?> cast(ElementRef element){
         switch (element.getElementKind()) {
             case SURVEY_PROGRAM:
-                return  (ElementRefTyped<SurveyProgram>)element;
+                return  new ElementRefTyped<SurveyProgram>(element);
             case STUDY:
-                return  (ElementRefTyped<Study>)element;
+                return  new ElementRefTyped<Study>(element);
             case TOPIC_GROUP:
-                return  (ElementRefTyped<TopicGroup>)element;
+                return  new ElementRefTyped<TopicGroup>(element);
             case CONCEPT:
-                return  (ElementRefTyped<Concept>)element;
+                return new ElementRefTyped<Concept>(element);
             case QUESTION_ITEM:
-                return  (ElementRefTyped<QuestionItem>)element;
+                return  new ElementRefTyped<QuestionItem>(element);
             case RESPONSEDOMAIN:
-                return  (ElementRefTyped<ResponseDomain>)element;
+                return  new ElementRefTyped<ResponseDomain>(element);
             case INSTRUMENT:
-                return  (ElementRefTyped<Instrument>)element;
+                return  new ElementRefTyped<Instrument>(element);
             case PUBLICATION:
-                return  (ElementRefTyped<Publication>)element;
+                return  new ElementRefTyped<Publication>(element);
             case CONTROL_CONSTRUCT:
             case QUESTION_CONSTRUCT:
-                return  (ElementRefTyped<QuestionConstruct>)element;
+                return  new ElementRefTyped<QuestionConstruct>(element);
             case STATEMENT_CONSTRUCT:
-                return  (ElementRefTyped<StatementItem>)element;
+                return  new ElementRefTyped<StatementItem>(element);
             case CONDITION_CONSTRUCT:
-                return  (ElementRefTyped<ConditionConstruct>)element;
+                return  new ElementRefTyped<ConditionConstruct>(element);
             case SEQUENCE_CONSTRUCT:
-                return  (ElementRefTyped<Sequence>)element;
+                return  new ElementRefTyped<Sequence>(element);
             default:
                 return null;
         }

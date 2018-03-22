@@ -15,8 +15,6 @@ import java.util.UUID;
 
 public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElementRef {
 
-
-
     public ElementRefTyped(ElementRef source ) {
         super(source.getElementKind(),source.getRefId(),source.getRevisionNumber());
         setVersion(source.getVersion() );

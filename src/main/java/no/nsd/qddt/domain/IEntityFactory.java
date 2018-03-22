@@ -10,9 +10,9 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
 
     T create();
 
-    T copyBody(T source, T dest);
+    <S extends T> S copyBody(T source, T dest);
 
-    default T copy(T source,  Integer revision) {
+    default <S extends T> S copy(T source,  Integer revision) {
         if (source.isNewCopy())
             revision = null;
 

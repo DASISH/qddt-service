@@ -31,11 +31,11 @@ public class InstrumentElement extends AbstractElementRef {
 //        joinColumns = @JoinColumn(name="instrument_element_id", referencedColumnName = "id"))
 //    private List<InstrumentElement> sequence = new ArrayList<>();
 
-
+/* 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
         joinColumns = @JoinColumn(name="instrument_element_id", referencedColumnName = "id"))
-    private Set<InstrumentParameter> parameters = new HashSet();
+    private Set<InstrumentParameter> parameters = new HashSet(); */
 
 
     public InstrumentElement() {
@@ -82,7 +82,8 @@ public class InstrumentElement extends AbstractElementRef {
         if (getVersion() != null ? !getVersion().equals( that.getVersion() ) : that.getVersion() != null) return false;
         if (element != null ? !element.equals( that.element ) : that.element != null) return false;
 //        if (sequence != null ? !sequence.equals( that.sequence ) : that.sequence != null) return false;
-        return parameters != null ? parameters.equals( that.parameters ) : that.parameters == null;
+//        return parameters != null ? parameters.equals( that.parameters ) : that.parameters == null;
+        return true;
     }
 
     @Override
@@ -95,7 +96,7 @@ public class InstrumentElement extends AbstractElementRef {
         result = 31 * result + (getVersion() != null ? getVersion().hashCode() : 0);
         result = 31 * result + (element != null ? element.hashCode() : 0);
 //        result = 31 * result + (sequence != null ? sequence.hashCode() : 0);
-        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
+//        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
         return result;
     }
 
@@ -110,7 +111,7 @@ public class InstrumentElement extends AbstractElementRef {
             + ", \"version\":" + getVersion()
             + ", \"element\":" + element
 //            + ", \"sequence\":" + sequence
-            + ", \"parameters\":" + parameters
+//            + ", \"parameters\":" + parameters
             + "}}";
     }
 

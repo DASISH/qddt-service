@@ -15,7 +15,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 	}
 
 	@Override
-  public TopicGroup copyBody(TopicGroup source, TopicGroup dest) {
+    public TopicGroup copyBody(TopicGroup source, TopicGroup dest) {
 	    dest.setAbstractDescription(source.getAbstractDescription());
       dest.setName(source.getName());
       dest.setOtherMaterials(source.getOtherMaterials().stream()
@@ -35,7 +35,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
       dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );
 //      dest.getConcepts().forEach(concept -> concept.setParentT(dest));
 
-      dest.setTopicQuestionItems( source.getTopicQuestionItemsT().stream()
+      dest.setTopicQuestionItems( source.getTopicQuestionItems().stream()
           .map( ElementRef::clone )
           .collect(Collectors.toList()));
 

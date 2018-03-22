@@ -80,7 +80,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public ControlConstruct save(ControlConstruct instance) {
+    public  <S extends ControlConstruct> S save(S instance) {
         return postLoadProcessing(
             controlConstructRepository.save(
                 prePersistProcessing(instance)));
@@ -138,113 +138,72 @@ class ControlConstructServiceImpl implements ControlConstructService {
             .map(qi -> mapConstruct(postLoadProcessing(qi)));
     }
 
-    private QuestionConstruct prePersistProcessing(QuestionConstruct instance ) {
-        instance.populateControlConstructInstructions();
-        instance.getControlConstructInstructions().forEach(cqi->{
-            if (cqi.getInstruction().getId() == null)
-                cqi.setInstruction(iService.save(cqi.getInstruction()));
-        });
-        if(instance.isBasedOn() || instance.isNewCopy()) {
-            QuestionConstructFactory ccf= new QuestionConstructFactory();
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-            instance = ccf.copy(instance, rev );
-        }
 
-        return  instance;
-    }
-
-    private Sequence prePersistProcessing(Sequence instance ) {
-        if(instance.isBasedOn() || instance.isNewCopy()) {
-            SequenceConstructFactory ccf= new SequenceConstructFactory();
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-            instance = ccf.copy(instance, rev );
-        }
-        return  instance;
-    }
-
-    private StatementItem prePersistProcessing(StatementItem instance ) {
-        if(instance.isBasedOn() || instance.isNewCopy()) {
-            StatementConstructFactory ccf= new StatementConstructFactory();
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-            instance = ccf.copy(instance, rev );
-        }
-        return  instance;
-    }
-
-    private ConditionConstruct prePersistProcessing(ConditionConstruct instance ) {
-        if(instance.isBasedOn() || instance.isNewCopy()) {
-            ConditionConstructFactory ccf= new ConditionConstructFactory();
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-            instance = ccf.copy(instance, rev );
-        }
-        return  instance;
-    }
-
-    private ControlConstruct prePersistProcessing(ControlConstruct instance) {
+    private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
         switch (instance.getClassKind()) {
             case "QUESTION_CONSTRUCT":
-                return  prePersistProcessing( (QuestionConstruct) instance );
+                if (instance instanceof QuestionConstruct) {
+                    ((QuestionConstruct)instance).populateControlConstructInstructions();
+                    ((QuestionConstruct)instance).getControlConstructInstructions().forEach(cqi->{
+                        if (cqi.getInstruction().getId() == null)
+                            cqi.setInstruction(iService.save(cqi.getInstruction()));
+                    });
+
+                    if(instance.isBasedOn() || instance.isNewCopy()) {
+                        QuestionConstructFactory ccf = new QuestionConstructFactory();
+                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+                        instance = ccf.copy(instance, rev );
+                    }
+                }
+                break;
             case "SEQUENCE_CONSTRUCT":
-                return  prePersistProcessing( (Sequence) instance );
+                if (instance instanceof Sequence) {
+                    if(instance.isBasedOn() || instance.isNewCopy()) {
+                        SequenceConstructFactory ccf= new SequenceConstructFactory();
+                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+                        instance = ccf.copy(instance, rev );
+                    }
+                }
+                break;
             case "CONDITION_CONSTRUCT":
-                return  prePersistProcessing( (ConditionConstruct) instance );
+                if (instance instanceof ConditionConstruct) {
+                    if(instance.isBasedOn() || instance.isNewCopy()) {
+                        ConditionConstructFactory ccf= new ConditionConstructFactory();
+                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+                        instance =  ccf.copy(instance, rev );
+                    }
+                }       
+                break; 
             case "STATEMENT_CONSTRUCT":
-                return  prePersistProcessing( (StatementItem) instance );
-            default:
-            return instance;
-        }
-    }
-
-
-    private QuestionConstruct postLoadProcessing(QuestionConstruct instance) {
-
-        instance.populateInstructions();                // instructions has to be unpacked into pre and post instructions
-
-        if (instance.getQuestionItemUUID() == null)     // before returning fetch correct version of QI...
-            instance.setQuestionItemRevision(0);
-        else {
-            Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
-                instance.getQuestionItemUUID(),
-                instance.getQuestionItemRevision());
-            instance.setQuestionItemRevision(rev.getRevisionNumber());
-            instance.setQuestionItem(rev.getEntity());
+                if (instance instanceof StatementItem) {
+                    if(instance.isBasedOn() || instance.isNewCopy()) {
+                        StatementConstructFactory ccf= new StatementConstructFactory();
+                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+                        instance =  ccf.copy(instance, rev );
+                    }   
+                }
+                break;
         }
         return instance;
     }
 
-//    private SequenceConstruct postLoadProcessing(SequenceConstruct instance) {
-//        return instance;
-//    }
-//
-//    private StatementConstruct postLoadProcessing(StatementConstruct instance) {
-//        return instance;
-//    }
-//
-//    private ConditionConstruct postLoadProcessing(ConditionConstruct instance) {
-//        return instance;
-//    }
-//
-
-    private ControlConstruct postLoadProcessing(ControlConstruct instance) {
+    private  <S extends ControlConstruct> S  postLoadProcessing(S instance) {
         assert  (instance != null);
-        try {
-            switch (instance.getClassKind()) {
-                case "QUESTION_CONSTRUCT":
-                    return  postLoadProcessing( (QuestionConstruct) instance );
-//                case "SEQUENCE_CONSTRUCT":
-//                    return  postLoadProcessing( (SequenceConstruct) instance );
-//                case "CONDITION_CONSTRUCT":
-//                    return  postLoadProcessing( (ConditionConstruct) instance );
-//                case "STATEMENT_CONSTRUCT":
-//                    return  postLoadProcessing( (StatementConstruct) instance );
-                default:
-                    return instance;
+        if ( instance instanceof QuestionConstruct) {
+            ((QuestionConstruct)instance).populateInstructions();                // instructions has to be unpacked into pre and post instructions
+
+            if (((QuestionConstruct)instance).getQuestionItemUUID() == null)  {   // before returning fetch correct version of QI...
+                ((QuestionConstruct)instance).setQuestionItemRevision(0);
+            } else {
+                Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
+                    ((QuestionConstruct)instance).getQuestionItemUUID(),
+                    ((QuestionConstruct)instance).getQuestionItemRevision());
+                    ((QuestionConstruct)instance).setQuestionItemRevision(rev.getRevisionNumber());
+                    ((QuestionConstruct)instance).setQuestionItem(rev.getEntity());
             }
-        } catch (Exception ex){
-            LOG.error("postLoadProcessing",ex);
-            throw ex;
         }
+        return instance;
     }
 
 }
