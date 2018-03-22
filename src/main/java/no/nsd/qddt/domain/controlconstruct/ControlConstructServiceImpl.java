@@ -153,8 +153,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         QuestionConstructFactory ccf = new QuestionConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-
-//                        instance = ccf.copy((QuestionConstruct)instance, rev );
+                        instance = (S)ccf.copy((QuestionConstruct)instance, rev );
                     }
                 }
                 break;
@@ -163,7 +162,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         SequenceConstructFactory ccf= new SequenceConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-//                        instance = ccf.copy(instance, rev );
+                        instance = (S)ccf.copy((Sequence)instance, rev );
                     }
                 }
                 break;
@@ -172,7 +171,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         ConditionConstructFactory ccf= new ConditionConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-//                        instance =  ccf.copy(instance, rev );
+                        instance =  (S)ccf.copy((ConditionConstruct)instance, rev );
                     }
                 }       
                 break; 
@@ -181,7 +180,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         StatementConstructFactory ccf= new StatementConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-//                        instance =  ccf.copy(instance, rev );
+                        instance =  (S)ccf.copy((StatementItem)instance, rev );
                     }   
                 }
                 break;

@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.elementref.typed;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 
-import javax.persistence.Transient;
 import java.util.UUID;
 
 /**
@@ -19,18 +17,16 @@ public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElem
         super(source.getElementKind(),source.getRefId(),source.getRevisionNumber());
         setVersion(source.getVersion() );
         setName( source.getName());
-        setElement( source.getElementAs() );
+        setElement( source.getElement() );
     }
 
     public ElementRefTyped(ElementKind kind, UUID id, Integer rev) {
         super( kind, id, rev );
     }
 
-
-    @JsonIgnore
-    @Transient
-    public T getElementAs(){
-        return (T)element;
+    @Override
+    public T getElement() {
+        return (T)super.element;
     }
 
     @Override

@@ -39,8 +39,8 @@ class InstrumentElementServiceImpl implements InstrumentElementService  {
     }
 
     public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {
-        sequence.getElementAs().getSequence().stream().forEach( ccLoader::fill );
-        return sequence.getElementAs().getSequence();
+        sequence.getElement().getSequence().stream().forEach( ccLoader::fill );
+        return sequence.getElement().getSequence();
     }
 
 

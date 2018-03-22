@@ -103,7 +103,7 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
             instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             instance.getChildren().forEach(this::postLoadProcessing);
 
-//                cqi.getElementAs().setConceptRefs(
+//                cqi.getElement().setConceptRefs(
 //                    findByQuestionItem(cqi.getId()).stream()
 //                        .map( ConceptRef::new )
 //                        .collect( Collectors.toList())

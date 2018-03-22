@@ -102,7 +102,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
                 cqi = qiLoader.fill( cqi );
 
-//                cqi.getElementAs().setConceptRefs(
+//                cqi.getElement().setConceptRefs(
 //                    conceptService.findByQuestionItem(cqi.getId(),null).stream()
 //                        .map( ConceptRef::new )
 //                        .collect( Collectors.toList())

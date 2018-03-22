@@ -31,6 +31,7 @@ class InstrumentServiceImpl implements InstrumentService {
     @Autowired
     public InstrumentServiceImpl(InstrumentRepository instrumentRepository
                                 ,ControlConstructAuditService controlConstructService) {
+                                    
         this.instrumentRepository = instrumentRepository;
         this.ccLoader = new ElementLoader( controlConstructService );
     }
@@ -99,8 +100,8 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {
-        sequence.getElementAs().getSequence().stream().forEach( ccLoader::fill );
-        return sequence.getElementAs().getSequence();
+        sequence.getElement().getSequence().stream().forEach( ccLoader::fill );
+        return sequence.getElement().getSequence();
     }
 
     protected Instrument prePersistProcessing(Instrument instance) {

@@ -5,10 +5,8 @@ package no.nsd.qddt.domain.elementref;
  */
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
@@ -102,6 +100,8 @@ public abstract class AbstractElementRef implements IElementRef {
     public Object getElement() {
         try {
             switch (elementKind) {
+                case CATEGORY:
+                    break;
                 case CONCEPT:
                     if(element instanceof Concept)
                         return new ConceptJsonEdit((Concept) element);
@@ -150,13 +150,6 @@ public abstract class AbstractElementRef implements IElementRef {
         }
     }
 
-    @JsonIgnore
-    @Transient
-    public AbstractEntityAudit getElementAs(){
-        if (element instanceof AbstractEntityAudit)
-            return (AbstractEntityAudit) element;
-        return null;
-    }
 
     @Override
     public boolean equals(Object o) {
