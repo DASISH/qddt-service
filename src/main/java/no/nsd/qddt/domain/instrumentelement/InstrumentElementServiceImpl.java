@@ -41,10 +41,13 @@ class InstrumentElementServiceImpl implements InstrumentElementService  {
          element.setElement(ccLoader.fill( element.getElement() ));
 
          if ( element.getElement().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
-           String question = ((QuestionConstruct) element.getElement()).getQuestionItem().getQuestion();
-           question.
+           String question = ((QuestionConstruct) element.getElement().getElement()).getQuestionItem().getQuestion();
+           // TODO question.
+           if (question.contains("[")) {
+               element.getParameters().add(new InstrumentParameter("[oara]", ""));
+           }
          }
-
+         return element;
     }
 
     public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {

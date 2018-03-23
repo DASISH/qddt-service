@@ -54,48 +54,48 @@ public class ControlConstructController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/updatecondition", method = RequestMethod.POST)
+    @RequestMapping(value = "/condition", method = RequestMethod.POST)
     public ConditionConstruct update(@RequestBody ConditionConstruct instance) {
         return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/updatequestion", method = RequestMethod.POST)
+    @RequestMapping(value = "/question", method = RequestMethod.POST)
     public QuestionConstruct update(@RequestBody QuestionConstruct instance) {
         return service.save(instance);
     }
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/updatesequence", method = RequestMethod.POST)
+    @RequestMapping(value = "/sequence", method = RequestMethod.POST)
     public Sequence update(@RequestBody Sequence instance) {
         return service.save(instance);
     }
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "updatestatement", method = RequestMethod.POST)
+    @RequestMapping(value = "/statement", method = RequestMethod.POST)
     public StatementItem update(@RequestBody StatementItem instance) {
         return service.save(instance);
     }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/createcondition", method = RequestMethod.POST)
+    @RequestMapping(value = "/condition/create", method = RequestMethod.POST)
     public ConditionConstruct createCC(@RequestBody ConditionConstruct instance) {
         return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/createquestion", method = RequestMethod.POST)
+    @RequestMapping(value = "/question/create", method = RequestMethod.POST)
     public QuestionConstruct createQC(@RequestBody QuestionConstruct instance) {
         return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/createsequence", method = RequestMethod.POST)
+    @RequestMapping(value = "/sequence/create", method = RequestMethod.POST)
     public Sequence createSC(@RequestBody Sequence instance) {
         return service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/createstatement", method = RequestMethod.POST)
+    @RequestMapping(value = "/statement/create", method = RequestMethod.POST)
     public StatementItem createSI(@RequestBody StatementItem instance) {
         return service.save(instance);
     }

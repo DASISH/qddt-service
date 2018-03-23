@@ -14,6 +14,11 @@ public class InstrumentParameter {
     private String name;
 
     private String path;
+
+    public InstrumentParameter(String name, String path) {
+        setName(name);
+        setPath(path);
+    }
     
     public String getName() {
         return name;
