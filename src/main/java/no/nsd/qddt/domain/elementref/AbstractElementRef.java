@@ -30,10 +30,10 @@ public abstract class AbstractElementRef implements IElementRef {
     protected ElementKind elementKind;
 
     @Type(type="pg-uuid")
-    protected UUID refId;
+    protected UUID elementId;
 
-    @Column(name = "revision")
-    protected Integer revisionNumber;
+    @Column(name = "element_revision")
+    protected Integer elementRevision;
 
     protected String name;
 
@@ -51,25 +51,29 @@ public abstract class AbstractElementRef implements IElementRef {
     @JsonCreator
     public AbstractElementRef(@JsonProperty("elementKind")ElementKind kind, @JsonProperty("id")UUID id, @JsonProperty("revisionNumber")Integer rev) {
         setElementKind(kind);
-        setRefId(id);
-        setRevisionNumber(rev);
+        setElementId(id);
+        setElementRevision(rev);
     }
 
-
-    public UUID getRefId() {
-        return refId;
-    }
-    public void setRefId(UUID refId) {
-        this.refId = refId;
+    @Override
+    public UUID getElementId() {
+        return elementId;
     }
 
-    public Integer getRevisionNumber() {
-        return revisionNumber;
-    }
-    public void setRevisionNumber(Integer revisionNumber) {
-        this.revisionNumber = revisionNumber;
+    @Override
+    public void setElementId(UUID elementId) {
+        this.elementId = elementId;
     }
 
+    @Override
+    public Integer getElementRevision() {
+        return elementRevision;
+    }
+
+    @Override
+    public void setElementRevision(Integer elementRevision) {
+        this.elementRevision = elementRevision;
+    }
 
     public ElementKind getElementKind(){
         return elementKind;
@@ -86,8 +90,8 @@ public abstract class AbstractElementRef implements IElementRef {
         this.name = name;
     }
 
-    public no.nsd.qddt.domain.embedded.Version getVersion() {
-        return new no.nsd.qddt.domain.embedded.Version(major,minor,revisionNumber,versionLabel);
+    public Version getVersion() {
+        return new Version(major,minor,elementRevision,versionLabel);
     }
     public void setVersion(Version version) {
         major = version.getMajor();
@@ -145,43 +149,53 @@ public abstract class AbstractElementRef implements IElementRef {
         if (element instanceof IElementRefType) {
             setName( ((IElementRefType) element).getName() );
             setVersion( ((IElementRefType) element).getVersion() );
-            setRefId( ((IElementRefType) element).getId() );
+            setElementId( ((IElementRefType) element).getId() );
             setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
         }
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ElementRef)) return false;
+        if (!(o instanceof AbstractElementRef)) return false;
 
-        ElementRef that = (ElementRef) o;
+        AbstractElementRef that = (AbstractElementRef) o;
+
         if (elementKind != that.elementKind) return false;
-        if (refId != null ? !refId.equals( that.refId ) : that.refId != null) return false;
-        return revisionNumber != null ? revisionNumber.equals( that.revisionNumber ) : that.revisionNumber == null;
+        if (elementId != null ? !elementId.equals( that.elementId ) : that.elementId != null) return false;
+        if (elementRevision != null ? !elementRevision.equals( that.elementRevision ) : that.elementRevision != null)
+            return false;
+        if (name != null ? !name.equals( that.name ) : that.name != null) return false;
+        if (major != null ? !major.equals( that.major ) : that.major != null) return false;
+        if (minor != null ? !minor.equals( that.minor ) : that.minor != null) return false;
+        if (versionLabel != null ? !versionLabel.equals( that.versionLabel ) : that.versionLabel != null) return false;
+        return element != null ? element.equals( that.element ) : that.element == null;
     }
 
     @Override
     public int hashCode() {
-        int result = (elementKind != null ? elementKind.hashCode() : 0);
-        result = 31 * result + (refId != null ? refId.hashCode() : 0);
-        result = 31 * result + (revisionNumber != null ? revisionNumber.hashCode() : 0);
+        int result = elementKind != null ? elementKind.hashCode() : 0;
+        result = 31 * result + (elementId != null ? elementId.hashCode() : 0);
+        result = 31 * result + (elementRevision != null ? elementRevision.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (major != null ? major.hashCode() : 0);
+        result = 31 * result + (minor != null ? minor.hashCode() : 0);
+        result = 31 * result + (versionLabel != null ? versionLabel.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "PublicationElement{" +
-            "refId=" + refId +
-            ", revisionNumber=" + revisionNumber +
-            ", elementKind=" + elementKind +
-            ", name='" + name + '\'' +
-            ", Version =" + getVersion() + '\'' +
-            ", element=" + element +
-            '}';
+        return "{\"AbstractElementRef\":{"
+            + "\"elementKind\":\"" + elementKind + "\""
+            + ", \"elementId\":" + elementId
+            + ", \"elementRevision\":\"" + elementRevision + "\""
+            + ", \"name\":\"" + name + "\""
+            + ", \"major\":\"" + major + "\""
+            + ", \"minor\":\"" + minor + "\""
+            + ", \"versionLabel\":\"" + versionLabel + "\""
+            + "}}";
     }
-
 
 
 }

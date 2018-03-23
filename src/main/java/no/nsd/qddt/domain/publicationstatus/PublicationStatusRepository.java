@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface PublicationStatusRepository extends BaseRepository<PublicationStatus,Long> {
 
-    List<PublicationStatus> findAllByAgencyAndParentIdIsNull(Agency agency);
+    List<PublicationStatus> findAllByAgencyAndParentIdIsNullOrderByParentIdx(Agency agency);
 
     List<PublicationStatus> findAllByAgencyAndParentIdIsNull(Agency agency,Sort sort);
 }

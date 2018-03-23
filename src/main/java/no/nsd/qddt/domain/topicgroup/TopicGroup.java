@@ -70,17 +70,17 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Concept> concepts = new HashSet<>(0);
 
 
-    @OrderColumn(name="parent_idx")
-    @OrderBy("parent_idx ASC")
+    @OrderColumn(name="topicgroup_idx")
+    @OrderBy("topicgroup_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="parent_id"))
+    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id"))
     private List<ElementRef>  topicQuestionItems = new ArrayList<>();
 
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
     @JoinTable(name = "TOPIC_GROUP_AUTHORS",
-            joinColumns = {@JoinColumn(name ="topic_id")},
+            joinColumns = {@JoinColumn(name ="topicgroup_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 

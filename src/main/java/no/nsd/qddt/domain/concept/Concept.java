@@ -49,7 +49,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderBy(value = "name asc")
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "concept_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private Set<Concept> children = new HashSet<>(0);
 
@@ -134,44 +134,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         else
             LOG.debug("ConceptQuestionItem not inserted, match found" );
     }
-
-
-/* 
-    public Set<ConceptQuestionItem> getConceptQuestionItems() {
-        return conceptQuestionItems;
-    }
-
-    public void setConceptQuestionItems(Set<ConceptQuestionItem> conceptQuestionItems) {
-        this.conceptQuestionItems = conceptQuestionItems;
-    }
-
-    public void addConceptQuestionItem(ConceptQuestionItem conceptQuestionItem) {
-        if (this.conceptQuestionItems.stream().noneMatch(cqi->conceptQuestionItem.getId().equals(cqi.getId()))) {
-
-            conceptQuestionItems.add(conceptQuestionItem);
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation added");
-            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
-        }
-        else
-            LOG.debug("ConceptQuestionItem not inserted, match found" );
-    }
-
-
-    public void addQuestionItem(QuestionItem questionItem) {
-        addConceptQuestionItem(new ConceptQuestionItem(this,questionItem));
-    }
-
-    // no update for QI when removing (it is bound to a revision anyway...).
-    public  void removeQuestionItem(UUID qiId){
-        int before = conceptQuestionItems.size();
-        conceptQuestionItems.removeIf(q -> q.getQuestionItem().getId().equals(qiId));
-        if (before> conceptQuestionItems.size()){
-            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation removed");
-            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
-        }
-    } */
 
 
     public Set<Concept> getChildren() {

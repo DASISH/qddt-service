@@ -14,7 +14,7 @@ import java.util.UUID;
 public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElementRef {
 
     public ElementRefTyped(ElementRef source ) {
-        super(source.getElementKind(),source.getRefId(),source.getRevisionNumber());
+        super(source.getElementKind(),source.getElementId(),source.getElementRevision());
         setVersion(source.getVersion() );
         setName( source.getName());
         setElement( source.getElement() );
@@ -31,7 +31,7 @@ public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElem
 
     @Override
     public ElementRefTyped<T> clone() {
-            ElementRef retval = new ElementRef(getElementKind(), getRefId(),getRevisionNumber());
+            ElementRef retval = new ElementRef(getElementKind(), getElementId(),getElementRevision());
             retval.setVersion( getVersion() );
             retval.setName( getName() );
         return new ElementRefTyped<>( retval);

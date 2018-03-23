@@ -52,10 +52,11 @@ public class PublicationStatusController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list", method = RequestMethod.GET , produces = "application/json")
     public List<PublicationStatusJsonParent> getAll() {
-        return service.findAll()
-                .stream().map(PublicationStatusJsonParent::new)
+        List<PublicationStatus> list = service.findAll();
+        return list.stream().map(PublicationStatusJsonParent::new)
                 .sorted(Comparator.comparing(PublicationStatusJsonParent::getChildrenIdx))
                 .collect(Collectors.toList());
+
     }
     
 }

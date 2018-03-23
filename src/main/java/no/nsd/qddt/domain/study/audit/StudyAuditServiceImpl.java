@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,8 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
             else
                 coms  =commentService.findAllByOwnerIdPublic(instance.getId());
             instance.setComments(new HashSet<>(coms));
+
+            Hibernate.initialize(instance.getTopicGroups());
 
             instance.getTopicGroups().forEach(c->{
                 final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId());

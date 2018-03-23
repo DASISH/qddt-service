@@ -27,23 +27,23 @@ public class ElementLoader{
     }
 
     public ElementRefTyped fill(ElementRefTyped element) {
-        Revision<Integer,UUID> revision = get(element.getRefId(), element.getRevisionNumber() );
+        Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
         element.setElement(revision.getEntity());
-        element.setRevisionNumber( revision.getRevisionNumber() );
+        element.setElementRevision( revision.getRevisionNumber() );
         return  element;
     }
 
     public ElementRef fill(ElementRef element) {
-        Revision<Integer,UUID> revision = get(element.getRefId(), element.getRevisionNumber() );
+        Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
         element.setElement(revision.getEntity());
-        element.setRevisionNumber( revision.getRevisionNumber() );
+        element.setElementRevision( revision.getRevisionNumber() );
         return  element;
     }
 
     public IElementRef fill(IElementRef element) {
-        Revision<Integer,UUID> revision = get(element.getRefId(), element.getRevisionNumber() );
+        Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
         element.setElement(revision.getEntity());
-        element.setRevisionNumber( revision.getRevisionNumber() );
+        element.setElementRevision( revision.getRevisionNumber() );
         return  element;
     }
 

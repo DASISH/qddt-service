@@ -31,6 +31,14 @@ public class ConditionConstruct extends ControlConstruct {
         this.condition = condition;
     }
 
+    public ConditionKind getConditionKind() {
+        return conditionKind;
+    }
+
+    public void setConditionKind(ConditionKind conditionKind) {
+        this.conditionKind = conditionKind;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -39,13 +47,15 @@ public class ConditionConstruct extends ControlConstruct {
 
         ConditionConstruct that = (ConditionConstruct) o;
 
-        return condition != null ? condition.equals( that.condition ) : that.condition == null;
+        if (condition != null ? !condition.equals( that.condition ) : that.condition != null) return false;
+        return conditionKind == that.conditionKind;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (condition != null ? condition.hashCode() : 0);
+        result = 31 * result + (conditionKind != null ? conditionKind.hashCode() : 0);
         return result;
     }
 
@@ -54,6 +64,7 @@ public class ConditionConstruct extends ControlConstruct {
         return "{\"ConditionConstruct\":"
             + super.toString()
             + ", \"condition\":\"" + condition + "\""
+            + ", \"conditionKind\":\"" + conditionKind + "\""
             + "}";
     }
 
