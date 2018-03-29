@@ -33,16 +33,16 @@ public class PublicationStatus {
 
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
-    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
-    private PublicationStatus parentId;
+    @JoinColumn(name = "publication_status_id",updatable = false,insertable = false)
+    private PublicationStatus parent;
 
-    @Column(name = "children_idx", updatable = false,insertable = false)
+    @Column(name = "publication_status_idx", updatable = false,insertable = false)
     @JsonIgnore
-    private Integer childrenIdx;
+    private Integer parentIdx;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @OrderColumn(name = "children_idx")
-    @JoinColumn(name = "parent_id")
+    @OrderColumn(name = "publication_status_idx")
+    @JoinColumn(name = "publication_status_id")
     private List<PublicationStatus> children = new ArrayList<>();
 
 
@@ -95,7 +95,7 @@ public class PublicationStatus {
     }
 
     public Integer getChildrenIdx() {
-        return childrenIdx;
+        return parentIdx;
     }
 
     @Override

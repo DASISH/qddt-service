@@ -74,8 +74,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
             instance = postLoadProcessing(
                 topicGroupRepository.save(
                     prePersistProcessing(instance)));
-        }catch (Exception ex){
+        } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
+            throw ex;
         }
         return instance;
     }
@@ -172,9 +173,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
             }
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map( StackTraceElement::toString )
-                .forEach(LOG::info);
+            throw ex;
         }
         return instance;
     }

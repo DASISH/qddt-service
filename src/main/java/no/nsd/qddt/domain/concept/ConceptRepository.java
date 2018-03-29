@@ -20,5 +20,5 @@ interface ConceptRepository extends BaseRepository<Concept,UUID> {
 
     Page<Concept> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndBasedOnObjectIsNull(String name, String description, Pageable pageable);
 
-    List<Concept> findByConceptQuestionItemsRefId(UUID id);
+    List<Concept> findByConceptQuestionItemsElementId(UUID id);
 }

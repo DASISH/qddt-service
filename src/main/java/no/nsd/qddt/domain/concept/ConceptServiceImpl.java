@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
 /**
@@ -154,17 +153,18 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Concept> findByQuestionItem(UUID id, Integer rev) {
-        return conceptRepository.findByConceptQuestionItemsRefId(id);
-//        return conceptRepository.findByConceptQuestionItemsQuestionId(id);
+        return conceptRepository.findByConceptQuestionItemsElementId(id);
     }
 
     private void setChildChangeStatus(Concept concept){
-        if (concept.getChangeKind() != ChangeKind.IN_DEVELOPMENT &&
-            concept.getChangeKind() != ChangeKind.ARCHIVED ) {
+// children don't need to be touched for parent to see them... as they are...
 
-            concept.setChangeKind(ChangeKind.UPDATED_PARENT);
-            concept.setChangeComment("Touched to save...");
-        }
+//        if (concept.getChangeKind() != ChangeKind.IN_DEVELOPMENT &&
+//            concept.getChangeKind() != ChangeKind.ARCHIVED ) {
+//
+//            concept.setChangeKind(ChangeKind.UPDATED_PARENT);
+//            concept.setChangeComment("Touched to save...");
+//        }
     }
 
 
@@ -175,21 +175,14 @@ class ConceptServiceImpl implements ConceptService {
                     qiLoader.fill( element );
                 }
             }
-
-
             // children are saved to hold revision info... i guess, these saves shouldn't
             if (instance.isBasedOn() == false)
                 instance.getChildren().stream().forEach( this::setChildChangeStatus );
+
         } catch (NullPointerException npe) {
             LOG.error("ConceptService-> prePersistProcessing " + npe);
-            StackTraceFilter.filter(npe.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
         } catch(Exception ex) {
             LOG.error("ConceptService-> prePersistProcessing " + instance.getName(), ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
         }
         return instance;
     }
@@ -206,7 +199,7 @@ class ConceptServiceImpl implements ConceptService {
                     cqi = qiLoader.fill( cqi );
 
                 ((QuestionItem) cqi.getElement())
-                    .setConceptRefs(findByQuestionItem(cqi.getRefId(),null).stream()
+                    .setConceptRefs(findByQuestionItem(cqi.getElementId(),null).stream()
                         .map( ConceptRef::new )
                         .collect( Collectors.toList()) );
             } );

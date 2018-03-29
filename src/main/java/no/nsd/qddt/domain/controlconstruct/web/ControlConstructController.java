@@ -7,7 +7,6 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -125,10 +123,7 @@ public class ControlConstructController extends AbstractController {
             return service.findByQuestionItems(Collections.singletonList(secondId));
         } catch (Exception ex){
             LOG.error("getBySecond",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
-            return  new ArrayList<>();
+            throw ex;
         }
     }
 

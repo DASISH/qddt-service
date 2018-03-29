@@ -78,6 +78,6 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     @Override
     public List<PublicationStatus> findAll() {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        return repository.findAllByAgencyAndParentIdIsNull(agency);
+        return repository.findAllByAgencyAndParentIdIsNullOrderByParentIdx(agency);
     }
 }

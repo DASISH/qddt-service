@@ -22,7 +22,7 @@ public class ElementRef extends AbstractElementRef {
 
     @Override
     public ElementRef clone() {
-        ElementRef retval = new ElementRef(getElementKind(), getRefId(),getRevisionNumber());
+        ElementRef retval = new ElementRef(getElementKind(), getElementId(),getElementRevision());
         retval.setVersion( getVersion() );
         retval.setName( getName() );
         return retval;
