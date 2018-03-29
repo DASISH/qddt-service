@@ -39,6 +39,8 @@ public class ResponseDomainJsonView {
     @Embedded
     private ResponseCardinality responseCardinality;
 
+    private String classKind;
+
     public ResponseDomainJsonView() {
     }
 
@@ -55,6 +57,7 @@ public class ResponseDomainJsonView {
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
         setManagedRepresentation(new CategoryJsonView(responseDomain.getManagedRepresentation()));
+        classKind = responseDomain.getClassKind();
     }
 
     public UUID getId() {
@@ -119,5 +122,9 @@ public class ResponseDomainJsonView {
 
     private void setManagedRepresentation(CategoryJsonView managedRepresentation) {
         this.managedRepresentation = managedRepresentation;
+    }
+    
+    public String getClassKind() {
+        return classKind;
     }
 }

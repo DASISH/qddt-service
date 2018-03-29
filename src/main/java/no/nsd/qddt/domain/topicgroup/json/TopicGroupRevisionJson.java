@@ -20,7 +20,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
     private static final long serialVersionUID = 2435677656441L;
 
-	  private String abstractDescription;
+	private String abstractDescription;
 
     private List<ElementRef> topicQuestionItems;
 
