@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
-import no.nsd.qddt.domain.instruction.Instruction;
+import no.nsd.qddt.domain.instruction.json.InstructionJsonView;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 
@@ -17,9 +17,9 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private Integer questionItemRevision;
 
-    private List<Instruction> preInstructions;
+    private List<InstructionJsonView> preInstructions;
 
-    private List<Instruction> postInstructions;
+    private List<InstructionJsonView> postInstructions;
 
     private String universe;
 
@@ -27,8 +27,8 @@ public class ConstructQuestionJson  extends ConstructJson {
         super(construct);
         questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
         questionItemRevision = construct.getQuestionItemRevision();
-        preInstructions = construct.getPreInstructions();
-        postInstructions = construct.getPostInstructions();
+        preInstructions = construct.getPreInstructions().stream().map( map -> new InstructionJsonView(map)).collect(Collectors.toList());
+        postInstructions = construct.getPostInstructions().stream().map( map -> new InstructionJsonView(map)).collect(Collectors.toList());
         universe =  construct.getUniverse().stream().map( s -> s.getDescription() ).collect( Collectors.joining("/ ") );
     }
 
@@ -48,19 +48,19 @@ public class ConstructQuestionJson  extends ConstructJson {
         this.questionItemRevision = questionItemRevision;
     }
 
-    public List<Instruction> getPreInstructions() {
+    public List<InstructionJsonView> getPreInstructions() {
         return preInstructions;
     }
 
-    public void setPreInstructions(List<Instruction> preInstructions) {
+    public void setPreInstructions(List<InstructionJsonView> preInstructions) {
         this.preInstructions = preInstructions;
     }
 
-    public List<Instruction> getPostInstructions() {
+    public List<InstructionJsonView> getPostInstructions() {
         return postInstructions;
     }
 
-    public void setPostInstructions(List<Instruction> postInstructions) {
+    public void setPostInstructions(List<InstructionJsonView> postInstructions) {
         this.postInstructions = postInstructions;
     }
 
