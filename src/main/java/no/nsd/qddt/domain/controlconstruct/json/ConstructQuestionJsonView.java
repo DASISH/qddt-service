@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.json;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -10,25 +11,30 @@ import java.util.stream.Collectors;
  */
 public class ConstructQuestionJsonView  extends ConstructJsonView {
 
-    private QuestionItemSimpleJson questionItem;
-
+    private UUID questionItemUUID;
+    
     private Integer questionItemRevision;
+
+    private String questionName;
+
+    private String questionText;
 
     private String universe;
 
     public ConstructQuestionJsonView(QuestionConstruct construct) {
         super(construct);
-        questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
+        questionItemUUID = construct.getQuestionItemUUID();
+        questionName = construct.getQuestionName();
+        questionText = construct.getQuestionText();
         questionItemRevision = construct.getQuestionItemRevision();
         universe =  construct.getUniverse().stream().map( s -> s.getDescription() ).collect( Collectors.joining("/ ") );
     }
 
-    public QuestionItemSimpleJson getQuestionItem() {
-        return questionItem;
-    }
-
-    public void setQuestionItem(QuestionItemSimpleJson questionItem) {
-        this.questionItem = questionItem;
+    /**
+     * @return the questionItemUUID
+     */
+    public UUID getQuestionItemUUID() {
+        return questionItemUUID;
     }
 
     public Integer getQuestionItemRevision() {
@@ -39,7 +45,20 @@ public class ConstructQuestionJsonView  extends ConstructJsonView {
         this.questionItemRevision = questionItemRevision;
     }
 
+    /**
+     * @return the questionName
+     */
+    public String getQuestionName() {
+        return questionName;
+    }
 
+    /**
+     * @return the questionText
+     */
+    public String getQuestionText() {
+        return questionText;
+    }
+    
     public String getUniverse() {
         return universe;
     }

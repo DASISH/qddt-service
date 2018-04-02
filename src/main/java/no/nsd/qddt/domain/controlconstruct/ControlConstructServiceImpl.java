@@ -137,7 +137,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         name = name.replace("*","%");
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
         return controlConstructRepository.findByQuery(kind, name, question , question, pageable)
-            .map(qi -> mapConstructView(postLoadProcessing(qi)));
+            .map(qi -> mapConstructView(qi));
     }
 
 
@@ -151,7 +151,11 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         if (cqi.getInstruction().getId() == null)
                             cqi.setInstruction(iService.save(cqi.getInstruction()));
                     });
-
+                    if (((QuestionConstruct)instance).getQuestionItem() != null ) {
+                        QuestionItem question = ((QuestionConstruct)instance).getQuestionItem();
+                        ((QuestionConstruct)instance).setQuestionName(question.getName());
+                        ((QuestionConstruct)instance).setQuestionText(question.getQuestion());
+                    }
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         QuestionConstructFactory ccf = new QuestionConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
