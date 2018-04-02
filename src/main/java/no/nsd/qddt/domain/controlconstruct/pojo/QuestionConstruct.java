@@ -48,8 +48,10 @@ public class QuestionConstruct  extends ControlConstruct {
     @Column(name = "questionitem_revision")
     private Integer questionItemRevision;
 
+    @Column(name = "question_name")
     private String questionName;
 
+    @Column(name = "question_text")
     private String questionText;
 
     //------------- End QuestionItem revision early bind "hack"------------------

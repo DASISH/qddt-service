@@ -71,6 +71,10 @@ public class FilterTool {
         sort.forEach(o->{
             if(o.getProperty().equals("modified")) {
                 orders.add(new Sort.Order(o.getDirection(), "updated"));
+            } else if (o.getProperty().equals("questionName")) {
+                orders.add(new Sort.Order(o.getDirection(), "question_name"));
+            } else if (o.getProperty().equals("questionText")) {
+                orders.add(new Sort.Order(o.getDirection(), "question_text"));
             } else
                 orders.add(o);
         });

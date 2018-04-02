@@ -28,12 +28,12 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
 
 
     @Query(value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc " +
-            "LEFT JOIN QUESTION_ITEM qi ON qi.id = cc.questionItem_id " +
+            "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
             "WHERE cc.control_construct_kind = :kind AND " +
             "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or qi.question ILIKE  '%'||:questionText||'%' ) "
            + "ORDER BY ?#{#pageable}"
             ,countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
-            "LEFT JOIN QUESTION_ITEM qi ON qi.id = cc.questionItem_id " +
+            "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
             "WHERE cc.control_construct_kind = :kind AND " +
             "( cc.name ILIKE '%'||:name||'%' or qi.name ILIKE  '%'||:questionName||'%' or qi.question ILIKE  '%'||:questionText||'%' ) "
             ,nativeQuery = true)
