@@ -17,7 +17,9 @@ public enum ElementKind {
     QUESTION_CONSTRUCT("Question Construct","QuestionConstruct"),
     STATEMENT_CONSTRUCT("Statement","StatementConstruct"),
     CONDITION_CONSTRUCT("Condition","ConditionConstruct"),
-    SEQUENCE_CONSTRUCT("Sequence","SequenceConstruct");
+    SEQUENCE_CONSTRUCT("Sequence","SequenceConstruct"),
+    INSTRUCTION("Instruction","Instruction"),
+    UNIVERSE("Universe","Universe");
 
 
     private final String description;
