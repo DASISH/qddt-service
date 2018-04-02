@@ -23,5 +23,19 @@ public  class Converter {
         }
     }
 
+    public static <S extends ConstructJsonView> S mapConstructView(ControlConstruct construct){
+        switch (construct.getClassKind()) {
+            case "QUESTION_CONSTRUCT":
+                return (S)new ConstructQuestionJsonView((QuestionConstruct) construct);
+//            case "STATEMENT_CONSTRUCT":
+//                return (S)new ConstructJsonView((StatementItem) construct);
+//            case "CONDITION_CONSTRUCT":
+//                return (S)new ConstructJsonView((ConditionConstruct) construct);
+//            case "SEQUENCE_CONSTRUCT":
+//                return (S)new ConstructJsonView((Sequence) construct);
+            default:
+                return (S)new ConstructJsonView(construct);
+        }
+    }
 
 }

@@ -8,6 +8,7 @@ import no.nsd.qddt.utils.ExtractFromException;
  * For consistency, this is the only API error object the application should use.
  *
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 public class ControllerAdviceExceptionMessage {
 

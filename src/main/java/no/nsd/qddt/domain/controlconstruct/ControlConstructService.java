@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.BaseService;
-import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import org.springframework.data.domain.Page;
@@ -23,6 +23,6 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
 
     List<ConstructQuestionJson> findTop25ByQuestionItemQuestion(String question);
 
-    <S extends ConstructJson> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable);
+    <S extends ConstructJsonView> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable);
 
 }

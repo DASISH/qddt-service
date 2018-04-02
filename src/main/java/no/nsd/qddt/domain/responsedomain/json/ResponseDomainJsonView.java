@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
-import no.nsd.qddt.domain.category.json.CategoryJsonView;
+import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonView;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -34,7 +34,7 @@ public class ResponseDomainJsonView {
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
 
-    private CategoryJsonView managedRepresentation;
+    private ManagedRepresentationJsonView managedRepresentation;
 
     @Embedded
     private ResponseCardinality responseCardinality;
@@ -56,7 +56,7 @@ public class ResponseDomainJsonView {
         setVersion(responseDomain.getVersion());
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
-        setManagedRepresentation(new CategoryJsonView(responseDomain.getManagedRepresentation()));
+        setManagedRepresentation(new ManagedRepresentationJsonView(responseDomain.getManagedRepresentation()));
         classKind = responseDomain.getClassKind();
     }
 
@@ -116,11 +116,11 @@ public class ResponseDomainJsonView {
         this.responseCardinality = responseCardinality;
     }
 
-    public CategoryJsonView getManagedRepresentation() {
+    public ManagedRepresentationJsonView getManagedRepresentation() {
         return managedRepresentation;
     }
 
-    private void setManagedRepresentation(CategoryJsonView managedRepresentation) {
+    private void setManagedRepresentation(ManagedRepresentationJsonView managedRepresentation) {
         this.managedRepresentation = managedRepresentation;
     }
     
