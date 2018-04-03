@@ -66,7 +66,6 @@ public class ElementLoader{
             LOG.error( "ElementLoader - fill", ex );
 
         }
-        return null;
     }
 
 }
