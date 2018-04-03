@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,7 +64,8 @@ public class PublicationServiceImpl implements PublicationService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Publication save(Publication instance) {
         try {
-            return repository.save(instance);
+            return  postLoadProcessing(
+                repository.save(instance));
         } catch (Exception ex){
             LOG.error("Publication save ->",ex);
             throw ex;
@@ -134,7 +136,15 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     ElementRef postLoadProcessing(ElementRef instance) {
-        instance = new ElementLoader(serviceLoader.getService( instance.getElementKind())).fill( instance );
+        try {
+            instance = new ElementLoader( serviceLoader.getService( instance.getElementKind() ) ).fill( instance );
+        } catch (InvalidDataAccessApiUsageException ida) {
+            return instance;
+        } catch (Exception e) {
+            LOG.error("postLoadProcessing " ,e );
+            return instance;
+        }
+
         switch (instance.getElementKind()) {
             case TOPIC_GROUP:
                 ((TopicGroupRevisionJson)instance.getElement()).getTopicQuestionItems()

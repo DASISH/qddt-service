@@ -60,11 +60,12 @@ public class ElementLoader{
             LOG.error( "ElementLoader - RevisionDoesNotExistException ", e );
             if (rev != null)
                 return get(id, null);
-
+            else
+                throw e;
         } catch (Exception ex) {
 
             LOG.error( "ElementLoader - fill", ex );
-
+            throw ex;
         }
     }
 

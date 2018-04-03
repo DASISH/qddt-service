@@ -43,7 +43,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
-    @JoinColumn(name = "parent_id",updatable = false,insertable = false)
+    @JoinColumn(name = "concept_id",updatable = false,insertable = false)
     private Concept parentReferenceOnly;
 
 

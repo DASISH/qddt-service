@@ -44,7 +44,7 @@ class InstrumentElementServiceImpl implements InstrumentElementService  {
            String question = ((QuestionConstruct) element.getElement().getElement()).getQuestionItem().getQuestion();
            // TODO question.
            if (question.contains("[")) {
-               element.getParameters().add(new InstrumentParameter("[oara]", ""));
+               element.getParameters().add(new InstrumentParameter("[oara]", null));
            }
          }
          return element;
