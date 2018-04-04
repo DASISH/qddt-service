@@ -4,9 +4,7 @@ import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
-import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
-import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 
 import org.slf4j.Logger;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.logstash.logback.encoder.org.apache.commons.lang.ArrayUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
