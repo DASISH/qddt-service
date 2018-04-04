@@ -4,7 +4,11 @@ import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
+import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.utils.SecurityContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.logstash.logback.encoder.org.apache.commons.lang.ArrayUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,12 +29,11 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 /**
  * @author Stig Norland
  */
-@Service("selectableService")
+@Service("publicationService")
 public class PublicationServiceImpl implements PublicationService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final PublicationRepository repository;
-
     private boolean showPrivate= true;
 
     @Autowired
@@ -105,6 +111,16 @@ public class PublicationServiceImpl implements PublicationService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable) {
+        
+        
+        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
+            return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(PUBLISED_PUBLIC,name,purpose,
+            defaultSort(pageable,"name","modified"));
+        }
+        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
+            return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike((String[])ArrayUtils.addAll(PUBLISED_PUBLIC, PUBLISED_INTERNAL) 
+            ,name,purpose, defaultSort(pageable,"name","modified"));            
+        }
         return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
                 defaultSort(pageable,"name","modified"));
     }
@@ -156,5 +172,9 @@ public class PublicationServiceImpl implements PublicationService {
         return instance;
     }
 
+    private static final String[] PUBLISED_PUBLIC = { "Export to Public History","Export to QVD","Export to Public" };
+    private static final String[] PUBLISED_INTERNAL = { "Designmeeting1","Designmeeting3","Designmeeting2","No Milestone",
+                                                        "FinalSource – SQP/TMT", "PostPilot", "Pilot – SQP/TMT", "PostEarlyTesting", 
+                                                        "Earlytesting - SQP/TMT" };
 
 }
