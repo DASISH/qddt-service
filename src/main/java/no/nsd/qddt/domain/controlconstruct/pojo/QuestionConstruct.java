@@ -48,6 +48,12 @@ public class QuestionConstruct  extends ControlConstruct {
     @Column(name = "questionitem_revision")
     private Integer questionItemRevision;
 
+    @Column(name = "question_name")
+    private String questionName;
+
+    @Column(name = "question_text")
+    private String questionText;
+
     //------------- End QuestionItem revision early bind "hack"------------------
 
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER )
@@ -106,6 +112,33 @@ public class QuestionConstruct  extends ControlConstruct {
         questionItemUUID = questionItem;
     }
 
+    /**
+     * @return the questionName
+     */
+    public String getQuestionName() {
+        return questionName;
+    }
+
+    /**
+     * @param questionName the questionName to set
+     */
+    public void setQuestionName(String questionName) {
+        this.questionName = questionName;
+    }
+
+    /**
+     * @return the questionText
+     */
+    public String getQuestionText() {
+        return questionText;
+    }
+
+    /**
+     * @param questionText the questionText to set
+     */
+    public void setQuestionText(String questionText) {
+        this.questionText = questionText;
+    }
 
     public List<Universe> getUniverse() {
         return universe;

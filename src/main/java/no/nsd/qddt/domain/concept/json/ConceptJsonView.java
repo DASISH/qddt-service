@@ -48,6 +48,8 @@ public class ConceptJsonView {
 
     private TopicRef topicRef;
 
+	private String classKind;
+
 
     public ConceptJsonView(Concept concept) {
         setId(concept.getId());
@@ -62,6 +64,7 @@ public class ConceptJsonView {
         setConceptQuestionItems(concept.getConceptQuestionItems());
         setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setTopicRef(concept.getTopicRef());
+        classKind = concept.getClassKind();
     }
 
     public UUID getId() {
@@ -143,5 +146,9 @@ public class ConceptJsonView {
 
     private void setTopicRef(TopicRef topicRef) {
         this.topicRef = topicRef;
+    }
+
+    public String getClassKind() {
+        return classKind;
     }
 }

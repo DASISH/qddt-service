@@ -18,14 +18,13 @@ public class ExtractFromException {
      * @return a formatted version.
      */
     public static String extractUUID(String exceptionMessage) {
-
-        Matcher patternMatcher = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}").matcher(exceptionMessage);
-        if(patternMatcher.find()) {
-            return patternMatcher.group();
+        if (exceptionMessage != null) {
+            Matcher patternMatcher = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}").matcher(exceptionMessage);
+            if(patternMatcher.find()) {
+                return patternMatcher.group();
+            }
         }
-
         return "NA";
-
     }
 
     /**
@@ -35,13 +34,14 @@ public class ExtractFromException {
      * @return a formatted version.
      */
     public static String extractMessage(String exceptionMessage) {
-
-        Matcher patternMatcher = Pattern.compile("[^:]+").matcher(exceptionMessage);
-        if(patternMatcher.find()) {
-            return patternMatcher.group();
+        if (exceptionMessage != null) {
+            Matcher patternMatcher = Pattern.compile("[^:]+").matcher(exceptionMessage);
+            if(patternMatcher.find()) {
+                return patternMatcher.group();
+            }
+            return exceptionMessage.substring(exceptionMessage.lastIndexOf(":")+1);
         }
-        return exceptionMessage.substring(exceptionMessage.lastIndexOf(":")+1);
-
+        return "NA";
     }
 
 

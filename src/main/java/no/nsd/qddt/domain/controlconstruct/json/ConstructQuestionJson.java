@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
-import no.nsd.qddt.domain.instruction.Instruction;
+import no.nsd.qddt.domain.instruction.json.InstructionJsonView;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,13 +13,15 @@ import java.util.stream.Collectors;
  */
 public class ConstructQuestionJson  extends ConstructJson {
 
-    private QuestionItemSimpleJson questionItem;
+    private static final long serialVersionUID = 1L;
+
+	private QuestionItemSimpleJson questionItem;
 
     private Integer questionItemRevision;
 
-    private List<Instruction> preInstructions;
+    private List<InstructionJsonView> preInstructions;
 
-    private List<Instruction> postInstructions;
+    private List<InstructionJsonView> postInstructions;
 
     private String universe;
 
@@ -27,8 +29,8 @@ public class ConstructQuestionJson  extends ConstructJson {
         super(construct);
         questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
         questionItemRevision = construct.getQuestionItemRevision();
-        preInstructions = construct.getPreInstructions();
-        postInstructions = construct.getPostInstructions();
+        preInstructions = construct.getPreInstructions().stream().map( map -> new InstructionJsonView(map)).collect(Collectors.toList());
+        postInstructions = construct.getPostInstructions().stream().map( map -> new InstructionJsonView(map)).collect(Collectors.toList());
         universe =  construct.getUniverse().stream().map( s -> s.getDescription() ).collect( Collectors.joining("/ ") );
     }
 
@@ -48,19 +50,19 @@ public class ConstructQuestionJson  extends ConstructJson {
         this.questionItemRevision = questionItemRevision;
     }
 
-    public List<Instruction> getPreInstructions() {
+    public List<InstructionJsonView> getPreInstructions() {
         return preInstructions;
     }
 
-    public void setPreInstructions(List<Instruction> preInstructions) {
+    public void setPreInstructions(List<InstructionJsonView> preInstructions) {
         this.preInstructions = preInstructions;
     }
 
-    public List<Instruction> getPostInstructions() {
+    public List<InstructionJsonView> getPostInstructions() {
         return postInstructions;
     }
 
-    public void setPostInstructions(List<Instruction> postInstructions) {
+    public void setPostInstructions(List<InstructionJsonView> postInstructions) {
         this.postInstructions = postInstructions;
     }
 
@@ -73,14 +75,14 @@ public class ConstructQuestionJson  extends ConstructJson {
 
         String question;
 
-        ResponseDomain responseDomain;
+        ResponseDomainJsonView responseDomain;
 
         public QuestionItemSimpleJson(QuestionItem questionItem) {
             if (questionItem == null)
                 return;
             name = questionItem.getName();
             question = questionItem.getQuestion();
-            responseDomain = questionItem.getResponseDomain();
+            // responseDomain =  new ResponseDomainJsonView(questionItem.getResponseDomain());
         }
 
 
@@ -92,7 +94,7 @@ public class ConstructQuestionJson  extends ConstructJson {
             return question;
         }
 
-        public ResponseDomain getResponseDomain() {
+        public ResponseDomainJsonView getResponseDomain() {
             return responseDomain;
         }
     }

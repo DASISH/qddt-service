@@ -6,7 +6,9 @@ import no.nsd.qddt.domain.controlconstruct.factory.QuestionConstructFactory;
 import no.nsd.qddt.domain.controlconstruct.factory.SequenceConstructFactory;
 import no.nsd.qddt.domain.controlconstruct.factory.StatementConstructFactory;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJsonView;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -28,6 +30,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstruct;
+import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstructView;
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 
 /**
@@ -130,16 +133,15 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public <S extends ConstructJson> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable) {
+    public <S extends ConstructJsonView> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable) {
         name = name.replace("*","%");
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
         return controlConstructRepository.findByQuery(kind, name, question , question, pageable)
-            .map(qi -> mapConstruct(postLoadProcessing(qi)));
+            .map(qi -> mapConstructView(qi));
     }
 
 
-
-    private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
+	private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
         switch (instance.getClassKind()) {
             case "QUESTION_CONSTRUCT":
@@ -149,7 +151,11 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         if (cqi.getInstruction().getId() == null)
                             cqi.setInstruction(iService.save(cqi.getInstruction()));
                     });
-
+                    if (((QuestionConstruct)instance).getQuestionItem() != null ) {
+                        QuestionItem question = ((QuestionConstruct)instance).getQuestionItem();
+                        ((QuestionConstruct)instance).setQuestionName(question.getName());
+                        ((QuestionConstruct)instance).setQuestionText(question.getQuestion());
+                    }
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         QuestionConstructFactory ccf = new QuestionConstructFactory();
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
@@ -199,8 +205,9 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
                     ((QuestionConstruct)instance).getQuestionItemUUID(),
                     ((QuestionConstruct)instance).getQuestionItemRevision());
-                    ((QuestionConstruct)instance).setQuestionItemRevision(rev.getRevisionNumber());
-                    ((QuestionConstruct)instance).setQuestionItem(rev.getEntity());
+
+                ((QuestionConstruct)instance).setQuestionItemRevision(rev.getRevisionNumber());
+                ((QuestionConstruct)instance).setQuestionItem(rev.getEntity());
             }
         }
         return instance;

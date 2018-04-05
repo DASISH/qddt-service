@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
+import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
@@ -135,7 +136,7 @@ public class ControlConstructController extends AbstractController {
 
 //    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE })
-    public HttpEntity<PagedResources<ConstructJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<ConstructJsonView>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                               @RequestParam(value = "questiontext",defaultValue = "%") String question,
                                                               @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") String kind,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
@@ -144,7 +145,7 @@ public class ControlConstructController extends AbstractController {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it necessary to distinguish
 
-        Page<ConstructJson> controlConstructs =
+        Page<ConstructJsonView> controlConstructs =
                 service.findByNameLikeAndControlConstructKind(name,question,kind,pageable); //.map( source -> Converter.mapConstruct( source ));
 
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);

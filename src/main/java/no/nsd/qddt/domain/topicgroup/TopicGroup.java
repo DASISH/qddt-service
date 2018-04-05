@@ -73,7 +73,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @OrderColumn(name="topicgroup_idx")
     @OrderBy("topicgroup_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id"))
+    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
     private List<ElementRef>  topicQuestionItems = new ArrayList<>();
 
 

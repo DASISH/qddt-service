@@ -20,10 +20,8 @@ public class QuestionItemListJson {
 
     private String name;
 
-/*     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
- */
+    private String classKind;
+ 
     private Timestamp modified;
 
     private UserJson modifiedBy;
@@ -56,6 +54,7 @@ public class QuestionItemListJson {
         question = entity.getQuestion();
         intent = entity.getIntent();
         responseDomainName = entity.getResponseDomainName();
+        classKind = "QUESTION_ITEM";
 //        responseDomain = new ResponseDomainJsonView(entity.getResponseDomain());
 //        responseDomain.getVersion().setRevision(entity.getResponseDomainRevision());
     }
@@ -102,9 +101,8 @@ public class QuestionItemListJson {
         return version;
     }
 
-
-//    public ResponseDomainJsonView getResponseDomain() {
-//        return responseDomain;
-//    }
+    public String getClassKind() {
+        return classKind;
+    }
 
 }
