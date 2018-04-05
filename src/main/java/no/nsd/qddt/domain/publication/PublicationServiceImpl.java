@@ -1,14 +1,12 @@
 package no.nsd.qddt.domain.publication;
 
+import net.logstash.logback.encoder.org.apache.commons.lang.ArrayUtils;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
-import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
-import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.logstash.logback.encoder.org.apache.commons.lang.ArrayUtils;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -123,7 +118,7 @@ public class PublicationServiceImpl implements PublicationService {
             return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike((String[])ArrayUtils.addAll(PUBLISED_PUBLIC, PUBLISED_INTERNAL) 
             ,name,purpose, defaultSort(pageable,"name","modified"));            
         }
-        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
+        return repository.findByStatusIgnoreCaseLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
                 defaultSort(pageable,"name","modified"));
     }
 

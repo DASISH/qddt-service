@@ -1,10 +1,9 @@
 package no.nsd.qddt.domain.category.json;
 
-import no.nsd.qddt.domain.AbstractJsonEdit;
-import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryRelationCodeType;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 
 import javax.persistence.Embedded;

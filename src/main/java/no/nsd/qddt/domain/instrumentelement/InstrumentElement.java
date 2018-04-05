@@ -32,7 +32,6 @@ public class InstrumentElement  {
 
 
     @OrderColumn(name="instrument_element_idx")
-    @OrderBy("instrument_element_idx ASC")
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @JoinColumn(name = "instrument_element_id" , referencedColumnName = "id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
