@@ -31,8 +31,8 @@ public  class Converter {
 //                return (S)new ConstructJsonView((StatementItem) construct);
 //            case "CONDITION_CONSTRUCT":
 //                return (S)new ConstructJsonView((ConditionConstruct) construct);
-//            case "SEQUENCE_CONSTRUCT":
-//                return (S)new ConstructJsonView((Sequence) construct);
+            case "SEQUENCE_CONSTRUCT":
+                return (S)new ConstructSequenceJsonView((Sequence) construct);
             default:
                 return (S)new ConstructJsonView(construct);
         }

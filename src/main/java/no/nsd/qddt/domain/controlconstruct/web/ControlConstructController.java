@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.controlconstruct.web;
 import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
-import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
@@ -63,11 +62,13 @@ public class ControlConstructController extends AbstractController {
     public QuestionConstruct update(@RequestBody QuestionConstruct instance) {
         return service.save(instance);
     }
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/sequence", method = RequestMethod.POST)
     public Sequence update(@RequestBody Sequence instance) {
         return service.save(instance);
     }
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/statement", method = RequestMethod.POST)
     public StatementItem update(@RequestBody StatementItem instance) {
