@@ -56,8 +56,8 @@ public class PublicationStatusJsonParent extends PublicationStatusJsonChild {
     @Override
     public String toString() {
         return String.format(
-                "PublicationStatusJsonListView (id=%s, label=%s, name=%s,  children=%s)",
-                super.id, super.label, super.name, this.children.size());
+                "PublicationStatusJsonListView (id=%s, label=%s, published=%s,  children=%s)",
+                super.id, super.label, super.published, this.children.size());
     }
 
 

@@ -11,13 +11,13 @@ class PublicationStatusJsonChild implements Serializable {
 
     final Long id;
     final String label;
-    final String name;
+    final PublicationStatus.Published published;
     private final String description;
 
     PublicationStatusJsonChild(PublicationStatus publicationStatus) {
         id = publicationStatus.getId();
         label = publicationStatus.getLabel();
-        name = publicationStatus.getName();
+        published = publicationStatus.getPublished();
         description = publicationStatus.getDescription();
     }
 
@@ -29,8 +29,8 @@ class PublicationStatusJsonChild implements Serializable {
         return label;
     }
 
-    public String getName() {
-        return name;
+    public PublicationStatus.Published getPublished() {
+        return published;
     }
 
     public String getDescription() {
@@ -46,7 +46,7 @@ class PublicationStatusJsonChild implements Serializable {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (label != null ? !label.equals(that.label) : that.label != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (published != null ? !published.equals(that.published) : that.published != null) return false;
         return description != null ? description.equals(that.description) : that.description == null;
     }
 
@@ -54,7 +54,7 @@ class PublicationStatusJsonChild implements Serializable {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (label != null ? label.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (published != null ? published.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
@@ -62,7 +62,7 @@ class PublicationStatusJsonChild implements Serializable {
     @Override
     public String toString() {
         return String.format(
-                "PublicationStatusJsonChild (id=%s, label=%s, name=%s, description=%s)", this.id, this.label, this.name, this.description);
+                "PublicationStatusJsonChild (id=%s, label=%s, published=%s, description=%s)", this.id, this.label, this.published, this.description);
     }
 
 

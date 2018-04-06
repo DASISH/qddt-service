@@ -10,12 +10,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "PUBLICATION_STATUS", uniqueConstraints = {@UniqueConstraint(columnNames = {"agency_id","label"},name = "UNQ_PUBLICATION_STATUS")})
-public class PublicationStatus<Published> {
+public class PublicationStatus {
 
     public enum Published {
-        NotPublished,
-        Internal,
-        Public
+        NOT_PUBLISHED,
+        INTERNAL_PUBLICATION,
+        EXTERNAL_PUBLICATION
     }
 
 
