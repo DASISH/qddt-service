@@ -8,12 +8,16 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Stig Norland
- */
 @Entity
 @Table(name = "PUBLICATION_STATUS", uniqueConstraints = {@UniqueConstraint(columnNames = {"agency_id","label"},name = "UNQ_PUBLICATION_STATUS")})
-public class PublicationStatus {
+public class PublicationStatus<Published> {
+
+    public enum Published {
+        NotPublished,
+        Internal,
+        Public
+    }
+
 
     @Id
     @Column(name = "id")
@@ -24,7 +28,8 @@ public class PublicationStatus {
     @JoinColumn(name = "agency_id",updatable = false)
     private Agency agency;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Published published;
 
     private String label;
 
@@ -70,13 +75,6 @@ public class PublicationStatus {
         this.label = label;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getDescription() {
         return Description;
@@ -84,6 +82,20 @@ public class PublicationStatus {
 
     public void setDescription(String description) {
         Description = description;
+    }
+
+    /**
+     * @return the published
+     */
+    public Published getPublished() {
+        return published;
+    }
+
+    /**
+     * @param published the published to set
+     */
+    public void setPublished(Published published) {
+        this.published = published;
     }
 
     public List<PublicationStatus> getChildren() {

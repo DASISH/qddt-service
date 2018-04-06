@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.instrumentelement;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -13,11 +14,11 @@ public class InstrumentParameter {
 
     private String name;
 
-    private String path;
+    private UUID referencedId;
 
-    public InstrumentParameter(String name, String path) {
+    public InstrumentParameter(String name, UUID id) {
         setName(name);
-        setPath(path);
+        setReferencedId(id);
     }
     
     public String getName() {
@@ -28,14 +29,13 @@ public class InstrumentParameter {
         this.name = name;
     }
 
-    public String getPath() {
-        return path;
+    public UUID getReferencedId() {
+        return referencedId;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setReferencedId(UUID referencedId) {
+        this.referencedId = referencedId;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -45,13 +45,13 @@ public class InstrumentParameter {
         InstrumentParameter that = (InstrumentParameter) o;
 
         if (name != null ? !name.equals( that.name ) : that.name != null) return false;
-
-        return true;
+        return referencedId != null ? referencedId.equals( that.referencedId ) : that.referencedId == null;
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (referencedId != null ? referencedId.hashCode() : 0);
         return result;
     }
 

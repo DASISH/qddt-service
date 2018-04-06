@@ -51,22 +51,20 @@ public class ElementLoader{
     // uses rev Object to facilitate by rev by reference
     private Revision get(UUID id,  Integer rev){
         try {
-            if (rev == null) {
-                return serviceAudit.findLastChange( id );
-            } else
-                return serviceAudit.findRevision( id,rev );
+            
+            return (rev == null) ? serviceAudit.findLastChange( id ) :  serviceAudit.findRevision( id,rev );
 
         } catch (RevisionDoesNotExistException e) {
+
             LOG.error( "ElementLoader - RevisionDoesNotExistException ", e );
-            if (rev != null)
-                return get(id, null);
+            if (rev == null) throw e;
+            return get(id, null);
 
         } catch (Exception ex) {
 
             LOG.error( "ElementLoader - fill", ex );
-
+            throw ex;
         }
-        return null;
     }
 
 }

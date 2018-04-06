@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface PublicationRepository extends BaseRepository<Publication,UUID> {
 
-    Page<Publication> findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(String status, String name, String purpose,Pageable pageable);
+    Page<Publication> findByStatusIgnoreCaseLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(String status, String name, String purpose,Pageable pageable);
 
     Page<Publication> findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(String[] statuses, String name, String purpose,Pageable pageable);
 }

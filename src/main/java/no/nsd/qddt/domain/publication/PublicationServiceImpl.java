@@ -1,22 +1,21 @@
 package no.nsd.qddt.domain.publication;
 
+import net.logstash.logback.encoder.org.apache.commons.lang.ArrayUtils;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import no.nsd.qddt.utils.SecurityContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import net.logstash.logback.encoder.org.apache.commons.lang.ArrayUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -66,8 +65,11 @@ public class PublicationServiceImpl implements PublicationService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Publication save(Publication instance) {
         try {
-            return repository.save(instance);
+
+            return  postLoadProcessing(repository.save(instance));
+
         } catch (Exception ex){
+
             LOG.error("Publication save ->",ex);
             throw ex;
         }
@@ -111,14 +113,17 @@ public class PublicationServiceImpl implements PublicationService {
         
         
         if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
+
             return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(PUBLISED_PUBLIC,name,purpose,
-            defaultSort(pageable,"name","modified"));
+                defaultSort(pageable,"name","modified"));
         }
         if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
-            return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike((String[])ArrayUtils.addAll(PUBLISED_PUBLIC, PUBLISED_INTERNAL) 
-            ,name,purpose, defaultSort(pageable,"name","modified"));            
+
+            return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(
+                (String[])ArrayUtils.addAll(PUBLISED_PUBLIC, PUBLISED_INTERNAL) 
+                ,name,purpose, defaultSort(pageable,"name","modified"));            
         }
-        return repository.findByStatusLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
+        return repository.findByStatusIgnoreCaseLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
                 defaultSort(pageable,"name","modified"));
     }
 
@@ -147,7 +152,15 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     ElementRef postLoadProcessing(ElementRef instance) {
-        instance = new ElementLoader(serviceLoader.getService( instance.getElementKind())).fill( instance );
+        try {
+            instance = new ElementLoader( serviceLoader.getService( instance.getElementKind() ) ).fill( instance );
+        } catch (InvalidDataAccessApiUsageException ida) {
+            return instance;
+        } catch (Exception e) {
+            LOG.error("postLoadProcessing " ,e );
+            return instance;
+        }
+
         switch (instance.getElementKind()) {
             case TOPIC_GROUP:
                 ((TopicGroupRevisionJson)instance.getElement()).getTopicQuestionItems()
