@@ -3,13 +3,15 @@ package no.nsd.qddt.domain.publication;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 /**
  * @author Stig Norland
@@ -21,7 +23,10 @@ public class Publication extends AbstractEntityAudit {
 
     private String purpose;
 
-    private String status;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Audited(targetAuditMode = NOT_AUDITED)
+    @JoinColumn(name="status_id")
+    private PublicationStatus status;
 
     @OrderColumn(name="publication_idx")
     @OrderBy("publication_idx ASC")
@@ -40,14 +45,13 @@ public class Publication extends AbstractEntityAudit {
     }
 
 
-    public String getStatus() {
+    public PublicationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PublicationStatus status) {
         this.status = status;
     }
-
 
     public List<ElementRef> getPublicationElements() {
         try {
@@ -62,33 +66,33 @@ public class Publication extends AbstractEntityAudit {
         this.publicationElements = publicationElements;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Publication)) return false;
-        if (!super.equals(o)) return false;
+        if (!super.equals( o )) return false;
 
         Publication that = (Publication) o;
 
-        return (Objects.equals(status, that.status));
-
+        if (purpose != null ? !purpose.equals( that.purpose ) : that.purpose != null) return false;
+        if (status != null ? !status.equals( that.status ) : that.status != null) return false;
+        return publicationElements != null ? publicationElements.equals( that.publicationElements ) : that.publicationElements == null;
     }
-
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = 31 * result + (purpose != null ? purpose.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (publicationElements != null ? publicationElements.hashCode() : 0);
         return result;
     }
-
 
     @Override
     public String toString() {
         return "Publication{" +
                 "purpose='" + purpose + '\'' +
-                ", status='" + status + '\'' +
+                ", status='" + status.getLabel() + '\'' +
                 ", publicationElements=" + publicationElements +
                 "} " + super.toString();
     }
@@ -100,7 +104,7 @@ public class Publication extends AbstractEntityAudit {
         pdfReport.addheader2("Purpose");
         pdfReport.addParagraph(getPurpose());
         pdfReport.addheader2("Publication status");
-        pdfReport.addParagraph(getStatus());
+        pdfReport.addParagraph(getStatus().getLabel());
         pdfReport.addPadding();
 
         int i=0;

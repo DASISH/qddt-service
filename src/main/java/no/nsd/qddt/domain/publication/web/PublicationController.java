@@ -75,12 +75,12 @@ public class PublicationController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<Publication>> getBy(@RequestParam(value = "name", defaultValue = "%") String name,
                                                          @RequestParam(value = "purpose", defaultValue = "%") String purpose,
-                                                         @RequestParam(value = "status", defaultValue = "%") String status,
+                                                         @RequestParam(value = "statusId") Long statusId,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
         name = name.replace("*", "%");
-        status = status.replace("*", "%");
+        purpose = purpose.replace("*", "%");
         Page<Publication> items =
-                service.findByNameOrPurposeAndStatus(name, purpose, status, pageable);
+                service.findByNameOrPurposeAndStatus(name, purpose, statusId, pageable);
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

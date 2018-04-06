@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.publication;
 
-import net.logstash.logback.encoder.org.apache.commons.lang.ArrayUtils;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
 import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
@@ -109,21 +109,23 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String status, Pageable pageable) {
+    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, Long statusId, Pageable pageable) {
         
         
         if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
 
-            return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(PUBLISED_PUBLIC,name,purpose,
+            PublicationStatus.Published[] published = {PublicationStatus.Published.EXTERNAL_PUBLICATION};
+            return repository.findByStatusPublishedInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(published,name,purpose,
                 defaultSort(pageable,"name","modified"));
         }
         if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
 
-            return repository.findByStatusInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(
-                (String[])ArrayUtils.addAll(PUBLISED_PUBLIC, PUBLISED_INTERNAL) 
-                ,name,purpose, defaultSort(pageable,"name","modified"));            
+            PublicationStatus.Published[] published = {PublicationStatus.Published.EXTERNAL_PUBLICATION, PublicationStatus.Published.INTERNAL_PUBLICATION};
+            return repository.findByStatusPublishedInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike( published, name, purpose,
+                defaultSort(pageable,"name","modified"));
         }
-        return repository.findByStatusIgnoreCaseLikeAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(status,name,purpose,
+
+        return repository.findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(statusId,name,purpose,
                 defaultSort(pageable,"name","modified"));
     }
 
@@ -143,7 +145,7 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     private Publication postLoadProcessing(Publication instance) {
-        if (instance.getStatus().toLowerCase().contains("public")|| instance.getStatus().toLowerCase().contains("extern"))
+        if (instance.getStatus().getPublished().ordinal() > PublicationStatus.Published.NOT_PUBLISHED.ordinal())
             showPrivate = false;
 
         instance.getPublicationElements().forEach(e-> postLoadProcessing(e));
@@ -181,10 +183,5 @@ public class PublicationServiceImpl implements PublicationService {
         }
         return instance;
     }
-
-    private static final String[] PUBLISED_PUBLIC = { "Export to Public History","Export to QVD","Export to Public" };
-    private static final String[] PUBLISED_INTERNAL = { "Designmeeting1","Designmeeting3","Designmeeting2","No Milestone",
-                                                        "FinalSource – SQP/TMT", "PostPilot", "Pilot – SQP/TMT", "PostEarlyTesting", 
-                                                        "Earlytesting - SQP/TMT" };
 
 }
