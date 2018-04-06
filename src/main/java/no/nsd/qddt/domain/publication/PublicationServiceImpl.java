@@ -125,8 +125,12 @@ public class PublicationServiceImpl implements PublicationService {
                 defaultSort(pageable,"name","modified"));
         }
 
-        return repository.findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(statusId,name,purpose,
+        if (statusId != null)
+            return repository.findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(statusId,name,purpose,
                 defaultSort(pageable,"name","modified"));
+        else
+            return repository.findByNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(name, purpose, defaultSort(pageable,"name","modified"));
+
     }
 
     @Override

@@ -17,4 +17,6 @@ public interface PublicationRepository extends BaseRepository<Publication,UUID> 
     Page<Publication> findByStatusPublishedInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(PublicationStatus.Published[] published, String name, String purpose, Pageable pageable);
 
     Page<Publication> findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(Long statusIds, String name, String purpose,Pageable pageable);
+
+    Page<Publication> findByNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(String name, String purpose,Pageable pageable);
 }
