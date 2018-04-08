@@ -71,6 +71,7 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
 
     protected PublicationStatus postLoadProcessing(PublicationStatus instance) {
+
         return instance;
     }
 
@@ -78,6 +79,8 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     @Override
     public List<PublicationStatus> findAll() {
         Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        return repository.findAllByAgencyAndParentIdIsNullOrderByParentIdx(agency);
+        List<PublicationStatus> retvals = repository.findAllByAgencyAndParentIdIsNullOrderByParentIdx(agency);
+        retvals.forEach(c -> c.getChildren().size());
+        return retvals;
     }
 }
