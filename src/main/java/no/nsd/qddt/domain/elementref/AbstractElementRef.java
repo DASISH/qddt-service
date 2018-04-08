@@ -102,46 +102,6 @@ public abstract class AbstractElementRef implements IElementRef {
 
     @JsonSerialize
     public Object getElement() {
-        try {
-            switch (elementKind) {
-                case CATEGORY:
-                    break;
-                case CONCEPT:
-                    if(element instanceof Concept)
-                        return new ConceptJsonEdit((Concept) element);
-                    break;
-                case CONTROL_CONSTRUCT:
-                    break;
-                case QUESTION_CONSTRUCT:
-                    break;
-                case STATEMENT_CONSTRUCT:
-                    break;
-                case SEQUENCE_CONSTRUCT:
-                    break;
-                case CONDITION_CONSTRUCT:
-                    break;
-                case INSTRUMENT:
-                    break;
-                case PUBLICATION:
-                    break;
-                case QUESTION_ITEM:
-                    if (element instanceof QuestionItem)
-                        return new QuestionItemJsonView((QuestionItem) element);
-                    break;
-                case RESPONSEDOMAIN:
-                    break;
-                case STUDY:
-                    break;
-                case SURVEY_PROGRAM:
-                    break;
-                case TOPIC_GROUP:
-                    if(element instanceof TopicGroup)
-                        return new TopicGroupRevisionJson((TopicGroup) element);
-                    break;
-            }
-        }catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-        }
         return element;
     }
     public void setElement(Object element) {

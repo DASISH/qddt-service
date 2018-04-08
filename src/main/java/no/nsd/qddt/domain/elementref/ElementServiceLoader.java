@@ -78,7 +78,8 @@ public class ElementServiceLoader  {
                 return topicGroupService;
             case PUBLICATION:
                 return publicationService;
+            default:
+                return null;
         }
-        return null;
     }
 }
