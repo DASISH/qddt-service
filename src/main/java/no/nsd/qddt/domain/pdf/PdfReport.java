@@ -173,7 +173,7 @@ public class PdfReport extends PdfDocument {
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(new Paragraph(element.getModified().toLocalDateTime().toString()))
+            new Cell().add(new Paragraph(String.format("%1$TD %1$TT",  element.getModified().toLocalDateTime())))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
@@ -275,7 +275,7 @@ public class PdfReport extends PdfDocument {
                 .setPaddingBottom(10)
                 .setBorder(Border.NO_BORDER)
                 .setTextAlignment(TextAlignment.RIGHT)
-                .add(new Paragraph( comment.getModified().toLocalDateTime().toString())));
+                .add(new Paragraph( String.format("%1$TD %1$TT",  comment.getModified().toLocalDateTime()))));
 
         for(Comment subcomment: comment.getComments().stream().filter(Comment::isPublic).collect(Collectors.toList())){
             addCommentRow(table,subcomment,level+1);

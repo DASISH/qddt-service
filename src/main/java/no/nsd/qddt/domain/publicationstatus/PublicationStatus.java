@@ -45,7 +45,7 @@ public class PublicationStatus {
     @JsonIgnore
     private Integer parentIdx;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @OrderColumn(name = "publication_status_idx")
     @JoinColumn(name = "publication_status_id")
     private List<PublicationStatus> children = new ArrayList<>();

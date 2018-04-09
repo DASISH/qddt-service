@@ -14,6 +14,7 @@ import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
 import org.hibernate.envers.Audited;
 
@@ -207,6 +208,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
     public void setParentU(UUID studyId) {
         setField("topicGroupId",studyId );
+    }
+
+    public StudyRef getStudyRef() {
+        return new StudyRef(getStudy());
     }
 
     @Override

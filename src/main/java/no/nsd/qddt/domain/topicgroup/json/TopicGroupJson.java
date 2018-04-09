@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
+import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 import java.util.HashSet;
@@ -29,6 +30,8 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private Set<CommentJsonEdit> comments = new HashSet<>();
 
+    private StudyRef studyRef;
+
     public TopicGroupJson(TopicGroup topicGroup) {
         super(topicGroup);
         if (topicGroup == null) return;
@@ -38,6 +41,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
         setOtherMaterials(topicGroup.getOtherMaterials());
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        studyRef = topicGroup.getStudyRef();
     }
 
     public String getAbstractDescription() {
@@ -72,6 +76,13 @@ public class TopicGroupJson extends AbstractJsonEdit {
         this.otherMaterials = otherMaterials;
     }
 
+    /**
+     * @return the studyRef
+     */
+    public StudyRef getStudyRef() {
+        return studyRef;
+    }
+    
     public Set<CommentJsonEdit> getComments() {
         return comments;
     }

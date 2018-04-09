@@ -84,9 +84,9 @@ public class ResponseDomainController extends AbstractController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "ResponseKind" }, produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ResponseDomainJsonEdit>> getBy(@RequestParam("ResponseKind") ResponseKind response,
-                                                                    @RequestParam(value = "Description",defaultValue = "%") String description,
-                                                                    @RequestParam(value = "Question",required = false) String question,
-                                                                    @RequestParam(value = "Name",defaultValue = "%") String name,
+                                                                    @RequestParam(value = "description",defaultValue = "%") String description,
+                                                                    @RequestParam(value = "question",required = false) String question,
+                                                                    @RequestParam(value = "name",defaultValue = "%") String name,
                                                                     Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ResponseDomainJsonEdit> responseDomains = null;
