@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -118,6 +119,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, Pageable pageable) {
+        pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
+
         return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question),pageable);
     }
 

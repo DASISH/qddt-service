@@ -28,7 +28,7 @@ public class FilterTool {
             ,sort);
     }
 
-    public static Sort filterSort(Sort source, String... args){
+    private static Sort filterSort(Sort source, String... args){
         List<String> filterwords = Arrays.asList( args );
         List<Sort.Order> orders = new ArrayList<>( 0 );
         source.iterator().forEachRemaining( o -> {
@@ -40,7 +40,7 @@ public class FilterTool {
     }
 
 
-    public static Sort defaultSort(String... args){
+    private static Sort defaultSort(String... args){
         return new Sort(
             Arrays.stream(args).map(s-> {
                 String[] par = s.split(" ");
@@ -71,6 +71,8 @@ public class FilterTool {
         sort.forEach(o->{
             if(o.getProperty().equals("modified")) {
                 orders.add(new Sort.Order(o.getDirection(), "updated"));
+            } else if (o.getProperty().equals("responseDomainName")) {
+                orders.add(new Sort.Order(o.getDirection(), "responsedomain_name"));
             } else if (o.getProperty().equals("questionName")) {
                 orders.add(new Sort.Order(o.getDirection(), "question_name"));
             } else if (o.getProperty().equals("questionText")) {

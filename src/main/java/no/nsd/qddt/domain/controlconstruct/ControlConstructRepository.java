@@ -27,34 +27,33 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
     List<QuestionConstruct> findByquestionItemUUID(UUID questionId);
 
 
-    @Query(value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc " +
+    @Query(name="findByQuery", nativeQuery = true,
+        value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc " +
             "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
-            "WHERE cc.control_construct_kind = 'QUESTION_CONSTRUCT' AND " +
-            "( cc.name ILIKE :name or qi.name ILIKE  :questionName or qi.question ILIKE  :questionText ) "
-           + "ORDER BY ?#{#pageable}"
-            ,countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
+            "WHERE cc.control_construct_kind = :kind AND " +
+            "( cc.control_construct_super_kind = :superKind or cc.name ILIKE :name or cc.description ILIKE :description " +
+            "or qi.name ILIKE :questionName or qi.question ILIKE :questionText ) "
+            + "ORDER BY ?#{#pageable}"
+        ,countQuery = "SELECT count(cc.*) FROM CONTROL_CONSTRUCT cc " +
             "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
-            "WHERE cc.control_construct_kind = 'QUESTION_CONSTRUCT' AND " +
-            "( cc.name ILIKE :name or qi.name ILIKE  :questionName or qi.question ILIKE  :questionText ) "
-            ,nativeQuery = true)
-    Page<QuestionConstruct> findQCByQuery(
-                   @Param("name")String name,
-                   @Param("questionName")String questionName,
-                   @Param("questionText")String questionText,
-                   Pageable pageable);
+        "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
+        "WHERE cc.control_construct_kind = :kind AND " +
+        "( cc.control_construct_super_kind = :superKind or cc.name ILIKE :name or cc.description ILIKE :description " +
+        "or qi.name ILIKE :questionName or qi.question ILIKE :questionText ) "
+        )
+    <S extends ControlConstruct> Page<S> findByQuery(@Param("kind")String kind, @Param("superKind")String superKind,
+                                                     @Param("name")String name, @Param("description")String desc,
+                                                     @Param("questionName")String questionName ,@Param("questionText")String questionText,
+                                                     Pageable pageable);
 
-    @Query(value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc " +
-        "WHERE cc.control_construct_kind = :kind AND " +
-        "(cc.control_construct_super_kind = :super or cc.name ILIKE :name or cc.description ILIKE :description ) "
-        + "ORDER BY ?#{#pageable}"
-        ,countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
-        "WHERE cc.control_construct_kind = :kind AND " +
-        "(cc.control_construct_super_kind = :super or cc.name ILIKE :name or cc.description ILIKE :description ) "
-        ,nativeQuery = true)
-    <S extends ControlConstruct> Page<S> findByQuery(
-        @Param("kind")String kind,
-        @Param("super")String superKind,
-        @Param("name")String name,
-        @Param("description")String desc,
-        Pageable pageable);
+//    @Query(name= "findBySearcAndControlConstructKind", nativeQuery = true,
+//        value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc WHERE cc.control_construct_kind = :kind AND " +
+//            "(cc.control_construct_super_kind = :super or cc.name ILIKE :name or cc.description ILIKE :description ) "
+//            + "ORDER BY ?#{#pageable}"
+//        ,countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
+//            "WHERE cc.control_construct_kind = :kind AND " +
+//            "(cc.control_construct_super_kind = :super or cc.name ILIKE :name or cc.description ILIKE :description ) ")
+//    <S extends ControlConstruct> Page<S> findBySearcAndControlConstructKind(@Param("kind")String kind,@Param("super")String superKind,
+//                                                     @Param("name")String name,@Param("description")String desc,
+//                                                     Pageable pageable);
 }

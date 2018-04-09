@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
+
 /**
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
@@ -84,11 +86,15 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Page<Instrument> findAllPageable(Pageable pageable) {
+        pageable = defaultSort(pageable, "name ASC", "updated DESC");
+
         return instrumentRepository.findAll(pageable);
     }
 
     @Override
     public Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        pageable = defaultSort(pageable, "name ASC", "updated DESC");
+
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
     }
 

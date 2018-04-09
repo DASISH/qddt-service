@@ -26,13 +26,14 @@ public class StringTool {
     }
 
     public static String likeify(String value){
-        if (value.isEmpty()) return "";
+        if (IsNullOrTrimEmpty(value)) return "";
+
         value = value.replace("*", "%");
         if (!value.startsWith("%"))
             value = "%"+value;
         if (!value.endsWith("%"))
             value = value + "%";
-
-        return value.replace("%%","%");
+        value = value.replace("%%","%");
+        return value;
     }
 }

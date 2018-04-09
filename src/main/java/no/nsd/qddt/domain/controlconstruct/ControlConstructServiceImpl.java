@@ -121,7 +121,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public <S extends ConstructJsonView> Page<S> findBySearcAndControlConstructKind(String kind, String superKind, String name, String description, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-        return controlConstructRepository.findByQuery(kind, superKind, likeify(name), likeify(description), pageable)
+
+//        LOG.info("kind " + kind + " sequenceKind= " + superKind +  " name= " + name + " description= " + description);
+
+        return controlConstructRepository.findByQuery(kind, superKind, likeify(name), likeify(description), "", "",pageable)
             .map(qi -> mapConstructView(qi));
     }
 
@@ -129,8 +132,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public <S extends ConstructJsonView> Page<S>  findQCBySearch(String name, String questionName, String questionText, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-        return controlConstructRepository
-            .findQCByQuery( likeify(name), likeify(questionName), likeify(questionText),pageable)
+
+//        LOG.info("name= " + name + " questionName= " + questionName + " questionText= " + questionText);
+
+        return controlConstructRepository.findByQuery("QUESTION_CONSTRUCT","", name,"", questionName, questionText, pageable)
             .map(qi-> mapConstructView(postLoadProcessing(qi)));
     }
 

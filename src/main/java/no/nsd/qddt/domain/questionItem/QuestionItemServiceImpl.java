@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
@@ -121,6 +122,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<QuestionItem> findByNameOrQuestionOrResponseName(String name, String question, String responseName, Pageable pageable) {
+        pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
+//        LOG.info( pageable.toString() );
         return questionItemRepository.findByQuery( likeify(name),likeify(question),likeify(responseName),pageable );
     }
 

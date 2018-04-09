@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.category.web;
 
-import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.category.HierarchyLevel;
+import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -104,11 +104,11 @@ public class CategoryController {
             if (category == null || category.isEmpty()) {
 
                 categories = service.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable)
-                    .map(converter -> new CategoryJsonEdit(converter));;
+                    .map(converter -> new CategoryJsonEdit(converter));
             } else {
 
                 categories = service.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable)
-                    .map(converter -> new CategoryJsonEdit(converter));;
+                    .map(converter -> new CategoryJsonEdit(converter));
             }
         }
         

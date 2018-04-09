@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.StringTool.likeify;
+
 /**
  * This controller relates to a meta storage, which has a rank,logic and Rankrationale property, and thus need control
  *
@@ -135,17 +137,17 @@ public class ControlConstructController extends AbstractController {
                                                                @RequestParam(value = "questiontext",defaultValue = "") String questionText,
                                                                @RequestParam(value = "questionname",defaultValue = "") String questionName,
                                                                @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") String kind,
-                                                               @RequestParam(value = "superkind",defaultValue = "") String superKind,
+                                                               @RequestParam(value = "sequencekind", defaultValue = "") String sequenceKind,
                                                                Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ConstructJsonView> controlConstructs;
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it necessary to distinguish
-
-        if (kind == "QUESTION_CONSTRUCT")
-            controlConstructs = service.findQCBySearch(name, questionName ,questionText, pageable); //.map( source -> Converter.mapConstruct( source ));
-        else
-            controlConstructs = service.findBySearcAndControlConstructKind( kind,superKind,name,description,pageable );
+        if (kind.equals("QUESTION_CONSTRUCT")) {
+            controlConstructs = service.findQCBySearch( likeify(name), likeify(questionName), likeify(questionText), pageable ); //.map( source -> Converter.mapConstruct( source ));
+        } else {
+            controlConstructs = service.findBySearcAndControlConstructKind( kind, sequenceKind, likeify(name), likeify(description), pageable );
+        }
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }
 
