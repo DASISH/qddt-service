@@ -41,7 +41,6 @@ public class ControlConstructController extends AbstractController {
     public ControlConstructController(ControlConstructService ccService, OtherMaterialService otherMaterialService) {
         this.service = ccService;
         this.omService = otherMaterialService;
-      //  this.iService = instrumentService;
     }
 
 
@@ -129,26 +128,24 @@ public class ControlConstructController extends AbstractController {
         }
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-questiontext/{question}", method = RequestMethod.GET)
-    public List<ConstructQuestionJson> getTop25ByQuestionText(@PathVariable("question") String questionText) {
-        return service.findTop25ByQuestionItemQuestion(questionText);
-    }
 
-//    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE })
-    public HttpEntity<PagedResources<ConstructJsonView>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                              @RequestParam(value = "questiontext",defaultValue = "%") String question,
-                                                              @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") String kind,
-                                                              Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<ConstructJsonView>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
+                                                               @RequestParam(value = "description",defaultValue = "") String description,
+                                                               @RequestParam(value = "questiontext",defaultValue = "") String questionText,
+                                                               @RequestParam(value = "questionname",defaultValue = "") String questionName,
+                                                               @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") String kind,
+                                                               @RequestParam(value = "superkind",defaultValue = "") String superKind,
+                                                               Pageable pageable, PagedResourcesAssembler assembler) {
 
-
+        Page<ConstructJsonView> controlConstructs;
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it necessary to distinguish
 
-        Page<ConstructJsonView> controlConstructs =
-                service.findByNameLikeAndControlConstructKind(name,question,kind,pageable); //.map( source -> Converter.mapConstruct( source ));
-
+        if (kind == "QUESTION_CONSTRUCT")
+            controlConstructs = service.findQCBySearch(name, questionName ,questionText, pageable); //.map( source -> Converter.mapConstruct( source ));
+        else
+            controlConstructs = service.findBySearcAndControlConstructKind( kind,superKind,name,description,pageable );
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }
 

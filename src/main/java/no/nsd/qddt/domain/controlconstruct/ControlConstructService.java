@@ -21,8 +21,8 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
      */
     List<ConstructQuestionJson> findByQuestionItems(List<UUID> questionItemIds);
 
-    List<ConstructQuestionJson> findTop25ByQuestionItemQuestion(String question);
+    <S extends ConstructJsonView> Page<S> findBySearcAndControlConstructKind(String kind, String superKind, String name, String description, Pageable pageable);
 
-    <S extends ConstructJsonView> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable);
+    <S extends ConstructJsonView> Page<S> findQCBySearch(String name, String questionName, String questionText, Pageable pageable);
 
 }

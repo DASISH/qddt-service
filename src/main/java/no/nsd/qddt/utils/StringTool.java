@@ -25,4 +25,14 @@ public class StringTool {
         return IsNullOrTrimEmpty(input)?"":input;
     }
 
+    public static String likeify(String value){
+        if (value.isEmpty()) return "";
+        value = value.replace("*", "%");
+        if (!value.startsWith("%"))
+            value = "%"+value;
+        if (!value.endsWith("%"))
+            value = value + "%";
+
+        return value.replace("%%","%");
+    }
 }

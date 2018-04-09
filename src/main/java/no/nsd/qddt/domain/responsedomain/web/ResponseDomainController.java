@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 import no.nsd.qddt.exception.RequestAbortedException;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,17 +55,8 @@ public class ResponseDomainController extends AbstractController {
     public ResponseDomain create(@RequestBody ResponseDomain responseDomain) {
         assert  responseDomain != null;
         responseDomain = service.save(responseDomain);
-        //HACK -> after saving responsdomain, save managed representation one more time to correct name and version...
-//        categoryService.save(responseDomain.getManagedRepresentation());
         return responseDomain;
     }
-
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/createmixed" ,method = RequestMethod.GET, params = {"responseDomaindId" ,"missingId" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-//    public ResponseDomainJsonEdit createMixed(@RequestParam("responseDomaindId") UUID rdId, @RequestParam("missingId") UUID missingId) {
-//
-//        return responseDomain2Json(service.createMixed(rdId,missingId));
-//    }
 
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -84,21 +74,18 @@ public class ResponseDomainController extends AbstractController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "ResponseKind" }, produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ResponseDomainJsonEdit>> getBy(@RequestParam("ResponseKind") ResponseKind response,
-                                                                    @RequestParam(value = "description",defaultValue = "%") String description,
-                                                                    @RequestParam(value = "question",required = false) String question,
-                                                                    @RequestParam(value = "name",defaultValue = "%") String name,
+                                                                    @RequestParam(value = "description",defaultValue = "") String description,
+                                                                    @RequestParam(value = "question",defaultValue = "") String question,
+                                                                    @RequestParam(value = "name",defaultValue = "") String name,
                                                                     Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
-            responseDomains = service.findBy(response, name, description, pageable).map(this::responseDomain2Json);
+            responseDomains = service.findBy(response, name, description, question , pageable).map(this::responseDomain2Json);
 
         } catch (Exception ex){
             LOG.error("getBy",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
-
+            throw ex;
         }
 
         return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);

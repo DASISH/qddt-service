@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -103,14 +104,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
         questionItemRepository.delete(instances);
     }
 
-    @Override
-    public Page<QuestionItem> getHierarchy(Pageable pageable) {
-        return  questionItemRepository.findAll(
-                defaultSort(pageable,"name", "question"));
-//                .map(this::postLoadProcessing);
-    }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<QuestionItem> findAllPageable(Pageable pageable){
         try {
             return questionItemRepository.findAll(
@@ -123,22 +119,12 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     @Override
-    public Page<QuestionItem> findByNameLikeAndQuestionLike(String name, String question, Pageable pageable) {
-        question = question.replace("*","%");
-        name = name.replace("*","%");
-
-        return questionItemRepository.findByNameLikeIgnoreCaseAndQuestionLikeIgnoreCase(name,question,
-                defaultSort(pageable,"name","question"));
-//                .map(this::postLoadProcessing);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public Page<QuestionItem> findByNameOrQuestionOrResponseName(String name, String question, String responseName, Pageable pageable) {
+        return questionItemRepository.findByQuery( likeify(name),likeify(question),likeify(responseName),pageable );
     }
 
-    @Override
-    public Page<QuestionItem> findByNameLikeOrQuestionLike(String searchString, Pageable pageable) {
-        searchString = searchString.replace("*","%");
-        return questionItemRepository.findByNameLikeIgnoreCaseOrQuestionLikeIgnoreCase(searchString,searchString,
-                defaultSort(pageable,"name","question"));
-//                .map(this::postLoadProcessing);
-    }
+
 
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
@@ -206,5 +192,4 @@ class QuestionItemServiceImpl implements QuestionItemService {
         }
          return instance;
     }
-
 }

@@ -12,17 +12,8 @@ import java.util.UUID;
  */
 public interface QuestionItemService extends BaseService<QuestionItem, UUID> {
 
-    /**
-     *
-     * @param pageable
-     * @return
-     */
-    Page<QuestionItem> getHierarchy(Pageable pageable);
-
     Page<QuestionItem> findAllPageable(Pageable pageable);
 
-    Page<QuestionItem> findByNameLikeAndQuestionLike(String name, String question, Pageable pageable);
-
-    Page<QuestionItem> findByNameLikeOrQuestionLike(String searchString, Pageable pageable);
+    Page<QuestionItem> findByNameOrQuestionOrResponseName(String name, String question, String responseName, Pageable pageable);
 
 }

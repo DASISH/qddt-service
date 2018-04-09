@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.responsedomain;
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -14,5 +16,19 @@ import java.util.UUID;
 interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
 
 
-    Page<ResponseDomain> findByResponseKindAndNameIgnoreCaseLikeOrDescriptionIgnoreCaseLike(ResponseKind responseKind, String name, String description, Pageable pageable);
+//    Page<ResponseDomain> findByResponseKindAndNameIgnoreCaseLikeOrDescriptionIgnoreCaseLike(ResponseKind responseKind, String name, String description, Pageable pageable);
+
+    @Query(value = "SELECT RD.* FROM RESPONSEDOMAIN RD LEFT JOIN QUESTION_ITEM qi ON qi.responsedomain_id = RD.id "  +
+        "WHERE RD.response_kind = :responseKind AND " +
+        "( RD.name ILIKE :name or RD.description ILIKE :description or qi.name ILIKE  :question or qi.question ILIKE  :question ) "
+        + "ORDER BY ?#{#pageable}"
+        ,countQuery = "SELECT count(RD.*)  FROM RESPONSEDOMAIN RD LEFT JOIN QUESTION_ITEM qi ON qi.responsedomain_id = RD.id "  +
+        "WHERE RD.response_kind = :responseKind AND " +
+        "( RD.name ILIKE :name or RD.description ILIKE :description or qi.name ILIKE  :question or qi.question ILIKE  :question ) "
+        ,nativeQuery = true)
+    Page<ResponseDomain> findByQuery( @Param("responseKind")String responseKind,
+                                                     @Param("name")String name,
+                                                     @Param("description")String description,
+                                                     @Param("question")String question,
+                                                     Pageable pageable);
 }

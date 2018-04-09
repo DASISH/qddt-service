@@ -5,10 +5,8 @@ import no.nsd.qddt.domain.controlconstruct.factory.ConditionConstructFactory;
 import no.nsd.qddt.domain.controlconstruct.factory.QuestionConstructFactory;
 import no.nsd.qddt.domain.controlconstruct.factory.SequenceConstructFactory;
 import no.nsd.qddt.domain.controlconstruct.factory.StatementConstructFactory;
-import no.nsd.qddt.domain.controlconstruct.json.ConstructJson;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
-import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJsonView;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -18,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +29,7 @@ import java.util.stream.Collectors;
 import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstruct;
 import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstructView;
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -121,27 +119,23 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public List<ConstructQuestionJson> findTop25ByQuestionItemQuestion(String question)  {
-
-        question = question.replace("*","%");
-        Pageable pageable = defaultOrModifiedSort(new PageRequest(0,25),"question ASC","name ASC");
-        return controlConstructRepository
-            .findByQuery("QUESTION_CONSTRUCT","%","%",question,pageable)
-            .map(qi-> (ConstructQuestionJson)mapConstruct(postLoadProcessing(qi)))
-            .getContent();
+    public <S extends ConstructJsonView> Page<S> findBySearcAndControlConstructKind(String kind, String superKind, String name, String description, Pageable pageable) {
+        pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
+        return controlConstructRepository.findByQuery(kind, superKind, likeify(name), likeify(description), pageable)
+            .map(qi -> mapConstructView(qi));
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public <S extends ConstructJsonView> Page<S> findByNameLikeAndControlConstructKind(String name, String question, String kind, Pageable pageable) {
-        name = name.replace("*","%");
+    public <S extends ConstructJsonView> Page<S>  findQCBySearch(String name, String questionName, String questionText, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-        return controlConstructRepository.findByQuery(kind, name, question , question, pageable)
-            .map(qi -> mapConstructView(qi));
+        return controlConstructRepository
+            .findQCByQuery( likeify(name), likeify(questionName), likeify(questionText),pageable)
+            .map(qi-> mapConstructView(postLoadProcessing(qi)));
     }
 
 
-	private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
+	  private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
         switch (instance.getClassKind()) {
             case "QUESTION_CONSTRUCT":
