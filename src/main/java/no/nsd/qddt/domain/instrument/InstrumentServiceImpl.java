@@ -86,14 +86,14 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Page<Instrument> findAllPageable(Pageable pageable) {
-        pageable = defaultSort(pageable, "name ASC", "updated DESC");
+        pageable = defaultSort(pageable, "name ASC", "modified DESC");
 
         return instrumentRepository.findAll(pageable);
     }
 
     @Override
     public Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        pageable = defaultSort(pageable, "name ASC", "updated DESC");
+        pageable = defaultSort(pageable, "name ASC", "modified DESC");
 
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
     }
