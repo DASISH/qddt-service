@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
-import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,14 +169,14 @@ public class PublicationServiceImpl implements PublicationService {
 
         switch (instance.getElementKind()) {
             case TOPIC_GROUP:
-                ((TopicGroupRevisionJson)instance.getElement()).getTopicQuestionItems()
+                ((TopicGroup)instance.getElement()).getTopicQuestionItems()
                     .forEach(e-> postLoadProcessing(e));
-                ((TopicGroupRevisionJson)instance.getElement()).getConcepts()
+                ((TopicGroup)instance.getElement()).getConcepts()
                     .forEach( c->c.getConceptQuestionItems()
                         .forEach( e-> postLoadProcessing(e) ) );
                 break;
             case CONCEPT:
-                ((ConceptJsonEdit)instance.getElement()).getConceptQuestionItems()
+                ((Concept)instance.getElement()).getConceptQuestionItems()
                     .forEach(e-> postLoadProcessing(e));
                 break;
             case CONTROL_CONSTRUCT:
