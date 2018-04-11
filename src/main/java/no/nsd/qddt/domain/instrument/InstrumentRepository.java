@@ -16,6 +16,6 @@ interface InstrumentRepository extends BaseRepository<Instrument,UUID> {
 
     List<Instrument> findByStudy(UUID studyId);
 
-    Page<Instrument> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(String name, String description, Pageable pageable);
+    Page<Instrument> findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(String name, String description, InstrumentKind InstrumentKind,  Pageable pageable);
 }
 

@@ -15,9 +15,9 @@ public enum ElementKind {
     PUBLICATION("Publication","Publication"),
     CONTROL_CONSTRUCT("Control Construct","ControlConstruct"),
     QUESTION_CONSTRUCT("Question Construct","QuestionConstruct"),
-    STATEMENT_CONSTRUCT("Statement","StatementConstruct"),
+    STATEMENT_CONSTRUCT("Statement","StatementItem"),
     CONDITION_CONSTRUCT("Condition","ConditionConstruct"),
-    SEQUENCE_CONSTRUCT("Sequence","SequenceConstruct"),
+    SEQUENCE_CONSTRUCT("Sequence","Sequence"),
     INSTRUCTION("Instruction","Instruction"),
     UNIVERSE("Universe","Universe");
 

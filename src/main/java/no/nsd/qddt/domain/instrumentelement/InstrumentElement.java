@@ -83,10 +83,10 @@ public class InstrumentElement  {
         this.parameters = parameters;
     }
 
-    public ElementRef getElement() {
+    public ElementRef getElementRef() {
         return elementRef;
     }
-    public void setElement(ElementRef elementRef) {
+    public void setElementRef(ElementRef elementRef) {
         this.elementRef = elementRef;
     }
 }

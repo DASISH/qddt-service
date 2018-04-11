@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -92,10 +93,10 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+    public Page<Instrument> findByNameAndDescriptionPageable(String name, String description,InstrumentKind kind, Pageable pageable) {
         pageable = defaultSort(pageable, "name ASC", "modified DESC");
 
-        return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCase(name,description,pageable);
+        return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable);
     }
 
     @Override
@@ -112,14 +113,14 @@ class InstrumentServiceImpl implements InstrumentService {
 
     protected Instrument prePersistProcessing(Instrument instance) {
         instance.getSequence().stream()
-            .filter( s-> s.getElement().getName().isEmpty() )
-            .forEach( s-> ccLoader.fill( s.getElement() ) );
+            .filter( s-> s.getElementRef().getName().isEmpty() )
+            .forEach( s-> ccLoader.fill( s.getElementRef() ) );
         return instance;
     }
 
 
     protected Instrument postLoadProcessing(Instrument instance) {
-        instance.getSequence().forEach( s -> postLoadProcessing( s.getElement() ) );
+        instance.getSequence().forEach( s -> postLoadProcessing( s.getElementRef() ) );
         return instance;
     }
 

@@ -19,7 +19,7 @@ public interface InstrumentService extends BaseService<Instrument, UUID> {
 
     Page<Instrument> findAllPageable(Pageable pageable);
 
-    Page<Instrument> findByNameAndDescriptionPageable(String name, String description, Pageable pageable);
+    Page<Instrument> findByNameAndDescriptionPageable(String name, String description,InstrumentKind kind, Pageable pageable);
 
     ElementRef getDetail(ElementRef element);
 

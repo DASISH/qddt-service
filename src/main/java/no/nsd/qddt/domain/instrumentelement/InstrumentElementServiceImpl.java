@@ -38,10 +38,10 @@ class InstrumentElementServiceImpl implements InstrumentElementService  {
     @Transactional(readOnly = true)
     public InstrumentElement getDetail(InstrumentElement element) {
         
-         element.setElement(ccLoader.fill( element.getElement() ));
+         element.setElementRef(ccLoader.fill( element.getElementRef() ));
 
-         if ( element.getElement().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
-           String question = ((QuestionConstruct) element.getElement().getElement()).getQuestionItem().getQuestion();
+         if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
+           String question = ((QuestionConstruct) element.getElementRef().getElement()).getQuestionItem().getQuestion();
            // TODO question.
            if (question.contains("[")) {
                element.getParameters().add(new InstrumentParameter("[oara]", null));

@@ -41,6 +41,7 @@ public class ElementLoader{
     }
 
     public IElementRef fill(IElementRef element) {
+        LOG.debug(element.toString());
         Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
         element.setElement(revision.getEntity());
         element.setElementRevision( revision.getRevisionNumber() );

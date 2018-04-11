@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.InstrumentKind;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -82,13 +83,12 @@ public class InstrumentController  {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Instrument>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                             Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<Instrument>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
+                                                        @RequestParam(value = "description",defaultValue = "") String decsription,
+                                                        @RequestParam(value = "kind",defaultValue = "") InstrumentKind kind,
+                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Instrument> items;
-        name = name.replace("*","%");
-
-        items = service.findByNameAndDescriptionPageable(name,name, pageable);
+        Page<Instrument> items = service.findByNameAndDescriptionPageable(name,decsription,kind, pageable);
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

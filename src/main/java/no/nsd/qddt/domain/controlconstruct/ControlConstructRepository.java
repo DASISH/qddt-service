@@ -36,10 +36,9 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
             + "ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(cc.*) FROM CONTROL_CONSTRUCT cc " +
             "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
-        "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
-        "WHERE cc.control_construct_kind = :kind AND " +
-        "( cc.control_construct_super_kind = :superKind or cc.name ILIKE :name or cc.description ILIKE :description " +
-        "or qi.name ILIKE :questionName or qi.question ILIKE :questionText ) "
+            "WHERE cc.control_construct_kind = :kind AND " +
+            "( cc.control_construct_super_kind = :superKind or cc.name ILIKE :name or cc.description ILIKE :description " +
+            "or qi.name ILIKE :questionName or qi.question ILIKE :questionText ) "
         )
     <S extends ControlConstruct> Page<S> findByQuery(@Param("kind")String kind, @Param("superKind")String superKind,
                                                      @Param("name")String name, @Param("description")String desc,

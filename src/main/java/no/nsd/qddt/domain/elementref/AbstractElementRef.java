@@ -103,6 +103,7 @@ public abstract class AbstractElementRef implements IElementRef {
             setName( ((IElementRefType) element).getName() );
             setVersion( ((IElementRefType) element).getVersion() );
             setElementId( ((IElementRefType) element).getId() );
+            
             setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
         }
     }
