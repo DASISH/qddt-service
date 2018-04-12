@@ -18,10 +18,12 @@ public interface QuestionItemRepository extends BaseRepository<QuestionItem,UUID
     Page<QuestionItem> findAll(Pageable pageable);
 
     @Query(value = "SELECT qi.* FROM QUESTION_ITEM qi " +
-        "WHERE ( qi.name ILIKE :name or qi.question ILIKE :question or qi.responsedomain_name ILIKE  :responseDomain ) "
+        "LEFT JOIN responsedomain r on qi.responsedomain_id = r.id " +
+        "WHERE ( qi.name ILIKE :name or qi.question ILIKE :question or r.name ILIKE  :responseDomain ) "
         + "ORDER BY ?#{#pageable}"
-        ,countQuery = "SELECT qi.* FROM QUESTION_ITEM qi " +
-        "WHERE ( qi.name ILIKE :name or qi.question ILIKE :question or qi.responsedomain_name ILIKE  :responseDomain ) "
+        ,countQuery = "SELECT count(qi.*) FROM QUESTION_ITEM qi " +
+        "LEFT JOIN responsedomain r on qi.responsedomain_id = r.id " +
+        "WHERE ( qi.name ILIKE :name or qi.question ILIKE :question or r.name ILIKE  :responseDomain ) "
         ,nativeQuery = true)
     Page<QuestionItem> findByQuery(@Param("name")String name,
                                      @Param("question")String question,
