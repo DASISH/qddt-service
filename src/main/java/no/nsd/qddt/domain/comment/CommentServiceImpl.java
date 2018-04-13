@@ -83,25 +83,25 @@ class CommentServiceImpl  implements CommentService  {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false, pageable);
+        return commentRepository.findAllByOwnerIdOrderByModifiedAsc(ownerId, pageable);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true, pageable);
+        return commentRepository.findAllByOwnerIdAndIsPublicOrderByModifiedAsc(ownerId,true, pageable);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Comment> findAllByOwnerId(UUID ownerId) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(ownerId,false);
+        return commentRepository.findAllByOwnerIdOrderByModifiedAsc(ownerId);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Comment> findAllByOwnerIdPublic(UUID ownerId) {
-        return commentRepository.findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(ownerId,false,true);
+        return commentRepository.findAllByOwnerIdAndIsPublicOrderByModifiedAsc(ownerId,true);
     }
 
 }

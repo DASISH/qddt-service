@@ -19,11 +19,11 @@ interface CommentRepository extends BaseRepository<Comment,UUID> {
      * @param pageable Pageable object
      * @return All attachments that belongs to the module with moduleId.
      */
-    Page<Comment> findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(UUID ownerUUID,boolean isHidden, Pageable pageable);
+    Page<Comment> findAllByOwnerIdOrderByModifiedAsc(UUID ownerUUID,Pageable pageable);
 
-    Page<Comment> findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(UUID ownerId, boolean isHidden, boolean isPublic, Pageable pageable);
+    List<Comment> findAllByOwnerIdOrderByModifiedAsc(UUID ownerUUID );
 
-    List<Comment> findAllByOwnerIdAndIsHiddenOrderByModifiedAsc(UUID ownerUUID, boolean isHidden);
+    Page<Comment> findAllByOwnerIdAndIsPublicOrderByModifiedAsc(UUID ownerId, boolean isPublic, Pageable pageable);
 
-    List<Comment> findAllByOwnerIdAndIsHiddenAndIsPublicOrderByModifiedAsc(UUID ownerId, boolean isHidden, boolean isPublic);
+    List<Comment> findAllByOwnerIdAndIsPublicOrderByModifiedAsc(UUID ownerId,  boolean isPublic);
 }

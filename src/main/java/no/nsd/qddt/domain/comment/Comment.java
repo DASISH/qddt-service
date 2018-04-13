@@ -34,9 +34,6 @@ public class Comment extends AbstractEntity  {
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
 
-    @Column(name = "is_hidden", columnDefinition = "boolean not null default false")
-    private Boolean isHidden;
-
     @Column(name = "is_public", columnDefinition = "boolean not null default true")
     private Boolean isPublic;
 
@@ -45,7 +42,6 @@ public class Comment extends AbstractEntity  {
 
 
     public Comment() {
-        isHidden = false;
         isPublic = true;
     }
 
@@ -80,15 +76,6 @@ public class Comment extends AbstractEntity  {
     }
 
 
-    public boolean getIsHidden() {
-        return (isHidden == null)?true:isHidden;
-    }
-
-    public void setIsHidden(boolean hidden) {
-        isHidden = hidden;
-    }
-
-
     public boolean isPublic() {
         return (isPublic == null)?true:isPublic;
     }
@@ -111,7 +98,6 @@ public class Comment extends AbstractEntity  {
 
         Comment comment1 = (Comment) o;
 
-        if (isHidden != comment1.isHidden) return false;
         if (isPublic != comment1.isPublic) return false;
         if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
         return comment != null ? comment.equals(comment1.comment) : comment1.comment == null;
@@ -121,7 +107,6 @@ public class Comment extends AbstractEntity  {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
-        result = 31 * result + (isHidden ? 1 : 0);
         result = 31 * result + (isPublic ? 1 : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;

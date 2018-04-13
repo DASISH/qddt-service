@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.comment;
 
 import no.nsd.qddt.domain.user.UserJson;
 import org.hibernate.annotations.Type;
+
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,33 +17,26 @@ public class CommentJsonEdit {
     @Type(type="pg-uuid")
     private UUID id;
 
-    private Timestamp modified;
-
-    private UserJson modifiedBy;
-
-    @Type(type="pg-uuid")
-    private UUID ownerId;
-
-    private Set<CommentJsonEdit> comments = new HashSet<>();
-
-    private boolean isHidden;
-
     private boolean isPublic;
 
     private String comment;
+
+    private Set<CommentJsonEdit> comments = new HashSet<>();
+
+    private Timestamp modified;
+
+    private UserJson modifiedBy;
 
     public CommentJsonEdit() {
     }
 
     public CommentJsonEdit(Comment comment) {
         setId(comment.getId());
-        setModified(comment.getModified());
-        setModifiedBy(new UserJson(comment.getModifiedBy()));
-        setOwnerId(comment.getOwnerId());
-        setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
-        setIsHidden(comment.getIsHidden());
         setPublic(comment.isPublic());
         setComment(comment.getComment());
+        setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        setModified(comment.getModified());
+        setModifiedBy(new UserJson(comment.getModifiedBy()));
     }
 
 
@@ -70,28 +64,12 @@ public class CommentJsonEdit {
         this.modifiedBy = modifiedBy;
     }
 
-    public UUID getOwnerId() {
-        return ownerId;
-    }
-
-    private void setOwnerId(UUID ownerId) {
-        this.ownerId = ownerId;
-    }
-
     public Set<CommentJsonEdit> getComments() {
         return comments;
     }
 
     private void setComments(Set<CommentJsonEdit> comments) {
         this.comments = comments;
-    }
-
-    public boolean getIsHidden() {
-        return isHidden;
-    }
-
-    private void setIsHidden(boolean hidden) {
-        isHidden = hidden;
     }
 
     public String getComment() {

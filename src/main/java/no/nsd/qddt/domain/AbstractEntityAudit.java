@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -13,7 +14,6 @@ import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -124,7 +124,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     private String changeComment;
 
 
-    @Where(clause = "is_hidden = 'false'")
+//    @Where(clause = "is_hidden = 'false'")
     @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
     @NotAudited
     private Set<Comment> comments = new HashSet<>();
@@ -218,8 +218,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         this.changeComment = changeComment;
     }
 
-    public Set<Comment> getComments() {
-        return this.comments;
+    public Set<CommentJsonEdit> getComments() {
+        return this.comments.stream().map(CommentJsonEdit::new).collect(Collectors.toSet());
     }
 
     public void setComments(Set<Comment> comments) {
