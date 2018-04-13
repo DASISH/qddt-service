@@ -58,10 +58,8 @@ public class InstructionController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Instruction>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
+    public HttpEntity<PagedResources<Instruction>> getBy(@RequestParam(value = "description",defaultValue = "") String description,
                                                       Pageable pageable, PagedResourcesAssembler assembler) {
-
-        description = description.replace("*","%");
 
         Page<Instruction> instructions = service.findByDescriptionLike(description, pageable);
         return new ResponseEntity<>(assembler.toResource(instructions), HttpStatus.OK);

@@ -40,7 +40,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
         setAuthors(topicGroup.getAuthors());
         setOtherMaterials(topicGroup.getOtherMaterials());
         setArchived(topicGroup.isArchived());
-        setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        setComments(topicGroup.getComments());
         studyRef = topicGroup.getStudyRef();
     }
 

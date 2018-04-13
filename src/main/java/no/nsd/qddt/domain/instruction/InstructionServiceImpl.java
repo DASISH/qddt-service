@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.StringTool.likeify;
+
 /**
  * @author Dag Østgulen Heradstveit
  */
@@ -76,7 +78,7 @@ class InstructionServiceImpl implements InstructionService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Instruction> findByDescriptionLike(String description, Pageable pageable) {
-        return instructionRepository.findByDescriptionIgnoreCaseLike(description,pageable);
+        return instructionRepository.findByDescriptionIgnoreCaseLike(likeify(description),pageable);
     }
 
 

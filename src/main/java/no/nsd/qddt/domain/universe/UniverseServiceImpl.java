@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.StringTool.likeify;
+
 /**
  * @author Dag Østgulen Heradstveit
  */
@@ -83,6 +85,6 @@ class UniverseServiceImpl implements UniverseService {
 
     @Override
     public Page<Universe> findByDescriptionLike(String description, Pageable pageable) {
-        return universeRepository.findByDescriptionIgnoreCaseLike(description,pageable);
+        return universeRepository.findByDescriptionIgnoreCaseLike(likeify(description),pageable);
     }
 }

@@ -62,7 +62,7 @@ public class ConceptJsonView {
         version = concept.getVersion();
         setChildren(concept.getChildren().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
         setConceptQuestionItems(concept.getConceptQuestionItems());
-        setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        setComments(concept.getComments());
         setTopicRef(concept.getTopicRef());
         classKind = concept.getClassKind();
     }

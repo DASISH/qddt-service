@@ -260,7 +260,6 @@ public class User {
         this.responseDomains = responseDomains;
     }
 
-
     public Set<Category> getCategories() {
         return categories;
     }

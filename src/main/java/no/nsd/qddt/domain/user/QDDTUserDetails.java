@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.user;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -64,6 +65,7 @@ public class QDDTUserDetails implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return user.isEnabled();
     }

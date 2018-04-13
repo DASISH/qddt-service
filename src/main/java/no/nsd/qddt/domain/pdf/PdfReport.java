@@ -24,7 +24,7 @@ import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.renderer.ParagraphRenderer;
 import net.logstash.logback.encoder.org.apache.commons.io.IOUtils;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;
 import org.joda.time.DateTime;
@@ -242,12 +242,12 @@ public class PdfReport extends PdfDocument {
             .setKeepTogether(true));
     }
 
-    public Document addComments(Set<Comment> comments){
+    public Document addComments(Set<CommentJsonEdit> comments){
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}))
             .setKeepTogether(true)
             .setWidth(width100*0.8F)
             .setPaddingBottom(30);
-        for(Comment comment: comments.stream().filter(Comment::isPublic).collect(Collectors.toList())){
+        for(CommentJsonEdit comment: comments.stream().filter(CommentJsonEdit::isPublic).collect(Collectors.toList())){
             addCommentRow(table,comment,0);
         }
         return this.document.add(table);
@@ -257,7 +257,7 @@ public class PdfReport extends PdfDocument {
         return document.add(new Paragraph().setPaddingBottom(30).setKeepTogether(false));
     }
 
-    private void addCommentRow(Table table,Comment comment, int level){
+    private void addCommentRow(Table table,CommentJsonEdit comment, int level){
         table.setBackgroundColor(new DeviceRgb(245, 245, 245))
             .addCell(new Cell(1,3)
                 .setWidth(width100*0.7F)
@@ -277,7 +277,7 @@ public class PdfReport extends PdfDocument {
                 .setTextAlignment(TextAlignment.RIGHT)
                 .add(new Paragraph( String.format("%1$TD %1$TT",  comment.getModified().toLocalDateTime()))));
 
-        for(Comment subcomment: comment.getComments().stream().filter(Comment::isPublic).collect(Collectors.toList())){
+        for(CommentJsonEdit subcomment: comment.getComments().stream().filter(CommentJsonEdit::isPublic).collect(Collectors.toList())){
             addCommentRow(table,subcomment,level+1);
         }
     }

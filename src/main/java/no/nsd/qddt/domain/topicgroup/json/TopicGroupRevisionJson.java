@@ -42,7 +42,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
         setAuthors(topicGroup.getAuthors());
         setOtherMaterials(topicGroup.getOtherMaterials());
         setArchived(topicGroup.isArchived());
-        setComments(topicGroup.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        setComments(topicGroup.getComments());
 //        System.out.println("TopicGroupRevisionJson");
         setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
 

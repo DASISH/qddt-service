@@ -45,7 +45,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
             setId(concept.getId());
             setName(concept.getName());
             setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toSet()));
-            setComments(concept.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+            setComments(concept.getComments());
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
             setArchived(concept.isArchived());

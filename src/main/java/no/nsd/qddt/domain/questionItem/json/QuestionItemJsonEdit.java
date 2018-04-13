@@ -37,7 +37,7 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
     public QuestionItemJsonEdit(QuestionItem questionItem) {
         super(questionItem);
         if (questionItem == null) return;
-        setComments(questionItem.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        setComments(questionItem.getComments());
         setQuestion(questionItem.getQuestion());
         setIntent(questionItem.getIntent());
         if (questionItem.getResponseDomain() != null)

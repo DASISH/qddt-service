@@ -39,7 +39,7 @@ public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
     public ResponseDomainJsonEdit(ResponseDomain responseDomain) {
         super(responseDomain);
         if (responseDomain == null) return;
-        setComments(responseDomain.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
+        setComments(responseDomain.getComments());
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
         setManagedRepresentation(new ManagedRepresentationJsonEdit(responseDomain.getManagedRepresentation()));
