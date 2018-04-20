@@ -182,7 +182,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         if (topicQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
             this.setChangeComment( "QuestionItem assosiation removed" );
-//            this.getParents().forEach( p -> p.setChangeKind( ChangeKind.UPDATED_CHILD ) );
         }
     }
 
@@ -196,7 +195,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
             topicQuestionItems.add(qef);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
-//            this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         }
         else
             LOG.debug("ConceptQuestionItem not inserted, match found" );

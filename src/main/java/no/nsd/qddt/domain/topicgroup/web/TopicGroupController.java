@@ -136,12 +136,13 @@ public class TopicGroupController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "topicid", "questionitemid"})
-    public TopicGroupJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId) {
+    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
+    public TopicGroupJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+                                          @RequestParam("questionitemrevision") Number revision) {
         TopicGroup topicGroup =null;
         try{
             topicGroup = service.findOne(topicId);
-            topicGroup.removeQuestionItem(questionItemId,null);
+            topicGroup.removeQuestionItem(questionItemId,revision.intValue());
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
             LOG.error("removeQuestionItem",ex);

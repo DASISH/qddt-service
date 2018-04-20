@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -56,7 +57,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
-    @Transactional()
+    @Transactional(propagation = Propagation.NEVER)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public ResponseDomain save(ResponseDomain instance) {
         return postLoadProcessing(
@@ -96,7 +97,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         // read the codes from the MR, into the RD
         if (instance.getCodes().size() == 0)
             instance.populateCodes();
-
 
 
         if (instance.getManagedRepresentation().getId() == null) {

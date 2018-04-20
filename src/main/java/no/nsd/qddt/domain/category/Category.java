@@ -51,7 +51,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @JsonDeserialize
     private Code code;
 
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+//    @Cascade( {org.hibernate.annotations.CascadeType.SAVE_UPDATE} )
     @OrderColumn(name="category_idx")
     private List<Category> children = new ArrayList<>();
 

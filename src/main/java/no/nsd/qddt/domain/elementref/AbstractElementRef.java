@@ -117,13 +117,8 @@ public abstract class AbstractElementRef implements IElementRef {
 
         if (elementKind != that.elementKind) return false;
         if (elementId != null ? !elementId.equals( that.elementId ) : that.elementId != null) return false;
-        if (elementRevision != null ? !elementRevision.equals( that.elementRevision ) : that.elementRevision != null)
-            return false;
-        if (name != null ? !name.equals( that.name ) : that.name != null) return false;
-        if (major != null ? !major.equals( that.major ) : that.major != null) return false;
-        if (minor != null ? !minor.equals( that.minor ) : that.minor != null) return false;
-        if (versionLabel != null ? !versionLabel.equals( that.versionLabel ) : that.versionLabel != null) return false;
-        return element != null ? element.equals( that.element ) : that.element == null;
+        if (elementRevision != null ? !elementRevision.equals( that.elementRevision ) : that.elementRevision != null)  return false;
+        return  true;
     }
 
     @Override

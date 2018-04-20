@@ -56,7 +56,7 @@ public class QuestionConstruct  extends ControlConstruct {
 
     //------------- End QuestionItem revision early bind "hack"------------------
 
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER )
+    @ManyToMany(fetch = FetchType.EAGER )
     @OrderColumn(name="universe_idx")
     private List<Universe> universe =new ArrayList<>(0);
 
