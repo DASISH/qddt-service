@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    @Transactional()
+    @Transactional(propagation = Propagation.NEVER)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Category save(Category instance) {
         if (_codes.size() >0)

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,6 +90,30 @@ public class ControllerExceptionAdvice {
         return message;
     }
 
+
+    /**
+     * Handle all exceptions of type {@link  org.springframework.dao.OptimisticLockingFailureException}
+     * when they occur from methods executed from the controller.
+     * @param req servlet request
+     * @param e general exception
+     * @return a {@link no.nsd.qddt.exception.ControllerAdviceExceptionMessage} object
+     */
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(JpaObjectRetrievalFailureException.class)
+    @ResponseBody public ControllerAdviceExceptionMessage handleRetrievalFailure(HttpServletRequest req, Exception e) {
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
+            req.getRequestURL().toString(),
+            ((JpaObjectRetrievalFailureException) e).getMostSpecificCause().getMessage()
+        );
+        if (message.getExceptionMessage().contains( "Category" ) && message.getUrl().contains( "responsedomain" )) {
+            message.setUserfriendlyMessage("Saving ResponseDomain failed.</BR>Can't add a MissingGroup to a deleted ResponseDomain.</br>Remove old ResponseDomain, add an active ResponseDomain, and then add MissingGroup...");
+        } else
+        message.setUserfriendlyMessage( "An Item required to complete the action, is no longer available.\r\n" +
+        "(remove old reference, add a new one, and try again...)");
+        logger.error("RetrievalFailure: " + e);
+
+        return message;
+    }
 
     /**
      * Default exception handler.

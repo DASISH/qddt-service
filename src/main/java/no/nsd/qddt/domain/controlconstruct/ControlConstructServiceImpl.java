@@ -11,6 +11,7 @@ import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.universe.UniverseService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private final ControlConstructRepository controlConstructRepository;
     private final ControlConstructAuditService auditService;
     private final InstructionService iService;
+    private final UniverseService uService;
     private final QuestionItemAuditService qiAuditService;
 
 
@@ -49,11 +51,13 @@ class ControlConstructServiceImpl implements ControlConstructService {
     public ControlConstructServiceImpl(ControlConstructRepository ccRepository,
                                        ControlConstructAuditService controlConstructAuditService,
                                        InstructionService iService,
+                                       UniverseService uService,
                                        QuestionItemAuditService questionAuditService
     ) {
         this.controlConstructRepository = ccRepository;
         this.auditService = controlConstructAuditService;
         this.iService = iService;
+        this.uService = uService;
         this.qiAuditService = questionAuditService;
     }
 
@@ -150,6 +154,12 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         if (cqi.getInstruction().getId() == null)
                             cqi.setInstruction(iService.save(cqi.getInstruction()));
                     });
+                    ((QuestionConstruct)instance).getUniverse().forEach(universe->{
+                        if(universe.getId() == null) {
+                            universe = uService.save( universe );
+                        }
+                    });
+
                     if (((QuestionConstruct)instance).getQuestionItem() != null ) {
                         QuestionItem question = ((QuestionConstruct)instance).getQuestionItem();
                         ((QuestionConstruct)instance).setQuestionName(question.getName());

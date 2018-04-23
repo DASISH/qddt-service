@@ -1,0 +1,7 @@
+curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGlnIiwicm9sZSI6W3siYXV0aG9yaXR5IjoiUk9MRV9TVVBFUiJ9XSwiY3JlYXRlZCI6MTUxNTc1OTM3NDU2MCwiaWQiOiI4M2Q0YzNhYS00ZmY5LTExZTUtODg1ZC1mZWZmODE5Y2RjOWYiLCJleHAiOjE1MTU4NDU3NzQsImVtYWlsIjoic3RpZy5ub3JsYW5kQG5zZC5ubyJ9.LJt5ZC0IA7MMkBDWD_CewtHpjQNDGJ6jr3rkebG8_wvum2ubsKqTpxPXdZN2JlOZnD3BdRSaavuXNAuKzcgIug"  "http://localhost:5001/questionitem/page/search?page=0&size=10&sort=modified,desc"
+
+curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9"  "http://localhost:5001/questionitem/page/search?page=0&size=10&sort=modified,desc"
+
+ sudo systemctl restart qddt-prod
+ 
+ 
