@@ -82,7 +82,7 @@ public class CategoryController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<CategoryJsonEdit>>  getBy(@RequestParam(value = "level", required = false) String level,
-                                                       @RequestParam(value = "category",required = false) String category,
+                                                       @RequestParam(value = "categoryKind",required = false) String category,
                                                        @RequestParam(value = "name",defaultValue = "%") String name,
                                                        Pageable pageable, PagedResourcesAssembler<CategoryJsonEdit> assembler) {
 

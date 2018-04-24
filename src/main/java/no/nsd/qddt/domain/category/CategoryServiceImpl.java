@@ -132,6 +132,7 @@ class CategoryServiceImpl implements CategoryService {
     private Category prePersistProcessing(Category instance) {
         // Category Save fails when there is a mix of new and existing children attached to a new element.
         try {
+            if (instance.getId() == null) instance.beforeInsert();
             if (!instance.isValid()) throw new InvalidObjectException(instance);
 
             if (_codes.size()==0)
