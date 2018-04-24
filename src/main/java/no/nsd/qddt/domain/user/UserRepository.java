@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.user;
 
 import no.nsd.qddt.domain.BaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -23,4 +25,6 @@ interface UserRepository extends BaseRepository<User, UUID> {
     Optional<User> findById(UUID id);
 
     Optional<User> findByUsername(String name);
+
+    Page<User> findByNameIgnoreCaseLike(String name, Pageable pageable);
 }

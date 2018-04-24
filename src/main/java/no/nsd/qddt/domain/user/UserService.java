@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.user;
 
 import no.nsd.qddt.domain.BaseService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
@@ -19,4 +21,6 @@ public interface UserService extends BaseService<User,UUID> {
     User findByEmail(String email);
 
     User findByName(String name);
+
+    Page<User> getByName(String name, Pageable pageable);
 }

@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.factory;
 
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialCtrlCtor;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
 
 import java.util.stream.Collectors;
 
@@ -19,7 +19,7 @@ public class StatementConstructFactory implements IEntityFactory<StatementItem> 
 
         dest.setOtherMaterials(source.getOtherMaterials().stream()
             .map( m -> {
-                OtherMaterialCtrlCtor om = m.clone();
+                OtherMaterialConstruct om = m.clone();
                 om.setOwnerId(dest.getId());
                 return om;
             })

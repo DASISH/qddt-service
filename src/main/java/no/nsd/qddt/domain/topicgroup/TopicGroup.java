@@ -85,8 +85,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-
-    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade =CascadeType.REMOVE)
+    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
 //    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
     private Set<OtherMaterialTopic> otherMaterials = new HashSet<>();
 

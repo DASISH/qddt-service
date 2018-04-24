@@ -14,16 +14,16 @@ import java.util.UUID;
 @Entity
 @Audited
 @DiscriminatorValue("CC")
-public class OtherMaterialCtrlCtor extends OtherMaterial {
+public class OtherMaterialConstruct extends OtherMaterial {
 
-    public OtherMaterialCtrlCtor() {
+    public OtherMaterialConstruct() {
     }
 
-    public OtherMaterialCtrlCtor(UUID parentId, MultipartFile file) {
+    public OtherMaterialConstruct(UUID parentId, MultipartFile file) {
         super( parentId, file );
     }
 
-    public OtherMaterialCtrlCtor(OtherMaterial om) {
+    public OtherMaterialConstruct(OtherMaterial om) {
         setOwnerId( om.getOwnerId() );
         setFileName( om.getFileName() );
         setFileType( om.getFileType() );
@@ -52,7 +52,7 @@ public class OtherMaterialCtrlCtor extends OtherMaterial {
     }
 
     @Override
-    public OtherMaterialCtrlCtor clone() {
-        return new OtherMaterialCtrlCtor(super.clone());
+    public OtherMaterialConstruct clone() {
+        return new OtherMaterialConstruct(super.clone());
 }
 }

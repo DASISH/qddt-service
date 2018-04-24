@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialCtrlCtor;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
@@ -33,9 +33,9 @@ public class ControlConstruct extends AbstractEntityAudit {
     @Column(name = "CONTROL_CONSTRUCT_KIND",  insertable=false, updatable = false)
     private String controlConstructKind;
 
-    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
+    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
 //    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
-    private Set<OtherMaterialCtrlCtor> otherMaterials = new HashSet<>();
+    private Set<OtherMaterialConstruct> otherMaterials = new HashSet<>();
 
 
 
@@ -57,13 +57,13 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
 
-    public Set<OtherMaterialCtrlCtor> getOtherMaterials() {
+    public Set<OtherMaterialConstruct> getOtherMaterials() {
         return otherMaterials;
     }
-    public void setOtherMaterials(Set<OtherMaterialCtrlCtor> otherMaterials) {
+    public void setOtherMaterials(Set<OtherMaterialConstruct> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
-    public OtherMaterialCtrlCtor addOtherMaterial(OtherMaterialCtrlCtor otherMaterial) {
+    public OtherMaterialConstruct addOtherMaterial(OtherMaterialConstruct otherMaterial) {
         otherMaterial.setParent( this );
         return  otherMaterial;
     }

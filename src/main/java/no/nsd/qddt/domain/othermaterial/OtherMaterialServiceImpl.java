@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.othermaterial;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialCtrlCtor;
+import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
 import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
@@ -154,7 +154,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
                 om = topic.addOtherMaterial(new OtherMaterialTopic( ownerId, multipartFile ) );
             } else {
                 ControlConstruct ctrl = controlConstructService.findOne( ownerId );
-                om = ctrl.addOtherMaterial( new OtherMaterialCtrlCtor( ownerId, multipartFile ) );
+                om = ctrl.addOtherMaterial( new OtherMaterialConstruct( ownerId, multipartFile ) );
             }
         }
 
