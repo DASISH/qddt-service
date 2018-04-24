@@ -82,7 +82,7 @@ public class CategoryController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<CategoryJsonEdit>>  getBy(@RequestParam(value = "level", required = false) String level,
-                                                       @RequestParam(value = "categoryKind",required = false) String category,
+                                                       @RequestParam(value = "categoryKind",required = false) String categoryKind,
                                                        @RequestParam(value = "name",defaultValue = "%") String name,
                                                        Pageable pageable, PagedResourcesAssembler<CategoryJsonEdit> assembler) {
 
@@ -91,23 +91,23 @@ public class CategoryController {
         if(!name.endsWith("%"))
             name += "%";
         if (level == null || level.isEmpty()) {
-            if (category == null || category.isEmpty()) {
+            if (categoryKind == null || categoryKind.isEmpty()) {
 
                 categories = service.findByNameLike(name, pageable)
                     .map(converter -> new CategoryJsonEdit(converter));
             } else {
 
-                categories = service.findByCategoryTypeAndNameLike(CategoryType.valueOf(category), name, pageable)
+                categories = service.findByCategoryTypeAndNameLike(CategoryType.valueOf(categoryKind), name, pageable)
                     .map(converter -> new CategoryJsonEdit(converter));
             }
         } else {
-            if (category == null || category.isEmpty()) {
+            if (categoryKind == null || categoryKind.isEmpty()) {
 
                 categories = service.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable)
                     .map(converter -> new CategoryJsonEdit(converter));
             } else {
 
-                categories = service.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(category), name, pageable)
+                categories = service.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(categoryKind), name, pageable)
                     .map(converter -> new CategoryJsonEdit(converter));
             }
         }

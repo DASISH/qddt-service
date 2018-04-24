@@ -49,7 +49,7 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
     'concept_aud'::text AS tablename
   FROM concept_aud
   UNION
-  SELECT concept_question_item_aud.id,
+  SELECT concept_question_item_aud.element_id,
     concept_question_item_aud.rev,
     concept_question_item_aud.revtype,
     concept_question_item_aud.revend,
@@ -63,14 +63,14 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
     'control_construct_aud'::text AS tablename
   FROM control_construct_aud
   UNION
-  SELECT control_construct_instruction_aud.control_construct_id AS id,
+  SELECT control_construct_instruction_aud.instruction_id AS id,
     control_construct_instruction_aud.rev,
     control_construct_instruction_aud.revtype,
     control_construct_instruction_aud.revend,
          'control_construct_instruction_aud'::text AS tablename
   FROM control_construct_instruction_aud
   UNION
-  SELECT control_construct_universe_aud.control_construct_id AS id,
+  SELECT control_construct_universe_aud.universe_id AS id,
     control_construct_universe_aud.rev,
     control_construct_universe_aud.revtype,
     control_construct_universe_aud.revend,
@@ -91,12 +91,12 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
     'instrument_aud'::text AS tablename
   FROM instrument_aud
   UNION
-  SELECT instrument_control_construct_aud.controlconstruct_id AS id,
-    instrument_control_construct_aud.rev,
-    instrument_control_construct_aud.revtype,
-    instrument_control_construct_aud.revend,
+  SELECT instrument_element_aud.element_id AS id,
+    instrument_element_aud.rev,
+    instrument_element_aud.revtype,
+    instrument_element_aud.revend,
          'instrument_control_construct_aud'::text AS tablename
-  FROM instrument_control_construct_aud
+  FROM instrument_element_aud
   UNION
   SELECT other_material_aud.id,
     other_material_aud.rev,
@@ -119,7 +119,7 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
     'publication_aud'::text AS tablename
   FROM publication_aud
   UNION
-  SELECT publication_element_aud.id,
+  SELECT publication_element_aud.element_id,
     publication_element_aud.rev,
     publication_element_aud.revtype,
     publication_element_aud.revend,
@@ -147,7 +147,7 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
     'study_aud'::text AS tablename
   FROM study_aud
   UNION
-  SELECT study_authors_aud.study_id AS id,
+  SELECT study_authors_aud.author_id AS id,
     study_authors_aud.rev,
     study_authors_aud.revtype,
     study_authors_aud.revend,
@@ -161,7 +161,7 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
     'survey_program_aud'::text AS tablename
   FROM survey_program_aud
   UNION
-  SELECT survey_program_authors_aud.survey_id AS id,
+  SELECT survey_program_authors_aud.author_id AS id,
     survey_program_authors_aud.rev,
     survey_program_authors_aud.revtype,
     survey_program_authors_aud.revend,
@@ -175,14 +175,14 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
     'topic_group_aud'::text AS tablename
   FROM topic_group_aud
   UNION
-  SELECT topic_group_authors_aud.topic_id AS id,
+  SELECT topic_group_authors_aud.author_id AS id,
     topic_group_authors_aud.rev,
     topic_group_authors_aud.revtype,
     topic_group_authors_aud.revend,
          'topic_group_authors_aud'::text AS tablename
   FROM topic_group_authors_aud
   UNION
-  SELECT topic_group_question_item_aud.id,
+  SELECT topic_group_question_item_aud.element_id,
     topic_group_question_item_aud.rev,
     topic_group_question_item_aud.revtype,
     topic_group_question_item_aud.revend,
@@ -304,7 +304,7 @@ drop sequence hibernate_sequence;
 CREATE SEQUENCE hibernate_sequence INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 5 NO CYCLE;
 
 
-INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (0, null, 0, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'NOT_PUBLISHED', 'Not Published', null);
+INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (0, null, 0, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'NOT_PUBLISHED', 'No publication', null);
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (1, null, 1, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'Internal publication', null);
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (2, null, 2, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'EXTERNAL_PUBLICATION', 'External publication', null);
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (3, 1, 0, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'Designmeeting1', 'Elements shared after first meeting to discuss questionnaire.');
@@ -312,7 +312,7 @@ INSERT INTO publication_status (id, publication_status_id, publication_status_id
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (4, 1, 1, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'Designmeeting2', 'Elements shared after second meeting to discuss questionnaire.');
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (11, 1, 8, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'No Milestone', 'Use for publication of elements between key milestones.');
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (10, 1, 7, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'FinalSource – SQP/TMT', 'Elements agreed as going into the final source questionnaire.');
-INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (9, 1, 6, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'POSINTERNAL_PUBLICATIONT_PILOT', 'PostPilot', 'Elements reviewed on basis of the results from the pilot.');
+INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (9, 1, 6, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'PostPilot', 'Elements reviewed on basis of the results from the pilot.');
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (8, 1, 5, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'Pilot – SQP/TMT', 'Elements agreed for pilot, export to SQP and translation');
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (7, 1, 4, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'PostEarlyTesting', 'Elements reviewed on basis of the results from the early testing.');
 INSERT INTO publication_status (id, publication_status_id, publication_status_idx, agency_id, published, label, description) VALUES (6, 1, 3, '1359ded2-9f18-11e5-8994-feff819cdc9f', 'INTERNAL_PUBLICATION', 'Earlytesting - SQP/TMT', 'Elements agreed for early pre-testing, export to SQP and translation.');
