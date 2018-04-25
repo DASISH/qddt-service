@@ -31,16 +31,11 @@ public class Instrument extends AbstractEntityAudit  {
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
-
-    @OrderBy("instrument_idx ASC")
-    @OrderColumn(name="instrument_idx")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "instrument", cascade = { CascadeType.ALL })
-    private List<InstrumentElement> sequence = new ArrayList<>();
-
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
-//        joinColumns = @JoinColumn(name="instrument_id", referencedColumnName = "id"))
-
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
+    @OrderColumn(name="_idx")
+    @OrderBy("_idx ASC")
+    @JoinColumn(name = "instrument_id")
+    private List<InstrumentElement>  sequence = new ArrayList<>();
 
     private String description;
 

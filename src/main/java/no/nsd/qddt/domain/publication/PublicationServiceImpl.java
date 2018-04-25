@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -109,27 +110,31 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, Long statusId, Pageable pageable) {
-        
-        
-        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
+    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, PublicationStatus.Published publishedKind, Long statusId, Pageable pageable) {
 
-            PublicationStatus.Published[] published = {PublicationStatus.Published.EXTERNAL_PUBLICATION};
-            return repository.findByStatusPublishedInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(published,name,purpose,
-                defaultSort(pageable,"name","modified"));
+        LOG.info("findByNameOrPurposeAndStatus ", publishedKind );
+
+        PublicationStatus.Published[] published = {};
+
+        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
+            published = new PublicationStatus.Published[]{PublicationStatus.Published.EXTERNAL_PUBLICATION};
         }
         if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
 
-            PublicationStatus.Published[] published = {PublicationStatus.Published.EXTERNAL_PUBLICATION, PublicationStatus.Published.INTERNAL_PUBLICATION};
-            return repository.findByStatusPublishedInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike( published, name, purpose,
-                defaultSort(pageable,"name","modified"));
+            published = new PublicationStatus.Published[]{PublicationStatus.Published.EXTERNAL_PUBLICATION, PublicationStatus.Published.INTERNAL_PUBLICATION};
+        }
+        if (published.length == 0 && (publishedKind != null)) {
+            published = new PublicationStatus.Published[]{publishedKind};
         }
 
-        if (statusId != null)
-            return repository.findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(statusId,name,purpose,
+        if( published.length > 0 )
+            return repository.findByStatusPublishedInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(published,likeify(name),likeify(purpose),
+                defaultSort(pageable,"name","modified"));
+        else if (statusId != null)
+            return repository.findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(statusId,likeify(name),likeify(purpose),
                 defaultSort(pageable,"name","modified"));
         else
-            return repository.findByNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(name, purpose, defaultSort(pageable,"name","modified"));
+            return repository.findByNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(likeify(name), likeify(purpose), defaultSort(pageable,"name","modified"));
 
     }
 

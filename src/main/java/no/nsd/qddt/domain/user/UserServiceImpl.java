@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nsd.qddt.utils.StringTool.likeify;
+
 /**
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
@@ -112,7 +114,7 @@ class UserServiceImpl implements UserService {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<User> getByName(String name, Pageable pageable) {
 
-        return  userRepository.findByNameIgnoreCaseLike( name , pageable );
+        return  userRepository.findByUsernameIgnoreCaseLike( likeify(name) , pageable );
     }
 
 

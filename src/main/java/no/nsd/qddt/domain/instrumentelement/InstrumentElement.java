@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.instrumentelement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.instrument.Instrument;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
@@ -25,22 +24,19 @@ public class InstrumentElement  {
     @GeneratedValue(generator = "uuid-gen")
     private UUID id;
 
+
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
     @JoinColumn(name = "instrument_element_id",updatable = false,insertable = false)
     private InstrumentElement parentReferenceOnly;
 
 
-    @OrderColumn(name="instrument_element_idx")
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @JoinColumn(name = "instrument_element_id" , referencedColumnName = "id")
+    @OrderColumn(name="_idx")
+    @OrderBy(value = "instrument_element_idx asc")
+    @JoinColumn(name = "instrument_element_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
-    private List<InstrumentElement> sequence = new ArrayList<>();
-
-    @JsonBackReference(value = "instrumentRef")
-    @ManyToOne()
-    @JoinColumn(name = "instrument_id",updatable = false)
-    private Instrument instrument;
+    private List<InstrumentElement> sequences = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
@@ -58,22 +54,16 @@ public class InstrumentElement  {
     public UUID getId() {
         return id;
     }
+
     public void setId(UUID id) {
         this.id = id;
     }
 
-    public List<InstrumentElement> getSequence() {
-        return sequence;
+    public List<InstrumentElement> getSequences() {
+        return sequences;
     }
-    public void setSequence(List<InstrumentElement> sequence) {
-        this.sequence = sequence;
-    }
-
-    public Instrument getInstrument() {
-        return instrument;
-    }
-    public void setInstrument(Instrument instrument) {
-        this.instrument = instrument;
+    public void setSequences(List<InstrumentElement> sequence) {
+        this.sequences = sequence;
     }
 
     public Set<InstrumentParameter> getParameters() {

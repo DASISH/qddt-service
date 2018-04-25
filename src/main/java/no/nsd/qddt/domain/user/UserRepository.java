@@ -26,5 +26,5 @@ interface UserRepository extends BaseRepository<User, UUID> {
 
     Optional<User> findByUsername(String name);
 
-    Page<User> findByNameIgnoreCaseLike(String name, Pageable pageable);
+    Page<User> findByUsernameIgnoreCaseLike(String name, Pageable pageable);
 }

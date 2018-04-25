@@ -113,19 +113,20 @@ class InstrumentServiceImpl implements InstrumentService {
 
     protected Instrument prePersistProcessing(Instrument instance) {
         instance.getSequence().stream()
-            .filter( s-> s.getElementRef().getName().isEmpty() )
             .forEach( s-> ccLoader.fill( s.getElementRef() ) );
         return instance;
     }
 
 
     protected Instrument postLoadProcessing(Instrument instance) {
+//        System.out.println("Instrument postLoadProcessing " + instance.getName() + " - "  + instance.getSequence().size());
         instance.getSequence().forEach( s -> postLoadProcessing( s.getElementRef() ) );
         return instance;
     }
 
 
     IElementRef postLoadProcessing(IElementRef instance) {
+//        System.out.println("IElementRef postLoadProcessing " + instance.getName() + " - "  + instance.getElementKind().name());
 
         if (instance.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT)
             return ccLoader.fill( instance );
