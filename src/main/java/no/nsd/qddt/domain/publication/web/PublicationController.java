@@ -74,13 +74,14 @@ public class PublicationController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Publication>> getBy(@RequestParam(value = "name", defaultValue = "%") String name,
-                                                         @RequestParam(value = "purpose", defaultValue = "%") String purpose,
+    public HttpEntity<PagedResources<Publication>> getBy(@RequestParam(value = "name", defaultValue = "*") String name,
+                                                         @RequestParam(value = "purpose", defaultValue = "") String purpose,
                                                          @RequestParam(value = "publishedstatus", required = false) String published,
                                                          @RequestParam(value = "statusId", required = false) Long statusId,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
+
         Page<Publication> items =
-                service.findByNameOrPurposeAndStatus(name, purpose, PublicationStatus.Published.valueOf(published), statusId, pageable);
+                service.findByNameOrPurposeAndStatus(name, purpose, published, statusId, pageable);
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

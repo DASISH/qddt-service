@@ -77,6 +77,8 @@ public class FilterTool {
                 orders.add(new Sort.Order(o.getDirection(), "question_name"));
             } else if (o.getProperty().equals("questionText")) {
                 orders.add(new Sort.Order(o.getDirection(), "question_text"));
+            } else if (o.getProperty().equals("status.label")) {
+                orders.add(new Sort.Order(o.getDirection(), "statuslabel")); 
             } else
                 orders.add(o);
         });
