@@ -151,7 +151,6 @@ public class ConceptController extends AbstractController {
     public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                         Pageable pageable, PagedResourcesAssembler assembler) {
 
-        name = name.replace("*","%");
         Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,name, pageable).map(ConceptJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

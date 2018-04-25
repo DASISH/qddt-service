@@ -62,7 +62,7 @@ public class TopicGroupAuditController {
     public HttpEntity<PagedResources<Revision<Integer, TopicGroupRevisionJson>>> allIncludinglatest(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",
-                    defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD")
+                    defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD,BASED_ON")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
             Pageable pageable, PagedResourcesAssembler assembler) {
 

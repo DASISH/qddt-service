@@ -6,6 +6,8 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -17,7 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -38,14 +40,17 @@ class ConceptServiceImpl implements ConceptService {
 
     private final ConceptRepository conceptRepository;
     private final ConceptAuditService auditService;
+    private final TopicGroupService tgService;
     private final ElementLoader qiLoader;
 
     @Autowired
       ConceptServiceImpl(ConceptRepository conceptRepository
             , ConceptAuditService conceptAuditService
-            , QuestionItemAuditService questionAuditService){
+            , QuestionItemAuditService questionAuditService
+            , TopicGroupService tgService){
         this.conceptRepository = conceptRepository;
         this.auditService = conceptAuditService;
+        this.tgService = tgService;
         this.qiLoader = new ElementLoader( questionAuditService );
     }
 
@@ -94,13 +99,15 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Concept copy(UUID id, Integer rev, UUID parentId) {
-        EntityManager manager =  emf.createEntityManager();
+//        EntityManager manager =  emf.createEntityManager();
 
         Concept source = auditService.findRevision(id,rev).getEntity();
         Concept target = new ConceptFactory().copy(source, rev);
-        manager.detach(target);
-        target.setParentU(parentId);
-        manager.merge(target);
+        TopicGroup tg = tgService.findOne( parentId );
+        tg.addConcept( target );
+//        manager.detach(target);
+//        target.setParentU(parentId);
+//        manager.merge(target);
         return conceptRepository.save(target);
 
     }
@@ -144,8 +151,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndBasedOnObjectIsNull(name,description,
-                defaultSort(pageable,"name ASC"));
+        Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }

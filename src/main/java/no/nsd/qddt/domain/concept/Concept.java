@@ -94,12 +94,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         this.topicGroup = topicGroup;
     }
 
-//    @JsonIgnore
-//    public List<ElementRefTyped<QuestionItem>> getConceptQuestionItemsT() {
-//        return conceptQuestionItems.stream()
-//            .map(c-> new ElementRefTyped<QuestionItem>(c) )
-//            .collect( Collectors.toList() );
-//    }
 
     public List<ElementRef> getConceptQuestionItems() {
         return conceptQuestionItems;
@@ -115,7 +109,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         if (conceptQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
             this.setChangeComment( "QuestionItem assosiation removed" );
-            this.getParents().forEach( p -> p.setChangeKind( ChangeKind.UPDATED_CHILD ) );
+            this.getParents().forEach( p -> {
+                p.setChangeKind( ChangeKind.UPDATED_CHILD );
+                p.setChangeComment( "QuestionItem assosiation removed from child" );
+            } );
         }
     }
 

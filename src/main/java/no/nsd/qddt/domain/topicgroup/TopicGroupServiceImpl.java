@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -32,15 +33,18 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private final ElementLoader qiLoader;
     private final TopicGroupRepository topicGroupRepository;
     private final TopicGroupAuditService auditService;
+    private final StudyService studyService;
 
     @Autowired
     public TopicGroupServiceImpl(TopicGroupRepository topicGroupRepository,
                                  TopicGroupAuditService topicGroupAuditService,
-                                 QuestionItemAuditService questionItemAuditService) {
+                                 QuestionItemAuditService questionItemAuditService,
+                                 StudyService studyService) {
 
         this.qiLoader = new ElementLoader( questionItemAuditService );
         this.topicGroupRepository = topicGroupRepository;
         this.auditService = topicGroupAuditService;
+        this.studyService = studyService;
     }
 
     @Override
@@ -101,8 +105,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
 //        EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev ).getEntity();
         TopicGroup target = new TopicGroupFactory().copy(source, rev);
+        studyService.findOne( parentId ).addTopicGroup( target );
 //        entityManager.detach( target );
-        target.setParentU(parentId);
+//        target.setParentU(parentId);
 //        entityManager.merge( target );
         return topicGroupRepository.save(target);
     }
@@ -146,7 +151,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        return topicGroupRepository.findByNameLikeIgnoreCaseOrAbstractDescriptionLikeIgnoreCase(name,description,pageable)
+        return topicGroupRepository.findByQuery(name,description,pageable)
                 .map(this::postLoadProcessing);
     }
 
