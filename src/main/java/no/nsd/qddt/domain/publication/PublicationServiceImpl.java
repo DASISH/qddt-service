@@ -128,7 +128,7 @@ public class PublicationServiceImpl implements PublicationService {
         }
 
         if( published.length > 0 )
-            return repository.findByStatusPublishedInAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(published,likeify(name),likeify(purpose),
+            return repository.findByQuery(published,likeify(name),likeify(purpose),
                 defaultSort(pageable,"name","modified"));
         else if (statusId != null)
             return repository.findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(statusId,likeify(name),likeify(purpose),
