@@ -210,6 +210,61 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
          'user_authority_aud'::text AS tablename
   FROM user_authority_aud;
 
+CREATE VIEW uuidpath (id, path) AS
+  SELECT c.id,
+    '/cateories'::text AS path
+  FROM category c
+  WHERE ((c.category_kind)::text = 'CATEGORY'::text)
+  UNION
+  SELECT c.id,
+    '/missing'::text AS path
+  FROM category c
+  WHERE ((c.category_kind)::text = 'MISSING_GROUP'::text)
+  UNION
+  SELECT cc.id,
+    '/questions'::text AS path
+  FROM control_construct cc
+  WHERE ((cc.control_construct_kind)::text = 'QUESTION_CONSTRUCT'::text)
+  UNION
+  SELECT cc.id,
+    '/sequences'::text AS path
+  FROM control_construct cc
+  WHERE ((cc.control_construct_kind)::text = 'SEQUENCE_CONSTRUCT'::text)
+  UNION
+  SELECT instrument.id,
+    '/instruments'::text AS path
+  FROM instrument
+  UNION
+  SELECT publication.id,
+    '/publications'::text AS path
+  FROM publication
+  UNION
+  SELECT question_item.id,
+    '/questionitems'::text AS path
+  FROM question_item
+  UNION
+  SELECT responsedomain.id,
+    '/responsedomains'::text AS path
+  FROM responsedomain
+  UNION
+  SELECT concept.id,
+    '/concept'::text AS path
+  FROM concept
+  UNION
+  SELECT topic_group.id,
+    '/module'::text AS path
+  FROM topic_group
+  UNION
+  SELECT study.id,
+    '/study'::text AS path
+  FROM study
+  UNION
+  SELECT survey_program.id,
+    '/survey'::text AS path
+  FROM survey_program;
+
+
+
 create view UAR as
   SELECT ua.id, ua.email, ua.username, a.name, a.authority
   FROM user_account ua

@@ -30,7 +30,7 @@ import java.util.UUID;
 public class OtherMaterial extends AbstractEntity implements Cloneable {
 
     @Type(type="pg-uuid")
-    @Column(name = "OWNER_ID")
+    @Column(name = "OWNER_ID", insertable = false, updatable=false)
     private UUID ownerId;
 
     @Column(name = "OWNER_TYPE",  insertable=false, updatable = false)
@@ -47,7 +47,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     private long size;
 
 
-//    @JsonIgnore
     @Type(type="pg-uuid")
     @Column(name="org_ref")
     private UUID orgRef;
@@ -62,7 +61,6 @@ public class OtherMaterial extends AbstractEntity implements Cloneable {
     @JsonManagedReference(value = "orgReferences")
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.DETACH})
     @JoinColumn(name = "org_ref")
-//    @AuditMappedBy(mappedBy = "source")
     private final Set<OtherMaterial> referencesBy = new HashSet<>(0);
 
 

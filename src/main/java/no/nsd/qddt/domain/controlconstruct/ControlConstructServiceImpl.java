@@ -156,7 +156,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     });
                     ((QuestionConstruct)instance).getUniverse().forEach(universe->{
                         if(universe.getId() == null) {
-                            universe = uService.save( universe );
+                            uService.save( universe );
                         }
                     });
 

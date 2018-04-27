@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -101,17 +102,33 @@ public class ControlConstructController extends AbstractController {
         return service.save(instance);
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-    public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") ControlConstruct instance) throws FileUploadException {
-        if (instance.getChangeKind() == null || instance.getChangeKind()  == AbstractEntityAudit.ChangeKind.CREATED)
+    public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") String jsonString) throws FileUploadException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        int index = jsonString.indexOf("\"classKind\":\"QUESTION_CONSTRUCT\"");
+        ControlConstruct instance;
+        if (index >0) {
+            instance = mapper.readValue( jsonString, QuestionConstruct.class );
+        } else {
+            instance = mapper.readValue( jsonString, Sequence.class );
+        }
+
+        instance.getOtherMaterials().forEach( om -> LOG.info(om.getOriginalName()));
+
+        if (instance.getId() == null)
             instance = service.save(instance);
-        if (files != null && files.length > 0)
-            for (MultipartFile multipartFile:files) {
-                instance.addOtherMaterial(omService.saveFile(multipartFile, instance.getId(),"CC"));
+        if (files != null && files.length > 0) {
+            LOG.info( "got new files!!!" );
+            for (MultipartFile multipartFile : files) {
+                instance.addOtherMaterial( omService.saveFile( multipartFile, instance.getId(), "CC" ) );
             }
-        return service.save(instance);
+        }
+        instance = service.save(instance);
+        instance.getOtherMaterials().forEach( om -> LOG.info(om.getOriginalName()));
+        return instance;
     }
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {

@@ -147,10 +147,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     public void setOtherMaterials(Set<OtherMaterialTopic> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
-    public OtherMaterialTopic addOtherMaterial(OtherMaterialTopic otherMaterial) {
-        otherMaterial.setParent( this );
-        otherMaterial.setParent(this);
-        return  otherMaterial;
+    public OtherMaterialTopic addOtherMaterial(OtherMaterialTopic om) {
+        om.setParent(this);
+        otherMaterials.add( om );
+        return om;
     }
 
     public String getAbstractDescription() {

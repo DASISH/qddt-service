@@ -1,12 +1,8 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
 import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -36,16 +32,17 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Value("${fileroot}")
     private String fileRoot;
     private final OtherMaterialRepository otherMaterialRepository;
-    private final ControlConstructService controlConstructService;
-    private final TopicGroupService topicGroupService;
+//    private final ControlConstructService controlConstructService;
+//    private final TopicGroupService topicGroupService;
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository,
-                             ControlConstructService controlConstructService,
-                             TopicGroupService topicGroupService){
+    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository
+//                             ,ControlConstructService controlConstructService
+//                             ,TopicGroupService topicGroupService
+        ){
         this.otherMaterialRepository = otherMaterialRepository;
-        this.topicGroupService = topicGroupService;
-        this.controlConstructService = controlConstructService;
+//        this.topicGroupService = topicGroupService;
+//        this.controlConstructService = controlConstructService;
     }
 
     @Override
@@ -150,11 +147,11 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
         } catch (ResourceNotFoundException re){
             if (kind.equals( "T" )) {
-                TopicGroup topic = topicGroupService.findOne( ownerId );
-                om = topic.addOtherMaterial(new OtherMaterialTopic( ownerId, multipartFile ) );
+//                TopicGroup topic = topicGroupService.findOne( ownerId );
+                om = new OtherMaterialTopic( ownerId, multipartFile );
             } else {
-                ControlConstruct ctrl = controlConstructService.findOne( ownerId );
-                om = ctrl.addOtherMaterial( new OtherMaterialConstruct( ownerId, multipartFile ) );
+//                ControlConstruct ctrl = controlConstructService.findOne( ownerId );
+                om = new OtherMaterialConstruct( ownerId, multipartFile );
             }
         }
 

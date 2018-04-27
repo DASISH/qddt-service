@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
@@ -10,7 +12,9 @@ import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +37,8 @@ public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
     @Embedded
     private ResponseCardinality responseCardinality;
 
+    private String anchorLabel;
+
     public ResponseDomainJsonEdit() {
     }
 
@@ -43,6 +49,11 @@ public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
         setDescription(responseDomain.getDescription());
         setDisplayLayout(responseDomain.getDisplayLayout());
         setManagedRepresentation(new ManagedRepresentationJsonEdit(responseDomain.getManagedRepresentation()));
+        List<Category> leafs = getLeafs( responseDomain.getManagedRepresentation() );
+        int size = leafs.size();
+        anchorLabel = managedRepresentation.getChildren().stream()
+            .map( c ->  (size > 2 && c.getName().length() > 12 ) ? c.getName().substring( 0,9 )+"..": c.getName() )
+            .collect( Collectors.joining(" + ") );
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());
     }
@@ -93,5 +104,19 @@ public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
 
     private void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
+    }
+
+    public String getAnchorLabel() {
+        return anchorLabel;
+    }
+
+    private List<Category> getLeafs(Category root) {
+        List<Category> children = new ArrayList<>( 2 );
+        if (root.getCategoryType() == CategoryType.MIXED) {
+            root.getChildren().forEach( c -> children.addAll( getLeafs( c ) ) );
+        } else {
+            children.addAll( root.getChildren() );
+        }
+        return children;
     }
 }

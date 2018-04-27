@@ -28,15 +28,12 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     private String label;
 
-
     @JsonIgnore
     @Column(name = "CONTROL_CONSTRUCT_KIND",  insertable=false, updatable = false)
     private String controlConstructKind;
 
-    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-//    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
+    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<OtherMaterialConstruct> otherMaterials = new HashSet<>();
-
 
 
     public ControlConstruct() {
@@ -63,9 +60,10 @@ public class ControlConstruct extends AbstractEntityAudit {
     public void setOtherMaterials(Set<OtherMaterialConstruct> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
-    public OtherMaterialConstruct addOtherMaterial(OtherMaterialConstruct otherMaterial) {
-        otherMaterial.setParent( this );
-        return  otherMaterial;
+    public OtherMaterialConstruct addOtherMaterial(OtherMaterialConstruct  om) {
+        om.setParent(this);
+        otherMaterials.add( om );
+        return om;
     }
 
     @Override

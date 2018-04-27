@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
@@ -164,13 +165,14 @@ class ConceptServiceImpl implements ConceptService {
 
     private void setChildChangeStatus(Concept concept){
 // children don't need to be touched for parent to see them... as they are...
+// however, they are saved as part of presisting, so we need to see correct status
 
-//        if (concept.getChangeKind() != ChangeKind.IN_DEVELOPMENT &&
-//            concept.getChangeKind() != ChangeKind.ARCHIVED ) {
-//
-//            concept.setChangeKind(ChangeKind.UPDATED_PARENT);
-//            concept.setChangeComment("Touched to save...");
-//        }
+        if (concept.getChangeKind() != ChangeKind.IN_DEVELOPMENT &&
+            concept.getChangeKind() != ChangeKind.ARCHIVED ) {
+
+            concept.setChangeKind(ChangeKind.UPDATED_PARENT);
+            concept.setChangeComment("Touched to keep flag in sync...");
+        }
     }
 
 
@@ -182,8 +184,8 @@ class ConceptServiceImpl implements ConceptService {
                 }
             }
             // children are saved to hold revision info... i guess, these saves shouldn't
-            if (instance.isBasedOn() == false)
-                instance.getChildren().stream().forEach( this::setChildChangeStatus );
+//            if (instance.isBasedOn() == false)
+            instance.getChildren().stream().forEach( this::setChildChangeStatus );
 
         } catch (NullPointerException npe) {
             LOG.error("ConceptService-> prePersistProcessing " + npe);
