@@ -30,7 +30,7 @@ import java.util.UUID;
 public class OtherMaterial extends AbstractEntity implements Cloneable {
 
     @Type(type="pg-uuid")
-    @Column(name = "OWNER_ID", updatable = false)
+    @Column(name = "OWNER_ID")
     private UUID ownerId;
 
     @Column(name = "OWNER_TYPE",  insertable=false, updatable = false)

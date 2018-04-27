@@ -40,7 +40,7 @@ public class OtherMaterialTopic extends OtherMaterial {
 
     @ManyToOne()
     @JsonBackReference(value = "tref")
-    @JoinColumn(name = "OWNER_ID",insertable = false, updatable = false)
+    @JoinColumn(name = "OWNER_ID")
     private TopicGroup parent;
 
     public TopicGroup getParent() {
@@ -54,6 +54,6 @@ public class OtherMaterialTopic extends OtherMaterial {
 
     @Override
     public OtherMaterialTopic clone() {
-        return (OtherMaterialTopic)super.clone();
+        return new OtherMaterialTopic(super.clone());
 }
 }
