@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
@@ -78,34 +79,11 @@ public class ControlConstructController extends AbstractController {
     }
 
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/condition/create", method = RequestMethod.POST)
-    public ConditionConstruct createCC(@RequestBody ConditionConstruct instance) {
-        return service.save(instance);
-    }
-
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/question/create", method = RequestMethod.POST)
-    public QuestionConstruct createQC(@RequestBody QuestionConstruct instance) {
-        return service.save(instance);
-    }
-
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/sequence/create", method = RequestMethod.POST)
-    public Sequence createSC(@RequestBody Sequence instance) {
-        return service.save(instance);
-    }
-
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/statement/create", method = RequestMethod.POST)
-    public StatementItem createSI(@RequestBody StatementItem instance) {
-        return service.save(instance);
-    }
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") String jsonString) throws FileUploadException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         int index = jsonString.indexOf("\"classKind\":\"QUESTION_CONSTRUCT\"");
         ControlConstruct instance;
         if (index >0) {
@@ -114,19 +92,14 @@ public class ControlConstructController extends AbstractController {
             instance = mapper.readValue( jsonString, Sequence.class );
         }
 
-        instance.getOtherMaterials().forEach( om -> LOG.info(om.getOriginalName()));
-
-        if (instance.getId() == null)
-            instance = service.save(instance);
         if (files != null && files.length > 0) {
             LOG.info( "got new files!!!" );
             for (MultipartFile multipartFile : files) {
-                instance.addOtherMaterial( omService.saveFile( multipartFile, instance.getId(), "CC" ) );
+                instance.getOtherMaterials().add(omService.saveFile( multipartFile, instance.getId() ));
             }
         }
-        instance = service.save(instance);
-        instance.getOtherMaterials().forEach( om -> LOG.info(om.getOriginalName()));
-        return instance;
+
+        return  service.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

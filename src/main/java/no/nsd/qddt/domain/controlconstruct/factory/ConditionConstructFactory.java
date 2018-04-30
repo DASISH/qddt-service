@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.controlconstruct.factory;
 
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
 
 import java.util.stream.Collectors;
 
@@ -16,14 +15,9 @@ public class ConditionConstructFactory implements IEntityFactory<ConditionConstr
     @Override
     public ConditionConstruct copyBody(ConditionConstruct source, ConditionConstruct dest) {
         dest.setLabel(source.getLabel());
-        dest.setCondition( source.getCondition() );
         dest.setOtherMaterials(source.getOtherMaterials().stream()
-            .map( m -> {
-                OtherMaterialConstruct om = m.clone();
-                om.setOwnerId(dest.getId());
-                return om;
-            })
-            .collect(Collectors.toSet()) );
+            .map( m -> m.clone().setOrgRef(source.getId()))
+            .collect(Collectors.toList())); 
 
         return dest;
     }

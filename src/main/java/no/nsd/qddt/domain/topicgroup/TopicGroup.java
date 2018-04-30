@@ -11,7 +11,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.StudyRef;
@@ -85,9 +85,15 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private Set<Author> authors = new HashSet<>();
 
-    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-//    @Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)
-    private Set<OtherMaterialTopic> otherMaterials = new HashSet<>();
+    @OrderColumn(name="owner_idx")
+    @OrderBy("owner_idx ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "OTHER_MATERIAL",
+        joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
+        private List<OtherMaterial> otherMaterials = new ArrayList<>();
+
+    // @OneToMany(mappedBy="owner", fetch = FetchType.EAGER)
+    // private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
 
@@ -135,7 +141,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
 
 
-    public Set<OtherMaterialTopic> getOtherMaterials() {
+    public List<OtherMaterial> getOtherMaterials() {
         try {
             return otherMaterials;
         } catch (Exception ex ){
@@ -144,13 +150,8 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         }
     }
 
-    public void setOtherMaterials(Set<OtherMaterialTopic> otherMaterials) {
+    public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
-    }
-    public OtherMaterialTopic addOtherMaterial(OtherMaterialTopic om) {
-        om.setParent(this);
-        otherMaterials.add( om );
-        return om;
     }
 
     public String getAbstractDescription() {

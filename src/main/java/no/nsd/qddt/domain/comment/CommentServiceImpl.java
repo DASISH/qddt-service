@@ -4,6 +4,7 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,24 +83,28 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
     public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable) {
         return commentRepository.findAllByOwnerIdOrderByModifiedAsc(ownerId, pageable);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
     public Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable) {
         return commentRepository.findAllByOwnerIdAndIsPublicOrderByModifiedAsc(ownerId,true, pageable);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
     public List<Comment> findAllByOwnerId(UUID ownerId) {
         return commentRepository.findAllByOwnerIdOrderByModifiedAsc(ownerId);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
     public List<Comment> findAllByOwnerIdPublic(UUID ownerId) {
         return commentRepository.findAllByOwnerIdAndIsPublicOrderByModifiedAsc(ownerId,true);
     }

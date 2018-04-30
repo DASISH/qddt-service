@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.role.Authority;
@@ -99,10 +99,6 @@ public class User {
     @OneToMany(mappedBy="modifiedBy")
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @JsonIgnore
-    @NotAudited
-    @OneToMany(mappedBy="modifiedBy")
-    private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy="modifiedBy")
@@ -234,14 +230,6 @@ public class User {
 
     public void setTopicGroups(Set<TopicGroup> topicGroups) {
         this.topicGroups = topicGroups;
-    }
-
-    public Set<OtherMaterial> getOtherMaterials() {
-        return otherMaterials;
-    }
-
-    public void setOtherMaterials(Set<OtherMaterial> otherMaterials) {
-        this.otherMaterials = otherMaterials;
     }
 
     public Set<Concept> getConcepts() {

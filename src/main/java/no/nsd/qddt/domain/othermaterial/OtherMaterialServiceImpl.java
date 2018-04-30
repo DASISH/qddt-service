@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -15,11 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,151 +32,44 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
 
     @Value("${fileroot}")
     private String fileRoot;
-    private final OtherMaterialRepository otherMaterialRepository;
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
 //    private final ControlConstructService controlConstructService;
 //    private final TopicGroupService topicGroupService;
 
     @Autowired
-    OtherMaterialServiceImpl(OtherMaterialRepository otherMaterialRepository
-//                             ,ControlConstructService controlConstructService
-//                             ,TopicGroupService topicGroupService
-        ){
-        this.otherMaterialRepository = otherMaterialRepository;
-//        this.topicGroupService = topicGroupService;
-//        this.controlConstructService = controlConstructService;
-    }
-
-    @Override
-    public long count() {
-        return otherMaterialRepository.count();
-    }
-
-    @Override
-    public boolean exists(UUID uuid) {
-        return otherMaterialRepository.exists(uuid);
-    }
-
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public OtherMaterial findOne(UUID uuid) {
-        return otherMaterialRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException(uuid, OtherMaterial.class)
-        );
-    }
+    OtherMaterialServiceImpl() {}
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public <S extends OtherMaterial> S save(S instance) {
-        return otherMaterialRepository.save(instance);
-    }
+    public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId) throws IOException {
 
+        OtherMaterial om= new OtherMaterial( multipartFile );
 
+        Path filepath = Paths.get(getFolder(ownerId.toString()),om.getFileName());
+        if (Files.exists(filepath)) {
+            final String matcher = filepath.getFileName().toString().substring(0,filepath.getFileName().toString().length()-2);
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public List<OtherMaterial> save(List<OtherMaterial> instances) {
-        return otherMaterialRepository.save(instances);
-    }
+            File[] matchingFiles = filepath.getParent().toFile().listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) { return name.startsWith(matcher); 
+                }});
 
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public void delete(UUID uuid)  {
-        try {
-            delete(findOne(uuid));
-        } catch (ReferenceInUseException e) {
-            e.printStackTrace();
+            String fileIndex = String.valueOf(matchingFiles.length);
+            fileIndex = ("00" + fileIndex).substring(fileIndex.length());
+            om.setFileName(matcher + fileIndex);
+            filepath = Paths.get(getFolder(ownerId.toString()),om.getFileName());
         }
-    }
-
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public void delete(List<OtherMaterial> instances)  {
-
-        instances.forEach(om -> {
-            if (om.getSource()== null)
-                try {
-                    delete(om);
-                } catch (ReferenceInUseException e) {
-                    // checking before calling no exception
-                }
-        });
-    }
-
-    private void delete(OtherMaterial om) throws ReferenceInUseException{
-//        deleteFile(om);
-        otherMaterialRepository.delete(om.getId());
-    }
-
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public OtherMaterial findBy(UUID owner, String filename) throws ResourceNotFoundException {
-
-        return otherMaterialRepository.findByOwnerIdAndOriginalName(owner,filename)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format( "%s [%s]", owner, filename ),
-                        OtherMaterial.class)
-        );
-
+        Files.copy(multipartFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+        return om;
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public List<OtherMaterial> findBy(UUID owner) throws ResourceNotFoundException {
-        return otherMaterialRepository.findByOwnerId(owner);
-    }
-
-
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId, String kind) throws FileUploadException {
-
-        String filepath = Paths.get(getFolder(ownerId.toString()), multipartFile.getOriginalFilename()).toString();
-
-        OtherMaterial om;
-        try {
-            om = findBy(ownerId,multipartFile.getOriginalFilename());
-            om.setSize(multipartFile.getSize());
-            om.setFileType(multipartFile.getContentType());
-            om.setOriginalName(multipartFile.getOriginalFilename());
-            om.setFileName(multipartFile.getName());
-
-        } catch (ResourceNotFoundException re){
-            if (kind.equals( "T" )) {
-//                TopicGroup topic = topicGroupService.findOne( ownerId );
-                om = new OtherMaterialTopic( ownerId, multipartFile );
-            } else {
-//                ControlConstruct ctrl = controlConstructService.findOne( ownerId );
-                om = new OtherMaterialConstruct( ownerId, multipartFile );
-            }
-        }
-
-
-        try {
-            Files.copy(multipartFile.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);
-            return save(om);
-        } catch (IOException e) {
-            String message = String.format("Failed to save file [%s]. \n\r%s"
-                    ,multipartFile.getOriginalFilename(),
-                    e.getMessage());
-            throw new FileUploadException(message);
-        }
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public File getFile(OtherMaterial om){
-        if (om.getSource() != null)
-            return getFile(om.getSource());
-
-        String filepath = Paths.get(getFolder(om.getOwnerId().toString()), om.getOriginalName()).toString();
+	public File getFile(UUID root, String fileName) {
+        String filepath = Paths.get(getFolder(root.toString()), fileName).toString();
         return new File(filepath);
-    }
+	}
 
 
     /*
@@ -193,14 +87,8 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     }
 
 
-    protected OtherMaterial prePersistProcessing(OtherMaterial instance) {
-        return instance;
-    }
 
 
-    protected OtherMaterial postLoadProcessing(OtherMaterial instance) {
-        return instance;
-    }
 
 
 }

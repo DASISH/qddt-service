@@ -9,6 +9,8 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.instruction.InstructionService;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.universe.UniverseService;
@@ -24,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstruct;
@@ -45,6 +49,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private final InstructionService iService;
     private final UniverseService uService;
     private final QuestionItemAuditService qiAuditService;
+    // private final OtherMaterialService oService;
 
 
     @Autowired
@@ -52,6 +57,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                                        ControlConstructAuditService controlConstructAuditService,
                                        InstructionService iService,
                                        UniverseService uService,
+                                    //    OtherMaterialService oService,
                                        QuestionItemAuditService questionAuditService
     ) {
         this.controlConstructRepository = ccRepository;
@@ -59,6 +65,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         this.iService = iService;
         this.uService = uService;
         this.qiAuditService = questionAuditService;
+        // this.oService = oService;
     }
 
     @Override
@@ -126,8 +133,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
     public <S extends ConstructJsonView> Page<S> findBySearcAndControlConstructKind(String kind, String superKind, String name, String description, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
 
-//        LOG.info("kind " + kind + " sequenceKind= " + superKind +  " name= " + name + " description= " + description);
-
         return controlConstructRepository.findByQuery(kind, superKind, likeify(name), likeify(description), "", "",pageable)
             .map(qi -> mapConstructView(qi));
     }
@@ -137,15 +142,14 @@ class ControlConstructServiceImpl implements ControlConstructService {
     public <S extends ConstructJsonView> Page<S>  findQCBySearch(String name, String questionName, String questionText, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
 
-//        LOG.info("name= " + name + " questionName= " + questionName + " questionText= " + questionText);
 
         return controlConstructRepository.findByQuery("QUESTION_CONSTRUCT","", name,"", questionName, questionText, pageable)
             .map(qi-> mapConstructView(postLoadProcessing(qi)));
     }
 
-
-	  private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
+    private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
+
         switch (instance.getClassKind()) {
             case "QUESTION_CONSTRUCT":
                 if (instance instanceof QuestionConstruct) {
@@ -166,36 +170,37 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         ((QuestionConstruct)instance).setQuestionText(question.getQuestion());
                     }
                     if(instance.isBasedOn() || instance.isNewCopy()) {
-                        QuestionConstructFactory ccf = new QuestionConstructFactory();
+                        
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = (S)ccf.copy((QuestionConstruct)instance, rev );
+                        instance = (S)new QuestionConstructFactory().copy((QuestionConstruct)instance, rev );
+
                     }
                 }
                 break;
             case "SEQUENCE_CONSTRUCT":
                 if (instance instanceof Sequence) {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
-                        SequenceConstructFactory ccf= new SequenceConstructFactory();
+                        
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = (S)ccf.copy((Sequence)instance, rev );
+                        instance = (S)new SequenceConstructFactory().copy((Sequence)instance, rev );
                     }
                 }
                 break;
             case "CONDITION_CONSTRUCT":
                 if (instance instanceof ConditionConstruct) {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
-                        ConditionConstructFactory ccf= new ConditionConstructFactory();
+                        
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)ccf.copy((ConditionConstruct)instance, rev );
+                        instance =  (S)new ConditionConstructFactory().copy((ConditionConstruct)instance, rev );
                     }
                 }       
                 break; 
             case "STATEMENT_CONSTRUCT":
                 if (instance instanceof StatementItem) {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
-                        StatementConstructFactory ccf= new StatementConstructFactory();
+                        
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)ccf.copy((StatementItem)instance, rev );
+                        instance =  (S)new StatementConstructFactory().copy((StatementItem)instance, rev );
                     }   
                 }
                 break;

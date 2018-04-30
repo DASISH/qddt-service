@@ -161,6 +161,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
+        
         return doArchive( instance ) ;
     }
 

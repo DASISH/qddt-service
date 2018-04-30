@@ -2,14 +2,16 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Instrument is the significant relation.
@@ -32,8 +34,11 @@ public class ControlConstruct extends AbstractEntityAudit {
     @Column(name = "CONTROL_CONSTRUCT_KIND",  insertable=false, updatable = false)
     private String controlConstructKind;
 
-    @OneToMany(mappedBy = "parent" ,fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<OtherMaterialConstruct> otherMaterials = new HashSet<>();
+    @OrderColumn(name="owner_idx")
+    @OrderBy("fileName ASC")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "OTHER_MATERIAL_CC", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
+    private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
 
     public ControlConstruct() {
@@ -54,16 +59,13 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
 
-    public Set<OtherMaterialConstruct> getOtherMaterials() {
-        return otherMaterials;
+    public List<OtherMaterial> getOtherMaterials() {
+        return otherMaterials.stream()
+            .map( om -> om.setOrgRef(this.getId()))
+            .collect(Collectors.toList());
     }
-    public void setOtherMaterials(Set<OtherMaterialConstruct> otherMaterials) {
+    public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
-    }
-    public OtherMaterialConstruct addOtherMaterial(OtherMaterialConstruct  om) {
-        om.setParent(this);
-        otherMaterials.add( om );
-        return om;
     }
 
     @Override

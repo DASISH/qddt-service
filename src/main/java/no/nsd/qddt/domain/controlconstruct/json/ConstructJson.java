@@ -2,9 +2,9 @@ package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialConstruct;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Stig Norland
@@ -13,7 +13,7 @@ public class ConstructJson  extends AbstractJsonEdit {
 
     private String label;
 
-    private Set<OtherMaterialConstruct> otherMaterials;
+    private List<OtherMaterial> otherMaterials;
 
     public ConstructJson(ControlConstruct construct){
         super(construct);
@@ -28,10 +28,10 @@ public class ConstructJson  extends AbstractJsonEdit {
         this.label = label;
     }
 
-    public Set<OtherMaterialConstruct> getOtherMaterials() {
+    public List<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
     }
-    public void setOtherMaterials(Set<OtherMaterialConstruct> otherMaterials) {
+    public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
 

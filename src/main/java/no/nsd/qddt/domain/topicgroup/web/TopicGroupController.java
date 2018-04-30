@@ -1,11 +1,14 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
 import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
 import no.nsd.qddt.exception.StackTraceFilter;
+
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +19,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -32,10 +40,13 @@ public class TopicGroupController extends AbstractController {
 
     private final TopicGroupService service;
     private final StudyService studyService;
+    private final OtherMaterialService omService;
 
 
     @Autowired
-    public TopicGroupController(TopicGroupService service, StudyService studyService) {
+    public TopicGroupController(TopicGroupService service, StudyService studyService,
+                                OtherMaterialService otherMaterialService) {
+        this.omService = otherMaterialService;
         this.service = service;
         this.studyService = studyService;
     }
@@ -52,6 +63,22 @@ public class TopicGroupController extends AbstractController {
         return new TopicGroupJson(service.save(instance));
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public TopicGroupJson createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("topicgroup") String jsonString) throws FileUploadException, IOException {
+
+        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        TopicGroup instance = mapper.readValue( jsonString, TopicGroup.class );
+
+        if (files != null && files.length > 0) {
+            for (MultipartFile multipartFile : files) {
+                instance.getOtherMaterials().add(omService.saveFile( multipartFile, instance.getId() ));
+            }
+        }
+        
+        return new TopicGroupJson(service.save(instance));
+    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)

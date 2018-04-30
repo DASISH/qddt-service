@@ -4,10 +4,11 @@ import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterialTopic;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private Set<Author> authors = new HashSet<>();
 
-    private Set<OtherMaterialTopic> otherMaterials = new HashSet<>();
+    private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
     private boolean isArchived;
 
@@ -68,12 +69,14 @@ public class TopicGroupJson extends AbstractJsonEdit {
         this.authors = authors;
     }
 
-    public Set<OtherMaterialTopic> getOtherMaterials() {
+    public List<OtherMaterial> getOtherMaterials() {
         return otherMaterials;
     }
 
-    private void setOtherMaterials(Set<OtherMaterialTopic> otherMaterials) {
-        this.otherMaterials = otherMaterials;
+    private void setOtherMaterials(List<OtherMaterial> otherMaterials) {
+        this.otherMaterials = otherMaterials.stream()
+            .map( om -> om.setOrgRef(this.getId()))
+            .collect(Collectors.toList());
     }
 
     /**

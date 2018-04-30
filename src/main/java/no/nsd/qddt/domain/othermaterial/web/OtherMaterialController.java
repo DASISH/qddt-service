@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.othermaterial.web;
 
-import no.nsd.qddt.domain.othermaterial.pojo.OtherMaterial;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -29,64 +29,23 @@ public class OtherMaterialController {
         this.service = service;
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public OtherMaterial get(@PathVariable("id") UUID id) {
-        return service.findOne(id);
-    }
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public OtherMaterial update(@RequestBody OtherMaterial instance) {
-        return service.save(instance);
-    }
-
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public OtherMaterial create(@RequestBody OtherMaterial instance) {
-        return service.save(instance);
-    }
+    @RequestMapping(value = "/upload/{ownerid}", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public @ResponseBody OtherMaterial handleFileUpload(
+        @PathVariable("ownerid") UUID ownerId,
+        @RequestParam("file") MultipartFile file) throws IOException, FileUploadException {
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable("id") UUID id) throws RequestAbortedException {
-        service.delete(id);
-    }
+        if (file.isEmpty()) throw new FileUploadException("File is empty");
 
-    @ResponseStatus(value = HttpStatus.I_AM_A_TEAPOT)
-    @RequestMapping(value = "/upload", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    String provideUploadInfo() {
-        return "You can upload a file by posting to this URL.";
-    }
-
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/upload/{ownerid}/{kind}", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-    public
-    @ResponseBody
-    OtherMaterial handleFileUpload(@PathVariable("ownerid") UUID ownerId,@PathVariable("kind") String kind,
-                                   @RequestParam("file") MultipartFile file) throws FileUploadException {
-        if (file.isEmpty())
-            throw new FileUploadException("File is empty");
-
-        return service.saveFile(file, ownerId,kind);
+        return service.saveFile(file, ownerId);
     }
 
 
-    @RequestMapping(value="/files/{fileId}", method=RequestMethod.GET,
-            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
-    @ResponseBody()
-    public FileSystemResource getFile(@PathVariable("fileId") UUID fileId) throws IOException {
-        return new FileSystemResource(service.getFile(service.findOne(fileId)));
+    @RequestMapping(value="/files/{root}/{filename}", method=RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+    @ResponseBody() public FileSystemResource getFile(@PathVariable("root") UUID root, @PathVariable("filename") String fileName ) throws IOException {
+        return new FileSystemResource(service.getFile(root, fileName));
     }
 
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
-    public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toDDIXml();
-    }
 
 
 }

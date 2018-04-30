@@ -9,10 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author Stig Norland
  */
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Audited
 @Table(name = "UNIVERSE", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","description","agency_id"},name = "UNQ_universe_name")})
