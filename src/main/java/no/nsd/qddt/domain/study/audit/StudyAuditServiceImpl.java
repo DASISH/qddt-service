@@ -85,17 +85,14 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
     private Study postLoadProcessing(Study instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms;
-            if (showPrivateComments)
-                coms = commentService.findAllByOwnerId(instance.getId());
-            else
-                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+            List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
+
             instance.setComments(new HashSet<>(coms));
 
             Hibernate.initialize(instance.getTopicGroups());
 
             instance.getTopicGroups().forEach(c->{
-                final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId());
+                final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId(),showPrivateComments);
                 c.setComments(new HashSet<>(coms2));
             });
 

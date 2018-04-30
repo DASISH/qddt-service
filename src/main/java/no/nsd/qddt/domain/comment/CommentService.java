@@ -12,13 +12,11 @@ import java.util.UUID;
  */
 public interface CommentService extends BaseService<Comment,UUID> {
 
-    Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable);
+    Page<Comment> findAllByOwnerIdPageable(UUID ownerId, boolean showAll,  Pageable pageable);
 
-    Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable);
+    List<Comment> findAllByOwnerId(UUID ownerId, boolean showAll);
 
-    List<Comment> findAllByOwnerId(UUID ownerId);
 
-    List<Comment> findAllByOwnerIdPublic(UUID ownerId);
 
 
 }

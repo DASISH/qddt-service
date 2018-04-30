@@ -16,8 +16,8 @@ public class StatementConstructFactory implements IEntityFactory<StatementItem> 
     public StatementItem copyBody(StatementItem source, StatementItem dest) {
         dest.setLabel(source.getLabel());
         dest.setOtherMaterials(source.getOtherMaterials().stream()
-            .map( m -> m.clone().setOrgRef(source.getId()))
-            .collect(Collectors.toList())); 
+            .map( m -> m.clone())
+            .collect(Collectors.toList()));
 
         dest.setStatement( source.getStatement() );
 

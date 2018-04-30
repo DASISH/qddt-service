@@ -9,8 +9,6 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.instruction.InstructionService;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.universe.UniverseService;
@@ -26,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.controlconstruct.json.Converter.mapConstruct;
@@ -173,7 +169,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
                         instance = (S)new QuestionConstructFactory().copy((QuestionConstruct)instance, rev );
-
                     }
                 }
                 break;

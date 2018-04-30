@@ -142,11 +142,8 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
 
     private HashSet<Comment> loadComments(UUID id){
-        List<Comment> coms;
-        if (showPrivateComments)
-            coms = commentService.findAllByOwnerId(id);
-        else
-            coms  =commentService.findAllByOwnerIdPublic(id);
+        List<Comment> coms  =commentService.findAllByOwnerId(id,showPrivateComments);
+
         return new HashSet<>(coms);
     }
 

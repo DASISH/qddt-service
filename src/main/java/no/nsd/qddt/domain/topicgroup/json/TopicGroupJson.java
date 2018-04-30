@@ -75,7 +75,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private void setOtherMaterials(List<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials.stream()
-            .map( om -> om.setOrgRef(this.getId()))
+            .map( om -> om.setOriginalOwner(this.getId()))
             .collect(Collectors.toList());
     }
 

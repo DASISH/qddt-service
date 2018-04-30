@@ -33,7 +33,7 @@ public class InstrumentElement  {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")
-    @OrderBy(value = "instrument_element_idx asc")
+    @OrderBy(value = "_idx asc")
     @JoinColumn(name = "instrument_element_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private List<InstrumentElement> sequences = new ArrayList<>();

@@ -1,11 +1,10 @@
 package no.nsd.qddt.domain.responsedomain.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,20 +74,13 @@ class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,Respons
     protected Revision<Integer, ResponseDomain> postLoadProcessing(Revision<Integer, ResponseDomain> instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms;
-            if (showPrivateComments)
-                coms = commentService.findAllByOwnerId(instance.getEntity().getId());
-            else
-                coms  =commentService.findAllByOwnerIdPublic(instance.getEntity().getId());
+            List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
             instance.getEntity().setComments(new HashSet<>(coms));
             Hibernate.initialize(instance.getEntity().getManagedRepresentation());  //Lazy loading trick... (we want the MRep when locking at a revision).
         } catch (Exception ex) {
             LOG.error("postLoadProcessing", ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a -> a.toString())
-                    .forEach(LOG::info);
         }
-            return instance;
+        return instance;
     }
 
 }

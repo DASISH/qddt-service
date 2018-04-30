@@ -57,6 +57,15 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, Pageable pageable) {
+        pageable = defaultOrModifiedSort(pageable, "name ASC");
+        LOG.info( pageable.toString() );
+        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question),pageable);
+    }
+
+
+    @Override
     @Transactional(propagation = Propagation.NEVER)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public ResponseDomain save(ResponseDomain instance) {
@@ -115,15 +124,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     private ResponseDomain postLoadProcessing(ResponseDomain instance) {
         return instance;
     }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, Pageable pageable) {
-        pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-
-        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question),pageable);
-    }
-
 
 
 }

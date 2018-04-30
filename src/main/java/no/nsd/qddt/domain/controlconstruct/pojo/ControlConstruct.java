@@ -7,11 +7,9 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.*;
 
 /**
  * Instrument is the significant relation.
@@ -35,9 +33,9 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String controlConstructKind;
 
     @OrderColumn(name="owner_idx")
-    @OrderBy("fileName ASC")
+    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "OTHER_MATERIAL_CC", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
+    @CollectionTable(name = "CONTROL_CONSTRUCT_OTHER_MATERIAL", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
     private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
 
@@ -60,9 +58,7 @@ public class ControlConstruct extends AbstractEntityAudit {
 
 
     public List<OtherMaterial> getOtherMaterials() {
-        return otherMaterials.stream()
-            .map( om -> om.setOrgRef(this.getId()))
-            .collect(Collectors.toList());
+        return otherMaterials;
     }
     public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;

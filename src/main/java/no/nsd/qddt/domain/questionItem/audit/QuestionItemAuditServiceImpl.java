@@ -93,11 +93,7 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
                     rev.getEntity().getResponseDomainUUID(),
                     rev.getEntity().getResponseDomainRevision()).getEntity());
         }
-        List<Comment> coms;
-        if (showPrivateComments)
-            coms = commentService.findAllByOwnerId(rev.getEntity().getId());
-        else
-            coms  =commentService.findAllByOwnerIdPublic(rev.getEntity().getId());
+        List<Comment> coms  =commentService.findAllByOwnerId(rev.getEntity().getId(),showPrivateComments);
         rev.getEntity().setComments(new HashSet<>(coms));
         return rev;
     }

@@ -16,7 +16,7 @@ public class ConditionConstructFactory implements IEntityFactory<ConditionConstr
     public ConditionConstruct copyBody(ConditionConstruct source, ConditionConstruct dest) {
         dest.setLabel(source.getLabel());
         dest.setOtherMaterials(source.getOtherMaterials().stream()
-            .map( m -> m.clone().setOrgRef(source.getId()))
+            .map( m -> m.clone())
             .collect(Collectors.toList())); 
 
         return dest;

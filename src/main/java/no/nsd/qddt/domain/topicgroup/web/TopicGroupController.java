@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.study.StudyService;
@@ -7,8 +9,6 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
 import no.nsd.qddt.exception.StackTraceFilter;
-
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -65,7 +62,7 @@ public class TopicGroupController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-    public TopicGroupJson createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("topicgroup") String jsonString) throws FileUploadException, IOException {
+    public TopicGroupJson createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("topicgroup") String jsonString) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -120,9 +117,9 @@ public class TopicGroupController extends AbstractController {
                     .collect(Collectors.toList());
         } catch (Exception ex){
             LOG.error("findByStudy",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
+//            StackTraceFilter.filter(ex.getStackTrace()).stream()
+//                    .map(a->a.toString())
+//                    .forEach(LOG::info);
             return Collections.emptyList();
         }
     }
@@ -154,9 +151,9 @@ public class TopicGroupController extends AbstractController {
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex){
             LOG.error("addQuestionItem",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
+//            StackTraceFilter.filter(ex.getStackTrace()).stream()
+//                    .map(a->a.toString())
+//                    .forEach(LOG::info);
 
             return null;
         }
@@ -173,9 +170,9 @@ public class TopicGroupController extends AbstractController {
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
             LOG.error("removeQuestionItem",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);
+//            StackTraceFilter.filter(ex.getStackTrace()).stream()
+//                    .map(a->a.toString())
+//                    .forEach(LOG::info);
             return new TopicGroupJson(topicGroup);
         }
     }

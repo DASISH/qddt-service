@@ -1,10 +1,11 @@
 package no.nsd.qddt.domain.comment;
 
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,43 +71,25 @@ class CommentServiceImpl  implements CommentService  {
         commentRepository.delete(instances);
     }
 
-
     protected Comment prePersistProcessing(Comment instance) {
         return instance;
     }
-
 
     protected Comment postLoadProcessing(Comment instance) {
         return instance;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
-    public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, Pageable pageable) {
-        return commentRepository.findAllByOwnerIdOrderByModifiedAsc(ownerId, pageable);
+    public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, boolean showAll,  Pageable pageable) {
+        assert  pageable != null;
+        User user = SecurityContext.getUserDetails().getUser();
+        assert user != null;
+        return commentRepository.findByQueryPageable( ownerId, user.getId(), showAll, pageable);
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
-    public Page<Comment> findAllByOwnerIdPublicPageable(UUID ownerId, Pageable pageable) {
-        return commentRepository.findAllByOwnerIdAndIsPublicOrderByModifiedAsc(ownerId,true, pageable);
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
-    public List<Comment> findAllByOwnerId(UUID ownerId) {
-        return commentRepository.findAllByOwnerIdOrderByModifiedAsc(ownerId);
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    @PostFilter("hasRole('ROLE_VIEW') and isPublic == true")
-    public List<Comment> findAllByOwnerIdPublic(UUID ownerId) {
-        return commentRepository.findAllByOwnerIdAndIsPublicOrderByModifiedAsc(ownerId,true);
+    public List<Comment> findAllByOwnerId(UUID ownerId, boolean showAll) {
+        User user = SecurityContext.getUserDetails().getUser();
+        assert user != null;
+        return commentRepository.findByQuery( ownerId, user.getId(), showAll);
     }
 
 }

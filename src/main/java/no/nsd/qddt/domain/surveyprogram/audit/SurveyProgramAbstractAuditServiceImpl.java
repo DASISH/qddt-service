@@ -83,15 +83,12 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms;
-            if (showPrivateComments)
-                coms = commentService.findAllByOwnerId(instance.getId());
-            else
-                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+            List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
+
             instance.setComments(new HashSet<>(coms));
 
             instance.getStudies().forEach(c->{
-                final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId());
+                final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId(),showPrivateComments);
                 c.setComments(new HashSet<>(coms2));
             });
 

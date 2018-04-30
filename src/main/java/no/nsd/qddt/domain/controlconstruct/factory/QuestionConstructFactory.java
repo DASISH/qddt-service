@@ -18,8 +18,8 @@ public class QuestionConstructFactory implements IEntityFactory<QuestionConstruc
         dest.setQuestionItem(source.getQuestionItem());
         dest.setQuestionItemRevision(source.getQuestionItemRevision());
         dest.setOtherMaterials(source.getOtherMaterials().stream()
-            .map( m -> m.clone().setOrgRef(source.getId()))
-            .collect(Collectors.toList())); 
+            .map( m -> m.clone())
+            .collect(Collectors.toList()));
 
         dest.setUniverse(source.getUniverse());
         dest.setControlConstructInstructions(source.getControlConstructInstructions());

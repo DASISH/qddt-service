@@ -18,17 +18,17 @@ interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
 
 //    Page<ResponseDomain> findByResponseKindAndNameIgnoreCaseLikeOrDescriptionIgnoreCaseLike(ResponseKind responseKind, String name, String description, Pageable pageable);
 
-    @Query(value = "SELECT RD.* FROM RESPONSEDOMAIN RD LEFT JOIN QUESTION_ITEM qi ON qi.responsedomain_id = RD.id "  +
-        "WHERE RD.response_kind = :responseKind AND " +
-        "( RD.name ILIKE :name or RD.description ILIKE :description or qi.name ILIKE  :question or qi.question ILIKE  :question ) "
-        + "ORDER BY ?#{#pageable}"
-        ,countQuery = "SELECT count(RD.*)  FROM RESPONSEDOMAIN RD LEFT JOIN QUESTION_ITEM qi ON qi.responsedomain_id = RD.id "  +
-        "WHERE RD.response_kind = :responseKind AND " +
-        "( RD.name ILIKE :name or RD.description ILIKE :description or qi.name ILIKE  :question or qi.question ILIKE  :question ) "
+    @Query(value = "SELECT RD.* FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
+        "( RD.name ILIKE :name or RD.description ILIKE :description OR " +
+        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) " +
+        "ORDER BY ?#{#pageable}"
+        ,countQuery = "SELECT count(RD.*)  FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
+        "(RD.name ILIKE :name or RD.description ILIKE :description OR " +
+        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) "
         ,nativeQuery = true)
     Page<ResponseDomain> findByQuery( @Param("responseKind")String responseKind,
-                                                     @Param("name")String name,
-                                                     @Param("description")String description,
-                                                     @Param("question")String question,
-                                                     Pageable pageable);
+                                     @Param("name")String name,
+                                     @Param("description")String description,
+                                     @Param("question")String question,
+                                     Pageable pageable);
 }

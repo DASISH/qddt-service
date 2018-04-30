@@ -59,12 +59,9 @@ public class CommentController {
     @SuppressWarnings("unchecked")
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<CommentJsonEdit>> get(@PathVariable("ownerId")UUID ownerId,@RequestParam(value = "public",defaultValue = "false") boolean publicOnly, Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<CommentJsonEdit> comments;
-        if (publicOnly)
-            comments = service.findAllByOwnerIdPublicPageable(ownerId, pageable).map(CommentJsonEdit::new);
-        else
-            comments = service.findAllByOwnerIdPageable(ownerId, pageable).map(CommentJsonEdit::new);
+    public HttpEntity<PagedResources<CommentJsonEdit>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
+
+        Page<CommentJsonEdit> comments = service.findAllByOwnerIdPageable(ownerId, true, pageable).map(CommentJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 

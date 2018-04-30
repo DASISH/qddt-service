@@ -118,11 +118,8 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
-        List<Comment> coms;
-        if (showPrivateComments)
-            coms = commentService.findAllByOwnerId(instance.getId());
-        else
-            coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+
+        List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
 
         instance.setComments(new HashSet<>(coms));
 

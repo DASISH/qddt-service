@@ -93,11 +93,7 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms;
-            if (showPrivateComments)
-                coms = commentService.findAllByOwnerId(instance.getId());
-            else
-                coms  =commentService.findAllByOwnerIdPublic(instance.getId());
+            List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
 
             instance.setComments(new HashSet<>(coms));
             instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));

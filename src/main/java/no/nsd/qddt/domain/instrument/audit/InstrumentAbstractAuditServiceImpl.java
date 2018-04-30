@@ -68,11 +68,8 @@ class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Ins
     @Override
     protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
         assert  (instance != null);
-        List<Comment> coms;
-        if (showPrivateComments)
-            coms = commentService.findAllByOwnerId(instance.getEntity().getId());
-        else
-            coms  =commentService.findAllByOwnerIdPublic(instance.getEntity().getId());
+        List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
+
         instance.getEntity().setComments(new HashSet<>(coms));;
         return instance;
     }

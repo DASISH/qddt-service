@@ -88,12 +88,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @OrderColumn(name="owner_idx")
     @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "OTHER_MATERIAL",
+    @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
         private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
-    // @OneToMany(mappedBy="owner", fetch = FetchType.EAGER)
-    // private Set<OtherMaterial> otherMaterials = new HashSet<>();
 
     private boolean isArchived;
 

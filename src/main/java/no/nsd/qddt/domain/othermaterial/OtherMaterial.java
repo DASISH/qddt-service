@@ -21,20 +21,20 @@ import java.util.UUID;
 @Embeddable
 public class OtherMaterial implements Cloneable {
 
-    private String fileName;
-
-    private String description;
-
-    private String fileType;
+    @Type(type="pg-uuid")
+    @Column(name="original_owner")
+    private UUID originalOwner;
 
     @Column(name = "original_name", updatable = false, nullable = false)
     private String originalName;
 
+    private String fileName;
+
+    private String fileType;
+
     private long size;
 
-    @Type(type="pg-uuid")
-    @Column(name="org_ref")
-    private UUID orgRef;
+    private String description;
 
 
     public OtherMaterial(){
@@ -48,8 +48,8 @@ public class OtherMaterial implements Cloneable {
         setDescription(null);
     }
 
-    public OtherMaterial(String name, String fileType, long size, String description) {
-        setOriginalName(name);
+    public OtherMaterial(String originalName, String fileType, long size, String description) {
+        setOriginalName(originalName);
         setFileType(fileType);
         setSize(size);
         setDescription(description);
@@ -91,18 +91,18 @@ public class OtherMaterial implements Cloneable {
         this.fileName = originalName.toUpperCase().replace(' ','_').replace('.','_').concat("00");
     }
 
-    public UUID getOrgRef() {
-        return  orgRef ;
+    public UUID getOriginalOwner() {
+        return originalOwner;
     }
 
     /**
-    *   This function is safe to activate, nothing will be overwitten.
+    *   This function is safe to activate, nothing will be overwritten.
     *
     **/
-    public OtherMaterial setOrgRef(UUID orgRef) {
-        // we want to keep reference to the first path for all decendances of the root...
-        if (this.orgRef == null)
-            this.orgRef = orgRef;
+    public OtherMaterial setOriginalOwner(UUID originalOwner) {
+        // we want to keep reference to the first path for all descendants of the root...
+        if (this.originalOwner == null)
+            this.originalOwner = originalOwner;
         return this;
     }
 
@@ -148,7 +148,7 @@ public class OtherMaterial implements Cloneable {
 
     @Override
     public OtherMaterial clone() {
-        return new OtherMaterial(fileName,fileType, size, description).setOrgRef(this.orgRef);
+        return new OtherMaterial(originalName,fileType, size, description).setOriginalOwner(this.originalOwner );
     }
 
 }

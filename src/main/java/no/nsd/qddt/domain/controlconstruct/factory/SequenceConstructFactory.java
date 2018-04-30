@@ -17,8 +17,8 @@ public class SequenceConstructFactory implements IEntityFactory<Sequence> {
     public Sequence copyBody(Sequence source, Sequence dest) {
         dest.setLabel(source.getLabel());
         dest.setOtherMaterials(source.getOtherMaterials().stream()
-            .map( m -> m.clone().setOrgRef(source.getId()))
-            .collect(Collectors.toList())); 
+            .map( m -> m.clone())
+            .collect(Collectors.toList()));
 
         dest.setDescription(source.getDescription());
         dest.setSequenceKind( source.getSequenceKind() );

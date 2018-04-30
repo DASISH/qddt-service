@@ -44,7 +44,6 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
         setOtherMaterials(topicGroup.getOtherMaterials());
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments());
-//        System.out.println("TopicGroupRevisionJson");
         setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
 
     }
@@ -109,7 +108,6 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
             return false;
         if (topicQuestionItems != null ? !topicQuestionItems.equals(that.topicQuestionItems) : that.topicQuestionItems != null)
             return false;
-//        if (concepts != null ? !concepts.equals(that.concepts) : that.concepts != null) return false;
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
@@ -119,8 +117,6 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
     @Override
     public int hashCode() {
         int result = abstractDescription != null ? abstractDescription.hashCode() : 0;
-//        result = 31 * result + (topicGroupQuestions != null ? topicGroupQuestions.hashCode() : 0);
-//        result = 31 * result + (concepts != null ? concepts.hashCode() : 0);
         result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
