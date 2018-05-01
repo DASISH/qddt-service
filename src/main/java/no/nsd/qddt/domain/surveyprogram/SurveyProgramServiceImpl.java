@@ -99,7 +99,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<SurveyProgram> findByAgency(User user) {
-        return surveyProgramRepository.findByAgencyOrIsArchivedOrderByNameAsc(user.getAgency())
+        return surveyProgramRepository.findByAgencyOrIsArchivedOrderByNameAsc(user.getAgency(), true)
             .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 

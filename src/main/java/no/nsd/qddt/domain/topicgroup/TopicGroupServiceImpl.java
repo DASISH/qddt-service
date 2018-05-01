@@ -135,7 +135,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    // Only users that can see survey and study can here, (sometimes guest should see this too.)
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<TopicGroup> findByStudyId(UUID id) {
         return topicGroupRepository.findByStudyId(id).stream()
                 .map(this::postLoadProcessing).collect(Collectors.toList());

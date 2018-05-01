@@ -9,11 +9,12 @@ import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Repository
 interface SurveyProgramRepository extends BaseRepository<SurveyProgram,UUID> {
 
     List<SurveyProgram> findByAgencyOrderByModifiedAsc(Agency agency);
 
-    List<SurveyProgram> findByAgencyOrIsArchivedOrderByNameAsc(Agency agency);
+    List<SurveyProgram> findByAgencyOrIsArchivedOrderByNameAsc(Agency agency, boolean isArchived);
 }

@@ -133,7 +133,7 @@ class ConceptServiceImpl implements ConceptService {
 
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findAllPageable(Pageable pageable) {
         Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
@@ -141,7 +141,7 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
                 defaultSort(pageable,"name ASC"));
@@ -150,7 +150,7 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
         Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
