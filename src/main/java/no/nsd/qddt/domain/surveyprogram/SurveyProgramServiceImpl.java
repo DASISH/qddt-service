@@ -95,18 +95,12 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         surveyProgramRepository.delete(instances);
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public List<SurveyProgram> findByModifiedBy(User user) {
-        return surveyProgramRepository.findByModifiedByOrderByModifiedAsc(user)
-            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
-    }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<SurveyProgram> findByAgency(User user) {
-        return surveyProgramRepository.findByAgencyOrderByModifiedAsc(user.getAgency())
-                .stream().map(this::postLoadProcessing).collect(Collectors.toList());
+        return surveyProgramRepository.findByAgencyOrIsArchivedOrderByNameAsc(user.getAgency())
+            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
 

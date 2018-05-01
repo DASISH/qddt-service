@@ -11,8 +11,6 @@ import java.util.List;
  */
 public interface SurveyProgramService extends BaseArchivedService<SurveyProgram> {
 
-    List<SurveyProgram> findByModifiedBy(User user);
-
     List<SurveyProgram> findByAgency(User user);
 
 }
