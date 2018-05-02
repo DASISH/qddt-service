@@ -100,7 +100,7 @@ public class PdfReport extends PdfDocument {
             .add(toc.get(0).getValue().getKey().split("\t")[1])
             .setPaddingBottom(60))
         .add(new Paragraph()
-            .add("Generated " + DateTime.now().toLocalDateTime().toString("EEEE d MMMM YYYY HH:mm:SS"))
+            .add("Generated " + DateTime.now().toString("EEEE d MMMM YYYY HH:mm:SS"))
             .setTextAlignment(TextAlignment.CENTER));
 
         document.add(new AreaBreak());
@@ -173,7 +173,7 @@ public class PdfReport extends PdfDocument {
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(new Paragraph(String.format("%1$TD %1$TT",  element.getModified().toLocalDateTime())))
+            new Cell().add(new Paragraph(String.format("%1$TF %1$TT",  element.getModified())))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));

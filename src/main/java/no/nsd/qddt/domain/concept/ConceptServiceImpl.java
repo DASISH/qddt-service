@@ -9,7 +9,6 @@ import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,27 +200,22 @@ class ConceptServiceImpl implements ConceptService {
      */
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
-        try{
-            instance.getConceptQuestionItems().forEach( cqi -> {
-                if (cqi.getElement() == null)
-                    cqi = qiLoader.fill( cqi );
-
-                ((QuestionItem) cqi.getElement())
-                    .setConceptRefs(findByQuestionItem(cqi.getElementId(),null).stream()
+        try {
+            instance.getConceptQuestionItems().forEach( qiLoader::fill );
+            instance.getConceptQuestionItems().forEach( cqi ->
+                ((QuestionItem) cqi.getElement()).setConceptRefs(
+                    findByQuestionItem(cqi.getElementId(),null).stream()
                         .map( ConceptRef::new )
-                        .collect( Collectors.toList()) );
-            } );
+                        .collect( Collectors.toList())
+                )
+            );
         } catch (Exception ex){
             LOG.error("ConceptService.postLoadProcessing",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map( StackTraceElement::toString )
-                .forEach(LOG::info);
         }
 
         instance.getChildren().forEach(this::postLoadProcessing);
         return instance;
     }
-
 
 
 }

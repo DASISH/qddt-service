@@ -10,7 +10,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
@@ -272,7 +271,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 .setTextAlignment(TextAlignment.RIGHT)
                 .add(new Paragraph("Version " +this.getVersion().toString())));
         for (Category cat: getFlatManagedRepresentation(getManagedRepresentation())) {
-            if (cat.getHierarchyLevel() == HierarchyLevel.ENTITY ){
+            if (cat.getCategoryType() == CategoryType.CATEGORY ){
                 table.addCell(new Cell()
                         .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
                 table.addCell(new Cell().add(new Paragraph(cat.getLabel()))

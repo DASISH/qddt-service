@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
@@ -174,8 +175,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 LOG.debug("PDF -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
-                instance.getConcepts().forEach( concept ->
-                    concept.getConceptQuestionItems().forEach( qiLoader::fill ) );
+                instance.getConcepts().forEach( this::loadConceptQuestion );
+
                 // when we print hierarchy we don't need qi concept reference....
             }
         } catch (Exception ex){
@@ -185,5 +186,10 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return instance;
     }
 
+
+    private void loadConceptQuestion(Concept parent) {
+        parent.getChildren().forEach( this::loadConceptQuestion );
+        parent.getConceptQuestionItems().forEach( qiLoader::fill );
+    }
 
 }

@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram;
 
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.user.User;
@@ -115,10 +116,9 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 instance.getStudies().forEach(  study ->
                     study.getTopicGroups().forEach( topic -> {
-                        topic.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
+                        topic.getTopicQuestionItems().forEach( qiLoader::fill );
                         Hibernate.initialize(topic.getConcepts());
-                        topic.getConcepts().forEach( concept ->
-                            concept.getConceptQuestionItems().forEach( qiLoader::fill ) );
+                        topic.getConcepts().forEach( this::loadConceptQuestion );
                     } ) );
                 LOG.debug("PDF -> fetching  concepts ");
             }
@@ -126,6 +126,11 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
             LOG.error("postLoadProcessing",ex);
         }
         return instance;
+    }
+
+    private void loadConceptQuestion(Concept parent) {
+        parent.getChildren().forEach( this::loadConceptQuestion );
+        parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
 }

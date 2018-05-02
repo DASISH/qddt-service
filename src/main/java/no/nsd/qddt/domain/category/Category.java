@@ -434,7 +434,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     private void populateCatCodes(Category current,List<Code> codes){
      assert current != null;
-     if (current.getHierarchyLevel() == HierarchyLevel.ENTITY ) {
+     if (current.getHierarchyLevel() == HierarchyLevel.ENTITY) {
          try {
              current.setCode(codes.get(_Index));
              _Index++;

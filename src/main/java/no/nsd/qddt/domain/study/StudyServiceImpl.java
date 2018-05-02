@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.study;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -110,16 +111,17 @@ class StudyServiceImpl implements StudyService {
 
             instance.getTopicGroups().forEach(t-> {
                 t.getTopicQuestionItems().forEach( qiLoader::fill );
-                t.getConcepts().forEach( c-> {
-                    c.getConceptQuestionItems().forEach( qiLoader::fill  );
-                    c.getChildren().forEach(
-                       cc-> cc.getConceptQuestionItems().forEach( qiLoader::fill  )
-                    );
-                } );
+                Hibernate.initialize(t.getConcepts());
+                t.getConcepts().forEach( this::loadConceptQuestion );
             });
 
             // when we print hierarchy we don't need qi concept reference....
         }
         return instance;
+    }
+
+    private void loadConceptQuestion(Concept parent) {
+        parent.getChildren().forEach( this::loadConceptQuestion );
+        parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 }
