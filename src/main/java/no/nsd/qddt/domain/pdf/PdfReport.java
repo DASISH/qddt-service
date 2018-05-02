@@ -183,7 +183,7 @@ public class PdfReport extends PdfDocument {
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(new Paragraph(element.getModifiedBy().getUsername()))
+            new Cell().add(new Paragraph(StringTool.CapString( element.getModifiedBy().getUsername())))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
