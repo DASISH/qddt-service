@@ -52,12 +52,12 @@ class UniverseServiceImpl implements UniverseService {
         return universeRepository.save(universe);
     }
 
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<Universe> save(List<Universe> universes) {
-        return universeRepository.save(universes);
-    }
+
+//    @Transactional()
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+//    public List<Universe> save(List<Universe> universes) {
+//        return universeRepository.save(universes);
+//    }
 
     @Override
     @Transactional()

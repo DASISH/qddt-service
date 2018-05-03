@@ -9,13 +9,14 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
  */
 @Audited
 @Entity
-public class InstrumentElement  {
+public class InstrumentElement  implements Cloneable {
 
     @Id
     @Type(type="pg-uuid")
@@ -78,5 +79,13 @@ public class InstrumentElement  {
     }
     public void setElementRef(ElementRef elementRef) {
         this.elementRef = elementRef;
+    }
+
+    public InstrumentElement clone(){
+        InstrumentElement clone = new InstrumentElement();
+        clone.setElementRef( this.elementRef.clone() );
+        clone.setParameters( this.getParameters().stream().map( InstrumentParameter::clone ).collect( Collectors.toSet() ) );
+        clone.setSequences( this.sequences.stream().map( InstrumentElement::clone ).collect( Collectors.toList() ) );
+        return clone;
     }
 }

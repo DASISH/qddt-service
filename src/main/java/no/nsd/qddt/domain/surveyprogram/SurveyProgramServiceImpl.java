@@ -76,13 +76,13 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         }
     }
 
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<SurveyProgram> save(List<SurveyProgram> instances) {
-        return surveyProgramRepository.save(instances)
-            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
-    }
+
+//    @Transactional()
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+//    public List<SurveyProgram> save(List<SurveyProgram> instances) {
+//        return surveyProgramRepository.save(instances)
+//            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
+//    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")

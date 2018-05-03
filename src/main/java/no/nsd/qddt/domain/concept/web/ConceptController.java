@@ -89,7 +89,7 @@ public class ConceptController extends AbstractController {
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
     public ConceptJsonEdit copy(@PathVariable("uuid") UUID sourceId ,
                                 @PathVariable("rev") Integer sourceRev,
-                                @PathVariable("parentUuid") UUID parentId) throws Exception {
+                                @PathVariable("parentUuid") UUID parentId)  {
         return concept2Json(
             service.save(
                 service.copy( sourceId, sourceRev, parentId ) ) );

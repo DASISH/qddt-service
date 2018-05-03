@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.controlconstruct.factory;
+package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 
 import java.util.stream.Collectors;
 
-public class SequenceConstructFactory implements IEntityFactory<Sequence> {
+public class FactorySequenceConstruct implements IEntityFactory<Sequence> {
 
 	@Override
 	public Sequence create() {

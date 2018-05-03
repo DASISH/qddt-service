@@ -69,12 +69,6 @@ class StudyServiceImpl implements StudyService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<Study> save(List<Study> instances) {
-        return studyRepository.save(instances);
-    }
-
-    @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {

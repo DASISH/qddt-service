@@ -1,11 +1,10 @@
-package no.nsd.qddt.domain.controlconstruct.factory;
+package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.IEntityFactory;
-import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 
 import java.util.stream.Collectors;
 
-public class ConditionConstructFactory implements IEntityFactory<ConditionConstruct> {
+public class FactoryConditionConstruct implements IEntityFactory<ConditionConstruct> {
 
 	@Override
 	public ConditionConstruct create() {

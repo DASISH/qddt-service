@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 @Audited
 @Embeddable
-public class InstrumentParameter {
+public class InstrumentParameter implements Cloneable {
 
     private String name;
 
@@ -62,5 +62,8 @@ public class InstrumentParameter {
             + "}}";
     }
 
+    public InstrumentParameter clone() {
+        return new InstrumentParameter( name, referencedId );
+    }
 
 }

@@ -140,7 +140,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return responseCardinality;
     }
 
-    private void setResponseCardinality(ResponseCardinality responseCardinality) {
+    protected void setResponseCardinality(ResponseCardinality responseCardinality) {
         this.responseCardinality = responseCardinality;
     }
 

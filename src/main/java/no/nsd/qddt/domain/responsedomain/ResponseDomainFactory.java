@@ -1,7 +1,8 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import java.util.List;
 import no.nsd.qddt.domain.IEntityFactory;
+
+import java.util.List;
 
 public class ResponseDomainFactory implements IEntityFactory<ResponseDomain> {
 
@@ -17,7 +18,8 @@ public class ResponseDomainFactory implements IEntityFactory<ResponseDomain> {
         dest.setDisplayLayout(source.getDisplayLayout());
         List<Code>  codes = source.getCodes();
         dest.setManagedRepresentation(source.getManagedRepresentation().clone());
-
+				dest.setResponseKind( source.getResponseKind() );
+				dest.setResponseCardinality( source.getResponseCardinality() );
         return dest;
 	}
     

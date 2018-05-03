@@ -53,11 +53,11 @@ class CommentServiceImpl  implements CommentService  {
         return commentRepository.save(instance);
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-    public List<Comment> save(List<Comment> instances) {
-        return commentRepository.save(instances);
-    }
+//    @Override
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+//    public List<Comment> save(List<Comment> instances) {
+//        return commentRepository.save(instances);
+//    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")

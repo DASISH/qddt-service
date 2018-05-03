@@ -1,11 +1,10 @@
-package no.nsd.qddt.domain.controlconstruct.factory;
+package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.IEntityFactory;
-import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 
 import java.util.stream.Collectors;
 
-public class StatementConstructFactory implements IEntityFactory<StatementItem> {
+public class FactoryStatementConstruct implements IEntityFactory<StatementItem> {
 
 	@Override
 	public StatementItem create() {

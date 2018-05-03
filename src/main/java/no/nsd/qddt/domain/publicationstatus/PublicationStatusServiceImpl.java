@@ -43,12 +43,11 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
                 prePersistProcessing(instance));
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<PublicationStatus> save(List<PublicationStatus> instances) {
-        instances.forEach(this::prePersistProcessing);
-        return repository.save(instances);
-    }
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+//    public List<PublicationStatus> save(List<PublicationStatus> instances) {
+//        instances.forEach(this::prePersistProcessing);
+//        return repository.save(instances);
+//    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")

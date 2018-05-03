@@ -106,14 +106,6 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<Category> save(List<Category> instances) {
-        return categoryRepository.save(instances);
-    }
-
-
-    @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         categoryRepository.delete(uuid);

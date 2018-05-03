@@ -74,12 +74,12 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
                         prePersistProcessing(instance)));
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<ResponseDomain> save(List<ResponseDomain> instances) {
-        instances.forEach(this::prePersistProcessing);
-        return responseDomainRepository.save(instances);
-    }
+
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+//    public List<ResponseDomain> save(List<ResponseDomain> instances) {
+//        instances.forEach(this::prePersistProcessing);
+//        return responseDomainRepository.save(instances);
+//    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")

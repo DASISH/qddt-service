@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.IElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
+import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,13 +30,16 @@ import static no.nsd.qddt.utils.StringTool.likeify;
 class InstrumentServiceImpl implements InstrumentService {
 
     private final InstrumentRepository instrumentRepository;
+    private final InstrumentAuditService auditService;
     private final ElementLoader ccLoader;
 
     @Autowired
     public InstrumentServiceImpl(InstrumentRepository instrumentRepository
+                                ,InstrumentAuditService instrumentAuditService
                                 ,ControlConstructAuditService controlConstructService) {
                                     
         this.instrumentRepository = instrumentRepository;
+        this.auditService = instrumentAuditService;
         this.ccLoader = new ElementLoader( controlConstructService );
     }
 
@@ -59,14 +63,9 @@ class InstrumentServiceImpl implements InstrumentService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Instrument save(Instrument instance) {
-        return instrumentRepository.save( prePersistProcessing( instance) );
+        return  postLoadProcessing(  instrumentRepository.save( prePersistProcessing( instance) ));
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<Instrument> save(List<Instrument> instances) {
-        return instrumentRepository.save(instances);
-    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
@@ -87,15 +86,15 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Page<Instrument> findAllPageable(Pageable pageable) {
-        pageable = defaultSort(pageable, "name ASC", "modified DESC");
 
+        pageable = defaultSort(pageable, "name ASC", "modified DESC");
         return instrumentRepository.findAll(pageable);
     }
 
     @Override
     public Page<Instrument> findByNameAndDescriptionPageable(String name, String description,InstrumentKind kind, Pageable pageable) {
-        pageable = defaultSort(pageable, "name ASC", "modified DESC");
 
+        pageable = defaultSort(pageable, "name ASC", "modified DESC");
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable);
     }
 
@@ -107,30 +106,35 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {
+
         sequence.getElement().getSequence().stream().forEach( ccLoader::fill );
         return sequence.getElement().getSequence();
     }
 
     protected Instrument prePersistProcessing(Instrument instance) {
-        instance.getSequence().stream()
-            .forEach( s-> ccLoader.fill( s.getElementRef() ) );
+        Integer rev = null;
+        if(instance.isBasedOn())
+            rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+
+        if (instance.isBasedOn() || instance.isNewCopy())
+            instance = new InstrumentFactory().copy(instance, rev );
+
+        instance.getSequence().stream().forEach( s-> ccLoader.fill( s.getElementRef() ) );
         return instance;
     }
 
 
     protected Instrument postLoadProcessing(Instrument instance) {
-//        System.out.println("Instrument postLoadProcessing " + instance.getName() + " - "  + instance.getSequence().size());
+
         instance.getSequence().forEach( s -> postLoadProcessing( s.getElementRef() ) );
         return instance;
     }
 
 
     IElementRef postLoadProcessing(IElementRef instance) {
-//        System.out.println("IElementRef postLoadProcessing " + instance.getName() + " - "  + instance.getElementKind().name());
 
         if (instance.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT)
             return ccLoader.fill( instance );
-
         return instance;
     }
 }

@@ -61,11 +61,11 @@ class UserServiceImpl implements UserService {
                         prePersistProcessing(user)));
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<User> save(List<User> instances) {
-        return userRepository.save(instances);
-    }
+
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+//    public List<User> save(List<User> instances) {
+//        return userRepository.save(instances);
+//    }
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

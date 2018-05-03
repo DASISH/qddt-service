@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
+import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.utils.SecurityContext;
@@ -21,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
-import static no.nsd.qddt.utils.StringTool.likeify;
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.StringTool.likeify;
 /**
  * @author Stig Norland
  */
@@ -33,14 +34,18 @@ public class PublicationServiceImpl implements PublicationService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final PublicationRepository repository;
+    private final PublicationAuditService auditService;
+
     private boolean showPrivate= true;
 
     @Autowired
     ElementServiceLoader serviceLoader;
 
     @Autowired
-    public PublicationServiceImpl(PublicationRepository repository)
+    public PublicationServiceImpl(PublicationRepository repository
+                                  ,PublicationAuditService publicationAuditService)
     {
+        this.auditService = publicationAuditService;
         this.repository = repository;
     }
 
@@ -68,21 +73,14 @@ public class PublicationServiceImpl implements PublicationService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Publication save(Publication instance) {
         try {
-
-            return  postLoadProcessing(repository.save(instance));
+            return  postLoadProcessing(
+                repository.save(
+                    prePersistProcessing( instance)));
 
         } catch (Exception ex){
-
             LOG.error("Publication save ->",ex);
             throw ex;
         }
-    }
-
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<Publication> save(List<Publication> instances) {
-        return repository.save(instances);
     }
 
 
@@ -152,7 +150,16 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     protected Publication prePersistProcessing(Publication instance) {
+        Integer rev = null;
+        if(instance.isBasedOn())
+            rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+
+        if (instance.isBasedOn() || instance.isNewCopy()) {
+            instance = new PublicationFactory().copy( instance, rev );
+            LOG.info( " PublicationFactory().copy " );
+        }
         return instance;
+
     }
 
     private Publication postLoadProcessing(Publication instance) {

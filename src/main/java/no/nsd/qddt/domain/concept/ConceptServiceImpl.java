@@ -81,7 +81,6 @@ class ConceptServiceImpl implements ConceptService {
         return postLoadProcessing(instance);
     }
 
-    @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public List<Concept> save(List<Concept> instances) {

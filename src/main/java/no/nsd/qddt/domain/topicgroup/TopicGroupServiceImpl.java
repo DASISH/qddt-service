@@ -86,12 +86,11 @@ class TopicGroupServiceImpl implements TopicGroupService {
         return instance;
     }
 
-    @Override
-    @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-    public List<TopicGroup> save(List<TopicGroup> instances) {
-        return topicGroupRepository.save(instances);
-    }
+//    @Transactional
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+//    public List<TopicGroup> save(List<TopicGroup> instances) {
+//        return topicGroupRepository.save(instances);
+//    }
 
     private EntityManagerFactory emf;
 

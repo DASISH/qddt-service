@@ -77,11 +77,6 @@ class InstrumentElementServiceImpl implements InstrumentElementService  {
         return instrumentRepository.save( instance );
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<InstrumentElement> save(List<InstrumentElement> instances) {
-        return instrumentRepository.save( instances );
-    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")

@@ -47,7 +47,6 @@ class AgencyServiceImpl implements AgencyService {
         return agencyRepository.findAll();
     }
 
-    @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<Agency> save(List<Agency> instances) {
         List<Agency> target = new ArrayList<>();

@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.controlconstruct.factory.ConditionConstructFactory;
-import no.nsd.qddt.domain.controlconstruct.factory.QuestionConstructFactory;
-import no.nsd.qddt.domain.controlconstruct.factory.SequenceConstructFactory;
-import no.nsd.qddt.domain.controlconstruct.factory.StatementConstructFactory;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactoryConditionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactoryQuestionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactorySequenceConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactoryStatementConstruct;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
@@ -94,7 +94,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 prePersistProcessing(instance)));
     }
 
-    @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
@@ -149,35 +148,39 @@ class ControlConstructServiceImpl implements ControlConstructService {
         switch (instance.getClassKind()) {
             case "QUESTION_CONSTRUCT":
                 if (instance instanceof QuestionConstruct) {
-                    ((QuestionConstruct)instance).populateControlConstructInstructions();
-                    ((QuestionConstruct)instance).getControlConstructInstructions().forEach(cqi->{
+                    QuestionConstruct qc = (QuestionConstruct)instance;
+                    qc.populateControlConstructInstructions();
+
+                    qc.getControlConstructInstructions().forEach(cqi->{
                         if (cqi.getInstruction().getId() == null)
                             cqi.setInstruction(iService.save(cqi.getInstruction()));
                     });
-                    ((QuestionConstruct)instance).getUniverse().forEach(universe->{
+
+                    qc.getUniverse().forEach(universe->{
                         if(universe.getId() == null) {
                             uService.save( universe );
                         }
                     });
 
-                    if (((QuestionConstruct)instance).getQuestionItem() != null ) {
-                        QuestionItem question = ((QuestionConstruct)instance).getQuestionItem();
-                        ((QuestionConstruct)instance).setQuestionName(question.getName());
-                        ((QuestionConstruct)instance).setQuestionText(question.getQuestion());
+                    if (qc.getQuestionItem() != null ) {
+                        QuestionItem question = qc.getQuestionItem();
+                        qc.setQuestionName(question.getName());
+                        qc.setQuestionText(question.getQuestion());
                     }
-                    if(instance.isBasedOn() || instance.isNewCopy()) {
-                        
-                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = (S)new QuestionConstructFactory().copy((QuestionConstruct)instance, rev );
+
+                    if(qc.isBasedOn() || qc.isNewCopy()) {
+                        Integer rev= auditService.findLastChange(qc.getId()).getRevisionNumber();
+                        qc = new FactoryQuestionConstruct().copy(qc, rev );
                     }
+                    instance = (S)qc;
                 }
                 break;
             case "SEQUENCE_CONSTRUCT":
                 if (instance instanceof Sequence) {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
-                        
+
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = (S)new SequenceConstructFactory().copy((Sequence)instance, rev );
+                        instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
                     }
                 }
                 break;
@@ -186,7 +189,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)new ConditionConstructFactory().copy((ConditionConstruct)instance, rev );
+                        instance =  (S)new FactoryConditionConstruct().copy((ConditionConstruct)instance, rev );
                     }
                 }       
                 break; 
@@ -195,7 +198,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     if(instance.isBasedOn() || instance.isNewCopy()) {
                         
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)new StatementConstructFactory().copy((StatementItem)instance, rev );
+                        instance =  (S)new FactoryStatementConstruct().copy((StatementItem)instance, rev );
                     }   
                 }
                 break;
@@ -206,18 +209,20 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private  <S extends ControlConstruct> S  postLoadProcessing(S instance) {
         assert  (instance != null);
         if ( instance instanceof QuestionConstruct) {
-            ((QuestionConstruct)instance).populateInstructions();                // instructions has to be unpacked into pre and post instructions
+            QuestionConstruct qc = (QuestionConstruct)instance;
+            qc.populateInstructions();                // instructions has to be unpacked into pre and post instructions
 
-            if (((QuestionConstruct)instance).getQuestionItemUUID() == null)  {   // before returning fetch correct version of QI...
-                ((QuestionConstruct)instance).setQuestionItemRevision(0);
+            if (qc.getQuestionItemUUID() == null)  {   // before returning fetch correct version of QI...
+                qc.setQuestionItemRevision(0);
             } else {
                 Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
-                    ((QuestionConstruct)instance).getQuestionItemUUID(),
-                    ((QuestionConstruct)instance).getQuestionItemRevision());
+                    qc.getQuestionItemUUID(),
+                    qc.getQuestionItemRevision());
 
-                ((QuestionConstruct)instance).setQuestionItemRevision(rev.getRevisionNumber());
-                ((QuestionConstruct)instance).setQuestionItem(rev.getEntity());
+                qc.setQuestionItemRevision(rev.getRevisionNumber());
+                qc.setQuestionItem(rev.getEntity());
             }
+            return (S)qc;
         }
         return instance;
     }

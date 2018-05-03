@@ -81,12 +81,11 @@ class QuestionItemServiceImpl implements QuestionItemService {
             throw ex;
         }
     }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<QuestionItem> save(List<QuestionItem> instances) {
-        return instances.stream().map(this::save).collect(Collectors.toList());
-    }
+//
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+//    public List<QuestionItem> save(List<QuestionItem> instances) {
+//        return instances.stream().map(this::save).collect(Collectors.toList());
+//    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")

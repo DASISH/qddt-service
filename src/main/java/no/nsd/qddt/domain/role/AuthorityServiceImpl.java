@@ -51,11 +51,11 @@ class AuthorityServiceImpl implements AuthorityService {
                         prePersistProcessing(instance)));
     }
 
-    @Override
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<Authority> save(List<Authority> instances) {
-        return authorityRepository.save(instances);
-    }
+
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    public List<Authority> save(List<Authority> instances) {
+//        return authorityRepository.save(instances);
+//    }
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
