@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-abstract class BaseRef<T> implements Refs<T> {
+abstract class BaseRef<T> implements IRefs<T> {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private String name;

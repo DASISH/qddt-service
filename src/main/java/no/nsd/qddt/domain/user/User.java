@@ -29,7 +29,10 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
+
+
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "USER_ACCOUNT")
@@ -287,6 +290,6 @@ public class User {
 
     @Override
     public String toString() {
-        return " \"User \" { \"name\" : \"" + username + "@" + agency==null? "?": agency.getName() + "\" } ";
+        return " \"User \" { \"name\" : \"" + username + "@" + agency==null ? "?": agency.getName() + "\" } ";
     }
 }

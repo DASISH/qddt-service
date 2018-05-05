@@ -12,8 +12,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 /**
- * @author Dag Østgulen Heradstveit
- */
+ * @author Stig Norland
+ **/
+
 @Repository
 interface PublicationAuditRepository extends RevisionRepository<Publication, UUID, Integer> {
 

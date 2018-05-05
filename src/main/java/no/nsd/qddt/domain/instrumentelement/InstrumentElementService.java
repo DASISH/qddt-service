@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * @author Dag Østgulen Heradstveit
- */
+ * @author Stig Norland
+ **/
+
 public interface InstrumentElementService extends BaseService<InstrumentElement, UUID> {
 
     InstrumentElement getDetail(InstrumentElement element);

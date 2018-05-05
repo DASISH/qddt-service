@@ -8,6 +8,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Stig Norland
+ **/
+
 @Entity
 @Table(name = "PUBLICATION_STATUS", uniqueConstraints = {@UniqueConstraint(columnNames = {"agency_id","label"},name = "UNQ_PUBLICATION_STATUS")})
 public class PublicationStatus {

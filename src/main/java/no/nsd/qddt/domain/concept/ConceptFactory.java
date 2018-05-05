@@ -4,6 +4,9 @@ import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.elementref.ElementRef;
 
 import java.util.stream.Collectors;
+/**
+ * @author Stig Norland
+ **/
 
 public class ConceptFactory implements IEntityFactory<Concept> {
 

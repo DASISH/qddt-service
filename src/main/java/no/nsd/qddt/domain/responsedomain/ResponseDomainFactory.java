@@ -4,6 +4,11 @@ import no.nsd.qddt.domain.IEntityFactory;
 
 import java.util.List;
 
+
+/**
+ * @author Stig Norland
+ */
+
 public class ResponseDomainFactory implements IEntityFactory<ResponseDomain> {
 
 	@Override

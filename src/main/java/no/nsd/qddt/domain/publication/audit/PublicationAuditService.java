@@ -11,8 +11,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 /**
- * @author Dag Østgulen Heradstveit
- */
+ * @author Stig Norland
+ **/
+
 public interface PublicationAuditService extends BaseServiceAudit<Publication, UUID, Integer> {
 
     Page<Revision<Integer, Publication>> findRevisionByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);

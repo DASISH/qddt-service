@@ -5,6 +5,10 @@ import no.nsd.qddt.domain.instrumentelement.InstrumentElement;
 
 import java.util.stream.Collectors;
 
+/**
+ * @author Stig Norland
+ **/
+
 public class InstrumentFactory implements IEntityFactory<Instrument> {
 
 	@Override

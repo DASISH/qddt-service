@@ -4,6 +4,10 @@ import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 
 import java.util.UUID;
 
+/**
+ * @author Stig Norland
+ */
+
 
 public interface IEntityFactory<T extends AbstractEntityAudit> {
 
