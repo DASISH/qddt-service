@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.user.UserJson;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -26,7 +26,8 @@ public class ConstructJsonView  {
 
     private Timestamp modified;
 
-    private AgencyJsonView agency;
+    private UserJson modifiedBy;
+
 
     public ConstructJsonView(ControlConstruct construct){
         id = construct.getId();
@@ -35,7 +36,8 @@ public class ConstructJsonView  {
         modified = construct.getModified();
         version = construct.getVersion();
         classKind = construct.getClassKind();
-        agency = new AgencyJsonView(construct.getAgency());
+        modifiedBy = new UserJson(construct.getModifiedBy());
+        // agency = new AgencyJsonView(construct.getAgency());
     }
 
     /**
@@ -81,11 +83,18 @@ public class ConstructJsonView  {
     }
 
     /**
-     * @return the agency
+     * @return the modifiedBy
      */
-    public AgencyJsonView getAgency() {
-        return agency;
+    public UserJson getModifiedBy() {
+        return modifiedBy;
     }
+    
+    // /**
+    //  * @return the agency
+    //  */
+    // public AgencyJsonView getAgency() {
+    //     return agency;
+    // }
     
     @Override
     public boolean equals(Object o) {
