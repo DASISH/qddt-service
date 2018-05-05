@@ -107,7 +107,7 @@ public class PdfReport extends PdfDocument {
         Paragraph p = new Paragraph().setFont(bold)
                 .add("Table of Content").setDestination("toc");
         document.add(p);
-        toc.remove(0);
+        // toc.remove(0);
         List<TabStop> tabstops = new ArrayList<>();
         tabstops.add(new TabStop(580, TabAlignment.RIGHT, new DottedLine()));
         for (AbstractMap.SimpleEntry<String, AbstractMap.SimpleEntry<String, Integer>> entry : toc) {

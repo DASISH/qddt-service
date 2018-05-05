@@ -41,8 +41,7 @@ public abstract class AbstractEntity {
 
     @ManyToOne()
     @JoinColumn(name = "user_id", nullable = false)
-    private User 
-    modifiedBy;
+    private User modifiedBy;
 
     public UUID getId() {
         return id;
