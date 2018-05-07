@@ -1,6 +1,7 @@
 package no.nsd.qddt.utils.advice;
 
 import no.nsd.qddt.exception.ControllerAdviceExceptionMessage;
+import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
 import org.slf4j.Logger;
@@ -111,6 +112,25 @@ public class ControllerExceptionAdvice {
         message.setUserfriendlyMessage( "An Item required to complete the action, is no longer available.\r\n" +
         "(remove old reference, add a new one, and try again...)");
         logger.error("RetrievalFailure: " + e);
+
+        return message;
+    }
+
+    /**
+     * Handle all exceptions of type {@link  org.springframework.dao.OptimisticLockingFailureException}
+     * when they occur from methods executed from the controller.
+     * @param req servlet request
+     * @param e general exception
+     * @return a {@link no.nsd.qddt.exception.ControllerAdviceExceptionMessage} object
+     */
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReferenceInUseException.class)
+    @ResponseBody public ControllerAdviceExceptionMessage handleRefInUseFailure(HttpServletRequest req, Exception e) {
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
+            req.getRequestURL().toString(),
+             e.getMessage()
+        );
+        message.setUserfriendlyMessage( "User are author of active items and cannot be deleted, try to disable user instead." );
 
         return message;
     }
