@@ -2,7 +2,7 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.user.UserJson;
+import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;

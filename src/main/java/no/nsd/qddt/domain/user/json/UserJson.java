@@ -1,5 +1,6 @@
-package no.nsd.qddt.domain.user;
+package no.nsd.qddt.domain.user.json;
 
+import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;

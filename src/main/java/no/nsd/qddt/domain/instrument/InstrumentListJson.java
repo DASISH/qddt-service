@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.user.UserJson;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
-import javax.xml.stream.events.EndDocument;
 
 import java.sql.Timestamp;
 import java.util.UUID;

@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.user;
 
 import no.nsd.qddt.domain.role.AuthorityService;
+import no.nsd.qddt.domain.search.SearchService;
+import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +32,15 @@ class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AuthorityService authorityService;
+    private final SearchService searchService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, AuthorityService authorityService) {
+    public UserServiceImpl(UserRepository userRepository
+        ,AuthorityService authorityService
+        ,SearchService searchService) {
         this.userRepository = userRepository;
         this.authorityService = authorityService;
+        this.searchService = searchService;
     }
 
 
@@ -65,14 +71,11 @@ class UserServiceImpl implements UserService {
     }
 
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-//    public List<User> save(List<User> instances) {
-//        return userRepository.save(instances);
-//    }
-
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
+        if (searchService.findByUserId( uuid ).size() > 0)
+            throw new ReferenceInUseException( uuid.toString() );
         userRepository.delete(uuid);
     }
 
@@ -120,21 +123,25 @@ class UserServiceImpl implements UserService {
         return  userRepository.findByUsernameIgnoreCaseLike( likeify(name) , pageable );
     }
 
+
+
     @Override
     public String setPassword(IPassword instance) {
         User user = userRepository.findById( instance.getId() )
             .orElseThrow(  () -> new UserNotFoundException(instance.getId()) );
 
         if (passwordEncoder().matches( instance.getOldPassword(), user.getPassword() )) {
-            user.setPassword( passwordEncoder().encode( instance.getNewPassword() ) );
-            userRepository.save( user );
+            userRepository.setPassword( user.getId(), passwordEncoder().encode( instance.getNewPassword() ) );
             return "Password changed successfully";
         } else
             throw  new UserDeniedAuthorizationException("Request denied.");
     }
 
-    public static PasswordEncoder passwordEncoder() {
+
+    private static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
 }

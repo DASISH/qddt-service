@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.search;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -10,6 +11,10 @@ import java.util.UUID;
  */
 @Repository
 public interface SearchRepository extends JpaRepository<QddtUrl,UUID> {
+
+    List<QddtUrl> findByName(String name);
+
+    List<QddtUrl> findByUserId(UUID userId);
 
 //    @Query(value = "SELECT p.*  FROM publication p " +
 //        "LEFT JOIN publication_status ps ON p.status_id = ps.id " +

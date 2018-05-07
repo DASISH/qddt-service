@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.user;
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -27,4 +28,10 @@ interface UserRepository extends BaseRepository<User, UUID> {
     Optional<User> findByUsername(String name);
 
     Page<User> findByUsernameIgnoreCaseLike(String name, Pageable pageable);
+
+    @Query("UPDATE User u SET u.password = :passwordEncrypted  where u.id = :id")
+    void setPassword(UUID id, String passwordEncrypted);
+
+
+
 }

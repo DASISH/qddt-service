@@ -14,6 +14,7 @@ import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.user.json.UserJsonEdit;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -21,6 +22,7 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -48,12 +50,16 @@ public class User {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "username", updatable = false ,insertable = false)
+    private String name;
+
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
     @JsonIgnore
-    @Column(name = "password")
+    @Column(name = "password", updatable = false)
     private String password;
 
     @Column(name = "email")
@@ -131,6 +137,15 @@ public class User {
         setPassword(password);
     }
 
+    public User(UserJsonEdit instance) {
+        setId( instance.getId() );
+        setUsername( instance.getName() );
+        setEmail( instance.getEmail() );
+        setEnabled( instance.isEnabled() );
+        setAuthorities( new HashSet<>( Arrays.asList( instance.getAuthority()) ));
+        setAgency( instance.getAgency() );
+    }
+
     public UUID getId() {
         return id;
     }
@@ -144,6 +159,14 @@ public class User {
     }
 
     public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getName() {
+        return SafeString(username);
+    }
+
+    public void setName(String username) {
         this.username = username;
     }
 

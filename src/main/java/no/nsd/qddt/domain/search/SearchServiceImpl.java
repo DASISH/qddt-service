@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,6 +27,18 @@ public class SearchServiceImpl implements SearchService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public QddtUrl findPath(UUID id) {
         return repository.findOne( id );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+    public List<QddtUrl> findByName(String name) {
+        return null;
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public List<QddtUrl> findByUserId(UUID userId) {
+        return null;
     }
 
 

@@ -35,10 +35,12 @@ class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Authority findOne(UUID uuid) {
         return authorityRepository.findOne(uuid);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<Authority> findAll() {
         return authorityRepository.findAll();
     }
@@ -51,11 +53,6 @@ class AuthorityServiceImpl implements AuthorityService {
                         prePersistProcessing(instance)));
     }
 
-
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-//    public List<Authority> save(List<Authority> instances) {
-//        return authorityRepository.save(instances);
-//    }
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

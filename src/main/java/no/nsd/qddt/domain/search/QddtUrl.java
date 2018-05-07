@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.search;
 
 import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -18,6 +19,10 @@ public class QddtUrl {
     @Id
     UUID id;
     String path;
+    String name;
+
+    @Column(name = "user_id")
+    UUID userId;
 
     public UUID getId() {
         return id;
@@ -37,6 +42,22 @@ public class QddtUrl {
 
     public String getUrl() {
         return  path + "/" + id.toString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.comment;
 
-import no.nsd.qddt.domain.user.UserJson;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;

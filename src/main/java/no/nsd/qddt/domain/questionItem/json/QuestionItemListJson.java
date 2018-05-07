@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.questionItem.json;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.user.UserJson;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
