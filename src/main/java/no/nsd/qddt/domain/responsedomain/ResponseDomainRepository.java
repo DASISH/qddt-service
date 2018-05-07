@@ -11,8 +11,10 @@ import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
-@Repository
+
+ @Repository
 interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
 
 

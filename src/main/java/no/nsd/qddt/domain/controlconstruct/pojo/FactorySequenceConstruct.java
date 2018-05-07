@@ -6,6 +6,10 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 
 import java.util.stream.Collectors;
 
+/**
+ * @author Stig Norland
+ **/
+
 public class FactorySequenceConstruct implements IEntityFactory<Sequence> {
 
 	@Override

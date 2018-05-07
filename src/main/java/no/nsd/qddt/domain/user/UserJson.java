@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.user;
 
-import no.nsd.qddt.domain.agency.AgencyJsonView;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
@@ -17,7 +16,7 @@ public class UserJson {
 
     private String email;
 
-    private AgencyJsonView agency;
+    private String agencyUserName;
 
     public UserJson() {
     }
@@ -27,8 +26,7 @@ public class UserJson {
         setId(user.getId());
         setEmail(user.getEmail());
         setUsername(user.getUsername());
-        if (user.getAgency() != null)
-            setAgency(new AgencyJsonView(user.getAgency()));
+        setAgencyUserName(username + "@" + user.getAgency().getName());
     }
 
 
@@ -56,11 +54,17 @@ public class UserJson {
         this.email = email;
     }
 
-    public AgencyJsonView getAgency() {
-        return agency;
+    /**
+     * @param agencyUserName the agencyUserName to set
+     */
+    public void setAgencyUserName(String agencyUserName) {
+        this.agencyUserName = agencyUserName;
     }
 
-    private void setAgency(AgencyJsonView agency) {
-        this.agency = agency;
+    /**
+     * @return the agencyUserName
+     */
+    public String getAgencyUserName() {
+        return agencyUserName;
     }
 }

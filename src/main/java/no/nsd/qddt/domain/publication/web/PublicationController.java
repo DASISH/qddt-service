@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.publication.web;
 
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.publication.Publication;
+import no.nsd.qddt.domain.publication.PublicationJson;
 import no.nsd.qddt.domain.publication.PublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -73,14 +74,15 @@ public class PublicationController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Publication>> getBy(@RequestParam(value = "name", defaultValue = "*") String name,
+    public HttpEntity<PagedResources<PublicationJson>> getBy(@RequestParam(value = "name", defaultValue = "*") String name,
                                                          @RequestParam(value = "purpose", defaultValue = "") String purpose,
                                                          @RequestParam(value = "publishedstatus", required = false) String published,
                                                          @RequestParam(value = "statusId", required = false) Long statusId,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Publication> items =
-                service.findByNameOrPurposeAndStatus(name, purpose, published, statusId, pageable);
+        Page<PublicationJson> items =
+                service.findByNameOrPurposeAndStatus(name, purpose, published, statusId, pageable)
+                .map( c -> new PublicationJson(c));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

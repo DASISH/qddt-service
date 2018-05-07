@@ -23,6 +23,7 @@ import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Service("conceptAuditService")
 class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> implements ConceptAuditService  {

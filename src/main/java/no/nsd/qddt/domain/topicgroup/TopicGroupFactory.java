@@ -6,6 +6,10 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 
 import java.util.stream.Collectors;
 
+/**
+ * @author Stig Norland
+ */
+
 class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 
 	@Override

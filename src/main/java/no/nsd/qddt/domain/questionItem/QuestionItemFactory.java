@@ -2,6 +2,11 @@ package no.nsd.qddt.domain.questionItem;
 
 import no.nsd.qddt.domain.IEntityFactory;
 
+/**
+ * @author Stig Norland
+ **/
+
+
 public class QuestionItemFactory implements IEntityFactory<QuestionItem> {
 
 	@Override

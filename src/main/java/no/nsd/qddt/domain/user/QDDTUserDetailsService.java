@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Stig Norland
+ */
+
 @Service
 public class QDDTUserDetailsService implements UserDetailsService {
 

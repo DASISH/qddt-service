@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.StringTool.SafeString;
 
 /**
  * The agency expressed as filed with the DDI Agency ID Registry with optional additional sub-agency extensions.
@@ -122,7 +123,7 @@ public class Agency implements Comparable<Agency>{
     }
 
     public String getName() {
-        return name;
+        return SafeString(name);
     }
 
     public void setName(String name) {

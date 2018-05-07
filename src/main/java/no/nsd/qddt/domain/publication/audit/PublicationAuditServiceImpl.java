@@ -13,8 +13,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 /**
- * @author Dag Østgulen Heradstveit
- */
+ * @author Stig Norland
+ **/
+
 @Service("publicationAuditService")
 class PublicationAuditServiceImpl extends AbstractAuditFilter<Integer,Publication> implements PublicationAuditService {
 

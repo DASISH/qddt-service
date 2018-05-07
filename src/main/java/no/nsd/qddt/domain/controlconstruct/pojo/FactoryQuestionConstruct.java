@@ -4,6 +4,10 @@ import no.nsd.qddt.domain.IEntityFactory;
 
 import java.util.stream.Collectors;
 
+/**
+ * @author Stig Norland
+ **/
+
 public class FactoryQuestionConstruct implements IEntityFactory<QuestionConstruct> {
 
     @Override
