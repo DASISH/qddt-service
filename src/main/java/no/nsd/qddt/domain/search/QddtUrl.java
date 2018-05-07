@@ -68,13 +68,17 @@ public class QddtUrl {
         QddtUrl qddtUrl = (QddtUrl) o;
 
         if (id != null ? !id.equals( qddtUrl.id ) : qddtUrl.id != null) return false;
-        return path != null ? path.equals( qddtUrl.path ) : qddtUrl.path == null;
+        if (path != null ? !path.equals( qddtUrl.path ) : qddtUrl.path != null) return false;
+        if (name != null ? !name.equals( qddtUrl.name ) : qddtUrl.name != null) return false;
+        return userId != null ? userId.equals( qddtUrl.userId ) : qddtUrl.userId == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
         return result;
     }
 
@@ -83,6 +87,8 @@ public class QddtUrl {
         return "{\"QddtUrl\":{"
             + "\"id\":" + id
             + ", \"path\":\"" + path + "\""
+            + ", \"name\":\"" + name + "\""
+            + ", \"userId\":" + userId
             + "}}";
     }
 

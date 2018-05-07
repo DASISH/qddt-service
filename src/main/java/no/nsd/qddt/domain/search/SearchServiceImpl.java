@@ -32,13 +32,13 @@ public class SearchServiceImpl implements SearchService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public List<QddtUrl> findByName(String name) {
-        return null;
+        return repository.findByName( name );
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public List<QddtUrl> findByUserId(UUID userId) {
-        return null;
+        return repository.findByUserId( userId );
     }
 
 
