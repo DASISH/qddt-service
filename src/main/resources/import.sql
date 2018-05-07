@@ -210,58 +210,73 @@ CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
          'user_authority_aud'::text AS tablename
   FROM user_authority_aud;
 
-CREATE VIEW uuidpath (id, path) AS
+drop table uuidpath;
+drop view uuidpath;
+
+CREATE VIEW uuidpath (id, path, name, user_id) AS
   SELECT c.id,
-    '/cateories'::text AS path
+    '/categories'::text AS path,
+    c.name,
+    c.user_id
   FROM category c
   WHERE ((c.category_kind)::text = 'CATEGORY'::text)
   UNION
   SELECT c.id,
-    '/missing'::text AS path
+    '/missing'::text AS path,
+    c.name,
+    c.user_id
   FROM category c
   WHERE ((c.category_kind)::text = 'MISSING_GROUP'::text)
   UNION
   SELECT cc.id,
-    '/questions'::text AS path
+    '/questions'::text AS path,
+    cc.name,
+    cc.user_id
   FROM control_construct cc
   WHERE ((cc.control_construct_kind)::text = 'QUESTION_CONSTRUCT'::text)
   UNION
   SELECT cc.id,
-    '/sequences'::text AS path
+    '/sequences'::text AS path,
+    cc.name,
+    cc.user_id
   FROM control_construct cc
   WHERE ((cc.control_construct_kind)::text = 'SEQUENCE_CONSTRUCT'::text)
   UNION
   SELECT instrument.id,
-    '/instruments'::text AS path
+    '/instruments'::text AS path,
+    instrument.name,
+    instrument.user_id
   FROM instrument
   UNION
   SELECT publication.id,
-    '/publications'::text AS path
+    '/publications'::text AS path,
+    publication.name,
+    publication.user_id
   FROM publication
   UNION
   SELECT question_item.id,
-    '/questionitems'::text AS path
+    '/questionitems'::text AS path,
+    question_item.name,
+    question_item.user_id
   FROM question_item
   UNION
   SELECT responsedomain.id,
-    '/responsedomains'::text AS path
+    '/responsedomains'::text AS path,
+    responsedomain.name,
+    responsedomain.user_id
   FROM responsedomain
   UNION
   SELECT concept.id,
-    '/concept'::text AS path
+    '/concept'::text AS path,
+    concept.name,
+    concept.user_id
   FROM concept
   UNION
   SELECT topic_group.id,
-    '/module'::text AS path
-  FROM topic_group
-  UNION
-  SELECT study.id,
-    '/study'::text AS path
-  FROM study
-  UNION
-  SELECT survey_program.id,
-    '/survey'::text AS path
-  FROM survey_program;
+    '/module'::text AS path,
+    topic_group.name,
+    topic_group.user_id
+  FROM topic_group;
 
 
 
