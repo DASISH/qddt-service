@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,5 +120,21 @@ class UserServiceImpl implements UserService {
         return  userRepository.findByUsernameIgnoreCaseLike( likeify(name) , pageable );
     }
 
+    @Override
+    public String setPassword(IPassword instance) {
+        User user = userRepository.findById( instance.getId() )
+            .orElseThrow(  () -> new UserNotFoundException(instance.getId()) );
+
+        if (passwordEncoder().matches( instance.getOldPassword(), user.getPassword() )) {
+            user.setPassword( passwordEncoder().encode( instance.getNewPassword() ) );
+            userRepository.save( user );
+            return "Password changed successfully";
+        } else
+            throw  new UserDeniedAuthorizationException("Request denied.");
+    }
+
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }

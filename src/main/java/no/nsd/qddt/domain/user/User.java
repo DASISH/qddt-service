@@ -48,6 +48,10 @@ public class User {
     @Column(name = "username")
     private String username;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "agency_id")
+    private Agency agency;
+
     @JsonIgnore
     @Column(name = "password")
     private String password;
@@ -117,9 +121,6 @@ public class User {
     @OneToMany(mappedBy="modifiedBy")
     private Set<Category> categories = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
 
     public User() {
     }

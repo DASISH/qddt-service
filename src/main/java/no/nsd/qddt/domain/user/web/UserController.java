@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.user.web;
 
+import no.nsd.qddt.domain.user.IPassword;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.utils.SecurityContext;
@@ -12,10 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -40,19 +38,22 @@ public class UserController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<User>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                             Pageable pageable, PagedResourcesAssembler assembler) {
-        Page<User> items =
-            userService.getByName(name, pageable);
 
+        Page<User> items = userService.getByName(name, pageable);
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    public User update(@RequestBody User instance) {
+        return userService.save(instance);
+    }
 
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)
-//    public List<User> listByUser() {
-//        User user = SecurityContext.getUserDetails().getUser();
-//        user.getAuthorities().
-//        return userService.findByAgency(user);
-//    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    public String resetPassword(@RequestBody IPassword instance) {
+        return userService.setPassword(instance);
+    }
+
 
 }
