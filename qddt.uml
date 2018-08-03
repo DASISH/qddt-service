@@ -3,188 +3,56 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="1260.7539772727273" y="321.0">no.nsd.qddt.domain.responsedomain.ResponseDomain</node>
-    <node x="1283.2539772727273" y="576.0">no.nsd.qddt.domain.questionItem.QuestionItem</node>
-    <node x="899.0937500000001" y="965.0">no.nsd.qddt.domain.controlconstruct.pojo.Sequence</node>
-    <node x="1239.0039772727273" y="0.0">no.nsd.qddt.domain.category.Category</node>
-    <node x="1124.0937500000002" y="943.0">no.nsd.qddt.domain.instrumentelement.InstrumentElement</node>
-    <node x="0.0" y="642.0">no.nsd.qddt.domain.instruction.Instruction</node>
-    <node x="581.0892045454548" y="631.0">no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct</node>
-    <node x="1442.23125" y="1748.0">no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
-    <node x="511.0937500000002" y="976.0">no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct</node>
-    <node x="100.09375000000023" y="899.0">no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct</node>
-    <node x="166.0" y="642.0">no.nsd.qddt.domain.universe.Universe</node>
-    <node x="739.0937500000001" y="987.0">no.nsd.qddt.domain.controlconstruct.pojo.StatementItem</node>
-    <node x="1097.1914772727273" y="631.0">no.nsd.qddt.domain.instrumentelement.InstrumentParameter</node>
-    <node x="1133.0937500000002" y="1230.0">no.nsd.qddt.domain.instrument.Instrument</node>
-    <node x="1416.23125" y="1537.0">no.nsd.qddt.domain.study.Study</node>
-    <node x="1476.3892045454547" y="899.0">no.nsd.qddt.domain.concept.Concept</node>
-    <node x="1557.389204545455" y="653.0">no.nsd.qddt.domain.elementref.ElementRef</node>
-    <node x="1440.9687500000002" y="1186.0">no.nsd.qddt.domain.topicgroup.TopicGroup</node>
+    <node x="640.0" y="395.0">no.nsd.qddt.domain.responsedomain.ResponseDomain</node>
+    <node x="601.0" y="711.0">no.nsd.qddt.domain.questionItem.QuestionItem</node>
+    <node x="388.0" y="189.0">no.nsd.qddt.domain.controlconstruct.pojo.Sequence</node>
+    <node x="0.0" y="395.0">no.nsd.qddt.domain.category.Category</node>
+    <node x="0.0" y="939.0">no.nsd.qddt.domain.instrumentelement.InstrumentElement</node>
+    <node x="719.0" y="939.0">no.nsd.qddt.domain.instruction.Instruction</node>
+    <node x="257.75" y="0.0">no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct</node>
+    <node x="-194.0" y="516.0">no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
+    <node x="160.0" y="200.0">no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct</node>
+    <node x="613.0" y="123.0">no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct</node>
+    <node x="910.0" y="939.0">no.nsd.qddt.domain.universe.Universe</node>
+    <node x="0.0" y="211.0">no.nsd.qddt.domain.controlconstruct.pojo.StatementItem</node>
+    <node x="514.0" y="939.0">no.nsd.qddt.domain.instrumentelement.InstrumentParameter</node>
+    <node x="315.0" y="711.0">no.nsd.qddt.domain.instrument.Instrument</node>
+    <node x="0.0" y="711.0">no.nsd.qddt.domain.concept.Concept</node>
+    <node x="883.0" y="711.0">no.nsd.qddt.domain.study.Study</node>
+    <node x="0.0" y="1101.0">no.nsd.qddt.domain.elementref.ElementRef</node>
+    <node x="341.0" y="395.0">no.nsd.qddt.domain.topicgroup.TopicGroup</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="no.nsd.qddt.domain.instrumentelement.InstrumentElement" target="no.nsd.qddt.domain.instrument.Instrument">
-      <point x="32.375" y="69.5" />
-      <point x="1285.9687500000002" y="1166.0" />
-      <point x="1283.7187500000002" y="1166.0" />
-      <point x="30.125" y="-91.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.instrument.Instrument" target="no.nsd.qddt.domain.instrumentelement.InstrumentElement">
-      <point x="-90.375" y="-91.5" />
-      <point x="1163.2187500000002" y="1166.0" />
-      <point x="1156.4687500000002" y="1166.0" />
-      <point x="-97.125" y="69.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.topicgroup.TopicGroup">
-      <point x="13.5625" y="-80.5" />
-      <point x="1538.29375" y="1477.0" />
-      <point x="1488.7187500000002" y="1477.0" />
-      <point x="-143.25" y="135.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.controlconstruct.pojo.Sequence" target="no.nsd.qddt.domain.elementref.ElementRef">
-      <point x="25.625" y="-47.5" />
-      <point x="1027.21875" y="839.0" />
-      <point x="1562.7892045454548" y="839.0" />
-      <point x="-48.6" y="14.5" />
-    </edge>
     <edge source="no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct" target="no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct">
-      <point x="24.4375" y="-113.5" />
-      <point x="320.0312500000002" y="779.0" />
-      <point x="598.5267045454548" y="779.0" />
-      <point x="-122.0625" y="36.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.instrumentelement.InstrumentElement" target="no.nsd.qddt.domain.instrumentelement.InstrumentParameter">
-      <point x="-32.375" y="-69.5" />
-      <point x="1221.2187500000002" y="809.0" />
-      <point x="1217.1914772727273" y="809.0" />
-      <point x="40.0" y="36.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.surveyprogram.SurveyProgram" target="no.nsd.qddt.domain.study.Study">
-      <point x="-20.625" y="-58.5" />
-      <point x="1504.10625" y="1723.0" />
-      <point x="1497.60625" y="1723.0" />
-      <point x="-27.125" y="80.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct" target="no.nsd.qddt.domain.instruction.Instruction">
-      <point x="-122.1875" y="-113.5" />
-      <point x="173.40625000000023" y="869.0" />
-      <point x="109.5" y="869.0" />
-      <point x="36.5" y="25.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.instrument.Instrument">
-      <point x="-67.8125" y="-80.5" />
-      <point x="1456.91875" y="1507.0" />
-      <point x="1223.4687500000002" y="1507.0" />
-      <point x="-30.125" y="91.5" />
+      <point x="0.0" y="-113.5" />
+      <point x="808.5" y="93.0" />
+      <point x="466.875" y="93.0" />
+      <point x="89.625" y="36.5" />
     </edge>
     <edge source="no.nsd.qddt.domain.controlconstruct.pojo.StatementItem" target="no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct">
-      <point x="35.0" y="-25.5" />
-      <point x="844.0937500000001" y="799.0" />
-      <point x="772.9017045454548" y="799.0" />
-      <point x="52.3125" y="36.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.topicgroup.TopicGroup">
-      <point x="101.25" y="113.5" />
-      <point x="1712.6392045454547" y="1146.0" />
-      <point x="1655.8437500000002" y="1146.0" />
-      <point x="23.875" y="-135.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.study.Study">
-      <point x="143.25000000000006" y="135.5" />
-      <point x="1775.2187500000002" y="1517.0" />
-      <point x="1619.66875" y="1517.0" />
-      <point x="94.9375" y="-80.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct" target="no.nsd.qddt.domain.questionItem.QuestionItem">
-      <point x="122.1875" y="-113.5" />
-      <point x="417.7812500000002" y="819.0" />
-      <point x="1312.8789772727273" y="819.0" />
-      <point x="-88.875" y="91.5" />
+      <point x="0.0" y="-25.5" />
+      <point x="70.0" y="93.0" />
+      <point x="287.625" y="93.0" />
+      <point x="-89.625" y="36.5" />
     </edge>
     <edge source="no.nsd.qddt.domain.controlconstruct.pojo.Sequence" target="no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct">
-      <point x="-25.625" y="-47.5" />
-      <point x="975.9687500000001" y="779.0" />
-      <point x="842.6517045454548" y="779.0" />
-      <point x="122.0625" y="36.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.responsedomain.ResponseDomain" target="no.nsd.qddt.domain.category.Category">
-      <point x="66.75" y="-102.5" />
-      <point x="74.0" y="135.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.elementref.ElementRef">
-      <point x="33.75" y="-113.5" />
-      <point x="1645.1392045454547" y="879.0" />
-      <point x="1616.7892045454548" y="879.0" />
-      <point x="5.399999999999977" y="14.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.instrumentelement.InstrumentElement" target="no.nsd.qddt.domain.elementref.ElementRef">
-      <point x="97.125" y="-69.5" />
-      <point x="1350.7187500000002" y="869.0" />
-      <point x="1595.1892045454547" y="869.0" />
-      <point x="-16.200000000000017" y="14.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.surveyprogram.SurveyProgram">
-      <point x="27.125" y="80.5" />
-      <point x="1551.85625" y="1723.0" />
-      <point x="1545.35625" y="1723.0" />
-      <point x="20.625" y="-58.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.concept.Concept">
-      <point x="-71.625" y="-135.5" />
-      <point x="1560.3437500000002" y="1166.0" />
-      <point x="1577.6392045454547" y="1166.0" />
-      <point x="-33.75" y="113.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct" target="no.nsd.qddt.domain.universe.Universe">
-      <point x="-24.4375" y="-113.5" />
-      <point x="271.1562500000002" y="879.0" />
-      <point x="275.5" y="879.0" />
-      <point x="36.5" y="25.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.instrument.Instrument" target="no.nsd.qddt.domain.study.Study">
-      <point x="30.125" y="91.5" />
-      <point x="1283.7187500000002" y="1497.0" />
-      <point x="1484.04375" y="1497.0" />
-      <point x="-40.6875" y="-80.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.elementref.ElementRef">
-      <point x="167.12500000000006" y="-135.5" />
-      <point x="1799.0937500000002" y="1166.0" />
-      <point x="1778.8892045454547" y="1166.0" />
-      <point x="1778.8892045454547" y="839.0" />
-      <point x="1659.9892045454549" y="839.0" />
-      <point x="48.599999999999966" y="14.5" />
+      <point x="0.0" y="-47.5" />
+      <point x="490.5" y="103.0" />
+      <point x="407.125" y="103.0" />
+      <point x="29.875" y="36.5" />
     </edge>
     <edge source="no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct" target="no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct">
-      <point x="52.0" y="-36.5" />
-      <point x="667.0937500000002" y="809.0" />
-      <point x="703.1517045454548" y="809.0" />
-      <point x="-17.4375" y="36.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.questionItem.QuestionItem">
-      <point x="-167.125" y="-135.5" />
-      <point x="1464.8437500000002" y="1166.0" />
-      <point x="1443.0267045454548" y="1166.0" />
-      <point x="1443.0267045454548" y="829.0" />
-      <point x="1431.3789772727273" y="829.0" />
-      <point x="29.625" y="91.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.questionItem.QuestionItem">
-      <point x="-101.25" y="-113.5" />
-      <point x="1510.1392045454547" y="829.0" />
-      <point x="1490.6289772727273" y="829.0" />
-      <point x="88.875" y="91.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.questionItem.QuestionItem" target="no.nsd.qddt.domain.responsedomain.ResponseDomain">
-      <point x="-59.25" y="-91.5" />
-      <point x="1342.5039772727273" y="551.0" />
-      <point x="1327.5039772727273" y="551.0" />
-      <point x="-66.75" y="102.5" />
+      <point x="0.0" y="-36.5" />
+      <point x="264.0" y="103.0" />
+      <point x="347.375" y="103.0" />
+      <point x="-29.875" y="36.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.5000000000000001" x="641.0" y="895.9999999999998" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0" x="513.5" y="833.0" />
+  <SelectedNodes>
+    <node>no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
+  </SelectedNodes>
   <Categories>
     <Category>Fields</Category>
     <Category>Properties</Category>

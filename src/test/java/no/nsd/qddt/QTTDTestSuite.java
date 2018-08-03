@@ -20,8 +20,6 @@ import no.nsd.qddt.domain.instruction.web.InstructionControllerTest;
 import no.nsd.qddt.domain.instrument.InstrumentServiceTest;
 import no.nsd.qddt.domain.instrument.audit.OthermaterialAuditServiceTest;
 import no.nsd.qddt.domain.instrument.web.InstrumentControllerTest;
-import no.nsd.qddt.domain.othermaterial.OtherMaterialServiceTest;
-import no.nsd.qddt.domain.othermaterial.web.OtherMaterialControllerTest;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainServiceTest;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditServiceTest;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainControllerTest;
@@ -85,9 +83,9 @@ import org.springframework.test.context.ActiveProfiles;
         ControlConstructAuditServiceTest.class,
         ControlConstructControllerTest.class,
 
-        // ====== OtherMaterial ======
-        OtherMaterialServiceTest.class,
-        OtherMaterialControllerTest.class,
+//        // ====== OtherMaterial ======
+//        OtherMaterialServiceTest.class,
+//        OtherMaterialControllerTest.class,
 
 //        // ====== Question ======
 //        QuestionServiceTest.class,

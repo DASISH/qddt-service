@@ -57,7 +57,7 @@ public class QuestionItemServiceTest  extends AbstractServiceTest {
     @Test
     @Override
     public void testFindOne() throws Exception {
-         Page result= service.findByNameLikeAndQuestionLike("","%2%",new PageRequest(0, 20));
+         Page result= service.findByNameOrQuestionOrResponseName("","%2%","",new PageRequest(0, 20));
 
         Assert.assertThat("Should be one", result.getTotalElements(),  Is.is(1L));
     }
@@ -67,20 +67,13 @@ public class QuestionItemServiceTest  extends AbstractServiceTest {
 
     }
 
-    @Override
-    public void testSaveAll() throws Exception {
-
-    }
 
     @Override
     public void testDelete() throws Exception {
 
     }
 
-    @Override
-    public void testDeleteAll() throws Exception {
 
-    }
 
 
 }

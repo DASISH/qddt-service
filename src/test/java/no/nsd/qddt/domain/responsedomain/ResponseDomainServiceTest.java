@@ -5,11 +5,6 @@ import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -75,29 +70,7 @@ public class ResponseDomainServiceTest  extends AbstractServiceTest {
         assertNotNull("ResponseDomain should be saved", responseDomainService.save(responseDomain));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-        List<ResponseDomain> aList = new ArrayList<>();
-        ResponseDomain responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain One");
-        responseDomain.setResponseKind(ResponseKind.LIST);
-        aList.add(responseDomain);
 
-        responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain Two");
-        responseDomain.setResponseKind(ResponseKind.SCALE);
-        aList.add(responseDomain);
-
-        responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain Three");
-        responseDomain.setResponseKind(ResponseKind.MIXED);
-        aList.add(responseDomain);
-
-        responseDomainService.save(aList);
-
-        assertEquals("Should return 3", responseDomainService.count(), 3L);
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -110,51 +83,4 @@ public class ResponseDomainServiceTest  extends AbstractServiceTest {
         assertNull("Should return null", responseDomainService.findOne(responseDomain.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<ResponseDomain> agencyList = new ArrayList<>();
-        ResponseDomain responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain One");
-        agencyList.add(responseDomain);
-
-        responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain Two");
-        agencyList.add(responseDomain);
-
-        responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain Three");
-        agencyList.add(responseDomain);
-
-        agencyList = responseDomainService.save(agencyList);
-        responseDomainService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", responseDomainService.findOne(a.getId())));
-
-    }
-
-    @Test(expected = ResourceNotFoundException.class)
-
-    public void testfindby() throws Exception {
-        List<ResponseDomain> agencyList = new ArrayList<>();
-        ResponseDomain responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain One");
-        responseDomain.setResponseKind(ResponseKind.LIST);
-        agencyList.add(responseDomain);
-
-        responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain Two");
-        responseDomain.setResponseKind(ResponseKind.SCALE);
-        agencyList.add(responseDomain);
-
-        responseDomain = new ResponseDomain();
-        responseDomain.setName("Test ResponseDomain Three");
-        responseDomain.setResponseKind(ResponseKind.MIXED);
-        agencyList.add(responseDomain);
-
-        responseDomainService.save(agencyList);
-
-        Page<ResponseDomain> result = responseDomainService.findBy(ResponseKind.LIST,"%","",new PageRequest(0, 20));
-        result.forEach(a -> System.out.println(a));
-    }
 }

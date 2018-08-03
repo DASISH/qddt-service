@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived {
 
     @Column(name = "description", length = 10000)
-    private String abstractDescription;
+    private String description;
 
 //    @JsonIgnore
     @JsonBackReference(value = "studyRef")
@@ -152,15 +152,16 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         this.otherMaterials = otherMaterials;
     }
 
-    public String getAbstractDescription() {
-        return abstractDescription;
+    public String getDescription() {
+        return description;
     }
-    public void setAbstractDescription(String abstractDescription) {
-        this.abstractDescription = abstractDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
+
     @JsonIgnore
-    public List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
+    protected List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
         return topicQuestionItems.stream()
             .map(c-> new ElementRefTyped<QuestionItem>(c) )
             .collect( Collectors.toList() );
@@ -202,9 +203,9 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         setField( "study", newParent );
     }
 
-    public void setParentU(UUID studyId) {
-        setField("topicGroupId",studyId );
-    }
+//    public void setParentU(UUID studyId) {
+//        setField("topicGroupId",studyId );
+//    }
 
     public StudyRef getStudyRef() {
         return new StudyRef(getStudy());
@@ -222,7 +223,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
         if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
             return false;
-        return abstractDescription != null ? abstractDescription.equals(that.abstractDescription) : that.abstractDescription == null;
+        return description != null ? description.equals(that.description) : that.description == null;
 
     }
 
@@ -230,7 +231,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (abstractDescription != null ? abstractDescription.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
@@ -239,7 +240,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     public String toString() {
         return "{\"_class\":\"TopicGroup\", " +
                 super.toString() +
-                "\"abstractDescription\":" + (abstractDescription == null ? "null" : "\"" + abstractDescription + "\"") +
+                "\"description\":" + (description == null ? "null" : "\"" + description + "\"") +
                 "\"concepts\":" + (getConcepts() == null ? "null" : Arrays.toString(getConcepts().toArray())) + ", " +
                 "\"authors\":" + (authors == null ? "null" : Arrays.toString(authors.toArray())) + ", " +
 //                "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
@@ -251,7 +252,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     public void fillDoc(PdfReport pdfReport, String counter) {
 
         pdfReport.addHeader(this,"Module " + counter )
-        .add(new Paragraph(this.getAbstractDescription())
+        .add(new Paragraph(this.getDescription())
             .setWidth(pdfReport.width100*0.8F)
             .setPaddingBottom(15));
 

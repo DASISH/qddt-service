@@ -5,27 +5,17 @@ buildscript {
         mavenCentral()
         jcenter()
     }
-    dependencies {
-        classpath(
-//                "org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE",
-                "com.bmuschko:gradle-docker-plugin:3.2.1",
-        )
-    }
 }
 
 plugins {
-    id "org.springframework.boot" version "1.5.10.RELEASE"
+    id "org.springframework.boot" version "1.5.15.RELEASE"
     id "org.asciidoctor.convert" version "1.5.2"
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 //apply plugin: 'spring-boot'
-//apply plugin: 'com.bmuschko.docker-remote-api'
-import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
-import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
-import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
-import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+
 
 
 idea {
@@ -36,7 +26,7 @@ idea {
 }
 
 def baseName = 'QDDT'
-def version = '0.9.0'
+def version = '1.0.0'
 group = 'no.nsd'
 description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
 
@@ -93,73 +83,7 @@ dependencies {
             "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.0.RELEASE"
     )
 }
-if(!org.gradle.internal.os.OperatingSystem.current().windows) {
 
-
-    docker {
-        if (org.gradle.internal.os.OperatingSystem.current().windows) {
-            url = 'http://localhost:2375'
-        } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
-            url = 'unix:///var/run/docker.sock'
-        }
-    }
-
-    task createDBContainer(type: DockerCreateContainer) {
-        imageId = 'postgres'
-        containerName = "qddt_local"
-        portBindings = ['5400:5432']
-        env = ['POSTGRES_PASSWORD=qddt', 'POSTGRES_DB=qddt', 'POSTGRES_USER=qddt']
-    }
-
-    task startDBContainer(type: DockerStartContainer) {
-        dependsOn createDBContainer
-        targetContainerId { createDBContainer.getContainerId() }
-    }
-
-    task stopDBContainer(type: DockerStopContainer) {
-        targetContainerId { createDBContainer.getContainerId() }
-    }
-
-    task destroyContainer(type: DockerRemoveContainer) {
-        dependsOn stopDBContainer
-        targetContainerId { createDBContainer.getContainerId() }
-    }
-
-    ext {
-        snippetsDir = file('build/generated-snippets')
-    }
-
-    bootRun {
-        addResources = true
-        mustRunAfter startDBContainer
-        systemProperties['spring.profiles.active'] = 'local'
-        dependsOn startDBContainer
-        finalizedBy stopDBContainer
-    }
-
-    test {
-        exclude 'no/nsd/qddt/QTTDTestSuite.class'
-//    outputs.dir snippetsDir
-        testLogging {
-            events 'started', 'passed', 'skipped', 'failed'
-            showExceptions true
-            exceptionFormat 'full'
-            showCauses true
-            showStackTraces true
-
-        }
-        systemProperties['spring.profiles.active'] = 'test'
-        dependsOn startDBContainer
-        finalizedBy(destroyContainer)
-        destroyContainer.mustRunAfter(test)
-    }
-
-    asciidoctor {
-        attributes 'snippets': snippetsDir
-        inputs.dir snippetsDir
-        dependsOn test
-    }
-}
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.1'
+    gradleVersion = '4.7'
 }

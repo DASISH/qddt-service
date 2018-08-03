@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -70,26 +67,7 @@ public class CommentServiceTest  extends AbstractServiceTest {
         assertNotNull("Comment should be saved", commentService.save(comment));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-        List<Comment> agencyList = new ArrayList<>();
-        Comment comment = new Comment();
-        comment.setComment("Test Comment One");
-        agencyList.add(comment);
 
-        comment = new Comment();
-        comment.setComment("Test Comment Two");
-        agencyList.add(comment);
-
-        comment = new Comment();
-        comment.setComment("Test Comment Three");
-        agencyList.add(comment);
-
-        commentService.save(agencyList);
-
-        assertEquals("Should return 3", commentService.count(), 3L);
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -102,26 +80,5 @@ public class CommentServiceTest  extends AbstractServiceTest {
         assertNull("Should return null", commentService.findOne(comment.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<Comment> agencyList = new ArrayList<>();
-        Comment comment = new Comment();
-        comment.setComment("Test Comment One");
-        agencyList.add(comment);
 
-        comment = new Comment();
-        comment.setComment("Test Comment Two");
-        agencyList.add(comment);
-
-        comment = new Comment();
-        comment.setComment("Test Comment Three");
-        agencyList.add(comment);
-
-        agencyList = commentService.save(agencyList);
-        commentService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", commentService.findOne(a.getId())));
-
-    }
 }

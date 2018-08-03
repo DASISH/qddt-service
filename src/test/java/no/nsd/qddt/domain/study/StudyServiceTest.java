@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -73,26 +70,6 @@ public class StudyServiceTest extends AbstractServiceTest {
         assertNotNull("Study should be saved", studyService.save(study));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-        List<Study> agencyList = new ArrayList<>();
-        Study study = new Study();
-        study.setName("Test Study One");
-        agencyList.add(study);
-
-        study = new Study();
-        study.setName("Test Study Two");
-        agencyList.add(study);
-
-        study = new Study();
-        study.setName("Test Study Three");
-        agencyList.add(study);
-
-        studyService.save(agencyList);
-
-        assertEquals("Should return 3", studyService.count(), 3L);
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -105,26 +82,5 @@ public class StudyServiceTest extends AbstractServiceTest {
         assertNull("Should return null", studyService.findOne(study.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<Study> agencyList = new ArrayList<>();
-        Study study = new Study();
-        study.setName("Test Study One");
-        agencyList.add(study);
 
-        study = new Study();
-        study.setName("Test Study Two");
-        agencyList.add(study);
-
-        study = new Study();
-        study.setName("Test Study Three");
-        agencyList.add(study);
-
-        agencyList = studyService.save(agencyList);
-        studyService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", studyService.findOne(a.getId())));
-
-    }
 }

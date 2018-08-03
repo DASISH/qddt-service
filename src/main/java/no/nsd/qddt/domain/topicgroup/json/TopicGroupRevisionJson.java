@@ -38,7 +38,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
     public TopicGroupRevisionJson(TopicGroup topicGroup) {
         super(topicGroup);
         if (topicGroup == null) return;
-        setAbstractDescription(topicGroup.getAbstractDescription());
+        setAbstractDescription(topicGroup.getDescription());
         setTopicQuestionItems( topicGroup.getTopicQuestionItems());
         setAuthors(topicGroup.getAuthors());
         setOtherMaterials(topicGroup.getOtherMaterials());
@@ -48,7 +48,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
     }
 
-    public String getAbstractDescription() {
+    public String getDescription() {
         return abstractDescription;
     }
 

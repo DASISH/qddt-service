@@ -19,7 +19,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 
 	@Override
     public TopicGroup copyBody(TopicGroup source, TopicGroup dest) {
-	    dest.setAbstractDescription(source.getAbstractDescription());
+	    dest.setDescription(source.getDescription());
       dest.setName(source.getName());
       dest.setOtherMaterials(source.getOtherMaterials().stream()
       .map( m -> m.clone())

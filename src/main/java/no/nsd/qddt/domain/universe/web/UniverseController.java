@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.universe.web;
 
 import no.nsd.qddt.domain.universe.Universe;
-import no.nsd.qddt.domain.universe.UniverseJsonView;
 import no.nsd.qddt.domain.universe.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -59,10 +58,11 @@ public class UniverseController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<UniverseJsonView>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
+    public HttpEntity<PagedResources<Universe>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<UniverseJsonView> universes = service.findByDescriptionLike(description, pageable).map( u -> new UniverseJsonView( u ) );
+//        Page<UniverseJsonView> universes = service.findByDescriptionLike(description, pageable).map( u -> new UniverseJsonView( u ) );
+        Page<Universe> universes = service.findByDescriptionLike(description, pageable);
         return new ResponseEntity<>(assembler.toResource(universes), HttpStatus.OK);
     }
 

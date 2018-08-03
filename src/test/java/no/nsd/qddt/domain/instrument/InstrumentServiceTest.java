@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -73,26 +70,7 @@ public class InstrumentServiceTest extends AbstractServiceTest {
         assertNotNull("Instrument should be saved", instrumentService.save(instrument));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-        List<Instrument> agencyList = new ArrayList<>();
-        Instrument instrument = new Instrument();
-        instrument.setName("Test Instrument One");
-        agencyList.add(instrument);
 
-        instrument = new Instrument();
-        instrument.setName("Test Instrument Two");
-        agencyList.add(instrument);
-
-        instrument = new Instrument();
-        instrument.setName("Test Instrument Three");
-        agencyList.add(instrument);
-
-        instrumentService.save(agencyList);
-
-        assertEquals("Should return 3", instrumentService.count(), 3L);
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -105,26 +83,4 @@ public class InstrumentServiceTest extends AbstractServiceTest {
         assertNull("Should return null", instrumentService.findOne(instrument.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<Instrument> agencyList = new ArrayList<>();
-        Instrument instrument = new Instrument();
-        instrument.setName("Test Instrument One");
-        agencyList.add(instrument);
-
-        instrument = new Instrument();
-        instrument.setName("Test Instrument Two");
-        agencyList.add(instrument);
-
-        instrument = new Instrument();
-        instrument.setName("Test Instrument Three");
-        agencyList.add(instrument);
-
-        agencyList = instrumentService.save(agencyList);
-        instrumentService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", instrumentService.findOne(a.getId())));
-
-    }
 }

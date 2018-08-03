@@ -4,17 +4,12 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.AuthorService;
-import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.user.UserService;
-import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Stig Norland
@@ -96,11 +91,7 @@ public class AuthorableSurveyTest extends AbstractServiceTest {
 
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
 
-    }
 
     @Test
     @Override
@@ -108,9 +99,5 @@ public class AuthorableSurveyTest extends AbstractServiceTest {
 
     }
 
-    @Test
-    @Override
-    public void testDeleteAll() throws Exception {
 
-    }
 }

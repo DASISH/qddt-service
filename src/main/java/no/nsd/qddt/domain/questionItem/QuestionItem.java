@@ -54,10 +54,10 @@ public class QuestionItem extends AbstractEntityAudit {
     private String responseDomainName;
 
 
-    @Column(name = "question")
+    @Column(name = "question", length = 2000)
     private String question;
 
-    @Column(name = "intent")
+    @Column(name = "intent", length = 3000)
     private String intent;
 
 

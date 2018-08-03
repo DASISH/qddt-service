@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -98,29 +97,7 @@ public class AuthorityServiceTest extends AbstractServiceTest {
         assertNotNull("User should be saved", userService.save(user));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-//        List<User> agencyList = new ArrayList<>();
-//        User user = new User();
-//        user.setEmail("Test User One");
-//        agencyList.add(user);
-//
-//        user = new User();
-//        user.setEmail("Test User Two");
-//        agencyList.add(user);
-//
-//        user = new User();
-//        user.setEmail("Test User Three");
-//        agencyList.add(user);
-//
-//        userService.save(agencyList);
-//
-//        assertEquals("Should have saved (3+2) agencies", 5L,userService.count());
 
-        assertEquals("Should have saved (3+2) agencies", 0L,0L);
-
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -133,26 +110,4 @@ public class AuthorityServiceTest extends AbstractServiceTest {
         assertNull("Should return null", userService.findOne(user.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<User> agencyList = new ArrayList<>();
-        User user = new User();
-        user.setEmail("Test User One");
-        agencyList.add(user);
-
-        user = new User();
-        user.setEmail("Test User Two");
-        agencyList.add(user);
-
-        user = new User();
-        user.setEmail("Test User Three");
-        agencyList.add(user);
-
-        agencyList = userService.save(agencyList);
-        userService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", userService.findOne(a.getId())));
-
-    }
 }

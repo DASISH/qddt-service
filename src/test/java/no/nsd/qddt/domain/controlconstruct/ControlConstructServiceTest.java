@@ -7,9 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -74,26 +71,6 @@ public class ControlConstructServiceTest extends AbstractServiceTest {
         assertNotNull("InstrumentQuestion should be saved", controlConstructService.save(controlConstruct));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-        List<ControlConstruct> agencyList = new ArrayList<>();
-        ControlConstruct controlConstruct = new ControlConstruct();
-        controlConstruct.setName("Test InstrumentQuestion One");
-        agencyList.add(controlConstruct);
-
-        controlConstruct = new ControlConstruct();
-        controlConstruct.setName("Test InstrumentQuestion Two");
-        agencyList.add(controlConstruct);
-
-        controlConstruct = new ControlConstruct();
-        controlConstruct.setName("Test InstrumentQuestion Three");
-        agencyList.add(controlConstruct);
-
-        controlConstructService.save(agencyList);
-
-        assertEquals("Should return 3", controlConstructService.count(), 3L);
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -106,26 +83,5 @@ public class ControlConstructServiceTest extends AbstractServiceTest {
         assertNull("Should return null", controlConstructService.findOne(controlConstruct.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<ControlConstruct> agencyList = new ArrayList<>();
-        ControlConstruct controlConstruct = new ControlConstruct();
-        controlConstruct.setName("Test InstrumentQuestion One");
-        agencyList.add(controlConstruct);
 
-        controlConstruct = new ControlConstruct();
-        controlConstruct.setName("Test InstrumentQuestion Two");
-        agencyList.add(controlConstruct);
-
-        controlConstruct = new ControlConstruct();
-        controlConstruct.setName("Test InstrumentQuestion Three");
-        agencyList.add(controlConstruct);
-
-        agencyList = controlConstructService.save(agencyList);
-        controlConstructService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", controlConstructService.findOne(a.getId())));
-
-    }
 }

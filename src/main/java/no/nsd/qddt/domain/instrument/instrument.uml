@@ -3,55 +3,45 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="466.17857142857144" y="144.0">no.nsd.qddt.domain.controlconstruct.pojo.Sequence</node>
-    <node x="21.785714285714278" y="133.0">no.nsd.qddt.domain.instrumentelement.InstrumentElement</node>
-    <node x="517.6607142857142" y="0.0">no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct</node>
-    <node x="0.0" y="0.0">no.nsd.qddt.domain.instrumentelement.InstrumentParameter</node>
-    <node x="31.803571428571445" y="300.0">no.nsd.qddt.domain.instrument.Instrument</node>
-    <node x="300.7857142857143" y="166.0">no.nsd.qddt.domain.elementref.typed.ElementRefTyped</node>
-    <node x="318.30357142857144" y="22.0">no.nsd.qddt.domain.elementref.ElementRef</node>
+    <node x="153.6953867972386" y="242.40284763796367">no.nsd.qddt.domain.controlconstruct.pojo.Sequence</node>
+    <node x="474.0205439927249" y="471.6260427798109">no.nsd.qddt.domain.instrumentelement.InstrumentElement</node>
+    <node x="0.0" y="0.0">no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct</node>
+    <node x="651.5607774712013" y="742.6731799219942">no.nsd.qddt.domain.instrumentelement.InstrumentParameter</node>
+    <node x="788.4251589866092" y="281.6112757845323">no.nsd.qddt.domain.instrument.Instrument</node>
+    <node x="174.79072009669306" y="596.8100147909743">no.nsd.qddt.domain.elementref.typed.ElementRefTyped</node>
+    <node x="306.1142576271304" y="468.0453237931889">no.nsd.qddt.domain.elementref.ElementRef</node>
   </nodes>
   <notes />
   <edges>
     <edge source="no.nsd.qddt.domain.controlconstruct.pojo.Sequence" target="no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct">
-      <point x="25.625" y="-47.5" />
-      <point x="594.3035714285714" y="113.0" />
-      <point x="589.9107142857142" y="113.0" />
-      <point x="-72.25" y="36.5" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.instrument.Instrument" target="no.nsd.qddt.domain.instrumentelement.InstrumentElement">
-      <point x="60.25" y="-91.5" />
-      <point x="212.55357142857144" y="275.0" />
-      <point x="216.03571428571428" y="275.0" />
-      <point x="64.75" y="58.5" />
+      <point x="5.681096877101808" y="0.0" />
+      <point x="5.681096877101822" y="0.0" />
     </edge>
     <edge source="no.nsd.qddt.domain.controlconstruct.pojo.Sequence" target="no.nsd.qddt.domain.elementref.ElementRef">
-      <point x="-76.875" y="-47.5" />
-      <point x="491.80357142857144" y="103.0" />
-      <point x="399.30357142857144" y="103.0" />
-      <point x="27.0" y="14.5" />
+      <point x="-5.68109687710178" y="0.0" />
+      <point x="-5.681096877101776" y="-0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.instrument.Instrument" target="no.nsd.qddt.domain.instrumentelement.InstrumentElement">
+      <point x="0.0" y="-5.622098956531758" />
+      <point x="-10.935372513903417" y="0.0" />
     </edge>
     <edge source="no.nsd.qddt.domain.instrumentelement.InstrumentElement" target="no.nsd.qddt.domain.elementref.ElementRef">
-      <point x="97.125" y="-58.5" />
-      <point x="248.41071428571428" y="103.0" />
-      <point x="345.30357142857144" y="103.0" />
-      <point x="-27.0" y="14.5" />
+      <point x="0.0" y="-4.585170727032711" />
+      <point x="0.0" y="-4.5851707270327156" />
     </edge>
     <edge source="no.nsd.qddt.domain.instrumentelement.InstrumentElement" target="no.nsd.qddt.domain.instrumentelement.InstrumentParameter">
-      <point x="-97.125" y="-58.5" />
-      <point x="54.16071428571428" y="113.0" />
-      <point x="40.0" y="113.0" />
-      <point x="-40.0" y="36.5" />
+      <point x="-5.622098956531801" y="0.0" />
+      <point x="-5.622098956531829" y="0.0" />
     </edge>
     <edge source="no.nsd.qddt.domain.elementref.typed.ElementRefTyped" target="no.nsd.qddt.domain.elementref.ElementRef">
-      <point x="-35.25" y="-25.5" />
-      <point x="336.0357142857143" y="113.0" />
-      <point x="363.30357142857144" y="113.0" />
-      <point x="-9.0" y="14.5" />
+      <point x="6.470978877635005" y="0.0" />
+      <point x="6.470978877634992" y="-0.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="426.0" y="262.0" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0" x="714.5" y="357.0" />
+  <SelectedNodes>
+    <node>no.nsd.qddt.domain.elementref.ElementRef</node>
+  </SelectedNodes>
   <Categories>
     <Category>Fields</Category>
     <Category>Properties</Category>

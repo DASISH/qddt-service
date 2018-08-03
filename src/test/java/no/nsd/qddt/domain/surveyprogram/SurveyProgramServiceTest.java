@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -73,26 +70,6 @@ public class SurveyProgramServiceTest extends AbstractServiceTest {
         assertNotNull("SurveyProgramService should be saved", surveyProgramService.save(surveyProgram));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-        List<SurveyProgram> agencyList = new ArrayList<>();
-        SurveyProgram surveyProgram = new SurveyProgram();
-        surveyProgram.setName("Test SurveyProgramService One");
-        agencyList.add(surveyProgram);
-
-        surveyProgram = new SurveyProgram();
-        surveyProgram.setName("Test SurveyProgramService Two");
-        agencyList.add(surveyProgram);
-
-        surveyProgram = new SurveyProgram();
-        surveyProgram.setName("Test SurveyProgramService Three");
-        agencyList.add(surveyProgram);
-
-        surveyProgramService.save(agencyList);
-
-        assertEquals("Should return 3", surveyProgramService.count(), 3L);
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -105,26 +82,5 @@ public class SurveyProgramServiceTest extends AbstractServiceTest {
         assertNull("Should return null", surveyProgramService.findOne(surveyProgram.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<SurveyProgram> agencyList = new ArrayList<>();
-        SurveyProgram surveyProgram = new SurveyProgram();
-        surveyProgram.setName("Test SurveyProgramService One");
-        agencyList.add(surveyProgram);
 
-        surveyProgram = new SurveyProgram();
-        surveyProgram.setName("Test SurveyProgramService Two");
-        agencyList.add(surveyProgram);
-
-        surveyProgram = new SurveyProgram();
-        surveyProgram.setName("Test SurveyProgramService Three");
-        agencyList.add(surveyProgram);
-
-        agencyList = surveyProgramService.save(agencyList);
-        surveyProgramService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", surveyProgramService.findOne(a.getId())));
-
-    }
 }

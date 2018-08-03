@@ -10,9 +10,7 @@ public interface ServiceTest {
     void testExists() throws Exception;
     void testFindOne() throws Exception;
     void testSave() throws Exception;
-    void testSaveAll() throws Exception;
     void testDelete() throws Exception;
-    void testDeleteAll() throws Exception;
 
 }
 

@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.publication;
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +29,12 @@ public class PublicationServiceTest extends AbstractServiceTest {
     private PublicationStatusService statusService;
 
 
-    List<PublicationStatusJsonParent> pubstat = null;
+    List<PublicationStatus> pubstat = null;
 
     @Before
     public void setup() {
         super.setup();
-        pubstat =  statusService.findAll().stream().map(i->new PublicationStatusJsonParent(i)).collect(Collectors.toList());
+        pubstat =  statusService.findAll().stream().collect(Collectors.toList());
         super.setBaseRepositories(repository);
     }
 
@@ -59,7 +59,7 @@ public class PublicationServiceTest extends AbstractServiceTest {
         Publication publication = new Publication();
         publication.setName("TEST");
         publication.setPurpose("TEST PURPOSE");
-        publication.setStatus(pubstat.get(2).getName());
+        publication.setStatus(pubstat.get(2));
         List<ElementRef> pubelements = new ArrayList<>();
         pubelements.add(new ElementRef( ElementKind.QUESTION_ITEM, UUID.fromString("fe107534-b071-41d3-bafc-71cf5cf716d6"),420));
         pubelements.add(new ElementRef(ElementKind.QUESTION_ITEM, UUID.fromString("635e2eac-91c2-4f1a-b6cf-3478621194c6"),418));
@@ -69,18 +69,11 @@ public class PublicationServiceTest extends AbstractServiceTest {
 
     }
 
-    @Override
-    public void testSaveAll() throws Exception {
 
-    }
 
     @Override
     public void testDelete() throws Exception {
 
     }
 
-    @Override
-    public void testDeleteAll() throws Exception {
-
-    }
 }

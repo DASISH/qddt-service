@@ -9,9 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -84,26 +81,7 @@ super.setBaseRepositories(conceptRepository);
         assertNotNull("Concept should be saved", conceptService.save(concept));
     }
 
-    @Test
-    @Override
-    public void testSaveAll() throws Exception {
-        List<Concept> agencyList = new ArrayList<>();
-        Concept concept = new Concept();
-        concept.setName("Test Concept One");
-        agencyList.add(concept);
 
-        concept = new Concept();
-        concept.setName("Test Concept Two");
-        agencyList.add(concept);
-
-        concept = new Concept();
-        concept.setName("Test Concept Three");
-        agencyList.add(concept);
-
-        conceptService.save(agencyList);
-
-        assertEquals("Should return 3", conceptService.count(), 3L);
-    }
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
@@ -116,28 +94,7 @@ super.setBaseRepositories(conceptRepository);
         assertNull("Should return null", conceptService.findOne(concept.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<Concept> agencyList = new ArrayList<>();
-        Concept concept = new Concept();
-        concept.setName("Test Concept One");
-        agencyList.add(concept);
 
-        concept = new Concept();
-        concept.setName("Test Concept Two");
-        agencyList.add(concept);
-
-        concept = new Concept();
-        concept.setName("Test Concept Three");
-        agencyList.add(concept);
-
-        agencyList = conceptService.save(agencyList);
-        conceptService.delete(agencyList);
-
-        agencyList.forEach(a -> assertNull("Should return null", conceptService.findOne(a.getId())));
-
-    }
 
     @Test
     public void testAddQuestion() throws Exception {
@@ -152,8 +109,6 @@ super.setBaseRepositories(conceptRepository);
         concept.addQuestionItem(ref);
 
         Concept savedConcept = conceptService.save(concept);
-
-//        assertEquals("they are equal" ,savedConcept.getQuestionItems(),concept.getQuestionItems());
 
     }
 

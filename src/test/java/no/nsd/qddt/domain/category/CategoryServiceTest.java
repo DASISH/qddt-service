@@ -10,9 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -84,7 +81,6 @@ public class CategoryServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    @Override
     public void testSaveAll() throws Exception {
         Category parent = new CategoryBuilder()
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
@@ -123,29 +119,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
         assertNull("Should return null", categoryService.findOne(category.getId()));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    @Override
-    public void testDeleteAll() throws Exception {
-        List<Category> categoryList = new ArrayList<>();
-        Category category = new Category();
-        category.setName("Test Code One");
-        categoryList.add(category);
 
-        category = new Category();
-        category.setName("Test Code Two");
-        categoryList.add(category);
-
-        category = new Category();
-        category.setName("Test Code Three");
-        categoryList.add(category);
-
-        categoryList = categoryService.save(categoryList);
-        categoryService.delete(categoryList);
-
-        throw new ResourceNotFoundException(1, Category.class);
-       // categoryList.forEach(a -> assertNull("Should return null", categoryService.findOne(a.getId())));
-
-    }
 
 
     @Test

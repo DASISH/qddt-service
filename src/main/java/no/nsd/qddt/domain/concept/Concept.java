@@ -198,6 +198,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return topicRef;
     }
 
+//    public void setTopicRef(TopicRef topicRef) {
+//        this.topicRef = topicRef;
+//    }
+
     protected Concept getParentRef(){
         return this.parentReferenceOnly;
     }
@@ -210,11 +214,8 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return current.getTopicGroup();
     }
 
-    public void setTopicRef(TopicRef topicRef) {
-        this.topicRef = topicRef;
-    }
 
-    protected List<AbstractEntityAudit> getParents() {
+    private List<AbstractEntityAudit> getParents() {
         List<AbstractEntityAudit> retvals = new ArrayList<>( 1 );
         Concept current = this;
         while(current.getParentRef() !=  null){
@@ -225,13 +226,13 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return retvals;
     }
 
-    public void setParentT(TopicGroup newParent) {
-        setField("topicGroup",newParent );
-    }
-
-    public void setParentU(UUID topicId) {
-        setField("topicGroupId",topicId );
-    }
+//    public void setParentT(TopicGroup newParent) {
+//        setField("topicGroup",newParent );
+//    }
+//
+//    public void setParentU(UUID topicId) {
+//        setField("topicGroupId",topicId );
+//    }
 
     protected void setParentC(Concept newParent)  {
         setField("parentReferenceOnly",newParent );
@@ -277,12 +278,12 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
 
-    @PreRemove
-    private void removeReferencesFromConcept(){
-        LOG.debug("Concept pre remove");
-//        getConceptQuestionItems().clear();
-//        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
-    }
+//    @PreRemove
+//    private void removeReferencesFromConcept(){
+//        LOG.debug("Concept pre remove");
+////        getConceptQuestionItems().clear();
+////        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
+//    }
 
 
     @Override

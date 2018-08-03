@@ -3,58 +3,60 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="0.0" y="284.0">no.nsd.qddt.domain.questionItem.QuestionItem</node>
-    <node x="970.0" y="544.0">no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
-    <node x="712.0" y="910.0">no.nsd.qddt.domain.instrument.Instrument</node>
-    <node x="708.0" y="618.0">no.nsd.qddt.domain.study.Study</node>
-    <node x="202.0" y="0.0">no.nsd.qddt.domain.concept.Concept</node>
-    <node x="285.0" y="357.0">no.nsd.qddt.domain.topicgroup.TopicGroup</node>
+    <node x="0.0" y="967.514753315401">no.nsd.qddt.domain.questionItem.QuestionItem</node>
+    <node x="1028.292350076012" y="315.8995558520081">no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
+    <node x="651.075700864026" y="0.0">no.nsd.qddt.domain.instrument.Instrument</node>
+    <node x="474.2043420493384" y="1277.4704756515628">no.nsd.qddt.domain.concept.Concept</node>
+    <node x="720.2134680379736" y="342.51660081177954">no.nsd.qddt.domain.study.Study</node>
+    <node x="502.45549740204643" y="654.6415297662724">no.nsd.qddt.domain.topicgroup.TopicGroup</node>
   </nodes>
   <notes />
   <edges>
     <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.topicgroup.TopicGroup">
-      <point x="0.0" y="5.8438346059325" />
-      <point x="0.0" y="5.843834605932514" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.surveyprogram.SurveyProgram" target="no.nsd.qddt.domain.study.Study">
-      <point x="0.0" y="16.19353824334999" />
-      <point x="0.0" y="16.19353824334999" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.instrument.Instrument">
-      <point x="4.993043550505718" y="-0.2636590653732469" />
-      <point x="4.993043550505718" y="-0.26365906537319006" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.topicgroup.TopicGroup">
-      <point x="5.3256665061630315" y="0.0" />
-      <point x="5.325666506163046" y="0.0" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.study.Study">
-      <point x="0.0" y="-17.531503817797564" />
-      <point x="0.0" y="-17.531503817797557" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.surveyprogram.SurveyProgram">
-      <point x="0.0" y="-16.19353824334999" />
-      <point x="0.0" y="-16.193538243350005" />
-    </edge>
-    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.concept.Concept">
-      <point x="-15.976999518489109" y="0.0" />
-      <point x="-15.976999518489123" y="-5.6843418860808015E-14" />
+      <point x="5.773502691896283" y="0.0" />
+      <point x="5.773502691896255" y="0.0" />
     </edge>
     <edge source="no.nsd.qddt.domain.instrument.Instrument" target="no.nsd.qddt.domain.study.Study">
-      <point x="-15.02089842424948" y="0.0" />
-      <point x="-15.02089842424948" y="0.0" />
+      <point x="5.073720130650543" y="0.0" />
+      <point x="5.073720130650486" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.surveyprogram.SurveyProgram">
+      <point x="-0.8492420409392025" y="-4.92735100798609" />
+      <point x="-0.8492420409392025" y="-4.92735100798609" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.concept.Concept">
+      <point x="15.008517965693926" y="0.0" />
+      <point x="15.008517965693926" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.topicgroup.TopicGroup">
+      <point x="-15.008517965693926" y="0.0" />
+      <point x="-15.008517965693898" y="0.0" />
+    </edge>
+    <edge source="no.nsd.qddt.domain.surveyprogram.SurveyProgram" target="no.nsd.qddt.domain.study.Study">
+      <point x="0.0" y="15.221160391951571" />
+      <point x="0.0" y="15.221160391951571" />
     </edge>
     <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.questionItem.QuestionItem">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
+    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.study.Study">
+      <point x="-17.320508075688764" y="0.0" />
+      <point x="-17.320508075688736" y="0.0" />
+    </edge>
     <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.questionItem.QuestionItem">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
+    <edge source="no.nsd.qddt.domain.study.Study" target="no.nsd.qddt.domain.instrument.Instrument">
+      <point x="-15.221160391951457" y="0.0" />
+      <point x="-15.221160391951457" y="-1.1368683772161603E-13" />
+    </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="639.5" y="471.0" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0" x="272.5" y="891.0" />
+  <SelectedNodes>
+    <node>no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
+  </SelectedNodes>
   <Categories>
     <Category>Fields</Category>
     <Category>Properties</Category>
