@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
@@ -251,10 +250,8 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) {
 
-        pdfReport.addHeader(this,"Module " + counter )
-        .add(new Paragraph(this.getDescription())
-            .setWidth(pdfReport.width100*0.8F)
-            .setPaddingBottom(15));
+        pdfReport.addHeader(this,"Module " + counter );
+        pdfReport.addParagraph( this.description );
 
         if(getComments().size()>0) {
             pdfReport.addheader2("Comments");

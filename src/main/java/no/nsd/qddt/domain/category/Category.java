@@ -21,20 +21,20 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 
 /**
  *
- * CategoryScheme : Categories provide enumerated representations for
- *      concepts and are used by questions, category lists, and variables
+ * <p>CategoryScheme : Categories provide enumerated representations for
+ *      concepts and are used by questions, category lists, and variables</p>
  *
- * CodeListScheme : Code lists link a specific value with a category and
- *      are used by questions and variables
+ * <p>CodeListScheme : Code lists link a specific value with a category and
+ *      are used by questions and variables</p>
  *
- * ManagedRepresentationScheme : Reusable representations of numeric,
- *      textual datetime, scale or missing values types.
+ * <p>ManagedRepresentationScheme : Reusable representations of numeric,
+ *      textual datetime, scale or missing values types.</p>
  *
- * CodeType (aka Code) A structure that links a unique value of a category to a
+ * <p>CodeType (aka Code) A structure that links a unique value of a category to a
  * specified category and provides information as to the location of the category
  * within a hierarchy, whether it is discrete, represents a total for the CodeList contents,
  * and if its sub-elements represent a comprehensive coverage of the category.
- * The Code is identifiable, but the value within the category must also be unique within the CodeList.
+ * The Code is identifiable, but the value within the category must also be unique within the CodeList.</p>
  *
  *
  * @author Stig Norland
@@ -44,7 +44,6 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 @Entity
 @Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind","based_on_object"},name = "UNQ_CATEGORY_NAME_KIND")})
 public class Category extends AbstractEntityAudit  implements Comparable<Category> , Cloneable {
-
 
     @Transient
     @JsonSerialize
@@ -57,30 +56,15 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     private List<Category> children = new ArrayList<>();
 
 
-    //name -> A description of a particular category or response.
-
-    /*
-    A display label for the category.
-    May be expressed in multiple languages.
-    Repeat for labels with different content, for example,
-    labels with differing length limitations or of different types or applications.
-     */
     @Column(name = "label")
     @OrderBy()
     private String label;
 
-    /*
-    A description of the content and purpose of the category.
-    May be expressed in multiple languages and supports the use of structured content.
-    Note that comparison of categories is done using the content of description.
-     */
+
     @Column(name = "description", length = 2000)
     private String description;
 
-    /**
-     * This field is only used for categories that facilitates user input.
-     * like numeric range / text length /
-     */
+
     @Column(name = "input_limit")
     @Embedded
     private ResponseCardinality inputLimit;
@@ -90,9 +74,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Enumerated(EnumType.STRING)
     private CategoryRelationCodeType classificationLevel;
 
-    /**
-     * format is used by datetime, and other kinds if needed.
-     */
     private String format;
 
 
@@ -106,7 +87,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public Category() {
         super();
-//        setClassKind( "CATEGORY" );
         code = new Code();
         hierarchyLevel = HierarchyLevel.ENTITY;
         setCategoryType(CategoryType.CATEGORY);
@@ -162,6 +142,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.hierarchyLevel = hierarchyLevel;
     }
 
+    /*
+    A display label for the category.
+    May be expressed in multiple languages.
+    Repeat for labels with different content, for example,
+    labels with differing length limitations or of different types or applications.
+     */
     public String getLabel() {
         return SafeString(label);
     }
@@ -172,6 +158,11 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             setName(StringTool.CapString(label));
     }
 
+    /*
+   A description of the content and purpose of the category.
+   May be expressed in multiple languages and supports the use of structured content.
+   Note that comparison of categories is done using the content of description.
+    */
     public String getDescription() {
         return StringTool.CapString(description);
     }
@@ -188,6 +179,10 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             this.code = code;
     }
 
+    /**
+     * This field is only used for categories that facilitates user input.
+     * like numeric range / text length /
+     */
     public ResponseCardinality getInputLimit() {
         if (inputLimit == null)
             setInputLimit("0","1");
@@ -210,6 +205,9 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.classificationLevel = classificationLevel;
     }
 
+    /**
+     * format is used by datetime, and other kinds if needed.
+     */
     public String getFormat() {
         return format;
     }

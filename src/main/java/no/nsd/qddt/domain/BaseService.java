@@ -11,20 +11,20 @@ public interface BaseService<T,ID> {
 
     /**
      *
-     * @return number of elements
+     * @return number of entities
      */
     long count();
 
     /**
      *
-     * @param id
-     * @return
+     * @param id ID of entity
+     * @return true if exists
      */
     boolean exists(ID id);
 
     /**
      * Return a entity based on its ID.
-     * @param id ID
+     * @param id ID of entity
      * @return Entity
      */
     <S extends T> S findOne(ID id);
@@ -40,14 +40,14 @@ public interface BaseService<T,ID> {
 
     /**
      * Deletes object with id ID from backstore, exception raised by failure.
-     * @param id identifier ID
+     * @param id ID of entity
      */
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     void delete(ID id) throws DataAccessException;
 
     /**
      * Deletes object with these IDs from backstore, exception raised by failure.
-     * @param instances list of identifier IDs
+     * @param instances list of entity IDs
      */
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     void delete(List<T> instances) throws DataAccessException;

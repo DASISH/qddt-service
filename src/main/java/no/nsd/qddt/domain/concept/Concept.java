@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
@@ -289,10 +288,8 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @Override
     public void fillDoc(PdfReport pdfReport,String counter ) {
         try {
-            pdfReport.addHeader(this, "Concept " + counter )
-                .add(new Paragraph(this.getDescription())
-                    .setWidth(pdfReport.width100*0.8F)
-                    .setPaddingBottom(15));
+            pdfReport.addHeader(this, "Concept " + counter );
+            pdfReport.addParagraph( this.description );
 
             if (getComments().size() > 0) {
                 pdfReport.addheader2("Comments");

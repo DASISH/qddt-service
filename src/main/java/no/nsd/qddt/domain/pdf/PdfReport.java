@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.pdf;
 
+import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
@@ -237,9 +238,18 @@ public class PdfReport extends PdfDocument {
     }
 
     public Document addParagraph(String value){
-        return this.document.add(new Paragraph(value)
-            .setWidth(width100*0.8F)
-            .setKeepTogether(true));
+        try {
+            Paragraph para = new Paragraph(  );
+            List<IElement> elements = HtmlConverter.convertToElements("<p>" + value + "</p>");
+            for (IElement element : elements) {
+                para.add((IBlockElement)element);
+            }
+            para.setWidth(width100*0.8F).setPaddingBottom(15);
+            this.document.add( para );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return this.document;
     }
 
     public Document addComments(Set<CommentJsonEdit> comments){
@@ -252,6 +262,7 @@ public class PdfReport extends PdfDocument {
         }
         return this.document.add(table);
     }
+
 
     public Document addPadding() {
         return document.add(new Paragraph().setPaddingBottom(30).setKeepTogether(false));

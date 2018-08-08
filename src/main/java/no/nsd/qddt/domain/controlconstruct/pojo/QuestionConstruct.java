@@ -44,6 +44,8 @@ public class QuestionConstruct  extends ControlConstruct {
     @Column(name="questionitem_id")
     private UUID questionItemUUID;
 
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "questionitem_revision")
     private Integer questionItemRevision;
@@ -86,6 +88,14 @@ public class QuestionConstruct  extends ControlConstruct {
 
     public QuestionConstruct() {
         super();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public QuestionItem getQuestionItem() {
@@ -224,6 +234,8 @@ public class QuestionConstruct  extends ControlConstruct {
     @Override
     public void fillDoc(PdfReport pdfReport, String counter)  {
         pdfReport.addHeader(this, "ControlConstruct " + counter);
+
+        pdfReport.addParagraph( this.getDescription() );
 
         if (getUniverse().size() > 0)
             pdfReport.addheader2("Universe");

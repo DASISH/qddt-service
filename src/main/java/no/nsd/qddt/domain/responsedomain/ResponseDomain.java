@@ -146,7 +146,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     /**
      * Vocabulary for Display layout  would suffice with 'Horizontal' (default) vs. Vertical'.
-     * @return
+     * @return DisplayLayout
      */
     public String getDisplayLayout() {
         return displayLayout;
