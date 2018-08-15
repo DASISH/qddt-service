@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -79,4 +80,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .headers().cacheControl();
     }
 
+    @Override
+    public final void configure(final WebSecurity web) throws Exception
+    {
+        super.configure(web);
+        web.httpFirewall(new AnnotatingHttpFirewall()); // Set the custom firewall.
+        return;
+    }
 }

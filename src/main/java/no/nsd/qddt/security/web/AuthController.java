@@ -42,9 +42,9 @@ public class AuthController extends AbstractController {
     @Value("${auth.header}")
     private String tokenHeader;
 
-    public final static String SIGNUP_URL = "/auth/signup";
-    public final static String SIGNIN_URL = "/auth/signin";
-    public final static String REFRESH_TOKEN_URL = "/auth/token/refresh";
+    public final static String SIGNUP_URL = "auth/signup";
+    public final static String SIGNIN_URL = "auth/signin";
+    public final static String REFRESH_TOKEN_URL = "auth/token/refresh";
 
     private AuthenticationManager authenticationManager;
     private JwtUtil jwtUtil;

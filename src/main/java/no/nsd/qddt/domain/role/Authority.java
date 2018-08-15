@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.role;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -34,7 +35,8 @@ public class Authority {
     @Column(name = "authority")
     private String authority;
 
-    @ManyToMany(mappedBy = "authorities")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
     public Authority() {

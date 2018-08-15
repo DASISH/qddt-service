@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
@@ -212,10 +211,8 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) {
-        pdfReport.addHeader(this,"Study " + counter )
-        .add(new Paragraph(this.getDescription())
-                .setWidth(pdfReport.width100*0.8F)
-                .setPaddingBottom(30));
+        pdfReport.addHeader(this,"Study " + counter );
+        pdfReport.addParagraph( this.description );
 
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");

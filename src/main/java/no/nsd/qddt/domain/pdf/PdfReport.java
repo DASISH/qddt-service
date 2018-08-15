@@ -8,8 +8,10 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.kernel.pdf.action.PdfAction;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.kernel.pdf.navigation.PdfDestination;
 import com.itextpdf.layout.Document;
@@ -35,10 +37,8 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.AbstractMap;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -125,20 +125,21 @@ public class PdfReport extends PdfDocument {
         try {
             for (int i = 1; i <= tocPages; i++) {
                 movePage(startToc+i, i );
-//                addPage(i, removePage());
             }
-//            copyPagesTo(startToc+1, getNumberOfPages(), this, 1);
-            } catch (Exception ex) {
+        } catch (Exception ex) {
             LOG.error("createToc",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map(a->a.toString())
-                    .forEach(LOG::info);         }
+                .map(a->a.toString())
+                .forEach(LOG::info);
+        }
         // add page labels
         getPage(1)
                 .setPageLabel(PageLabelNumberingStyle.LOWERCASE_ROMAN_NUMERALS, null, 1);
-        getPage(2 + tocPages)
-                .setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, null, 1);
+        getPage(1 + tocPages)
+                .setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, "Page ", 1);
 
+        setPageFooter( tocPages );
+        close();
     }
 
     public PdfFont getParagraphFont() {
@@ -148,7 +149,12 @@ public class PdfReport extends PdfDocument {
     private PdfOutline outline = null;
 
     public Document addHeader(AbstractEntityAudit element, String header) {
-
+        String[] values = header.split(" ");
+        String chapter = "";
+        if (values.length > 1) {
+            chapter = values[1];
+            document.add( new AreaBreak() );
+        }
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F})).setKeepTogether(true);
         table.addCell(
             new Cell(4,3).add(
@@ -200,10 +206,7 @@ public class PdfReport extends PdfDocument {
             .setBorder(Border.NO_BORDER));
         document.add(table);
         outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());
-        String[] values = header.split(" ");
-        String chapter = "";
-        if (values.length > 1)
-            chapter = values[1];
+
         AbstractMap.SimpleEntry<String, Integer> titlePage
                 = new AbstractMap.SimpleEntry<>(
                 chapter + "\t"  + StringTool.CapString(element.getName())
@@ -240,11 +243,15 @@ public class PdfReport extends PdfDocument {
     public Document addParagraph(String value){
         try {
             Paragraph para = new Paragraph(  );
-            List<IElement> elements = HtmlConverter.convertToElements("<p>" + value + "</p>");
+            value = Arrays.asList(value.split( "\n" )).stream()
+                .map( p -> "<p>" + p  + "</p>" )
+                .collect(Collectors.joining(" "));
+            LOG.info( value );
+            List<IElement> elements = HtmlConverter.convertToElements(value);
             for (IElement element : elements) {
-                para.add((IBlockElement)element);
+                para.add( (IBlockElement)element);
             }
-            para.setWidth(width100*0.8F).setPaddingBottom(15);
+            para.setWidth(width100*0.8F).setPaddingBottom(15).setKeepTogether(true);
             this.document.add( para );
         } catch (IOException e) {
             e.printStackTrace();
@@ -303,6 +310,24 @@ public class PdfReport extends PdfDocument {
         PdfOutline kid = outline.addOutline(title);
         kid.addDestination(PdfDestination.makeDestination(new PdfString(key)));
         return outline;
+    }
+
+    private void setPageFooter(int tocPages) {
+        String[] pagelabels = getPageLabels();
+        for(int i = tocPages+1; i < getNumberOfPages(); i++  ) {
+            PdfPage page = getPage( i);
+            page.setRotation( 0 );
+            PdfCanvas canvas = new PdfCanvas(page);
+            Rectangle pageSize = page.getPageSize();
+            canvas.beginText();
+            canvas.setFontAndSize(font , 5);
+            canvas.moveText(0, (pageSize.getBottom() + document.getBottomMargin()) - (pageSize.getTop() + document.getTopMargin()) - 20)
+                .showText(pagelabels[i])
+                .endText()
+                .release();
+
+            LOG.info(pagelabels[i]);
+        }
     }
 
     private class UpdatePageRenderer extends ParagraphRenderer {

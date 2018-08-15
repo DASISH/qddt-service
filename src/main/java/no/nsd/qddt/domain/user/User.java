@@ -37,7 +37,7 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
-@Table(name = "USER_ACCOUNT")
+@Table(name = "USER_ACCOUNT", uniqueConstraints = {@UniqueConstraint(columnNames = {"email" },name = "UNQ_USER_EMAIL")})
 public class User {
 
     @Id
