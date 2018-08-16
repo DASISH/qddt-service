@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
+        LOG.info( "postload topic " + instance.getId() );
         try{
             for (ElementRef cqi :instance.getTopicQuestionItems()) {
 
@@ -109,7 +111,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 //                );
 
             }
-
+            Hibernate.initialize(instance.getConcepts());
             instance.getConcepts().forEach(this::postLoadProcessing);
             instance.setComments(loadComments(instance.getId()));
 
@@ -124,6 +126,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
+        LOG.info( "postload concept " + instance.getId() );
         try{
             instance.setComments(loadComments(instance.getId()));
             instance.getConceptQuestionItems()

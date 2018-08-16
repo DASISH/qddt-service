@@ -143,6 +143,7 @@ public abstract class AbstractElementRef implements IElementRef {
             + ", \"major\":\"" + major + "\""
             + ", \"minor\":\"" + minor + "\""
             + ", \"versionLabel\":\"" + versionLabel + "\""
+            + ", \"item\":\"" + element!=null ? element.toString():"null" + "\""
             + "}}";
     }
 

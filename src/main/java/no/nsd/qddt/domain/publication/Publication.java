@@ -22,7 +22,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public class Publication extends AbstractEntityAudit {
 
     private String purpose;
-
+//https://www.baeldung.com/jackson-json-view-annotation
     @ManyToOne(fetch = FetchType.EAGER)
     @Audited(targetAuditMode = NOT_AUDITED)
     @JoinColumn(name="status_id")

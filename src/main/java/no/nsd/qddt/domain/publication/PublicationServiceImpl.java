@@ -174,6 +174,7 @@ public class PublicationServiceImpl implements PublicationService {
     ElementRef postLoadProcessing(ElementRef instance) {
         try {
             instance = new ElementLoader( serviceLoader.getService( instance.getElementKind() ) ).fill( instance );
+            LOG.info( instance.getName() + " " + instance.getElementKind());
         } catch (InvalidDataAccessApiUsageException ida) {
             return instance;
         } catch (Exception e) {
