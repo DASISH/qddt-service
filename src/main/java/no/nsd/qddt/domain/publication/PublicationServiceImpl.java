@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,24 +180,24 @@ public class PublicationServiceImpl implements PublicationService {
             return instance;
         }
 
-        switch (instance.getElementKind()) {
-            case TOPIC_GROUP:
-                ((TopicGroup)instance.getElement()).getTopicQuestionItems()
-                    .forEach(e-> postLoadProcessing(e));
-                ((TopicGroup)instance.getElement()).getConcepts()
-                    .forEach( c->c.getConceptQuestionItems()
-                        .forEach( e-> postLoadProcessing(e) ) );
-                break;
-            case CONCEPT:
-                ((Concept)instance.getElement()).getConceptQuestionItems()
-                    .forEach(e-> postLoadProcessing(e));
-                break;
-            case CONTROL_CONSTRUCT:
-            case QUESTION_CONSTRUCT:
-                break;
-            default:
-                // do nothing
-        }
+//        switch (instance.getElementKind()) {
+//            case TOPIC_GROUP:
+//                ((TopicGroup)instance.getElement()).getTopicQuestionItems()
+//                    .forEach(e-> postLoadProcessing(e));
+//                ((TopicGroup)instance.getElement()).getConcepts()
+//                    .forEach( c->c.getConceptQuestionItems()
+//                        .forEach( e-> postLoadProcessing(e) ) );
+//                break;
+//            case CONCEPT:
+//                ((Concept)instance.getElement()).getConceptQuestionItems()
+//                    .forEach(e-> postLoadProcessing(e));
+//                break;
+//            case CONTROL_CONSTRUCT:
+//            case QUESTION_CONSTRUCT:
+//                break;
+//            default:
+//                // do nothing
+//        }
         return instance;
     }
 

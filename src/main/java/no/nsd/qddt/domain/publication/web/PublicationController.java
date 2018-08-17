@@ -40,7 +40,7 @@ public class PublicationController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/element/", method = RequestMethod.GET)
+    @RequestMapping(value = "/element/", method = RequestMethod.POST)
     public ElementRef getDetail(@RequestBody ElementRef instance) {
         return service.getDetail(instance);
     }
