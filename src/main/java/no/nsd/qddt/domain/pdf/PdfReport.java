@@ -132,7 +132,7 @@ public class PdfReport extends PdfDocument {
                 .map(a->a.toString())
                 .forEach(LOG::info);
         }
-        // add page labels
+        // add page labels, only visible electronically, not on print.
         getPage(1)
                 .setPageLabel(PageLabelNumberingStyle.LOWERCASE_ROMAN_NUMERALS, null, 1);
         getPage(1 + tocPages)
@@ -153,7 +153,7 @@ public class PdfReport extends PdfDocument {
         String chapter = "";
         if (values.length > 1) {
             chapter = values[1];
-            document.add( new AreaBreak() );
+            document.add( new AreaBreak() );        //https://github.com/DASISH/qddt-client/issues/611
         }
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F})).setKeepTogether(true);
         table.addCell(
@@ -246,7 +246,7 @@ public class PdfReport extends PdfDocument {
             value = Arrays.asList(value.split( "\n" )).stream()
                 .map( p -> "<p>" + p  + "</p>" )
                 .collect(Collectors.joining(" "));
-            LOG.info( value );
+//            LOG.info( value );
             List<IElement> elements = HtmlConverter.convertToElements(value);
             for (IElement element : elements) {
                 para.add( (IBlockElement)element);
