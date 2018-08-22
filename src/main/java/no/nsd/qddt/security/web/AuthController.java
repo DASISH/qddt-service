@@ -99,7 +99,7 @@ public class AuthController extends AbstractController {
      * @throws AuthenticationException
      */
     @RequestMapping(value = SIGNUP_URL, method = RequestMethod.POST)
-    public ResponseEntity createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest)             throws AuthenticationException {
+    public ResponseEntity createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
 
         final String name = authenticationRequest.getUsername();
         final String email = authenticationRequest.getEmail();

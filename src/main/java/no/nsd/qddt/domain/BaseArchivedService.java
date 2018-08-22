@@ -22,4 +22,5 @@ public interface BaseArchivedService<T extends AbstractEntityAudit> extends Base
         return instance;
     }
 
+    boolean hasArchivedContent(UUID id);
 }

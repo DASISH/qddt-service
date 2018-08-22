@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -76,17 +77,11 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         }
     }
 
-
-//    @Transactional()
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-//    public List<SurveyProgram> save(List<SurveyProgram> instances) {
-//        return surveyProgramRepository.save(instances)
-//            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
-//    }
-
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
+        if (surveyProgramRepository.hasArchive( uuid ) > 0)
+            throw new ReferenceInUseException( uuid + ", has descendants that are Archived." );
         surveyProgramRepository.delete(uuid);
     }
 
@@ -133,4 +128,8 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
+    @Override
+    public boolean hasArchivedContent(UUID id) {
+        return (surveyProgramRepository.hasArchive( id ) > 0);
+    }
 }

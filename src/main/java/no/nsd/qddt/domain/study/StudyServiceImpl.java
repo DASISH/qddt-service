@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -72,7 +73,8 @@ class StudyServiceImpl implements StudyService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
-
+        if (studyRepository.hasArchive( uuid ) > 0)
+            throw new ReferenceInUseException( uuid + ", has descendants that are Archived." );
         studyRepository.delete(uuid);
     }
 
@@ -117,5 +119,10 @@ class StudyServiceImpl implements StudyService {
     private void loadConceptQuestion(Concept parent) {
         parent.getChildren().forEach( this::loadConceptQuestion );
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
+    }
+
+    @Override
+    public boolean hasArchivedContent(UUID id) {
+        return false;
     }
 }

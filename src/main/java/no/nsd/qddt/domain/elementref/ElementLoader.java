@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.elementref;
 
 import no.nsd.qddt.domain.BaseServiceAudit;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +21,16 @@ public class ElementLoader{
         this.serviceAudit = serviceAudit;
     }
 
-    public IElementRef fill(ElementKind kind, UUID id, Integer rev) {
-        return fill( new ElementRef( kind, id, rev ));
-    }
-
-    public ElementRefTyped fill(ElementRefTyped element) {
-        Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
-        element.setElement(revision.getEntity());
-        element.setElementRevision( revision.getRevisionNumber() );
-        return  element;
-    }
+//    public IElementRef fill(ElementKind kind, UUID id, Integer rev) {
+//        return fill( new ElementRef( kind, id, rev ));
+//    }
+//
+//    public ElementRefTyped<no.nsd.qddt.domain.AbstractEntityAudit> fill(ElementRefTyped<no.nsd.qddt.domain.AbstractEntityAudit> element) {
+//        Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
+//        element.setElement(revision.getEntity());
+//        element.setElementRevision( revision.getRevisionNumber() );
+//        return  element;
+//    }
 
     public ElementRef fill(ElementRef element) {
         Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );

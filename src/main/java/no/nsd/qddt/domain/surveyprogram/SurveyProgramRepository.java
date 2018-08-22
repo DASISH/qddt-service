@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.BaseArchivedRepository;
 import no.nsd.qddt.domain.agency.Agency;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Repository
-interface SurveyProgramRepository extends BaseRepository<SurveyProgram,UUID> {
+interface SurveyProgramRepository extends BaseArchivedRepository<SurveyProgram,UUID> {
 
     List<SurveyProgram> findByAgencyOrderByModifiedAsc(Agency agency);
 
