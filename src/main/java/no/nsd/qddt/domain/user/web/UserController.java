@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.user.web;
 
-import no.nsd.qddt.domain.user.IPassword;
+import no.nsd.qddt.domain.user.Password;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.domain.user.json.UserJsonEdit;
@@ -61,15 +61,15 @@ public class UserController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.POST ,produces = MediaType.APPLICATION_JSON_VALUE)
     public UserJsonEdit update(@RequestBody UserJsonEdit instance) {
 
         return  new UserJsonEdit( userService.save(new User(instance)));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/resetpassword", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
-    public String resetPassword(@RequestBody IPassword instance) {
+    @RequestMapping(value = "/resetpassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String resetPassword(@RequestBody Password instance) {
         return userService.setPassword(instance);
     }
 

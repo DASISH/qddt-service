@@ -22,6 +22,7 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class User {
     private Agency agency;
 
     @JsonIgnore
-    @Column(name = "password", updatable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "email")
@@ -67,6 +68,10 @@ public class User {
 
     @JsonIgnore
     private boolean isEnabled;
+
+    @Column(name = "updated")
+    @Version()
+    private Timestamp modified;
 
 
     @JsonIgnore
@@ -192,6 +197,14 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
     }
 
     public Set<Authority> getAuthorities() {

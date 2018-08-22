@@ -24,6 +24,6 @@ public interface UserService extends BaseService<User,UUID> {
 
     Page<User> getByName(String name, Pageable pageable);
 
-    String setPassword(IPassword instance);
+    String setPassword(Password instance);
 
 }

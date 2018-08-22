@@ -5,6 +5,8 @@ import no.nsd.qddt.domain.search.SearchService;
 import no.nsd.qddt.exception.ReferenceInUseException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.UserNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,8 @@ import static no.nsd.qddt.utils.StringTool.likeify;
 
 @Service("userService")
 class UserServiceImpl implements UserService {
+
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final UserRepository userRepository;
     private final AuthorityService authorityService;
@@ -126,15 +130,17 @@ class UserServiceImpl implements UserService {
 
 
     @Override
-    public String setPassword(IPassword instance) {
+    @Transactional()
+    public String setPassword(Password instance) {
         User user = userRepository.findById( instance.getId() )
             .orElseThrow(  () -> new UserNotFoundException(instance.getId()) );
 
-        if (passwordEncoder().matches( instance.getOldPassword(), user.getPassword() )) {
-            userRepository.setPassword( user.getId(), passwordEncoder().encode( instance.getNewPassword() ) );
-            return "Password changed successfully";
-        } else
-            throw  new UserDeniedAuthorizationException("Request denied.");
+        if (!passwordEncoder().matches( instance.getOldPassword(), user.getPassword() )) {
+            throw new UserDeniedAuthorizationException( "Password mismatch ( user was modified [" + user.getModified() +"] )." );
+        }
+
+        userRepository.setPassword( user.getId(), passwordEncoder().encode( instance.getPassword() ) );
+        return "Password changed successfully";
     }
 
 
