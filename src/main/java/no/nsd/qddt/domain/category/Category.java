@@ -42,7 +42,7 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
  */
 @Audited
 @Entity
-@Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind" },name = "UNQ_CATEGORY_NAME_KIND")})
+@Table(name = "CATEGORY", uniqueConstraints = {@UniqueConstraint(columnNames = {"label","name","category_kind" },name = "UNQ_CATEGORY_NAME_KIND")})   //https://github.com/DASISH/qddt-client/issues/606
 public class Category extends AbstractEntityAudit  implements Comparable<Category> , Cloneable {
 
     @Transient
