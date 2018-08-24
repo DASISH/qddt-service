@@ -1,5 +1,6 @@
 ![alt text](../../../qddt-client/wiki/images/seriss-logo.jpg)
 
+![alt text](../../../qddt-client/wiki/images/qddt-text.png)
 
 
 Deploy
