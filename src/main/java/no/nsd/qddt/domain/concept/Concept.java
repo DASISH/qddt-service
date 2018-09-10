@@ -197,9 +197,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return topicRef;
     }
 
-//    public void setTopicRef(TopicRef topicRef) {
-//        this.topicRef = topicRef;
-//    }
 
     protected Concept getParentRef(){
         return this.parentReferenceOnly;
@@ -225,13 +222,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return retvals;
     }
 
-//    public void setParentT(TopicGroup newParent) {
-//        setField("topicGroup",newParent );
-//    }
-//
-//    public void setParentU(UUID topicId) {
-//        setField("topicGroupId",topicId );
-//    }
 
     protected void setParentC(Concept newParent)  {
         setField("parentReferenceOnly",newParent );
@@ -273,17 +263,13 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @Override
     public String toDDIXml(){
-        return super.toDDIXml();
+        StringBuilder sb = new StringBuilder();
+        sb.append( super.toDDIXml() );
+        sb.append("    <r:ConceptName>"+ getName() +"</r:ConceptName>\n");
+        sb.append("    <r:Label>"+ getLabel() +"</r:Label>\n");
+        sb.append("    <r:Description>"+ getDescription() +"</r:Description>\n");
+        return sb.toString();
     }
-
-
-//    @PreRemove
-//    private void removeReferencesFromConcept(){
-//        LOG.debug("Concept pre remove");
-////        getConceptQuestionItems().clear();
-////        getConceptQuestionItems().forEach(cqi->cqi.getQuestionItem().updateStatusQI(this));
-//    }
-
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter ) {

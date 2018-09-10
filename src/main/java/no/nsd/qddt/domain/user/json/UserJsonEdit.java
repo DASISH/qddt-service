@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.user.User;
 import org.hibernate.PropertyNotFoundException;
 import org.hibernate.annotations.Type;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
@@ -28,6 +29,8 @@ public class UserJsonEdit {
 
     private String classKind;
 
+    private Timestamp modified;
+
     public UserJsonEdit() {
     }
 
@@ -37,9 +40,10 @@ public class UserJsonEdit {
         setEmail(user.getEmail());
         setName(user.getUsername());
         setAgency( user.getAgency() );
-        setAuthority( user.getAuthorities().stream().findFirst().orElseThrow( () -> new PropertyNotFoundException( "Authority" ) ) );
+        setAuthority( user.getAuthorities().stream().findFirst().orElseThrow( () -> new PropertyNotFoundException( "No Authority set" ) ) );
         setEnabled( user.isEnabled() );
         setClassKind( "USER" );
+        setModified( user.getModified() );
     }
 
 
@@ -97,5 +101,13 @@ public class UserJsonEdit {
 
     public void setClassKind(String classKind) {
         this.classKind = classKind;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
     }
 }

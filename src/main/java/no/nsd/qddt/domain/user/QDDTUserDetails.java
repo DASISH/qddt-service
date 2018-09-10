@@ -10,6 +10,7 @@ import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 public class QDDTUserDetails implements UserDetails {
 
@@ -49,16 +50,25 @@ public class QDDTUserDetails implements UserDetails {
         return user.getUsername();
     }
 
+    /*
+    not implemented, always return TRUE
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /*
+    not implemented, always return TRUE
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /*
+    not implemented, always return TRUE
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;

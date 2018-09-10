@@ -23,7 +23,7 @@ interface UserRepository extends BaseRepository<User, UUID> {
      * @param email of the user we want
      * @return user with the given email
      */
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailIgnoreCase(String email);
 
     Optional<User> findById(UUID id);
 

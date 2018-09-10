@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
-import no.nsd.qddt.exception.ReferenceInUseException;
+import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -118,8 +118,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        if (topicGroupRepository.hasArchive( uuid ) > 0)
-            throw new ReferenceInUseException( uuid + ", has descendants that are Archived." );
+        if (topicGroupRepository.hasArchive( uuid.toString() ) > 0)
+            throw new DescendantsArchivedException( uuid.toString() );
         topicGroupRepository.delete(uuid);
     }
 

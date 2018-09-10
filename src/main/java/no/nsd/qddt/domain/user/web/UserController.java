@@ -35,8 +35,8 @@ public class UserController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public UserJsonEdit get(@PathVariable("id") UUID id) {
-        return new UserJsonEdit( userService.findOne(id));
+    public User get(@PathVariable("id") UUID id) {
+        return userService.findOne(id);
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -62,9 +62,9 @@ public class UserController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST ,produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserJsonEdit update(@RequestBody UserJsonEdit instance) {
+    public User update(@RequestBody User instance) {
 
-        return  new UserJsonEdit( userService.save(new User(instance)));
+        return  userService.save(instance);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

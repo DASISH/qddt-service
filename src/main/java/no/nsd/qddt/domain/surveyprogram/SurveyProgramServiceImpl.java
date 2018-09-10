@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.exception.ReferenceInUseException;
+import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -80,8 +80,8 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
-        if (surveyProgramRepository.hasArchive( uuid ) > 0)
-            throw new ReferenceInUseException( uuid + ", has descendants that are Archived." );
+        if (surveyProgramRepository.hasArchive( uuid.toString() ) > 0)
+            throw new DescendantsArchivedException( uuid.toString() );
         surveyProgramRepository.delete(uuid);
     }
 
@@ -130,6 +130,6 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     public boolean hasArchivedContent(UUID id) {
-        return (surveyProgramRepository.hasArchive( id ) > 0);
+        return (surveyProgramRepository.hasArchive( id.toString() ) > 0);
     }
 }

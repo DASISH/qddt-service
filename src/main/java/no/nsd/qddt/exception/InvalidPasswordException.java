@@ -13,6 +13,5 @@ public class InvalidPasswordException extends RuntimeException{
     public InvalidPasswordException(String email) {
         super("Invalid password for '" + email + "'.");
         logger.error("[logger] Invalid password for " + email + ".");
-        logger.debug(StackTraceFilter.nsdStack().toString());
     }
 }

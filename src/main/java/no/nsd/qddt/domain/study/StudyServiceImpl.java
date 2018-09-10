@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.exception.ReferenceInUseException;
+import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -73,8 +73,8 @@ class StudyServiceImpl implements StudyService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
-        if (studyRepository.hasArchive( uuid ) > 0)
-            throw new ReferenceInUseException( uuid + ", has descendants that are Archived." );
+        if (studyRepository.hasArchive( uuid.toString() ) > 0)
+            throw new DescendantsArchivedException( uuid.toString() );
         studyRepository.delete(uuid);
     }
 
@@ -97,19 +97,17 @@ class StudyServiceImpl implements StudyService {
     }
 
 
-
-
     private Study postLoadProcessing(Study instance) {
         if (StackTraceFilter.stackContains("getPdf","getXml")) {
             LOG.debug("PDF -> fetching  concepts ");
-            Hibernate.initialize(instance.getTopicGroups());
-            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
+//            Hibernate.initialize(instance.getTopicGroups());
+//            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
 
-            instance.getTopicGroups().forEach(t-> {
-                t.getTopicQuestionItems().forEach( qiLoader::fill );
-                Hibernate.initialize(t.getConcepts());
-                t.getConcepts().forEach( this::loadConceptQuestion );
-            });
+            instance.getTopicGroups().forEach( topic -> {
+                topic.getTopicQuestionItems().forEach( qiLoader::fill );
+                Hibernate.initialize(topic.getConcepts());
+                topic.getConcepts().forEach( this::loadConceptQuestion );
+            } );
 
             // when we print hierarchy we don't need qi concept reference....
         }

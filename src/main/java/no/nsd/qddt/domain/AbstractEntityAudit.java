@@ -9,13 +9,12 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
-import no.nsd.qddt.utils.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.ByteArrayOutputStream;
@@ -31,8 +30,6 @@ import java.util.stream.Collectors;
 @Audited
 @MappedSuperclass
 public abstract class AbstractEntityAudit extends AbstractEntity  implements IElementRefType {
-
-
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -99,6 +96,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
 
     @ManyToOne
     @JoinColumn(name = "agency_id",updatable = false, nullable = false)
+//    @NotAudited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Agency agency;
 
     @Column(name = "name")
@@ -124,8 +123,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     private String changeComment;
 
 
-//    @Where(clause = "is_hidden = 'false'")
-    @OneToMany(mappedBy="ownerId", fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id")
     @NotAudited
     private Set<Comment> comments = new HashSet<>();
 
@@ -229,9 +228,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
 
     @PrePersist
     private void onInsert(){
-        LOG.debug("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
-        User user = SecurityContext.getUserDetails().getUser();
-        agency = user.getAgency();
+
+        LOG.info("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         if (changeKind == null || changeKind.ordinal() > ChangeKind.REFERENCED.ordinal()) {
             changeKind = ChangeKind.CREATED;
             changeComment = ChangeKind.CREATED.description;
@@ -243,16 +241,16 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     @PreUpdate
     private void onUpdate(){
         try {
-            LOG.debug("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
+            LOG.info("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
             ChangeKind change = changeKind;
 
             if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() & !ver.isNew()) {
                 change = ChangeKind.IN_DEVELOPMENT;
-                changeKind = change;
+                setChangeKind( change );
             }
-            if (StringTool.IsNullOrTrimEmpty(changeComment))
-                changeComment = change.description;
+            if (StringTool.IsNullOrTrimEmpty(changeComment))        // insert default comment if none was supplied, (shouldn't occur)
+                setChangeComment( change.description );
             switch (change) {
                 case BASED_ON:
                 case TRANSLATED:
@@ -284,13 +282,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
                     ver.setVersionLabel("Changes in hierarchy");
                     break;
             }
-            version = ver;
+            setVersion (ver);
             beforeUpdate();
-        }catch (Exception ex){
+        } catch (Exception ex){
             LOG.error("AbstractEntityAudit::onUpdate",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
         }
     }
 
@@ -367,12 +362,16 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
 
     @Override
     public String toDDIXml(){
-        return  super.toDDIXml() +
-                getAgency().toDDIXml() +
-                getVersion().toDDIXml() +
-                "<BasedOnObject>" +
-                "   <BasedOnReference>" + getBasedOnObject() + "</BasedOnReference>" +
-                "</BasedOnObject>";
+        return
+            "    <r:URN>urn:ddi:"+ getAgency().getName()+":"+ super.getId()+":" + getVersion() +"</r:URN>\n" +
+            "    <r:VersionRationale>" + getChangeKind().getName() + "</r:VersionRationale>\n" +
+            ((getBasedOnObject() == null) ? "" :
+            "    <r:BasedOnObject>\n" +
+            "       <r:BasedOnReference>\n" +
+            "           <r:URN>urn:ddi:"+ getAgency().getName()+":"+ basedOnObject+ ":" + getVersion() +"</r:URN>\n" +
+            "       </r:BasedOnReference>\n" +
+            "    </r:BasedOnObject>\n");
+
     }
 
 

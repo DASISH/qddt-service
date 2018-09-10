@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import javax.persistence.PreUpdate;
  * Be aware that this class will cause {@link NullPointerException} if BeforeSecurityContext is not set in tests.
  *
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 @Configurable
 public class EntityCreatedModifiedDateAuditEventConfiguration {
@@ -30,15 +32,15 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void createOrUpdate(AbstractEntity entity) {
         try {
-//            entity.setModified(LocalDateTime.now());
-            entity.setModifiedBy(SecurityContext.getUserDetails().getUser());
-
-            if (entity instanceof AbstractEntityAudit )
-                LOG.debug("Entity EventConfiguration CreateOrUpdate "+ entity.getClass().getSimpleName() + " - " +
-                    ((AbstractEntityAudit)entity).getName());
+            LOG.info("CREATE_OR_UPDATE " + entity.getModified().toString() + " -> " + entity.getId() );
+            if (entity instanceof AbstractEntityAudit ) {
+                User user = SecurityContext.getUserDetails().getUser();
+                ((AbstractEntityAudit) entity).setAgency( user.getAgency() );
+                entity.setModifiedBy( user );
+                LOG.info( "AbstractEntityAudit EventConfiguration CreateOrUpdate done " + entity.getClass().getSimpleName() );
+            }
             else
-                LOG.debug("Entity EventConfiguration CreateOrUpdate "+ entity.getClass().getSimpleName() + " - " +
-                        entity.toString());
+                LOG.info("Entity EventConfiguration CreateOrUpdate  OTHER "+ entity.getClass().getSimpleName());
 
 
         } catch (Exception e){

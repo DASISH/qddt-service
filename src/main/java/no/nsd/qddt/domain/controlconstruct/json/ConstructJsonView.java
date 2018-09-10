@@ -36,7 +36,7 @@ public class ConstructJsonView  {
         modified = construct.getModified();
         version = construct.getVersion();
         classKind = construct.getClassKind();
-        modifiedBy = new UserJson(construct.getModifiedBy());
+        modifiedBy = construct.getModifiedBy();
         // agency = new AgencyJsonView(construct.getAgency());
     }
 

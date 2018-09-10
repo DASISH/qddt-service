@@ -1,10 +1,13 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.Objects;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +42,10 @@ public abstract class AbstractEntity {
     @Version()
     private Timestamp modified;
 
-    @ManyToOne()
+
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private User modifiedBy;
 
     public UUID getId() {
@@ -59,8 +64,8 @@ public abstract class AbstractEntity {
         this.modified = modified;
     }
 
-    public User getModifiedBy() {
-        return modifiedBy;
+    public UserJson getModifiedBy() {
+        return new UserJson(  modifiedBy);
     }
 
     public void setModifiedBy(User modifiedBy) {
@@ -71,22 +76,15 @@ public abstract class AbstractEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AbstractEntity)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         AbstractEntity that = (AbstractEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (modified != null ? !modified.equals(that.modified) : that.modified != null) return false;
-        return modifiedBy != null ? modifiedBy.equals(that.modifiedBy) : that.modifiedBy == null;
-
+        return Objects.equal( id, that.id ) &&
+            Objects.equal( modified, that.modified );
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (modified != null ? modified.hashCode() : 0);
-        result = 31 * result + (modifiedBy != null ? modifiedBy.hashCode() : 0);
-        return result;
+        return Objects.hashCode( id, modified );
     }
 
     @Override
@@ -98,7 +96,7 @@ public abstract class AbstractEntity {
     }
 
     public String toDDIXml(){
-        return "<ID type='ID'>" + getId().toString() + "</ID>";
+        return "";
     }
 
 

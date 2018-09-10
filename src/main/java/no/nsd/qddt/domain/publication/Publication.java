@@ -25,7 +25,7 @@ public class Publication extends AbstractEntityAudit {
 //https://www.baeldung.com/jackson-json-view-annotation
     @ManyToOne(fetch = FetchType.EAGER)
     @Audited(targetAuditMode = NOT_AUDITED)
-    @JoinColumn(name="status_id")
+    @JoinColumn(name="status_id", nullable = false)
     private PublicationStatus status;
 
     @OrderColumn(name="publication_idx")

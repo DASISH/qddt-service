@@ -1,9 +1,6 @@
 package no.nsd.qddt.utils.advice;
 
-import no.nsd.qddt.exception.ControllerAdviceExceptionMessage;
-import no.nsd.qddt.exception.ReferenceInUseException;
-import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.UserNotFoundException;
+import no.nsd.qddt.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -136,6 +133,27 @@ public class ControllerExceptionAdvice {
     }
 
     /**
+     * Handle all exceptions of type {@link  no.nsd.qddt.exception.InvalidPasswordException}
+     * when they occur from methods executed from the controller.
+     * @param req servlet request
+     * @param e general exception
+     * @return a {@link no.nsd.qddt.exception.InvalidPasswordException} object
+     */
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = InvalidPasswordException.class)
+    @ResponseBody public ControllerAdviceExceptionMessage handleInvalidPasswordException(HttpServletRequest req, Exception e)  {
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
+            req.getRequestURL().toString(),
+            e.getLocalizedMessage()
+        );
+
+        message.setUserfriendlyMessage( getRootCauseMessage(e.getCause()));
+        logger.error(e.getClass().getSimpleName(),e);
+
+        return message;
+    }
+
+    /**
      * Default exception handler.
      * Will catch all bad requests, but will not provide further details of the error.
      * @param req servlet request
@@ -155,7 +173,5 @@ public class ControllerExceptionAdvice {
 
         return message;
     }
-
-
 
 }

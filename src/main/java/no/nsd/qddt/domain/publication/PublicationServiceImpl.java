@@ -9,7 +9,6 @@ import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -170,15 +169,15 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     ElementRef postLoadProcessing(ElementRef instance) {
-        try {
-            instance = new ElementLoader( serviceLoader.getService( instance.getElementKind() ) ).fill( instance );
-            LOG.info( instance.getName() + " " + instance.getElementKind());
-        } catch (InvalidDataAccessApiUsageException ida) {
-            return instance;
-        } catch (Exception e) {
-            LOG.error("postLoadProcessing " ,e );
-            return instance;
-        }
+//        try {
+//            instance = new ElementLoader( serviceLoader.getService( instance.getElementKind() ) ).fill( instance );
+//            LOG.info( instance.getName() + " " + instance.getElementKind());
+//        } catch (InvalidDataAccessApiUsageException ida) {
+//            return instance;
+//        } catch (Exception e) {
+//            LOG.error("postLoadProcessing " ,e );
+//            return instance;
+//        }
 
 //        switch (instance.getElementKind()) {
 //            case TOPIC_GROUP:

@@ -124,14 +124,6 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
         }
     }
 
-//    @Override
-//    public void makeNewCopy(Integer revision){
-//        if (hasRun) return;
-//        super.makeNewCopy(revision);
-//        getStudies().forEach(s->s.makeNewCopy(revision));
-//        getComments().clear();
-//    }
-
 
     @Override
     public boolean equals(Object o) {

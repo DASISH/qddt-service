@@ -219,9 +219,14 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     @Override
-    protected void beforeUpdate() {}
+    protected void beforeUpdate() {
+//        LOG.info( "QuestionItem before UPDATE" );
+    }
     @Override
-    protected void beforeInsert() {}
+    protected void beforeInsert() {
+//        LOG.info( "QuestionItem before INSERT" );
+
+    }
 
 
 }

@@ -46,7 +46,7 @@ public class InstrumentListJson {
         description = entity.getDescription();
         version = entity.getVersion();
         modified = entity.getModified();
-        modifiedBy = new UserJson(entity.getModifiedBy());
+        modifiedBy = entity.getModifiedBy();
         classKind = entity.getClassKind();
         instrumentKind = entity.getInstrumentKind().getName();
     }

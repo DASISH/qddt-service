@@ -56,6 +56,11 @@ public class Agency implements Comparable<Agency>{
     @Version
     private Timestamp modified;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
+    private Set<User> users = new HashSet<>();
+
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
@@ -92,10 +97,6 @@ public class Agency implements Comparable<Agency>{
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
     private Set<Category> categories = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
-    private Set<User> users = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")

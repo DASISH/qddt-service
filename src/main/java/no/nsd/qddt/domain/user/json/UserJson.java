@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.user.json;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.Type;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,8 @@ public class UserJson {
 
     private String agencyUserName;
 
+    private Timestamp modified;
+
     public UserJson() {
     }
 
@@ -28,6 +31,7 @@ public class UserJson {
         setEmail(user.getEmail());
         setUsername(user.getUsername());
         setAgencyUserName(username + "@" + user.getAgency().getName());
+        setModified( user.getModified() );
     }
 
 
@@ -67,5 +71,13 @@ public class UserJson {
      */
     public String getAgencyUserName() {
         return agencyUserName;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
     }
 }

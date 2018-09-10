@@ -50,7 +50,7 @@ public class QuestionItemListJson {
         agency = new AgencyJsonView(entity.getAgency());
         version = entity.getVersion();
         modified = entity.getModified();
-        modifiedBy = new UserJson(entity.getModifiedBy());
+        modifiedBy = entity.getModifiedBy();
         question = entity.getQuestion();
         intent = entity.getIntent();
         responseDomainName = entity.getResponseDomainName();

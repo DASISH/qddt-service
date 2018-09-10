@@ -39,9 +39,11 @@ class UserServiceImpl implements UserService {
     private final SearchService searchService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository
+    public UserServiceImpl(
+        UserRepository userRepository
         ,AuthorityService authorityService
         ,SearchService searchService) {
+
         this.userRepository = userRepository;
         this.authorityService = authorityService;
         this.searchService = searchService;
@@ -67,11 +69,11 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('OWNER')")
     public User save(User user) {
         return postLoadProcessing(
-                userRepository.save(
-                        prePersistProcessing(user)));
+            userRepository.save(
+                prePersistProcessing(user)));
     }
 
 
@@ -92,6 +94,7 @@ class UserServiceImpl implements UserService {
 
     private User prePersistProcessing(User instance) {
         if (instance.getAuthorities().size() == 0) {
+            LOG.info( "prePersistProcessing -> ROLE_LIMITED" );
             instance.setAuthorities(authorityService.findAll()
                 .stream().filter(i->i.getAuthority() == "ROLE_LIMITED")
                 .collect(Collectors.toSet()));
@@ -108,7 +111,7 @@ class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(
+        return userRepository.findByEmailIgnoreCase(email).orElseThrow(
                 () -> new UserNotFoundException(email)
         );
     }
@@ -131,6 +134,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('OWNER')")
     public String setPassword(Password instance) {
         User user = userRepository.findById( instance.getId() )
             .orElseThrow(  () -> new UserNotFoundException(instance.getId()) );

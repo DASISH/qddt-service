@@ -59,7 +59,7 @@ public  abstract class AbstractJsonEdit implements Serializable {
         setBasedOnObject(entity.getBasedOnObject());
         setBasedOnRevision(entity.getBasedOnRevision());
         setModified(entity.getModified());
-        setModifiedBy(new UserJson(entity.getModifiedBy()));
+        setModifiedBy(entity.getModifiedBy());
         setVersion(entity.getVersion());
         setChangeKind( entity.getChangeKind());
         setClassKind( entity.getClassKind() );

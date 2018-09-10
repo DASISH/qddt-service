@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.exception.ReferenceInUseException;
+import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,8 +116,8 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        if (conceptRepository.hasArchive( uuid ) > 0)
-            throw new ReferenceInUseException( uuid + ", has descendants that are Archived." );
+        if (conceptRepository.hasArchive( uuid.toString() ) > 0)
+            throw new DescendantsArchivedException( uuid.toString() );
         try {
             conceptRepository.delete( uuid );
         } catch ( Exception ex ) {

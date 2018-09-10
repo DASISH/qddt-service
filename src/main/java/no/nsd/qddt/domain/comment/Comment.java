@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.pdf.PdfReport;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -121,7 +120,7 @@ public class Comment extends AbstractEntity  {
     }
 
 
-    public void fillDoc(PdfReport pdfReport,String counter) {
-    }
+//    public void fillDoc(PdfReport pdfReport,String counter) {
+//    }
 
 }

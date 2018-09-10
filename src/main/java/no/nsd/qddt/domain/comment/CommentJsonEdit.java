@@ -36,7 +36,7 @@ public class CommentJsonEdit {
         setComment(comment.getComment());
         setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setModified(comment.getModified());
-        setModifiedBy(new UserJson(comment.getModifiedBy()));
+        setModifiedBy(comment.getModifiedBy());
     }
 
 

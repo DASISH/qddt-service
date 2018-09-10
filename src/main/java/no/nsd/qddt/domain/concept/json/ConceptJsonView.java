@@ -56,7 +56,7 @@ public class ConceptJsonView {
         setName(concept.getName());
         setLabel(concept.getLabel());
         setDescription(concept.getDescription());
-        modifiedBy = new UserJson(concept.getModifiedBy());
+        modifiedBy = concept.getModifiedBy();
         agency = new AgencyJsonView(concept.getAgency());
         modified = concept.getModified();
         version = concept.getVersion();
