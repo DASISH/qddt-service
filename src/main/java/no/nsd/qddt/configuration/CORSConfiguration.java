@@ -33,38 +33,5 @@ public class CORSConfiguration {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
-//    @Bean
-//    public static FilterRegistrationBean corsFilter(@Value("${api.origin}") String origin) {
-//        return new FilterRegistrationBean(new Filter() {
-//
-//            public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-//                    throws IOException, ServletException {
-//
-//                HttpServletRequest request = (HttpServletRequest) req;
-//                HttpServletResponse response = (HttpServletResponse) res;
-//                String method = request.getMethod();
-//
-//                response.setHeader("Access-Control-Allow-Origin", "*");
-//                response.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
-//                response.setHeader("Access-Control-Max-Age", Long.toString(60 * 60));
-//                response.setHeader("Access-Control-Allow-Credentials", "true");
-//                response.setHeader("Access-Control-Allow-Headers", "*");
-//
-//                if ("OPTIONS".equals(method)) {
-//                    response.setStatus(HttpStatus.OK.value());
-//                }
-//
-//                else {
-//                    chain.doFilter(req, res);
-//                }
-//            }
-//
-//            public void init(FilterConfig filterConfig) {
-//            }
-//
-//            public void destroy() {
-//            }
-//
-//        });
-//    }
+
 }

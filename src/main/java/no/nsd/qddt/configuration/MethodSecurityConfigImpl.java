@@ -1,7 +1,8 @@
 package no.nsd.qddt.configuration;
 
+import no.nsd.qddt.security.PermissionEvaluatorImpl;
+import no.nsd.qddt.security.SecurityExpressionHandlerImpl;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
@@ -15,7 +16,7 @@ public class MethodSecurityConfigImpl extends GlobalMethodSecurityConfiguration 
 
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
-        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        SecurityExpressionHandlerImpl expressionHandler = new SecurityExpressionHandlerImpl();
         expressionHandler.setPermissionEvaluator(new PermissionEvaluatorImpl());
         return expressionHandler;
     }

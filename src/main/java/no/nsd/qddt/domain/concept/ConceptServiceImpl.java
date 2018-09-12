@@ -76,7 +76,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY')")
     public Concept save(Concept instance) {
         instance = conceptRepository.save( prePersistProcessing( instance ) );
         return postLoadProcessing(instance);
@@ -179,6 +179,7 @@ class ConceptServiceImpl implements ConceptService {
 
     private Concept prePersistProcessing(Concept instance) {
         try {
+
             for (ElementRef element: instance.getConceptQuestionItems()) {
                 if (element.getName() == null) {
                     qiLoader.fill( element );

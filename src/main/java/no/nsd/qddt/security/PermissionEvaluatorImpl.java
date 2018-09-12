@@ -1,11 +1,12 @@
-package no.nsd.qddt.configuration;
+package no.nsd.qddt.security;
 
 import javassist.NotFoundException;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.user.QDDTUserDetails;
 import no.nsd.qddt.domain.user.User;
-import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
@@ -18,24 +19,26 @@ import java.util.stream.Collectors;
  */
 public class PermissionEvaluatorImpl implements PermissionEvaluator {
 
-    private enum PermissionType { OWNER, USER, AGENCY };
+    private enum PermissionType { OWNER, USER, AGENCY }
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public boolean hasPermission( Authentication auth, Object targetDomainObject, Object permission) {
+        LOG.info("hasPermission implemented");
         if ((auth == null) || (targetDomainObject == null) ||
             !(permission instanceof String) ||
             !(targetDomainObject instanceof AbstractEntityAudit) ){
             return false;
         }
         try {
-            return hasPermission(((QDDTUserDetails)auth.getDetails()), (AbstractEntityAudit)targetDomainObject, ((String) permission).toUpperCase());
+            return hasPrivilege(((QDDTUserDetails)auth.getDetails()), (AbstractEntityAudit)targetDomainObject, ((String) permission).toUpperCase());
         } catch (NotFoundException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    private boolean hasPermission(QDDTUserDetails details, AbstractEntityAudit entity, String permission) throws NotFoundException {
+    private boolean hasPrivilege(QDDTUserDetails details, AbstractEntityAudit entity, String permission) throws NotFoundException {
         switch (PermissionType.valueOf( permission )) {
             case OWNER:
                 return isOwner( details.getUser(), entity );
@@ -49,11 +52,12 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission( Authentication auth, Serializable targetId, String targetType, Object permission) {
+    public boolean hasPermission( Authentication auth, Serializable targetId, String targetType, Object permission)  {
+        LOG.info("hasPermission NOT implemented");
         if ((auth == null) || (targetType == null) || !(permission instanceof String)) {
             return false;
         }
-        throw  new NotImplementedException( "Serializable and " );
+        return  false;
     }
 
     private boolean isOwner(User user, AbstractEntityAudit entity) {

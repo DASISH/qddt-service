@@ -64,38 +64,47 @@ public class Agency implements Comparable<Agency>{
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<Study>  studies = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<Instrument> instruments = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<Instruction> instructions = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<Concept> concepts = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<QuestionItem> questions = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<ResponseDomain> responses = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @NotAudited
     private Set<Category> categories = new HashSet<>();
 
     @JsonIgnore
@@ -237,9 +246,7 @@ public class Agency implements Comparable<Agency>{
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return  31 * super.hashCode() + (name != null ? name.hashCode() : 0);
     }
 
     @Override
@@ -249,8 +256,7 @@ public class Agency implements Comparable<Agency>{
     }
 
     public int compareTo(Agency o) {
-        int i;
-        i= this.getName().compareTo(o.getName());
+        int i = this.getName().compareTo(o.getName());
         if (i!=0) return i;
 
         return this.getId().compareTo(o.getId());

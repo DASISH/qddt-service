@@ -9,7 +9,9 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.utils.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -96,7 +98,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
 
     @ManyToOne
     @JoinColumn(name = "agency_id",updatable = false, nullable = false)
-//    @NotAudited
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Agency agency;
 
@@ -230,6 +231,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     private void onInsert(){
 
         LOG.info("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
+        User user = SecurityContext.getUserDetails().getUser();
+        setAgency( user.getAgency() );
+        setModifiedBy( user );
+
         if (changeKind == null || changeKind.ordinal() > ChangeKind.REFERENCED.ordinal()) {
             changeKind = ChangeKind.CREATED;
             changeComment = ChangeKind.CREATED.description;
@@ -244,6 +249,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
             LOG.info("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             Version ver = version;
             ChangeKind change = changeKind;
+            User user = SecurityContext.getUserDetails().getUser();
+            setModifiedBy( user );
 
             if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() & !ver.isNew()) {
                 change = ChangeKind.IN_DEVELOPMENT;

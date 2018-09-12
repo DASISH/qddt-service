@@ -32,7 +32,6 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void createOrUpdate(AbstractEntity entity) {
         try {
-            LOG.info("CREATE_OR_UPDATE " + entity.getModified().toString() + " -> " + entity.getId() );
             if (entity instanceof AbstractEntityAudit ) {
                 User user = SecurityContext.getUserDetails().getUser();
                 ((AbstractEntityAudit) entity).setAgency( user.getAgency() );
