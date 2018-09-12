@@ -14,3 +14,5 @@ gradlew build -x test
 Documentation
 -------------
 https://dasish.github.io/qddt-service/
+
+https://dasish.github.io/qddt-service/index.html
