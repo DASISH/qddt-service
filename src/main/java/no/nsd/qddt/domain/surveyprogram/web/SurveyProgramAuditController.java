@@ -53,6 +53,12 @@ public class SurveyProgramAuditController {
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/{id}/{revision}",  method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
+        return service.findRevision(id, revision).getEntity().makePdf().toByteArray();
+    }
+
 //    @RequestMapping(value = "/{id}/filteredlist", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
 //    public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> list(
 //            @PathVariable("id") UUID id, @PathVariable("changeKinds") String[]changes, Pageable pageable, PagedResourcesAssembler assembler){

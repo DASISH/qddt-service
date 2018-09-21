@@ -53,4 +53,11 @@ public class QuestionItemAuditController {
         Page<Revision<Integer, QuestionItem>> entities = auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/{id}/{revision}",  method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
+        return auditService.findRevision(id, revision).getEntity().makePdf().toByteArray();
+    }
+
 }

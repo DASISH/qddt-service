@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Dag Østgulen Heradstveit.
+ * @author Dag Østgulen Heradstveit.
  */
 public class FileUploadException extends RuntimeException {
 

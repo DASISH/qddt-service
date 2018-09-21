@@ -54,4 +54,10 @@ public class StudyAuditController {
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/{id}/{revision}",  method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
+        return service.findRevision(id, revision).getEntity().makePdf().toByteArray();
+    }
+
 }

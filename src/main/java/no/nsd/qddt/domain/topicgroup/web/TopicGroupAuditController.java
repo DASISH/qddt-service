@@ -71,6 +71,13 @@ public class TopicGroupAuditController {
 
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/{id}/{revision}",  method = RequestMethod.GET, produces = "application/pdf")
+    public byte[] getPdf(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
+        return service.findRevision(id, revision).getEntity().makePdf().toByteArray();
+    }
+
     private Revision<Integer,TopicGroupRevisionJson> topicRev2Json(Revision<Integer, TopicGroup> revision){
         return new Revision<>(
                 revision.getMetadata(),
