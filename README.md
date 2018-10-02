@@ -11,8 +11,12 @@ Deploy
 
 gradlew build -x test
 
+https://github.com/DASISH/qddt-client/wiki/Dev-Backend-&-datastore
+
 Documentation
 -------------
 https://dasish.github.io/qddt-service/
 
 https://github.com/DASISH/qddt-client/wiki
+
+
