@@ -23,7 +23,7 @@ import java.util.UUID;
 //@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Audited
 @MappedSuperclass
-@EntityListeners(EntityCreatedModifiedDateAuditEventConfiguration.class)
+//@EntityListeners(EntityCreatedModifiedDateAuditEventConfiguration.class)
 public abstract class AbstractEntity {
 
     @Transient
@@ -46,6 +46,7 @@ public abstract class AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+//    @NotAudited
     private User modifiedBy;
 
     public UUID getId() {
@@ -65,7 +66,7 @@ public abstract class AbstractEntity {
     }
 
     public UserJson getModifiedBy() {
-        return new UserJson(  modifiedBy);
+        return  (modifiedBy != null) ? new UserJson(modifiedBy) : null;
     }
 
     public void setModifiedBy(User modifiedBy) {
@@ -115,6 +116,5 @@ public abstract class AbstractEntity {
             LOG.error("IMPOSSIBLE! ", e );
         }
     }
-
 
 }

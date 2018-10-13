@@ -43,12 +43,12 @@ public class CommentController {
         return service.save(comment);
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create/{ownerId}", method = RequestMethod.POST)
-    public Comment create(@RequestBody Comment comment, @PathVariable("ownerId") UUID ownerId) {
-        comment.setOwnerId(ownerId);
-        return service.save(comment);
-    }
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @RequestMapping(value = "/create/{ownerId}", method = RequestMethod.POST)
+//    public Comment create(@RequestBody Comment comment, @PathVariable("ownerId") UUID ownerId) {
+//        comment.setOwnerId(ownerId);
+//        return service.save(comment);
+//    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)

@@ -55,7 +55,7 @@ public class User  {
     private Agency agency;
 
     @JsonIgnore
-    @Column(name = "password", nullable = false, updatable = false)
+    @Column(name = "password", updatable = false)
     private String password;
 
     @Column(name = "email")
@@ -98,12 +98,13 @@ public class User  {
 
     @PrePersist
     public void onPrePersist() {
-        LOG.debug("INSERT");
+        setPassword("$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW");    // set password = password
+        LOG.debug("USER INSERT");
     }
 
     @PreUpdate
     public void onPreUpdate() {
-        LOG.debug("UPDATE");
+        LOG.debug("USER UPDATE");
     }
 
 

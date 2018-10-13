@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instrument.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.instrument.Instrument;
@@ -11,8 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,9 +68,9 @@ class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Ins
     @Override
     protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
         assert  (instance != null);
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
-
-        instance.getEntity().setComments(new HashSet<>(coms));;
+        instance.getEntity().setComments(new ArrayList<>(coms));
         return instance;
     }
 

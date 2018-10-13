@@ -32,15 +32,16 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
     @PreUpdate
     public void createOrUpdate(AbstractEntity entity) {
         try {
-            if (entity instanceof AbstractEntityAudit ) {
-                User user = SecurityContext.getUserDetails().getUser();
-                ((AbstractEntityAudit) entity).setAgency( user.getAgency() );
+            User user = SecurityContext.getUserDetails().getUser();
+            if (entity.getModifiedBy() == null) {
                 entity.setModifiedBy( user );
+            }
+            if (entity instanceof AbstractEntityAudit ) {
+                ((AbstractEntityAudit) entity).setAgency( user.getAgency() );
                 LOG.info( "AbstractEntityAudit EventConfiguration CreateOrUpdate done " + entity.getClass().getSimpleName() );
             }
             else
                 LOG.info("Entity EventConfiguration CreateOrUpdate  OTHER "+ entity.getClass().getSimpleName());
-
 
         } catch (Exception e){
             LOG.error("Entity EventConfiguration", e);

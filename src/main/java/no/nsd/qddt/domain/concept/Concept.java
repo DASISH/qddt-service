@@ -20,13 +20,9 @@ import java.util.stream.Collectors;
 
 
 /**
- * <ul class="inheritance">
  *     <li>A Concept consist of one or more QuestionItems.</li>
- *     <ul class="inheritance">
  *         <li>Every QuestionItem will have a Question.</li>
  *         <li>Every QuestionItem will have a ResponseDomain.</li>
- *     </ul>
- * </ul>
  * <br>
  * ConceptScheme: Concepts express ideas associated with objects and means of representing the concept
  *

@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
-
 /**
  * @author Dag Østgulen Heradstveit
  */
@@ -50,7 +48,7 @@ public class UserController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<UserJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
                                                             Pageable pageable, PagedResourcesAssembler assembler) {
-        pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
+//        pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
         Page<UserJsonEdit> items = userService.getByName(name, pageable).map( c -> new UserJsonEdit(c) );
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

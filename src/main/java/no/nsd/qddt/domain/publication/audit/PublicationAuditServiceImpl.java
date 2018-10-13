@@ -60,7 +60,7 @@ class PublicationAuditServiceImpl extends AbstractAuditFilter<Integer,Publicatio
 
     @Override
     protected Revision<Integer, Publication> postLoadProcessing(Revision<Integer, Publication> instance) {
-//        List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
 
         return instance;
     }

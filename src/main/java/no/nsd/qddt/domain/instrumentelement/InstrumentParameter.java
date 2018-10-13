@@ -16,6 +16,8 @@ public class InstrumentParameter implements Cloneable {
 
     private UUID referencedId;
 
+    public InstrumentParameter() {}
+
     public InstrumentParameter(String name, UUID id) {
         setName(name);
         setReferencedId(id);

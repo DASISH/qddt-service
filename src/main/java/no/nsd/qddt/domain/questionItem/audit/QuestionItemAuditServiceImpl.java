@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.questionItem.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.questionItem.QuestionItem;
@@ -14,8 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,16 +86,18 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
     }
 
     @Override
-    protected Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> rev){
-        if (rev.getEntity().getResponseDomainUUID() != null) {
-            rev.getEntity().setResponseDomain(
+    protected Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> instance){
+        if (instance.getEntity().getResponseDomainUUID() != null) {
+            instance.getEntity().setResponseDomain(
                 rdAuditController.getByRevision(
-                    rev.getEntity().getResponseDomainUUID(),
-                    rev.getEntity().getResponseDomainRevision()).getEntity());
+                    instance.getEntity().getResponseDomainUUID(),
+                    instance.getEntity().getResponseDomainRevision()).getEntity());
         }
-        List<Comment> coms  =commentService.findAllByOwnerId(rev.getEntity().getId(),showPrivateComments);
-        rev.getEntity().setComments(new HashSet<>(coms));
-        return rev;
+        List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
+        instance.getEntity().setComments(new ArrayList<>(coms));
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+
+        return instance;
     }
 
 

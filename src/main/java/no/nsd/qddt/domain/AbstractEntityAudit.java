@@ -20,8 +20,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.ByteArrayOutputStream;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -96,6 +96,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
      * What am I?
      */
 
+//    @NotAudited
     @ManyToOne
     @JoinColumn(name = "agency_id",updatable = false, nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -124,10 +125,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     private String changeComment;
 
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id")
     @NotAudited
-    private Set<Comment> comments = new HashSet<>();
+    @OrderBy("owner_idx desc")
+    @OrderColumn(name="owner_idx")
+    @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
 
     @Transient
@@ -218,18 +220,17 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         this.changeComment = changeComment;
     }
 
-    public Set<CommentJsonEdit> getComments() {
-        return this.comments.stream().map(CommentJsonEdit::new).collect(Collectors.toSet());
+    public List<CommentJsonEdit> getComments() {
+        return this.comments.stream().map(CommentJsonEdit::new).collect(Collectors.toList());
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
 
     @PrePersist
     private void onInsert(){
-
         LOG.info("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         setAgency( user.getAgency() );

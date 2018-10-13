@@ -2,8 +2,6 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 
-import java.util.UUID;
-
 /**
  * @author Stig Norland
  */
@@ -41,7 +39,7 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
             ((IArchived)retval).setArchived(false);
         retval.setClassKind( source.getClassKind() );
         retval.setName( source.getName() );
-        retval.setId( UUID.randomUUID());
+//        retval.setId( UUID.randomUUID());
         return retval;
     }
 

@@ -32,7 +32,8 @@ interface UserRepository extends BaseRepository<User, UUID> {
     Page<User> findByUsernameIgnoreCaseLike(String name, Pageable pageable);
 
     @Modifying
-    @Query("update User u set u.password = :passwordEncrypted  where u.id = :id")
-    void setPassword(@Param("id") UUID uuid, @Param("passwordEncrypted") String password);
+//    @Query("update User u set u.password = :passwordEncrypted  where u.id = :id")
+    @Query(value = "update user_account set password = :passwordEncrypted where id = :uuid" ,nativeQuery = true )
+    void setPassword(@Param("uuid") UUID uuid, @Param("passwordEncrypted") String passwordEncrypted);
 
 }

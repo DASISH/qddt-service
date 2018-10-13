@@ -259,7 +259,7 @@ public class PdfReport extends PdfDocument {
         return this.document;
     }
 
-    public Document addComments(Set<CommentJsonEdit> comments){
+    public Document addComments(List<CommentJsonEdit> comments){
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}))
             .setKeepTogether(true)
             .setWidth(width100*0.8F)

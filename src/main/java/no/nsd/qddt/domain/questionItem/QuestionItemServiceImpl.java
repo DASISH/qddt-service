@@ -70,7 +70,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public QuestionItem save(QuestionItem instance) {
         try {
             QuestionItem qi =  questionItemRepository.save(
@@ -88,7 +88,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 //    }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public void delete(UUID uuid) {
         try {
             questionItemRepository.delete(uuid);

@@ -67,7 +67,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     @Transactional(propagation = Propagation.NEVER)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public ResponseDomain save(ResponseDomain instance) {
         return postLoadProcessing(
                 responseDomainRepository.save(

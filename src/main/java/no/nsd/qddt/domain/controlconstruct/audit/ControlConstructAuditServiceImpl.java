@@ -18,8 +18,8 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -121,7 +121,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
 
-        instance.setComments(new HashSet<>(coms));
+        instance.setComments(new ArrayList<>(coms));
 
         return  instance.getClassKind().equals("QUESTION_CONSTRUCT")?postLoadProcessing( (QuestionConstruct) instance ): instance;
     }
@@ -129,6 +129,8 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     @Override
     protected Revision<Integer, ControlConstruct> postLoadProcessing(Revision<Integer, ControlConstruct> instance) {
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+
         return new Revision<>(instance.getMetadata(), postLoadProcessing(instance.getEntity()));
     }
 }

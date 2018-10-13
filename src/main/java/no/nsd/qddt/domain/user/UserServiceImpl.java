@@ -126,7 +126,7 @@ class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<User> getByName(String name, Pageable pageable) {
-
+        LOG.info( pageable.toString() );
         return  userRepository.findByUsernameIgnoreCaseLike( likeify(name) , pageable );
     }
 

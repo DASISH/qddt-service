@@ -4,8 +4,8 @@ import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -17,11 +17,14 @@ public class CommentJsonEdit {
     @Type(type="pg-uuid")
     private UUID id;
 
+    @Type(type="pg-uuid")
+    private UUID ownerId;
+
     private boolean isPublic;
 
     private String comment;
 
-    private Set<CommentJsonEdit> comments = new HashSet<>();
+    private List<CommentJsonEdit> comments = new ArrayList<>();
 
     private Timestamp modified;
 
@@ -32,11 +35,14 @@ public class CommentJsonEdit {
 
     public CommentJsonEdit(Comment comment) {
         setId(comment.getId());
+        setOwnerId( comment.getOwnerId() );
         setPublic(comment.isPublic());
         setComment(comment.getComment());
-        setComments(comment.getComments().stream().map(CommentJsonEdit::new).collect(Collectors.toSet()));
         setModified(comment.getModified());
         setModifiedBy(comment.getModifiedBy());
+        setComments(comment.getComments().stream().map(CommentJsonEdit::new)
+//            .sorted( Comparator.comparing( Comment::getOwnerIdx))
+            .collect(Collectors.toList()));
     }
 
 
@@ -46,6 +52,14 @@ public class CommentJsonEdit {
 
     private void setId(UUID id) {
         this.id = id;
+    }
+
+    public UUID getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Timestamp getModified() {
@@ -64,11 +78,11 @@ public class CommentJsonEdit {
         this.modifiedBy = modifiedBy;
     }
 
-    public Set<CommentJsonEdit> getComments() {
+    public List<CommentJsonEdit> getComments() {
         return comments;
     }
 
-    private void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(List<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 

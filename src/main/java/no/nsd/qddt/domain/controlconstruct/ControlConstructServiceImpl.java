@@ -87,7 +87,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public  <S extends ControlConstruct> S save(S instance) {
         return postLoadProcessing(
             controlConstructRepository.save(
@@ -95,7 +95,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
         return  instances.stream().map(this::save).collect(Collectors.toList());
     }

@@ -16,8 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,6 +86,7 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     @Override
     protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
         return new Revision<>(
                 instance.getMetadata(),
                 postLoadProcessing(instance.getEntity()));
@@ -96,7 +97,7 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
         try{
             List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
 
-            instance.setComments(new HashSet<>(coms));
+            instance.setComments(new ArrayList<>(coms));
             instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             instance.getChildren().forEach(this::postLoadProcessing);
 

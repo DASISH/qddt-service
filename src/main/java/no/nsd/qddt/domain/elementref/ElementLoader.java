@@ -39,12 +39,12 @@ public class ElementLoader{
         return  element;
     }
 
-    public IElementRef fill(IElementRef element) {
-        LOG.debug((element!=null)? element.toString(): "ELEMENT EMPTY");
-        Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
-        element.setElement(revision.getEntity());
-        element.setElementRevision( revision.getRevisionNumber() );
-        return  element;
+    public IElementRef fill(IElementRef ref) {
+        LOG.debug((ref.getElement()!=null)? ref.getElement().toString() : "ELEMENT EMPTY");
+        Revision<Integer,UUID> revision = get(ref.getElementId(), ref.getElementRevision() );
+        ref.setElement(revision.getEntity());
+        ref.setElementRevision( revision.getRevisionNumber() );
+        return  ref;
     }
 
 
