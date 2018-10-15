@@ -1,291 +1,373 @@
-DROP VIEW allrev;
-CREATE VIEW allrev (id, rev, revtype, revend, tablename) AS
+DROP TABLE IF EXISTS public.project_archived;
+DROP VIEW IF  EXISTS public.project_archived;
+
+DROP TABLE IF EXISTS public.project_archived_hierarchy;
+DROP VIEW IF  EXISTS public.project_archived_hierarchy;
+
+DROP TABLE IF EXISTS public.uar;
+DROP VIEW IF  EXISTS public.uar;
+
+DROP TABLE IF EXISTS public.uuidpath;
+DROP VIEW IF  EXISTS public.uuidpath;
+
+DROP TABLE IF EXISTS public.allrev;
+DROP VIEW IF  EXISTS public.allrev;
+
+CREATE VIEW public.allrev (id, rev, revtype, revend, tablename) AS
   SELECT agency_aud.id,
     agency_aud.rev,
     agency_aud.revtype,
     agency_aud.revend,
     'agency_aud'::text AS tablename
-  FROM agency_aud
+  FROM audit.agency_aud
   UNION
   SELECT author_aud.id,
     author_aud.rev,
     author_aud.revtype,
     author_aud.revend,
     'author_aud'::text AS tablename
-  FROM author_aud
+  FROM audit.author_aud
   UNION
   SELECT authority_aud.id,
     authority_aud.rev,
     authority_aud.revtype,
     authority_aud.revend,
     'authority_aud'::text AS tablename
-  FROM authority_aud
+  FROM audit.authority_aud
   UNION
   SELECT category_aud.id,
     category_aud.rev,
     category_aud.revtype,
     category_aud.revend,
     'category_aud'::text AS tablename
-  FROM category_aud
+  FROM audit.category_aud
   UNION
   SELECT category_children_aud.category_id AS id,
     category_children_aud.rev,
     category_children_aud.revtype,
     category_children_aud.revend,
          'category_children_aud'::text AS tablename
-  FROM category_children_aud
+  FROM audit.category_children_aud
   UNION
   SELECT code_aud.responsedomain_id AS id,
     code_aud.rev,
     code_aud.revtype,
     code_aud.revend,
          'code_aud'::text AS tablename
-  FROM code_aud
+  FROM audit.code_aud
   UNION
   SELECT concept_aud.id,
     concept_aud.rev,
     concept_aud.revtype,
     concept_aud.revend,
     'concept_aud'::text AS tablename
-  FROM concept_aud
+  FROM audit.concept_aud
   UNION
   SELECT concept_question_item_aud.element_id,
     concept_question_item_aud.rev,
     concept_question_item_aud.revtype,
     concept_question_item_aud.revend,
     'concept_question_item_aud'::text AS tablename
-  FROM concept_question_item_aud
+  FROM audit.concept_question_item_aud
   UNION
   SELECT control_construct_aud.id,
     control_construct_aud.rev,
     control_construct_aud.revtype,
     control_construct_aud.revend,
     'control_construct_aud'::text AS tablename
-  FROM control_construct_aud
+  FROM audit.control_construct_aud
   UNION
   SELECT control_construct_instruction_aud.instruction_id AS id,
     control_construct_instruction_aud.rev,
     control_construct_instruction_aud.revtype,
     control_construct_instruction_aud.revend,
          'control_construct_instruction_aud'::text AS tablename
-  FROM control_construct_instruction_aud
+  FROM audit.control_construct_instruction_aud
   UNION
   SELECT control_construct_universe_aud.universe_id AS id,
     control_construct_universe_aud.rev,
     control_construct_universe_aud.revtype,
     control_construct_universe_aud.revend,
          'control_construct_universe_aud'::text AS tablename
-  FROM control_construct_universe_aud
+  FROM audit.control_construct_universe_aud
   UNION
   SELECT instruction_aud.id,
     instruction_aud.rev,
     instruction_aud.revtype,
     instruction_aud.revend,
     'instruction_aud'::text AS tablename
-  FROM instruction_aud
+  FROM audit.instruction_aud
   UNION
   SELECT instrument_aud.id,
     instrument_aud.rev,
     instrument_aud.revtype,
     instrument_aud.revend,
     'instrument_aud'::text AS tablename
-  FROM instrument_aud
+  FROM audit.instrument_aud
   UNION
   SELECT instrument_element_aud.element_id AS id,
     instrument_element_aud.rev,
     instrument_element_aud.revtype,
     instrument_element_aud.revend,
          'instrument_control_construct_aud'::text AS tablename
-  FROM instrument_element_aud
+  FROM audit.instrument_element_aud
   UNION
-  SELECT other_material_aud.id,
-    other_material_aud.rev,
-    other_material_aud.revtype,
-    other_material_aud.revend,
-    'other_material_aud'::text AS tablename
-  FROM other_material_aud
+  SELECT control_construct_other_material_aud.owner_id as id,
+         control_construct_other_material_aud.rev,
+         control_construct_other_material_aud.revtype,
+         control_construct_other_material_aud.revend,
+         'control_construct_other_material_aud'::text AS tablename
+  FROM audit.control_construct_other_material_aud
   UNION
-  SELECT other_material_other_material_aud.id,
-    other_material_other_material_aud.rev,
-    other_material_other_material_aud.revtype,
-    other_material_other_material_aud.revend,
-    'other_material_other_material_aud'::text AS tablename
-  FROM other_material_other_material_aud
+  SELECT topic_group_other_material_aud.owner_id as id,
+         topic_group_other_material_aud.rev,
+         topic_group_other_material_aud.revtype,
+         topic_group_other_material_aud.revend,
+         'control_construct_other_material_aud'::text AS tablename
+  FROM audit.topic_group_other_material_aud
   UNION
   SELECT publication_aud.id,
     publication_aud.rev,
     publication_aud.revtype,
     publication_aud.revend,
     'publication_aud'::text AS tablename
-  FROM publication_aud
+  FROM audit.publication_aud
   UNION
   SELECT publication_element_aud.element_id,
     publication_element_aud.rev,
     publication_element_aud.revtype,
     publication_element_aud.revend,
     'publication_element_aud'::text AS tablename
-  FROM publication_element_aud
+  FROM audit.publication_element_aud
   UNION
   SELECT question_item_aud.id,
     question_item_aud.rev,
     question_item_aud.revtype,
     question_item_aud.revend,
     'question_item_aud'::text AS tablename
-  FROM question_item_aud
+  FROM audit.question_item_aud
   UNION
   SELECT responsedomain_aud.id,
     responsedomain_aud.rev,
     responsedomain_aud.revtype,
     responsedomain_aud.revend,
     'responsedomain_aud'::text AS tablename
-  FROM responsedomain_aud
+  FROM audit.responsedomain_aud
   UNION
   SELECT study_aud.id,
     study_aud.rev,
     study_aud.revtype,
     study_aud.revend,
     'study_aud'::text AS tablename
-  FROM study_aud
+  FROM audit.study_aud
   UNION
   SELECT study_authors_aud.author_id AS id,
     study_authors_aud.rev,
     study_authors_aud.revtype,
     study_authors_aud.revend,
          'study_authors_aud'::text AS tablename
-  FROM study_authors_aud
+  FROM audit.study_authors_aud
   UNION
   SELECT survey_program_aud.id,
     survey_program_aud.rev,
     survey_program_aud.revtype,
     survey_program_aud.revend,
     'survey_program_aud'::text AS tablename
-  FROM survey_program_aud
+  FROM audit.survey_program_aud
   UNION
   SELECT survey_program_authors_aud.author_id AS id,
     survey_program_authors_aud.rev,
     survey_program_authors_aud.revtype,
     survey_program_authors_aud.revend,
          'survey_program_authors_aud'::text AS tablename
-  FROM survey_program_authors_aud
+  FROM audit.survey_program_authors_aud
   UNION
   SELECT topic_group_aud.id,
     topic_group_aud.rev,
     topic_group_aud.revtype,
     topic_group_aud.revend,
     'topic_group_aud'::text AS tablename
-  FROM topic_group_aud
+  FROM audit.topic_group_aud
   UNION
   SELECT topic_group_authors_aud.author_id AS id,
     topic_group_authors_aud.rev,
     topic_group_authors_aud.revtype,
     topic_group_authors_aud.revend,
          'topic_group_authors_aud'::text AS tablename
-  FROM topic_group_authors_aud
+  FROM audit.topic_group_authors_aud
   UNION
   SELECT topic_group_question_item_aud.element_id,
     topic_group_question_item_aud.rev,
     topic_group_question_item_aud.revtype,
     topic_group_question_item_aud.revend,
     'topic_group_question_item_aud'::text AS tablename
-  FROM topic_group_question_item_aud
+  FROM audit.topic_group_question_item_aud
   UNION
   SELECT universe_aud.id,
     universe_aud.rev,
     universe_aud.revtype,
     universe_aud.revend,
     'universe_aud'::text AS tablename
-  FROM universe_aud
+  FROM audit.universe_aud
   UNION
   SELECT user_account_aud.id,
     user_account_aud.rev,
     user_account_aud.revtype,
     user_account_aud.revend,
     'user_account_aud'::text AS tablename
-  FROM user_account_aud
+  FROM audit.user_account_aud
   UNION
   SELECT user_authority_aud.user_id AS id,
     user_authority_aud.rev,
     user_authority_aud.revtype,
     user_authority_aud.revend,
          'user_authority_aud'::text AS tablename
-  FROM user_authority_aud;
+  FROM audit.user_authority_aud;
 
-drop table uuidpath;
-drop view uuidpath;
+CREATE VIEW public.project_archived (id, path, name, is_archived, parent_id) AS
+  SELECT concept.id,
+         '/concept'::text AS path,
+         concept.name,
+         concept.is_archived,
+         COALESCE(concept.topicgroup_id, concept.concept_id) AS parent_id
+  FROM public.concept
+  UNION
+  SELECT topic_group.id,
+         '/module'::text AS path,
+         topic_group.name,
+         topic_group.is_archived,
+         topic_group.study_id AS parent_id
+  FROM public.topic_group
+  UNION
+  SELECT study.id,
+         '/study'::text AS path,
+         study.name,
+         study.is_archived,
+         study.survey_id AS parent_id
+  FROM public.study
+  UNION
+  SELECT survey_program.id,
+         '/survey'::text AS path,
+         survey_program.name,
+         survey_program.is_archived,
+         NULL::uuid AS parent_id
+  FROM public.survey_program;
 
-CREATE VIEW uuidpath (id, path, name, user_id) AS
+
+CREATE VIEW public.project_archived_hierarchy (id, path, name, is_archived, ancestors) AS
+  WITH RECURSIVE tree AS (
+    SELECT project_archived.id,
+           project_archived.path,
+           project_archived.name,
+           project_archived.is_archived,
+           ARRAY[]::uuid[] AS ancestors
+    FROM project_archived
+    WHERE (project_archived.parent_id IS NULL)
+    UNION ALL
+    SELECT project_archived.id,
+           project_archived.path AS kind,
+           project_archived.name,
+           project_archived.is_archived,
+           (tree_1.ancestors || project_archived.parent_id)
+    FROM project_archived,
+         tree tree_1
+    WHERE (project_archived.parent_id = tree_1.id)
+  )
+  SELECT tree.id,
+         tree.path,
+         tree.name,
+         tree.is_archived,
+         tree.ancestors
+  FROM tree;
+
+CREATE VIEW public.uar (id, email, username, name, authority) AS
+  SELECT ua.id,
+        ua.email,
+        ua.username,
+        a.name,
+        a.authority
+  FROM ((user_account ua
+     LEFT JOIN public.user_authority au ON ((au.user_id = ua.id)))
+     LEFT JOIN public.authority a ON ((au.authority_id = a.id)))
+  WHERE ua.is_enabled;
+
+CREATE VIEW public.uuidpath (id, path, name, user_id) AS
   SELECT c.id,
     '/categories'::text AS path,
     c.name,
     c.user_id
-  FROM category c
+  FROM public.category c
   WHERE ((c.category_kind)::text = 'CATEGORY'::text)
   UNION
   SELECT c.id,
     '/missing'::text AS path,
     c.name,
     c.user_id
-  FROM category c
+  FROM public.category c
   WHERE ((c.category_kind)::text = 'MISSING_GROUP'::text)
   UNION
   SELECT cc.id,
     '/questions'::text AS path,
     cc.name,
     cc.user_id
-  FROM control_construct cc
+  FROM public.control_construct cc
   WHERE ((cc.control_construct_kind)::text = 'QUESTION_CONSTRUCT'::text)
   UNION
   SELECT cc.id,
     '/sequences'::text AS path,
     cc.name,
     cc.user_id
-  FROM control_construct cc
+  FROM public.control_construct cc
   WHERE ((cc.control_construct_kind)::text = 'SEQUENCE_CONSTRUCT'::text)
   UNION
   SELECT instrument.id,
     '/instruments'::text AS path,
     instrument.name,
     instrument.user_id
-  FROM instrument
+  FROM public.instrument
   UNION
   SELECT publication.id,
     '/publications'::text AS path,
     publication.name,
     publication.user_id
-  FROM publication
+  FROM public.publication
   UNION
   SELECT question_item.id,
     '/questionitems'::text AS path,
     question_item.name,
     question_item.user_id
-  FROM question_item
+  FROM public.question_item
   UNION
   SELECT responsedomain.id,
     '/responsedomains'::text AS path,
     responsedomain.name,
     responsedomain.user_id
-  FROM responsedomain
+  FROM public.responsedomain
   UNION
   SELECT concept.id,
     '/concept'::text AS path,
     concept.name,
     concept.user_id
-  FROM concept
+  FROM public.concept
   UNION
   SELECT topic_group.id,
     '/module'::text AS path,
     topic_group.name,
     topic_group.user_id
-  FROM topic_group;
+  FROM public.topic_group
+  UNION
+  SELECT study.id,
+    '/study'::text AS path,
+    study.name,
+    study.user_id
+  FROM public.study
+  UNION
+  SELECT survey_program.id,
+    '/survey'::text AS path,
+    survey_program.name,
+    survey_program.user_id
+  FROM public.survey_program;
 
-
-
-create view UAR as
-  SELECT ua.id, ua.email, ua.username, a.name, a.authority
-  FROM user_account ua
-    left join user_authority au on au.user_id = ua.id
-    left join authority a on au.authority_id = a.id
-  where ua.is_enabled;
 
 --Add primary agency
 INSERT INTO public.agency (id, updated, name) VALUES('1359ded1-9f18-11e5-8994-feff819cdc9f','2018-01-01', 'Admin-qddt');

@@ -99,6 +99,10 @@ class UserServiceImpl implements UserService {
                 .stream().filter(i->i.getAuthority() == "ROLE_LIMITED")
                 .collect(Collectors.toSet()));
         }
+        if (instance.getId() == null) {
+            LOG.info( "set default password" );
+            instance.setPassword( "$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW" );
+        }
         return instance;
     }
 
@@ -134,7 +138,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('OWNER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('USER')")
     public String setPassword(Password instance) {
         User user = userRepository.findById( instance.getId() )
             .orElseThrow(  () -> new UserNotFoundException(instance.getId()) );

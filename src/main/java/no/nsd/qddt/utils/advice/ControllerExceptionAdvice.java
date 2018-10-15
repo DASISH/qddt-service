@@ -153,6 +153,27 @@ public class ControllerExceptionAdvice {
         return message;
     }
 
+
+    /**
+     * Handle all exceptions of type {@link  no.nsd.qddt.exception.InvalidPasswordException}
+     * when they occur from methods executed from the controller.
+     * @param req servlet request
+     * @param e general exception
+     * @return a {@link no.nsd.qddt.exception.InvalidPasswordException} object
+     */
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = DescendantsArchivedException.class)
+    @ResponseBody public ControllerAdviceExceptionMessage handleDescendantsArchivedException (HttpServletRequest req, Exception e)  {
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
+            req.getRequestURL().toString(),
+            e.getLocalizedMessage()
+        );
+
+        message.setUserfriendlyMessage( getRootCauseMessage(e.getCause()));
+
+        return message;
+    }
+
     /**
      * Default exception handler.
      * Will catch all bad requests, but will not provide further details of the error.

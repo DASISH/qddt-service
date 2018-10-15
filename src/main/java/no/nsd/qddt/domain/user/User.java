@@ -98,8 +98,8 @@ public class User  {
 
     @PrePersist
     public void onPrePersist() {
-        setPassword("$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW");    // set password = password
         LOG.debug("USER INSERT");
+        setPassword("$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW");    // set password = password
     }
 
     @PreUpdate

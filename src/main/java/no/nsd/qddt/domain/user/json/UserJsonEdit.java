@@ -7,7 +7,11 @@ import org.hibernate.PropertyNotFoundException;
 import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Stig Norland
@@ -21,7 +25,7 @@ public class UserJsonEdit {
 
     private String email;
 
-    private Authority authority;
+    private Set<Authority> authorities;
 
     private Agency agency;
 
@@ -40,7 +44,8 @@ public class UserJsonEdit {
         setEmail(user.getEmail());
         setName(user.getUsername());
         setAgency( user.getAgency() );
-        setAuthority( user.getAuthorities().stream().findFirst().orElseThrow( () -> new PropertyNotFoundException( "No Authority set" ) ) );
+        setAuthorities( user.getAuthorities().stream().findFirst().orElseThrow(
+            () -> new PropertyNotFoundException(  "No Authority set " + user.getUsername() ) ) );
         setEnabled( user.isEnabled() );
         setClassKind( "USER" );
         setModified( user.getModified() );
@@ -71,12 +76,13 @@ public class UserJsonEdit {
         this.email = email;
     }
 
-    public Authority getAuthority() {
-        return authority;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    public void setAuthority(Authority authority) {
-        this.authority =  authority;
+    public void setAuthorities(Authority authority) {
+        this.authorities = Stream.of(authority)
+            .collect( Collectors.toCollection(HashSet::new));
     }
 
     public Agency getAgency() {

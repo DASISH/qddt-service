@@ -41,6 +41,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
 
 
     private boolean hasPrivilege(QDDTUserDetails details, AbstractEntityAudit entity, String permission){
+        LOG.info( details.getUsername() + " - " + entity.getName() + " - " + permission );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
@@ -61,12 +62,14 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
     private boolean isUser(User user, AbstractEntityAudit entity) {
-        return  false;
+        return ( user.getId().equals( entity.getId() ));
     }
 
     private boolean isMemberOfAgency(Agency agency, AbstractEntityAudit entity) {
         assert entity.getAgency() != null;
-        return (agency.getId().equals( entity.getAgency().getId()));
+        boolean isMember = agency.getId().equals( entity.getAgency().getId());
+        LOG.info( String.valueOf( isMember ) );
+        return (isMember);
     }
 
 }
