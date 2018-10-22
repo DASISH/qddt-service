@@ -271,7 +271,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         return "{\"Category\":"
             + super.toString()
             + ", \"code\":" + code
-            + ", \"children\":" + children
+            + ", \"children\": [" + children.stream().map( c -> c.toString() ).collect( Collectors.joining(", ") ) + "]"
             + ", \"label\":\"" + label + "\""
             + ", \"description\":\"" + description + "\""
             + ", \"inputLimit\":" + inputLimit

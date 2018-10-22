@@ -1,12 +1,9 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.elementref.IElementRef;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,15 +52,15 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Instrument findOne(UUID uuid) {
-        return postLoadProcessing( instrumentRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Instrument.class)));
+        return  instrumentRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Instrument.class));
     }
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Instrument save(Instrument instance) {
-        return  postLoadProcessing(  instrumentRepository.save( prePersistProcessing( instance) ));
+        return  instrumentRepository.save( prePersistProcessing( instance) );
     }
 
 
@@ -98,18 +95,11 @@ class InstrumentServiceImpl implements InstrumentService {
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public ElementRef getDetail(ElementRef element) {
-        return ccLoader.fill( element );
-    }
-
-    public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {
-
-        sequence.getElement().getSequence().stream().forEach( ccLoader::fill );
-        return sequence.getElement().getSequence();
-    }
+//    public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {
+//
+//        sequence.getElement().getSequence().stream().forEach( ccLoader::fill );
+//        return sequence.getElement().getSequence();
+//    }
 
     protected Instrument prePersistProcessing(Instrument instance) {
         Integer rev = null;
@@ -119,22 +109,21 @@ class InstrumentServiceImpl implements InstrumentService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );
 
-        instance.getSequence().stream().forEach( s-> ccLoader.fill( s.getElementRef() ) );
+        instance.getSequence().stream().forEach( s-> postLoadProcessing( s ) );
         return instance;
     }
 
-
-    protected Instrument postLoadProcessing(Instrument instance) {
-
-        instance.getSequence().forEach( s -> postLoadProcessing( s.getElementRef() ) );
-        return instance;
+    private InstrumentElement postLoadProcessing(InstrumentElement instance) {
+        instance.getSequences().stream().forEach( s -> postLoadProcessing( s ) );
+        return  loadDetail( instance) ;
     }
 
-
-    IElementRef postLoadProcessing(IElementRef instance) {
-
-        if (instance.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT)
-            return ccLoader.fill( instance );
-        return instance;
+    @Transactional(readOnly = true)
+    InstrumentElement loadDetail(InstrumentElement element) {
+        if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
+            ElementRef ref = ccLoader.fill( element.getElementRef());
+            element.setElementRef(ref);
+        }
+        return element;
     }
 }
