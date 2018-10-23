@@ -198,7 +198,7 @@ public class User  {
 
     @Override
     public String toString() {
-        return " \"User \" : { \"name\" : \"" + getUsername() + "@" + (agency!=null ? agency.getName(): "?") + "\" }, ";
+        return " \"User \" : \"" + getUsername() + "@" + (agency!=null ? agency.getName(): "?") + ", ";
     }
 
 }
