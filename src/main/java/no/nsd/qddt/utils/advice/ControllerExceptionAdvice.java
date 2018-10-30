@@ -153,6 +153,29 @@ public class ControllerExceptionAdvice {
         return message;
     }
 
+
+    /**
+     * Handle all exceptions of type {@link  org.springframework.security.access.AccessDeniedException}
+     * when they occur from methods executed from the controller.
+     * @param req servlet request
+     * @param e general exception
+     * @return a {@link org.springframework.security.access.AccessDeniedException} object
+     */
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = org.springframework.security.access.AccessDeniedException.class)
+    @ResponseBody public ControllerAdviceExceptionMessage handleAccessDeniedException(HttpServletRequest req, Exception e)  {
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
+            req.getRequestURL().toString(),
+            e.getLocalizedMessage()
+        );
+
+        message.setUserfriendlyMessage( getRootCauseMessage(e.getCause()));
+        logger.error(e.getClass().getSimpleName(),e);
+
+        return message;
+    }
+
+
     /**
      * Handle all exceptions of type {@link  no.nsd.qddt.exception.InvalidPasswordException}
      * when they occur from methods executed from the controller.

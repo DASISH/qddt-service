@@ -35,7 +35,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission( Authentication auth, Serializable targetId, String targetType, Object permission)  {
-        LOG.error( "hasPermission not implemented" );
+        LOG.error( "hasPermission (4 args) not implemented" );
         return false;
     }
 

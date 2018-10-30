@@ -1,8 +1,5 @@
 package no.nsd.qddt.domain.instrument.web;
 
-import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
-import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentKind;
 import no.nsd.qddt.domain.instrument.InstrumentListJson;
@@ -19,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,19 +39,7 @@ public class InstrumentController  {
     public Instrument get(@PathVariable("id") UUID id) {
         return service.findOne(id);
     }
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/sequence", method = RequestMethod.GET)
-    public List<ElementRef> getSequence(@RequestBody ElementRefTyped<Sequence> element) {
-        return service.loadSequence( element );
-    }
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public ElementRef getDetail(@RequestBody ElementRef element) {
-        return service.getDetail(element);
-    }
-
+    
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)

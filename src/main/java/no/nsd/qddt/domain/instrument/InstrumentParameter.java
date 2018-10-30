@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrumentelement;
+package no.nsd.qddt.domain.instrument;
 
 import org.hibernate.envers.Audited;
 
@@ -28,7 +28,7 @@ public class InstrumentParameter implements Cloneable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.trim();
     }
 
     public UUID getReferencedId() {

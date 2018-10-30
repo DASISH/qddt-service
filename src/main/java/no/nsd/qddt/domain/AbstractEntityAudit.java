@@ -358,10 +358,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
 
     @Override
     public String toString() {
-        return "{" + super.toString() +
+        return  super.toString() +
                 "\"version\":" + (version == null ? "null" : version) + ", " +
-                "\"changeKind\":" + (changeKind == null ? "null" : changeKind) + ", " +
-                "\"changeComment\":" + (changeComment == null ? "null" : "\"" + changeComment + "\"") + ", " +
+//                "\"changeKind\":" + (changeKind == null ? "null" : changeKind) + ", " +
+//                "\"changeComment\":" + (changeComment == null ? "null" : "\"" + changeComment + "\"") + ", " +
                 "\"basedOnObject\":" + (basedOnObject == null ? "null" : basedOnObject) + ", " +
                 "\"basedOnRevision\":" + (basedOnRevision == null ? "null" : "\"" + basedOnRevision + "\"") + ", " +
                 "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
