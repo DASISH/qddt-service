@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,6 +68,26 @@ public class ControllerExceptionAdvice {
         return message;
     }
 
+
+    /**
+     * Handle all exceptions of type {@link no.nsd.qddt.exception.UserDeniedAuthorizationException}
+     * when they occur from methods executed from the controller.
+     * @param req servlet request
+     * @param e general exception
+     * @return a {@link no.nsd.qddt.exception.ControllerAdviceExceptionMessage} object
+     */
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)
+    @ExceptionHandler(UserDeniedAuthorizationException.class)
+    @ResponseBody public ControllerAdviceExceptionMessage handleDeniedAuthorization(HttpServletRequest req, Exception e) {
+        ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
+                req.getRequestURL().toString(),
+                e.getLocalizedMessage()
+        );
+
+        logger.error("Password missmatch: " + message.toString());
+
+        return message;
+    }
 
     /**
      * Handle all exceptions of type {@link  org.springframework.dao.OptimisticLockingFailureException}
