@@ -182,6 +182,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
                         instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
                     }
+//                    ((Sequence) instance).getSequence().stream().forEach( e -> {
+//                        e.getElement()
+//                    } );
+
                 }
                 break;
             case "CONDITION_CONSTRUCT":

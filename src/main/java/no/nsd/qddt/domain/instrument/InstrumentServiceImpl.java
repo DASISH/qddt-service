@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,17 +97,17 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public Page<Instrument> findByNameAndDescriptionPageable(String name, String description,InstrumentKind kind, Pageable pageable) {
+    public Page<Instrument> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable) {
 
         pageable = defaultSort(pageable, "name ASC", "modified DESC");
+
+        InstrumentKind kind = Arrays.stream( InstrumentKind.values() )
+            .filter( f -> f.getName().toLowerCase().contains( strKind.toLowerCase() ) && strKind.length() > 1)
+            .findFirst().orElse( null );
+
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable);
     }
 
-//    public List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence ) {
-//
-//        sequence.getElement().getSequence().stream().forEach( ccLoader::fill );
-//        return sequence.getElement().getSequence();
-//    }
 
     protected Instrument prePersistProcessing(Instrument instance) {
         LOG.info("prePersistProcessing");

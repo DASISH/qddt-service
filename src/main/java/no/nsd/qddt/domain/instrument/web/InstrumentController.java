@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.instrument.web;
 
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.instrument.InstrumentKind;
 import no.nsd.qddt.domain.instrument.InstrumentListJson;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.xml.XmlReport;
@@ -16,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -75,12 +72,8 @@ public class InstrumentController  {
                                                         @RequestParam(value = "description",defaultValue = "") String decsription,
                                                         @RequestParam(value = "kind",defaultValue = "") String strKind,
                                                         Pageable pageable, PagedResourcesAssembler assembler) {
-        InstrumentKind kind = null;
-        Optional<InstrumentKind> found =  Arrays.stream( InstrumentKind.values() ).filter( f -> f.getName().toLowerCase().contains( strKind.toLowerCase() ) ).findFirst();
-        if (found.isPresent())
-            kind = found.get();
 
-        Page<InstrumentListJson> items = service.findByNameAndDescriptionPageable(name,decsription,kind, pageable)
+        Page<InstrumentListJson> items = service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable)
                                             .map(c -> new InstrumentListJson(c));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
