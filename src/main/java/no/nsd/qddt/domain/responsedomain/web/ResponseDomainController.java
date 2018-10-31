@@ -77,7 +77,7 @@ public class ResponseDomainController extends AbstractController {
     public HttpEntity<PagedResources<ResponseDomainJsonEdit>> getBy(@RequestParam("ResponseKind") ResponseKind response,
                                                                     @RequestParam(value = "description",defaultValue = "") String description,
                                                                     @RequestParam(value = "question",defaultValue = "") String question,
-                                                                    @RequestParam(value = "name",defaultValue = "") String name,
+                                                                    @RequestParam(value = "name",defaultValue = "%") String name,
                                                                     Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ResponseDomainJsonEdit> responseDomains = null;

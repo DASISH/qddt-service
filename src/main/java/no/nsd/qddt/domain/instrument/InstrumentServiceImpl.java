@@ -100,7 +100,9 @@ class InstrumentServiceImpl implements InstrumentService {
     public Page<Instrument> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable) {
 
         pageable = defaultSort(pageable, "name ASC", "modified DESC");
-
+        if (name.isEmpty()  &&  description.isEmpty()) {
+            name = "%";
+        }
         InstrumentKind kind = Arrays.stream( InstrumentKind.values() )
             .filter( f -> f.getName().toLowerCase().contains( strKind.toLowerCase() ) && strKind.length() > 1)
             .findFirst().orElse( null );

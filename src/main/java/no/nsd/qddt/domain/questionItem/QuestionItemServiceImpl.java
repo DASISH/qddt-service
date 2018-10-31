@@ -122,7 +122,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<QuestionItem> findByNameOrQuestionOrResponseName(String name, String question, String responseName, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-//        LOG.info( pageable.toString() );
+        if (name.isEmpty()  &&  responseName.isEmpty() && question.isEmpty()) {
+            name = "%";
+        }
         return questionItemRepository.findByQuery( likeify(name),likeify(question),likeify(responseName),pageable );
     }
 

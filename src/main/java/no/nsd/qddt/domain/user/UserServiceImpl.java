@@ -140,15 +140,19 @@ class UserServiceImpl implements UserService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('USER')")
     public String setPassword(Password instance) {
+        LOG.info("old " + instance.getOldPassword());
+
         User user = userRepository.findById( instance.getId() )
             .orElseThrow(  () -> new UserNotFoundException(instance.getId()) );
 
+        LOG.info("old on server " + user.getPassword());
+
         if (!passwordEncoder().matches( instance.getOldPassword(), user.getPassword() )) {
-            throw new UserDeniedAuthorizationException( "Password mismatch ( user was modified [" + user.getModified() +"] )." );
+            throw new UserDeniedAuthorizationException( "Password mismatch ()" );
         }
 
         userRepository.setPassword( user.getId(), passwordEncoder().encode( instance.getPassword() ) );
-        return "Password changed successfully";
+        return "{ \"message\" : \"Password changed successfully\"}";
     }
 
 

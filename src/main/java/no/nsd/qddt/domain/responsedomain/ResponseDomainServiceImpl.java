@@ -60,7 +60,9 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC");
-        LOG.info( pageable.toString() );
+        if (name.isEmpty()  &&  description.isEmpty() && question.isEmpty()) {
+            name = "%";
+        }
         return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question),pageable);
     }
 

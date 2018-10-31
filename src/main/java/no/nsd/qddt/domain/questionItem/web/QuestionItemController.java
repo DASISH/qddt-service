@@ -68,7 +68,7 @@ public class QuestionItemController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItemListJson>>  getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<QuestionItemListJson>>  getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                                    @RequestParam(value = "question",defaultValue = "") String question,
                                                                    @RequestParam(value = "responseDomainName",defaultValue = "") String responseName,
                                                                    Pageable pageable, PagedResourcesAssembler assembler) {

@@ -153,6 +153,9 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        if (name.isEmpty()  &&  description.isEmpty()) {
+            name = "%";
+        }
         Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
