@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -71,8 +73,12 @@ public class InstrumentController  {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<InstrumentListJson>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                         @RequestParam(value = "description",defaultValue = "") String decsription,
-                                                        @RequestParam(value = "kind",defaultValue = "") InstrumentKind kind,
+                                                        @RequestParam(value = "kind",defaultValue = "") String strKind,
                                                         Pageable pageable, PagedResourcesAssembler assembler) {
+        InstrumentKind kind = null;
+        Optional<InstrumentKind> found =  Arrays.stream( InstrumentKind.values() ).filter( f -> f.getName().toLowerCase().contains( strKind.toLowerCase() ) ).findFirst();
+        if (found.isPresent())
+            kind = found.get();
 
         Page<InstrumentListJson> items = service.findByNameAndDescriptionPageable(name,decsription,kind, pageable)
                                             .map(c -> new InstrumentListJson(c));

@@ -82,9 +82,9 @@ public class InstrumentElement  implements Cloneable {
     }
 
 
+    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
     public void setElementRef(ElementRef elementRef) {
-        final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
-
+        System.out.println("setElementRef " + elementRef.getName());
         if (elementRef.getElement() instanceof QuestionConstruct) {
             QuestionConstruct qc = (QuestionConstruct) elementRef.getElement();
             parameters.clear();
@@ -108,8 +108,8 @@ public class InstrumentElement  implements Cloneable {
     }
 
 
+    private final Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
     private String removeHtmlTags(String string) {
-        final Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
         Matcher m = REMOVE_TAGS.matcher(string);
         return m.replaceAll("");
     }

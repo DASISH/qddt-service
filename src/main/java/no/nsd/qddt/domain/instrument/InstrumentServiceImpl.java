@@ -6,6 +6,8 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,9 @@ class InstrumentServiceImpl implements InstrumentService {
     private final InstrumentRepository instrumentRepository;
     private final InstrumentAuditService auditService;
     private final ElementLoader ccLoader;
+
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
 
     @Autowired
     public InstrumentServiceImpl(InstrumentRepository instrumentRepository
@@ -60,6 +65,8 @@ class InstrumentServiceImpl implements InstrumentService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Instrument save(Instrument instance) {
+        System.out.println("save instrument ");
+
         return  instrumentRepository.save( prePersistProcessing( instance) );
     }
 
@@ -102,6 +109,8 @@ class InstrumentServiceImpl implements InstrumentService {
 //    }
 
     protected Instrument prePersistProcessing(Instrument instance) {
+        LOG.info("prePersistProcessing");
+
         Integer rev = null;
         if(instance.isBasedOn())
             rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
@@ -109,17 +118,19 @@ class InstrumentServiceImpl implements InstrumentService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );
 
-        instance.getSequence().stream().forEach( s-> postLoadProcessing( s ) );
+        instance.getSequence().stream().forEach( this::loadDetails );
         return instance;
     }
 
-    private InstrumentElement postLoadProcessing(InstrumentElement instance) {
-        instance.getSequences().stream().forEach( s -> postLoadProcessing( s ) );
+    private InstrumentElement loadDetails(InstrumentElement instance) {
+        LOG.info("loadDetails");
+        instance.getSequences().stream().forEach( this::loadDetails );
         return  loadDetail( instance) ;
     }
 
-    @Transactional(readOnly = true)
     InstrumentElement loadDetail(InstrumentElement element) {
+        LOG.info("loadDetail");
+
         if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
             ElementRef ref = ccLoader.fill( element.getElementRef());
             element.setElementRef(ref);
