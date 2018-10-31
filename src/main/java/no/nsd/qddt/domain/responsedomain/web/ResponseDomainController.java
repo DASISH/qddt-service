@@ -77,12 +77,13 @@ public class ResponseDomainController extends AbstractController {
     public HttpEntity<PagedResources<ResponseDomainJsonEdit>> getBy(@RequestParam("ResponseKind") ResponseKind response,
                                                                     @RequestParam(value = "description",defaultValue = "") String description,
                                                                     @RequestParam(value = "question",defaultValue = "") String question,
-                                                                    @RequestParam(value = "name",defaultValue = "%") String name,
+                                                                    @RequestParam(value = "name",defaultValue = "") String name,
+                                                                    @RequestParam(value = "anchor",defaultValue = "") String anchor,
                                                                     Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
-            responseDomains = service.findBy(response, name, description, question , pageable).map(this::responseDomain2Json);
+            responseDomains = service.findBy(response, name, description, question, anchor, pageable).map(this::responseDomain2Json);
 
         } catch (Exception ex){
             LOG.error("getBy",ex);

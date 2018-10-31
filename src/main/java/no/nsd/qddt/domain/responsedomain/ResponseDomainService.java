@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 public interface ResponseDomainService extends BaseService<ResponseDomain,UUID> {
 
-    Page<ResponseDomain> findBy(ResponseKind responseKind, String name,String description, String question, Pageable pageable);
+    Page<ResponseDomain> findBy(ResponseKind responseKind, String name,String description, String question, String anchor, Pageable pageable);
 
 
 //    ResponseDomain createMixed(UUID rdId, UUID missingId);
