@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -47,22 +48,21 @@ class CommentServiceImpl  implements CommentService  {
     }
 
     @Override
-    @Transactional()
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Comment save(Comment instance) {
-        return commentRepository.save(instance);
+        Comment retval = commentRepository.saveAndFlush(instance);
+        commentRepository.indexChildren( retval.getOwnerId() );
+        return retval;
     }
 
-//    @Override
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-//    public List<Comment> save(List<Comment> instances) {
-//        return commentRepository.save(instances);
-//    }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public void delete(UUID uuid) {
         commentRepository.delete(uuid);
+        commentRepository.indexChildren( uuid );
     }
 
     @Override

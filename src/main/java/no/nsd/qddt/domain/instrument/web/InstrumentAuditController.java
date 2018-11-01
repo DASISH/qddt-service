@@ -56,7 +56,7 @@ public class InstrumentAuditController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/{id}/{revision}",  method = RequestMethod.GET, produces = "application/pdf")
+    @RequestMapping(value = "/pdf/{id}/{revision}",  method = RequestMethod.GET, produces = "application/pdf")
     public byte[] getPdf(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision).getEntity().makePdf().toByteArray();
     }

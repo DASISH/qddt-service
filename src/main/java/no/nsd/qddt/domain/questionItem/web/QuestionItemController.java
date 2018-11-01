@@ -70,7 +70,7 @@ public class QuestionItemController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<QuestionItemListJson>>  getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                                    @RequestParam(value = "question",defaultValue = "") String question,
-                                                                   @RequestParam(value = "responsename",defaultValue = "") String responseName,
+                                                                   @RequestParam(value = "responseDomainName",defaultValue = "") String responseName,
                                                                    Pageable pageable, PagedResourcesAssembler assembler) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         try {

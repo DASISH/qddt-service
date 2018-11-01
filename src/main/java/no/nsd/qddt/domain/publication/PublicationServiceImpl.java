@@ -124,6 +124,9 @@ public class PublicationServiceImpl implements PublicationService {
         }
 
         LOG.info("findByNameOrPurposeAndStatus2 " + published.get(0) + " " + name +" "+  purpose);
+        if (name.isEmpty()  &&  purpose.isEmpty()) {
+            name = "%";
+        }
 
         if( published.size() > 0 )
             return repository.findByQuery(published,likeify(name),likeify(purpose),defaultOrModifiedSort(pageable,"name"));

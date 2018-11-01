@@ -6,10 +6,8 @@ import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -24,7 +22,7 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
 
         private String intent;
 
-        private Set<CommentJsonEdit> comments = new HashSet<>();
+        private List<CommentJsonEdit> comments = new ArrayList<>();
 
         private List<ConceptRef> conceptRefs;
 
@@ -79,11 +77,11 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
         this.intent = intent;
     }
 
-    public Set<CommentJsonEdit> getComments() {
+    public List<CommentJsonEdit> getComments() {
         return comments;
     }
 
-    private void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(List<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 

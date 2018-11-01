@@ -155,6 +155,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
+        if (name.isEmpty()  &&  description.isEmpty()) {
+            name = "%";
+        }
         return topicGroupRepository.findByQuery(name,description,pageable)
                 .map(this::postLoadProcessing);
     }

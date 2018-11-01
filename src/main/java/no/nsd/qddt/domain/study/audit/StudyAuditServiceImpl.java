@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.study.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
@@ -16,8 +16,8 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,6 +78,7 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
     @Override
     protected Revision<Integer, Study> postLoadProcessing(Revision<Integer, Study> instance) {
         assert  (instance != null);
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
         postLoadProcessing(instance.getEntity());
         return instance;
     }
@@ -87,13 +88,13 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
         try{
             List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
 
-            instance.setComments(new HashSet<>(coms));
+            instance.setComments(new ArrayList<>(coms));
 
             Hibernate.initialize(instance.getTopicGroups());
 
             instance.getTopicGroups().forEach(c->{
                 final List<Comment> coms2 = commentService.findAllByOwnerId(c.getId(),showPrivateComments);
-                c.setComments(new HashSet<>(coms2));
+                c.setComments(new ArrayList<>(coms2));
             });
 
         } catch (Exception ex){

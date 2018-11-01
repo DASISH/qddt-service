@@ -19,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -91,6 +88,8 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     @Override
     protected Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
         assert  (instance != null);
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+
         return new Revision<>(instance.getMetadata(),
                 postLoadProcessing(instance.getEntity()));
 
@@ -144,10 +143,10 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     }
 
 
-    private HashSet<Comment> loadComments(UUID id){
+    private List<Comment> loadComments(UUID id){
         List<Comment> coms  =commentService.findAllByOwnerId(id,showPrivateComments);
 
-        return new HashSet<>(coms);
+        return new ArrayList<>(coms);
     }
 
 }

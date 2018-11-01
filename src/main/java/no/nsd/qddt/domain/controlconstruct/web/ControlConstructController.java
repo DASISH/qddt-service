@@ -125,10 +125,10 @@ public class ControlConstructController extends AbstractController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE })
     public HttpEntity<PagedResources<ConstructJsonView>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                                @RequestParam(value = "description",defaultValue = "") String description,
-                                                               @RequestParam(value = "questiontext",defaultValue = "") String questionText,
-                                                               @RequestParam(value = "questionname",defaultValue = "") String questionName,
-                                                               @RequestParam(value = "constructkind",defaultValue = "QUESTION_CONSTRUCT") String kind,
-                                                               @RequestParam(value = "sequencekind", defaultValue = "") String sequenceKind,
+                                                               @RequestParam(value = "questionText",defaultValue = "") String questionText,
+                                                               @RequestParam(value = "questionName",defaultValue = "") String questionName,
+                                                               @RequestParam(value = "constructKind",defaultValue = "QUESTION_CONSTRUCT") String kind,
+                                                               @RequestParam(value = "sequenceKind", defaultValue = "") String sequenceKind,
                                                                Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ConstructJsonView> controlConstructs;

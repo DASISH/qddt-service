@@ -42,7 +42,7 @@ public class ConceptJsonView {
 
     private List<ElementRef> conceptQuestionItems = new ArrayList<>();
 
-    private Set<CommentJsonEdit> comments = new HashSet<>();
+    private List<CommentJsonEdit> comments = new ArrayList<>();
 
     private Set<ConceptJsonView> children = new HashSet<>();
 
@@ -124,11 +124,11 @@ public class ConceptJsonView {
     }
 
 
-    public Set<CommentJsonEdit> getComments() {
+    public List<CommentJsonEdit> getComments() {
         return comments;
     }
 
-    private void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(List<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 

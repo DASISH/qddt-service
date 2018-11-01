@@ -1,9 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.BaseService;
-import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
-import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,9 +16,6 @@ public interface InstrumentService extends BaseService<Instrument, UUID> {
 
     Page<Instrument> findAllPageable(Pageable pageable);
 
-    Page<Instrument> findByNameAndDescriptionPageable(String name, String description,InstrumentKind kind, Pageable pageable);
+    Page<Instrument> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable);
 
-    ElementRef getDetail(ElementRef element);
-
-    List<ElementRef> loadSequence(ElementRefTyped<Sequence> sequence );
 }

@@ -77,7 +77,7 @@ public class PublicationController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<PublicationJson>> getBy(@RequestParam(value = "name", defaultValue = "*") String name,
                                                          @RequestParam(value = "purpose", defaultValue = "") String purpose,
-                                                         @RequestParam(value = "publishedstatus", required = false) String published,
+                                                         @RequestParam(value = "publishedStatus", required = false) String published,
                                                          @RequestParam(value = "statusId", required = false) Long statusId,
                                                          Pageable pageable, PagedResourcesAssembler assembler) {
 

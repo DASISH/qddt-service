@@ -13,9 +13,8 @@ import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +28,7 @@ public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
 
     private String displayLayout;
 
-    private Set<CommentJsonEdit> comments = new HashSet<>();
+    private List<CommentJsonEdit> comments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
@@ -82,11 +81,11 @@ public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
         this.displayLayout = displayLayout;
     }
 
-    public Set<CommentJsonEdit> getComments() {
+    public List<CommentJsonEdit> getComments() {
         return comments;
     }
 
-    private void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(List<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 

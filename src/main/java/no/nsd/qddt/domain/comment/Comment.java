@@ -2,11 +2,12 @@ package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
-import org.hibernate.annotations.Type;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.utils.SecurityContext;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,12 +27,19 @@ import java.util.UUID;
 @Table(name = "comment")
 public class Comment extends AbstractEntity  {
 
-    @Column(name = "owner_id", updatable = false)
-    @Type(type="pg-uuid")
+    @Column(name = "owner_id",columnDefinition = "uuid", updatable = false, nullable = false)
+//    @Type(type="pg-uuid")
     private UUID ownerId;
 
+//    @Column(name = "owner_idx", updatable = false,insertable = false)
+//    @JsonIgnore
+//    private Integer ownerIdx;
+
+
+    @OrderBy("owner_idx desc")
+    @OrderColumn(name="owner_idx")
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
-    private Set<Comment> comments = new HashSet<>();
+    private List<Comment> comments = new ArrayList<>(0);
 
     @Column(name = "is_public", columnDefinition = "boolean not null default true")
     private Boolean isPublic;
@@ -55,13 +63,20 @@ public class Comment extends AbstractEntity  {
     public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
+//
+//    protected Integer getOwnerIdx() {
+//        return ownerIdx;
+//    }
+//
+//    public void setOwnerIdx(Integer ownerIdx) {
+//        this.ownerIdx = ownerIdx;
+//    }
 
-
-    public Set<Comment> getComments() {
+    public List<Comment> getComments() {
         return this.comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -119,8 +134,12 @@ public class Comment extends AbstractEntity  {
                 "} " + super.toString();
     }
 
+    @PrePersist
+    private void onInsert(){
+        LOG.info("Comment PrePersist " + this.getClass().getSimpleName());
+        User user = SecurityContext.getUserDetails().getUser();
+        setModifiedBy( user );
+    }
 
-//    public void fillDoc(PdfReport pdfReport,String counter) {
-//    }
 
 }

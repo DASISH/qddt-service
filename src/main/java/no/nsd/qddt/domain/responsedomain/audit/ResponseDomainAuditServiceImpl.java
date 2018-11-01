@@ -14,8 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,7 +75,7 @@ class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,Respons
         assert  (instance != null);
         try{
             List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
-            instance.getEntity().setComments(new HashSet<>(coms));
+            instance.getEntity().setComments(new ArrayList<>(coms));
             Hibernate.initialize(instance.getEntity().getManagedRepresentation());  //Lazy loading trick... (we want the MRep when locking at a revision).
         } catch (Exception ex) {
             LOG.error("postLoadProcessing", ex);

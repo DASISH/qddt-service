@@ -30,8 +30,8 @@ public class UserJson {
         setId(user.getId());
         setEmail(user.getEmail());
         setUsername(user.getUsername());
-        setAgencyUserName(username + "@" + user.getAgency().getName());
         setModified( user.getModified() );
+        setAgencyUserName(username + "@" + (user.getAgency()!=null ? user.getAgency().getName(): "????"));
     }
 
 

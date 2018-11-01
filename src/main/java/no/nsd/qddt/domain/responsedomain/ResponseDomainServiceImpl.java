@@ -58,16 +58,18 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, Pageable pageable) {
+    public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, String anchor, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC");
-        LOG.info( pageable.toString() );
-        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question),pageable);
+        if (name.isEmpty()  &&  description.isEmpty() && question.isEmpty() && anchor.isEmpty()) {
+            name = "%";
+        }
+        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), likeify(anchor),pageable);
     }
 
 
     @Override
     @Transactional(propagation = Propagation.NEVER)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public ResponseDomain save(ResponseDomain instance) {
         return postLoadProcessing(
                 responseDomainRepository.save(
@@ -75,11 +77,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-//    public List<ResponseDomain> save(List<ResponseDomain> instances) {
-//        instances.forEach(this::prePersistProcessing);
-//        return responseDomainRepository.save(instances);
-//    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")

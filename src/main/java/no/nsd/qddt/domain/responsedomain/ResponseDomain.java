@@ -19,7 +19,6 @@ import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -251,9 +250,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @Override
     public String toString() {
 
-        return MessageFormat.format("ResponseDomain { {0}, {1} } " ,
-                super.toString(),
-                getManagedRepresentation().toString());
+        return " \"ResponseDomain\" : { " + super.toString() +  getManagedRepresentation().toString() + "}, ";
     }
 
     @Override

@@ -12,8 +12,8 @@ import java.io.Serializable;
 @NoRepositoryBean
 public interface BaseArchivedRepository <T, ID extends Serializable> extends BaseRepository<T,ID> {
 //    @Query(value = "select count(*) from project_archived_hierarchy as pah  where is_archived and  pah.ancestors  = ANY(:idUser) "
-        @Query(value = "select count(*) from project_archived_hierarchy as pah  where is_archived and  pah.ancestors  @> ARRAY[CAST(:idUser AS uuid)];"
+        @Query(value = "select count(*) from project_archived_hierarchy as pah  where is_archived and  pah.ancestors  @> ARRAY[CAST(:entityId AS uuid)];"
         ,nativeQuery = true)
-    long hasArchive(@Param("idUser") String id);
+    long hasArchive(@Param("entityId") String entityId);
 
 }

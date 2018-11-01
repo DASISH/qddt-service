@@ -87,7 +87,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public  <S extends ControlConstruct> S save(S instance) {
         return postLoadProcessing(
             controlConstructRepository.save(
@@ -95,7 +95,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public List<ControlConstruct> save(List<ControlConstruct> instances) {
         return  instances.stream().map(this::save).collect(Collectors.toList());
     }
@@ -127,6 +127,9 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public <S extends ConstructJsonView> Page<S> findBySearcAndControlConstructKind(String kind, String superKind, String name, String description, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
+        if (name.isEmpty()  &&  description.isEmpty() && superKind.isEmpty()) {
+            name = "%";
+        }
 
         return controlConstructRepository.findByQuery(kind, superKind, likeify(name), likeify(description), "", "",pageable)
             .map(qi -> mapConstructView(qi));
@@ -136,7 +139,9 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public <S extends ConstructJsonView> Page<S>  findQCBySearch(String name, String questionName, String questionText, Pageable pageable) {
         pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-
+        if (name.isEmpty()  &&  questionName.isEmpty() && questionText.isEmpty()) {
+            name = "%";
+        }
 
         return controlConstructRepository.findByQuery("QUESTION_CONSTRUCT","", name,"", questionName, questionText, pageable)
             .map(qi-> mapConstructView(postLoadProcessing(qi)));
@@ -182,6 +187,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
                         instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
                     }
+//                    ((Sequence) instance).getSequence().stream().forEach( e -> {
+//                        e.getElement()
+//                    } );
+
                 }
                 break;
             case "CONDITION_CONSTRUCT":

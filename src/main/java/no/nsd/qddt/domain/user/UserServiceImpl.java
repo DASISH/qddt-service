@@ -99,6 +99,10 @@ class UserServiceImpl implements UserService {
                 .stream().filter(i->i.getAuthority() == "ROLE_LIMITED")
                 .collect(Collectors.toSet()));
         }
+        if (instance.getId() == null) {
+            LOG.info( "set default password" );
+            instance.setPassword( "$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW" );
+        }
         return instance;
     }
 
@@ -126,7 +130,7 @@ class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<User> getByName(String name, Pageable pageable) {
-
+        LOG.info( pageable.toString() );
         return  userRepository.findByUsernameIgnoreCaseLike( likeify(name) , pageable );
     }
 
@@ -134,17 +138,21 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('OWNER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('USER')")
     public String setPassword(Password instance) {
+        LOG.info("old " + instance.getOldPassword());
+
         User user = userRepository.findById( instance.getId() )
             .orElseThrow(  () -> new UserNotFoundException(instance.getId()) );
 
+        LOG.info("old on server " + user.getPassword());
+
         if (!passwordEncoder().matches( instance.getOldPassword(), user.getPassword() )) {
-            throw new UserDeniedAuthorizationException( "Password mismatch ( user was modified [" + user.getModified() +"] )." );
+            throw new UserDeniedAuthorizationException( "Password mismatch ()" );
         }
 
         userRepository.setPassword( user.getId(), passwordEncoder().encode( instance.getPassword() ) );
-        return "Password changed successfully";
+        return "{ \"message\" : \"Password changed successfully\"}";
     }
 
 

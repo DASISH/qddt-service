@@ -8,10 +8,7 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +30,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
     private boolean isArchived;
 
-    private Set<CommentJsonEdit> comments = new HashSet<>();
+    private List<CommentJsonEdit> comments = new ArrayList<>();
 
     public TopicGroupRevisionJson(TopicGroup topicGroup) {
         super(topicGroup);
@@ -88,11 +85,11 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
         this.otherMaterials = otherMaterials;
     }
 
-    public Set<CommentJsonEdit> getComments() {
+    public List<CommentJsonEdit> getComments() {
         return comments;
     }
 
-    private void setComments(Set<CommentJsonEdit> comments) {
+    private void setComments(List<CommentJsonEdit> comments) {
         this.comments = comments;
     }
 

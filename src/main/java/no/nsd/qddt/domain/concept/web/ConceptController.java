@@ -150,9 +150,10 @@ public class ConceptController extends AbstractController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                             @RequestParam(value = "description",defaultValue = "%") String description,
                                                         Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,name, pageable).map(ConceptJsonEdit::new);
+        Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,description, pageable).map(ConceptJsonEdit::new);
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }
 
