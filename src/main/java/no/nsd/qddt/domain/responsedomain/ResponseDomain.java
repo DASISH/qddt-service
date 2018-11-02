@@ -19,10 +19,7 @@ import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -72,6 +69,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
 
+    private UUID schemaId;
     
     @JsonIgnore
     @OrderColumn(name="responsedomain_idx")
@@ -289,4 +287,11 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
 
+    public UUID getSchemaId() {
+        return schemaId;
+    }
+
+    public void setSchemaId(UUID schemaId) {
+        this.schemaId = schemaId;
+    }
 }

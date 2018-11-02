@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,6 +21,13 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 public class InstrumentElement  implements Cloneable {
+
+    @JsonIgnore
+    @Transient
+    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
+    @JsonIgnore
+    @Transient
+    private final Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
 
     @Id
     @Type(type="pg-uuid")
@@ -82,7 +90,6 @@ public class InstrumentElement  implements Cloneable {
     }
 
 
-    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
     public void setElementRef(ElementRef elementRef) {
         System.out.println("setElementRef " + elementRef.getName());
         if (elementRef.getElement() instanceof QuestionConstruct) {
@@ -108,7 +115,6 @@ public class InstrumentElement  implements Cloneable {
     }
 
 
-    private final Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
     private String removeHtmlTags(String string) {
         Matcher m = REMOVE_TAGS.matcher(string);
         return m.replaceAll("");

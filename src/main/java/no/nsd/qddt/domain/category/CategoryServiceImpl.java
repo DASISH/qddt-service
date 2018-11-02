@@ -53,7 +53,7 @@ class CategoryServiceImpl implements CategoryService {
 
         PageRequest sort = defaultOrModifiedSort( pageable, "name ASC", "updated DESC" );
 
-        LOG.info( "level:'" + level + "' - type:'" + type + "' -name:'" +  likeify(name) + "' - desc:'" +  likeify(description) + "' - sort:" +  sort.toString());
+//        LOG.info( "level:'" + level + "' - type:'" + type + "' -name:'" +  likeify(name) + "' - desc:'" +  likeify(description) + "' - sort:" +  sort.toString());
 
         return  repository.findByQuery(  type, level, likeify(name), likeify(description), sort);
 
