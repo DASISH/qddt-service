@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/FieldLevelDocumentation/schemas/logicalproduct_xsd/elements/Category.html
@@ -28,66 +31,52 @@ import static no.nsd.qddt.utils.FilterTool.defaultSort;
 class CategoryServiceImpl implements CategoryService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepository repository;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryServiceImpl(CategoryRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<Category> findByNameLike(String name, Pageable pageable) {
-        return categoryRepository.findByNameIgnoreCaseLike(name,defaultSort(pageable,"name","modified"));
+    public Page<Category> findBy(String level, String type, String name, String description, Pageable pageable) {
+
+        if (IsNullOrTrimEmpty(name)  &&  IsNullOrTrimEmpty(description) ) {
+            name = "%";
+        }
+
+        CategoryType categoryType =  CategoryType.getEnum(type);
+        HierarchyLevel hierarchyLevel = HierarchyLevel.getEnum(level);
+
+        if (categoryType == null && hierarchyLevel == null)
+            throw  new IllegalArgumentException( "categoryType OR hierarchyLevel has to be specified." );
+
+        PageRequest sort = defaultOrModifiedSort( pageable, "name ASC", "updated DESC" );
+
+        LOG.info( "level:'" + level + "' - type:'" + type + "' -name:'" +  likeify(name) + "' - desc:'" +  likeify(description) + "' - sort:" +  sort.toString());
+
+        return  repository.findByQuery(  type, level, likeify(name), likeify(description), sort);
+
     }
 
-    /*
-    This call will give you all Category with HierarchyLevel,CategoryType and
-     Name (support whildcard searches)
-     */
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<Category> findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(hierarchyLevel,categoryType,name,
-                defaultSort(pageable,"name","modified"));
-    }
-
-
-    /*
-        This call will give you all Category with CategoryType and Name (support whildcard searches)
-        regardless of HierarchyLevel.
-         */
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<Category> findByCategoryTypeAndNameLike(CategoryType categoryType, String name, Pageable pageable) {
-        return categoryRepository.findByCategoryTypeAndNameIgnoreCaseLike(categoryType, name,
-                defaultSort(pageable,"name","modified"));
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<Category> findByHierarchyAndNameLike(HierarchyLevel level, String name, Pageable pageable) {
-        return categoryRepository.findByHierarchyLevelAndNameIgnoreCaseLike(level, name,
-                defaultSort(pageable,"name","modified"));
-    }
 
     @Override
     @Transactional(readOnly = true)
     public long count() {
-        return categoryRepository.count();
+        return repository.count();
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return categoryRepository.exists(uuid);
+        return repository.exists(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Category findOne(UUID uuid) {
-        return postLoadProcessing(categoryRepository.findById(uuid).orElseThrow(
+        return postLoadProcessing(repository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, Category.class))
         );
     }
@@ -100,7 +89,7 @@ class CategoryServiceImpl implements CategoryService {
         if (_codes.size() >0)
             LOG.error( "_codes not intilaized empty" );
         return postLoadProcessing( 
-            categoryRepository.save(
+            repository.save(
                 prePersistProcessing(instance)));
     }
 
@@ -108,14 +97,14 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        categoryRepository.delete(uuid);
+        repository.delete(uuid);
     }
 
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Category> instances) {
-        categoryRepository.delete(instances);
+        repository.delete(instances);
     }
 
   
@@ -135,7 +124,7 @@ class CategoryServiceImpl implements CategoryService {
 
             if (instance.getId() == null) {
                 Code c = instance.getCode();
-                instance = categoryRepository.save( instance );
+                instance = repository.save( instance );
                 instance.setCode( c );
             }
             return instance;

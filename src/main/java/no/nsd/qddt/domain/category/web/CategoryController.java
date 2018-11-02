@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.category.web;
 
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
-import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -59,58 +57,16 @@ public class CategoryController {
 
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/by-group/{name}", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<CategoryJsonEdit>> getByGroup(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        name = name.replace("*","%");
-        Page<Category> categories = service.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, name, pageable);
-        categories.map(CategoryJsonEdit::new);
-
-        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
-    }
-
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/by-leaf/{name}", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<CategoryJsonEdit>> getByLeaf(@PathVariable("name")String name, Pageable pageable, PagedResourcesAssembler assembler) {
-        name = name.replace("*","%");
-
-        Page<Category> categories = service.findByHierarchyAndNameLike(HierarchyLevel.ENTITY, name, pageable);
-        categories.map(CategoryJsonEdit::new);
-        return new ResponseEntity<>(assembler.toResource(categories), HttpStatus.OK);
-    }
-
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<CategoryJsonEdit>>  getBy(@RequestParam(value = "level", required = false) String level,
-                                                       @RequestParam(value = "categoryKind",required = false) String categoryKind,
-                                                       @RequestParam(value = "name",defaultValue = "%") String name,
+    public HttpEntity<PagedResources<CategoryJsonEdit>>  getBy(@RequestParam(value = "level", defaultValue = "") String level,
+                                                       @RequestParam(value = "categoryKind",defaultValue = "") String categoryKind,
+                                                       @RequestParam(value = "name",defaultValue = "") String name,
+                                                       @RequestParam(value = "description",defaultValue = "") String description,
                                                        Pageable pageable, PagedResourcesAssembler<CategoryJsonEdit> assembler) {
 
-        Page<CategoryJsonEdit> categories;
-        name = name.replace("*","%");
-        if(!name.endsWith("%"))
-            name += "%";
-        if (level == null || level.isEmpty()) {
-            if (categoryKind == null || categoryKind.isEmpty()) {
+        Page<CategoryJsonEdit> categories = service.findBy(level,categoryKind, name, description, pageable)
+            .map(converter -> new CategoryJsonEdit(converter));
 
-                categories = service.findByNameLike(name, pageable)
-                    .map(converter -> new CategoryJsonEdit(converter));
-            } else {
-
-                categories = service.findByCategoryTypeAndNameLike(CategoryType.valueOf(categoryKind), name, pageable)
-                    .map(converter -> new CategoryJsonEdit(converter));
-            }
-        } else {
-            if (categoryKind == null || categoryKind.isEmpty()) {
-
-                categories = service.findByHierarchyAndNameLike(HierarchyLevel.valueOf(level), name, pageable)
-                    .map(converter -> new CategoryJsonEdit(converter));
-            } else {
-
-                categories = service.findByHierarchyAndCategoryAndNameLike(HierarchyLevel.valueOf(level),CategoryType.valueOf(categoryKind), name, pageable)
-                    .map(converter -> new CategoryJsonEdit(converter));
-            }
-        }
         
         return new ResponseEntity(assembler.toResource(categories), HttpStatus.OK);
     }

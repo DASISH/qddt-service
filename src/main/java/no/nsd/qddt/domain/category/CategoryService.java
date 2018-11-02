@@ -11,13 +11,6 @@ import java.util.UUID;
  */
 public interface CategoryService extends BaseService<Category, UUID> {
 
-
-    Page<Category>findByNameLike(String name, Pageable pageable);
-
-    Page<Category>findByCategoryTypeAndNameLike(CategoryType categoryType,String name,Pageable pageable );
-
-    Page<Category>findByHierarchyAndNameLike(HierarchyLevel entity, String name, Pageable pageable);
-
-    Page<Category>findByHierarchyAndCategoryAndNameLike(HierarchyLevel hierarchyLevel, CategoryType categoryType,String name,Pageable pageable);
+    Page<Category>findBy(String hierarchyLevel, String categoryType,String name, String description, Pageable pageable);
 
 }

@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.category;
 
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+
 /**
  * @author Stig Norland
  * @see Category
@@ -71,11 +73,11 @@ public enum CategoryType {
     }
 
     public static CategoryType getEnum(String name) {
-        if(name == null)
-            throw new IllegalArgumentException();
+        if(IsNullOrTrimEmpty(name))
+            return null;
         for(CategoryType v : values())
-            if(name.equalsIgnoreCase(v.getName())) return v;
-        throw new IllegalArgumentException();
+            if(name.equalsIgnoreCase(v.toString()) || name.equalsIgnoreCase(v.getName()) ) return v;
+        throw new IllegalArgumentException("Enum value not valid " + name);
     }
 
 }

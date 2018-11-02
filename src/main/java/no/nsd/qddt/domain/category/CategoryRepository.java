@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.category;
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -13,14 +15,17 @@ import java.util.UUID;
  */
 @Repository
 interface CategoryRepository extends BaseRepository<Category,UUID> {
-//    @NamedNativeQuery(name = "findUniqueCategoryInOrder", query= "select distinct category as name from Code  order by category", resultClass= Category.class)
 
-    Page<Category> findByNameIgnoreCaseLike(String name, Pageable pageable);
-
-    Page<Category> findByCategoryTypeAndNameIgnoreCaseLike(CategoryType categoryType, String name, Pageable pageable);
-
-    Page<Category> findByHierarchyLevelAndNameIgnoreCaseLike(HierarchyLevel hierarchyLevel, String name, Pageable pageable);
-
-    Page<Category> findByHierarchyLevelAndCategoryTypeAndNameIgnoreCaseLike(HierarchyLevel hierarchyLevel, CategoryType categoryType, String name, Pageable pageable);
+    @Query(value = "SELECT ca.* FROM category ca WHERE ( ca.category_kind ILIKE :categoryType OR ca.hierarchy_level ILIKE :hierarchyLevel ) " +
+        "AND ( ca.name ILIKE :name or ca.description ILIKE :description ) " +
+        "ORDER BY ?#{#pageable}"
+        ,countQuery = "SELECT count(ca.*) FROM category ca WHERE ( ca.category_kind ILIKE :categoryType OR ca.hierarchy_level ILIKE :hierarchyLevel ) " +
+        "AND ( ca.name ILIKE :name or ca.description ILIKE :description ) "
+        ,nativeQuery = true)
+    Page<Category> findByQuery(@Param("categoryType")String categoryType,
+                                     @Param("hierarchyLevel")String hierarchyLevel,
+                                     @Param("name")String name,
+                                     @Param("description")String description,
+                                     Pageable pageable);
 
 }
