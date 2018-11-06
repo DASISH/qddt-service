@@ -63,7 +63,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
         if (name.isEmpty()  &&  description.isEmpty() && question.isEmpty() && anchor.isEmpty()) {
             name = "%";
         }
-        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), likeify(anchor),pageable);
+//        likeify(anchor),
+        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), pageable);
     }
 
 
@@ -92,27 +93,26 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {
-        
-        ResponseDomainFactory rdf= new ResponseDomainFactory();
-        if(instance.isBasedOn()) {
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-            instance = rdf.copy(instance, rev );
+
+        ResponseDomainFactory rdf = new ResponseDomainFactory();
+        if (instance.isBasedOn()) {
+            Integer rev = auditService.findLastChange( instance.getId() ).getRevisionNumber();
+            instance = rdf.copy( instance, rev );
         } else if (instance.isNewCopy()) {
-            instance = rdf.copy(instance, null);
+            instance = rdf.copy( instance, null );
         }
         // read the codes from the MR, into the RD
         if (instance.getCodes().size() == 0)
             instance.populateCodes();
 
 
-        if (instance.getManagedRepresentation().getId() == null) {
-            instance.beforeUpdate();
-            instance.setManagedRepresentation(
-                categoryService.save(
-                    instance.getManagedRepresentation()));
-        } else
-
+//        if (instance.getManagedRepresentation().getId() == null) {
+        instance.beforeUpdate();
         instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
+        instance.setManagedRepresentation(
+            categoryService.save(
+                instance.getManagedRepresentation()));
+//        } else
 
         return instance;
     }

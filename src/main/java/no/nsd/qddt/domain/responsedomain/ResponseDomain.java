@@ -12,15 +12,18 @@ import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
-import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static no.nsd.qddt.utils.StringTool.CapString;
+import static no.nsd.qddt.utils.StringTool.IsNullOrEmpty;
 
 
 /**
@@ -86,7 +89,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
-    @ManyToOne( fetch = FetchType.EAGER)
+    @ManyToOne( fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
@@ -110,11 +113,11 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @Override
     @Column(nullable = false)
     public String getName() {
-        return StringTool.CapString(super.getName());
+        return CapString(super.getName());
     }
 
     public String getDescription() {
-        if (StringTool.IsNullOrEmpty(description))
+        if (IsNullOrEmpty(description))
             description= "";
         return description;
     }
@@ -191,10 +194,10 @@ public class ResponseDomain extends AbstractEntityAudit  {
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
             setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(Category::getName).collect(Collectors.joining(" + "))));
         }
-        managedRepresentation.setName(getName());
-        managedRepresentation.setDescription(String.format("[%s] group - %s",
-                StringTool.CapString(managedRepresentation.getCategoryType().name().toLowerCase()),
-                getDescription()));
+        managedRepresentation.setLabel(getName());
+        managedRepresentation.setName(  managedRepresentation.getCategoryType().getName() +  ":" +  ((getId() != null) ? getId().toString() : Integer.toString( new Random().nextInt() )));
+        if (managedRepresentation.getHierarchyLevel() == HierarchyLevel.GROUP_ENTITY)
+        managedRepresentation.setDescription(managedRepresentation.getChildren().stream().map(Category::getName).collect(Collectors.joining(", ")));
         managedRepresentation.setChangeComment(getChangeComment());
         managedRepresentation.setChangeKind(getChangeKind());
         if(!getVersion().isModified()) {

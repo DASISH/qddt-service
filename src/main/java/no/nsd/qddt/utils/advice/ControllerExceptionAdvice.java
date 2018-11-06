@@ -70,7 +70,7 @@ public class ControllerExceptionAdvice {
 
 
     /**
-     * Handle all exceptions of type {@link no.nsd.qddt.exception.UserDeniedAuthorizationException}
+     * Handle all exceptions of type {@link UserDeniedAuthorizationException}
      * when they occur from methods executed from the controller.
      * @param req servlet request
      * @param e general exception
@@ -161,7 +161,7 @@ public class ControllerExceptionAdvice {
      * @param e general exception
      * @return a {@link org.springframework.security.access.AccessDeniedException} object
      */
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(value = org.springframework.security.access.AccessDeniedException.class)
     @ResponseBody public ControllerAdviceExceptionMessage handleAccessDeniedException(HttpServletRequest req, Exception e)  {
         ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
@@ -183,7 +183,7 @@ public class ControllerExceptionAdvice {
      * @param e general exception
      * @return a {@link no.nsd.qddt.exception.InvalidPasswordException} object
      */
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = InvalidPasswordException.class)
     @ResponseBody public ControllerAdviceExceptionMessage handleInvalidPasswordException(HttpServletRequest req, Exception e)  {
         ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
@@ -199,13 +199,13 @@ public class ControllerExceptionAdvice {
 
 
     /**
-     * Handle all exceptions of type {@link  no.nsd.qddt.exception.InvalidPasswordException}
+     * Handle all exceptions of type {@link  DescendantsArchivedException}
      * when they occur from methods executed from the controller.
      * @param req servlet request
      * @param e general exception
-     * @return a {@link no.nsd.qddt.exception.InvalidPasswordException} object
+     * @return a {@link DescendantsArchivedException} object
      */
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(value = DescendantsArchivedException.class)
     @ResponseBody public ControllerAdviceExceptionMessage handleDescendantsArchivedException (HttpServletRequest req, Exception e)  {
         ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(

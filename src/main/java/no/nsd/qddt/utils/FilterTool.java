@@ -78,7 +78,9 @@ public class FilterTool {
             } else if (o.getProperty().equals("questionText")) {
                 orders.add(new Sort.Order(o.getDirection(), "question_text"));
             } else if (o.getProperty().equals("status.label")) {
-                orders.add(new Sort.Order(o.getDirection(), "statuslabel")); 
+                orders.add(new Sort.Order(o.getDirection(), "statuslabel"));
+            } else if (o.getProperty().equals("categoryType")) {
+                orders.add(new Sort.Order(o.getDirection(), "category_kind"));
             } else
                 orders.add(o);
         });

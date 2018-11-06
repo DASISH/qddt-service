@@ -23,8 +23,7 @@ interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
 
     @Query(value = "SELECT RD.* FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
         "( RD.name ILIKE :name or RD.description ILIKE :description OR " +
-        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) OR " +
-        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :anchor OR qi.question ILIKE :anchor ) ) " +
+        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) " +
         "ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(RD.*)  FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
         "(RD.name ILIKE :name or RD.description ILIKE :description OR " +
@@ -34,6 +33,6 @@ interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
                                      @Param("name")String name,
                                      @Param("description")String description,
                                      @Param("question")String question,
-                                     @Param("anchor")String anchor,
+//                                     @Param("anchor")String anchor,
                                      Pageable pageable);
 }

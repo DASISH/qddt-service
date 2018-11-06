@@ -60,7 +60,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @OrderBy()
     private String label;
 
-
     @Column(name = "description", length = 2000)
     private String description;
 
