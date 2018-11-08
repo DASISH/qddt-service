@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 /**
  * @author Stig Norland
  */
-public interface ChangeFeedService  extends BaseService<ChangeFeed, Long> {
+public interface ChangeFeedService  extends BaseService<ChangeFeed, ChangeFeedKey> {
     Page<ChangeFeed> findAllPageable(Pageable pageable);
 }

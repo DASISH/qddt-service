@@ -30,13 +30,13 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
     }
 
     @Override
-    public boolean exists(Long aLong) {
-        return repository.exists( aLong );
+    public boolean exists(ChangeFeedKey ig) {
+        return false;
     }
 
     @Override
-    public <S extends ChangeFeed> S findOne(Long aLong) {
-        return (S) repository.findOne( aLong );
+    public <S extends ChangeFeed> S findOne(ChangeFeedKey id) {
+        return (S) repository.findOne( id );
     }
 
     @Override
@@ -45,8 +45,8 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
     }
 
     @Override
-    public void delete(Long aLong) throws DataAccessException {
-        repository.delete( aLong );
+    public void delete(ChangeFeedKey id) throws DataAccessException {
+        repository.delete( id );
     }
 
     @Override

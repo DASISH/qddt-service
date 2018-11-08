@@ -1,9 +1,11 @@
 package no.nsd.qddt.domain.changefeed;
 
-import no.nsd.qddt.domain.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Stig Norland
  */
-public interface ChangeFeedRepository extends BaseRepository<ChangeFeed,Long> {
+@Repository
+public interface ChangeFeedRepository extends JpaRepository<ChangeFeed,ChangeFeedKey> {
 }

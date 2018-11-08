@@ -1,52 +1,109 @@
 package no.nsd.qddt.domain.changefeed;
 
 import com.google.common.base.Objects;
-import no.nsd.qddt.domain.elementref.AbstractElementRef;
-import no.nsd.qddt.domain.elementref.IElementRef;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.utils.SecurityContext;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
+import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
 @Entity
-@Table(name = "change_feed")
-public class ChangeFeed extends AbstractElementRef {
+@Table(name = "change_log")
+@Immutable
+public class ChangeFeed  {
 
-    @Id
-    private Long id;
+//    @SuppressWarnings("unused")
+//    @Id
+//    private Integer id;
+//
+//    @Column(name = "ref_id")
+//    protected UUID refId;
+//
+//    @Column(name = "ref_rev")
+//    protected Integer refRev;
 
-    @Column(name = "updated", nullable = false)
-    @Version
-    private Timestamp modified;
+    @EmbeddedId
+    private ChangeFeedKey changeFeedKey;
+
+    @Column(name = "ref_kind")
+    private  String refKind;
+
+    @Column(name = "ref_change_kind")
+    private  String refChangeKind;
+
+    @Column(name = "ref_modified")
+    private Timestamp refModified;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @JoinColumn(name = "ref_modified_by",  updatable = false)
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private User modifiedBy;
 
-    @Enumerated(EnumType.STRING)
-    private ActionKind action;
+    @Column(name = "ref_action")
+    private Short refAction;
 
-    public Long getId() {
-        return id;
+    @Column(name = "element_id")
+    private  UUID elementId;
+
+    @Column(name = "element_revision")
+    private  Integer elementRevision;
+
+    @Column(name = "element_kind")
+    private String elementKind;
+
+    @Column(name = "name")
+    private String name;
+
+    public ChangeFeedKey getChangeFeedKey() {
+        return changeFeedKey;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setChangeFeedKey(ChangeFeedKey changeFeedKey) {
+        this.changeFeedKey = changeFeedKey;
     }
 
-    public Timestamp getModified() {
-        return modified;
+    //    public UUID getRefId() {
+//        return refId;
+//    }
+//
+//    public void setRefId(UUID refId) {
+//        this.refId = refId;
+//    }
+//
+//    public Integer getRefRev() {
+//        return refRev;
+//    }
+//
+//    public void setRefRev(Integer refRev) {
+//        this.refRev = refRev;
+//    }
+
+    public String getRefKind() {
+        return refKind;
     }
 
-    public void setModified(Timestamp modified) {
-        this.modified = modified;
+    public void setRefKind(String refKind) {
+        this.refKind = refKind;
+    }
+
+    public String getRefChangeKind() {
+        return refChangeKind;
+    }
+
+    public void setRefChangeKind(String refChangeKind) {
+        this.refChangeKind = refChangeKind;
+    }
+
+    public Timestamp getRefModified() {
+        return refModified;
+    }
+
+    public void setRefModified(Timestamp refModified) {
+        this.refModified = refModified;
     }
 
     public User getModifiedBy() {
@@ -57,48 +114,85 @@ public class ChangeFeed extends AbstractElementRef {
         this.modifiedBy = modifiedBy;
     }
 
-    public ActionKind getAction() {
-        return action;
+    public Short getRefAction() {
+        return refAction;
     }
 
-    public void setAction(ActionKind action) {
-        this.action = action;
+    public void setRefAction(Short refAction) {
+        this.refAction = refAction;
     }
 
-    public ChangeFeed(IElementRef ref, ActionKind action) {
-        super( ref.getElementKind(), ref.getElementId(), ref.getElementRevision() );
-        this.modifiedBy = SecurityContext.getUserDetails().getUser();
-        this.action = action;
+    public UUID getElementId() {
+        return elementId;
+    }
+
+    public void setElementId(UUID elementId) {
+        this.elementId = elementId;
+    }
+
+    public Integer getElementRevision() {
+        return elementRevision;
+    }
+
+    public void setElementRevision(Integer elementRevision) {
+        this.elementRevision = elementRevision;
+    }
+
+    public String getElementKind() {
+        return elementKind;
+    }
+
+    public void setElementKind(String elementKind) {
+        this.elementKind = elementKind;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ChangeFeed() {
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals( o )) return false;
         ChangeFeed that = (ChangeFeed) o;
-        return Objects.equal( id, that.id ) &&
-            Objects.equal( modified, that.modified ) &&
-            action == that.action;
+        return Objects.equal( changeFeedKey, that.changeFeedKey ) &&
+            Objects.equal( refKind, that.refKind ) &&
+            Objects.equal( refChangeKind, that.refChangeKind ) &&
+            Objects.equal( refModified, that.refModified ) &&
+            Objects.equal( modifiedBy, that.modifiedBy ) &&
+            Objects.equal( refAction, that.refAction ) &&
+            Objects.equal( elementId, that.elementId ) &&
+            Objects.equal( elementRevision, that.elementRevision ) &&
+            Objects.equal( elementKind, that.elementKind ) &&
+            Objects.equal( name, that.name );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( super.hashCode(), id, modified, action );
+        return Objects.hashCode( changeFeedKey, refKind, refChangeKind, refModified, modifiedBy, refAction, elementId, elementRevision, elementKind, name );
     }
 
     @Override
     public String toString() {
-        return "{\"ChangeFeed\": { "
-            + ", \"id\":\"" + id + "\""
-            + ", \"modified\":" + modified
-            + ", \"action\":\"" + action + "\""
-            + ", \"refId\":" + getElementId()
-            + ", \"refRevision\":\"" + getElementRevision() + "\""
-            + ", \"refKind\":" + getElementKind()
-            + ", \"name\":\"" + getName() + "\""
-            + ", \"version\":" + getVersion()
-            + "} }";
+        return "{\"ChangeFeed\":{"
+            + "\"changeFeedKey\":" + changeFeedKey
+            + ", \"refKind\":\"" + refKind + "\""
+            + ", \"refChangeKind\":\"" + refChangeKind + "\""
+            + ", \"refModified\":" + refModified
+            + ", \"modifiedBy\":" + modifiedBy
+            + ", \"refAction\":\"" + refAction + "\""
+            + ", \"elementId\":" + elementId
+            + ", \"elementRevision\":\"" + elementRevision + "\""
+            + ", \"elementKind\":\"" + elementKind + "\""
+            + ", \"name\":\"" + name + "\""
+            + "}}";
     }
 
 
