@@ -33,14 +33,6 @@ import java.util.stream.Collectors;
 @MappedSuperclass
 public abstract class AbstractEntityAudit extends AbstractEntity  implements IElementRefType {
 
-    public String getXmlLang() {
-        return xmlLang;
-    }
-
-    public void setXmlLang(String xmlLang) {
-        this.xmlLang = xmlLang;
-    }
-
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
      * First entry will always be CREATED.
@@ -241,6 +233,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         this.comments = comments;
     }
 
+    public String getXmlLang() {
+        return xmlLang;
+    }
+
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
+
 
     @PrePersist
     private void onInsert(){
@@ -307,6 +307,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
             beforeUpdate();
         } catch (Exception ex){
             LOG.error("AbstractEntityAudit::onUpdate",ex);
+
         }
     }
 

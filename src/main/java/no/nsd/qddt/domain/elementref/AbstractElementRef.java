@@ -140,9 +140,7 @@ public abstract class AbstractElementRef implements IElementRef {
             + ", \"elementId\":" + elementId
             + ", \"elementRevision\":\"" + elementRevision + "\""
             + ", \"name\":\"" + name + "\""
-            + ", \"major\":\"" + major + "\""
-            + ", \"minor\":\"" + minor + "\""
-            + ", \"versionLabel\":\"" + versionLabel + "\""
+            + ", \"version\":" + getVersion()
             + "}}";
     }
 

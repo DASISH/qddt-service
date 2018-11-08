@@ -122,10 +122,10 @@ public class Version implements Comparable<Version> {
     }
 
     @Override
-    public String
-    toString() {
-        return  String.format(versionFormat, major, minor, versionLabel).trim();
+    public String toString() {
+        return "{ \"Version\":\"" + major + "." + minor + "." + revision + "-" +versionLabel + "\" }";
     }
+
 
     @Override
     public int compareTo(Version o) {

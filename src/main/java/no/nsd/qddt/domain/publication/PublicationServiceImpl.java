@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
-import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+import no.nsd.qddt.domain.publicationstatus.PublicationStatus.Published;
 import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +15,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
-import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.StringTool.IsNullOrEmpty;
 import static no.nsd.qddt.utils.StringTool.likeify;
 /**
  * @author Stig Norland
@@ -37,6 +38,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Autowired
     ElementServiceLoader serviceLoader;
+
 
     @Autowired
     public PublicationServiceImpl(PublicationRepository repository
@@ -107,34 +109,29 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String publishedKind, Long statusId, Pageable pageable) {
+    public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String publicationStatus, String publishedKind, Pageable pageable) {
 
-        
-        List<String> published = new ArrayList<>();
-
-        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
-            published.add(PublicationStatus.Published.EXTERNAL_PUBLICATION.name());
-        }
-        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
-            published.add(PublicationStatus.Published.EXTERNAL_PUBLICATION.name());
-            published.add(PublicationStatus.Published.INTERNAL_PUBLICATION.name());
-        }
-        if (published.size() == 0 && (!IsNullOrTrimEmpty(publishedKind))) {
-            published.add(publishedKind);
-        }
-
-        LOG.info("findByNameOrPurposeAndStatus2 " + published.get(0) + " " + name +" "+  purpose);
-        if (name.isEmpty()  &&  purpose.isEmpty()) {
+        if (name.isEmpty()  &&  purpose.isEmpty() && publicationStatus.isEmpty()) {
             name = "%";
         }
+        if (IsNullOrEmpty(publicationStatus))
+            publicationStatus = "#";
 
-        if( published.size() > 0 )
-            return repository.findByQuery(published,likeify(name),likeify(purpose),defaultOrModifiedSort(pageable,"name"));
-        else if (statusId != null)
-            return repository.findByStatus_IdAndNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(statusId,likeify(name),likeify(purpose),
-                defaultSort(pageable,"name","modified"));
-        else
-            return repository.findByNameIgnoreCaseLikeOrPurposeIgnoreCaseLike(likeify(name), likeify(purpose), defaultSort(pageable,"name","modified"));
+        String statuses = Arrays.stream(publicationStatus.split( " ")).map( val -> val.trim() ).collect( Collectors.joining("|") );
+        statuses= "%(" + statuses + ")%";
+        Published published = Published.valueOf( publishedKind );
+
+        LOG.info("findByNameOrPurposeAndStatus2 " + published + " name: " + name + " purpose: " + purpose + " statuses: " +  statuses);
+
+        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
+            published = Published.EXTERNAL_PUBLICATION;
+        }
+        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
+            if (published.equals( Published.NOT_PUBLISHED ))
+            published = Published.INTERNAL_PUBLICATION;
+        }
+
+        return repository.findByQuery(likeify(name),likeify(purpose),statuses, published.name() ,defaultOrModifiedSort(pageable,"name"));
 
     }
 
@@ -163,7 +160,7 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     private Publication postLoadProcessing(Publication instance) {
-        if (instance.getStatus().getPublished().ordinal() > PublicationStatus.Published.NOT_PUBLISHED.ordinal())
+        if (instance.getStatus().getPublished().ordinal() > Published.NOT_PUBLISHED.ordinal())
             showPrivate = false;
 
         instance.getPublicationElements().forEach(e-> postLoadProcessing(e));
