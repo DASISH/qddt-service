@@ -36,7 +36,7 @@ public class ChangeFeed  {
     private  String refChangeKind;
 
     @Column(name = "ref_modified")
-    private Timestamp refModified;
+    private Timestamp modified;
 
     @ManyToOne
     @JoinColumn(name = "ref_modified_by",  updatable = false)
@@ -58,29 +58,15 @@ public class ChangeFeed  {
     @Column(name = "name")
     private String name;
 
-    public ChangeFeedKey getChangeFeedKey() {
-        return changeFeedKey;
+    public UUID getRefId() {
+        return changeFeedKey.refId;
     }
 
-    public void setChangeFeedKey(ChangeFeedKey changeFeedKey) {
-        this.changeFeedKey = changeFeedKey;
+
+    public Integer getRefRev() {
+        return changeFeedKey.refRev;
     }
 
-    //    public UUID getRefId() {
-//        return refId;
-//    }
-//
-//    public void setRefId(UUID refId) {
-//        this.refId = refId;
-//    }
-//
-//    public Integer getRefRev() {
-//        return refRev;
-//    }
-//
-//    public void setRefRev(Integer refRev) {
-//        this.refRev = refRev;
-//    }
 
     public String getRefKind() {
         return refKind;
@@ -98,12 +84,12 @@ public class ChangeFeed  {
         this.refChangeKind = refChangeKind;
     }
 
-    public Timestamp getRefModified() {
-        return refModified;
+    public Timestamp getModified() {
+        return modified;
     }
 
-    public void setRefModified(Timestamp refModified) {
-        this.refModified = refModified;
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
     }
 
     public User getModifiedBy() {
@@ -165,7 +151,7 @@ public class ChangeFeed  {
         return Objects.equal( changeFeedKey, that.changeFeedKey ) &&
             Objects.equal( refKind, that.refKind ) &&
             Objects.equal( refChangeKind, that.refChangeKind ) &&
-            Objects.equal( refModified, that.refModified ) &&
+            Objects.equal( modified, that.modified ) &&
             Objects.equal( modifiedBy, that.modifiedBy ) &&
             Objects.equal( refAction, that.refAction ) &&
             Objects.equal( elementId, that.elementId ) &&
@@ -176,7 +162,7 @@ public class ChangeFeed  {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( changeFeedKey, refKind, refChangeKind, refModified, modifiedBy, refAction, elementId, elementRevision, elementKind, name );
+        return Objects.hashCode( changeFeedKey, refKind, refChangeKind, modified, modifiedBy, refAction, elementId, elementRevision, elementKind, name );
     }
 
     @Override
@@ -185,7 +171,7 @@ public class ChangeFeed  {
             + "\"changeFeedKey\":" + changeFeedKey
             + ", \"refKind\":\"" + refKind + "\""
             + ", \"refChangeKind\":\"" + refChangeKind + "\""
-            + ", \"refModified\":" + refModified
+            + ", \"modified\":" + modified
             + ", \"modifiedBy\":" + modifiedBy
             + ", \"refAction\":\"" + refAction + "\""
             + ", \"elementId\":" + elementId
