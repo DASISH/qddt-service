@@ -14,13 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Stig Norland
  */
 @RestController
-@RequestMapping(value = "/changefeed")
+@RequestMapping(value = "/changelog")
 public class ChangeFeedController  extends AbstractController {
 
     private final ChangeFeedService service;
@@ -33,7 +34,7 @@ public class ChangeFeedController  extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ChangeFeed>> getBy(Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<ChangeFeed>> getBy(@RequestParam(value = "name", required = false) String name, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ChangeFeed> items = service.findAllPageable( pageable);
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
