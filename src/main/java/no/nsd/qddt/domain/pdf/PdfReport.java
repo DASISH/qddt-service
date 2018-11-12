@@ -8,7 +8,6 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -37,7 +36,9 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +73,7 @@ public class PdfReport extends PdfDocument {
                     .setHyphenation(new HyphenationConfig("en", "uk", 3, 3))
                     .setFont(font)
                     .setFontSize(11);
+//            addEventHandler( PdfDocumentEvent.END_PAGE, new TextFooterEventHandler(document));
         } catch (Exception ex) {
             LOG.error("PdfReport()",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
@@ -121,24 +123,26 @@ public class PdfReport extends PdfDocument {
                     .setAction(PdfAction.createGoTo(entry.getKey()));
             document.add(p);
         }
-        int tocPages = getNumberOfPages() - startToc;
+        int lastPage = getNumberOfPages();
+        int tocPages = lastPage - startToc;
         try {
-            for (int i = 1; i <= tocPages; i++) {
-                movePage(startToc+i, i );
+            for (int i = 0 ; i < tocPages; i++) {
+                movePage(getLastPage(), 1 );
             }
         } catch (Exception ex) {
             LOG.error("createToc",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
+//            StackTraceFilter.filter(ex.getStackTrace()).stream()
+//                .map(a->a.toString())
+//                .forEach(LOG::info);
         }
         // add page labels, only visible electronically, not on print.
         getPage(1)
                 .setPageLabel(PageLabelNumberingStyle.LOWERCASE_ROMAN_NUMERALS, null, 1);
         getPage(1 + tocPages)
-                .setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, "Page ", 1);
+                .setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, "Page ", tocPages+1);
 
-        setPageFooter( tocPages );
+//        setPageFooter( tocPages );
+
         close();
     }
 
@@ -170,7 +174,7 @@ public class PdfReport extends PdfDocument {
             .setTextAlignment(TextAlignment.RIGHT)
             .setBorder(Border.NO_BORDER));
         table.addCell(
-            new Cell().add(new Paragraph( element.getVersion().toString()))
+            new Cell().add(new Paragraph( element.getVersion().getMajor() + "." + element.getVersion().getMajor() + "-" +  element.getVersion().getVersionLabel() ))
             .setFontSize(9)
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder(Border.NO_BORDER));
@@ -251,7 +255,7 @@ public class PdfReport extends PdfDocument {
             for (IElement element : elements) {
                 para.add( (IBlockElement)element);
             }
-            para.setWidth(width100*0.8F).setPaddingBottom(15).setKeepTogether(true);
+            para.setWidth(width100*0.8F).setPaddingBottom(15).setKeepTogether(true).setKeepTogether(true);
             this.document.add( para );
         } catch (IOException e) {
             e.printStackTrace();
@@ -269,7 +273,6 @@ public class PdfReport extends PdfDocument {
         }
         return this.document.add(table);
     }
-
 
     public Document addPadding() {
         return document.add(new Paragraph().setPaddingBottom(30).setKeepTogether(false));
@@ -314,19 +317,21 @@ public class PdfReport extends PdfDocument {
 
     private void setPageFooter(int tocPages) {
         String[] pagelabels = getPageLabels();
-        for(int i = tocPages+1; i < getNumberOfPages(); i++  ) {
-            PdfPage page = getPage( i);
-            page.setRotation( 0 );
-            PdfCanvas canvas = new PdfCanvas(page);
-            Rectangle pageSize = page.getPageSize();
-            canvas.beginText();
-            canvas.setFontAndSize(font , 5);
-            canvas.moveText(0, (pageSize.getBottom() + document.getBottomMargin()) - (pageSize.getTop() + document.getTopMargin()) - 20)
-                .showText(pagelabels[i])
-                .endText()
-                .release();
-
-            LOG.info(pagelabels[i]);
+        float y =  document.getBottomMargin() + 10;
+        int pageCount = getNumberOfPages();
+        for(int i = tocPages +1 ; i <= pageCount; i++  ) {
+            PdfCanvas canvas = new PdfCanvas(this, i);
+            try {
+                canvas.beginText();
+                canvas.setFontAndSize(font,7);
+                canvas.moveText(500, y)
+                    .showText("XXX " + pagelabels[i])
+                    .endText()
+                    .release();
+            } catch (Exception e) {
+                e.printStackTrace();
+                canvas.release();
+            }
         }
     }
 

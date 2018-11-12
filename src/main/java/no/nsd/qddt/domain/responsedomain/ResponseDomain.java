@@ -267,7 +267,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
             .setBorder(new DottedBorder(ColorConstants.GRAY,1)))
             .addCell(new Cell()
                 .setTextAlignment(TextAlignment.RIGHT)
-                .add(new Paragraph("Version " +this.getVersion().toString())));
+                .add(new Paragraph( String.format("Version %s", getVersion()))));
         for (Category cat: getFlatManagedRepresentation(getManagedRepresentation())) {
             if (cat.getCategoryType() == CategoryType.CATEGORY ){
                 table.addCell(new Cell()
