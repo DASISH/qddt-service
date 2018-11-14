@@ -299,9 +299,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             if (counter.length()>0)
                 counter = counter+".";
             int i = 0;
-            for (Concept concept : getChildren()) {
-                concept.fillDoc(pdfReport, counter + String.valueOf(++i));
-                pdfReport.addPadding();
+            for (Concept concept : getChildren().stream()
+                .sorted( Comparator.comparing( AbstractEntityAudit::getName ))
+                .collect( Collectors.toList())) {
+                    concept.fillDoc(pdfReport, counter + String.valueOf(++i));
+                    pdfReport.addPadding();
             }
 
             if (getChildren().size() == 0)
