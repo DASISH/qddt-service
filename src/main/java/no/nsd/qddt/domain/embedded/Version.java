@@ -123,7 +123,13 @@ public class Version implements Comparable<Version> {
 
     @Override
     public String toString() {
-        return "{ \"Version\":\"" + major + "." + minor + "." + revision + "-" +versionLabel + "\" }";
+        return String.format( versionFormat, major, minor, versionLabel );
+    }
+
+
+    public String toJson() {
+        return String.format( "{\"Version\":{\"major\":\"%d\", \"minor\":\"%d\", \"versionLabel\":\"%s\"%s}}",
+            major, minor, versionLabel, (revision != null) ? ", \"revision\":\"" + revision + "\"" : "" );
     }
 
 

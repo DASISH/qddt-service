@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
@@ -153,8 +152,7 @@ public class Instrument extends AbstractEntityAudit  {
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {
-        pdfReport.getTheDocument().add(new Paragraph()
-                .add("Instrument..."));
+        pdfReport.addParagraph( "Instrument...");
     }
 
     @Override

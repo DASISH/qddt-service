@@ -276,11 +276,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             if (getComments().size() > 0) {
                 pdfReport.addheader2("Comments");
                 pdfReport.addComments(getComments());
-                pdfReport.addPadding();
+                // pdfReport.addPadding();
             }
 
             if (getConceptQuestionItems().size() > 0) {
-                pdfReport.addPadding();
+                // pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
                 for (ElementRefTyped<QuestionItem> item : getConceptQuestionItems()
                         .stream().map(c-> new ElementRefTyped<QuestionItem>(c) ).collect( Collectors.toList() )) {
@@ -289,7 +289,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                         pdfReport.addParagraph( item.getElement().getQuestion() );
                         if (item.getElement().getResponseDomain() != null)
                             item.getElement().getResponseDomain().fillDoc( pdfReport, "" );
-                        pdfReport.addPadding();
+                        // pdfReport.addPadding();
                     } else {
                         LOG.info( item.toString() );
                     }
@@ -303,11 +303,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                 .sorted( Comparator.comparing( AbstractEntityAudit::getName ))
                 .collect( Collectors.toList())) {
                     concept.fillDoc(pdfReport, counter + String.valueOf(++i));
-                    pdfReport.addPadding();
+                    // pdfReport.addPadding();
             }
 
             if (getChildren().size() == 0)
-                pdfReport.addPadding();
+                 pdfReport.addPadding();
 
         } catch (Exception ex) {
             LOG.error(ex.getMessage());

@@ -217,7 +217,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
 
         if (counter.length()>0)
             counter = counter+".";

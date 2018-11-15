@@ -24,8 +24,9 @@ public class PublicationStatus {
 
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue()
+    @Column(name = "id", updatable = false)
+//    @GenericGenerator(name = "sequence-generator",strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
+//    @SequenceGenerator(  )
     private Long id;
 
     @ManyToOne

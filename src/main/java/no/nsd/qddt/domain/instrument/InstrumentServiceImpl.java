@@ -64,7 +64,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public Instrument save(Instrument instance) {
         System.out.println("save instrument ");
 

@@ -5,7 +5,6 @@ import com.google.common.base.Objects;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.slf4j.Logger;
@@ -31,10 +30,9 @@ public abstract class AbstractEntity {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Id
-    @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
+    @GeneratedValue(generator ="UUID")
+    @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
+    @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
 

@@ -210,12 +210,12 @@ public class QuestionItem extends AbstractEntityAudit {
         }
         if (getResponseDomain() != null)
             this.getResponseDomain().fillDoc(pdfReport,"");
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
 
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
     }
 
     @Override

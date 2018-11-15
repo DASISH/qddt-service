@@ -163,7 +163,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
 
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
 
         int i = 0;
         for (Study study : getStudies()) {

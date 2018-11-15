@@ -264,7 +264,7 @@ public class QuestionConstruct  extends ControlConstruct {
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
 
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
     }
 
     @Override

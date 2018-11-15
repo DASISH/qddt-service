@@ -48,7 +48,7 @@ class InstructionServiceImpl implements InstructionService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')  and hasPermission(#instance,'AGENCY')")
     public Instruction save(Instruction instruction) {
         return instructionRepository.save(instruction);
     }

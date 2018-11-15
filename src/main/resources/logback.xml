@@ -1,9 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <property name="LOG_FILE" value="./log/logback.log"/>
     <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+
+    <!--<appender debug="true" name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
+        <!--&lt;!&ndash; encoders are  by default assigned the type-->
+             <!--ch.qos.logback.classic.encoder.PatternLayoutEncoder &ndash;&gt;-->
+        <!--<encoder>-->
+            <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+
+    <!--<root level="debug">-->
+        <!--<appender-ref ref="STDOUT" />-->
+    <!--</root>-->
+
+
+    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+    <!--<logger name="org.springframework" level="INFO"/>-->
+
+    <!--<appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+        <!--<destination>elk.nsd.no:5000</destination>-->
+        <!--<encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+            <!--<customFields>{ "QDDT": "service" }</customFields>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+
     <root level="INFO">
+        <!--<appender-ref ref="stash" />-->
         <appender-ref ref="FILE" />
     </root>
+
 </configuration>

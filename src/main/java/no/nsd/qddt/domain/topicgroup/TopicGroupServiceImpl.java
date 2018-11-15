@@ -74,7 +74,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')  and hasPermission(#instance,'AGENCY')")
     public TopicGroup save(TopicGroup instance) {
         try {
             instance = postLoadProcessing(

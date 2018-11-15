@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -23,10 +22,9 @@ import java.util.UUID;
 public class Authority {
 
     @Id
-    @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
+    @GeneratedValue(generator ="UUID")
+    @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
+    @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "name")

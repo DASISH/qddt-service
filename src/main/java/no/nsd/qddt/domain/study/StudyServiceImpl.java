@@ -62,7 +62,7 @@ class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')  and hasPermission(#instance,'AGENCY')")
     public Study save(Study instance) {
         return postLoadProcessing(
                 studyRepository.save(

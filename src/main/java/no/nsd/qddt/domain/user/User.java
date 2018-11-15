@@ -36,9 +36,9 @@ public class User  {
 
     @Id
     @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
+    @GeneratedValue(generator ="UUID")
+    @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
+    @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
     @JsonIgnore
@@ -109,6 +109,8 @@ public class User  {
 
 
     public UUID getId() {
+        if (id == null)
+            LOG.error( "user id is null " + this);
         return id;
     }
 
