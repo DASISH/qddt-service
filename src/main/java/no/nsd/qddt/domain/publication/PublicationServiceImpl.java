@@ -69,7 +69,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public Publication save(Publication instance) {
         try {
             return  postLoadProcessing(

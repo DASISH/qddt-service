@@ -62,7 +62,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')  and hasPermission(#instance,'AGENCY')")
     public SurveyProgram save(SurveyProgram instance) {
         try {
             return postLoadProcessing(

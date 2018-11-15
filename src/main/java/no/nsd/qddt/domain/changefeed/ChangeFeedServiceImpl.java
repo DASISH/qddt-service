@@ -44,7 +44,7 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
 
     @Override
     public <S extends ChangeFeed> S save(S instance) {
-        return repository.save( instance );
+        return  instance ;
     }
 
     @Override

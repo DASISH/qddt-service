@@ -105,7 +105,7 @@ public class Publication extends AbstractEntityAudit {
         pdfReport.addParagraph(getPurpose());
         pdfReport.addheader2("Publication status");
         pdfReport.addParagraph(getStatus().getLabel());
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
 
         int i=0;
         for (ElementRef element:getPublicationElements()) {

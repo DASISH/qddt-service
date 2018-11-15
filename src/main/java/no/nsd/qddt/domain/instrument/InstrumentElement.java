@@ -31,9 +31,9 @@ public class InstrumentElement  implements Cloneable {
 
     @Id
     @Type(type="pg-uuid")
-    @Column(name = "id")
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")
+    @GeneratedValue(generator ="UUID")
+    @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
+    @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
 
@@ -44,7 +44,7 @@ public class InstrumentElement  implements Cloneable {
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @OrderColumn(name="_idx")
+    @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
     @OrderBy(value = "_idx asc")
     @JoinColumn(name = "instrument_element_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")

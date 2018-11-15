@@ -6,10 +6,9 @@ package no.nsd.qddt.utils;
 public class StringTool {
 
     public static String CapString(String input){
-        if (input != null && input.length() >1)
-            return  input.substring(0,1).toUpperCase()  + input.substring(1);
-        else
-            return input;
+        return (input != null && input.length() > 1) ?
+            input.substring( 0, 1 ).toUpperCase() + input.substring( 1 )
+            : input;
     }
 
     public static boolean IsNullOrEmpty(String input){

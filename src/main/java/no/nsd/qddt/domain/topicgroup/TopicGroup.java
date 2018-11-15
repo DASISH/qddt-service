@@ -256,7 +256,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         if(getComments().size()>0) {
             pdfReport.addheader2("Comments");
             pdfReport.addComments(getComments());
-            pdfReport.addPadding();
+//            // pdfReport.addPadding();
         }
 
         if (getTopicQuestionItems().size() > 0) {
@@ -266,7 +266,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
                 pdfReport.addParagraph(item.getElement().getQuestion());
                 if (item.getElement().getResponseDomain() != null)
                     item.getElement().getResponseDomain().fillDoc(pdfReport, "");
-                pdfReport.addPadding();
+//                // pdfReport.addPadding();
             }
         }
 
