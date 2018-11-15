@@ -52,6 +52,7 @@ public class PdfReport extends PdfDocument {
 
     private PdfFont font;
     private PdfFont bold;
+    private PdfFont monoHeader;
     private final int sizeSmall = 9;
     private final int sizeNormal = 12;
     private final int sizeHeader2 = 14;
@@ -66,6 +67,7 @@ public class PdfReport extends PdfDocument {
 
             font = PdfFontFactory.createFont( StandardFonts.TIMES_ROMAN);
             bold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+            monoHeader = PdfFontFactory.createFont(StandardFonts.COURIER);
             getCatalog().setPageMode(PdfName.UseOutlines);
             document = new Document(this, PageSize.A4);
             width100 = PageSize.A4.getWidth() - document.getLeftMargin() - document.getRightMargin();
@@ -157,7 +159,7 @@ public class PdfReport extends PdfDocument {
         }
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}));
         table.addCell(
-            new Cell(4,3).add(new Paragraph(header).setMultipliedLeading( 1F ).setFontSize(23))
+            new Cell(4,3).add(new Paragraph(header).setMultipliedLeading( 1F ).setFontSize(23).setFont(monoHeader))
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder( Border.NO_BORDER)
             .add(new Paragraph("____________________________________________________")
