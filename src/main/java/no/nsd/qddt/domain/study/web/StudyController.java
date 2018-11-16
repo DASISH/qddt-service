@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -69,8 +68,8 @@ public class StudyController extends AbstractController {
 
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
-    public ByteArrayOutputStream getPdf(@PathVariable("id") UUID id) {
-        return service.findOne(id).makePdf();
+    public byte[] getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf().toByteArray();
     }
 
     @ResponseStatus(value = HttpStatus.OK)

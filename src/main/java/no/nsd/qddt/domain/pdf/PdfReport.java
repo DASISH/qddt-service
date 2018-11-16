@@ -63,7 +63,7 @@ public class PdfReport extends PdfDocument {
     private final Style cellStyleRight =  new Style().setFontSize(sizeSmall).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER);
 
     private Document document;
-    private Document tocDoc;
+//    private PdfDocument pdfContent;
 
     public PdfReport(ByteArrayOutputStream outputStream) {
         super(new PdfWriter( outputStream).setSmartMode(true));
@@ -72,6 +72,11 @@ public class PdfReport extends PdfDocument {
             font = PdfFontFactory.createFont( StandardFonts.TIMES_ROMAN);
             bold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
             chapterHeading = PdfFontFactory.createFont(StandardFonts.COURIER);
+
+//            pdfContent = new PdfDocument( new PdfWriter(dest) )
+
+            initializeOutlines();
+
             getCatalog().setPageMode(PdfName.UseOutlines);
             document = new Document(this, PageSize.A4);
             width100 = PageSize.A4.getWidth() - document.getLeftMargin() - document.getRightMargin();
@@ -143,7 +148,7 @@ public class PdfReport extends PdfDocument {
         getPage(1).setPageLabel(PageLabelNumberingStyle.LOWERCASE_ROMAN_NUMERALS, null, 1);
         getPage(tocPages+1).setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, "Page ", 1);
         getPage(startToc+1).setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, "Page ", startToc-tocPages+1);
-//        document.flush();
+        document.flush();
         close();
     }
 

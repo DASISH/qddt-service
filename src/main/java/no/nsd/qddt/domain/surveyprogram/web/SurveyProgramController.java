@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,8 +65,8 @@ public class SurveyProgramController {
 
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
-    public ByteArrayOutputStream getPdf(@PathVariable("id") UUID id) {
-        return service.findOne(id).makePdf();
+    public byte[] getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf().toByteArray();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
