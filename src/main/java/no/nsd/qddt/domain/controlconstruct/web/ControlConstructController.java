@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -144,8 +145,8 @@ public class ControlConstructController extends AbstractController {
 
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
-    public byte[] getPdf(@PathVariable("id") UUID id) {
-        return service.findOne(id).makePdf().toByteArray();
+    public ByteArrayOutputStream getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf();
     }
 
     @ResponseStatus(value = HttpStatus.OK)

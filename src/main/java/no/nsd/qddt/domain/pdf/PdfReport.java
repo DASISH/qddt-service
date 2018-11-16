@@ -14,6 +14,7 @@ import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.kernel.pdf.navigation.PdfDestination;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.hyphenation.HyphenationConfig;
@@ -52,20 +53,25 @@ public class PdfReport extends PdfDocument {
 
     private PdfFont font;
     private PdfFont bold;
+    private PdfFont chapterHeading;
     private final int sizeSmall = 9;
     private final int sizeNormal = 12;
     private final int sizeHeader2 = 14;
     private final int sizeHeader1 = 18;
-    
-    
+
+    private final Style cellStyleLeft =  new Style().setFontSize(sizeSmall).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER);
+    private final Style cellStyleRight =  new Style().setFontSize(sizeSmall).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER);
+
     private Document document;
+    private Document tocDoc;
 
     public PdfReport(ByteArrayOutputStream outputStream) {
-        super(new PdfWriter( outputStream));
+        super(new PdfWriter( outputStream).setSmartMode(true));
         try {
 
             font = PdfFontFactory.createFont( StandardFonts.TIMES_ROMAN);
             bold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+            chapterHeading = PdfFontFactory.createFont(StandardFonts.COURIER);
             getCatalog().setPageMode(PdfName.UseOutlines);
             document = new Document(this, PageSize.A4);
             width100 = PageSize.A4.getWidth() - document.getLeftMargin() - document.getRightMargin();
@@ -137,7 +143,7 @@ public class PdfReport extends PdfDocument {
         getPage(1).setPageLabel(PageLabelNumberingStyle.LOWERCASE_ROMAN_NUMERALS, null, 1);
         getPage(tocPages+1).setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, "Page ", 1);
         getPage(startToc+1).setPageLabel(PageLabelNumberingStyle.DECIMAL_ARABIC_NUMERALS, "Page ", startToc-tocPages+1);
-
+//        document.flush();
         close();
     }
 
@@ -157,52 +163,20 @@ public class PdfReport extends PdfDocument {
         }
         Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}));
         table.addCell(
-            new Cell(4,3).add(new Paragraph(header).setMultipliedLeading( 1F ).setFontSize(23))
+            new Cell(4,3).add(new Paragraph(header).setMultipliedLeading( 1F ).setFontSize(23).setFont( chapterHeading ))
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder( Border.NO_BORDER)
             .add(new Paragraph("____________________________________________________")
             .setFontColor(ColorConstants.BLUE)))
-        .addCell(
-            new Cell().add(new Paragraph( "Version"))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.RIGHT)
-            .setBorder(Border.NO_BORDER))
-        .addCell(
-            new Cell().add(new Paragraph( element.getVersion().toString()))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.LEFT)
-            .setBorder(Border.NO_BORDER))
-        .addCell(
-            new Cell().add(new Paragraph("Last Saved"))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.RIGHT)
-            .setBorder(Border.NO_BORDER))
-        .addCell(
-            new Cell().add(new Paragraph(String.format("%1$TF %1$TT",  element.getModified())))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.LEFT)
-            .setBorder(Border.NO_BORDER))
-        .addCell(
-            new Cell().add(new Paragraph("Last Saved By"))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.RIGHT)
-            .setBorder(Border.NO_BORDER))
-        .addCell(
-            new Cell().add(new Paragraph(StringTool.CapString( element.getModifiedBy().getUsername())))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.LEFT)
-            .setBorder(Border.NO_BORDER))
-        .addCell(
-            new Cell().add(new Paragraph("Agency"))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.RIGHT)
-            .setBorder(Border.NO_BORDER))
-        .addCell(
-            new Cell().add(new Paragraph(element.getAgency().getName()))
-            .setFontSize(sizeSmall)
-            .setTextAlignment(TextAlignment.LEFT)
-            .setBorder(Border.NO_BORDER))
-        .setKeepTogether( true );
+        .addCell(new Cell().add(new Paragraph( "Version")).addStyle( cellStyleRight ) )
+        .addCell(new Cell().add(new Paragraph( element.getVersion().toString())).addStyle( cellStyleLeft ))
+        .addCell(new Cell().add(new Paragraph("Last Saved")).addStyle( cellStyleRight ))
+        .addCell(new Cell().add(new Paragraph(String.format("%1$TF %1$TT",  element.getModified()))).addStyle( cellStyleLeft ))
+        .addCell(new Cell().add(new Paragraph("Last Saved By")).addStyle( cellStyleRight ))
+        .addCell(new Cell().add(new Paragraph(StringTool.CapString( element.getModifiedBy().getUsername()))).addStyle( cellStyleLeft ))
+        .addCell(new Cell().add(new Paragraph("Agency")).addStyle( cellStyleRight ))
+        .addCell(new Cell().add(new Paragraph(element.getAgency().getName())).addStyle( cellStyleLeft ))
+        .setKeepTogether( true ).setKeepWithNext(true);
         document.add(table);
 
         outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());

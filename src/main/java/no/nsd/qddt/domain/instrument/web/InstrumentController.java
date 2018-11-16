@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -81,8 +82,8 @@ public class InstrumentController  {
 
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
-    public byte[] getPdf(@PathVariable("id") UUID id) {
-        return service.findOne(id).makePdf().toByteArray();
+    public ByteArrayOutputStream getPdf(@PathVariable("id") UUID id) {
+        return service.findOne(id).makePdf();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
