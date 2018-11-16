@@ -37,7 +37,7 @@ public class TextFooterEventHandler implements IEventHandler {
             labels = pdfDocument.getPageLabels();
         }
 
-//        if ( labels[i-1].contains( "Page" )) {
+        if ( labels[i-1].contains( "Page" )) {
             PdfCanvas canvas = new PdfCanvas( pdfDoc.getPage() );
             canvas.beginText();
             try {
@@ -50,7 +50,7 @@ public class TextFooterEventHandler implements IEventHandler {
                 e.printStackTrace();
                 canvas.release();
             }
-//        }
+        }
     }
 
 }
