@@ -16,6 +16,9 @@ import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -72,6 +75,10 @@ public class ResponseDomain extends AbstractEntityAudit  {
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
 
+    @Type(type="pg-uuid")
+    @Column(name = "schema_id", unique = true )
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")    
     private UUID schemaId;
     
     @JsonIgnore

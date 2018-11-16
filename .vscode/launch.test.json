@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "QDDT",
+                "projectName": "QDDT",
+                "workingDirectory": "c:\\Users\\Stig\\Projects\\qddt-service",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "QDDT",
+                "projectName": "QDDT",
+                "workingDirectory": "c:\\Users\\Stig\\Projects\\qddt-service",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}
