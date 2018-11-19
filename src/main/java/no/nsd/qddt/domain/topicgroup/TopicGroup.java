@@ -65,9 +65,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private UUID studyId;
 
     @JsonIgnore
-    @OrderBy(value = "name asc")
+    @OrderBy("_idx desc")
+    @OrderColumn(name="_idx")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })
-    private Set<Concept> concepts = new HashSet<>(0);
+    private List<Concept> concepts = new ArrayList<>(0);
 
 
     @OrderColumn(name="topicgroup_idx")
@@ -130,10 +131,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         return concept;
     }
 
-    public Set<Concept> getConcepts() {
+    public List<Concept> getConcepts() {
         return concepts;
     }
-    public void setConcepts(Set<Concept> concepts) {
+    public void setConcepts(List<Concept> concepts) {
         this.concepts = concepts;
     }
 
