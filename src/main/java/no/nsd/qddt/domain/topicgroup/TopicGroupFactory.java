@@ -29,7 +29,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 
       dest.setConcepts(source.getConcepts().stream()
           .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
-          .collect(Collectors.toSet()));
+          .collect(Collectors.toList()));
 
       dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );
 

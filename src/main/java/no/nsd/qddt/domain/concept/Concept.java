@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements IArchived {
 
-
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
     @JoinColumn(name = "concept_id",updatable = false,insertable = false)
@@ -43,10 +42,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @OrderBy(value = "name asc")
+    @IndexColumn(name="_idx")
     @JoinColumn(name = "concept_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly")
-    private Set<Concept> children = new HashSet<>(0);
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "_idx")
+    private List<Concept> children = new ArrayList<>(0);
 
 
     @JsonBackReference(value = "topicGroupRef")
@@ -60,8 +59,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @OrderColumn(name="concept_idx")
     @OrderBy("concept_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
-        joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
+    @CollectionTable(name = "CONCEPT_QUESTION_ITEM", joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
     private List<ElementRef>  conceptQuestionItems = new ArrayList<>();
 
     private String label;
@@ -128,11 +126,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
 
-    public Set<Concept> getChildren() {
+    public List<Concept> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<Concept> children) {
+    public void setChildren(List<Concept> children) {
         this.children = children;
     }
 

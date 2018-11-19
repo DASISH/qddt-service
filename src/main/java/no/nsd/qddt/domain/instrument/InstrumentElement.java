@@ -53,7 +53,7 @@ public class InstrumentElement  implements Cloneable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
         joinColumns = @JoinColumn(name="instrument_element_id", referencedColumnName = "id"))
-    private Set<InstrumentParameter> parameters = new HashSet();
+    private Set<InstrumentParameter> parameters = new HashSet<>();
 
 
     @Embedded
