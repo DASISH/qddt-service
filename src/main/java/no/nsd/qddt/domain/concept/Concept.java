@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
@@ -15,7 +16,10 @@ import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -35,16 +39,23 @@ import java.util.stream.Collectors;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements IArchived {
 
+
+
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
     @JoinColumn(name = "concept_id",updatable = false,insertable = false)
     private Concept parentReferenceOnly;
 
 
+    @JsonIgnore
+    @Column(name = "_idx" ,insertable = false, updatable = false)
+    private Integer index;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @IndexColumn(name="_idx")
+    @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
+//    @OrderBy(value = "_idx asc")
     @JoinColumn(name = "concept_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "_idx")
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
     private List<Concept> children = new ArrayList<>(0);
 
 
@@ -134,10 +145,12 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         this.children = children;
     }
 
-    public void addChildren(Concept concept){
+    public void addChildren(Integer index, Concept concept){
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
-        this.children.add(concept);
+
+        this.children.add((index!=null)? index : this.children.size() , concept);
+
         this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
     }
 

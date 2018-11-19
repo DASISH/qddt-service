@@ -61,6 +61,7 @@ public class ConceptController extends AbstractController {
             Concept concept = service.findOne(conceptId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
+
             concept.addQuestionItem(questionItemId, questionItemRevision.intValue()  );
 
             return concept2Json(service.save(concept));
@@ -96,13 +97,20 @@ public class ConceptController extends AbstractController {
                 service.copy( sourceId, sourceRev, parentId ) ) );
     }
 
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/move/{sourceId}/{targetId}/{location}", method = RequestMethod.POST)
+    public ConceptJsonEdit moveTo(@PathVariable("sourceId") UUID sourceId,
+                                  @PathVariable("targetId") UUID targetId,
+                                  @PathVariable("location") Integer index)  {
+        return concept2Json(service.moveTo(sourceId, targetId, index));
+    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
     public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("uuid") UUID parentId) {
 
         Concept parent = service.findOne(parentId);
-        parent.addChildren(concept);
+        parent.addChildren(null,concept);
         ConceptJsonEdit parentJson = concept2Json(service.save(parent));
 
         return parentJson.getChildren().stream()

@@ -21,4 +21,6 @@ public interface ConceptService  extends BaseArchivedService<Concept> {
     List<Concept> findByQuestionItem(UUID id, Integer rev);
 
     Concept copy(UUID id, Integer rev, UUID parentId);
+
+    Concept moveTo(UUID sourceId, UUID parentId, Integer index);
 }

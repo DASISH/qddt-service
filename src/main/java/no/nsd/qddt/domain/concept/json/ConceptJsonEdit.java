@@ -29,7 +29,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
-    private Set<ConceptJsonEdit> children = new HashSet<>();
+    private List<ConceptJsonEdit> children = new ArrayList<>();
 
     private boolean isArchived;
 
@@ -44,7 +44,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         try{
             setId(concept.getId());
             setName(concept.getName());
-            setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toSet()));
+            setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toList()));
             setComments(concept.getComments());
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
@@ -75,11 +75,11 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         this.name = name;
     }
 
-    public Set<ConceptJsonEdit> getChildren() {
+    public List<ConceptJsonEdit> getChildren() {
         return children;
     }
 
-    private void setChildren(Set<ConceptJsonEdit> children) {
+    private void setChildren(List<ConceptJsonEdit> children) {
         this.children = children;
     }
 

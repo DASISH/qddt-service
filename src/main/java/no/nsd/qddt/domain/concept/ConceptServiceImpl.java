@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -99,17 +98,26 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Concept copy(UUID id, Integer rev, UUID parentId) {
-//        EntityManager manager =  emf.createEntityManager();
 
         Concept source = auditService.findRevision(id,rev).getEntity();
         Concept target = new ConceptFactory().copy(source, rev);
         TopicGroup tg = tgService.findOne( parentId );
         tg.addConcept( target );
-//        manager.detach(target);
-//        target.setParentU(parentId);
-//        manager.merge(target);
-        return conceptRepository.save(target);
 
+        return conceptRepository.save(target);
+    }
+
+    @Override
+    @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY')")
+    public Concept moveTo(UUID sourceId, UUID parentId, Integer index) {
+        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
+
+        Concept target = conceptRepository.findById( parentId ).orElseThrow(   () -> new ResourceNotFoundException(parentId, Concept.class));
+
+        target.addChildren( index, source );
+
+        return  conceptRepository.save( target );
     }
 
 
@@ -136,7 +144,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findAllPageable(Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name ASC"));
+        Page<Concept> pages = conceptRepository.findAll(pageable);
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -144,8 +152,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
-                defaultSort(pageable,"name ASC"));
+        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNullOrderByIndex(id,pageable);
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -156,7 +163,7 @@ class ConceptServiceImpl implements ConceptService {
         if (name.isEmpty()  &&  description.isEmpty()) {
             name = "%";
         }
-        Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),defaultSort(pageable,"name ASC"));
+        Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),pageable);
         pages.map(this::postLoadProcessing);
         return pages;
     }

@@ -18,7 +18,7 @@ interface ConceptRepository extends BaseArchivedRepository<Concept,UUID> {
 
     Page<Concept> findAll(Pageable pageable);
 
-    Page<Concept> findByTopicGroupIdAndNameIsNotNull(UUID id, Pageable pageable);
+    Page<Concept> findByTopicGroupIdAndNameIsNotNullOrderByIndex(UUID id, Pageable pageable);
 
     @Query(value = "SELECT c.* FROM concept c " +
         "WHERE (  c.change_kind !='BASED_ON' and (c.name ILIKE :name or c.description ILIKE :description) ) "
@@ -26,8 +26,7 @@ interface ConceptRepository extends BaseArchivedRepository<Concept,UUID> {
         ,countQuery = "SELECT count(c.*) FROM concept c " +
         "WHERE (  c.change_kind !='BASED_ON' and (c.name ILIKE :name or c.description ILIKE :description) ) "
         ,nativeQuery = true)
-    Page<Concept> findByQuery(@Param("name")String name, @Param("description")String description,Pageable pageable);
-    
+    Page<Concept> findByQuery(@Param("name")String name, @Param("description")String description, Pageable pageable);
 
     List<Concept> findByConceptQuestionItemsElementId(UUID id);
 }
