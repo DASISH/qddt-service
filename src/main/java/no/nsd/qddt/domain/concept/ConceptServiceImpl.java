@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
@@ -109,15 +110,17 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY')")
-    public Concept moveTo(UUID sourceId, UUID parentId, Integer index) {
-        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or ( hasAnyAuthority('ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY'))")
+    public <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId) {
+        return  conceptRepository.moveTo( parentId, index, sourceId );
 
-        Concept target = conceptRepository.findById( parentId ).orElseThrow(   () -> new ResourceNotFoundException(parentId, Concept.class));
-
-        target.addChildren( index, source );
-
-        return  conceptRepository.save( target );
+//        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
+//
+//        S target = (S) conceptRepository.findById( parentId ).orElseGet( tgService.findOne( parentId )  );
+//
+//        if ( ElementKind.valueOf( target.getClassKind()) == ElementKind.CONCEPT) {
+//            return  conceptRepository.moveTo( target.getId(), index, source.getId() );
+//        }
     }
 
 

@@ -49,7 +49,6 @@ public class ConceptController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ConceptJsonEdit update(@RequestBody Concept concept) {
-        LOG.debug(concept.toString());
         return concept2Json(service.save(concept));
     }
 
@@ -98,11 +97,11 @@ public class ConceptController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/move/{sourceId}/{targetId}/{location}", method = RequestMethod.POST)
-    public ConceptJsonEdit moveTo(@PathVariable("sourceId") UUID sourceId,
-                                  @PathVariable("targetId") UUID targetId,
-                                  @PathVariable("location") Integer index)  {
-        return concept2Json(service.moveTo(sourceId, targetId, index));
+    @RequestMapping(value = "/move/{targetId}/{index}/{sourceId}", method = RequestMethod.POST)
+    public ConceptJsonEdit moveTo(@PathVariable("targetId") UUID targetId,
+                                  @PathVariable("index") Integer index,
+                                  @PathVariable("sourceId") UUID sourceId)  {
+        return concept2Json(service.moveTo(targetId, index, sourceId));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)

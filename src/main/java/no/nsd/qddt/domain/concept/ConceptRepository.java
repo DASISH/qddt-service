@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.BaseArchivedRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,4 +30,6 @@ interface ConceptRepository extends BaseArchivedRepository<Concept,UUID> {
     Page<Concept> findByQuery(@Param("name")String name, @Param("description")String description, Pageable pageable);
 
     List<Concept> findByConceptQuestionItemsElementId(UUID id);
+
+    <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId);
 }

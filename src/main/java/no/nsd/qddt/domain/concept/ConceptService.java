@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.BaseArchivedService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,5 +23,5 @@ public interface ConceptService  extends BaseArchivedService<Concept> {
 
     Concept copy(UUID id, Integer rev, UUID parentId);
 
-    Concept moveTo(UUID sourceId, UUID parentId, Integer index);
+    <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId);
 }
