@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
@@ -82,6 +81,18 @@ class ConceptServiceImpl implements ConceptService {
         return postLoadProcessing(instance);
     }
 
+
+    @Override
+    @Transactional()
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+    public List<Concept> saveAll(Iterable<Concept> entities) {
+        entities.forEach( this::prePersistProcessing );
+        entities = conceptRepository.save(  entities );
+        entities.forEach( this::postLoadProcessing );
+        return (List<Concept>) entities;
+    }
+
+
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public List<Concept> save(List<Concept> instances) {
@@ -108,20 +119,21 @@ class ConceptServiceImpl implements ConceptService {
         return conceptRepository.save(target);
     }
 
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or ( hasAnyAuthority('ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY'))")
-    public <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId) {
-        return  conceptRepository.moveTo( parentId, index, sourceId );
 
-//        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
+//    @Override
+//    @Transactional()
+//    @PreAuthorize("( hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY'))")
+//    public <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId) {
+//        return  conceptRepository.moveTo( parentId, index, sourceId );
 //
-//        S target = (S) conceptRepository.findById( parentId ).orElseGet( tgService.findOne( parentId )  );
-//
-//        if ( ElementKind.valueOf( target.getClassKind()) == ElementKind.CONCEPT) {
-//            return  conceptRepository.moveTo( target.getId(), index, source.getId() );
-//        }
-    }
+////        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
+////
+////        S target = (S) conceptRepository.findById( parentId ).orElseGet( tgService.findOne( parentId )  );
+////
+////        if ( ElementKind.valueOf( target.getClassKind()) == ElementKind.CONCEPT) {
+////            return  conceptRepository.moveTo( target.getId(), index, source.getId() );
+////        }
+//    }
 
 
     @Override
@@ -155,7 +167,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNullOrderByIndex(id,pageable);
+        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,pageable);
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -226,7 +238,7 @@ class ConceptServiceImpl implements ConceptService {
                 )
             );
         } catch (Exception ex){
-            LOG.error("ConceptService.postLoadProcessing",ex);
+            LOG.error("postLoadProcessing-> " +  ((instance != null)? instance.getId(): " IS NULL ") ,ex);
         }
 
         instance.getChildren().forEach(this::postLoadProcessing);

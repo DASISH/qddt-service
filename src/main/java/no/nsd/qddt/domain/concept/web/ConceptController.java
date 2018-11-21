@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -51,6 +52,16 @@ public class ConceptController extends AbstractController {
     public ConceptJsonEdit update(@RequestBody Concept concept) {
         return concept2Json(service.save(concept));
     }
+
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public List<ConceptJsonEdit> updateAll(@RequestBody List<Concept> concepts) {
+        return  service.saveAll( concepts).stream()
+            .map( this::concept2Json )
+            .collect( Collectors.toList());
+    }
+
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "conceptid", "questionitemid","questionitemrevision"})
@@ -95,14 +106,14 @@ public class ConceptController extends AbstractController {
             service.save(
                 service.copy( sourceId, sourceRev, parentId ) ) );
     }
-
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/move/{targetId}/{index}/{sourceId}", method = RequestMethod.POST)
-    public ConceptJsonEdit moveTo(@PathVariable("targetId") UUID targetId,
-                                  @PathVariable("index") Integer index,
-                                  @PathVariable("sourceId") UUID sourceId)  {
-        return concept2Json(service.moveTo(targetId, index, sourceId));
-    }
+//
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @RequestMapping(value = "/move/{targetId}/{index}/{sourceId}", method = RequestMethod.POST)
+//    public ConceptJsonEdit moveTo(@PathVariable("targetId") UUID targetId,
+//                                  @PathVariable("index") Integer index,
+//                                  @PathVariable("sourceId") UUID sourceId)  {
+//        return concept2Json(service.moveTo(targetId, index, sourceId));
+//    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
@@ -119,7 +130,7 @@ public class ConceptController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{uuid}", method = RequestMethod.POST)
     public ConceptJsonEdit createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
 
         topicGroupService.findOne(topicId).addConcept(concept);

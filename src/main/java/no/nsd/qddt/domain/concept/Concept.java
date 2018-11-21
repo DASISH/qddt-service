@@ -39,8 +39,6 @@ import java.util.stream.Collectors;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements IArchived {
 
-
-
     @JsonBackReference(value = "parentRef")
     @ManyToOne()
     @JoinColumn(name = "concept_id",updatable = false,insertable = false)
@@ -53,7 +51,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
-//    @OrderBy(value = "_idx asc")
+    @OrderBy(value = "_idx asc")
     @JoinColumn(name = "concept_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
     private List<Concept> children = new ArrayList<>(0);
@@ -71,7 +69,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @OrderBy("concept_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM", joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
-    private List<ElementRef>  conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef>  conceptQuestionItems = new ArrayList<>(0);
 
     private String label;
 
@@ -138,6 +136,9 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     public List<Concept> getChildren() {
+        if (children == null) {
+            LOG.error( "ConceptID:"  +getId() +  " -> getChildren is null" );
+        }
         return children;
     }
 
