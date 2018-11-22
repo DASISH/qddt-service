@@ -51,7 +51,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
-    @OrderBy(value = "_idx asc")
     @JoinColumn(name = "concept_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
     private List<Concept> children = new ArrayList<>(0);
@@ -66,7 +65,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     private UUID topicGroupId;
 
     @OrderColumn(name="concept_idx")
-    @OrderBy("concept_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM", joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
     private List<ElementRef>  conceptQuestionItems = new ArrayList<>(0);

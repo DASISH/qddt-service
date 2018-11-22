@@ -65,14 +65,12 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private UUID studyId;
 
     @JsonIgnore
-    @OrderBy("_idx asc")
     @OrderColumn(name="_idx")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })
     private List<Concept> concepts = new ArrayList<>(0);
 
 
     @OrderColumn(name="topicgroup_idx")
-    @OrderBy("topicgroup_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
     private List<ElementRef>  topicQuestionItems = new ArrayList<>();
@@ -86,7 +84,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Author> authors = new HashSet<>();
 
     @OrderColumn(name="owner_idx")
-    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})

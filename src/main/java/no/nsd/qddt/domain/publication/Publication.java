@@ -29,7 +29,6 @@ public class Publication extends AbstractEntityAudit {
     private PublicationStatus status;
 
     @OrderColumn(name="publication_idx")
-    @OrderBy("publication_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PUBLICATION_ELEMENT",
         joinColumns = @JoinColumn(name="publication_id", referencedColumnName = "id"))

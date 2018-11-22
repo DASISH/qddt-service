@@ -31,7 +31,6 @@ public class Instrument extends AbstractEntityAudit  {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")
-    @OrderBy("_idx ASC")
     @JoinColumn(name = "instrument_id")
     private List<InstrumentElement>  sequence = new ArrayList<>();
 

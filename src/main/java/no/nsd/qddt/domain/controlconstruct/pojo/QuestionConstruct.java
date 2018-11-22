@@ -65,7 +65,6 @@ public class QuestionConstruct  extends ControlConstruct {
 
     @JsonIgnore
     @OrderColumn(name="instruction_idx")
-    @OrderBy("instruction_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
         joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
