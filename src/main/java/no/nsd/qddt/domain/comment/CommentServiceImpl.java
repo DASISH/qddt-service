@@ -49,7 +49,7 @@ class CommentServiceImpl  implements CommentService  {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')  and hasPermission(#instance,'OWNER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'OWNER')")
     public Comment save(Comment instance) {
         Comment retval = commentRepository.saveAndFlush(instance);
         commentRepository.indexChildren( retval.getOwnerId() );

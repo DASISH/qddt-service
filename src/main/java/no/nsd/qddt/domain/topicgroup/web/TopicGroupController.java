@@ -82,15 +82,15 @@ public class TopicGroupController extends AbstractController {
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroupJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
 
-        if(instance.getStudy() == null ){
-            studyService.findOne(studyId).addTopicGroup(instance);
-        }
         try {
-            instance = service.save(instance);
-        }catch (Exception ex){
+            return new TopicGroupJson(
+                service.save(studyService.findOne(studyId)
+                .addTopicGroup(instance.getIndex(), instance)));
+        } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
+            return null;
         }
-        return new TopicGroupJson(instance);
+
     }
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
@@ -110,7 +110,7 @@ public class TopicGroupController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/by-parent/{uuid}", method = RequestMethod.GET)
     public List<TopicGroupJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
             return service.findByStudyId(studyId).stream()
@@ -140,8 +140,8 @@ public class TopicGroupController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
-    public TopicGroupJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "parentId", "questionitemid","questionitemrevision"})
+    public TopicGroupJson addQuestionItem(@RequestParam("parentId") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             TopicGroup topicGroup = service.findOne(topicId);
@@ -161,8 +161,8 @@ public class TopicGroupController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
-    public TopicGroupJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "parentId", "questionitemid","questionitemrevision"})
+    public TopicGroupJson removeQuestionItem(@RequestParam("parentId") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                           @RequestParam("questionitemrevision") Number revision) {
         TopicGroup topicGroup =null;
         try{

@@ -64,18 +64,21 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @Column(name = "study_id", insertable = false, updatable = false)
     private UUID studyId;
 
+    @Column(name = "study_idx" ,insertable = false, updatable = false)
+    private Integer index;
+
+
     @JsonIgnore
-    @OrderBy(value = "name asc")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })
-    private Set<Concept> concepts = new HashSet<>(0);
+    @OrderColumn(name="_idx")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
+//    @AuditMappedBy(mappedBy = "id", positionMappedBy = "index")
+    private List<Concept> concepts = new ArrayList<>(0);
 
 
     @OrderColumn(name="topicgroup_idx")
-    @OrderBy("topicgroup_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
     private List<ElementRef>  topicQuestionItems = new ArrayList<>();
-
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -85,11 +88,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Author> authors = new HashSet<>();
 
     @OrderColumn(name="owner_idx")
-    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
-        private List<OtherMaterial> otherMaterials = new ArrayList<>();
+    private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
 
     private boolean isArchived;
@@ -122,18 +124,22 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         this.study = study;
     }
 
+    public Integer getIndex() {
+        return index;
+    }
 
-    public Concept addConcept(Concept concept){
-        concept.setTopicGroup(this);
-        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-        setChangeComment("Concept ["+ concept.getName() +"] added");
+
+    public Concept addConcept(Integer index, Concept concept){
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        setChangeComment("Concept added");
+        this.concepts.add((index!=null)? index : this.concepts.size() , concept);
         return concept;
     }
 
-    public Set<Concept> getConcepts() {
+    public List<Concept> getConcepts() {
         return concepts;
     }
-    public void setConcepts(Set<Concept> concepts) {
+    public void setConcepts(List<Concept> concepts) {
         this.concepts = concepts;
     }
 
@@ -274,7 +280,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
             counter = counter+".";
         int i = 0;
         for (Concept concept : getConcepts()) {
-            concept.fillDoc(pdfReport ,counter+ String.valueOf(++i));
+            concept.fillDoc(pdfReport ,counter+ ++i );
         }
     }
 

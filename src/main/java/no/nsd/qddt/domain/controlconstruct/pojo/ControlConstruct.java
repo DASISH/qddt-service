@@ -33,7 +33,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String controlConstructKind;
 
     @OrderColumn(name="owner_idx")
-    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_OTHER_MATERIAL", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
     private List<OtherMaterial> otherMaterials = new ArrayList<>();

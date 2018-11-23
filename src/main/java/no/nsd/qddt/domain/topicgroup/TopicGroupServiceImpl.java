@@ -106,7 +106,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 //        EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev ).getEntity();
         TopicGroup target = new TopicGroupFactory().copy(source, rev);
-        studyService.findOne( parentId ).addTopicGroup( target );
+        studyService.findOne( parentId ).addTopicGroup( target.getIndex(), target );
 //        entityManager.detach( target );
 //        target.setParentU(parentId);
 //        entityManager.merge( target );
@@ -141,7 +141,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     // Only users that can see survey and study can here, (sometimes guest should see this too.)
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<TopicGroup> findByStudyId(UUID id) {
-        return topicGroupRepository.findByStudyId(id).stream()
+        return topicGroupRepository.findByStudyIdOrderByIndex(id).stream().filter( f -> f != null )
                 .map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
@@ -188,6 +188,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
             LOG.error("postLoadProcessing",ex);
             throw ex;
         }
+        LOG.debug("TopicGroupIdx " + instance.getIndex().toString() );
         return instance;
     }
 

@@ -45,7 +45,6 @@ public class InstrumentElement  implements Cloneable {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
-    @OrderBy(value = "_idx asc")
     @JoinColumn(name = "instrument_element_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
     private List<InstrumentElement> sequences = new ArrayList<>();
@@ -53,7 +52,7 @@ public class InstrumentElement  implements Cloneable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
         joinColumns = @JoinColumn(name="instrument_element_id", referencedColumnName = "id"))
-    private Set<InstrumentParameter> parameters = new HashSet();
+    private Set<InstrumentParameter> parameters = new HashSet<>();
 
 
     @Embedded

@@ -14,7 +14,9 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -67,9 +69,10 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 //            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "study", fetch = FetchType.LAZY)
-    @OrderBy(value = "name ASC")
-    private Set<TopicGroup> topicGroups = new HashSet<>(0);
+    @OrderColumn(name="study_idx")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "study", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
+//    @AuditMappedBy(mappedBy = "id", positionMappedBy = "index")
+    private List<TopicGroup> topicGroups = new ArrayList<>(0);
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "STUDY_AUTHORS",
@@ -129,19 +132,19 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     }
 
 
-    public Set<TopicGroup> getTopicGroups() {
+    public List<TopicGroup> getTopicGroups() {
         return topicGroups;
     }
 
-    public void setTopicGroups(Set<TopicGroup> topicGroups) {
-        this.topicGroups = topicGroups;
-    }
+//    public void setTopicGroups(List<TopicGroup> topicGroups) {
+//        this.topicGroups = topicGroups;
+//    }
 
-    public TopicGroup addTopicGroup(TopicGroup topicGroup){
-        LOG.debug("TopicGroup ["+ topicGroup.getName() + "] added to Study [" + this.getName() +"]");
-        topicGroup.setStudy(this);
+    public TopicGroup addTopicGroup(Integer index,TopicGroup topicGroup){
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("TopicGroup ["+ topicGroup.getName() +"] added");
+        this.topicGroups.add((index!=null)? index : this.topicGroups.size() , topicGroup);
+//        topicGroup.setStudy(this);
         return topicGroup;
     }
 

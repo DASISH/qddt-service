@@ -83,7 +83,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
     
     @JsonIgnore
     @OrderColumn(name="responsedomain_idx")
-    @OrderBy("responsedomain_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id",  referencedColumnName = "id"))
     private List<Code> codes = new ArrayList<>();

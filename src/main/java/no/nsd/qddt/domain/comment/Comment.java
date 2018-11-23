@@ -28,7 +28,6 @@ import java.util.UUID;
 public class Comment extends AbstractEntity  {
 
     @Column(name = "owner_id",columnDefinition = "uuid", updatable = false, nullable = false)
-//    @Type(type="pg-uuid")
     private UUID ownerId;
 
 //    @Column(name = "owner_idx", updatable = false,insertable = false)
@@ -36,7 +35,7 @@ public class Comment extends AbstractEntity  {
 //    private Integer ownerIdx;
 
 
-    @OrderBy("owner_idx desc")
+//    @OrderBy("owner_idx desc")
     @OrderColumn(name="owner_idx")
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>(0);

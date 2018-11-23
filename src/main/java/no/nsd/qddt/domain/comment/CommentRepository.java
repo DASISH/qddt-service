@@ -28,7 +28,7 @@ interface CommentRepository extends BaseRepository<Comment,UUID> {
         "WHERE co.owner_id = CAST(:ownerId AS uuid) " +
         "AND ( (  :showAll  and (SELECT authority FROM uar WHERE id = CAST(:userId AS uuid)) IN ('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') )" +
         "OR co.is_public = true )" +
-        "ORDER BY co.updated asc "
+        "ORDER BY co.owner_idx asc "
         ,countQuery = "SELECT  count(co.*) FROM comment co " +
         "WHERE co.owner_id = CAST(:ownerId AS uuid) " +
         "AND ( (  :showAll  and (SELECT authority FROM uar WHERE id = CAST(:userId AS uuid)) IN ('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') )" +
