@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FileUploadException extends RuntimeException {
 
+    private static final long serialVersionUID = 7324952042963154126L;
     private static final Logger logger = LoggerFactory.getLogger(FileUploadException.class);
 
     public FileUploadException(String path) {

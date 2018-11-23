@@ -3,7 +3,7 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="0.0" y="967.514753315401">no.nsd.qddt.domain.questionItem.QuestionItem</node>
+    <node x="0.0" y="967.514753315401">no.nsd.qddt.domain.questionitem.QuestionItem</node>
     <node x="1028.292350076012" y="315.8995558520081">no.nsd.qddt.domain.surveyprogram.SurveyProgram</node>
     <node x="651.075700864026" y="0.0">no.nsd.qddt.domain.instrument.Instrument</node>
     <node x="474.2043420493384" y="1277.4704756515628">no.nsd.qddt.domain.concept.Concept</node>
@@ -36,7 +36,7 @@
       <point x="0.0" y="15.221160391951571" />
       <point x="0.0" y="15.221160391951571" />
     </edge>
-    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.questionItem.QuestionItem">
+    <edge source="no.nsd.qddt.domain.topicgroup.TopicGroup" target="no.nsd.qddt.domain.questionitem.QuestionItem">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
@@ -44,7 +44,7 @@
       <point x="-17.320508075688764" y="0.0" />
       <point x="-17.320508075688736" y="0.0" />
     </edge>
-    <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.questionItem.QuestionItem">
+    <edge source="no.nsd.qddt.domain.concept.Concept" target="no.nsd.qddt.domain.questionitem.QuestionItem">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>

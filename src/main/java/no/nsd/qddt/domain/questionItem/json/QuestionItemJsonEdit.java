@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.questionItem.json;
+package no.nsd.qddt.domain.questionitem.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 

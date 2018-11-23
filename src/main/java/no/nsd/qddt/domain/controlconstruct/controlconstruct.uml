@@ -3,7 +3,7 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="828.5972222222222" y="0.0">no.nsd.qddt.domain.questionItem.QuestionItem</node>
+    <node x="828.5972222222222" y="0.0">no.nsd.qddt.domain.questionitem.QuestionItem</node>
     <node x="2.75" y="329.0">no.nsd.qddt.domain.controlconstruct.pojo.Sequence</node>
     <node x="662.5972222222222" y="66.0">no.nsd.qddt.domain.instruction.Instruction</node>
     <node x="249.375" y="55.0">no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct</node>
@@ -39,7 +39,7 @@
       <point x="336.5625" y="233.0" />
       <point x="-52.3125" y="36.5" />
     </edge>
-    <edge source="no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct" target="no.nsd.qddt.domain.questionItem.QuestionItem">
+    <edge source="no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct" target="no.nsd.qddt.domain.questionitem.QuestionItem">
       <point x="73.3125" y="-113.5" />
       <point x="903.2847222222222" y="223.0" />
       <point x="1006.3472222222222" y="223.0" />

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.refclasses;
 
-import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 
 import java.util.*;
 

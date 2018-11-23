@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.questionItem;
+package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.BaseService;
 import org.springframework.data.domain.Page;

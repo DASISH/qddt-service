@@ -13,6 +13,7 @@ import java.util.UUID;
  */
 public class ResourceNotFoundException extends RuntimeException {
 
+    private static final long serialVersionUID = -2513860927841180502L;
     private static final Logger logger = LoggerFactory.getLogger(ResourceNotFoundException.class);
 
     public ResourceNotFoundException(Number id, Class<?> clazz) {
