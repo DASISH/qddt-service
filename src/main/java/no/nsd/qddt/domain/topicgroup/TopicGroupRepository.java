@@ -16,7 +16,7 @@ import java.util.UUID;
 @Repository
 interface TopicGroupRepository extends BaseArchivedRepository<TopicGroup,UUID> {
 
-    List<TopicGroup> findByStudyId(UUID id);
+    List<TopicGroup> findByStudyIdOrderByIndex(UUID id);
 
     Page<TopicGroup> findAll(Pageable pageable);
 

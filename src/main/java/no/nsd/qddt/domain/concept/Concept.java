@@ -330,4 +330,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     protected void beforeInsert() {}
 
 
+    public Integer getIndex() {
+        return index;
+    }
 }

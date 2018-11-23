@@ -1,7 +1,9 @@
 package no.nsd.qddt.security;
 
+import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.user.QDDTUserDetails;
 import no.nsd.qddt.domain.user.User;
 import org.slf4j.Logger;
@@ -25,11 +27,20 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     public boolean hasPermission( Authentication auth, Object targetDomainObject, Object permission) {
         if ((auth == null) || (targetDomainObject == null) ||
             !(permission instanceof String) ||
-            !(targetDomainObject instanceof AbstractEntityAudit) ){
+            !(targetDomainObject instanceof AbstractEntity)  ){
             return false;
         }
 
-        return hasPrivilege( (QDDTUserDetails)auth.getPrincipal(), (AbstractEntityAudit)targetDomainObject, ((String) permission).toUpperCase());
+        if (targetDomainObject instanceof Comment) {
+            User user = ((QDDTUserDetails) auth.getPrincipal()).getUser();
+            Comment comment = (Comment) targetDomainObject;
+
+            return  comment.getModifiedBy() == null ||  (user.getId().equals(  comment.getModifiedBy().getId()));
+
+        } else if (targetDomainObject instanceof AbstractEntityAudit) {
+            return hasPrivilege( (QDDTUserDetails) auth.getPrincipal(), (AbstractEntityAudit) targetDomainObject, ((String) permission).toUpperCase() );
+        }
+        return  false;
     }
 
 
@@ -58,7 +69,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
     private boolean isOwner(User user, AbstractEntityAudit entity) {
-        return  ( user.getId().equals( entity.getModifiedBy().getId() ));
+        return  ( entity.getModifiedBy() == null || user.getId().equals( entity.getModifiedBy().getId() ));
     }
 
     private boolean isUser(User user, AbstractEntityAudit entity) {
@@ -66,7 +77,8 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
     private boolean isMemberOfAgency(Agency agency, AbstractEntityAudit entity) {
-        assert entity.getAgency() != null;
+        if (entity.getAgency()  == null || entity.getModifiedBy() == null ) return  true;
+
         boolean isMember = agency.getId().equals( entity.getAgency().getId());
         LOG.info( String.valueOf( isMember ) );
         return (isMember);

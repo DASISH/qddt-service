@@ -70,7 +70,7 @@ public class SurveyProgramController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<SurveyProgram> listByUser() {
         User user = SecurityContext.getUserDetails().getUser();
         return service.findByAgency(user);

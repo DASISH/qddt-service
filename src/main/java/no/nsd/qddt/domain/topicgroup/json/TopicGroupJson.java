@@ -30,6 +30,8 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private StudyRef studyRef;
 
+    private Integer index;
+
     public TopicGroupJson(TopicGroup topicGroup) {
         super(topicGroup);
         if (topicGroup == null) return;
@@ -40,6 +42,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments());
         studyRef = topicGroup.getStudyRef();
+        this.index = topicGroup.getIndex();
     }
 
     public String getDescription() {
@@ -91,6 +94,9 @@ public class TopicGroupJson extends AbstractJsonEdit {
         this.comments = comments;
     }
 
+    public Integer getIndex() {
+        return index;
+    }
 
     @Override
     public boolean equals(Object o) {

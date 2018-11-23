@@ -114,7 +114,7 @@ class ConceptServiceImpl implements ConceptService {
         Concept source = auditService.findRevision(id,rev).getEntity();
         Concept target = new ConceptFactory().copy(source, rev);
         TopicGroup tg = tgService.findOne( parentId );
-        tg.addConcept( target );
+        tg.addConcept(target.getIndex(), target );
 
         return conceptRepository.save(target);
     }
