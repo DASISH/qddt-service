@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -100,7 +102,10 @@ public abstract class AbstractElementRef implements IElementRef {
     public void setElement(Object element) {
         this.element = element;
         if (element instanceof IElementRefType) {
-            setName( ((IElementRefType) element).getName() );
+            if (element instanceof QuestionItem)
+                setName(((QuestionItem)element).getName() + " - " + ((QuestionItem)element).getQuestion());
+            else 
+                setName( ((IElementRefType) element).getName() );
             setVersion( ((IElementRefType) element).getVersion() );
             setElementId( ((IElementRefType) element).getId() );
             

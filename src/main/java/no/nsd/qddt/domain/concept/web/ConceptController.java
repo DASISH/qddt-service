@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.xml.XmlReport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +54,24 @@ public class ConceptController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public List<ConceptJsonEdit> updateAll(@RequestBody List<Concept> concepts) {
-        return  service.saveAll( concepts).stream().filter( f -> f != null)
+    @RequestMapping(value = "/list/{parentId}", method = RequestMethod.POST)
+    public List<ConceptJsonEdit> updateAll(@RequestBody List<Concept> concepts, 
+        @PathVariable(name = "parentId", required= false) UUID id) {
+
+        if (id!=null) {
+            if (service.exists(id)) {
+                Concept concept = service.findOne(id);
+                concept.setChildren(concepts);
+                concepts = service.save(concept).getChildren();
+            } else {
+                TopicGroup tg = topicGroupService.findOne(id);
+                tg.setConcepts(concepts);
+                concepts = topicGroupService.save(tg).getConcepts();
+            }
+        } else 
+            concepts=  service.saveAll( concepts);
+
+        return concepts.stream().filter( f -> f != null)
             .map( this::concept2Json )
             .collect( Collectors.toList());
     }

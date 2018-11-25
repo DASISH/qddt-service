@@ -27,13 +27,10 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/topicgroup", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TopicGroupAuditController {
 
-    private final TopicGroupAuditService service;
-
     @Autowired
-    public TopicGroupAuditController(TopicGroupAuditService service) {
-        this.service = service;
-    }
+    private TopicGroupAuditService service;
 
+    
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, TopicGroupRevisionJson> getLastRevision(@PathVariable("id") UUID id) {
         return topicRev2Json(service.findLastChange(id));

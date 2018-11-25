@@ -9,7 +9,6 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
 import no.nsd.qddt.domain.xml.XmlReport;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,18 +35,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/topicgroup")
 public class TopicGroupController extends AbstractController {
 
-    private final TopicGroupService service;
-    private final StudyService studyService;
-    private final OtherMaterialService omService;
-
-
     @Autowired
-    public TopicGroupController(TopicGroupService service, StudyService studyService,
-                                OtherMaterialService otherMaterialService) {
-        this.omService = otherMaterialService;
-        this.service = service;
-        this.studyService = studyService;
-    }
+    private TopicGroupService service;
+    @Autowired
+    private StudyService studyService;
+    @Autowired
+    private OtherMaterialService omService;
+
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -81,16 +76,9 @@ public class TopicGroupController extends AbstractController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroupJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
-
-        try {
-            return new TopicGroupJson(
-                service.save(studyService.findOne(studyId)
-                .addTopicGroup(instance.getIndex(), instance)));
-        } catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-            return null;
-        }
-
+        return new TopicGroupJson(
+            service.save(studyService.findOne(studyId)
+            .addTopicGroup(instance.getIndex(), instance)));
     }
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
@@ -98,8 +86,8 @@ public class TopicGroupController extends AbstractController {
                                 @PathVariable("rev") Integer sourceRev,
                                 @PathVariable("parentUuid") UUID parentId) {
         return new TopicGroupJson(
-                service.save(
-                        service.copy(sourceId,sourceRev,parentId)));
+            service.save(
+                service.copy(sourceId,sourceRev,parentId)));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -118,9 +106,6 @@ public class TopicGroupController extends AbstractController {
                     .collect(Collectors.toList());
         } catch (Exception ex){
             LOG.error("findByStudy",ex);
-//            StackTraceFilter.filter(ex.getStackTrace()).stream()
-//                    .map(a->a.toString())
-//                    .forEach(LOG::info);
             return Collections.emptyList();
         }
     }

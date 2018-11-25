@@ -17,7 +17,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <ul class="inheritance">
@@ -133,7 +135,9 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
 
     public List<TopicGroup> getTopicGroups() {
-        return topicGroups;
+        return topicGroups
+        .stream().filter( Objects::nonNull )
+        .collect(Collectors.toList());
     }
 
 //    public void setTopicGroups(List<TopicGroup> topicGroups) {
@@ -220,7 +224,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-        // pdfReport.addPadding();
+        pdfReport.addPadding();
 
         if (counter.length()>0)
             counter = counter+".";

@@ -175,10 +175,10 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
 
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
-                LOG.debug("PDF -> fetching  concepts ");
+                LOG.debug("PDF -> fetching  concepts and QuestionItems ");
+                instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( this::loadConceptQuestion );
 
@@ -188,7 +188,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
             LOG.error("postLoadProcessing",ex);
             throw ex;
         }
-        LOG.debug("TopicGroupIdx " + instance.getIndex().toString() );
+        LOG.debug("TopicGroupIdx " + (instance.getIndex()==null?"NULL":instance.getIndex()) );
         return instance;
     }
 

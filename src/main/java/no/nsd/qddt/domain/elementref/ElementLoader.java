@@ -21,17 +21,6 @@ public class ElementLoader{
         this.serviceAudit = serviceAudit;
     }
 
-//    public IElementRef fill(ElementKind kind, UUID id, Integer rev) {
-//        return fill( new ElementRef( kind, id, rev ));
-//    }
-//
-//    public ElementRefTyped<no.nsd.qddt.domain.AbstractEntityAudit> fill(ElementRefTyped<no.nsd.qddt.domain.AbstractEntityAudit> element) {
-//        Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
-//        element.setElement(revision.getEntity());
-//        element.setElementRevision( revision.getRevisionNumber() );
-//        return  element;
-//    }
-
     public ElementRef fill(ElementRef element) {
         Revision<Integer,UUID> revision = get(element.getElementId(), element.getElementRevision() );
         element.setElement(revision.getEntity());
@@ -55,9 +44,8 @@ public class ElementLoader{
             return (rev == null) ? serviceAudit.findLastChange( id ) :  serviceAudit.findRevision( id,rev );
 
         } catch (RevisionDoesNotExistException e) {
-
-            LOG.error( "ElementLoader - RevisionDoesNotExistException ", e );
             if (rev == null) throw e;
+            LOG.warn( "ElementLoader - RevisionDoesNotExist fallback, fetching latest -> " + id);
             return get(id, null);
 
         } catch (Exception ex) {

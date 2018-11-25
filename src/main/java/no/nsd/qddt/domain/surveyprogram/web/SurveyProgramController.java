@@ -61,6 +61,12 @@ public class SurveyProgramController {
         service.delete(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public List<SurveyProgram> listByUser() {
+        User user = SecurityContext.getUserDetails().getUser();
+        return service.findByAgency(user);
+    }
 
 
     @ResponseBody
@@ -69,12 +75,6 @@ public class SurveyProgramController {
         return service.findOne(id).makePdf().toByteArray();
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<SurveyProgram> listByUser() {
-        User user = SecurityContext.getUserDetails().getUser();
-        return service.findByAgency(user);
-    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)

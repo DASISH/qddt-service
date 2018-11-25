@@ -168,6 +168,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @JsonIgnore
     protected List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
         return topicQuestionItems.stream()
+            .filter( f -> f!=null)
             .map(c-> new ElementRefTyped<QuestionItem>(c) )
             .collect( Collectors.toList() );
     }
@@ -208,9 +209,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         setField( "study", newParent );
     }
 
-//    public void setParentU(UUID studyId) {
-//        setField("topicGroupId",studyId );
-//    }
 
     public StudyRef getStudyRef() {
         return new StudyRef(getStudy());
@@ -268,13 +266,14 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
             for (ElementRefTyped<QuestionItem> item : getTopicQuestionItemsT()) {
-                pdfReport.addheader2(item.getName(), String.format("Version %s",item.getVersion()));
+                pdfReport.addheader2(item.getElement().getName(), String.format("Version %s",item.getElement().getVersion()));
                 pdfReport.addParagraph(item.getElement().getQuestion());
                 if (item.getElement().getResponseDomain() != null)
                     item.getElement().getResponseDomain().fillDoc(pdfReport, "");
 //                // pdfReport.addPadding();
             }
         }
+        pdfReport.addPadding();
 
         if (counter.length()>0)
             counter = counter+".";

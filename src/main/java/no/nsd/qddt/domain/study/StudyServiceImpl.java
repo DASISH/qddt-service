@@ -55,9 +55,10 @@ class StudyServiceImpl implements StudyService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Study findOne(UUID uuid) {
-        return studyRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Study.class)
-        );    }
+        return postLoadProcessing(studyRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Study.class))
+        );    
+    }
 
 
     @Override
@@ -97,19 +98,36 @@ class StudyServiceImpl implements StudyService {
     }
 
 
+//     private Study postLoadProcessing(Study instance) {
+//         if (StackTraceFilter.stackContains("getPdf","getXml")) {
+//             LOG.debug("PDF -> fetching  concepts ");
+// //            Hibernate.initialize(instance.getTopicGroups());
+// //            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
+
+//             instance.getTopicGroups().forEach( topic -> {
+//                 topic.getTopicQuestionItems().forEach( qiLoader::fill );
+//                 Hibernate.initialize(topic.getConcepts());
+//                 topic.getConcepts().forEach( this::loadConceptQuestion );
+//             } );
+
+//             // when we print hierarchy we don't need qi concept reference....
+//         }
+//         return instance;
+//     }
+
     private Study postLoadProcessing(Study instance) {
-        if (StackTraceFilter.stackContains("getPdf","getXml")) {
-            LOG.debug("PDF -> fetching  concepts ");
-//            Hibernate.initialize(instance.getTopicGroups());
-//            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
-
-            instance.getTopicGroups().forEach( topic -> {
-                topic.getTopicQuestionItems().forEach( qiLoader::fill );
-                Hibernate.initialize(topic.getConcepts());
-                topic.getConcepts().forEach( this::loadConceptQuestion );
-            } );
-
-            // when we print hierarchy we don't need qi concept reference....
+        assert  (instance != null);
+        try{
+            if (StackTraceFilter.stackContains("getPdf","getXml")) {
+                instance.getTopicGroups().forEach( topic -> {
+                    topic.getTopicQuestionItems().forEach( qiLoader::fill );
+                    Hibernate.initialize(topic.getConcepts());
+                    topic.getConcepts().forEach( this::loadConceptQuestion );
+                    } );
+                LOG.debug("PDF -> fetching  concepts ");
+            }
+        } catch (Exception ex){
+            LOG.error("postLoadProcessing",ex);
         }
         return instance;
     }

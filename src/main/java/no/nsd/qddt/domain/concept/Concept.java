@@ -19,6 +19,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     public List<ElementRef> getConceptQuestionItems() {
-        return conceptQuestionItems;
+        return conceptQuestionItems.stream().filter( Objects::nonNull ).collect(Collectors.toList());
     }
 
     public void setConceptQuestionItems(List<ElementRef> conceptQuestionItems) {
@@ -137,7 +138,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         if (children == null) {
             LOG.error( "ConceptID:"  +getId() +  " -> getChildren is null" );
         }
-        return children;
+        return children.stream().filter( Objects::nonNull ).collect(Collectors.toList());
     }
 
     public void setChildren(List<Concept> children) {
@@ -293,9 +294,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                 // pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
                 for (ElementRefTyped<QuestionItem> item : getConceptQuestionItems()
-                        .stream().map(c-> new ElementRefTyped<QuestionItem>(c) ).collect( Collectors.toList() )) {
+                        .stream().map(c-> new ElementRefTyped<QuestionItem>(c) )
+                        .collect( Collectors.toList() )) {
                     if (item.getElement() != null) {
-                        pdfReport.addheader2( item.getName(), String.format( "Version %s", item.getVersion() ) );
+                        pdfReport.addheader2( item.getElement().getName(), String.format( "Version %s", item.getElement().getVersion() ) );
                         pdfReport.addParagraph( item.getElement().getQuestion() );
                         if (item.getElement().getResponseDomain() != null)
                             item.getElement().getResponseDomain().fillDoc( pdfReport, "" );
@@ -306,18 +308,14 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                 }
             }
 
+            pdfReport.addPadding();
+
             if (counter.length()>0)
                 counter = counter+".";
-            int i = 0;
-            for (Concept concept : getChildren().stream()
-                .sorted( Comparator.comparing( AbstractEntityAudit::getName ))
-                .collect( Collectors.toList())) {
-                    concept.fillDoc(pdfReport, counter + String.valueOf(++i));
-                    // pdfReport.addPadding();
+                int i = 0;
+            for (Concept concept : getChildren().stream().collect( Collectors.toList())) {
+                concept.fillDoc(pdfReport, counter + String.valueOf(++i));
             }
-
-            if (getChildren().size() == 0)
-                 pdfReport.addPadding();
 
         } catch (Exception ex) {
             LOG.error(ex.getMessage());
