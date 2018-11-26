@@ -10,7 +10,6 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -98,20 +101,19 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         LOG.info( "postload topic " + instance.getId() );
-        try{
-            for (ElementRef cqi :instance.getTopicQuestionItems()) {
-
-                cqi = qiLoader.fill( cqi );
-
-//                cqi.getElement().setConceptRefs(
-//                    conceptService.findByQuestionItem(cqi.getId(),null).stream()
-//                        .map( ConceptRef::new )
-//                        .collect( Collectors.toList())
-//                );
-
+        try {
+            for (ElementRef cqi : instance.getTopicQuestionItems()) {
+                qiLoader.fill( cqi );
             }
-            Hibernate.initialize(instance.getConcepts());
-            instance.getConcepts().forEach(this::postLoadProcessing);
+
+//            if (!Hibernate.isInitialized( instance.getConcepts() ))
+//                Hibernate.initialize( instance.getConcepts() );
+
+            for (Concept c : instance.getConcepts().stream().filter( f -> f != null ).collect( Collectors.toList())
+            ) {
+                postLoadProcessing( c );
+            }
+
             instance.setComments(loadComments(instance.getId()));
 
         } catch (Exception ex){

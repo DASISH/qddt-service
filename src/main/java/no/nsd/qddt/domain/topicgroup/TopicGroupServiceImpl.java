@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
@@ -23,6 +24,8 @@ import javax.persistence.PersistenceUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 
 /**
  * @author Stig Norland
@@ -65,9 +68,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public TopicGroup findOne(UUID uuid) {
-        return topicGroupRepository.findById(uuid)
-            .map(this::postLoadProcessing).orElseThrow(
-            () -> new ResourceNotFoundException(uuid, TopicGroup.class)
+        return postLoadProcessing(topicGroupRepository.findById(uuid).orElseThrow(
+            () -> new ResourceNotFoundException(uuid, TopicGroup.class))
         );
     }
 
@@ -168,7 +170,11 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
-        
+        for (ElementRef cqi: instance.getTopicQuestionItems()) {
+            if (IsNullOrTrimEmpty( cqi.getName())) {
+                qiLoader.fill( cqi ).setValues();
+            }
+        }
         return doArchive( instance ) ;
     }
 

@@ -37,7 +37,7 @@ public class QuestionConstruct  extends ControlConstruct {
 
     /**
      * This field must be available "raw" in order to set and query
-     * questionItem by ID
+     * questionitem by ID
      */
     @JsonIgnore
     @Type(type="pg-uuid")

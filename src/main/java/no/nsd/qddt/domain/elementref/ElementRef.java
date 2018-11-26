@@ -20,6 +20,8 @@ public class ElementRef extends AbstractElementRef {
         super( kind, id, rev );
     }
 
+
+
     @Override
     public ElementRef clone() {
         ElementRef retval = new ElementRef(getElementKind(), getElementId(),getElementRevision());

@@ -70,7 +70,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
     @JsonIgnore
     @OrderColumn(name="_idx")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
 //    @AuditMappedBy(mappedBy = "id", positionMappedBy = "index")
     private List<Concept> concepts = new ArrayList<>(0);
 
@@ -78,7 +78,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @OrderColumn(name="topicgroup_idx")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
-    private List<ElementRef>  topicQuestionItems = new ArrayList<>();
+    private List<ElementRef>  topicQuestionItems = new ArrayList<>(0);
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -91,7 +91,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
-    private List<OtherMaterial> otherMaterials = new ArrayList<>();
+    private List<OtherMaterial> otherMaterials = new ArrayList<>(0);
 
 
     private boolean isArchived;

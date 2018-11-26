@@ -7,7 +7,6 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
@@ -17,7 +16,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -293,19 +291,18 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             if (getConceptQuestionItems().size() > 0) {
                 // pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
-                for (ElementRefTyped<QuestionItem> item : getConceptQuestionItems()
-                        .stream().map(c-> new ElementRefTyped<QuestionItem>(c) )
-                        .collect( Collectors.toList() )) {
-                    if (item.getElement() != null) {
-                        pdfReport.addheader2( item.getElement().getName(), String.format( "Version %s", item.getElement().getVersion() ) );
-                        pdfReport.addParagraph( item.getElement().getQuestion() );
-                        if (item.getElement().getResponseDomain() != null)
-                            item.getElement().getResponseDomain().fillDoc( pdfReport, "" );
-                        // pdfReport.addPadding();
+                getConceptQuestionItems().stream()
+                    .map( cqi ->  (QuestionItem)cqi.getElement() )
+                    .forEach( item -> {
+                    if (item != null) {
+                        pdfReport.addheader2( item.getName(), String.format( "Version %s", item.getVersion() ) );
+                        pdfReport.addParagraph( item.getQuestion() );
+                        if (item.getResponseDomain() != null)
+                            item.getResponseDomain().fillDoc( pdfReport, "" );
                     } else {
                         LOG.info( item.toString() );
                     }
-                }
+                });
             }
 
             pdfReport.addPadding();
@@ -313,8 +310,8 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             if (counter.length()>0)
                 counter = counter+".";
                 int i = 0;
-            for (Concept concept : getChildren().stream().collect( Collectors.toList())) {
-                concept.fillDoc(pdfReport, counter + String.valueOf(++i));
+            for (Concept concept : getChildren()) {
+                concept.fillDoc(pdfReport, counter + ++i );
             }
 
         } catch (Exception ex) {

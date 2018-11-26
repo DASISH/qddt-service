@@ -8,7 +8,9 @@ import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**

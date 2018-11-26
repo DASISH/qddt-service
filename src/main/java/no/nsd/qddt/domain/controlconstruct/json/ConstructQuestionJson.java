@@ -82,7 +82,7 @@ public class ConstructQuestionJson  extends ConstructJson {
                 return;
             name = questionItem.getName();
             question = questionItem.getQuestion();
-            // responseDomain =  new ResponseDomainJsonView(questionItem.getResponseDomain());
+            // responseDomain =  new ResponseDomainJsonView(questionitem.getResponseDomain());
         }
 
 

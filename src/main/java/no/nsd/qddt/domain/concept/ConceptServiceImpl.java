@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
@@ -11,9 +10,6 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
-import no.nsd.qddt.utils.StringTool;
-
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +26,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -208,12 +205,12 @@ class ConceptServiceImpl implements ConceptService {
 
     private Concept prePersistProcessing(Concept instance) {
         try {
+            instance.getConceptQuestionItems().forEach(
+                cqi -> {
+                    if (IsNullOrTrimEmpty( cqi.getName()))
+                        qiLoader.fill( cqi ).setValues();
+                });
 
-            for (ElementRef element: instance.getConceptQuestionItems()) {
-                if (element.getName() == null) {
-                    qiLoader.fill( element );
-                }
-            }
             // children are saved to hold revision info... i guess, these saves shouldn't
 //            if (instance.isBasedOn() == false)
             instance.getChildren().stream().forEach( this::setChildChangeStatus );
@@ -238,10 +235,10 @@ class ConceptServiceImpl implements ConceptService {
                 instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             } else {
                 instance.getConceptQuestionItems().forEach( cqi -> {
-                    if (StringTool.IsNullOrTrimEmpty(cqi.getName())) {
-                        cqi = qiLoader.fill(cqi);
-                        ((QuestionItem) cqi.getElement()).setConceptRefs(
-                        findByQuestionItem(cqi.getElementId(),null).stream()
+                    if (IsNullOrTrimEmpty(cqi.getName())) {
+
+                        ((QuestionItem)qiLoader.fill(cqi).getElement()).setConceptRefs(
+                            findByQuestionItem(cqi.getElementId(),null).stream()
                             .map( ConceptRef::new )
                             .collect( Collectors.toList()));
                     }

@@ -10,11 +10,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 @Audited
@@ -96,21 +96,22 @@ public abstract class AbstractElementRef implements IElementRef {
 
 
     @JsonSerialize
-    public Object getElement() {
-        return element;
+    public IElementRefType getElement() {
+        return (IElementRefType)element;
     }
     public void setElement(Object element) {
         this.element = element;
-        if (element instanceof IElementRefType) {
-            if (element instanceof QuestionItem)
-                setName(((QuestionItem)element).getName() + " - " + ((QuestionItem)element).getQuestion());
-            else 
-                setName( ((IElementRefType) element).getName() );
-            setVersion( ((IElementRefType) element).getVersion() );
-            setElementId( ((IElementRefType) element).getId() );
-            
-            setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
-        }
+    }
+
+
+    public AbstractElementRef setValues() {
+        if (getElement() instanceof QuestionItem)
+            setName( getElement().getName() + " - " + ((QuestionItem) element).getQuestion() );
+        else
+            setName( getElement().getName());
+        setVersion( getElement().getVersion() );
+        setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
+        return this;
     }
 
     @Override
@@ -121,8 +122,8 @@ public abstract class AbstractElementRef implements IElementRef {
         AbstractElementRef that = (AbstractElementRef) o;
 
         if (elementKind != that.elementKind) return false;
-        if (elementId != null ? !elementId.equals( that.elementId ) : that.elementId != null) return false;
-        if (elementRevision != null ? !elementRevision.equals( that.elementRevision ) : that.elementRevision != null)  return false;
+        if (!Objects.equals( elementId, that.elementId )) return false;
+        if (!Objects.equals( elementRevision, that.elementRevision ))  return false;
         return  true;
     }
 

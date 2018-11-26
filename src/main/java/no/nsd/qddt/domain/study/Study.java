@@ -14,12 +14,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * <ul class="inheritance">
@@ -135,9 +130,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
 
     public List<TopicGroup> getTopicGroups() {
-        return topicGroups
-        .stream().filter( Objects::nonNull )
-        .collect(Collectors.toList());
+        return topicGroups;
     }
 
 //    public void setTopicGroups(List<TopicGroup> topicGroups) {
@@ -191,12 +184,12 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
         Study study = (Study) o;
 
-        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null)
+        if (!Objects.equals( surveyProgram, study.surveyProgram ))
             return false;
-        if (description != null ? !description.equals(study.description) : study.description != null) return false;
-        if (authors != null ? !authors.equals(study.authors) : study.authors != null) return false;
-        if (instruments != null ? !instruments.equals(study.instruments) : study.instruments != null) return false;
-        return !(topicGroups != null ? !topicGroups.equals(study.topicGroups) : study.topicGroups != null);
+        if (!Objects.equals( description, study.description )) return false;
+        if (!Objects.equals( authors, study.authors )) return false;
+        if (!Objects.equals( instruments, study.instruments )) return false;
+        return !(!Objects.equals( topicGroups, study.topicGroups ));
 
     }
 
