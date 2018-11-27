@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.refclasses.ConceptRef;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -19,8 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -69,7 +66,6 @@ class ConceptServiceImpl implements ConceptService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Concept findOne(UUID uuid) {
         return conceptRepository.findById(uuid).map(this::postLoadProcessing).orElseThrow(
-//        return conceptRepository.findById(uuid).orElseThrow(
             () -> new ResourceNotFoundException(uuid, Concept.class));
 
     }
@@ -78,14 +74,15 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY')")
     public Concept save(Concept instance) {
-        instance = conceptRepository.save( prePersistProcessing( instance ) );
-        return postLoadProcessing(instance);
+        return postLoadProcessing(
+            conceptRepository.save(
+                prePersistProcessing( instance ) ));
     }
 
 
     @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#entities,'AGENCY')")
     public List<Concept> saveAll(Iterable<Concept> entities) {
         entities.forEach( this::prePersistProcessing );
         entities = conceptRepository.save(  entities );
@@ -93,31 +90,29 @@ class ConceptServiceImpl implements ConceptService {
         return (List<Concept>) entities;
     }
 
+//
+//    @Transactional()
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+//    public List<Concept> save(List<Concept> instances) {
+//        instances.forEach(this::save);
+//        return instances;
+//    }
 
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-    public List<Concept> save(List<Concept> instances) {
-        instances.forEach(this::save);
-        return instances;
-    }
-
-    private EntityManagerFactory emf;
-
-    @PersistenceUnit
-    public void setEntityManagerFactory(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
+//    private EntityManagerFactory emf;
+//
+//    @PersistenceUnit
+//    public void setEntityManagerFactory(EntityManagerFactory emf) {
+//        this.emf = emf;
+//    }
  
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Concept copy(UUID id, Integer rev, UUID parentId) {
 
         Concept source = auditService.findRevision(id,rev).getEntity();
-        Concept target = new ConceptFactory().copy(source, rev);
-        TopicGroup tg = tgService.findOne( parentId );
-        tg.addConcept(target.getIndex(), target );
-
-        return conceptRepository.save(target);
+        return conceptRepository.save(
+            tgService.findOne( parentId )
+                .addConcept( new ConceptFactory().copy(source, rev) ));
     }
 
 

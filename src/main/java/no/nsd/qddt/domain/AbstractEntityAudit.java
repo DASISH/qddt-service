@@ -270,7 +270,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
                 change = ChangeKind.IN_DEVELOPMENT;
                 setChangeKind( change );
             }
-            if (StringTool.IsNullOrTrimEmpty(changeComment))        // insert default comment if none was supplied, (shouldn't occur)
+            if (StringTool.IsNullOrTrimEmpty(changeComment))        // insert default comment if none was supplied, (can occur with auto touching (hierarchy updates etc))
                 setChangeComment( change.description );
             switch (change) {
                 case BASED_ON:

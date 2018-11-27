@@ -67,7 +67,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     private Set<Instrument> instruments = new HashSet<>();
 
     @OrderColumn(name="study_idx")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "study", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "study", cascade = { CascadeType.MERGE, CascadeType.PERSIST,  CascadeType.REMOVE })   // TODO check performance and consequences
 //    @AuditMappedBy(mappedBy = "id", positionMappedBy = "index")
     private List<TopicGroup> topicGroups = new ArrayList<>(0);
 
@@ -137,11 +137,13 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 //        this.topicGroups = topicGroups;
 //    }
 
-    public TopicGroup addTopicGroup(Integer index,TopicGroup topicGroup){
+    public TopicGroup addTopicGroup(TopicGroup topicGroup){
+
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("TopicGroup ["+ topicGroup.getName() +"] added");
-        this.topicGroups.add((index!=null)? index : this.topicGroups.size() , topicGroup);
-//        topicGroup.setStudy(this);
+        int index = (topicGroup.getIndex()!=null)? topicGroup.getIndex() : this.topicGroups.size();
+        this.topicGroups.add( index, topicGroup);
+        topicGroup.setStudy(this);
         return topicGroup;
     }
 

@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,8 +107,10 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
                 qiLoader.fill( cqi );
             }
 
-//            if (!Hibernate.isInitialized( instance.getConcepts() ))
-//                Hibernate.initialize( instance.getConcepts() );
+            if (!Hibernate.isInitialized( instance.getConcepts() )) {
+                LOG.debug( "Hibernate.initialize..." );
+                Hibernate.initialize( instance.getConcepts() );
+            }
 
             for (Concept c : instance.getConcepts().stream().filter( f -> f != null ).collect( Collectors.toList())
             ) {

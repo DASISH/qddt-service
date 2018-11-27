@@ -136,18 +136,19 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         if (children == null) {
             LOG.error( "ConceptID:"  +getId() +  " -> getChildren is null" );
         }
-        return children.stream().filter( Objects::nonNull ).collect(Collectors.toList());
+        return children;
+//        return children.stream().filter( Objects::nonNull ).collect(Collectors.toList());
     }
 
     public void setChildren(List<Concept> children) {
         this.children = children;
     }
 
-    public void addChildren(Integer index, Concept concept){
+    public void addChildren(Concept concept){
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-        setChangeComment("SubConcept added");
 
-        this.children.add((index!=null)? index : this.children.size() , concept);
+        int index = (concept.getIndex()!=null)? concept.getIndex() : this.getChildren().size();
+        this.children.add( index, concept);
 
         this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
     }

@@ -2,8 +2,8 @@ package no.nsd.qddt.security;
 
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.user.QDDTUserDetails;
 import no.nsd.qddt.domain.user.User;
 import org.slf4j.Logger;
@@ -26,21 +26,21 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     @Override
     public boolean hasPermission( Authentication auth, Object targetDomainObject, Object permission) {
         if ((auth == null) || (targetDomainObject == null) ||
-            !(permission instanceof String) ||
-            !(targetDomainObject instanceof AbstractEntity)  ){
+            !(permission instanceof String)  ){
             return false;
         }
 
-        if (targetDomainObject instanceof Comment) {
-            User user = ((QDDTUserDetails) auth.getPrincipal()).getUser();
-            Comment comment = (Comment) targetDomainObject;
+        User user = ((QDDTUserDetails) auth.getPrincipal()).getUser();
+        String PERMISSION = ((String) permission).toUpperCase();
 
-            return  comment.getModifiedBy() == null ||  (user.getId().equals(  comment.getModifiedBy().getId()));
-
-        } else if (targetDomainObject instanceof AbstractEntityAudit) {
-            return hasPrivilege( (QDDTUserDetails) auth.getPrincipal(), (AbstractEntityAudit) targetDomainObject, ((String) permission).toUpperCase() );
-        }
-        return  false;
+        if (targetDomainObject instanceof Iterable) {
+            for (AbstractEntity abstractEntity : ((Iterable<AbstractEntity>) targetDomainObject)) {
+                if (!hasPrivilege( user, abstractEntity, PERMISSION ))
+                    return false;
+            }
+            return true;
+        } else
+            return hasPrivilege( user, (AbstractEntity) targetDomainObject, PERMISSION );
     }
 
 
@@ -51,28 +51,35 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
 
-    private boolean hasPrivilege(QDDTUserDetails details, AbstractEntityAudit entity, String permission){
-        LOG.info( details.getUsername() + " - " + entity.getName() + " - " + permission );
+    private boolean hasPrivilege(User user, AbstractEntity entity, String permission){
+        LOG.debug( user.getUsername() + " - " + entity.getClass().getName() + " - " + permission );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
+
+        if (isArchived( (IArchived) entity )) return false;
+
         switch (PermissionType.valueOf( permission )) {
             case OWNER:
-                return isOwner( details.getUser(), entity );
+                return isOwner( user, entity );
             case USER:
-                return isUser( details.getUser(), entity );
+                return isUser( user, entity );
             case AGENCY:
-                return isMemberOfAgency( details.getUser().getAgency(), entity );
+                return isMemberOfAgency( user.getAgency(), (AbstractEntityAudit)entity );
             default:
                 return false;
         }
     }
 
-    private boolean isOwner(User user, AbstractEntityAudit entity) {
+    private boolean isArchived(IArchived entity) {
+        return entity.isArchived();
+    }
+
+    private boolean isOwner(User user, AbstractEntity entity) {
         return  ( entity.getModifiedBy() == null || user.getId().equals( entity.getModifiedBy().getId() ));
     }
 
-    private boolean isUser(User user, AbstractEntityAudit entity) {
+    private boolean isUser(User user, AbstractEntity entity) {
         return ( user.getId().equals( entity.getId() ));
     }
 
@@ -80,7 +87,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         if (entity.getAgency()  == null || entity.getModifiedBy() == null ) return  true;
 
         boolean isMember = agency.getId().equals( entity.getAgency().getId());
-        LOG.info( String.valueOf( isMember ) );
+        LOG.debug( String.valueOf( isMember ) );
         return (isMember);
     }
 

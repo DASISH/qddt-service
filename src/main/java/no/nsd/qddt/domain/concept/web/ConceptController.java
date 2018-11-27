@@ -106,14 +106,14 @@ public class ConceptController extends AbstractController {
     @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "parentId", "questionitemid"})
     public ConceptJsonEdit removeQuestionItem(@RequestParam("parentId") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
                                                @RequestParam("questionitemrevision") Number questionItemRevision) {
-        Concept concept=null;
+        Concept concept;
         try{
             concept = service.findOne(conceptId);
             concept.removeQuestionItem(questionItemId,questionItemRevision.intValue());
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
             LOG.error("removeQuestionItem",ex);
-            return concept2Json(concept);
+            return concept2Json(service.findOne(conceptId));
         }
     }
 
@@ -139,17 +139,12 @@ public class ConceptController extends AbstractController {
     @RequestMapping(value = "/create/{uuid}", method = RequestMethod.POST)
     public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("uuid") UUID parentId) {
 
-        // changeing to save child....
-
         if (service.exists( parentId )) {
-             service.findOne( parentId ).addChildren( concept.getIndex(), concept );
+             service.findOne( parentId ).addChildren( concept );
             return concept2Json( service.save( concept ) );
 
-//            return parentJson.getChildren().stream()
-//                .filter( c -> Objects.equals( c.getName(), concept.getName() ) ).findFirst()
-//                .orElseThrow( () -> new ResourceNotFoundException( 0, Concept.class ) );
         } else {
-            topicGroupService.findOne(parentId).addConcept(concept.getIndex(), concept);
+            topicGroupService.findOne(parentId).addConcept(concept);
             return concept2Json(service.save(concept));
         }
     }

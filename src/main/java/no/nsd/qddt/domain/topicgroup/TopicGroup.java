@@ -129,11 +129,14 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
 
 
-    public Concept addConcept(Integer index, Concept concept){
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-        setChangeComment("Concept added");
-        this.concepts.add((index!=null)? index : this.concepts.size() , concept);
+    public Concept addConcept(Concept concept){
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        setChangeComment("Concept ["+ concept.getName() +"] added");
+        int index = (concept.getIndex()!=null)? concept.getIndex() : this.concepts.size();
+        this.concepts.add( index, concept);
+        concept.setTopicGroup(this);
         return concept;
+
     }
 
     public List<Concept> getConcepts() {

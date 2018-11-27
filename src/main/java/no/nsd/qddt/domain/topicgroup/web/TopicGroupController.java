@@ -76,9 +76,17 @@ public class TopicGroupController extends AbstractController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroupJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
-        return new TopicGroupJson(
-            service.save(studyService.findOne(studyId)
-            .addTopicGroup(instance.getIndex(), instance)));
+
+        if (instance.getStudy() == null){
+            studyService.findOne(studyId).addTopicGroup(instance);
+        }
+
+        return new TopicGroupJson(service.save( instance ));
+//        Study study = studyService.findOne(studyId);
+//        study.addTopicGroup(instance.getIndex(), instance);
+//        instance = studyService.save( study ).getTopicGroups().stream()
+//            .max( Comparator.comparing(TopicGroup::getModified)).get();
+
     }
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
