@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentReport;
 import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.utils.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
@@ -382,19 +383,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
                 "\"agency\":" + (agency == null ? "null" : agency) + ", ";
     }
 
-    @Override
-    public String toDDIXml(){
-        return
-            "    <r:URN>urn:ddi:"+ getAgency().getName()+":"+ super.getId()+":" + getVersion() +"</r:URN>\n" +
-            "    <r:VersionRationale>" + getChangeKind().getName() + "</r:VersionRationale>\n" +
-            ((getBasedOnObject() == null) ? "" :
-            "    <r:BasedOnObject>\n" +
-            "       <r:BasedOnReference>\n" +
-            "           <r:URN>urn:ddi:"+ getAgency().getName()+":"+ basedOnObject+ ":" + getVersion() +"</r:URN>\n" +
-            "       </r:BasedOnReference>\n" +
-            "    </r:BasedOnObject>\n");
-
-    }
+    public abstract void toXml(XmlDDIFragmentReport report );
 
 
     public abstract void fillDoc(PdfReport pdfReport,String counter);
