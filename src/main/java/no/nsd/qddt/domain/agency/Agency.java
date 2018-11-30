@@ -239,9 +239,6 @@ public class Agency implements Comparable<Agency>{
 
     }
 
-    public String toDDIXml(){
-        return "<ID type='ID'>" + getId().toString() + "</ID>";
-    }
 
 
     @Override

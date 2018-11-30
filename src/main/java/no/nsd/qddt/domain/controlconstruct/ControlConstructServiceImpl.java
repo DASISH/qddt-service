@@ -79,10 +79,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public ControlConstruct findOne(UUID id) {
 
-        ControlConstruct instance = controlConstructRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id, ControlConstruct.class));
+        return controlConstructRepository.findById(id)
+            .map( this::postLoadProcessing )
+            .orElseThrow(() -> new ResourceNotFoundException(id, ControlConstruct.class));
 
-        return postLoadProcessing(instance);
     }
 
     @Override
@@ -231,8 +231,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
                 qc.setQuestionItemRevision(rev.getRevisionNumber());
                 qc.setQuestionItem(rev.getEntity());
             }
+            qc.setChangeComment( null );
             return (S)qc;
         }
+        instance.setChangeComment( null );
         return instance;
     }
 

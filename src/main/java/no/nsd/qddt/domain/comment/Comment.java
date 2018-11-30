@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.comment;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.xml.XmlDDICommentsBuilder;
 import no.nsd.qddt.utils.SecurityContext;
 
 import javax.persistence.*;
@@ -132,6 +134,12 @@ public class Comment extends AbstractEntity  {
                 ", comment='" + comment + '\'' +
                 "} " + super.toString();
     }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new XmlDDICommentsBuilder(this);
+}
+
 
     @PrePersist
     private void onInsert(){

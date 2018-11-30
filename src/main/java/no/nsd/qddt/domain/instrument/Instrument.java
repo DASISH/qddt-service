@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -147,6 +148,11 @@ public class Instrument extends AbstractEntityAudit  {
             + ", \"externalInstrumentLocation\":\"" + externalInstrumentLocation + "\""
             + ", \"instrumentKind\":\"" + instrumentKind + "\""
             + "}";
+    }
+
+    @Override
+    public String toXml(XmlDDIFragmentBuilder report) {
+
     }
 
     @Override

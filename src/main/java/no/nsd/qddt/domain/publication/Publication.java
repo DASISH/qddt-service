@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
 
@@ -94,6 +95,11 @@ public class Publication extends AbstractEntityAudit {
                 ", status='" + status.getLabel() + '\'' +
                 ", publicationElements=" + publicationElements +
                 "} " + super.toString();
+    }
+
+    @Override
+    public String toXml(XmlDDIFragmentBuilder report) {
+
     }
 
 

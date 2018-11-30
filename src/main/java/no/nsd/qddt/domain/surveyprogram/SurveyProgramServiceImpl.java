@@ -117,6 +117,11 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
                     } ) );
                 LOG.debug("PDF -> fetching  concepts ");
             }
+            else {
+                instance.setChangeComment( null );
+                instance.getStudies().forEach( s -> s.setChangeComment( null ) );
+            }
+
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
         }
@@ -128,8 +133,4 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
-    @Override
-    public boolean hasArchivedContent(UUID id) {
-        return (surveyProgramRepository.hasArchive( id.toString() ) > 0);
-    }
 }

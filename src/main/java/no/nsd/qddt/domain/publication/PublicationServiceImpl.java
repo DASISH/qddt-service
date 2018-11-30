@@ -163,41 +163,9 @@ public class PublicationServiceImpl implements PublicationService {
         if (instance.getStatus().getPublished().ordinal() > Published.NOT_PUBLISHED.ordinal())
             showPrivate = false;
 
-        instance.getPublicationElements().forEach(e-> postLoadProcessing(e));
-
+        instance.setChangeComment( null );
         return instance;
     }
 
-    ElementRef postLoadProcessing(ElementRef instance) {
-//        try {
-//            instance = new ElementLoader( serviceLoader.getService( instance.getElementKind() ) ).fill( instance );
-//            LOG.info( instance.getName() + " " + instance.getElementKind());
-//        } catch (InvalidDataAccessApiUsageException ida) {
-//            return instance;
-//        } catch (Exception e) {
-//            LOG.error("postLoadProcessing " ,e );
-//            return instance;
-//        }
-
-//        switch (instance.getElementKind()) {
-//            case TOPIC_GROUP:
-//                ((TopicGroup)instance.getElement()).getTopicQuestionItems()
-//                    .forEach(e-> postLoadProcessing(e));
-//                ((TopicGroup)instance.getElement()).getConcepts()
-//                    .forEach( c->c.getConceptQuestionItems()
-//                        .forEach( e-> postLoadProcessing(e) ) );
-//                break;
-//            case CONCEPT:
-//                ((Concept)instance.getElement()).getConceptQuestionItems()
-//                    .forEach(e-> postLoadProcessing(e));
-//                break;
-//            case CONTROL_CONSTRUCT:
-//            case QUESTION_CONSTRUCT:
-//                break;
-//            default:
-//                // do nothing
-//        }
-        return instance;
-    }
 
 }

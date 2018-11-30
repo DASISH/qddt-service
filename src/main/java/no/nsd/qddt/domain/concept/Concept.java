@@ -11,6 +11,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
@@ -268,14 +269,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     @Override
-    public String toDDIXml(){
-        StringBuilder sb = new StringBuilder();
-        sb.append( super.toDDIXml() );
-        sb.append("    <r:ConceptName>"+ getName() +"</r:ConceptName>\n");
-        sb.append("    <r:Label>"+ getLabel() +"</r:Label>\n");
-        sb.append("    <r:Description>"+ getDescription() +"</r:Description>\n");
-        return sb.toString();
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ConceptFragmentBuilder(this);
     }
+
+
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter ) {

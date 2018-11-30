@@ -16,7 +16,7 @@ import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.QuestionItemRef;
-
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -261,10 +261,17 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ResponseDomainFragmentBuilder(this);
+    }
+
+
+    @Override
     public void fillDoc(PdfReport pdfReport,String counter) {
         com.itextpdf.layout.element.Table table =
             new com.itextpdf.layout.element.Table(UnitValue.createPercentArray(new float[]{15.0F,70.0F,15.0F}))
                 .setKeepTogether(true)
+                .setKeepTogether( true )
                 .setWidth(pdfReport.width100*0.8F)
                 .setBorder(new DottedBorder( ColorConstants.GRAY,1))
                 .setFontSize(10);

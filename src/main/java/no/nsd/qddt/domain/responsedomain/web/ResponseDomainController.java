@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
-import no.nsd.qddt.domain.xml.XmlReport;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -97,7 +97,7 @@ public class ResponseDomainController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
+        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
     }
 
     private ResponseDomainJsonEdit responseDomain2Json(ResponseDomain responseDomain){

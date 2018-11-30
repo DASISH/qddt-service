@@ -4,12 +4,15 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
-import no.nsd.qddt.domain.xml.XmlReport;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -65,6 +68,12 @@ public class StudyController extends AbstractController {
         }
     }
 
+    @RequestMapping(value = "/list/by-parent/{uuid}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<Study> getList(@PathVariable("uuid") UUID parentid) {
+        return this.surveyProgramService.findOne( parentid ).getStudies()
+            .stream().filter( f -> f != null).collect( Collectors.toList());
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")
@@ -75,6 +84,6 @@ public class StudyController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
+        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
     }
 }

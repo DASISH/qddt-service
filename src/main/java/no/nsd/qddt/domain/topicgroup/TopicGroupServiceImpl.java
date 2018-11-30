@@ -163,10 +163,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 .map(this::postLoadProcessing);
     }
 
-    @Override
-    public List<TopicGroup> findByQuestionItem(UUID id, Integer rev) {
-        return null;
-    }
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
         for (ElementRef cqi: instance.getTopicQuestionItems()) {
@@ -203,8 +199,4 @@ class TopicGroupServiceImpl implements TopicGroupService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
-    @Override
-    public boolean hasArchivedContent(UUID id) {
-        return false;
-    }
 }

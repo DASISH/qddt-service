@@ -5,7 +5,7 @@ package no.nsd.qddt.domain.xml;
  */
 
 
-public enum HtmlFormatting {
+public enum Html5Tags {
     abbr("Denotes abbreviations, along with the full forms"),
     address("Tag for specifying author’s contact details."),
     b("Makes text bold. Used to emphasize a point"),
@@ -40,7 +40,7 @@ public enum HtmlFormatting {
 
     private final String description;
 
-    HtmlFormatting(String description) {
+    Html5Tags(String description) {
         this.description = description;
     }
 }

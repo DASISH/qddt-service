@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.responsedomain.Code;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
@@ -280,6 +281,12 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             + ", \"categoryType\":\"" + categoryType + "\""
             + ", \"_Index\":\"" + _Index + "\""
             + "}";
+    }
+
+    @Override
+    public String toXml(XmlDDIFragmentBuilder report) {
+        StringBuilder sb = new StringBuilder();
+        return sb.toString();
     }
 
 

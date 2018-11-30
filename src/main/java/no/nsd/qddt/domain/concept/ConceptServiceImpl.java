@@ -247,10 +247,5 @@ class ConceptServiceImpl implements ConceptService {
         return instance;
     }
 
-
-    @Override
-    public boolean hasArchivedContent(UUID id) {
-        return false;
-    }
 }
 

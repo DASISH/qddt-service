@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.xml.XmlReport;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,7 +79,7 @@ public class SurveyProgramController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
+        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
     }
 
 }

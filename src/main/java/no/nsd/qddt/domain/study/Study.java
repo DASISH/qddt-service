@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
@@ -208,6 +209,12 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
         return "Study{" +
                 ", description='" + description + '\'' +
                 "} " + super.toString();
+    }
+
+    @Override
+    public String toXml(XmlDDIFragmentBuilder report) {
+        StringBuilder sb = new StringBuilder();
+        return sb.toString();
     }
 
 

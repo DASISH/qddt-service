@@ -1,15 +1,15 @@
 package no.nsd.qddt.domain.instruction;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author Stig Norland
@@ -61,6 +61,11 @@ public class Instruction extends AbstractEntityAudit {
         return "Instruction{" +
                 "  id =\'" + getId() + '\'' +
                 ", description=\'" + description + "\' }";
+    }
+
+    @Override
+    public String toXml(XmlDDIFragmentBuilder report) {
+
     }
 
     @Override

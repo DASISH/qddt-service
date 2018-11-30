@@ -15,6 +15,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -251,6 +252,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
                 "\"authors\":" + (authors == null ? "null" : Arrays.toString(authors.toArray())) + ", " +
 //                "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
                 "}";
+    }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new TopicGroupFragmentBuilder(this);
     }
 
 

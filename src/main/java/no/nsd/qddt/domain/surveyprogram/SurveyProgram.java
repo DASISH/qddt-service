@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
@@ -151,6 +152,12 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
                 "studies=" + studies +
                 ", description='" + description + '\'' +
                 "} " + super.toString();
+    }
+
+    @Override
+    public String toXml(XmlDDIFragmentBuilder report) {
+        StringBuilder sb = new StringBuilder();
+        return sb.toString();
     }
 
 

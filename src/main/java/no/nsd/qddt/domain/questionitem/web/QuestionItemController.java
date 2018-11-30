@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.json.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.questionitem.json.QuestionItemListJson;
 import no.nsd.qddt.domain.questionitem.QuestionItemService;
-import no.nsd.qddt.domain.xml.XmlReport;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -98,7 +98,7 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
+        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
     }
 
 }

@@ -57,7 +57,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
 
-        if (isArchived( (IArchived) entity )) return false;
+        if (isArchived( entity )) return false;
 
         switch (PermissionType.valueOf( permission )) {
             case OWNER:
@@ -71,8 +71,11 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         }
     }
 
-    private boolean isArchived(IArchived entity) {
-        return entity.isArchived();
+    private boolean isArchived(AbstractEntity entity) {
+        if (entity instanceof  IArchived)
+            return ((IArchived) entity).isArchived();
+        else
+            return false;
     }
 
     private boolean isOwner(User user, AbstractEntity entity) {

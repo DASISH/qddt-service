@@ -65,9 +65,5 @@ public class CommentController {
         return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
-    public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toDDIXml();
-    }
+
 }

@@ -126,6 +126,8 @@ class StudyServiceImpl implements StudyService {
                     } );
                 LOG.debug("PDF -> fetching  concepts ");
             }
+            else
+                instance.setChangeComment( null );
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
         }
@@ -137,8 +139,4 @@ class StudyServiceImpl implements StudyService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
-    @Override
-    public boolean hasArchivedContent(UUID id) {
-        return false;
-    }
 }
