@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
+import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;

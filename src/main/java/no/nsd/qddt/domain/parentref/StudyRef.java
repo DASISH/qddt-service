@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.refclasses;
+package no.nsd.qddt.domain.parentref;
 
 import no.nsd.qddt.domain.study.Study;
 

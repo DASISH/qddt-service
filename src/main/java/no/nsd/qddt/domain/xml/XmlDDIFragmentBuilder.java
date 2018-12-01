@@ -25,7 +25,7 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         "\t\t<r:String>%2$s</r:String>\n" +
         "\t</r:RationaleDescription>\n" +
         "\t\t<r:RationaleCode>%3$s</r:RationaleCode>\n" +
-        "</r:VersionRationale>";
+        "</r:VersionRationale>\n";
 
     private final String xmlBasedOn =
         "<r:BasedOnReference>\n" +

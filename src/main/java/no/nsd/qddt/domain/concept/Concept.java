@@ -9,7 +9,7 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.refclasses.TopicRef;
+import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;

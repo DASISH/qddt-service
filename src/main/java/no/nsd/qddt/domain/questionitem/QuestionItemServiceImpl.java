@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
+import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;

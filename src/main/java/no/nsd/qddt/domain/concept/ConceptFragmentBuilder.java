@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
 
     private final String xmlConcept =
-        "<d:TopicGroup>\n" +
+        "<d:Concept>\n" +
             "\t%1$s\n" +
             "\t%2$s\n" +
             "\t%3$s\n" +
@@ -25,7 +25,8 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
             "\t\t<r:Content xml:lang=\"eng-GB\" isTranslated=\"false\" isTranslatable=\"true\" isPlainText=\"true\">%5$s</r:Content>\n" +
             "\t</r:Description>\n" +
             "\t%6$s\n" +
-            "</d:TopicGroup>";
+            "\t%7$s\n" +
+        "</d:Concept>\n";
 
             private List<ConceptFragmentBuilder> children;
             private List<QuestionItemFragmentBuilder> questions;
@@ -33,7 +34,7 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
             public ConceptFragmentBuilder(Concept concept) {
                 super(concept);
                 questions = concept.getConceptQuestionItems().stream()
-                .map( cqi -> cqi.getElement().getXmlBuilder() )
+                .map( cqi ->   (QuestionItemFragmentBuilder)cqi.getElement().getXmlBuilder() )
                 .collect( Collectors.toList() );
 
                 children = concept.getChildren().stream()
@@ -45,6 +46,9 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
             @Override
             public void setEntityBody(Map<UUID, String> fragments) {
                 fragments.putIfAbsent( entity.getId(), getXmlBody() );
+                for(QuestionItemFragmentBuilder question: questions) {
+                    question.setEntityBody( fragments );
+                }
                 for(ConceptFragmentBuilder child : children) {
                     child.setEntityBody( fragments );
                 }
@@ -57,6 +61,9 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
                     getBasedOn(),
                     entity.getName(),
                     entity.getDescription(),
+                    questions.stream()
+                        .map(q -> q.getEntityRef())
+                        .collect( Collectors.joining("\n") ),
                     children.stream()
                         .map(c -> c.getEntityRef())
                         .collect( Collectors.joining("\n")) );

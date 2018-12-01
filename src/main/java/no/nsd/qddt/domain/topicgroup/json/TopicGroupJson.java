@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.refclasses.StudyRef;
+import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 import java.util.*;

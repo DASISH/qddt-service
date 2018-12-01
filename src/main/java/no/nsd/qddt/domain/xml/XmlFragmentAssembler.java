@@ -36,7 +36,7 @@ public class XmlFragmentAssembler<T extends AbstractEntity> {
         "xmlns:s=\"ddi:studyunit:3_2\" " +
         "xmlns:html=\"http://www.w3.org/1999/xhtml\" " +
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-        "xsi:schemaLocation=\"ddi:instance:3_2  http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd\">";
+        "xsi:schemaLocation=\"ddi:instance:3_2  http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd\">\n";
 
     private final T rootElement;
     private final AbstractXmlBuilder builder;
@@ -51,14 +51,14 @@ public class XmlFragmentAssembler<T extends AbstractEntity> {
 
 
     protected String getTopLevelReference(){
-        return "\t<ddi:TopLevelReference isExternal=\"false\" externalReferenceDefaultURI=\"false\" isReference=\"true\" lateBound=\"false\" objectLanguage=\"eng-GB\">\n" +
-            "\t\t" + builder.getId() +
-            "\t\t<r:TypeOfObject>" + rootElement.getClass().getSimpleName() + "</r:TypeOfObject>\n" +
-            "\t</ddi:TopLevelReference>";
+        return "<ddi:TopLevelReference isExternal=\"false\" externalReferenceDefaultURI=\"false\" isReference=\"true\" lateBound=\"false\" objectLanguage=\"eng-GB\">\n" +
+            "\t" + builder.getId() +
+            "\t<r:TypeOfObject>" + rootElement.getClass().getSimpleName() + "</r:TypeOfObject>\n" +
+            "</ddi:TopLevelReference>\n";
     }
 
     protected String getFooter() {
-        return "</ddi:FragmentInstance>";
+        return "</ddi:FragmentInstance>\n";
     }
 
 
@@ -68,7 +68,7 @@ public class XmlFragmentAssembler<T extends AbstractEntity> {
         return sb.append( XMLDEF )
             .append( xmlFragHeader )
             .append( getTopLevelReference() )
-            .append( fragments.values().stream().collect( Collectors.joining("\n","<ddi:Fragment>","</ddi:Fragment>") ))
+            .append( fragments.values().stream().collect( Collectors.joining("</ddi:Fragment>\n<ddi:Fragment>\n","<ddi:Fragment>\n","</ddi:Fragment>\n") ))
             .append( getFooter() )
             .toString();
     }

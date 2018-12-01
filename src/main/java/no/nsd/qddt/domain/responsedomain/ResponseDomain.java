@@ -15,7 +15,7 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.refclasses.QuestionItemRef;
+import no.nsd.qddt.domain.parentref.QuestionItemRef;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;

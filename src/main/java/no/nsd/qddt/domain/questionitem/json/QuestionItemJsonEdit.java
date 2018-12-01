@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.questionitem.json;
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
+import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.ArrayList;
