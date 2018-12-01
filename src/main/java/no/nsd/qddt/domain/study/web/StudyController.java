@@ -1,18 +1,25 @@
 package no.nsd.qddt.domain.study.web;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import no.nsd.qddt.domain.xml.XmlFragmentAssembler;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -24,7 +31,6 @@ public class StudyController extends AbstractController {
 
     private final StudyService service;
     private final SurveyProgramService surveyProgramService;
-
 
     @Autowired
     public StudyController(StudyService service, SurveyProgramService surveyProgramService
@@ -84,6 +90,7 @@ public class StudyController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
+        return new XmlFragmentAssembler<Study>(service.findOne(id)).compileToXml();
+
     }
 }

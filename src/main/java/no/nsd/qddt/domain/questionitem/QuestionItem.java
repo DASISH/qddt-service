@@ -174,8 +174,7 @@ public class QuestionItem extends AbstractEntityAudit {
         if (responseDomainRevision != null ? !responseDomainRevision.equals(that.responseDomainRevision) : that.responseDomainRevision != null)
             return false;
         if (question != null ? !question.equals(that.question) : that.question != null) return false;
-        if (intent != null ? !intent.equals(that.intent) : that.intent != null)
-            return false;
+        if (intent != null ? !intent.equals(that.intent) : that.intent != null) return false;
         return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
     }
 
@@ -201,7 +200,7 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     @Override
-    public AbstractXmlBuilder getXmlBuilder() {
+    public QuestionItemFragmentBuilder getXmlBuilder() {
         return new QuestionItemFragmentBuilder(this);
     }
 
@@ -217,24 +216,17 @@ public class QuestionItem extends AbstractEntityAudit {
         }
         if (getResponseDomain() != null) {
             this.getResponseDomain().fillDoc( pdfReport, "" );
-            // pdfReport.addPadding();
         }
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-        // pdfReport.addPadding();
     }
 
     @Override
-    protected void beforeUpdate() {
-//        LOG.info( "QuestionItem before UPDATE" );
-    }
+    protected void beforeUpdate() { }
+
     @Override
-    protected void beforeInsert() {
-//        LOG.info( "QuestionItem before INSERT" );
-
-    }
-
+    protected void beforeInsert() { }
 
 }
 

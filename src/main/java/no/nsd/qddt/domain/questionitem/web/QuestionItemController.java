@@ -1,11 +1,7 @@
 package no.nsd.qddt.domain.questionitem.web;
 
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.json.QuestionItemJsonEdit;
-import no.nsd.qddt.domain.questionitem.json.QuestionItemListJson;
-import no.nsd.qddt.domain.questionitem.QuestionItemService;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
-import no.nsd.qddt.exception.StackTraceFilter;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +11,21 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItemService;
+import no.nsd.qddt.domain.questionitem.json.QuestionItemJsonEdit;
+import no.nsd.qddt.domain.questionitem.json.QuestionItemListJson;
+import no.nsd.qddt.domain.xml.XmlFragmentAssembler;
+import no.nsd.qddt.exception.StackTraceFilter;
 
 /**
  * @author Stig Norland
@@ -29,7 +37,7 @@ public class QuestionItemController {
     private final QuestionItemService service;
 
     @Autowired
-    public QuestionItemController(QuestionItemService service){
+    public QuestionItemController(QuestionItemService service) {
         this.service = service;
     }
 
@@ -98,7 +106,8 @@ public class QuestionItemController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
+        return new XmlFragmentAssembler<QuestionItem>(service.findOne(id)).compileToXml();
+
     }
 
 }

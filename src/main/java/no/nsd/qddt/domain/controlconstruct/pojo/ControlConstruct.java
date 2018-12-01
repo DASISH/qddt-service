@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
@@ -100,10 +101,11 @@ public class ControlConstruct extends AbstractEntityAudit {
             + ", \"label\":\"" + label + "}";
     }
 
-    @Override
-    public String toXml(XmlDDIFragmentBuilder report) {
 
-    }
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 
 
 }

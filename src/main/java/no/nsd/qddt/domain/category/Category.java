@@ -9,7 +9,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.responsedomain.Code;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
@@ -284,13 +284,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     }
 
     @Override
-    public String toXml(XmlDDIFragmentBuilder report) {
-        StringBuilder sb = new StringBuilder();
-        return sb.toString();
-    }
-
-
-    @Override
     public void fillDoc(PdfReport pdfReport,String counter) {
         Document document =pdfReport.getTheDocument();
         switch (getCategoryType()){
@@ -471,5 +464,10 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         clone.setChangeComment("Copy of [" + getName() + "]");
         return clone;
     }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 
 }

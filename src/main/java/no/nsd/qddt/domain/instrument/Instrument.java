@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -151,9 +151,9 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
     @Override
-    public String toXml(XmlDDIFragmentBuilder report) {
-
-    }
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {
@@ -169,5 +169,6 @@ public class Instrument extends AbstractEntityAudit  {
     protected void beforeInsert() {
 
     }
+
 
 }

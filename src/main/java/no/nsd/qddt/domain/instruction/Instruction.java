@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.instruction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -64,17 +64,18 @@ public class Instruction extends AbstractEntityAudit {
     }
 
     @Override
-    public String toXml(XmlDDIFragmentBuilder report) {
-
-    }
-
-    @Override
     public void fillDoc(PdfReport pdfReport,String counter) {
     }
 
     @Override
     protected void beforeUpdate() {}
     @Override
-    protected void beforeInsert() {}
+    protected void beforeInsert() {
+    }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 
 }

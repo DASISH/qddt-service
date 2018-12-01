@@ -1,18 +1,29 @@
 package no.nsd.qddt.domain.surveyprogram;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+
+import org.hibernate.Hibernate;
+import org.hibernate.envers.Audited;
+
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
-import org.hibernate.Hibernate;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 
 /**
  * <ul class="inheritance">
@@ -155,10 +166,9 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
     }
 
     @Override
-    public String toXml(XmlDDIFragmentBuilder report) {
-        StringBuilder sb = new StringBuilder();
-        return sb.toString();
-    }
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 
 
     @Override
@@ -181,6 +191,8 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
     @Override
     protected void beforeUpdate() {}
     @Override
-    protected void beforeInsert() {}
+    protected void beforeInsert() {
+    }
+
 
 }

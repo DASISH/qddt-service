@@ -1,12 +1,9 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.domain.AbstractController;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
-import no.nsd.qddt.domain.responsedomain.ResponseKind;
-import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
-import no.nsd.qddt.exception.RequestAbortedException;
+import java.util.UUID;
+
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +13,21 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.ConstraintViolationException;
-import java.util.UUID;
+import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
+import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
+import no.nsd.qddt.domain.xml.XmlFragmentAssembler;
+import no.nsd.qddt.exception.RequestAbortedException;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -33,9 +41,9 @@ public class ResponseDomainController extends AbstractController {
     private final ResponseDomainService service;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService service){
+    public ResponseDomainController(ResponseDomainService service) {
         this.service = service;
-//        CategoryService categoryService1 = categoryService;
+        // CategoryService categoryService1 = categoryService;
 
     }
 
@@ -97,7 +105,8 @@ public class ResponseDomainController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
+        return new XmlFragmentAssembler<ResponseDomain>(service.findOne(id)).compileToXml();
+
     }
 
     private ResponseDomainJsonEdit responseDomain2Json(ResponseDomain responseDomain){

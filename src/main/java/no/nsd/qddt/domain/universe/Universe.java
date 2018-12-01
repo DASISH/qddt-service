@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.universe;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
@@ -66,15 +67,16 @@ public class Universe extends AbstractEntityAudit {
     }
 
     @Override
-    public String toXml(XmlDDIFragmentBuilder report) {
-
-    }
-
-    @Override
     public void fillDoc(PdfReport pdfReport,String counter) {}
 
     @Override
     protected void beforeUpdate() {}
     @Override
-    protected void beforeInsert() {}
+    protected void beforeInsert() {
+    }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 }
