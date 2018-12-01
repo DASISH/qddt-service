@@ -9,6 +9,8 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.xml.XmlFragmentAssembler;
+
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -151,6 +153,7 @@ public class ControlConstructController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toXml( new XmlDDIFragmentBuilder() );
+        return new XmlFragmentAssembler<ControlConstruct>(service.findOne(id)).compileToXml();
+
     }
 }
