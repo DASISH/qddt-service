@@ -14,6 +14,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @Transient
     @JsonSerialize
-    private List<ConceptRef> conceptRefs;
+    private List<ConceptRef> conceptRefs = new ArrayList<>( 0 );
 
 
     public QuestionItem() {

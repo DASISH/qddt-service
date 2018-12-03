@@ -14,18 +14,18 @@ import java.util.stream.Collectors;
 public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup> {
 
     private final String xmlTopic =
-        "<d:TopicGroup>\n" +
-            "\t%1$s\n" +
-            "\t%2$s\n" +
-            "\t%3$s\n" +
-            "\t<r:Name maxLength=\"250\">\n" +
-            "\t\t<r:Content xml:lang=\"eng-GB\" isTranslated=\"false\" isTranslatable=\"true\" isPlainText=\"true\">%4$s</r:Content>\n" +
-            "\t</r:Name>\n" +
-            "\t<r:Description>\n" +
-            "\t\t<r:Content xml:lang=\"eng-GB\" isTranslated=\"false\" isTranslatable=\"true\" isPlainText=\"true\">%5$s</r:Content>\n" +
+        "<d:ConceptGroup isOrdered= \"false\" isAdministrativeOnly=\"true\">\n" +
+            "\t%1$s" +
+            "\t%2$s" +
+            "\t%3$s" +
+            "\t<r:ConceptGroupName maxLength=\"250\">\n" +
+            "\t\t<r:Content xml:lang=\"%6$s\">%4$s</r:Content>\n" +
+            "\t</r:ConceptGroupName>\n" +
+            "\t<r:Description maxLength=\"10000\">\n" +
+            "\t\t<r:Content xml:lang=\"%6$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
             "\t</r:Description>\n" +
-            "\t%6$s\n" +
-        "</d:TopicGroup>";
+            "\t%7$s" +
+        "</d:ConceptGroup>\n";
 
     private List<ConceptFragmentBuilder> children;
 
@@ -50,9 +50,10 @@ public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup>
             getBasedOn(),
             entity.getName(),
             entity.getDescription(),
+            entity.getXmlLang(),
             children.stream()
                 .map(c -> c.getEntityRef())
-                .collect( Collectors.joining("\n")) );
+                .collect( Collectors.joining()) );
     }
 
 }

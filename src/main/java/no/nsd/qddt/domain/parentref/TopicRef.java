@@ -22,7 +22,8 @@ public class TopicRef extends BaseRef<TopicRef>{
         parent = new StudyRef(topicGroup.getStudy());
     }
 
-    public StudyRef getStudyRef() {
+    @Override
+    public StudyRef getParent() {
         return parent;
     }
 
@@ -57,4 +58,5 @@ public class TopicRef extends BaseRef<TopicRef>{
     public int compareTo(TopicRef o) {
         return this.getName().compareToIgnoreCase(o.getName());
     }
+
 }

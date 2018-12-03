@@ -9,16 +9,14 @@ public class ConceptRef extends BaseRef<ConceptRef> {
 
     private TopicRef parent;
 
-    public ConceptRef() {
-        super();
-    }
-
-    public ConceptRef(Concept concept){
+        public ConceptRef(Concept concept){
         super(concept);
         parent = concept.getTopicRef();
     }
 
-    public TopicRef getTopicRef() {
+
+    @Override
+    public TopicRef getParent() {
         return parent;
     }
 
@@ -55,9 +53,9 @@ public class ConceptRef extends BaseRef<ConceptRef> {
             return  -1;
         int i;
         try {
-            i = this.getTopicRef().getStudyRef().compareTo(o.getTopicRef().getStudyRef());
+            i = this.getParent().getParent().compareTo(o.getParent().getParent());
             if (i == 0)
-                i = this.getTopicRef().compareTo(o.getTopicRef());
+                i = this.getParent().compareTo(o.getParent());
             if (i == 0)
                 i = getName().compareToIgnoreCase(o.getName());
         } catch (NullPointerException ex) {
@@ -65,4 +63,6 @@ public class ConceptRef extends BaseRef<ConceptRef> {
         }
         return i;
     }
+
+
 }

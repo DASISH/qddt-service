@@ -142,6 +142,6 @@ public class Version implements Comparable<Version> {
     }
 
     public String toDDIXml() {
-        return String.format( versionFormat, major, minor, "" );
+        return String.format( versionFormat, major, minor, "" ).trim();
     }
 }

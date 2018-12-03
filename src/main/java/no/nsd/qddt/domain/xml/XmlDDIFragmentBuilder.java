@@ -9,10 +9,10 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
 
     protected String xmlTagPreFix= "r:";
 
-    private final String xmlURN1 =
-        "<r:URN>urn:ddi:%1$s:%2$s:%3$s</r:URN>\n";
+    protected final String xmlURN1 =
+        "<r:URN type=\"URN\" typeOfIdentifier=\"Canonical\">urn:ddi:%1$s:%2$s:%3$s</r:URN>\n";
 
-    private final String xmlRef =
+    protected final String xmlRef =
         "<%1$s%2$sReference>\n" +
         "\t%3$s" +
         "\t<%1$sTypeOfObject>%2$s</%1$sTypeOfObject>\n" +
@@ -24,7 +24,7 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         "\t<r:RationaleDescription>\n" +
         "\t\t<r:String>%2$s</r:String>\n" +
         "\t</r:RationaleDescription>\n" +
-        "\t\t<r:RationaleCode>%3$s</r:RationaleCode>\n" +
+        "\t<r:RationaleCode>%3$s</r:RationaleCode>\n" +
         "</r:VersionRationale>\n";
 
     private final String xmlBasedOn =
@@ -40,7 +40,7 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
 
 
     protected String getRationale() {
-        return  String.format( xmlRationale, entity.getModifiedBy().getUsername(), entity.getChangeComment(), entity.getChangeKind());
+        return  String.format( xmlRationale, entity.getModifiedBy().getAgencyUserName(), entity.getChangeComment(), entity.getChangeKind().name() );
     }
 
     protected String getBasedOn() {

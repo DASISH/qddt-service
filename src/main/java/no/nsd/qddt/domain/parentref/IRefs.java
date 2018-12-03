@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.parentref;
 
+import no.nsd.qddt.domain.embedded.Version;
+
 import java.util.UUID;
 
 /**
@@ -8,12 +10,15 @@ import java.util.UUID;
  * without ending up with a circular reference loop.
  */
 interface IRefs<T> extends Comparable<T> {
-    String getName();
-
-    void setName(String name);
 
     UUID getId();
 
-    void setId(UUID id);
+    String getName();
+
+    Version getVersion();
+
+    String getAgency();
+
+    IRefs getParent();
 
 }

@@ -23,10 +23,11 @@ public class StudyRef extends BaseRef<StudyRef> {
             parent = new SurveyRef();
         }
     }
-
-    public SurveyRef getSurveyRef() {
+    @Override
+    public SurveyRef getParent() {
         return parent;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -58,4 +59,5 @@ public class StudyRef extends BaseRef<StudyRef> {
     public int compareTo(StudyRef o) {
         return this.getName().compareToIgnoreCase(o.getName());
     }
+
 }

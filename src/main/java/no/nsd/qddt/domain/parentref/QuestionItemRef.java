@@ -9,25 +9,22 @@ import java.util.*;
  */
 public class QuestionItemRef extends BaseRef<QuestionItemRef> {
 
-    private Set<ConceptRef> parents;
-
-    public QuestionItemRef(){
-        super();
-
-    }
+    private ConceptRef parent;
+    private List<ConceptRef> parents;
 
     public QuestionItemRef(QuestionItem entity) {
         super(entity);
-        parents = new HashSet<>(entity.getConceptRefs());
+        parents = entity.getConceptRefs();
+        parent = entity.getConceptRefs().get( 0 );
     }
 
+    @Override
+    public ConceptRef getParent() {
+        return parent;
+    }
 
-    public Set<ConceptRef> getConceptRefs() {
+    public List<ConceptRef> getParents() {
         return parents;
-    }
-
-    public void setConceptRefs(Set<ConceptRef> conceptRefs) {
-        this.parents = conceptRefs;
     }
 
 
@@ -61,4 +58,5 @@ public class QuestionItemRef extends BaseRef<QuestionItemRef> {
     public int compareTo(QuestionItemRef o) {
         return this.getName().compareToIgnoreCase(o.getName());
     }
+
 }

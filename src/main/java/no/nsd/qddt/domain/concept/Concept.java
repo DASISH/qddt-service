@@ -61,8 +61,8 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @JoinColumn(name = "topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
-    @Column(name = "topicgroup_id", insertable = false, updatable = false)
-    private UUID topicGroupId;
+//    @Column(name = "topicgroup_id", insertable = false, updatable = false)
+//    private UUID topicGroupId;
 
     @OrderColumn(name="concept_idx")
     @ElementCollection(fetch = FetchType.EAGER)

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.parentref;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,16 +16,8 @@ abstract class BaseRef<T> implements IRefs<T> {
 
     private String name;
     private UUID id;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
+    private Version version;
+    private String agency;
 
     @Override
     public UUID getId() {
@@ -32,16 +25,27 @@ abstract class BaseRef<T> implements IRefs<T> {
     }
 
     @Override
-    public void setId(UUID id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
 
+    @Override
+    public Version getVersion() {
+        return version;
+    }
+
+    @Override
+    public String getAgency() {
+        return agency;
+    }
 
     BaseRef(AbstractEntityAudit entity){
         assert entity != null;
         try {
-            setName(entity.getName());
-            setId(entity.getId());
+            name = entity.getName();
+            id = entity.getId();
+            version = entity.getVersion();
+            agency = entity.getAgency().getName();
         } catch (NullPointerException npe){
             LOG.error("BaseRef NullPointerException");
         } catch (Exception ex){
@@ -85,5 +89,6 @@ abstract class BaseRef<T> implements IRefs<T> {
         if (o==null) return 1;
         return this.getName().compareToIgnoreCase(o.getName());
     }
+
 
 }

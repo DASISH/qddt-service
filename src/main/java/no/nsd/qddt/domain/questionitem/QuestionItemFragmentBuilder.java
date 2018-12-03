@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -12,20 +13,20 @@ import java.util.UUID;
 public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionItem> {
     private final String xmlQuestionItem =
         "<d:QuestionItem>\n" +
-            "\t%1$s\n" +
-            "\t%2$s\n" +
-            "\t%3$s\n" +
-            "\t<r:QuestionItemName maxLength=\"250\">\n" +
-            "\t\t<r:Content xml:lang=\"eng-GB\" isTranslated=\"false\" isTranslatable=\"true\" isPlainText=\"true\">%4$s</r:Content>\n" +
-            "\t</r:QuestionItemName>\n" +
-            "\t<r:QuestionIntent>\n" +
-            "\t\t<r:Content xml:lang=\"eng-GB\" isTranslated=\"false\" isTranslatable=\"true\" isPlainText=\"true\">%5$s</r:Content>\n" +
-            "\t</r:QuestionIntent>\n" +
-            "\t<r:QuestionText>\n" +
-            "\t\t<r:Content xml:lang=\"eng-GB\" isTranslated=\"false\" isTranslatable=\"true\" isPlainText=\"true\">%5$s</r:Content>\n" +
-            "\t</r:QuestionText>\n" +
-            "\t%6$s\n" +
-            "</d:QuestionItem>";
+            "\t%1$s" +
+            "\t%2$s" +
+            "\t%3$s" +
+            "\t<QuestionItemName>\n" +
+            "\t\t<r:String>%4$s</r:String>\n" +
+            "\t</QuestionItemName>\n" +
+            "\t<QuestionIntent>\n" +
+            "\t\t<r:Content xml:lang=\"%7$s\">%5$s</r:Content>\n" +
+            "\t</QuestionIntent>\n" +
+            "\t<QuestionText>\n" +
+            "\t\t<r:Content xml:lang=\"%7$s\" isPlainText=\"false\">%6$s</r:Content>\n" +
+            "\t</QuestionText>\n" +
+            "\t%8$s" +
+        "</d:QuestionItem>\n";
 
 
     private final AbstractXmlBuilder responseBuilder;
@@ -35,6 +36,15 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
         responseBuilder = questionItem.getResponseDomain().getXmlBuilder();
     }
 
+    protected String getConceptRef() {
+        return entity.getConceptRefs().stream()
+            .map(cr ->{
+                String urn = String.format(xmlURN1, cr.getAgency(),cr.getId(),cr.getVersion().toDDIXml());
+                return String.format( xmlRef, xmlTagPreFix, "Concept", urn);
+                })
+            .collect( Collectors.joining());
+
+    }
 
     @Override
     public void setEntityBody(Map<UUID, String> fragments) {
@@ -50,6 +60,8 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
             entity.getName(),
             entity.getIntent(),
             entity.getQuestion(),
-            responseBuilder.getEntityRef());
+            entity.getXmlLang(),
+            responseBuilder.getEntityRef(),
+            getConceptRef());
     }
 }

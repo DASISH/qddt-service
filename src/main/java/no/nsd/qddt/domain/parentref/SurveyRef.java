@@ -17,4 +17,9 @@ public class SurveyRef extends BaseRef<SurveyRef>{
     public int compareTo(SurveyRef o) {
         return this.getName().compareToIgnoreCase(o.getName());
     }
+
+    @Override
+    public IRefs getParent() {
+        return null;
+    }
 }

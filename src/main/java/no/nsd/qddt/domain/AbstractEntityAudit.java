@@ -81,6 +81,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
             throw new IllegalArgumentException();
         }
 
+
         @Override
         public String toString() {
             return "{ " +
