@@ -1,5 +1,7 @@
-package no.nsd.qddt.domain;
+package no.nsd.qddt.configuration;
 
+import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
