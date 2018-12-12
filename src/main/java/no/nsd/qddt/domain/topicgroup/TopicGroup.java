@@ -11,11 +11,12 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -72,7 +73,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @JsonIgnore
     @OrderColumn(name="_idx")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
-//    @AuditMappedBy(mappedBy = "id", positionMappedBy = "index")
+    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "index")
     private List<Concept> concepts = new ArrayList<>(0);
 
 

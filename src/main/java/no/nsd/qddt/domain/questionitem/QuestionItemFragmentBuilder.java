@@ -43,7 +43,6 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
                 return String.format( xmlRef, xmlTagPreFix, "Concept", urn);
                 })
             .collect( Collectors.joining());
-
     }
 
     @Override

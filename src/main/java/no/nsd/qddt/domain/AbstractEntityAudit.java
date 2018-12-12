@@ -11,7 +11,7 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
-import no.nsd.qddt.utils.SecurityContext;
+import no.nsd.qddt.security.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;

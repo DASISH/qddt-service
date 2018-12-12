@@ -10,22 +10,22 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class XmlFragmentAssembler<T extends AbstractEntity> {
+public class XmlDDIFragmentAssembler<T extends AbstractEntity> {
 
     private final String XMLDEF = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private final String xmlFragHeader =
         "<ddi:FragmentInstance " +
-        "xmlns:ddi=\"ddi:instance:3_2\" " +
-        "xmlns:html=\"http://www.w3.org/1999/xhtml\" " +
+        "xmlns:d=\"ddi:datacollection:3_2\" " +
+        "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-        "xsi:schemaLocation=\"ddi:instance:3_2  http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd\">\n";
+        "xsi:schemaLocation=\"ddi:datacollection:3_2 http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/datacollection.xsd\">\n";
 
     private final T rootElement;
     private final AbstractXmlBuilder builder;
 
     private Map<UUID,String> fragments = new HashMap<>();
 
-    public XmlFragmentAssembler(T rootElement) {
+    public XmlDDIFragmentAssembler(T rootElement) {
         this.rootElement = rootElement;
         builder = rootElement.getXmlBuilder();
         builder.setEntityBody( fragments );

@@ -25,9 +25,9 @@ public class Password {
         return oldPassword;
     }
 
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
+//    public void setOldPassword(String oldPassword) {
+//        this.oldPassword = oldPassword;
+//    }
 
     public String getPassword() {
         return password;
