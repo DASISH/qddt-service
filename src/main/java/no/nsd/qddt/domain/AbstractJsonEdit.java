@@ -41,6 +41,7 @@ public  abstract class AbstractJsonEdit implements Serializable {
     private AbstractEntityAudit.ChangeKind changeKind;
 
     private String classKind;
+    private String xmlLang;
 
     protected AbstractJsonEdit() {
     }
@@ -63,6 +64,7 @@ public  abstract class AbstractJsonEdit implements Serializable {
         setVersion(entity.getVersion());
         setChangeKind( entity.getChangeKind());
         setClassKind( entity.getClassKind() );
+        xmlLang = entity.getXmlLang();
     }
 
     public UUID getId() {
@@ -143,5 +145,9 @@ public  abstract class AbstractJsonEdit implements Serializable {
 
     public void setClassKind(String classKind) {
         this.classKind = classKind;
+    }
+
+    public String getXmlLang() {
+        return xmlLang;
     }
 }

@@ -1,10 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.controlconstruct.pojo.FactoryConditionConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.FactoryQuestionConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.FactorySequenceConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.FactoryStatementConstruct;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
@@ -19,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -220,16 +217,16 @@ class ControlConstructServiceImpl implements ControlConstructService {
         if ( instance instanceof QuestionConstruct) {
             QuestionConstruct qc = (QuestionConstruct)instance;
             qc.populateInstructions();                // instructions has to be unpacked into pre and post instructions
-
-            if (qc.getQuestionItemUUID() == null)  {   // before returning fetch correct version of QI...
-                qc.setQuestionItemRevision(0);
-            } else {
+            try {
                 Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
                     qc.getQuestionItemUUID(),
-                    qc.getQuestionItemRevision());
+                    qc.getQuestionItemRevision() );
 
-                qc.setQuestionItemRevision(rev.getRevisionNumber());
-                qc.setQuestionItem(rev.getEntity());
+                qc.setQuestionItemRevision( rev.getRevisionNumber() );
+                qc.setQuestionItem( rev.getEntity() );
+            } catch (JpaSystemException ex) {
+                ((QuestionConstruct) instance).setQuestionItemRevision( 0 );
+                LOG.error( "CCS QI revision not found, resetting to latest.", ex );
             }
             qc.setChangeComment( null );
             return (S)qc;

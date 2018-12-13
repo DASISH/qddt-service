@@ -77,14 +77,13 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')  and hasPermission(#instance,'AGENCY')")
     public TopicGroup save(TopicGroup instance) {
         try {
-            instance = postLoadProcessing(
+            return postLoadProcessing(
                 topicGroupRepository.save(
                     prePersistProcessing(instance)));
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             throw ex;
         }
-        return instance;
     }
 
 //    @Transactional

@@ -269,6 +269,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     @Override
+    @JsonIgnore
     public AbstractXmlBuilder getXmlBuilder() {
         return new ConceptFragmentBuilder(this);
     }

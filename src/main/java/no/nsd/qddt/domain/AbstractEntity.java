@@ -95,6 +95,7 @@ public abstract class AbstractEntity {
 
     }
 
+    @JsonIgnore
     public abstract AbstractXmlBuilder getXmlBuilder();
 
 

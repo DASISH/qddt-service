@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import static no.nsd.qddt.configuration.SecurityConfiguration.WebSecurityConfig.passwordEncoder;
+import static no.nsd.qddt.configuration.SecurityConfiguration.passwordEncoder;
 
 /**
  * AuthController provides signup, signin and token refresh methods

@@ -125,10 +125,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     @Column(name = "change_comment",nullable = false)
     private String changeComment;
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private String xmlLang = "eng-GB";
+    private String xmlLang = "en-GB";
 
     @NotAudited
     @OrderBy("owner_idx desc")
@@ -316,7 +313,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
 
     protected abstract void beforeInsert();
 
-
     @JsonIgnore
     public boolean isBasedOn(){
         return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
@@ -348,7 +344,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         setId(UUID.randomUUID());
         hasRun = true;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -382,7 +377,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
                 "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
                 "\"agency\":" + (agency == null ? "null" : agency) + ", ";
     }
-
 
 
     public abstract void fillDoc(PdfReport pdfReport,String counter);

@@ -88,15 +88,20 @@ class QuestionItemServiceImpl implements QuestionItemService {
 //    }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public void delete(UUID uuid) {
+        delete(questionItemRepository.getOne( uuid ));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
+    public void delete(QuestionItem instance) {
         try {
-            questionItemRepository.delete(uuid);
+            questionItemRepository.delete(instance);
         } catch (Exception ex){
             LOG.error("QI delete ->",ex);
             throw ex;
         }
     }
+
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")

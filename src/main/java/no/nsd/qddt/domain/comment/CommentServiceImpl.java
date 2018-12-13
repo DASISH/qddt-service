@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.comment;
 
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.utils.SecurityContext;
+import no.nsd.qddt.security.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

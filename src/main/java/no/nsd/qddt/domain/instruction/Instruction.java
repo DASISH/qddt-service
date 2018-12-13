@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+
 /**
  * @author Stig Norland
  */
@@ -32,9 +34,11 @@ public class Instruction extends AbstractEntityAudit {
         return description;
     }
     public void setDescription(String description) {
-
-        setName(description.toUpperCase().replace(' ','_').substring(0,description.length()>25?25:description.length()));
         this.description = description;
+        if (IsNullOrTrimEmpty(getName())) {
+            Integer max25 = description.length()>25?25:description.length();
+            setName(description.toUpperCase().replace(' ','_').substring(0,max25));
+        }
     }
 
     @Override

@@ -3,8 +3,7 @@ package no.nsd.qddt.domain.instrument.web;
 import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentListJson;
 import no.nsd.qddt.domain.instrument.InstrumentService;
-import no.nsd.qddt.domain.xml.XmlFragmentAssembler;
-
+import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,7 +88,7 @@ public class InstrumentController  {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlFragmentAssembler<Instrument>(service.findOne(id)).compileToXml();
+        return new XmlDDIFragmentAssembler<Instrument>(service.findOne(id)).compileToXml();
     }
 
 }

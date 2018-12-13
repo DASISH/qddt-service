@@ -106,7 +106,7 @@ public class QuestionConstruct  extends ControlConstruct {
     }
 
     public Integer getQuestionItemRevision() {
-        return questionItemRevision;
+        return (questionItemRevision==null) ? 0 :questionItemRevision;
     }
 
     public void setQuestionItemRevision(Integer questionItemRevision) {

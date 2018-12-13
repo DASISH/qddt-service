@@ -9,6 +9,7 @@ import org.hibernate.envers.RevisionListener;
 public class RevisionEntityListenerImpl implements RevisionListener {
     @Override
     public void newRevision(Object revisionEntity) {
+//        System.err.println("setModifiedBy");
         ( (RevisionEntityImpl) revisionEntity ).setModifiedBy( SecurityContext.getUserDetails().getUser() );
     }
 }

@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.domain.xml.XmlFragmentAssembler;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -204,7 +204,7 @@ public class ConceptController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlFragmentAssembler<Concept>(service.findOne(id)).compileToXml();
+        return new XmlDDIFragmentAssembler<Concept>(service.findOne(id)).compileToXml();
     }
 
 

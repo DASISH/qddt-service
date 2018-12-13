@@ -1,9 +1,12 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import java.util.UUID;
-
-import javax.validation.ConstraintViolationException;
-
+import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
+import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,21 +16,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import no.nsd.qddt.domain.AbstractController;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
-import no.nsd.qddt.domain.responsedomain.ResponseKind;
-import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
-import no.nsd.qddt.domain.xml.XmlFragmentAssembler;
-import no.nsd.qddt.exception.RequestAbortedException;
+import javax.validation.ConstraintViolationException;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -105,7 +97,7 @@ public class ResponseDomainController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlFragmentAssembler<ResponseDomain>(service.findOne(id)).compileToXml();
+        return new XmlDDIFragmentAssembler<ResponseDomain>(service.findOne(id)).compileToXml();
 
     }
 
