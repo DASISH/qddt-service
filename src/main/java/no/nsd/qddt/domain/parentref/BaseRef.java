@@ -14,10 +14,11 @@ import java.util.UUID;
 abstract class BaseRef<T> implements IRefs<T> {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    private String name;
     private UUID id;
     private Version version;
     private String agency;
+
+    private String name;
 
     @Override
     public UUID getId() {
@@ -85,10 +86,10 @@ abstract class BaseRef<T> implements IRefs<T> {
                 '}';
     }
 
-    public int compareTo(BaseRef o) {
-        if (o==null) return 1;
-        return this.getName().compareToIgnoreCase(o.getName());
-    }
+//    public int compareTo(BaseRef o) {
+//        if (o==null) return 1;
+//        return this.getName().compareToIgnoreCase(o.getName());
+//    }
 
 
 }

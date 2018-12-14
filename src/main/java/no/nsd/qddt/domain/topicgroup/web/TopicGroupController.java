@@ -83,7 +83,7 @@ public class TopicGroupController extends AbstractController {
 
         return new TopicGroupJson(service.save( instance ));
 //        Study study = studyService.findOne(studyId);
-//        study.addTopicGroup(instance.getIndex(), instance);
+//        study.addTopicGroup(instance.getStudyIndex(), instance);
 //        instance = studyService.save( study ).getTopicGroups().stream()
 //            .max( Comparator.comparing(TopicGroup::getModified)).get();
 

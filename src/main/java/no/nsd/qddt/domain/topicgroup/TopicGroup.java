@@ -67,7 +67,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private UUID studyId;
 
     @Column(name = "study_idx" ,insertable = false, updatable = false)
-    private Integer index;
+    private Integer studyIndex;
 
 
     @JsonIgnore
@@ -127,7 +127,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
 
     public Integer getIndex() {
-        return index;
+        return studyIndex;
     }
 
 

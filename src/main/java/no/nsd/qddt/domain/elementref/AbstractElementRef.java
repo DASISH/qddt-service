@@ -7,7 +7,7 @@ package no.nsd.qddt.domain.elementref;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.IElementRefType;
+import no.nsd.qddt.domain.IEntityAuditXmlRef;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
@@ -22,19 +22,19 @@ import java.util.UUID;
 public abstract class AbstractElementRef implements IElementRef {
 
     @Enumerated(EnumType.STRING)
-    protected ElementKind elementKind;
+    private ElementKind elementKind;
 
     @Type(type="pg-uuid")
-    protected UUID elementId;
+    private UUID elementId;
 
     @Column(name = "element_revision")
-    protected Integer elementRevision;
+    private Integer elementRevision;
 
     protected String name;
 
-    protected Integer major;
-    protected Integer minor;
-    protected String versionLabel;
+    private Integer major;
+    private Integer minor;
+    private String versionLabel;
 
 
     @Transient
@@ -96,8 +96,8 @@ public abstract class AbstractElementRef implements IElementRef {
 
 
     @JsonSerialize
-    public IElementRefType getElement() {
-        return (IElementRefType)element;
+    public IEntityAuditXmlRef getElement() {
+        return (IEntityAuditXmlRef)element;
     }
     public void setElement(Object element) {
         this.element = element;

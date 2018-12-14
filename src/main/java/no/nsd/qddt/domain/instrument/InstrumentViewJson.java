@@ -12,12 +12,12 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class InstrumentListJson {
+public class InstrumentViewJson {
 
     @Type(type = "pg-uuid")
     private UUID id;
 
-	private String label;
+	  private String label;
 
     private String name;
 
@@ -35,10 +35,10 @@ public class InstrumentListJson {
     private Version version;
 
 
-    public InstrumentListJson() {
+    public InstrumentViewJson() {
     }
 
-    public InstrumentListJson(Instrument entity) {
+    public InstrumentViewJson(Instrument entity) {
         if (entity == null) return;
         id = entity.getId();
         name = entity.getName();

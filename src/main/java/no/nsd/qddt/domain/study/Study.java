@@ -1,29 +1,6 @@
 package no.nsd.qddt.domain.study;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.PreRemove;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import org.hibernate.Hibernate;
-import org.hibernate.envers.Audited;
-
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
@@ -34,6 +11,12 @@ import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * <ul class="inheritance">
@@ -87,7 +70,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
     @OrderColumn(name="study_idx")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "study", cascade = { CascadeType.MERGE, CascadeType.PERSIST,  CascadeType.REMOVE })   // TODO check performance and consequences
-//    @AuditMappedBy(mappedBy = "id", positionMappedBy = "index")
+    @AuditMappedBy(mappedBy = "study", positionMappedBy = "studyIndex")
     private List<TopicGroup> topicGroups = new ArrayList<>(0);
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)

@@ -32,7 +32,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private StudyRef studyRef;
 
-    private Integer index;
+    private Integer studyIndex;
 
     public TopicGroupJson(TopicGroup topicGroup) {
         super(topicGroup);
@@ -44,7 +44,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments());
         studyRef = topicGroup.getStudyRef();
-        this.index = topicGroup.getIndex();
+        this.studyIndex = topicGroup.getIndex();
     }
 
     public String getDescription() {
@@ -97,7 +97,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
     }
 
     public Integer getIndex() {
-        return index;
+        return studyIndex;
     }
 
     @Override

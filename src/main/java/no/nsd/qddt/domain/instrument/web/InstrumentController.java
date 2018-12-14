@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instrument.web;
 
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.instrument.InstrumentListJson;
+import no.nsd.qddt.domain.instrument.InstrumentViewJson;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,13 +68,13 @@ public class InstrumentController  {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<InstrumentListJson>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
-                                                        @RequestParam(value = "description",defaultValue = "") String decsription,
-                                                        @RequestParam(value = "kind",defaultValue = "") String strKind,
-                                                        Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<InstrumentViewJson>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
+                                                                @RequestParam(value = "description",defaultValue = "") String decsription,
+                                                                @RequestParam(value = "kind",defaultValue = "") String strKind,
+                                                                Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<InstrumentListJson> items = service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable)
-                                            .map(c -> new InstrumentListJson(c));
+        Page<InstrumentViewJson> items = service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable)
+                                            .map(c -> new InstrumentViewJson(c));
 
         return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
     }

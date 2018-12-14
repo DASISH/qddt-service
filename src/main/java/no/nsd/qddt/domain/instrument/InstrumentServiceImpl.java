@@ -138,7 +138,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     private InstrumentElement loadDetails(InstrumentElement instance) {
         LOG.info("loadDetails");
-        instance.getSequences().stream().forEach( this::loadDetails );
+        instance.getSequence().stream().forEach( this::loadDetails );
         return  loadDetail( instance) ;
     }
 

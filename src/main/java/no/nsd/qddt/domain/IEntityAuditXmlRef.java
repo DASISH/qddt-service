@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain;
 
+import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 
@@ -8,10 +9,10 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface IElementRefType {
-
+public interface IEntityAuditXmlRef  {
     UUID getId();
-    String getName();
     Version getVersion();
+    String getName();
+    Agency getAgency();
     AbstractXmlBuilder getXmlBuilder();
 }

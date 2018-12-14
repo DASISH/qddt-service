@@ -2,6 +2,7 @@ package no.nsd.qddt.domain;
 
 
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
 
@@ -20,8 +21,10 @@ public class RevisionEntityImpl extends DefaultRevisionEntity {
     @JoinColumn(name = "user_id", nullable = false)
     User modifiedBy;
 
-    public User getModifiedBy() {
-        return modifiedBy;
+
+
+    public UserJson getModifiedBy() {
+        return  new UserJson(modifiedBy);
     }
 
     public void setModifiedBy(User modifiedBy) {

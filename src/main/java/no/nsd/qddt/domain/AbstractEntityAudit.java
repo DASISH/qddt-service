@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  implements IElementRefType {
+public abstract class AbstractEntityAudit extends AbstractEntity  implements IEntityAuditXmlRef {
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.

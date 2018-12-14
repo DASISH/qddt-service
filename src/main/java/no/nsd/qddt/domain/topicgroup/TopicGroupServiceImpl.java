@@ -141,7 +141,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     // Only users that can see survey and study can here, (sometimes guest should see this too.)
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<TopicGroup> findByStudyId(UUID id) {
-        return topicGroupRepository.findByStudyIdOrderByIndex(id).stream().filter( f -> f != null )
+        return topicGroupRepository.findByStudyIdOrderByStudyIndex(id).stream().filter( f -> f != null )
                 .map(this::postLoadProcessing).collect(Collectors.toList());
     }
 

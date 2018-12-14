@@ -42,12 +42,15 @@ public class InstrumentElement  implements Cloneable {
     @JoinColumn(name = "instrument_element_id",updatable = false,insertable = false)
     private InstrumentElement parentReferenceOnly;
 
+    @JsonIgnore
+    @Column(name = "_idx" ,insertable = false, updatable = false)
+    private Integer index;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
     @JoinColumn(name = "instrument_element_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly")
-    private List<InstrumentElement> sequences = new ArrayList<>();
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
+    private List<InstrumentElement> sequence = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
@@ -70,11 +73,11 @@ public class InstrumentElement  implements Cloneable {
         this.id = id;
     }
 
-    public List<InstrumentElement> getSequences() {
-        return sequences;
+    public List<InstrumentElement> getSequence() {
+        return sequence;
     }
-    public void setSequences(List<InstrumentElement> sequence) {
-        this.sequences = sequence;
+    public void setSequence(List<InstrumentElement> sequence) {
+        this.sequence = sequence;
     }
 
     public Set<InstrumentParameter> getParameters() {
@@ -123,7 +126,7 @@ public class InstrumentElement  implements Cloneable {
         InstrumentElement clone = new InstrumentElement();
         clone.setElementRef( this.elementRef.clone() );
         clone.setParameters( this.getParameters().stream().map( InstrumentParameter::clone ).collect( Collectors.toSet() ) );
-        clone.setSequences( this.sequences.stream().map( InstrumentElement::clone ).collect( Collectors.toList() ) );
+        clone.setSequence( this.sequence.stream().map( InstrumentElement::clone ).collect( Collectors.toList() ) );
         return clone;
     }
 }

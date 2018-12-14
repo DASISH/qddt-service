@@ -22,7 +22,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
     private List<ElementRef> topicQuestionItems;
 
-    private Set<ConceptJsonView> concepts = new HashSet<>();
+    private List<ConceptJsonView> concepts = new ArrayList<>();
 
     private Set<Author> authors = new HashSet<>();
 
@@ -42,7 +42,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments());
         if (topicGroup.getConcepts()!= null)
-            setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
+            setConcepts(topicGroup.getConcepts().stream().map(ConceptJsonView::new).collect(Collectors.toList()));
     }
 
     public String getDescription() {
@@ -61,11 +61,11 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
         this.topicQuestionItems = topicQuestionItems;
     }
 
-    public Set<ConceptJsonView> getConcepts() {
+    public List<ConceptJsonView> getConcepts() {
         return concepts;
     }
 
-    private void setConcepts(Set<ConceptJsonView> concepts) {
+    private void setConcepts(List<ConceptJsonView> concepts) {
         this.concepts = concepts;
     }
 
