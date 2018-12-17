@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS public.project_archived;
+﻿DROP TABLE IF EXISTS public.project_archived;
 DROP VIEW IF  EXISTS public.project_archived;
 
 DROP TABLE IF EXISTS public.project_archived_hierarchy;
@@ -415,7 +415,19 @@ INSERT INTO public.user_authority (user_id, authority_id) VALUES('83d4c319-4ff9-
 --Guest
 INSERT INTO public.user_authority (user_id, authority_id) VALUES('83d4c31a-4ff9-11e5-885d-feff819cdc9f', '9bec2d6e-4ff9-11e5-885d-feff819cdc9f');
 
-insert into audit.revinfo (revtstmp, rev) values(1498471892683,1);
+INSERT INTO
+  public.revision_entity_impl
+(
+  id,
+  "timestamp",
+  user_id
+)
+VALUES (
+  1,
+  1498471892683,
+  '83d4c311-4ff9-11e5-885d-feff819cdc9f'
+);
+-- audit.revinfo (revtstmp, rev) values(,1);
 
 --Add primary agency
 INSERT INTO audit.agency_aud (id, updated, name, rev, revtype) VALUES('1359ded1-9f18-11e5-8994-feff819cdc9f','2018-01-01', 'Admin-qddt',1, 0);

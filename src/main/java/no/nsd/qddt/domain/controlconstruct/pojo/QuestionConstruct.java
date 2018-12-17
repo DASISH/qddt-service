@@ -117,7 +117,7 @@ public class QuestionConstruct  extends ControlConstruct {
         return questionItemUUID;
     }
 
-    protected void setQuestionItemUUID(UUID questionItem) {
+    public void setQuestionItemUUID(UUID questionItem) {
         questionItemUUID = questionItem;
     }
 

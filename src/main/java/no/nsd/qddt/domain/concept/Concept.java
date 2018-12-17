@@ -52,7 +52,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
     @JoinColumn(name = "concept_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
+    // @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
     private List<Concept> children = new ArrayList<>(0);
 
 

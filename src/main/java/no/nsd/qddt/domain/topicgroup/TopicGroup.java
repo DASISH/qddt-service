@@ -73,7 +73,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @JsonIgnore
     @OrderColumn(name="_idx")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
-    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "index")
+    // @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "index")
     private List<Concept> concepts = new ArrayList<>(0);
 
 
