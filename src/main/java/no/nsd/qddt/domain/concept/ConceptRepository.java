@@ -38,6 +38,6 @@ interface ConceptRepository extends BaseArchivedRepository<Concept,UUID> {
             "FROM concept cc where COALESCE (topicgroup_id, concept_id) = CAST(:parentId AS uuid)) as crow " +
             "WHERE concept.id  = crow.id;"
         , nativeQuery = true)
-    int indexChildren(@Param("parentId")UUID parentId);
-//    <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId);
+    int indexChildren(@Param("parentId")String parentId);
+
 }

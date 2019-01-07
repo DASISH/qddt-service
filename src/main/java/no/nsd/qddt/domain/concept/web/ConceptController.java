@@ -126,14 +126,17 @@ public class ConceptController extends AbstractController {
             service.save(
                 service.copy( sourceId, sourceRev, parentId ) ) );
     }
-//
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/move/{targetId}/{index}/{sourceId}", method = RequestMethod.POST)
-//    public ConceptJsonEdit moveTo(@PathVariable("targetId") UUID targetId,
-//                                  @PathVariable("index") Integer index,
-//                                  @PathVariable("sourceId") UUID sourceId)  {
-//        return concept2Json(service.moveTo(targetId, index, sourceId));
-//    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/move/{targetId}/{index}/{sourceId}", method = RequestMethod.POST)
+    public List<ConceptJsonEdit> moveTo(@PathVariable("targetId") UUID targetId,
+                                  @PathVariable("index") Integer index,
+                                  @PathVariable("sourceId") UUID sourceId)  {
+        return service.moveTo(targetId, index, sourceId).stream()
+            .filter( f -> f != null)
+            .map( this::concept2Json )
+            .collect( Collectors.toList());
+    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{uuid}", method = RequestMethod.POST)

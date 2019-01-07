@@ -2,9 +2,10 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.parentref.ConceptRef;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -74,9 +75,10 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY')")
     public Concept save(Concept instance) {
-        return postLoadProcessing(
-            conceptRepository.save(
-                prePersistProcessing( instance ) ));
+        instance = conceptRepository.saveAndFlush(prePersistProcessing( instance ) );
+//        UUID parentId = (instance.getParentRef() != null) ? instance.getParentRef().getId() : instance.getTopicRef().getId();
+//        conceptRepository.indexChildren( parentId.toString() );
+        return postLoadProcessing(instance);
     }
 
 
@@ -86,6 +88,10 @@ class ConceptServiceImpl implements ConceptService {
     public List<Concept> saveAll(Iterable<Concept> entities) {
         entities.forEach( this::prePersistProcessing );
         entities = conceptRepository.save(  entities );
+        entities.forEach( c -> {
+            UUID parentId = (c.getParentRef() != null) ? c.getParentRef().getId() : c.getTopicRef().getId();
+            conceptRepository.indexChildren( parentId.toString() );
+        } );
         entities.forEach( this::postLoadProcessing );
         return (List<Concept>) entities;
     }
@@ -116,20 +122,28 @@ class ConceptServiceImpl implements ConceptService {
     }
 
 
-//    @Override
-//    @Transactional()
-//    @PreAuthorize("( hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY'))")
-//    public <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId) {
-//        return  conceptRepository.moveTo( parentId, index, sourceId );
-//
-////        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
-////
-////        S target = (S) conceptRepository.findById( parentId ).orElseGet( tgService.findOne( parentId )  );
-////
-////        if ( ElementKind.valueOf( target.getClassKind()) == ElementKind.CONCEPT) {
-////            return  conceptRepository.moveTo( target.getId(), index, source.getId() );
-////        }
-//    }
+    @Transactional()
+    @PreAuthorize("( hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY'))")
+    public List<Concept> moveTo(UUID targetId, Integer index, UUID sourceId) {
+
+        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
+        TopicGroup topicGroup = source.getParentTopicGroup();
+
+        if (source.getParentRef()!= null) {
+            source.getParentRef().getChildren().remove( source );
+        } else {
+            topicGroup.getConcepts().remove( source );
+        }
+
+        if (topicGroup.getId() == targetId) {
+            topicGroup.addConcept( source, index );
+        } else {
+            Concept target = getChild( topicGroup, targetId );
+            target.addChildren( source, index );
+        }
+
+        return tgService.save( topicGroup ).getConcepts();
+    }
 
 
     @Override
@@ -245,6 +259,17 @@ class ConceptServiceImpl implements ConceptService {
 
         instance.getChildren().forEach(this::postLoadProcessing);
         return instance;
+    }
+
+
+    private Concept getChild(TopicGroup instance, UUID uuid ) {
+        return instance.getConcepts().stream().filter( c -> getChild( c, uuid ) != null ).findFirst().get();
+    }
+
+
+    private Concept getChild(Concept instance, UUID uuid ) {
+        if (instance.getId().equals( uuid ) )return instance;
+        return instance.getChildren().stream().filter( c -> getChild( c, uuid ) != null ).findFirst().get();
     }
 
 }

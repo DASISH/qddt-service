@@ -24,5 +24,5 @@ public interface ConceptService  extends BaseArchivedService<Concept> {
 
     List<Concept> saveAll(Iterable<Concept> entities);
 
-//    <S extends AbstractEntityAudit> S moveTo(UUID parentId, Integer index, UUID sourceId);
+    List<Concept>  moveTo(UUID parentId, Integer index, UUID sourceId);
 }

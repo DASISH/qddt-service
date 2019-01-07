@@ -7,9 +7,9 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;
@@ -46,23 +46,25 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     @JsonIgnore
-    @Column(name = "_idx" ,insertable = false, updatable = false)
-    private Integer index;
+    @Column(name = "topic_idx" ,insertable = false, updatable = false)
+    private Integer topicIndex;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
-    @JoinColumn(name = "concept_id")
-    // @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
+    @JsonIgnore
+    @Column(name = "concept_idx" ,insertable = false, updatable = false)
+    private Integer conceptIndex;
+
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentReferenceOnly", cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
+    @OrderColumn(name="concept_idx")
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "conceptIndex")
     private List<Concept> children = new ArrayList<>(0);
 
 
     @JsonBackReference(value = "topicGroupRef")
     @ManyToOne()
-    @JoinColumn(name = "topicgroup_id",updatable = false)
+    @JoinColumn(name = "topicgroup_id",updatable = false,insertable = false)
     private TopicGroup topicGroup;
 
-//    @Column(name = "topicgroup_id", insertable = false, updatable = false)
-//    private UUID topicGroupId;
 
     @OrderColumn(name="concept_idx")
     @ElementCollection(fetch = FetchType.EAGER)
@@ -146,14 +148,15 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
     public void addChildren(Concept concept){
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-
         int index = (concept.getIndex()!=null)? concept.getIndex() : this.getChildren().size();
-        this.children.add( index, concept);
-
-        this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
+        addChildren( concept, index );
     }
 
+    public void addChildren(Concept concept, Integer index ){
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        this.children.add( index, concept);
+        this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
+    }
 
     public String getLabel() {
         return label;
@@ -194,7 +197,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     public TopicRef getTopicRef() {
         if (topicRef == null) {
-            TopicGroup topicGroup = findTopicGroup2();
+            TopicGroup topicGroup = getParentTopicGroup();
             if (topicGroup == null) {
                topicRef = new TopicRef();
             } else
@@ -209,7 +212,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return this.parentReferenceOnly;
     }
 
-    private TopicGroup findTopicGroup2(){
+    protected TopicGroup getParentTopicGroup(){
         Concept current = this;
         while(current.getParentRef() !=  null){
             current = current.getParentRef();
@@ -226,7 +229,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             retvals.add( current );
         }
         retvals.add( current.getTopicGroup() );         //this will fail for Concepts that return from clients.
-        return retvals;
+        return retvals; // .stream().filter( f -> f != null ).collect( Collectors.toList());
     }
 
 
@@ -326,6 +329,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     public Integer getIndex() {
-        return index;
+        return (topicIndex != null) ? topicIndex: conceptIndex;
     }
 }

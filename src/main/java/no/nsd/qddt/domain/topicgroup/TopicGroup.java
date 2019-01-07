@@ -71,9 +71,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
 
     @JsonIgnore
-    @OrderColumn(name="_idx")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
-    // @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "index")
+    @OrderColumn(name="topic_idx")
+//    @AuditJoinTable()
+    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "topicIndex")
     private List<Concept> concepts = new ArrayList<>(0);
 
 
@@ -132,13 +133,16 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
 
     public Concept addConcept(Concept concept){
+        int index = (concept.getIndex()!=null)? concept.getIndex() : this.concepts.size();
+        return addConcept( concept, index );
+    }
+
+    public Concept addConcept(Concept concept, Integer index ){
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");
-        int index = (concept.getIndex()!=null)? concept.getIndex() : this.concepts.size();
         this.concepts.add( index, concept);
         concept.setTopicGroup(this);
         return concept;
-
     }
 
     public List<Concept> getConcepts() {
