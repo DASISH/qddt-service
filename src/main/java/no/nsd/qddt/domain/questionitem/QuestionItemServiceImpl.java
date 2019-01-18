@@ -161,8 +161,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
                 instance.setResponseDomainRevision(0);
 
             instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
-                    .map( ConceptRef::new )
-                    .collect( Collectors.toList()) );
+                .map( ConceptRef::new )
+                .collect( Collectors.toList()) );
 
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());

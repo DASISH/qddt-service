@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.domain.responsedomain.ResponseDomainFragment.*;
-
 /**
  * @author Stig Norland
  */
@@ -36,9 +34,8 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     }
 
     private String getXmlBody() {
-
         return String.format( xmlDomain,
-            ResponseDomainName.values()[entity.getResponseKind().ordinal()].toString(),
+            entity.getResponseKind().getDDIName(),
             getId()+
             getRationale()+
             getBasedOn()+

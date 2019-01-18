@@ -20,16 +20,6 @@ public class ResponseDomainFragment {
             "\t%2$s" +
         "</d:%1$s>\n";
 
-    public enum ResponseDomainName {
-        DateTimeDomain,
-//        MissingCodeRepresentation,
-//        MissingTextRepresentation,
-        TextDomain,
-        NumericDomain,
-        CodeDomain,
-        ScaleDomain,
-        ResponseDomainInMixed
-    }
 
     private static final Map<ResponseKind, Map<String,String>> myMap;
     static {

@@ -20,10 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -155,11 +157,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        if (name.isEmpty()  &&  description.isEmpty()) {
-            name = "%";
-        }
-        return topicGroupRepository.findByQuery(name,description,pageable)
-                .map(this::postLoadProcessing);
+        return topicGroupRepository
+            .findByQuery(likeify(name),likeify(description),pageable)
+            .map(this::postLoadProcessing);
     }
 
 
@@ -180,7 +180,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 LOG.debug("PDF -> fetching  concepts and QuestionItems ");
                 instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
                 Hibernate.initialize(instance.getConcepts());
-                instance.getConcepts().forEach( this::loadConceptQuestion );
+
+                instance.getConcepts().stream().filter( Objects::nonNull ).forEach(this::loadConceptQuestion);
+//                instance.getConcepts().forEach( this::loadConceptQuestion );
 
                 // when we print hierarchy we don't need qi concept reference....
             }
@@ -194,7 +196,8 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
 
     private void loadConceptQuestion(Concept parent) {
-        parent.getChildren().forEach( this::loadConceptQuestion );
+        parent.getChildren().stream().filter( Objects::nonNull ).forEach(this::loadConceptQuestion);
+//        parent.getChildren().forEach( this::loadConceptQuestion );
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 

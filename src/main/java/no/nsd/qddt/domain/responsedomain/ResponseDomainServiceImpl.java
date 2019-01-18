@@ -64,7 +64,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
             name = "%";
         }
 //        likeify(anchor),
-        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), pageable)
+        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), likeify( anchor ), pageable)
             .map( this::postLoadProcessing );
     }
 

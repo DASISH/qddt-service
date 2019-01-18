@@ -21,12 +21,27 @@ package no.nsd.qddt.domain.responsedomain;
 
 
 public enum ResponseKind {
-    DATETIME,
-    TEXT,
-    NUMERIC,
-    LIST,
-    SCALE,
-    MIXED
+    DATETIME("DateTimeDomain"),
+    TEXT("TextDomain"),
+    NUMERIC("NumericDomain"),
+    LIST("CodeDomain"),
+    SCALE("ScaleDomain"),
+    MIXED("ResponseDomainInMixed");
+    ResponseKind(String name){
+        this.name = name;
+    }
+
+    private final String name;
+
+    public String getDDIName() {
+        return name;
+    }
+
 }
+
+//"MissingCodeRepresentation",
+//"MissingTextRepresentation",
+
+
 
 

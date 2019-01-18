@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.topicgroup.web;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -10,7 +11,6 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
@@ -121,14 +121,14 @@ public class TopicGroupController extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<TopicGroupJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                         Pageable pageable, PagedResourcesAssembler assembler) {
-        name = name.replace("*","%");
-        Page<TopicGroupJson> items =
-                service.findByNameAndDescriptionPageable(name,name, pageable)
-                        .map(TopicGroupJson::new);
-
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+    public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                             @RequestParam(value = "description",defaultValue = "%") String description,
+                                                             Pageable pageable, PagedResourcesAssembler assembler) {
+        return new ResponseEntity<>(
+            assembler.toResource(
+                service.findByNameAndDescriptionPageable(name,description, pageable)
+                    .map(TopicGroupJson::new))
+                ,HttpStatus.OK);
     }
 
 

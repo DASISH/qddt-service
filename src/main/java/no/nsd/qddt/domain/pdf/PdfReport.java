@@ -166,6 +166,17 @@ public class PdfReport extends PdfDocument {
 //            document.add( new AreaBreak(AreaBreakType.NEXT_AREA  ) );
             // document.add( new AreaBreak() );        //https://github.com/DASISH/qddt-client/issues/611
         }
+        outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());
+        SimpleEntry<String, Integer> titlePage = new SimpleEntry<>( chapter + "\t"  + StringTool.CapString(element.getName()), getNumberOfPages());
+        toc.add(new SimpleEntry<>(element.getId().toString(),titlePage));
+
+        Paragraph p = new Paragraph(element.getName())
+            .setFontColor(ColorConstants.BLUE)
+            .setFontSize(sizeHeader1)
+            .setMultipliedLeading( 1F )
+//            .setWidth(width100*0.8F)
+            .setDestination(element.getId().toString());
+
         Table table = new Table(UnitValue.createPercentArray(new float[]{68.0F,12.0F,20.0F}));
         table.addCell(
             new Cell(4,1).add(new Paragraph(header).setMultipliedLeading( 1F ).setFontSize(21).setFont( chapterHeading ))
@@ -173,7 +184,8 @@ public class PdfReport extends PdfDocument {
             .setBorder( Border.NO_BORDER)
             .add(new Paragraph("__________________________________________________________")
             .setFontColor(ColorConstants.BLUE)
-            .setVerticalAlignment( VerticalAlignment.TOP ) ))
+            .setVerticalAlignment( VerticalAlignment.TOP ) )
+        .add( p ))
         .addCell(new Cell().add(new Paragraph( "Version")).addStyle( cellStyleRight ) )
         .addCell(new Cell().add(new Paragraph( element.getVersion().toString())).addStyle( cellStyleLeft ))
         .addCell(new Cell().add(new Paragraph("Last Saved")).addStyle( cellStyleRight ))
@@ -184,19 +196,8 @@ public class PdfReport extends PdfDocument {
         .addCell(new Cell().add(new Paragraph(element.getAgency().getName())).addStyle( cellStyleLeft ))
         .setWidth(width100 );
 
-        outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());
-        SimpleEntry<String, Integer> titlePage = new SimpleEntry<>( chapter + "\t"  + StringTool.CapString(element.getName()), getNumberOfPages());
-        toc.add(new SimpleEntry<>(element.getId().toString(),titlePage));
-
-        Paragraph p = new Paragraph(element.getName())
-            .setFontColor(ColorConstants.BLUE)
-            .setFontSize(sizeHeader1)
-            .setMultipliedLeading( 1F )
-            .setWidth(width100*0.8F)
-            .setDestination(element.getId().toString());
-            p.setNextRenderer(new UpdatePageRenderer(p, titlePage));
-
-        Div div = new Div().add(table).add(p).setKeepTogether( true ).setKeepWithNext(true);
+        p.setNextRenderer(new UpdatePageRenderer(p, titlePage));
+        Div div = new Div().add(table).setKeepTogether( true ).setKeepWithNext(true);
 
 
         return document.add(div);

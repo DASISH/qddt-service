@@ -288,7 +288,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
                 table.addCell( new Cell().add( new Paragraph( cat.getCategoryType().name() ) )
                     .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) )
                 );
-                table.addCell( new Cell( 1, 2 ).add( new Paragraph( cat.getName() ) )
+                table.addCell( new Cell( 1, 2 ).add( new Paragraph( cat.getLabel() ) )
                     .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
             }
         pdfReport.getTheDocument().add(table);

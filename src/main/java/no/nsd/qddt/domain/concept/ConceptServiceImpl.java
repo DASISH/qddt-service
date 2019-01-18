@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -221,7 +222,8 @@ class ConceptServiceImpl implements ConceptService {
                 });
 
             // children are saved to hold revision info... i guess, these saves shouldn't
-//            if (instance.isBasedOn() == false)
+            // if (instance.isBasedOn() == false)
+
             instance.getChildren().stream().forEach( this::setChildChangeStatus );
 
         } catch (NullPointerException npe) {
@@ -256,8 +258,8 @@ class ConceptServiceImpl implements ConceptService {
         } catch (Exception ex){
             LOG.error("postLoadProcessing-> " +  ((instance != null)? instance.getId(): " IS NULL ") ,ex);
         }
-
-        instance.getChildren().forEach(this::postLoadProcessing);
+        instance.getChildren().stream().filter( Objects::nonNull ).forEach(this::postLoadProcessing);
+//        instance.getChildren().forEach(this::postLoadProcessing);
         return instance;
     }
 
