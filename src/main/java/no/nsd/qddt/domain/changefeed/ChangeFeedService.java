@@ -9,4 +9,6 @@ import org.springframework.data.domain.Pageable;
  */
 public interface ChangeFeedService  extends BaseService<ChangeFeed, ChangeFeedKey> {
     Page<ChangeFeed> findAllPageable(Pageable pageable);
+
+    Page<ChangeFeed> filterbyPageable(String name, String change, String kind, Pageable pageable);
 }

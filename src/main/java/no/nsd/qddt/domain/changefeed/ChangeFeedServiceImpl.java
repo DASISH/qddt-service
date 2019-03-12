@@ -5,13 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -59,7 +58,14 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
 
     @Override
     public Page<ChangeFeed> findAllPageable(Pageable pageable) {
-        PageRequest sort = defaultOrModifiedSort( pageable, "refModified DESC" );
+//        PageRequest sort = defaultOrModifiedSort( pageable, "refModified DESC" );
         return repository.findAll( pageable );
+    }
+
+    @Override
+    public Page<ChangeFeed> filterbyPageable(String name, String change, String kind, Pageable pageable) {
+//        PageRequest sort = defaultOrModifiedSort( pageable, "refModified DESC" );
+        return repository.findByNameLikeIgnoreCaseOrRefChangeKindLikeIgnoreCaseOrRefKindLikeIgnoreCase
+            (likeify(name),likeify(change),likeify(kind),pageable );
     }
 }

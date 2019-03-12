@@ -87,11 +87,16 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
     private boolean isMemberOfAgency(Agency agency, AbstractEntityAudit entity) {
-        if (entity.getAgency()  == null || entity.getModifiedBy() == null ) return  true;
+        if (entity.getAgency()  == null || entity.getModifiedBy() == null || isReferenceCopy(entity) ) return  true;
 
         boolean isMember = agency.getId().equals( entity.getAgency().getId());
         LOG.debug( String.valueOf( isMember ) );
         return (isMember);
     }
 
+    private boolean isReferenceCopy(AbstractEntityAudit entity) {
+        return ( entity.getChangeKind() == AbstractEntityAudit.ChangeKind.BASED_ON ||
+            entity.getChangeKind() == AbstractEntityAudit.ChangeKind.NEW_COPY ||
+            entity.getChangeKind() == AbstractEntityAudit.ChangeKind.TRANSLATED);
+    }
 }

@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
@@ -110,9 +111,13 @@ class TopicGroupServiceImpl implements TopicGroupService {
 //        entityManager.detach( target );
 //        target.setParentU(parentId);
 //        entityManager.merge( target );
-        return topicGroupRepository.save(
-            studyService.findOne( parentId )
-                .addTopicGroup( new TopicGroupFactory().copy(source, rev) ));
+
+        Study study = studyService.findOne( parentId );
+        TopicGroup topic = study.addTopicGroup( new TopicGroupFactory().copy(source, rev) );
+        studyService.save( study );
+
+        return topicGroupRepository.save( topic );
+
     }
 
 

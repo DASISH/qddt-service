@@ -14,13 +14,13 @@ public class UserJson {
     @Type(type="pg-uuid")
     private UUID id;
 
-    private String username;
+    private String name;
 
     private String email;
 
-    private String agencyUserName;
-
     private Timestamp modified;
+
+    private String agencyName;
 
     public UserJson() {
     }
@@ -29,9 +29,9 @@ public class UserJson {
         if (user == null) return;
         setId(user.getId());
         setEmail(user.getEmail());
-        setUsername(user.getUsername());
+        setName(user.getUsername());
         setModified( user.getModified() );
-        setAgencyUserName(username + "@" + (user.getAgency()!=null ? user.getAgency().getName(): "????"));
+        setAgencyName( (user.getAgency() != null) ? user.getAgency().getName() : "IS NULL" );
     }
 
 
@@ -43,12 +43,12 @@ public class UserJson {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    private void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -59,25 +59,19 @@ public class UserJson {
         this.email = email;
     }
 
-    /**
-     * @param agencyUserName the agencyUserName to set
-     */
-    public void setAgencyUserName(String agencyUserName) {
-        this.agencyUserName = agencyUserName;
-    }
-
-    /**
-     * @return the agencyUserName
-     */
-    public String getAgencyUserName() {
-        return agencyUserName;
-    }
-
     public Timestamp getModified() {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    private void setModified(Timestamp modified) {
         this.modified = modified;
+    }
+
+    public String getAgencyName() {
+        return agencyName;
+    }
+
+    private void setAgencyName(String agencyName) {
+        this.agencyName = agencyName;
     }
 }

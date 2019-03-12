@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.changefeed;
 
 import com.google.common.base.Objects;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
@@ -44,7 +45,7 @@ public class ChangeFeed  {
     private User modifiedBy;
 
     @Column(name = "element_id")
-    private  UUID elementId;
+    private UUID elementId;
 
     @Column(name = "element_revision")
     private  Integer elementRevision;
@@ -89,8 +90,8 @@ public class ChangeFeed  {
         this.modified = modified;
     }
 
-    public User getModifiedBy() {
-        return modifiedBy;
+    public UserJson getModifiedBy() {
+        return new UserJson( modifiedBy);
     }
 
     public void setModifiedBy(User modifiedBy) {

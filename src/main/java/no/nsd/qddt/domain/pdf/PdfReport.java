@@ -191,7 +191,7 @@ public class PdfReport extends PdfDocument {
         .addCell(new Cell().add(new Paragraph("Last Saved")).addStyle( cellStyleRight ))
         .addCell(new Cell().add(new Paragraph(String.format("%1$TF %1$TT",  element.getModified()))).addStyle( cellStyleLeft ))
         .addCell(new Cell().add(new Paragraph("Last Saved By")).addStyle( cellStyleRight ))
-        .addCell(new Cell().add(new Paragraph(StringTool.CapString( element.getModifiedBy().getUsername()))).addStyle( cellStyleLeft ))
+        .addCell(new Cell().add(new Paragraph(StringTool.CapString( element.getModifiedBy().getName()))).addStyle( cellStyleLeft ))
         .addCell(new Cell().add(new Paragraph("Agency")).addStyle( cellStyleRight ))
         .addCell(new Cell().add(new Paragraph(element.getAgency().getName())).addStyle( cellStyleLeft ))
         .setWidth(width100 );
@@ -268,7 +268,7 @@ public class PdfReport extends PdfDocument {
             .addCell(new Cell(1,1)
                 .setBorder( Border.NO_BORDER )
     //                .setWidth(width100*0.20F)
-                .add(new Paragraph( comment.getModifiedBy().getAgencyUserName()  +
+                .add(new Paragraph( comment.getModifiedBy().getName() + "@"  + comment.getModifiedBy().getAgencyName() +
                     String.format(" - %1$TD %1$TT",  comment.getModified().toLocalDateTime()) ) ));
 
         for(CommentJsonEdit subcomment: comment.getComments().stream().filter(CommentJsonEdit::isPublic).collect(Collectors.toList())){

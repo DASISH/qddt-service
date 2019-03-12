@@ -17,20 +17,26 @@ public class ConceptFactory implements IEntityFactory<Concept> {
 
 	@Override
 	public Concept copyBody(Concept source, Concept dest) {
-        dest.setDescription(source.getDescription());
-        dest.setLabel(source.getLabel());
-        dest.setName(source.getName());
+    dest.setDescription(source.getDescription());
+    dest.setLabel(source.getLabel());
+    dest.setName(source.getName());
 
-        dest.setChildren(source.getChildren().stream()
-            .map(mapper -> copy(mapper, dest.getBasedOnRevision()))
-            .collect(Collectors.toList()));
+    ConceptFactory factory = new ConceptFactory();
+    dest.setChildren(
+          source.getChildren().stream()
+          .map(concept ->  {
+              var copy = factory.copy(concept,dest.getBasedOnRevision());
+              copy.setParentC( dest );
+              return copy;
+          })
+          .collect( Collectors.toList())
+    );
 
-        dest.getChildren().forEach(action -> action.setParentC(dest));
 
-        dest.setConceptQuestionItems( source.getConceptQuestionItems().stream()
-            .map( ElementRef::clone )
-            .collect(Collectors.toList()));
-        return dest;
+    dest.setConceptQuestionItems( source.getConceptQuestionItems().stream()
+        .map( ElementRef::clone )
+        .collect(Collectors.toList()));
+    return dest;
 	}
     
 }

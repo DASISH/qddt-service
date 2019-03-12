@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.topicgroup;
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.concept.ConceptFactory;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 
 import java.util.stream.Collectors;
 
@@ -22,16 +23,15 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 	    dest.setDescription(source.getDescription());
       dest.setName(source.getName());
       dest.setOtherMaterials(source.getOtherMaterials().stream()
-      .map( m -> m.clone())
+      .map( OtherMaterial::clone )
       .collect(Collectors.toList()) ); 
 
       ConceptFactory cf = new ConceptFactory();
 
-      dest.setConcepts(source.getConcepts().stream()
+      source.getConcepts().stream()
           .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
-          .collect(Collectors.toList()));
+          .forEach( dest::addConcept );
 
-      dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );
 
       dest.setTopicQuestionItems( source.getTopicQuestionItems().stream()
           .map( ElementRef::clone )
