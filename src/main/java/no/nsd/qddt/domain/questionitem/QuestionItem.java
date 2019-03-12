@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.questionItem;
+package no.nsd.qddt.domain.questionitem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -7,13 +7,14 @@ import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
+import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @Transient
     @JsonSerialize
-    private List<ConceptRef> conceptRefs;
+    private List<ConceptRef> conceptRefs = new ArrayList<>( 0 );
 
 
     public QuestionItem() {
@@ -173,8 +174,7 @@ public class QuestionItem extends AbstractEntityAudit {
         if (responseDomainRevision != null ? !responseDomainRevision.equals(that.responseDomainRevision) : that.responseDomainRevision != null)
             return false;
         if (question != null ? !question.equals(that.question) : that.question != null) return false;
-        if (intent != null ? !intent.equals(that.intent) : that.intent != null)
-            return false;
+        if (intent != null ? !intent.equals(that.intent) : that.intent != null) return false;
         return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
     }
 
@@ -199,6 +199,12 @@ public class QuestionItem extends AbstractEntityAudit {
                 "} " + System.lineSeparator();
     }
 
+    @Override
+    public QuestionItemFragmentBuilder getXmlBuilder() {
+        return new QuestionItemFragmentBuilder(this);
+    }
+
+
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {
@@ -208,26 +214,19 @@ public class QuestionItem extends AbstractEntityAudit {
             pdfReport.addheader2("Intent")
             .add(new Paragraph(this.getIntent()));
         }
-        if (getResponseDomain() != null)
-            this.getResponseDomain().fillDoc(pdfReport,"");
-        // pdfReport.addPadding();
-
+        if (getResponseDomain() != null) {
+            this.getResponseDomain().fillDoc( pdfReport, "" );
+        }
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-        // pdfReport.addPadding();
     }
 
     @Override
-    protected void beforeUpdate() {
-//        LOG.info( "QuestionItem before UPDATE" );
-    }
+    protected void beforeUpdate() { }
+
     @Override
-    protected void beforeInsert() {
-//        LOG.info( "QuestionItem before INSERT" );
-
-    }
-
+    protected void beforeInsert() { }
 
 }
 

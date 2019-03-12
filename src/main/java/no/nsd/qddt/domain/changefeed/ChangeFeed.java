@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.changefeed;
 
 import com.google.common.base.Objects;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
@@ -23,11 +24,11 @@ public class ChangeFeed  {
 //    @Column(name = "ref_id")
 //    protected UUID refId;
 //
-//    @Column(name = "ref_rev")
-//    protected Integer refRev;
-
     @EmbeddedId
     private ChangeFeedKey changeFeedKey;
+
+    @Column(name = "ref_rev", insertable=false, updatable=false )
+    protected Integer refRev;
 
     @Column(name = "ref_kind")
     private  String refKind;
@@ -43,11 +44,8 @@ public class ChangeFeed  {
 //    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private User modifiedBy;
 
-    @Column(name = "ref_action")
-    private Short refAction;
-
     @Column(name = "element_id")
-    private  UUID elementId;
+    private UUID elementId;
 
     @Column(name = "element_revision")
     private  Integer elementRevision;
@@ -64,7 +62,7 @@ public class ChangeFeed  {
 
 
     public Integer getRefRev() {
-        return changeFeedKey.refRev;
+        return refRev;
     }
 
 
@@ -92,20 +90,12 @@ public class ChangeFeed  {
         this.modified = modified;
     }
 
-    public User getModifiedBy() {
-        return modifiedBy;
+    public UserJson getModifiedBy() {
+        return new UserJson( modifiedBy);
     }
 
     public void setModifiedBy(User modifiedBy) {
         this.modifiedBy = modifiedBy;
-    }
-
-    public Short getRefAction() {
-        return refAction;
-    }
-
-    public void setRefAction(Short refAction) {
-        this.refAction = refAction;
     }
 
     public UUID getElementId() {
@@ -153,7 +143,6 @@ public class ChangeFeed  {
             Objects.equal( refChangeKind, that.refChangeKind ) &&
             Objects.equal( modified, that.modified ) &&
             Objects.equal( modifiedBy, that.modifiedBy ) &&
-            Objects.equal( refAction, that.refAction ) &&
             Objects.equal( elementId, that.elementId ) &&
             Objects.equal( elementRevision, that.elementRevision ) &&
             Objects.equal( elementKind, that.elementKind ) &&
@@ -162,7 +151,7 @@ public class ChangeFeed  {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( changeFeedKey, refKind, refChangeKind, modified, modifiedBy, refAction, elementId, elementRevision, elementKind, name );
+        return Objects.hashCode( changeFeedKey, refKind, refChangeKind, modified, modifiedBy,  elementId, elementRevision, elementKind, name );
     }
 
     @Override
@@ -173,7 +162,6 @@ public class ChangeFeed  {
             + ", \"refChangeKind\":\"" + refChangeKind + "\""
             + ", \"modified\":" + modified
             + ", \"modifiedBy\":" + modifiedBy
-            + ", \"refAction\":\"" + refAction + "\""
             + ", \"elementId\":" + elementId
             + ", \"elementRevision\":\"" + elementRevision + "\""
             + ", \"elementKind\":\"" + elementKind + "\""

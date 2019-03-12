@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.publicationstatus;
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.utils.SecurityContext;
+import no.nsd.qddt.security.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -77,8 +77,8 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
     @Override
     public List<PublicationStatus> findAll() {
-        Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        List<PublicationStatus> retvals = repository.findAllByAgencyAndParentIdIsNullOrderByParentIdx(agency);
+//        Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
+        List<PublicationStatus> retvals = repository.findAllByAgencyAndParentIdIsNullOrderByParentIdx(null);
         retvals.forEach(c -> c.getChildren().size());
         return retvals;
     }

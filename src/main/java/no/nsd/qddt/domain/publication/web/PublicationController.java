@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.publication.PublicationJson;
 import no.nsd.qddt.domain.publication.PublicationService;
-import no.nsd.qddt.domain.xml.XmlReport;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +25,6 @@ import java.util.UUID;
 @RequestMapping("/publication")
 public class PublicationController {
 
-
     private final PublicationService service;
 
     @Autowired
@@ -33,7 +32,7 @@ public class PublicationController {
         this.service = service;
     }
 
-    //    @JsonView(View.Simple.class)
+    // @JsonView(View.Simple.class)
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Publication get(@PathVariable("id") UUID id) {
@@ -98,6 +97,7 @@ public class PublicationController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
+        return new XmlDDIFragmentAssembler<Publication>(service.findOne(id)).compileToXml();
+
     }
 }

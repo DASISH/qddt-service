@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.questionItem;
+package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.concept.ConceptService;
-import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.refclasses.ConceptRef;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -88,15 +88,20 @@ class QuestionItemServiceImpl implements QuestionItemService {
 //    }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public void delete(UUID uuid) {
+        delete(questionItemRepository.getOne( uuid ));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
+    public void delete(QuestionItem instance) {
         try {
-            questionItemRepository.delete(uuid);
+            questionItemRepository.delete(instance);
         } catch (Exception ex){
             LOG.error("QI delete ->",ex);
             throw ex;
         }
     }
+
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
@@ -156,8 +161,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
                 instance.setResponseDomainRevision(0);
 
             instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
-                    .map( ConceptRef::new )
-                    .collect( Collectors.toList()) );
+                .map( ConceptRef::new )
+                .collect( Collectors.toList()) );
 
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());

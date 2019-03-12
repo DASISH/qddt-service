@@ -1,7 +1,9 @@
 package no.nsd.qddt.domain.universe;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -9,7 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 
 /**
  * @author Stig Norland
@@ -33,9 +35,11 @@ public class Universe extends AbstractEntityAudit {
     }
 
     public void setDescription(String description) {
-
-        setName(description.toUpperCase().replace(' ','_').substring(0,description.length()>25?25:description.length()));
         this.description = description;
+        if (IsNullOrTrimEmpty(getName())) {
+            Integer max25 = description.length()>25?25:description.length();
+            setName(description.toUpperCase().replace(' ','_').substring(0,max25));
+        }
     }
 
     @Override
@@ -71,5 +75,11 @@ public class Universe extends AbstractEntityAudit {
     @Override
     protected void beforeUpdate() {}
     @Override
-    protected void beforeInsert() {}
+    protected void beforeInsert() {
+    }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 }

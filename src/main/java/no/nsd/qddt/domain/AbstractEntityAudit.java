@@ -11,7 +11,7 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
-import no.nsd.qddt.utils.SecurityContext;
+import no.nsd.qddt.security.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  implements IElementRefType {
+public abstract class AbstractEntityAudit extends AbstractEntity  implements IEntityAuditXmlRef {
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -81,6 +81,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
             throw new IllegalArgumentException();
         }
 
+
         @Override
         public String toString() {
             return "{ " +
@@ -124,10 +125,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
     @Column(name = "change_comment",nullable = false)
     private String changeComment;
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private String xmlLang = "eng-GB";
+    private String xmlLang = "en-GB";
 
     @NotAudited
     @OrderBy("owner_idx desc")
@@ -270,7 +268,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
                 change = ChangeKind.IN_DEVELOPMENT;
                 setChangeKind( change );
             }
-            if (StringTool.IsNullOrTrimEmpty(changeComment))        // insert default comment if none was supplied, (shouldn't occur)
+            if (StringTool.IsNullOrTrimEmpty(changeComment))        // insert default comment if none was supplied, (can occur with auto touching (hierarchy updates etc))
                 setChangeComment( change.description );
             switch (change) {
                 case BASED_ON:
@@ -315,7 +313,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
 
     protected abstract void beforeInsert();
 
-
     @JsonIgnore
     public boolean isBasedOn(){
         return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
@@ -348,7 +345,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
         hasRun = true;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -380,20 +376,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEl
                 "\"basedOnRevision\":" + (basedOnRevision == null ? "null" : "\"" + basedOnRevision + "\"") + ", " +
                 "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
                 "\"agency\":" + (agency == null ? "null" : agency) + ", ";
-    }
-
-    @Override
-    public String toDDIXml(){
-        return
-            "    <r:URN>urn:ddi:"+ getAgency().getName()+":"+ super.getId()+":" + getVersion() +"</r:URN>\n" +
-            "    <r:VersionRationale>" + getChangeKind().getName() + "</r:VersionRationale>\n" +
-            ((getBasedOnObject() == null) ? "" :
-            "    <r:BasedOnObject>\n" +
-            "       <r:BasedOnReference>\n" +
-            "           <r:URN>urn:ddi:"+ getAgency().getName()+":"+ basedOnObject+ ":" + getVersion() +"</r:URN>\n" +
-            "       </r:BasedOnReference>\n" +
-            "    </r:BasedOnObject>\n");
-
     }
 
 

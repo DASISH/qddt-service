@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
@@ -58,8 +59,9 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Instrument findOne(UUID uuid) {
-        return  instrumentRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Instrument.class));
+        return  instrumentRepository.findById(uuid)
+            .map(this::clearChangeCommet)
+            .orElseThrow(() -> new ResourceNotFoundException(uuid, Instrument.class));
     }
 
     @Override
@@ -86,14 +88,15 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public List<Instrument> findByStudy(UUID studyId) {
-        return instrumentRepository.findByStudy(studyId);
+        return instrumentRepository.findByStudy(studyId).stream()
+            .map( this::clearChangeCommet).collect( Collectors.toList());
     }
 
     @Override
     public Page<Instrument> findAllPageable(Pageable pageable) {
 
         pageable = defaultSort(pageable, "name ASC", "modified DESC");
-        return instrumentRepository.findAll(pageable);
+        return instrumentRepository.findAll(pageable).map( this::clearChangeCommet);
     }
 
     @Override
@@ -107,7 +110,8 @@ class InstrumentServiceImpl implements InstrumentService {
             .filter( f -> f.getName().toLowerCase().contains( strKind.toLowerCase() ) && strKind.length() > 1)
             .findFirst().orElse( null );
 
-        return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable);
+        return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable)
+            .map( this::clearChangeCommet);
     }
 
 
@@ -121,23 +125,33 @@ class InstrumentServiceImpl implements InstrumentService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );
 
-        instance.getSequence().stream().forEach( this::loadDetails );
+        // Nødvendig???
+//        instance.getSequence().stream().forEach( this::loadDetails );
         return instance;
     }
 
+    private Instrument clearChangeCommet(Instrument instrument){
+        instrument.setChangeComment( null );
+        return  instrument;
+    }
+
+
     private InstrumentElement loadDetails(InstrumentElement instance) {
         LOG.info("loadDetails");
-        instance.getSequences().stream().forEach( this::loadDetails );
+        instance.getSequence().stream().forEach( this::loadDetails );
         return  loadDetail( instance) ;
     }
 
-    InstrumentElement loadDetail(InstrumentElement element) {
-        LOG.info("loadDetail");
+    private InstrumentElement loadDetail(InstrumentElement element) {
 
         if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
+            LOG.info("loadDetail QC");
             ElementRef ref = ccLoader.fill( element.getElementRef());
             element.setElementRef(ref);
         }
         return element;
     }
+
+
+
 }

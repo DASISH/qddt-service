@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.user.json;
 
-import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.PropertyNotFoundException;
@@ -27,7 +27,7 @@ public class UserJsonEdit {
 
     private Set<Authority> authorities;
 
-    private Agency agency;
+    private AgencyJsonView agency;
 
     private boolean enabled;
 
@@ -43,7 +43,7 @@ public class UserJsonEdit {
         setId(user.getId());
         setEmail(user.getEmail());
         setName(user.getUsername());
-        setAgency( user.getAgency() );
+        setAgency( new AgencyJsonView( user.getAgency()) );
         setAuthorities( user.getAuthorities().stream().findFirst().orElseThrow(
             () -> new PropertyNotFoundException(  "No Authority set " + user.getUsername() ) ) );
         setEnabled( user.isEnabled() );
@@ -85,11 +85,11 @@ public class UserJsonEdit {
             .collect( Collectors.toCollection(HashSet::new));
     }
 
-    public Agency getAgency() {
+    public AgencyJsonView getAgency() {
         return agency;
     }
 
-    public void setAgency(Agency agency) {
+    public void setAgency(AgencyJsonView agency) {
         this.agency = agency;
     }
 

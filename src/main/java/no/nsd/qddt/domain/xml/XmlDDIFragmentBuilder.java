@@ -40,7 +40,8 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
 
 
     protected String getRationale() {
-        return  String.format( xmlRationale, entity.getModifiedBy().getAgencyUserName(), entity.getChangeComment(), entity.getChangeKind().name() );
+        return  String.format( xmlRationale,  entity.getModifiedBy().getName() + "@" + entity.getAgency().getName(),
+            entity.getChangeComment(), entity.getChangeKind().name() );
     }
 
     protected String getBasedOn() {

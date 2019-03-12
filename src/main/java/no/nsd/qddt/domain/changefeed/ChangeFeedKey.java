@@ -12,6 +12,8 @@ import java.util.UUID;
  */
 @Embeddable
 public class ChangeFeedKey implements Serializable {
+    private static final long serialVersionUID = -7581799247841869060L;
+
     @Column(name = "ref_id")
     protected UUID refId;
 

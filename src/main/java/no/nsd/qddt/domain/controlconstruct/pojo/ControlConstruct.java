@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -33,7 +35,6 @@ public class ControlConstruct extends AbstractEntityAudit {
     private String controlConstructKind;
 
     @OrderColumn(name="owner_idx")
-    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_OTHER_MATERIAL", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
     private List<OtherMaterial> otherMaterials = new ArrayList<>();
@@ -99,6 +100,12 @@ public class ControlConstruct extends AbstractEntityAudit {
             + super.toString()
             + ", \"label\":\"" + label + "}";
     }
+
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
 
 
 }

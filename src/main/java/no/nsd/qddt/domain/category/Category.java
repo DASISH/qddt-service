@@ -14,7 +14,10 @@ import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.SafeString;
@@ -153,8 +156,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public void setLabel(String label) {
         this.label = label;
-        if (StringTool.IsNullOrTrimEmpty(getName()))
-            setName(StringTool.CapString(label));
+        if (StringTool.IsNullOrTrimEmpty(super.getName()))
+            setName(label.toUpperCase());
     }
 
     /*
@@ -237,7 +240,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Column(nullable = false)
     public String getName(){
         if (StringTool.IsNullOrTrimEmpty(super.getName()))
-            super.setName(StringTool.CapString(this.getLabel()));
+            super.setName(this.getLabel().toUpperCase());
         return super.getName();
     }
 
@@ -463,6 +466,10 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         clone.setChangeKind(ChangeKind.NEW_COPY);
         clone.setChangeComment("Copy of [" + getName() + "]");
         return clone;
+    }
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new CategoryFragmentBuilder(this);
     }
 
 }

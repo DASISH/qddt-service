@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.universe.web;
 
 import no.nsd.qddt.domain.universe.Universe;
+import no.nsd.qddt.domain.universe.UniverseJsonEdit;
 import no.nsd.qddt.domain.universe.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,20 +33,20 @@ public class UniverseController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Universe get(@PathVariable("id") UUID id) {
-        return service.findOne(id);
+    public UniverseJsonEdit get(@PathVariable("id") UUID id) {
+        return new UniverseJsonEdit(service.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Universe update(@RequestBody Universe universe) {
-        return service.save(universe);
+    public UniverseJsonEdit update(@RequestBody Universe universe) {
+        return new UniverseJsonEdit(service.save(universe));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Universe create(@RequestBody Universe universe) {
-        return service.save(universe);
+    public UniverseJsonEdit create(@RequestBody Universe universe) {
+        return new UniverseJsonEdit(service.save(universe));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -58,18 +59,15 @@ public class UniverseController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Universe>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
+    public HttpEntity<PagedResources<UniverseJsonEdit>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
                                                               Pageable pageable, PagedResourcesAssembler assembler) {
 
 //        Page<UniverseJsonView> universes = service.findByDescriptionLike(description, pageable).map( u -> new UniverseJsonView( u ) );
-        Page<Universe> universes = service.findByDescriptionLike(description, pageable);
+        Page<UniverseJsonEdit> universes = service.findByDescriptionLike(description, pageable)
+            .map( u -> new UniverseJsonEdit(u) );
         return new ResponseEntity<>(assembler.toResource(universes), HttpStatus.OK);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
-    public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toDDIXml();
-    }
+
 }
 

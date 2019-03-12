@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
@@ -37,7 +37,7 @@ public class QuestionConstruct  extends ControlConstruct {
 
     /**
      * This field must be available "raw" in order to set and query
-     * questionItem by ID
+     * questionitem by ID
      */
     @JsonIgnore
     @Type(type="pg-uuid")
@@ -65,7 +65,6 @@ public class QuestionConstruct  extends ControlConstruct {
 
     @JsonIgnore
     @OrderColumn(name="instruction_idx")
-    @OrderBy("instruction_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
         joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
@@ -107,7 +106,7 @@ public class QuestionConstruct  extends ControlConstruct {
     }
 
     public Integer getQuestionItemRevision() {
-        return questionItemRevision;
+        return (questionItemRevision==null) ? 0 :questionItemRevision;
     }
 
     public void setQuestionItemRevision(Integer questionItemRevision) {
@@ -118,7 +117,7 @@ public class QuestionConstruct  extends ControlConstruct {
         return questionItemUUID;
     }
 
-    protected void setQuestionItemUUID(UUID questionItem) {
+    public void setQuestionItemUUID(UUID questionItem) {
         questionItemUUID = questionItem;
     }
 

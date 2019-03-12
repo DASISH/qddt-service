@@ -129,8 +129,8 @@ class CategoryServiceImpl implements CategoryService {
             }
             return instance;
         }catch (Exception e) {
-
-            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
+            LOG.error(e.getClass().getName(), e );
+//            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
         }
     }

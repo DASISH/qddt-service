@@ -1,10 +1,10 @@
-package no.nsd.qddt.domain.questionItem.audit;
+package no.nsd.qddt.domain.questionitem.audit;
 
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainAuditController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

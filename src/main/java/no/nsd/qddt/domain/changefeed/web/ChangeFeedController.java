@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.changefeed.ChangeFeed;
 import no.nsd.qddt.domain.changefeed.ChangeFeedService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
@@ -34,10 +33,12 @@ public class ChangeFeedController  extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ChangeFeed>> getBy(@RequestParam(value = "name", required = false) String name, Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<ChangeFeed> items = service.findAllPageable( pageable);
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+    public HttpEntity<PagedResources<ChangeFeed>> getPage(
+        @RequestParam(value = "name",defaultValue = "%") String name,
+        @RequestParam(value = "change",defaultValue = "%") String change,
+        @RequestParam(value = "kind",defaultValue = "%") String kind,
+        Pageable pageable, PagedResourcesAssembler assembler) {
+        return new ResponseEntity<>(assembler.toResource(service.filterbyPageable(name,change,kind, pageable)), HttpStatus.OK);
     }
 
 

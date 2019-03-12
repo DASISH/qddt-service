@@ -107,9 +107,9 @@ public class Version implements Comparable<Version> {
 
         Version version = (Version) o;
 
-        if (major != null ? !major.equals(version.major) : version.major != null) return false;
-        if (minor != null ? !minor.equals(version.minor) : version.minor != null) return false;
-        return versionLabel != null ? versionLabel.equals(version.versionLabel) : version.versionLabel == null;
+        if (!Objects.equals( major, version.major )) return false;
+        if (!Objects.equals( minor, version.minor )) return false;
+        return Objects.equals( versionLabel, version.versionLabel );
 
     }
 
@@ -141,6 +141,6 @@ public class Version implements Comparable<Version> {
     }
 
     public String toDDIXml() {
-        return "<Version>" + toString() +"</Version>";
+        return String.format( versionFormat, major, minor, "" ).trim();
     }
 }

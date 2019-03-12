@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.instruction.web;
 
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instruction.InstructionService;
+import no.nsd.qddt.domain.instruction.json.InstructionJsonEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,20 +33,20 @@ public class InstructionController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Instruction get(@PathVariable("id") UUID id) {
-        return service.findOne(id);
+    public InstructionJsonEdit get(@PathVariable("id") UUID id) {
+        return new InstructionJsonEdit(service.findOne(id));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Instruction update(@RequestBody Instruction instruction) {
-        return service.save(instruction);
+    public InstructionJsonEdit update(@RequestBody Instruction instruction) {
+        return new InstructionJsonEdit(service.save(instruction));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Instruction create(@RequestBody Instruction instruction) {
-        return service.save(instruction);
+    public InstructionJsonEdit create(@RequestBody Instruction instruction) {
+        return new InstructionJsonEdit(service.save(instruction));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -58,17 +59,14 @@ public class InstructionController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Instruction>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
+    public HttpEntity<PagedResources<InstructionJsonEdit>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
                                                       Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Instruction> instructions = service.findByDescriptionLike(description, pageable);
+        Page<InstructionJsonEdit> instructions = service.findByDescriptionLike(description, pageable)
+            .map( i -> new InstructionJsonEdit(i)  );
         return new ResponseEntity<>(assembler.toResource(instructions), HttpStatus.OK);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
-    public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toDDIXml();
-    }
+
 }
 

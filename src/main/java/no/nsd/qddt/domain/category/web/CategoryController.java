@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.category.web;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,6 +75,7 @@ public class CategoryController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return service.findOne(id).toDDIXml();
+        return new XmlDDIFragmentAssembler<Category>(service.findOne(id)).compileToXml();
+
     }
 }

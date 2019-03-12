@@ -1,8 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.borders.DottedBorder;
 import com.itextpdf.layout.element.Cell;
@@ -15,14 +13,16 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.refclasses.QuestionItemRef;
-
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.CapString;
@@ -83,7 +83,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
     
     @JsonIgnore
     @OrderColumn(name="responsedomain_idx")
-    @OrderBy("responsedomain_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id",  referencedColumnName = "id"))
     private List<Code> codes = new ArrayList<>();
@@ -177,7 +176,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         return managedRepresentation;
     }
 
-    private List<Category> getFlatManagedRepresentation(Category current){
+    protected List<Category> getFlatManagedRepresentation(Category current){
         List<Category> retval = new ArrayList<>();
         if (current == null) return  retval;
         retval.add(current);
@@ -227,13 +226,6 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    public Set<QuestionItemRef> getQuestionRefs(){
-        return  new HashSet<>();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -262,10 +254,17 @@ public class ResponseDomain extends AbstractEntityAudit  {
     }
 
     @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ResponseDomainFragmentBuilder(this);
+    }
+
+
+    @Override
     public void fillDoc(PdfReport pdfReport,String counter) {
         com.itextpdf.layout.element.Table table =
             new com.itextpdf.layout.element.Table(UnitValue.createPercentArray(new float[]{15.0F,70.0F,15.0F}))
                 .setKeepTogether(true)
+                .setKeepTogether( true )
                 .setWidth(pdfReport.width100*0.8F)
                 .setBorder(new DottedBorder( ColorConstants.GRAY,1))
                 .setFontSize(10);
@@ -275,24 +274,23 @@ public class ResponseDomain extends AbstractEntityAudit  {
             .addCell(new Cell()
                 .setTextAlignment(TextAlignment.RIGHT)
                 .add(new Paragraph( String.format("Version %s", getVersion()))));
-        for (Category cat: getFlatManagedRepresentation(getManagedRepresentation())) {
-            if (cat.getCategoryType() == CategoryType.CATEGORY ){
-                table.addCell(new Cell()
-                        .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
-                table.addCell(new Cell().add(new Paragraph(cat.getLabel()))
-                        .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
-                table.addCell(new Cell()
-                    .setTextAlignment(TextAlignment.CENTER)
-                    .add(new Paragraph(cat.getCode()!=null ? cat.getCode().getCodeValue(): cat.getCategoryType().name()))
-                    .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
+        for (Category cat: getFlatManagedRepresentation(getManagedRepresentation()))
+            if (cat.getCategoryType() == CategoryType.CATEGORY) {
+                table.addCell( new Cell()
+                    .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
+                table.addCell( new Cell().add( new Paragraph( cat.getLabel() ) )
+                    .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
+                table.addCell( new Cell()
+                    .setTextAlignment( TextAlignment.CENTER )
+                    .add( new Paragraph( cat.getCode() != null ? cat.getCode().getCodeValue() : cat.getCategoryType().name() ) )
+                    .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
             } else {
-                table.addCell(new Cell().add(new Paragraph(cat.getCategoryType().name()))
-                        .setBorder(new DottedBorder(ColorConstants.GRAY,1))
-                        );
-                table.addCell(new Cell(1,2).add(new Paragraph(cat.getName()))
-                    .setBorder(new DottedBorder(ColorConstants.GRAY,1)));
+                table.addCell( new Cell().add( new Paragraph( cat.getCategoryType().name() ) )
+                    .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) )
+                );
+                table.addCell( new Cell( 1, 2 ).add( new Paragraph( cat.getLabel() ) )
+                    .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
             }
-        }
         pdfReport.getTheDocument().add(table);
     }
 

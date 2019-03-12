@@ -2,9 +2,10 @@ package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -31,7 +32,6 @@ public class Instrument extends AbstractEntityAudit  {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")
-    @OrderBy("_idx ASC")
     @JoinColumn(name = "instrument_id")
     private List<InstrumentElement>  sequence = new ArrayList<>();
 
@@ -108,6 +108,13 @@ public class Instrument extends AbstractEntityAudit  {
         }
     }
 
+//    TODO implement outparams....
+//    @Transient
+//    public List<InstrumentParameter> getOutParameter() {
+//        this.sequence.stream().collect( TreeMap::new, TreeMap::putAll,
+//            (map1, map2) -> { map1.putAll(map2); return map1; });
+//    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -151,6 +158,11 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
     @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
+
+    @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {
         pdfReport.addParagraph( "Instrument...");
     }
@@ -164,5 +176,6 @@ public class Instrument extends AbstractEntityAudit  {
     protected void beforeInsert() {
 
     }
+
 
 }
