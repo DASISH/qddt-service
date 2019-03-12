@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public class FileNotOwnedException extends RuntimeException {
 
-    private static final long serialVersionUID = 297954013228247353L;
     private static final Logger logger = LoggerFactory.getLogger(FileNotOwnedException.class);
 
     public FileNotOwnedException(User activeUser, UUID fileId) {

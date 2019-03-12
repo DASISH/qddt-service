@@ -1,6 +1,5 @@
 package no.nsd.qddt.security;
 
-import no.nsd.qddt.domain.user.QDDTUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +31,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
      * @param userDetailsService to inject
      */
     @Autowired
-    public void setUserDetailsService(QDDTUserDetailsService userDetailsService) {
+    public void setUserDetailsService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

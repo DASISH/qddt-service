@@ -1,29 +1,17 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-
-import org.hibernate.Hibernate;
-import org.hibernate.envers.Audited;
-
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import org.hibernate.Hibernate;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <ul class="inheritance">
@@ -165,11 +153,6 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
                 "} " + super.toString();
     }
 
-    @Override
-    public AbstractXmlBuilder getXmlBuilder() {
-        return null;
-	}
-
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) {
@@ -180,7 +163,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
 
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
 
         int i = 0;
         for (Study study : getStudies()) {
@@ -191,8 +174,6 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
     @Override
     protected void beforeUpdate() {}
     @Override
-    protected void beforeInsert() {
-    }
-
+    protected void beforeInsert() {}
 
 }

@@ -7,7 +7,7 @@ import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -19,11 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -102,21 +98,20 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         LOG.info( "postload topic " + instance.getId() );
-        try {
-            for (ElementRef cqi : instance.getTopicQuestionItems()) {
-                qiLoader.fill( cqi );
-            }
+        try{
+            for (ElementRef cqi :instance.getTopicQuestionItems()) {
 
-            if (!Hibernate.isInitialized( instance.getConcepts() )) {
-                LOG.debug( "Hibernate.initialize..." );
-                Hibernate.initialize( instance.getConcepts() );
-            }
+                cqi = qiLoader.fill( cqi );
 
-            for (Concept c : instance.getConcepts().stream().filter( f -> f != null ).collect( Collectors.toList())
-            ) {
-                postLoadProcessing( c );
-            }
+//                cqi.getElement().setConceptRefs(
+//                    conceptService.findByQuestionItem(cqi.getId(),null).stream()
+//                        .map( ConceptRef::new )
+//                        .collect( Collectors.toList())
+//                );
 
+            }
+            Hibernate.initialize(instance.getConcepts());
+            instance.getConcepts().forEach(this::postLoadProcessing);
             instance.setComments(loadComments(instance.getId()));
 
         } catch (Exception ex){

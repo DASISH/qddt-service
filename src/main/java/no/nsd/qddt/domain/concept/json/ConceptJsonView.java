@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 

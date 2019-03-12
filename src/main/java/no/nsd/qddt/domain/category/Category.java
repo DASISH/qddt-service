@@ -9,16 +9,12 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.responsedomain.Code;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.SafeString;
@@ -157,8 +153,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public void setLabel(String label) {
         this.label = label;
-        if (StringTool.IsNullOrTrimEmpty(super.getName()))
-            setName(label.toUpperCase());
+        if (StringTool.IsNullOrTrimEmpty(getName()))
+            setName(StringTool.CapString(label));
     }
 
     /*
@@ -241,7 +237,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Column(nullable = false)
     public String getName(){
         if (StringTool.IsNullOrTrimEmpty(super.getName()))
-            super.setName(this.getLabel().toUpperCase());
+            super.setName(StringTool.CapString(this.getLabel()));
         return super.getName();
     }
 
@@ -285,6 +281,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             + ", \"_Index\":\"" + _Index + "\""
             + "}";
     }
+
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter) {
@@ -466,10 +463,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         clone.setChangeKind(ChangeKind.NEW_COPY);
         clone.setChangeComment("Copy of [" + getName() + "]");
         return clone;
-    }
-    @Override
-    public AbstractXmlBuilder getXmlBuilder() {
-        return new CategoryFragmentBuilder(this);
     }
 
 }

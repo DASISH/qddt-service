@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.parentref.StudyRef;
+import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 import java.util.*;
@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
  * @author Stig Norland
  */
 public class TopicGroupJson extends AbstractJsonEdit {
-
-    private static final long serialVersionUID = -6737006454459231451L;
 
     private String abstractDescription;
 
@@ -32,8 +30,6 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private StudyRef studyRef;
 
-    private Integer studyIndex;
-
     public TopicGroupJson(TopicGroup topicGroup) {
         super(topicGroup);
         if (topicGroup == null) return;
@@ -44,7 +40,6 @@ public class TopicGroupJson extends AbstractJsonEdit {
         setArchived(topicGroup.isArchived());
         setComments(topicGroup.getComments());
         studyRef = topicGroup.getStudyRef();
-        this.studyIndex = topicGroup.getIndex();
     }
 
     public String getDescription() {
@@ -96,9 +91,6 @@ public class TopicGroupJson extends AbstractJsonEdit {
         this.comments = comments;
     }
 
-    public Integer getIndex() {
-        return studyIndex;
-    }
 
     @Override
     public boolean equals(Object o) {

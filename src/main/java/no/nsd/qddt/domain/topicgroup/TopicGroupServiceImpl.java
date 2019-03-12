@@ -2,8 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
@@ -19,13 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
-import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -68,8 +65,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public TopicGroup findOne(UUID uuid) {
-        return postLoadProcessing(topicGroupRepository.findById(uuid).orElseThrow(
-            () -> new ResourceNotFoundException(uuid, TopicGroup.class))
+        return topicGroupRepository.findById(uuid)
+            .map(this::postLoadProcessing).orElseThrow(
+            () -> new ResourceNotFoundException(uuid, TopicGroup.class)
         );
     }
 
@@ -79,13 +77,14 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')  and hasPermission(#instance,'AGENCY')")
     public TopicGroup save(TopicGroup instance) {
         try {
-            return postLoadProcessing(
+            instance = postLoadProcessing(
                 topicGroupRepository.save(
                     prePersistProcessing(instance)));
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             throw ex;
         }
+        return instance;
     }
 
 //    @Transactional
@@ -94,25 +93,24 @@ class TopicGroupServiceImpl implements TopicGroupService {
 //        return topicGroupRepository.save(instances);
 //    }
 
-//    private EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
-//    @PersistenceUnit
-//    public void setEntityManagerFactory(EntityManagerFactory emf) {
-//        this.emf = emf;
-//    }
+    @PersistenceUnit
+    public void setEntityManagerFactory(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public TopicGroup copy(UUID id, Integer rev, UUID parentId) {
+//        EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev ).getEntity();
-//        TopicGroup copy = new TopicGroupFactory().copy(source, rev);
-//        studyService.findOne( parentId ).addTopicGroup( copy );
+        TopicGroup target = new TopicGroupFactory().copy(source, rev);
+        studyService.findOne( parentId ).addTopicGroup( target );
 //        entityManager.detach( target );
 //        target.setParentU(parentId);
 //        entityManager.merge( target );
-        return topicGroupRepository.save(
-            studyService.findOne( parentId )
-                .addTopicGroup( new TopicGroupFactory().copy(source, rev) ));
+        return topicGroupRepository.save(target);
     }
 
 
@@ -143,7 +141,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     // Only users that can see survey and study can here, (sometimes guest should see this too.)
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<TopicGroup> findByStudyId(UUID id) {
-        return topicGroupRepository.findByStudyIdOrderByStudyIndex(id).stream().filter( f -> f != null )
+        return topicGroupRepository.findByStudyId(id).stream()
                 .map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
@@ -157,32 +155,32 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<TopicGroup> findByNameAndDescriptionPageable(String name, String description, Pageable pageable) {
-        return topicGroupRepository
-            .findByQuery(likeify(name),likeify(description),pageable)
-            .map(this::postLoadProcessing);
+        if (name.isEmpty()  &&  description.isEmpty()) {
+            name = "%";
+        }
+        return topicGroupRepository.findByQuery(name,description,pageable)
+                .map(this::postLoadProcessing);
     }
 
+    @Override
+    public List<TopicGroup> findByQuestionItem(UUID id, Integer rev) {
+        return null;
+    }
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
-        for (ElementRef cqi: instance.getTopicQuestionItems()) {
-            if (IsNullOrTrimEmpty( cqi.getName())) {
-                qiLoader.fill( cqi ).setValues();
-            }
-        }
+        
         return doArchive( instance ) ;
     }
 
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
+            instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
 
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
-                LOG.debug("PDF -> fetching  concepts and QuestionItems ");
-                instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
+                LOG.debug("PDF -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
-
-                instance.getConcepts().stream().filter( Objects::nonNull ).forEach(this::loadConceptQuestion);
-//                instance.getConcepts().forEach( this::loadConceptQuestion );
+                instance.getConcepts().forEach( this::loadConceptQuestion );
 
                 // when we print hierarchy we don't need qi concept reference....
             }
@@ -190,15 +188,17 @@ class TopicGroupServiceImpl implements TopicGroupService {
             LOG.error("postLoadProcessing",ex);
             throw ex;
         }
-        LOG.debug("TopicGroupIdx " + (instance.getIndex()==null?"NULL":instance.getIndex()) );
         return instance;
     }
 
 
     private void loadConceptQuestion(Concept parent) {
-        parent.getChildren().stream().filter( Objects::nonNull ).forEach(this::loadConceptQuestion);
-//        parent.getChildren().forEach( this::loadConceptQuestion );
+        parent.getChildren().forEach( this::loadConceptQuestion );
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
+    @Override
+    public boolean hasArchivedContent(UUID id) {
+        return false;
+    }
 }

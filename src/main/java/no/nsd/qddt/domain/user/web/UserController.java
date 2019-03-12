@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.user.Password;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.domain.user.json.UserJsonEdit;
-import no.nsd.qddt.security.SecurityContext;
+import no.nsd.qddt.utils.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

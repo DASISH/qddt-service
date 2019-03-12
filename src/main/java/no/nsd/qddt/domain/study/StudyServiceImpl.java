@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.study;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -55,10 +55,9 @@ class StudyServiceImpl implements StudyService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Study findOne(UUID uuid) {
-        return postLoadProcessing(studyRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Study.class))
-        );    
-    }
+        return studyRepository.findById(uuid).orElseThrow(
+                () -> new ResourceNotFoundException(uuid, Study.class)
+        );    }
 
 
     @Override
@@ -98,38 +97,19 @@ class StudyServiceImpl implements StudyService {
     }
 
 
-//     private Study postLoadProcessing(Study instance) {
-//         if (StackTraceFilter.stackContains("getPdf","getXml")) {
-//             LOG.debug("PDF -> fetching  concepts ");
-// //            Hibernate.initialize(instance.getTopicGroups());
-// //            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
-
-//             instance.getTopicGroups().forEach( topic -> {
-//                 topic.getTopicQuestionItems().forEach( qiLoader::fill );
-//                 Hibernate.initialize(topic.getConcepts());
-//                 topic.getConcepts().forEach( this::loadConceptQuestion );
-//             } );
-
-//             // when we print hierarchy we don't need qi concept reference....
-//         }
-//         return instance;
-//     }
-
     private Study postLoadProcessing(Study instance) {
-        assert  (instance != null);
-        try{
-            if (StackTraceFilter.stackContains("getPdf","getXml")) {
-                instance.getTopicGroups().forEach( topic -> {
-                    topic.getTopicQuestionItems().forEach( qiLoader::fill );
-                    Hibernate.initialize(topic.getConcepts());
-                    topic.getConcepts().forEach( this::loadConceptQuestion );
-                    } );
-                LOG.debug("PDF -> fetching  concepts ");
-            }
-            else
-                instance.setChangeComment( null );
-        } catch (Exception ex){
-            LOG.error("postLoadProcessing",ex);
+        if (StackTraceFilter.stackContains("getPdf","getXml")) {
+            LOG.debug("PDF -> fetching  concepts ");
+//            Hibernate.initialize(instance.getTopicGroups());
+//            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
+
+            instance.getTopicGroups().forEach( topic -> {
+                topic.getTopicQuestionItems().forEach( qiLoader::fill );
+                Hibernate.initialize(topic.getConcepts());
+                topic.getConcepts().forEach( this::loadConceptQuestion );
+            } );
+
+            // when we print hierarchy we don't need qi concept reference....
         }
         return instance;
     }
@@ -139,4 +119,8 @@ class StudyServiceImpl implements StudyService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
+    @Override
+    public boolean hasArchivedContent(UUID id) {
+        return false;
+    }
 }

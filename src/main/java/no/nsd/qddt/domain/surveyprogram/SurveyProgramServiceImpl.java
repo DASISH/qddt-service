@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -117,11 +117,6 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
                     } ) );
                 LOG.debug("PDF -> fetching  concepts ");
             }
-            else {
-                instance.setChangeComment( null );
-                instance.getStudies().forEach( s -> s.setChangeComment( null ) );
-            }
-
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
         }
@@ -133,4 +128,8 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
+    @Override
+    public boolean hasArchivedContent(UUID id) {
+        return (surveyProgramRepository.hasArchive( id.toString() ) > 0);
+    }
 }

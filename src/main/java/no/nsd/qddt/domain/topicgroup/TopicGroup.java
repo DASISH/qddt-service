@@ -11,12 +11,10 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.refclasses.StudyRef;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -66,22 +64,18 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @Column(name = "study_id", insertable = false, updatable = false)
     private UUID studyId;
 
-    @Column(name = "study_idx" ,insertable = false, updatable = false)
-    private Integer studyIndex;
-
-
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })   // TODO check performance and consequences
-    @OrderColumn(name="topic_idx")
-//    @AuditJoinTable()
-    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "topicIndex")
-    private List<Concept> concepts = new ArrayList<>(0);
+    @OrderBy(value = "name asc")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })
+    private Set<Concept> concepts = new HashSet<>(0);
 
 
     @OrderColumn(name="topicgroup_idx")
+    @OrderBy("topicgroup_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
-    private List<ElementRef>  topicQuestionItems = new ArrayList<>(0);
+    private List<ElementRef>  topicQuestionItems = new ArrayList<>();
+
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -91,10 +85,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Author> authors = new HashSet<>();
 
     @OrderColumn(name="owner_idx")
+    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
-    private List<OtherMaterial> otherMaterials = new ArrayList<>(0);
+        private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
 
     private boolean isArchived;
@@ -127,28 +122,18 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         this.study = study;
     }
 
-    public Integer getIndex() {
-        return studyIndex;
-    }
-
 
     public Concept addConcept(Concept concept){
-        int index = (concept.getIndex()!=null)? concept.getIndex() : this.concepts.size();
-        return addConcept( concept, index );
-    }
-
-    public Concept addConcept(Concept concept, Integer index ){
+        concept.setTopicGroup(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");
-        this.concepts.add( index, concept);
-        concept.setTopicGroup(this);
         return concept;
     }
 
-    public List<Concept> getConcepts() {
+    public Set<Concept> getConcepts() {
         return concepts;
     }
-    public void setConcepts(List<Concept> concepts) {
+    public void setConcepts(Set<Concept> concepts) {
         this.concepts = concepts;
     }
 
@@ -177,7 +162,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @JsonIgnore
     protected List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
         return topicQuestionItems.stream()
-            .filter( f -> f!=null)
             .map(c-> new ElementRefTyped<QuestionItem>(c) )
             .collect( Collectors.toList() );
     }
@@ -218,6 +202,9 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         setField( "study", newParent );
     }
 
+//    public void setParentU(UUID studyId) {
+//        setField("topicGroupId",studyId );
+//    }
 
     public StudyRef getStudyRef() {
         return new StudyRef(getStudy());
@@ -259,11 +246,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
                 "}";
     }
 
-    @Override
-    public AbstractXmlBuilder getXmlBuilder() {
-        return new TopicGroupFragmentBuilder(this);
-    }
-
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) {
@@ -280,20 +262,19 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
             for (ElementRefTyped<QuestionItem> item : getTopicQuestionItemsT()) {
-                pdfReport.addheader2(item.getElement().getName(), String.format("Version %s",item.getElement().getVersion()));
+                pdfReport.addheader2(item.getName(), String.format("Version %s",item.getVersion()));
                 pdfReport.addParagraph(item.getElement().getQuestion());
                 if (item.getElement().getResponseDomain() != null)
                     item.getElement().getResponseDomain().fillDoc(pdfReport, "");
 //                // pdfReport.addPadding();
             }
         }
-        pdfReport.addPadding();
 
         if (counter.length()>0)
             counter = counter+".";
         int i = 0;
         for (Concept concept : getConcepts()) {
-            concept.fillDoc(pdfReport ,counter+ ++i );
+            concept.fillDoc(pdfReport ,counter+ String.valueOf(++i));
         }
     }
 

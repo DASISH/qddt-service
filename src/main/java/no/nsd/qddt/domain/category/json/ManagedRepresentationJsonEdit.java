@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
  */
 public class ManagedRepresentationJsonEdit extends AbstractJsonEdit {
 
-    private static final long serialVersionUID = -2417561008434743742L;
-
     private String label;
 
     private String description;

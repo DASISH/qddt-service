@@ -52,7 +52,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public ResponseDomain findOne(UUID uuid) {
-        return responseDomainRepository.findById(uuid).map( this::postLoadProcessing ).orElseThrow(
+        return responseDomainRepository.findById(uuid).orElseThrow(
                 () -> new ResourceNotFoundException(uuid, ResponseDomain.class));
     }
 
@@ -64,8 +64,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
             name = "%";
         }
 //        likeify(anchor),
-        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), likeify( anchor ), pageable)
-            .map( this::postLoadProcessing );
+        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), pageable);
     }
 
 
@@ -120,7 +119,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
 
     private ResponseDomain postLoadProcessing(ResponseDomain instance) {
-        instance.setChangeComment( null );
         return instance;
     }
 

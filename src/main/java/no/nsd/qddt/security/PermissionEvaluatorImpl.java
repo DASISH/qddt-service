@@ -1,8 +1,6 @@
 package no.nsd.qddt.security;
 
-import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.user.QDDTUserDetails;
 import no.nsd.qddt.domain.user.User;
@@ -26,21 +24,12 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     @Override
     public boolean hasPermission( Authentication auth, Object targetDomainObject, Object permission) {
         if ((auth == null) || (targetDomainObject == null) ||
-            !(permission instanceof String)  ){
+            !(permission instanceof String) ||
+            !(targetDomainObject instanceof AbstractEntityAudit) ){
             return false;
         }
 
-        User user = ((QDDTUserDetails) auth.getPrincipal()).getUser();
-        String PERMISSION = ((String) permission).toUpperCase();
-
-        if (targetDomainObject instanceof Iterable) {
-            for (AbstractEntity abstractEntity : ((Iterable<AbstractEntity>) targetDomainObject)) {
-                if (!hasPrivilege( user, abstractEntity, PERMISSION ))
-                    return false;
-            }
-            return true;
-        } else
-            return hasPrivilege( user, (AbstractEntity) targetDomainObject, PERMISSION );
+        return hasPrivilege( (QDDTUserDetails)auth.getPrincipal(), (AbstractEntityAudit)targetDomainObject, ((String) permission).toUpperCase());
     }
 
 
@@ -51,46 +40,35 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
 
-    private boolean hasPrivilege(User user, AbstractEntity entity, String permission){
-        LOG.debug( user.getUsername() + " - " + entity.getClass().getName() + " - " + permission );
+    private boolean hasPrivilege(QDDTUserDetails details, AbstractEntityAudit entity, String permission){
+        LOG.info( details.getUsername() + " - " + entity.getName() + " - " + permission );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
-
-        if (isArchived( entity )) return false;
-
         switch (PermissionType.valueOf( permission )) {
             case OWNER:
-                return isOwner( user, entity );
+                return isOwner( details.getUser(), entity );
             case USER:
-                return isUser( user, entity );
+                return isUser( details.getUser(), entity );
             case AGENCY:
-                return isMemberOfAgency( user.getAgency(), (AbstractEntityAudit)entity );
+                return isMemberOfAgency( details.getUser().getAgency(), entity );
             default:
                 return false;
         }
     }
 
-    private boolean isArchived(AbstractEntity entity) {
-        if (entity instanceof  IArchived)
-            return ((IArchived) entity).isArchived();
-        else
-            return false;
+    private boolean isOwner(User user, AbstractEntityAudit entity) {
+        return  ( user.getId().equals( entity.getModifiedBy().getId() ));
     }
 
-    private boolean isOwner(User user, AbstractEntity entity) {
-        return  ( entity.getModifiedBy() == null || user.getId().equals( entity.getModifiedBy().getId() ));
-    }
-
-    private boolean isUser(User user, AbstractEntity entity) {
+    private boolean isUser(User user, AbstractEntityAudit entity) {
         return ( user.getId().equals( entity.getId() ));
     }
 
     private boolean isMemberOfAgency(Agency agency, AbstractEntityAudit entity) {
-        if (entity.getAgency()  == null || entity.getModifiedBy() == null ) return  true;
-
+        assert entity.getAgency() != null;
         boolean isMember = agency.getId().equals( entity.getAgency().getId());
-        LOG.debug( String.valueOf( isMember ) );
+        LOG.info( String.valueOf( isMember ) );
         return (isMember);
     }
 

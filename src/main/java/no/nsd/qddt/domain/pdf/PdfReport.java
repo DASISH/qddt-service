@@ -57,10 +57,10 @@ public class PdfReport extends PdfDocument {
     private final int sizeSmall = 9;
     private final int sizeNormal = 12;
     private final int sizeHeader2 = 14;
-    private final int sizeHeader1 = 23;
+    private final int sizeHeader1 = 18;
 
-    private final Style cellStyleLeft =  new Style().setFontSize(sizeSmall).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER).setPadding( 1.0F );
-    private final Style cellStyleRight =  new Style().setFontSize(sizeSmall).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setPadding( 1.0F ).setPaddingRight( 4.0F );
+    private final Style cellStyleLeft =  new Style().setFontSize(sizeSmall).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER);
+    private final Style cellStyleRight =  new Style().setFontSize(sizeSmall).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER);
 
     private Document document;
 //    private PdfDocument pdfContent;
@@ -164,28 +164,15 @@ public class PdfReport extends PdfDocument {
         if (values.length > 1) {
             chapter = values[1];
 //            document.add( new AreaBreak(AreaBreakType.NEXT_AREA  ) );
-            // document.add( new AreaBreak() );        //https://github.com/DASISH/qddt-client/issues/611
+            document.add( new AreaBreak() );        //https://github.com/DASISH/qddt-client/issues/611
         }
-        outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());
-        SimpleEntry<String, Integer> titlePage = new SimpleEntry<>( chapter + "\t"  + StringTool.CapString(element.getName()), getNumberOfPages());
-        toc.add(new SimpleEntry<>(element.getId().toString(),titlePage));
-
-        Paragraph p = new Paragraph(element.getName())
-            .setFontColor(ColorConstants.BLUE)
-            .setFontSize(sizeHeader1)
-            .setMultipliedLeading( 1F )
-//            .setWidth(width100*0.8F)
-            .setDestination(element.getId().toString());
-
-        Table table = new Table(UnitValue.createPercentArray(new float[]{68.0F,12.0F,20.0F}));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{20.0F,20.0F,20.0F,20.0F,20.0F}));
         table.addCell(
-            new Cell(4,1).add(new Paragraph(header).setMultipliedLeading( 1F ).setFontSize(21).setFont( chapterHeading ))
+            new Cell(4,3).add(new Paragraph(header).setMultipliedLeading( 1F ).setFontSize(23).setFont( chapterHeading ))
             .setTextAlignment(TextAlignment.LEFT)
             .setBorder( Border.NO_BORDER)
-            .add(new Paragraph("__________________________________________________________")
-            .setFontColor(ColorConstants.BLUE)
-            .setVerticalAlignment( VerticalAlignment.TOP ) )
-        .add( p ))
+            .add(new Paragraph("____________________________________________________")
+            .setFontColor(ColorConstants.BLUE)))
         .addCell(new Cell().add(new Paragraph( "Version")).addStyle( cellStyleRight ) )
         .addCell(new Cell().add(new Paragraph( element.getVersion().toString())).addStyle( cellStyleLeft ))
         .addCell(new Cell().add(new Paragraph("Last Saved")).addStyle( cellStyleRight ))
@@ -194,13 +181,21 @@ public class PdfReport extends PdfDocument {
         .addCell(new Cell().add(new Paragraph(StringTool.CapString( element.getModifiedBy().getUsername()))).addStyle( cellStyleLeft ))
         .addCell(new Cell().add(new Paragraph("Agency")).addStyle( cellStyleRight ))
         .addCell(new Cell().add(new Paragraph(element.getAgency().getName())).addStyle( cellStyleLeft ))
-        .setWidth(width100 );
+        .setKeepTogether( true ).setKeepWithNext(true);
+        document.add(table);
 
-        p.setNextRenderer(new UpdatePageRenderer(p, titlePage));
-        Div div = new Div().add(table).setKeepTogether( true ).setKeepWithNext(true);
+        outline = createOutline(outline, StringTool.CapString(element.getName()), element.getId().toString());
+        SimpleEntry<String, Integer> titlePage = new SimpleEntry<>( chapter + "\t"  + StringTool.CapString(element.getName()), getNumberOfPages());
 
-
-        return document.add(div);
+        Paragraph p =new Paragraph(element.getName()).setKeepWithNext(true);
+        p.setFontColor(ColorConstants.BLUE)
+            .setFontSize(sizeHeader1)
+            .setMultipliedLeading( 1F )
+            .setWidth(width100*0.8F)
+            .setDestination(element.getId().toString())
+            .setNextRenderer(new UpdatePageRenderer(p, titlePage));
+        toc.add(new SimpleEntry<>(element.getId().toString(),titlePage));
+        return document.add(p);
     }
 
     public Document getTheDocument() {

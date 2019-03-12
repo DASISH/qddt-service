@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 
 import java.util.UUID;
 import java.util.stream.Collectors;

@@ -25,7 +25,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
     private CategoryRepository categoryRepository;
 
     @Autowired
-
+//    private CodeService codeService;
 
 
     @Before
@@ -140,8 +140,153 @@ public class CategoryServiceTest extends AbstractServiceTest {
         categoryService.save(rootCategory);
 
 
-        Page<Category> rootList= categoryService.findBy("GROUP_ENTITY","LIST", "%", "%", new PageRequest(0, 20));
+        Page<Category> rootList= categoryService.findByCategoryTypeAndNameLike(CategoryType.LIST, "%", new PageRequest(0, 20));
         assertEquals("Skal bare være et element i listen",  1L,rootList.getTotalElements());
 
+    }
+
+    @Test
+    public void testfindByName(){
+        Category rootCategory = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("Kjønn4").createCategory();
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Kvinne4").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Mann4").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Transperson4").createCategory());
+        categoryService.save(rootCategory);
+
+        Page<Category> list = categoryService.findByNameLike("%nne%", new PageRequest(0, 20));
+        assertEquals("Skal ha to elementer", 2L, list.getTotalElements());
+
+    }
+
+    @Test
+    public void testfindGroupByName(){
+        Category rootCategory = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("Kjønn5").createCategory();
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Kvinne5").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Mann5").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Transperson5").createCategory());
+        categoryService.save(rootCategory);
+
+        Page<Category> rootList= categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, "%", new PageRequest(0, 20));
+        assertEquals("Skal bare være et element i listen",  1L,rootList.getTotalElements());
+    }
+
+    @Transactional
+    @Test
+    public void testfindRootLevelByName(){
+        Category rootCategory = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("Kjønn6").createCategory();
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Kvinne6").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Mann6").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Transperson6").createCategory());
+        rootCategory = categoryService.save(rootCategory);
+
+        Category group = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.MISSING_GROUP)
+                .setLabel("NA Svar").createCategory();
+        group.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Vet ikke").createCategory());
+        group.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Vil ikke svare").createCategory());
+        group = categoryService.save(group);
+
+        Category root = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("Kjønn-liste2").createCategory();
+
+        root.getChildren().add(rootCategory);
+        root.getChildren().add(group);
+        root = categoryService.save(root);
+
+        Page<Category> rootList= categoryService.findByHierarchyAndNameLike(HierarchyLevel.GROUP_ENTITY, "Kjønn%", new PageRequest(0, 20));
+        assertEquals("Should be 1 element in list",  1L,rootList.getTotalElements());
+//        assertEquals("Should be 5 Grandchildren elements", 5L, rootList.getContent().get(0).getAllChildrenFlatten().size());
+
+    }
+
+    @Transactional
+    @Test
+    public void testHierarchAndCategory(){
+
+        Category rootCategory = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("Kjønn7").createCategory();
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Kvinne7").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Mann7").createCategory());
+        rootCategory.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Transperson7").createCategory());
+        rootCategory = categoryService.save(rootCategory);
+
+        Category group = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.MISSING_GROUP)
+                .setLabel("NA Svar").createCategory();
+        group.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Vet ikke").createCategory());
+        group.getChildren().add(new CategoryBuilder()
+                .setType(CategoryType.CATEGORY)
+                .setLabel("Vil ikke svare").createCategory());
+        group = categoryService.save(group);
+
+        Category root = new CategoryBuilder()
+                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
+                .setType(CategoryType.LIST)
+                .setLabel("Kjønns Svar").createCategory();
+        root.getChildren().add(rootCategory);
+        root.getChildren().add(group);
+        categoryService.save(root);
+
+
+        Page<Category> page =categoryService.findByHierarchyAndCategoryAndNameLike(
+                HierarchyLevel.ENTITY,
+                CategoryType.CATEGORY,
+                "%", new PageRequest(0, 20));
+
+        assertEquals("Should be 2 element in list",  2L,page.getTotalElements());
+//        assertEquals("Should be 0 Grandchildren elements", 0L, page.getContent().get(0).getAllChildrenFlatten().size());
+
+        page =categoryService.findByHierarchyAndCategoryAndNameLike(
+                HierarchyLevel.GROUP_ENTITY,
+                CategoryType.SCALE,
+                "%", new PageRequest(0, 20));
+
+        assertEquals("Should be 1 element in list",  1L,page.getTotalElements());
+//        assertEquals("Should be 3 Grandchildren elements", 3L, page.getContent().get(0).getAllChildrenFlatten().size());
     }
 }

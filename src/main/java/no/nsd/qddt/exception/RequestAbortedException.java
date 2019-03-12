@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
  */
 public class RequestAbortedException extends RuntimeException{
 
-    private static final long serialVersionUID = 513859607031911571L;
     private static final Logger logger = LoggerFactory.getLogger(InvalidObjectException.class);
     private static final StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 

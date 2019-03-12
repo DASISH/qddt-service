@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
  */
 public class InvalidPasswordException extends RuntimeException{
 
-    private static final long serialVersionUID = -7026178953815161624L;
     private static final Logger logger = LoggerFactory.getLogger(InvalidPasswordException.class);
 
     public InvalidPasswordException(String email) {

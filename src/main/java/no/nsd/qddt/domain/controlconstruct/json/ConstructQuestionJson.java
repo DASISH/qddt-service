@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.instruction.json.InstructionJsonView;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
 
 import java.util.List;
@@ -82,7 +82,7 @@ public class ConstructQuestionJson  extends ConstructJson {
                 return;
             name = questionItem.getName();
             question = questionItem.getQuestion();
-            // responseDomain =  new ResponseDomainJsonView(questionitem.getResponseDomain());
+            // responseDomain =  new ResponseDomainJsonView(questionItem.getResponseDomain());
         }
 
 

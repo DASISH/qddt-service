@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
  */
 public class CategoryJsonEdit extends AbstractJsonEdit {
 
-    private static final long serialVersionUID = -2195696472853764486L;
-
     private String label;
 
     private String description;

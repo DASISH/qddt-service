@@ -10,7 +10,6 @@ import java.util.UUID;
  */
 public class UserNotFoundException extends RuntimeException{
 
-    private static final long serialVersionUID = 3390953808347101016L;
     private static final Logger logger = LoggerFactory.getLogger(UserNotFoundException.class);
 
     public UserNotFoundException(String email) {

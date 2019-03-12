@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  */
 public class InvalidObjectException extends RuntimeException{
 
-    private static final long serialVersionUID = 7509899931915065094L;
     private static final Logger logger = LoggerFactory.getLogger(InvalidObjectException.class);
 
     public InvalidObjectException(AbstractEntity object) {

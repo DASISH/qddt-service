@@ -2,7 +2,10 @@ package no.nsd.qddt.domain.elementref.typed;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.AbstractElementRef;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -10,29 +13,28 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 
 public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElementRef {
 
-    public ElementRefTyped(AbstractElementRef source ) {
+    public ElementRefTyped(ElementRef source ) {
         super(source.getElementKind(),source.getElementId(),source.getElementRevision());
         setVersion(source.getVersion() );
         setName( source.getName());
         setElement( source.getElement() );
     }
 
-//    public ElementRefTyped(ElementKind kind, UUID id, Integer rev) {
-//        super( kind, id, rev );
-//    }
+    public ElementRefTyped(ElementKind kind, UUID id, Integer rev) {
+        super( kind, id, rev );
+    }
 
     @Override
     public T getElement() {
         return (T)super.element;
     }
 
-
     @Override
     public ElementRefTyped<T> clone() {
             ElementRef retval = new ElementRef(getElementKind(), getElementId(),getElementRevision());
             retval.setVersion( getVersion() );
             retval.setName( getName() );
-        return new ElementRefTyped<>( retval );
+        return new ElementRefTyped<>( retval);
     }
 
 }

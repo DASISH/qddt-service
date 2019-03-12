@@ -1,7 +1,10 @@
 package no.nsd.qddt.domain.author.web;
 
-import java.util.UUID;
-
+import no.nsd.qddt.domain.author.Author;
+import no.nsd.qddt.domain.author.AuthorService;
+import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,15 +14,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import no.nsd.qddt.domain.author.Author;
-import no.nsd.qddt.domain.author.AuthorService;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -29,6 +26,7 @@ import no.nsd.qddt.domain.author.AuthorService;
 public class AuthorController {
 
     private final AuthorService authorService;
+
 
     @Autowired
     public AuthorController(AuthorService authorService) {

@@ -2,14 +2,14 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.parentref.ConceptRef;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
-import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -68,6 +69,7 @@ class ConceptServiceImpl implements ConceptService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Concept findOne(UUID uuid) {
         return conceptRepository.findById(uuid).map(this::postLoadProcessing).orElseThrow(
+//        return conceptRepository.findById(uuid).orElseThrow(
             () -> new ResourceNotFoundException(uuid, Concept.class));
 
     }
@@ -76,74 +78,38 @@ class ConceptServiceImpl implements ConceptService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY')")
     public Concept save(Concept instance) {
-        instance = conceptRepository.saveAndFlush(prePersistProcessing( instance ) );
-//        UUID parentId = (instance.getParentRef() != null) ? instance.getParentRef().getId() : instance.getTopicRef().getId();
-//        conceptRepository.indexChildren( parentId.toString() );
+        instance = conceptRepository.save( prePersistProcessing( instance ) );
         return postLoadProcessing(instance);
     }
 
-
-    @Override
     @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#entities,'AGENCY')")
-    public List<Concept> saveAll(Iterable<Concept> entities) {
-        entities.forEach( this::prePersistProcessing );
-        entities = conceptRepository.save(  entities );
-        entities.forEach( c -> {
-            UUID parentId = (c.getParentRef() != null) ? c.getParentRef().getId() : c.getTopicRef().getId();
-            conceptRepository.indexChildren( parentId.toString() );
-        } );
-        entities.forEach( this::postLoadProcessing );
-        return (List<Concept>) entities;
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
+    public List<Concept> save(List<Concept> instances) {
+        instances.forEach(this::save);
+        return instances;
     }
 
-//
-//    @Transactional()
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-//    public List<Concept> save(List<Concept> instances) {
-//        instances.forEach(this::save);
-//        return instances;
-//    }
+    private EntityManagerFactory emf;
 
-//    private EntityManagerFactory emf;
-//
-//    @PersistenceUnit
-//    public void setEntityManagerFactory(EntityManagerFactory emf) {
-//        this.emf = emf;
-//    }
+    @PersistenceUnit
+    public void setEntityManagerFactory(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
  
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Concept copy(UUID id, Integer rev, UUID parentId) {
+//        EntityManager manager =  emf.createEntityManager();
 
         Concept source = auditService.findRevision(id,rev).getEntity();
-        return conceptRepository.save(
-            tgService.findOne( parentId )
-                .addConcept( new ConceptFactory().copy(source, rev) ));
-    }
+        Concept target = new ConceptFactory().copy(source, rev);
+        TopicGroup tg = tgService.findOne( parentId );
+        tg.addConcept( target );
+//        manager.detach(target);
+//        target.setParentU(parentId);
+//        manager.merge(target);
+        return conceptRepository.save(target);
 
-
-    @Transactional()
-    @PreAuthorize("( hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT') and hasPermission(#instance,'AGENCY'))")
-    public List<Concept> moveTo(UUID targetId, Integer index, UUID sourceId) {
-
-        Concept source = conceptRepository.findById( sourceId ).orElseThrow(   () -> new ResourceNotFoundException(sourceId, Concept.class));
-        TopicGroup topicGroup = source.getParentTopicGroup();
-
-        if (source.getParentRef()!= null) {
-            source.getParentRef().getChildren().remove( source );
-        } else {
-            topicGroup.getConcepts().remove( source );
-        }
-
-        if (topicGroup.getId() == targetId) {
-            topicGroup.addConcept( source, index );
-        } else {
-            Concept target = getChild( topicGroup, targetId );
-            target.addChildren( source, index );
-        }
-
-        return tgService.save( topicGroup ).getConcepts();
     }
 
 
@@ -170,7 +136,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findAllPageable(Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findAll(pageable);
+        Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -178,7 +144,8 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findByTopicGroupPageable(UUID id, Pageable pageable) {
-        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,pageable);
+        Page<Concept> pages = conceptRepository.findByTopicGroupIdAndNameIsNotNull(id,
+                defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -189,7 +156,7 @@ class ConceptServiceImpl implements ConceptService {
         if (name.isEmpty()  &&  description.isEmpty()) {
             name = "%";
         }
-        Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),pageable);
+        Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),defaultSort(pageable,"name ASC"));
         pages.map(this::postLoadProcessing);
         return pages;
     }
@@ -215,15 +182,14 @@ class ConceptServiceImpl implements ConceptService {
 
     private Concept prePersistProcessing(Concept instance) {
         try {
-            instance.getConceptQuestionItems().forEach(
-                cqi -> {
-                    if (IsNullOrTrimEmpty( cqi.getName()))
-                        qiLoader.fill( cqi ).setValues();
-                });
 
+            for (ElementRef element: instance.getConceptQuestionItems()) {
+                if (element.getName() == null) {
+                    qiLoader.fill( element );
+                }
+            }
             // children are saved to hold revision info... i guess, these saves shouldn't
-            // if (instance.isBasedOn() == false)
-
+//            if (instance.isBasedOn() == false)
             instance.getChildren().stream().forEach( this::setChildChangeStatus );
 
         } catch (NullPointerException npe) {
@@ -241,38 +207,26 @@ class ConceptServiceImpl implements ConceptService {
     protected Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try {
-            if (StackTraceFilter.stackContains("getPdf","getXml")) {
-                LOG.debug("PDF -> fetching  QuestionItems ");
-                instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
-            } else {
-                instance.getConceptQuestionItems().forEach( cqi -> {
-                    if (IsNullOrTrimEmpty(cqi.getName())) {
-
-                        ((QuestionItem)qiLoader.fill(cqi).getElement()).setConceptRefs(
-                            findByQuestionItem(cqi.getElementId(),null).stream()
-                            .map( ConceptRef::new )
-                            .collect( Collectors.toList()));
-                    }
-                });
-            }
+            instance.getConceptQuestionItems().forEach( qiLoader::fill );
+            instance.getConceptQuestionItems().forEach( cqi ->
+                ((QuestionItem) cqi.getElement()).setConceptRefs(
+                    findByQuestionItem(cqi.getElementId(),null).stream()
+                        .map( ConceptRef::new )
+                        .collect( Collectors.toList())
+                )
+            );
         } catch (Exception ex){
-            LOG.error("postLoadProcessing-> " +  ((instance != null)? instance.getId(): " IS NULL ") ,ex);
+            LOG.error("ConceptService.postLoadProcessing",ex);
         }
-        instance.getChildren().stream().filter( Objects::nonNull ).forEach(this::postLoadProcessing);
-//        instance.getChildren().forEach(this::postLoadProcessing);
+
+        instance.getChildren().forEach(this::postLoadProcessing);
         return instance;
     }
 
 
-    private Concept getChild(TopicGroup instance, UUID uuid ) {
-        return instance.getConcepts().stream().filter( c -> getChild( c, uuid ) != null ).findFirst().get();
+    @Override
+    public boolean hasArchivedContent(UUID id) {
+        return false;
     }
-
-
-    private Concept getChild(Concept instance, UUID uuid ) {
-        if (instance.getId().equals( uuid ) )return instance;
-        return instance.getChildren().stream().filter( c -> getChild( c, uuid ) != null ).findFirst().get();
-    }
-
 }
 

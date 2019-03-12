@@ -42,20 +42,18 @@ public class InstrumentElement  implements Cloneable {
     @JoinColumn(name = "instrument_element_id",updatable = false,insertable = false)
     private InstrumentElement parentReferenceOnly;
 
-    @JsonIgnore
-    @Column(name = "_idx" ,insertable = false, updatable = false)
-    private Integer index;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
+    @OrderBy(value = "_idx asc")
     @JoinColumn(name = "instrument_element_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
-    private List<InstrumentElement> sequence = new ArrayList<>();
+    @AuditMappedBy(mappedBy = "parentReferenceOnly")
+    private List<InstrumentElement> sequences = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
         joinColumns = @JoinColumn(name="instrument_element_id", referencedColumnName = "id"))
-    private Set<InstrumentParameter> parameters = new HashSet<>();
+    private Set<InstrumentParameter> parameters = new HashSet();
 
 
     @Embedded
@@ -73,11 +71,11 @@ public class InstrumentElement  implements Cloneable {
         this.id = id;
     }
 
-    public List<InstrumentElement> getSequence() {
-        return sequence;
+    public List<InstrumentElement> getSequences() {
+        return sequences;
     }
-    public void setSequence(List<InstrumentElement> sequence) {
-        this.sequence = sequence;
+    public void setSequences(List<InstrumentElement> sequence) {
+        this.sequences = sequence;
     }
 
     public Set<InstrumentParameter> getParameters() {
@@ -126,7 +124,7 @@ public class InstrumentElement  implements Cloneable {
         InstrumentElement clone = new InstrumentElement();
         clone.setElementRef( this.elementRef.clone() );
         clone.setParameters( this.getParameters().stream().map( InstrumentParameter::clone ).collect( Collectors.toSet() ) );
-        clone.setSequence( this.sequence.stream().map( InstrumentElement::clone ).collect( Collectors.toList() ) );
+        clone.setSequences( this.sequences.stream().map( InstrumentElement::clone ).collect( Collectors.toList() ) );
         return clone;
     }
 }

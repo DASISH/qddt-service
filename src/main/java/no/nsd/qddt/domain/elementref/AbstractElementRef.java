@@ -7,14 +7,12 @@ package no.nsd.qddt.domain.elementref;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.IEntityAuditXmlRef;
+import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.UUID;
 
 @Audited
@@ -22,19 +20,19 @@ import java.util.UUID;
 public abstract class AbstractElementRef implements IElementRef {
 
     @Enumerated(EnumType.STRING)
-    private ElementKind elementKind;
+    protected ElementKind elementKind;
 
     @Type(type="pg-uuid")
-    private UUID elementId;
+    protected UUID elementId;
 
     @Column(name = "element_revision")
-    private Integer elementRevision;
+    protected Integer elementRevision;
 
     protected String name;
 
-    private Integer major;
-    private Integer minor;
-    private String versionLabel;
+    protected Integer major;
+    protected Integer minor;
+    protected String versionLabel;
 
 
     @Transient
@@ -96,22 +94,18 @@ public abstract class AbstractElementRef implements IElementRef {
 
 
     @JsonSerialize
-    public IEntityAuditXmlRef getElement() {
-        return (IEntityAuditXmlRef)element;
+    public Object getElement() {
+        return element;
     }
     public void setElement(Object element) {
         this.element = element;
-    }
-
-
-    public AbstractElementRef setValues() {
-        if (getElement() instanceof QuestionItem)
-            setName( getElement().getName() + " - " + ((QuestionItem) element).getQuestion() );
-        else
-            setName( getElement().getName());
-        setVersion( getElement().getVersion() );
-        setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
-        return this;
+        if (element instanceof IElementRefType) {
+            setName( ((IElementRefType) element).getName() );
+            setVersion( ((IElementRefType) element).getVersion() );
+            setElementId( ((IElementRefType) element).getId() );
+            
+            setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
+        }
     }
 
     @Override
@@ -122,8 +116,8 @@ public abstract class AbstractElementRef implements IElementRef {
         AbstractElementRef that = (AbstractElementRef) o;
 
         if (elementKind != that.elementKind) return false;
-        if (!Objects.equals( elementId, that.elementId )) return false;
-        if (!Objects.equals( elementRevision, that.elementRevision ))  return false;
+        if (elementId != null ? !elementId.equals( that.elementId ) : that.elementId != null) return false;
+        if (elementRevision != null ? !elementRevision.equals( that.elementRevision ) : that.elementRevision != null)  return false;
         return  true;
     }
 

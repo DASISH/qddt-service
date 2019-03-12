@@ -4,9 +4,9 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.xml.XmlReport;
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -49,49 +49,18 @@ public class ConceptController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ConceptJsonEdit update(@RequestBody Concept concept) {
+        LOG.debug(concept.toString());
         return concept2Json(service.save(concept));
     }
 
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/{parentId}", method = RequestMethod.POST)
-    public List<ConceptJsonEdit> updateAll(@RequestBody List<Concept> concepts, 
-        @PathVariable(name = "parentId", required= false) UUID id) {
-
-        if (id!=null) {
-            if (service.exists(id)) {
-                Concept concept = service.findOne(id);
-                concept.setChildren(concepts);
-                concepts = service.save(concept).getChildren();
-            } else {
-                TopicGroup tg = topicGroupService.findOne(id);
-                tg.setConcepts(concepts);
-                concepts = topicGroupService.save(tg).getConcepts();
-            }
-        } else 
-            concepts=  service.saveAll( concepts);
-
-        return concepts.stream().filter( f -> f != null)
-            .map( this::concept2Json )
-            .collect( Collectors.toList());
-    }
-
-    @RequestMapping(value = "/list/by-parent/{uuid}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<ConceptJsonEdit> getList(@PathVariable("uuid") UUID parentid) {
-        return this.topicGroupService.findOne( parentid ).getConcepts()
-            .parallelStream().filter( f -> f != null).map(this::concept2Json).collect( Collectors.toList());
-    }
-
-
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "parentId", "questionitemid","questionitemrevision"})
-    public ConceptJsonEdit addQuestionItem(@RequestParam("parentId") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
+    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "conceptid", "questionitemid","questionitemrevision"})
+    public ConceptJsonEdit addQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             Concept concept = service.findOne(conceptId);
             if (questionItemRevision == null)
                 questionItemRevision=0;
-
             concept.addQuestionItem(questionItemId, questionItemRevision.intValue()  );
 
             return concept2Json(service.save(concept));
@@ -103,17 +72,17 @@ public class ConceptController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "parentId", "questionitemid"})
-    public ConceptJsonEdit removeQuestionItem(@RequestParam("parentId") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
+    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "conceptid", "questionitemid"})
+    public ConceptJsonEdit removeQuestionItem(@RequestParam("conceptid") UUID conceptId, @RequestParam("questionitemid") UUID questionItemId,
                                                @RequestParam("questionitemrevision") Number questionItemRevision) {
-        Concept concept;
+        Concept concept=null;
         try{
             concept = service.findOne(conceptId);
             concept.removeQuestionItem(questionItemId,questionItemRevision.intValue());
             return concept2Json(service.save(concept));
         } catch (Exception ex) {
             LOG.error("removeQuestionItem",ex);
-            return concept2Json(service.findOne(conceptId));
+            return concept2Json(concept);
         }
     }
 
@@ -127,46 +96,38 @@ public class ConceptController extends AbstractController {
                 service.copy( sourceId, sourceRev, parentId ) ) );
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/move/{targetId}/{index}/{sourceId}", method = RequestMethod.POST)
-    public List<ConceptJsonEdit> moveTo(@PathVariable("targetId") UUID targetId,
-                                  @PathVariable("index") Integer index,
-                                  @PathVariable("sourceId") UUID sourceId)  {
-        return service.moveTo(targetId, index, sourceId).stream()
-            .filter( f -> f != null)
-            .map( this::concept2Json )
-            .collect( Collectors.toList());
-    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create/{uuid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/create/by-parent/{uuid}", method = RequestMethod.POST)
     public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("uuid") UUID parentId) {
 
-        if (service.exists( parentId )) {
-             service.findOne( parentId ).addChildren( concept );
-            return concept2Json( service.save( concept ) );
+        Concept parent = service.findOne(parentId);
+        parent.addChildren(concept);
+        ConceptJsonEdit parentJson = concept2Json(service.save(parent));
 
-        } else {
-            topicGroupService.findOne(parentId).addConcept(concept);
-            return concept2Json(service.save(concept));
-        }
+        return parentJson.getChildren().stream()
+            .filter(c -> Objects.equals(c.getName(), concept.getName())).findFirst()
+            .orElseThrow( ()-> new ResourceNotFoundException(0, Concept.class));
     }
 
 
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/create/{uuid}", method = RequestMethod.POST)
-//    public ConceptJsonEdit createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
-//
-//        topicGroupService.findOne(topicId).addConcept(concept);
-//        return concept2Json(service.save(concept));
-//    }
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @RequestMapping(value = "/create/by-topicgroup/{uuid}", method = RequestMethod.POST)
+    public ConceptJsonEdit createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
+
+        topicGroupService.findOne(topicId).addConcept(concept);
+        return concept2Json(service.save(concept));
+    }
 
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
+
         service.delete(id);
+
     }
+
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -178,7 +139,7 @@ public class ConceptController extends AbstractController {
 
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page/by-parent/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = "/page/by-topicgroup/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,pageable).map(ConceptJsonEdit::new);
@@ -197,17 +158,17 @@ public class ConceptController extends AbstractController {
     }
 
 
-//    @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
-//    @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-//    public List<Concept> getByQuestionItemId(@PathVariable("qiId") UUID id) {
-//        return  service.findByQuestionItem(id,null);
-//    }
+    @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
+    @RequestMapping(value = "/list/by-QuestionItem/{qiId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<Concept> getByQuestionItemId(@PathVariable("qiId") UUID id) {
+        return  service.findByQuestionItem(id,null);
+    }
 
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlDDIFragmentAssembler<Concept>(service.findOne(id)).compileToXml();
+        return new XmlReport(service.findOne(id)).get();
     }
 
 

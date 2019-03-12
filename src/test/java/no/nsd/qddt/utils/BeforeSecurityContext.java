@@ -1,6 +1,5 @@
 package no.nsd.qddt.utils;
 
-import no.nsd.qddt.configuration.CreatedModifiedEventConfiguration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,7 @@ import org.springframework.security.core.context.*;
  * annotated by the {@link org.aspectj.lang.annotation.Before} annotation.
  *
  * All inserts need a {@link no.nsd.qddt.domain.user.User} attached as can be seen
- * in {@link CreatedModifiedEventConfiguration} listener.
+ * in {@link no.nsd.qddt.domain.EntityCreatedModifiedDateAuditEventConfiguration} listener.
  * Created by Dag Østgulen Heradstveit.
  */
 public class BeforeSecurityContext {

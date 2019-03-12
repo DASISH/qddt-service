@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus.Published;
-import no.nsd.qddt.security.SecurityContext;
+import no.nsd.qddt.utils.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +123,7 @@ public class PublicationServiceImpl implements PublicationService {
 
         LOG.info("findByNameOrPurposeAndStatus2 " + published + " name: " + name + " purpose: " + purpose + " statuses: " +  statuses);
 
-        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch( p -> p.getAuthority().equals("ROLE_GUEST"))) {
+        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_GUEST"))) {
             published = Published.EXTERNAL_PUBLICATION;
         }
         if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
@@ -163,9 +163,41 @@ public class PublicationServiceImpl implements PublicationService {
         if (instance.getStatus().getPublished().ordinal() > Published.NOT_PUBLISHED.ordinal())
             showPrivate = false;
 
-        instance.setChangeComment( null );
+        instance.getPublicationElements().forEach(e-> postLoadProcessing(e));
+
         return instance;
     }
 
+    ElementRef postLoadProcessing(ElementRef instance) {
+//        try {
+//            instance = new ElementLoader( serviceLoader.getService( instance.getElementKind() ) ).fill( instance );
+//            LOG.info( instance.getName() + " " + instance.getElementKind());
+//        } catch (InvalidDataAccessApiUsageException ida) {
+//            return instance;
+//        } catch (Exception e) {
+//            LOG.error("postLoadProcessing " ,e );
+//            return instance;
+//        }
+
+//        switch (instance.getElementKind()) {
+//            case TOPIC_GROUP:
+//                ((TopicGroup)instance.getElement()).getTopicQuestionItems()
+//                    .forEach(e-> postLoadProcessing(e));
+//                ((TopicGroup)instance.getElement()).getConcepts()
+//                    .forEach( c->c.getConceptQuestionItems()
+//                        .forEach( e-> postLoadProcessing(e) ) );
+//                break;
+//            case CONCEPT:
+//                ((Concept)instance.getElement()).getConceptQuestionItems()
+//                    .forEach(e-> postLoadProcessing(e));
+//                break;
+//            case CONTROL_CONSTRUCT:
+//            case QUESTION_CONSTRUCT:
+//                break;
+//            default:
+//                // do nothing
+//        }
+        return instance;
+    }
 
 }

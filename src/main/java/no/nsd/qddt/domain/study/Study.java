@@ -9,14 +9,13 @@ import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <ul class="inheritance">
@@ -68,10 +67,9 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 //            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OrderColumn(name="study_idx")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "study", cascade = { CascadeType.MERGE, CascadeType.PERSIST,  CascadeType.REMOVE })   // TODO check performance and consequences
-    @AuditMappedBy(mappedBy = "study", positionMappedBy = "studyIndex")
-    private List<TopicGroup> topicGroups = new ArrayList<>(0);
+    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "study", fetch = FetchType.LAZY)
+    @OrderBy(value = "name ASC")
+    private Set<TopicGroup> topicGroups = new HashSet<>(0);
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "STUDY_AUTHORS",
@@ -131,21 +129,19 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     }
 
 
-    public List<TopicGroup> getTopicGroups() {
+    public Set<TopicGroup> getTopicGroups() {
         return topicGroups;
     }
 
-//    public void setTopicGroups(List<TopicGroup> topicGroups) {
-//        this.topicGroups = topicGroups;
-//    }
+    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+        this.topicGroups = topicGroups;
+    }
 
     public TopicGroup addTopicGroup(TopicGroup topicGroup){
-
+        LOG.debug("TopicGroup ["+ topicGroup.getName() + "] added to Study [" + this.getName() +"]");
+        topicGroup.setStudy(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("TopicGroup ["+ topicGroup.getName() +"] added");
-        int index = (topicGroup.getIndex()!=null)? topicGroup.getIndex() : this.topicGroups.size();
-        this.topicGroups.add( index, topicGroup);
-        topicGroup.setStudy(this);
         return topicGroup;
     }
 
@@ -188,12 +184,12 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
         Study study = (Study) o;
 
-        if (!Objects.equals( surveyProgram, study.surveyProgram ))
+        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null)
             return false;
-        if (!Objects.equals( description, study.description )) return false;
-        if (!Objects.equals( authors, study.authors )) return false;
-        if (!Objects.equals( instruments, study.instruments )) return false;
-        return !(!Objects.equals( topicGroups, study.topicGroups ));
+        if (description != null ? !description.equals(study.description) : study.description != null) return false;
+        if (authors != null ? !authors.equals(study.authors) : study.authors != null) return false;
+        if (instruments != null ? !instruments.equals(study.instruments) : study.instruments != null) return false;
+        return !(topicGroups != null ? !topicGroups.equals(study.topicGroups) : study.topicGroups != null);
 
     }
 
@@ -212,11 +208,6 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
                 "} " + super.toString();
     }
 
-    @Override
-    public AbstractXmlBuilder getXmlBuilder() {
-        return null;
-	}
-
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) {
@@ -226,7 +217,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-        pdfReport.addPadding();
+        // pdfReport.addPadding();
 
         if (counter.length()>0)
             counter = counter+".";

@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.xml.XmlReport;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,9 +33,9 @@ public class ResponseDomainController extends AbstractController {
     private final ResponseDomainService service;
 
     @Autowired
-    public ResponseDomainController(ResponseDomainService service) {
+    public ResponseDomainController(ResponseDomainService service){
         this.service = service;
-        // CategoryService categoryService1 = categoryService;
+//        CategoryService categoryService1 = categoryService;
 
     }
 
@@ -97,8 +97,7 @@ public class ResponseDomainController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlDDIFragmentAssembler<ResponseDomain>(service.findOne(id)).compileToXml();
-
+        return new XmlReport(service.findOne(id)).get();
     }
 
     private ResponseDomainJsonEdit responseDomain2Json(ResponseDomain responseDomain){

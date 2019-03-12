@@ -7,7 +7,6 @@ package no.nsd.qddt.exception;
  * @author Stig Norland
  */
 public class DescendantsArchivedException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(DescendantsArchivedException.class);
 
     public DescendantsArchivedException(String name) {

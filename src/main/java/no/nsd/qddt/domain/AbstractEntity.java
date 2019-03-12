@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.json.UserJson;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -95,8 +94,9 @@ public abstract class AbstractEntity {
 
     }
 
-    @JsonIgnore
-    public abstract AbstractXmlBuilder getXmlBuilder();
+    public String toDDIXml(){
+        return "";
+    }
 
 
     /*

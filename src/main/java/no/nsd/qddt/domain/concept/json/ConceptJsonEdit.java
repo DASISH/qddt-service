@@ -4,13 +4,11 @@ import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.refclasses.TopicRef;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,9 +16,7 @@ import java.util.stream.Collectors;
  */
 public class ConceptJsonEdit extends AbstractJsonEdit {
 
-    private static final long serialVersionUID = 541001925912854125L;
-
-    @Type(type = "pg-uuid")
+    @Type(type="pg-uuid")
     private UUID id;
 
     private String name;
@@ -33,7 +29,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
-    private List<ConceptJsonEdit> children = new ArrayList<>();
+    private Set<ConceptJsonEdit> children = new HashSet<>();
 
     private boolean isArchived;
 
@@ -48,7 +44,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         try{
             setId(concept.getId());
             setName(concept.getName());
-            setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toList()));
+            setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toSet()));
             setComments(concept.getComments());
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
@@ -79,11 +75,11 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         this.name = name;
     }
 
-    public List<ConceptJsonEdit> getChildren() {
+    public Set<ConceptJsonEdit> getChildren() {
         return children;
     }
 
-    private void setChildren(List<ConceptJsonEdit> children) {
+    private void setChildren(Set<ConceptJsonEdit> children) {
         this.children = children;
     }
 

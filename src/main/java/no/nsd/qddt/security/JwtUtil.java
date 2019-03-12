@@ -21,7 +21,6 @@ import java.util.UUID;
 @Component
 public class JwtUtil implements Serializable {
 
-    private static final long serialVersionUID = -9124506121880820040L;
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_ID = "id";
     private static final String CLAIM_KEY_CREATED = "iat";

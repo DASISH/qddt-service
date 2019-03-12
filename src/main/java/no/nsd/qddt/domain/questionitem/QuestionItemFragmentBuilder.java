@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionItem> {
+public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<no.nsd.qddt.domain.questionItem.QuestionItem> {
     private final String xmlQuestionItem =
         "<d:QuestionItem>\n" +
             "\t%1$s" +
@@ -32,7 +32,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
 
     private final AbstractXmlBuilder responseBuilder;
 
-    public QuestionItemFragmentBuilder(QuestionItem questionItem) {
+    public QuestionItemFragmentBuilder(no.nsd.qddt.domain.questionItem.QuestionItem questionItem) {
         super(questionItem);
         responseBuilder = questionItem.getResponseDomain().getXmlBuilder();
     }

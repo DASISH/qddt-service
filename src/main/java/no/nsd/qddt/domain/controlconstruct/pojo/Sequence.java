@@ -19,6 +19,7 @@ public class Sequence extends ControlConstruct {
     private String description;
 
     @OrderColumn(name="sequence_idx")
+    @OrderBy("sequence_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_SEQUENCE",
         joinColumns = @JoinColumn(name="sequence_id", referencedColumnName = "id"))

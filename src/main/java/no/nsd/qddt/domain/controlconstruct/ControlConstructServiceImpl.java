@@ -1,12 +1,16 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactoryConditionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactoryQuestionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactorySequenceConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.FactoryStatementConstruct;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.instruction.InstructionService;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.universe.UniverseService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
@@ -15,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,10 +79,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public ControlConstruct findOne(UUID id) {
 
-        return controlConstructRepository.findById(id)
-            .map( this::postLoadProcessing )
-            .orElseThrow(() -> new ResourceNotFoundException(id, ControlConstruct.class));
+        ControlConstruct instance = controlConstructRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id, ControlConstruct.class));
 
+        return postLoadProcessing(instance);
     }
 
     @Override
@@ -217,21 +220,19 @@ class ControlConstructServiceImpl implements ControlConstructService {
         if ( instance instanceof QuestionConstruct) {
             QuestionConstruct qc = (QuestionConstruct)instance;
             qc.populateInstructions();                // instructions has to be unpacked into pre and post instructions
-            try {
+
+            if (qc.getQuestionItemUUID() == null)  {   // before returning fetch correct version of QI...
+                qc.setQuestionItemRevision(0);
+            } else {
                 Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
                     qc.getQuestionItemUUID(),
-                    qc.getQuestionItemRevision() );
+                    qc.getQuestionItemRevision());
 
-                qc.setQuestionItemRevision( rev.getRevisionNumber() );
-                qc.setQuestionItem( rev.getEntity() );
-            } catch (JpaSystemException ex) {
-                ((QuestionConstruct) instance).setQuestionItemRevision( 0 );
-                LOG.error( "CCS QI revision not found, resetting to latest.", ex );
+                qc.setQuestionItemRevision(rev.getRevisionNumber());
+                qc.setQuestionItem(rev.getEntity());
             }
-            qc.setChangeComment( null );
             return (S)qc;
         }
-        instance.setChangeComment( null );
         return instance;
     }
 
