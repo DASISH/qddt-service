@@ -20,18 +20,19 @@ apply plugin: 'idea'
 
 idea {
     project {
-        jdkName = '1.10'
+        jdkName = '1.8'
         languageLevel = '1.8'
     }
 }
 
-
+def baseName = 'QDDT'
+def version = '1.0.0'
 group = 'no.nsd'
 description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
 
 jar {
-    baseName = 'QDDT'
-    version = '1.0.0'
+    baseName = baseName
+    version = version
 }
 
 repositories {
@@ -71,15 +72,11 @@ dependencies {
     compile("javax.json:javax.json-api:1.1.2")
     compile("org.glassfish:javax.json:1.1.2")
     compile("io.jsonwebtoken:jjwt:0.9.0")
-    
+
     compile("org.postgresql:postgresql:42.2.1")
     compile("com.itextpdf:itext7-core:7.1.1")
     compile("com.itextpdf:html2pdf:2.0.2")
 
-    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-    compile group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-    compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
-    compile group: 'javax.activation', name: 'activation', version: '1.1.1'
 
     testCompile(
             "junit:junit",
@@ -95,6 +92,6 @@ asciidoctor {
     outputDir = file('build/docs')
 }
 
-//task wrapper(type: Wrapper) {
-//    gradleVersion = '4.10.2'
-//}
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.7'
+}
