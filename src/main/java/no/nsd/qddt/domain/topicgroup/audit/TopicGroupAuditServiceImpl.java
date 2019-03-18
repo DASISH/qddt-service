@@ -7,7 +7,7 @@ import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
@@ -19,7 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -38,7 +41,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
     @Autowired
     public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,
-                                      QuestionItemAuditService  questionItemAuditService,
+                                      QuestionItemAuditService questionItemAuditService,
 //                                      ConceptService conceptService,
                                       CommentService commentService ) {
         this.topicGroupAuditRepository = topicGroupAuditRepository;

@@ -4,8 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.xml.XmlReport;
-import no.nsd.qddt.utils.SecurityContext;
+import no.nsd.qddt.security.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,6 +60,12 @@ public class SurveyProgramController {
         service.delete(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public List<SurveyProgram> listByUser() {
+        User user = SecurityContext.getUserDetails().getUser();
+        return service.findByAgency(user);
+    }
 
 
     @ResponseBody
@@ -69,17 +74,11 @@ public class SurveyProgramController {
         return service.findOne(id).makePdf().toByteArray();
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-user", method = RequestMethod.GET)
-    public List<SurveyProgram> listByUser() {
-        User user = SecurityContext.getUserDetails().getUser();
-        return service.findByAgency(user);
-    }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
-    public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
-    }
+//    @ResponseStatus(value = HttpStatus.OK)
+//    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+//    public String getXml(@PathVariable("id") UUID id) {
+//        return new XmlFragmentAssembler<SurveyProgram>(service.findOne(id)).compileToXml();
+//    }
 
 }

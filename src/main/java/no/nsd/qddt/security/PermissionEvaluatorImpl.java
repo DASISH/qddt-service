@@ -1,5 +1,6 @@
 package no.nsd.qddt.security;
 
+import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.user.QDDTUserDetails;
@@ -25,11 +26,11 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     public boolean hasPermission( Authentication auth, Object targetDomainObject, Object permission) {
         if ((auth == null) || (targetDomainObject == null) ||
             !(permission instanceof String) ||
-            !(targetDomainObject instanceof AbstractEntityAudit) ){
+            !(targetDomainObject instanceof AbstractEntity) ){
+            LOG.info( "Prereq for hasPermission not fulfilled" );
             return false;
         }
-
-        return hasPrivilege( (QDDTUserDetails)auth.getPrincipal(), (AbstractEntityAudit)targetDomainObject, ((String) permission).toUpperCase());
+        return hasPrivilege( (QDDTUserDetails)auth.getPrincipal(), (AbstractEntity)targetDomainObject, ((String) permission).toUpperCase());
     }
 
 
@@ -40,8 +41,8 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
 
-    private boolean hasPrivilege(QDDTUserDetails details, AbstractEntityAudit entity, String permission){
-        LOG.info( details.getUsername() + " - " + entity.getName() + " - " + permission );
+    private boolean hasPrivilege(QDDTUserDetails details, AbstractEntity entity, String permission){
+        LOG.info( details.getUsername() + " - " + entity + " - " + permission );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
@@ -51,25 +52,31 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
             case USER:
                 return isUser( details.getUser(), entity );
             case AGENCY:
-                return isMemberOfAgency( details.getUser().getAgency(), entity );
+                return isMemberOfAgency( details.getUser().getAgency(), (AbstractEntityAudit )entity );
             default:
+                LOG.info( "hasPrivilege default: fail" );
                 return false;
         }
     }
 
-    private boolean isOwner(User user, AbstractEntityAudit entity) {
-        return  ( user.getId().equals( entity.getModifiedBy().getId() ));
+    private boolean isOwner(User user, AbstractEntity entity) {
+        assert entity.getModifiedBy() != null;
+        return user.getId().equals( entity.getModifiedBy().getId() );
     }
 
-    private boolean isUser(User user, AbstractEntityAudit entity) {
+    // entity is a User entity
+    private boolean isUser(User user, AbstractEntity entity) {
+        assert entity.getId() != null;
         return ( user.getId().equals( entity.getId() ));
     }
 
     private boolean isMemberOfAgency(Agency agency, AbstractEntityAudit entity) {
         assert entity.getAgency() != null;
-        boolean isMember = agency.getId().equals( entity.getAgency().getId());
-        LOG.info( String.valueOf( isMember ) );
-        return (isMember);
+        if (agency.getId().equals( entity.getAgency().getId()))
+            return true;
+
+        LOG.info( agency.getName() + " != " + entity.getAgency().getName() );
+        return false;
     }
 
 }

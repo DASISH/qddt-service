@@ -3,9 +3,9 @@ package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
 //import no.nsd.qddt.domain.question.Question;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.questionItem.QuestionItemRepository;
-import no.nsd.qddt.domain.questionItem.QuestionItemService;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItemRepository;
+import no.nsd.qddt.domain.questionitem.QuestionItemService;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;

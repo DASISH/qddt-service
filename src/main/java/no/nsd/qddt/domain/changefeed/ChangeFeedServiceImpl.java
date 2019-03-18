@@ -65,7 +65,7 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
     @Override
     public Page<ChangeFeed> filterbyPageable(String name, String change, String kind, Pageable pageable) {
 //        PageRequest sort = defaultOrModifiedSort( pageable, "refModified DESC" );
-        return repository.findByNameLikeIgnoreCaseOrRefChangeKindLikeIgnoreCaseOrRefKindLikeIgnoreCase
-            (likeify(name),likeify(change),likeify(kind),pageable );
+//        return repository.findByNameLikeIgnoreCaseOrRefChangeKindLikeIgnoreCaseOrRefKindLikeIgnoreCase
+        return repository.findByQuery( likeify(name),likeify(change),likeify(kind),pageable );
     }
 }

@@ -1,22 +1,22 @@
 package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.refclasses.TopicRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -42,7 +42,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     private Concept parentReferenceOnly;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     @OrderBy(value = "name asc")
     @JoinColumn(name = "concept_id")
     @AuditMappedBy(mappedBy = "parentReferenceOnly")
@@ -183,7 +183,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     public TopicRef getTopicRef() {
         if (topicRef == null) {
-            TopicGroup topicGroup = findTopicGroup2();
+            TopicGroup topicGroup = getParentTopicGroup();
             if (topicGroup == null) {
                topicRef = new TopicRef();
             } else
@@ -198,7 +198,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return this.parentReferenceOnly;
     }
 
-    private TopicGroup findTopicGroup2(){
+    protected TopicGroup getParentTopicGroup(){
         Concept current = this;
         while(current.getParentRef() !=  null){
             current = current.getParentRef();
@@ -215,7 +215,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             retvals.add( current );
         }
         retvals.add( current.getTopicGroup() );         //this will fail for Concepts that return from clients.
-        return retvals;
+        return retvals; // .stream().filter( f -> f != null ).collect( Collectors.toList());
     }
 
 
@@ -232,8 +232,8 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
         Concept concept = (Concept) o;
 
-        if (label != null ? !label.equals(concept.label) : concept.label != null) return false;
-        return !(description != null ? !description.equals(concept.description) : concept.description != null);
+        if (!Objects.equals( label, concept.label )) return false;
+        return Objects.equals( description, concept.description );
     }
 
 
@@ -258,14 +258,12 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     @Override
-    public String toDDIXml(){
-        StringBuilder sb = new StringBuilder();
-        sb.append( super.toDDIXml() );
-        sb.append("    <r:ConceptName>"+ getName() +"</r:ConceptName>\n");
-        sb.append("    <r:Label>"+ getLabel() +"</r:Label>\n");
-        sb.append("    <r:Description>"+ getDescription() +"</r:Description>\n");
-        return sb.toString();
+    @JsonIgnore
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ConceptFragmentBuilder(this);
     }
+
+
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter ) {
@@ -282,28 +280,27 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             if (getConceptQuestionItems().size() > 0) {
                 // pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
-                for (ElementRefTyped<QuestionItem> item : getConceptQuestionItems()
-                        .stream().map(c-> new ElementRefTyped<QuestionItem>(c) ).collect( Collectors.toList() )) {
-                    if (item.getElement() != null) {
+                getConceptQuestionItems().stream()
+                    .map( cqi ->  (QuestionItem)cqi.getElement() )
+                    .forEach( item -> {
+                    if (item != null) {
                         pdfReport.addheader2( item.getName(), String.format( "Version %s", item.getVersion() ) );
-                        pdfReport.addParagraph( item.getElement().getQuestion() );
-                        if (item.getElement().getResponseDomain() != null)
-                            item.getElement().getResponseDomain().fillDoc( pdfReport, "" );
-                        // pdfReport.addPadding();
+                        pdfReport.addParagraph( item.getQuestion() );
+                        if (item.getResponseDomain() != null)
+                            item.getResponseDomain().fillDoc( pdfReport, "" );
                     } else {
                         LOG.info( item.toString() );
                     }
-                }
+                });
             }
+
+            pdfReport.addPadding();
 
             if (counter.length()>0)
                 counter = counter+".";
-            int i = 0;
-            for (Concept concept : getChildren().stream()
-                .sorted( Comparator.comparing( AbstractEntityAudit::getName ))
-                .collect( Collectors.toList())) {
-                    concept.fillDoc(pdfReport, counter + String.valueOf(++i));
-                    // pdfReport.addPadding();
+                int i = 0;
+            for (Concept concept : getChildren()) {
+                concept.fillDoc(pdfReport, counter + ++i );
             }
 
             if (getChildren().size() == 0)

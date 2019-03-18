@@ -16,6 +16,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -169,13 +170,13 @@ public class QuestionItem extends AbstractEntityAudit {
 
         QuestionItem that = (QuestionItem) o;
 
-        if (responseDomainUUID != null ? !responseDomainUUID.equals(that.responseDomainUUID) : that.responseDomainUUID != null)
+        if (!Objects.equals( responseDomainUUID, that.responseDomainUUID ))
             return false;
-        if (responseDomainRevision != null ? !responseDomainRevision.equals(that.responseDomainRevision) : that.responseDomainRevision != null)
+        if (!Objects.equals( responseDomainRevision, that.responseDomainRevision ))
             return false;
-        if (question != null ? !question.equals(that.question) : that.question != null) return false;
-        if (intent != null ? !intent.equals(that.intent) : that.intent != null) return false;
-        return conceptRefs != null ? conceptRefs.equals(that.conceptRefs) : that.conceptRefs == null;
+        if (!Objects.equals( question, that.question )) return false;
+        if (!Objects.equals( intent, that.intent )) return false;
+        return Objects.equals( conceptRefs, that.conceptRefs );
     }
 
     @Override

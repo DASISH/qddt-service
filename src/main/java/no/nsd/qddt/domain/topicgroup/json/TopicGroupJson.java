@@ -5,10 +5,13 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.refclasses.StudyRef;
+import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

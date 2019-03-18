@@ -22,6 +22,7 @@ import com.itextpdf.layout.layout.LayoutContext;
 import com.itextpdf.layout.layout.LayoutResult;
 import com.itextpdf.layout.property.*;
 import com.itextpdf.layout.renderer.ParagraphRenderer;
+import javassist.Loader;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,12 +98,13 @@ public class PdfReport extends PdfDocument {
     }
 
     public void createToc() {
+        URL url = getResource("qddt.png");
         int startToc = getNumberOfPages();
         getLastPage().setPageLabel(PageLabelNumberingStyle.LOWERCASE_ROMAN_NUMERALS, null, 1);
 //        LOG.info( String.join( ", ", getPageLabels() ) );
         document.add(new AreaBreak( AreaBreakType.NEXT_PAGE));
         document.add(
-            new Image( ImageDataFactory.create( ClassLoader.getSystemResource( "qddt.png" )  ) )
+            new Image( ImageDataFactory.create( url  ) )
             .setHorizontalAlignment( HorizontalAlignment.CENTER ))
         .add(new Paragraph()
             .setFont(bold)
@@ -303,5 +306,33 @@ public class PdfReport extends PdfDocument {
             entry.setValue(layoutContext.getArea().getPageNumber());
             return result;
         }
+    }
+
+    private URL getResource(String resource){
+
+        URL url ;
+
+        //Try with the Thread Context Loader.
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if(classLoader != null){
+            url = classLoader.getResource(resource);
+            if(url != null){
+                return url;
+            }
+        }
+
+        //Let's now try with the classloader that loaded this class.
+        classLoader = Loader.class.getClassLoader();
+        if(classLoader != null){
+            url = classLoader.getResource(resource);
+            if(url != null){
+                return url;
+            }
+        }
+
+        LOG.info( "getResource failing soon..." );
+
+        //Last ditch attempt. Get the resource from the classpath.
+        return ClassLoader.getSystemResource(resource);
     }
 }

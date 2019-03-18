@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
-import no.nsd.qddt.domain.xml.XmlReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -72,9 +71,10 @@ public class StudyController extends AbstractController {
         return service.findOne(id).makePdf().toByteArray();
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
-    public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
-    }
+//    @ResponseStatus(value = HttpStatus.OK)
+//    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
+//    public String getXml(@PathVariable("id") UUID id) {
+//        return new XmlFragmentAssembler<Study>(service.findOne(id)).compileToXml();
+//
+//    }
 }

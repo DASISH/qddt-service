@@ -3,7 +3,8 @@ package no.nsd.qddt.domain.study;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -100,18 +101,15 @@ class StudyServiceImpl implements StudyService {
     private Study postLoadProcessing(Study instance) {
         if (StackTraceFilter.stackContains("getPdf","getXml")) {
             LOG.debug("PDF -> fetching  concepts ");
-//            Hibernate.initialize(instance.getTopicGroups());
-//            instance.getTopicGroups().forEach( c-> Hibernate.initialize(c.getConcepts() ));
-
-            instance.getTopicGroups().forEach( topic -> {
-                topic.getTopicQuestionItems().forEach( qiLoader::fill );
-                Hibernate.initialize(topic.getConcepts());
-                topic.getConcepts().forEach( this::loadConceptQuestion );
-            } );
-
-            // when we print hierarchy we don't need qi concept reference....
+            instance.getTopicGroups().forEach( this::loadTopic );
         }
         return instance;
+    }
+
+    private void loadTopic(TopicGroup topic){
+        topic.getTopicQuestionItems().forEach( qiLoader::fill );
+        Hibernate.initialize(topic.getConcepts());
+        topic.getConcepts().forEach( this::loadConceptQuestion );
     }
 
     private void loadConceptQuestion(Concept parent) {
@@ -119,8 +117,4 @@ class StudyServiceImpl implements StudyService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
-    @Override
-    public boolean hasArchivedContent(UUID id) {
-        return false;
-    }
 }

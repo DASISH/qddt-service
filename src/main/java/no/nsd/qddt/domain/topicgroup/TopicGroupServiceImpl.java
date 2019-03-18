@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
@@ -197,8 +197,4 @@ class TopicGroupServiceImpl implements TopicGroupService {
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
-    @Override
-    public boolean hasArchivedContent(UUID id) {
-        return false;
-    }
 }

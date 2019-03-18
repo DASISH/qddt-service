@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import java.util.Objects;
 
 /**
  * @author Stig Norland
@@ -103,14 +104,17 @@ public class Version implements Comparable<Version> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Version)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Version version = (Version) o;
 
-        if (!Objects.equals( major, version.major )) return false;
-        if (!Objects.equals( minor, version.minor )) return false;
-        return Objects.equals( versionLabel, version.versionLabel );
-
+        if (isModified != version.isModified) return false;
+        if (isNew != version.isNew) return false;
+        if (!major.equals( version.major )) return false;
+        if (!minor.equals( version.minor )) return false;
+        if (!Objects.equals( versionLabel, version.versionLabel ))
+            return false;
+        return Objects.equals( revision, version.revision );
     }
 
     @Override

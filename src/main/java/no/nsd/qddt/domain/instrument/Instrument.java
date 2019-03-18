@@ -2,8 +2,8 @@ package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;

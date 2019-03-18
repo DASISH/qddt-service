@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -180,6 +181,11 @@ public class Author extends AbstractEntity {
                 "\"picture\":" + (picture == null ? "null" : picture) + ", " +
                 "\"authorsAffiliation\":" + (authorsAffiliation == null ? "null" : "\"" + authorsAffiliation + "\"") +
                 "}";
+    }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
     }
 
     public String getAuthorsAffiliation() {

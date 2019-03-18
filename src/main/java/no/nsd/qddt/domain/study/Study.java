@@ -9,12 +9,14 @@ import no.nsd.qddt.domain.instrument.Instrument;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -184,12 +186,12 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
         Study study = (Study) o;
 
-        if (surveyProgram != null ? !surveyProgram.equals(study.surveyProgram) : study.surveyProgram != null)
+        if (!Objects.equals( surveyProgram, study.surveyProgram ))
             return false;
-        if (description != null ? !description.equals(study.description) : study.description != null) return false;
-        if (authors != null ? !authors.equals(study.authors) : study.authors != null) return false;
-        if (instruments != null ? !instruments.equals(study.instruments) : study.instruments != null) return false;
-        return !(topicGroups != null ? !topicGroups.equals(study.topicGroups) : study.topicGroups != null);
+        if (!Objects.equals( description, study.description )) return false;
+        if (!Objects.equals( authors, study.authors )) return false;
+        if (!Objects.equals( instruments, study.instruments )) return false;
+        return !(!Objects.equals( topicGroups, study.topicGroups ));
 
     }
 
@@ -208,6 +210,11 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
                 "} " + super.toString();
     }
 
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return null;
+	}
+
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) {
@@ -217,7 +224,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
         pdfReport.addComments(getComments());
-        // pdfReport.addPadding();
+        pdfReport.addPadding();
 
         if (counter.length()>0)
             counter = counter+".";

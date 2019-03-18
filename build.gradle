@@ -14,14 +14,14 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'idea'
-//apply plugin: 'spring-boot'
+//apply plugin: 'spring-boot'ø
 
 
 
 idea {
     project {
-        jdkName = '1.10'
-        languageLevel = '1.8'
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
@@ -31,7 +31,6 @@ description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT
 
 jar {
     baseName = 'QDDT'
-    version = '1.0.0'
 }
 
 repositories {
@@ -71,7 +70,7 @@ dependencies {
     compile("javax.json:javax.json-api:1.1.2")
     compile("org.glassfish:javax.json:1.1.2")
     compile("io.jsonwebtoken:jjwt:0.9.0")
-    
+
     compile("org.postgresql:postgresql:42.2.1")
     compile("com.itextpdf:itext7-core:7.1.1")
     compile("com.itextpdf:html2pdf:2.0.2")

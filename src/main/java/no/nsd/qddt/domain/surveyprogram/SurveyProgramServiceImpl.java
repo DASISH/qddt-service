@@ -2,7 +2,8 @@ package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -107,15 +108,9 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {
         assert  (instance != null);
         try{
-
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 instance.getStudies().forEach(  study ->
-                    study.getTopicGroups().forEach( topic -> {
-                        topic.getTopicQuestionItems().forEach( qiLoader::fill );
-                        Hibernate.initialize(topic.getConcepts());
-                        topic.getConcepts().forEach( this::loadConceptQuestion );
-                    } ) );
-                LOG.debug("PDF -> fetching  concepts ");
+                    study.getTopicGroups().forEach( this::loadTopic ));
             }
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
@@ -123,13 +118,16 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         return instance;
     }
 
+    private void loadTopic(TopicGroup topic){
+        topic.getTopicQuestionItems().forEach( qiLoader::fill );
+        Hibernate.initialize(topic.getConcepts());
+        LOG.debug("PDF -> fetching  concepts ");
+        topic.getConcepts().forEach( this::loadConceptQuestion );
+    }
+
     private void loadConceptQuestion(Concept parent) {
         parent.getChildren().forEach( this::loadConceptQuestion );
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 
-    @Override
-    public boolean hasArchivedContent(UUID id) {
-        return (surveyProgramRepository.hasArchive( id.toString() ) > 0);
-    }
 }

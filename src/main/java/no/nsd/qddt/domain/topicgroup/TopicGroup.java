@@ -12,9 +12,10 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionItem.QuestionItem;
-import no.nsd.qddt.domain.refclasses.StudyRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -218,11 +219,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
         TopicGroup that = (TopicGroup) o;
 
-        if (study != null ? !study.equals(that.study) : that.study != null) return false;
-        if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
-        if (otherMaterials != null ? !otherMaterials.equals(that.otherMaterials) : that.otherMaterials != null)
+        if (!Objects.equals( study, that.study )) return false;
+        if (!Objects.equals( authors, that.authors )) return false;
+        if (!Objects.equals( otherMaterials, that.otherMaterials ))
             return false;
-        return description != null ? description.equals(that.description) : that.description == null;
+        return Objects.equals( description, that.description );
 
     }
 
@@ -246,6 +247,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
                 "}";
     }
 
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new TopicGroupFragmentBuilder(this);
+    }
+
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter) {
@@ -262,19 +268,20 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
             for (ElementRefTyped<QuestionItem> item : getTopicQuestionItemsT()) {
-                pdfReport.addheader2(item.getName(), String.format("Version %s",item.getVersion()));
+                pdfReport.addheader2(item.getElement().getName(), String.format("Version %s",item.getElement().getVersion()));
                 pdfReport.addParagraph(item.getElement().getQuestion());
                 if (item.getElement().getResponseDomain() != null)
                     item.getElement().getResponseDomain().fillDoc(pdfReport, "");
 //                // pdfReport.addPadding();
             }
         }
+        pdfReport.addPadding();
 
         if (counter.length()>0)
             counter = counter+".";
         int i = 0;
         for (Concept concept : getConcepts()) {
-            concept.fillDoc(pdfReport ,counter+ String.valueOf(++i));
+            concept.fillDoc(pdfReport ,counter+ ++i );
         }
     }
 

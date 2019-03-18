@@ -3,15 +3,14 @@ package no.nsd.qddt.domain.topicgroup.web;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
-import no.nsd.qddt.domain.xml.XmlReport;
-import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
@@ -36,18 +35,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/topicgroup")
 public class TopicGroupController extends AbstractController {
 
-    private final TopicGroupService service;
-    private final StudyService studyService;
-    private final OtherMaterialService omService;
-
-
     @Autowired
-    public TopicGroupController(TopicGroupService service, StudyService studyService,
-                                OtherMaterialService otherMaterialService) {
-        this.omService = otherMaterialService;
-        this.service = service;
-        this.studyService = studyService;
-    }
+    private TopicGroupService service;
+    @Autowired
+    private StudyService studyService;
+    @Autowired
+    private OtherMaterialService omService;
+
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -82,15 +77,16 @@ public class TopicGroupController extends AbstractController {
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroupJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
 
-        if(instance.getStudy() == null ){
+        if (instance.getStudy() == null){
             studyService.findOne(studyId).addTopicGroup(instance);
         }
-        try {
-            instance = service.save(instance);
-        }catch (Exception ex){
-            StackTraceFilter.println(ex.getStackTrace());
-        }
-        return new TopicGroupJson(instance);
+
+        return new TopicGroupJson(service.save( instance ));
+//        Study study = studyService.findOne(studyId);
+//        study.addTopicGroup(instance.getStudyIndex(), instance);
+//        instance = studyService.save( study ).getTopicGroups().stream()
+//            .max( Comparator.comparing(TopicGroup::getModified)).get();
+
     }
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
@@ -98,8 +94,8 @@ public class TopicGroupController extends AbstractController {
                                 @PathVariable("rev") Integer sourceRev,
                                 @PathVariable("parentUuid") UUID parentId) {
         return new TopicGroupJson(
-                service.save(
-                        service.copy(sourceId,sourceRev,parentId)));
+            service.save(
+                service.copy(sourceId,sourceRev,parentId)));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -110,7 +106,7 @@ public class TopicGroupController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-study/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/by-parent/{uuid}", method = RequestMethod.GET)
     public List<TopicGroupJson> findByStudy(@PathVariable("uuid") UUID studyId) {
         try {
             return service.findByStudyId(studyId).stream()
@@ -118,9 +114,6 @@ public class TopicGroupController extends AbstractController {
                     .collect(Collectors.toList());
         } catch (Exception ex){
             LOG.error("findByStudy",ex);
-//            StackTraceFilter.filter(ex.getStackTrace()).stream()
-//                    .map(a->a.toString())
-//                    .forEach(LOG::info);
             return Collections.emptyList();
         }
     }
@@ -128,20 +121,20 @@ public class TopicGroupController extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<TopicGroupJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                         Pageable pageable, PagedResourcesAssembler assembler) {
-        name = name.replace("*","%");
-        Page<TopicGroupJson> items =
-                service.findByNameAndDescriptionPageable(name,name, pageable)
-                        .map(TopicGroupJson::new);
-
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+    public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                             @RequestParam(value = "description",defaultValue = "%") String description,
+                                                             Pageable pageable, PagedResourcesAssembler assembler) {
+        return new ResponseEntity<>(
+            assembler.toResource(
+                service.findByNameAndDescriptionPageable(name,description, pageable)
+                    .map(TopicGroupJson::new))
+                ,HttpStatus.OK);
     }
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
-    public TopicGroupJson addQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+    @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "parentId", "questionitemid","questionitemrevision"})
+    public TopicGroupJson addQuestionItem(@RequestParam("parentId") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                            @RequestParam("questionitemrevision") Number questionItemRevision ) {
         try {
             TopicGroup topicGroup = service.findOne(topicId);
@@ -161,8 +154,8 @@ public class TopicGroupController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "topicid", "questionitemid","questionitemrevision"})
-    public TopicGroupJson removeQuestionItem(@RequestParam("topicid") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
+    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "parentId", "questionitemid","questionitemrevision"})
+    public TopicGroupJson removeQuestionItem(@RequestParam("parentId") UUID topicId, @RequestParam("questionitemid") UUID questionItemId,
                                           @RequestParam("questionitemrevision") Number revision) {
         TopicGroup topicGroup =null;
         try{
@@ -189,6 +182,6 @@ public class TopicGroupController extends AbstractController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
     public String getXml(@PathVariable("id") UUID id) {
-        return new XmlReport(service.findOne(id)).get();
+        return new XmlDDIFragmentAssembler<TopicGroup>(service.findOne(id)).compileToXml();
     }
 }
