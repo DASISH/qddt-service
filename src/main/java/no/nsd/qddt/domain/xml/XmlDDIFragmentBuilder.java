@@ -33,6 +33,10 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         "\t<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
         "</r:BasedOnReference>\n";
 
+    private  final String xmlLang =
+        "<r:xmlLang>\n" +
+            "\t%1$s" +
+        "</r:xmlLang>\n";
 
     public XmlDDIFragmentBuilder(T entity) {
         super(entity);
@@ -49,6 +53,10 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         return String.format( xmlBasedOn, xmlTagPreFix,getId(),entity.getClass().getSimpleName() );
     }
 
+    protected String getXmlLang() {
+        if (entity.getXmlLang() == null) return "";
+        return String.format( xmlLang, entity.getXmlLang() );
+    }
 
     @Override
     protected String getId() {
