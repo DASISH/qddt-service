@@ -1,11 +1,10 @@
 package no.nsd.qddt.domain.instrument.web;
 
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.instrument.InstrumentViewJson;
 import no.nsd.qddt.domain.instrument.InstrumentService;
+import no.nsd.qddt.domain.instrument.InstrumentViewJson;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
@@ -60,10 +59,9 @@ public class InstrumentController  {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Instrument>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<PagedResources<InstrumentViewJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<Instrument> instruments = service.findAllPageable(pageable);
-        return new ResponseEntity<>(assembler.toResource(instruments), HttpStatus.OK);
+        return new ResponseEntity<>(assembler.toResource(service.findAllPageable(pageable)), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
@@ -73,10 +71,9 @@ public class InstrumentController  {
                                                                 @RequestParam(value = "kind",defaultValue = "") String strKind,
                                                                 Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<InstrumentViewJson> items = service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable)
-                                            .map(c -> new InstrumentViewJson(c));
-
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+        return new ResponseEntity<>(
+            assembler.toResource(service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable))
+            , HttpStatus.OK);
     }
 
     @ResponseBody

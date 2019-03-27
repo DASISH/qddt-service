@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.base.Objects;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.role.Authority;
 import org.hibernate.annotations.GenericGenerator;
@@ -14,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -187,15 +187,28 @@ public class User  {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         User user = (User) o;
-        return Objects.equal( id, user.id ) &&
-            Objects.equal( email, user.email ) &&
-            Objects.equal( modified, user.modified );
+
+        if (isEnabled != user.isEnabled) return false;
+        if (!Objects.equals( id, user.id )) return false;
+        if (!Objects.equals( name, user.name )) return false;
+        if (!Objects.equals( agency, user.agency )) return false;
+        if (!Objects.equals( password, user.password )) return false;
+        if (!Objects.equals( email, user.email )) return false;
+        return Objects.equals( modified, user.modified );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( id, email, modified );
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (agency != null ? agency.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (isEnabled ? 1 : 0);
+        result = 31 * result + (modified != null ? modified.hashCode() : 0);
+        return result;
     }
 
     @Override

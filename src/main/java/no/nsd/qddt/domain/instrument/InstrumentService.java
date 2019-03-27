@@ -12,10 +12,10 @@ import java.util.UUID;
  */
 public interface InstrumentService extends BaseService<Instrument, UUID> {
 
-    List<Instrument> findByStudy(UUID studyId);
+    List<InstrumentViewJson> findByStudy(UUID studyId);
 
-    Page<Instrument> findAllPageable(Pageable pageable);
+    Page<InstrumentViewJson> findAllPageable(Pageable pageable);
 
-    Page<Instrument> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable);
+    Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable);
 
 }

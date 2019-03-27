@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
+import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,16 +34,19 @@ public class SurveyProgramAuditController {
         this.service = service;
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, SurveyProgram> findLastRevisionById(@PathVariable("id") UUID id) {
         return service.findLastChange(id);
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, SurveyProgram> findByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return service.findRevision(id, revision);
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> allProjects(
             @PathVariable("id") UUID id,

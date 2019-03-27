@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.universe.web;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.domain.universe.audit.UniverseAuditService;
+import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,16 +35,19 @@ public class UniverseAuditController {
     }
 
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, Universe> getLastRevision(@PathVariable("id") UUID id) {
         return auditService.findLastChange(id);
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, Universe> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision);
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Universe>>> allProjects(
             @PathVariable("id") UUID id,

@@ -33,17 +33,19 @@ public class InstrumentAuditController {
         this.auditService = service;
     }
 
-
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, Instrument> getLastRevision(@PathVariable("id") UUID id) {
         return auditService.findLastChange(id);
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, Instrument> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision);
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, Instrument>>> allProjects(
             @PathVariable("id") UUID id,
@@ -55,6 +57,7 @@ public class InstrumentAuditController {
         return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
 
+    // @JsonView(View.Audit.class)
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}/{revision}",  method = RequestMethod.GET, produces = "application/pdf")
     public byte[] getPdf(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {

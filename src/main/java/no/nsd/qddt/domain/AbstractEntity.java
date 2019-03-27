@@ -1,10 +1,11 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.base.Objects;
+import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.jsonviews.View;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -33,15 +35,18 @@ public abstract class AbstractEntity {
     @Id
     @GeneratedValue(generator ="UUID")
     @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
+    // @JsonView(View.Simple.class)
     @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
 
+    // @JsonView(View.Simple.class)
     @Column(name = "updated")
     @Version()
     private Timestamp modified;
 
 
+    // @JsonView(View.Simple.class)
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -77,14 +82,20 @@ public abstract class AbstractEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         AbstractEntity that = (AbstractEntity) o;
-        return Objects.equal( id, that.id ) &&
-            Objects.equal( modified, that.modified );
+
+        if (!Objects.equals( id, that.id )) return false;
+        if (!Objects.equals( modified, that.modified )) return false;
+        return Objects.equals( modifiedBy, that.modifiedBy );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( id, modified );
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (modified != null ? modified.hashCode() : 0);
+        result = 31 * result + (modifiedBy != null ? modifiedBy.hashCode() : 0);
+        return result;
     }
 
     @Override

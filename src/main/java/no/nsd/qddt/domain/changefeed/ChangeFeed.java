@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.changefeed;
 
-import com.google.common.base.Objects;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -137,21 +137,34 @@ public class ChangeFeed  {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         ChangeFeed that = (ChangeFeed) o;
-        return Objects.equal( changeFeedKey, that.changeFeedKey ) &&
-            Objects.equal( refKind, that.refKind ) &&
-            Objects.equal( refChangeKind, that.refChangeKind ) &&
-            Objects.equal( modified, that.modified ) &&
-            Objects.equal( modifiedBy, that.modifiedBy ) &&
-            Objects.equal( elementId, that.elementId ) &&
-            Objects.equal( elementRevision, that.elementRevision ) &&
-            Objects.equal( elementKind, that.elementKind ) &&
-            Objects.equal( name, that.name );
+
+        if (!Objects.equals( refRev, that.refRev )) return false;
+        if (!Objects.equals( refKind, that.refKind )) return false;
+        if (!Objects.equals( refChangeKind, that.refChangeKind ))
+            return false;
+        if (!Objects.equals( modified, that.modified )) return false;
+        if (!Objects.equals( modifiedBy, that.modifiedBy )) return false;
+        if (!Objects.equals( elementId, that.elementId )) return false;
+        if (!Objects.equals( elementRevision, that.elementRevision ))
+            return false;
+        if (!Objects.equals( elementKind, that.elementKind )) return false;
+        return Objects.equals( name, that.name );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( changeFeedKey, refKind, refChangeKind, modified, modifiedBy,  elementId, elementRevision, elementKind, name );
+        int result = refRev != null ? refRev.hashCode() : 0;
+        result = 31 * result + (refKind != null ? refKind.hashCode() : 0);
+        result = 31 * result + (refChangeKind != null ? refChangeKind.hashCode() : 0);
+        result = 31 * result + (modified != null ? modified.hashCode() : 0);
+        result = 31 * result + (modifiedBy != null ? modifiedBy.hashCode() : 0);
+        result = 31 * result + (elementId != null ? elementId.hashCode() : 0);
+        result = 31 * result + (elementRevision != null ? elementRevision.hashCode() : 0);
+        result = 31 * result + (elementKind != null ? elementKind.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override

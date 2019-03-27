@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +59,10 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Instrument findOne(UUID uuid) {
         return  instrumentRepository.findById(uuid)
-            .map(this::clearChangeCommet)
+            .map(this::loadDetail)
             .orElseThrow(() -> new ResourceNotFoundException(uuid, Instrument.class));
     }
 
@@ -87,20 +89,23 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public List<Instrument> findByStudy(UUID studyId) {
+    @Transactional(readOnly = true)
+    public List<InstrumentViewJson> findByStudy(UUID studyId) {
         return instrumentRepository.findByStudy(studyId).stream()
-            .map( this::clearChangeCommet).collect( Collectors.toList());
+            .map( this::loadListDetail).collect( Collectors.toList());
     }
 
     @Override
-    public Page<Instrument> findAllPageable(Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<InstrumentViewJson> findAllPageable(Pageable pageable) {
 
         pageable = defaultSort(pageable, "name ASC", "modified DESC");
-        return instrumentRepository.findAll(pageable).map( this::clearChangeCommet);
+        return instrumentRepository.findAll(pageable).map( this::loadListDetail);
     }
 
     @Override
-    public Page<Instrument> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable) {
 
         pageable = defaultSort(pageable, "name ASC", "modified DESC");
         if (name.isEmpty()  &&  description.isEmpty()) {
@@ -111,7 +116,7 @@ class InstrumentServiceImpl implements InstrumentService {
             .findFirst().orElse( null );
 
         return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable)
-            .map( this::clearChangeCommet);
+            .map( this::loadListDetail);
     }
 
 
@@ -130,11 +135,18 @@ class InstrumentServiceImpl implements InstrumentService {
         return instance;
     }
 
-    private Instrument clearChangeCommet(Instrument instrument){
-        instrument.setChangeComment( null );
-        return  instrument;
+
+    private InstrumentViewJson loadListDetail(Instrument instrument) {
+        return new InstrumentViewJson( instrument );
     }
 
+
+    private Instrument loadDetail(Instrument instrument) {
+        instrument.setChangeComment( null );
+        Hibernate.initialize(instrument.getSequence());
+        instrument.getSequence().stream().forEach( this::loadDetails );
+        return  instrument;
+    }
 
     private InstrumentElement loadDetails(InstrumentElement instance) {
         LOG.info("loadDetails");

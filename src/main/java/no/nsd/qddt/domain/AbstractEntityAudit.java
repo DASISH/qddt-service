@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.agency.Agency;
@@ -11,6 +12,7 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.jsonviews.View;
 import no.nsd.qddt.security.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
@@ -98,42 +100,52 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
      */
 
 //    @NotAudited
+    // @JsonView(View.Edit.class)
     @ManyToOne
     @JoinColumn(name = "agency_id",updatable = false, nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Agency agency;
 
+    // @JsonView(View.Simple.class)
     @Column(name = "name")
     private String name;
 
 
+    // @JsonView(View.Edit.class)
     @Column(name = "based_on_object",updatable = false)
     @Type(type="pg-uuid")
     private UUID basedOnObject;
 
+    // @JsonView(View.Edit.class)
     @Column(name = "based_on_revision",updatable = false)
     private Integer basedOnRevision;
 
 
+    // @JsonView(View.Edit.class)
     @Embedded
     private Version version;
 
+    // @JsonView(View.Edit.class)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ChangeKind changeKind;
 
     @Column(name = "change_comment",nullable = false)
+    // @JsonView(View.Audit.class)
     private String changeComment;
 
-    private String xmlLang = "en-GB";
+    // @JsonView(View.Simple.class)
+    private String xmlLang;
 
     @NotAudited
+    // @JsonView(View.Edit.class)
     @OrderBy("owner_idx desc")
     @OrderColumn(name="owner_idx")
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
 
+    // @JsonView(View.Simple.class)
     @Transient
     @JsonSerialize
     @JsonDeserialize
@@ -232,7 +244,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     }
 
     public String getXmlLang() {
-        return xmlLang;
+        return StringTool.IsNullOrEmpty(xmlLang)? "en-GB": xmlLang ;
     }
 
     public void setXmlLang(String xmlLang) {

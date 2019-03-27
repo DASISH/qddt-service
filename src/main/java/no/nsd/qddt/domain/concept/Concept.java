@@ -281,16 +281,18 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                 // pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
                 getConceptQuestionItems().stream()
-                    .map( cqi ->  (QuestionItem)cqi.getElement() )
+                    .map( cqi ->  {
+                        if (cqi.getElement() == null){
+                            LOG.info( cqi.toString() );
+                            return null;
+                        }
+                        return (QuestionItem)cqi.getElement();
+                    } )
                     .forEach( item -> {
-                    if (item != null) {
                         pdfReport.addheader2( item.getName(), String.format( "Version %s", item.getVersion() ) );
                         pdfReport.addParagraph( item.getQuestion() );
                         if (item.getResponseDomain() != null)
                             item.getResponseDomain().fillDoc( pdfReport, "" );
-                    } else {
-                        LOG.info( item.toString() );
-                    }
                 });
             }
 

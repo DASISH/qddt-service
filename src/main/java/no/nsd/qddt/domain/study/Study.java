@@ -63,7 +63,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     @Column(length = 10000)
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.DETACH } , mappedBy = "study")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH } , mappedBy = "study")
 //    @JoinTable(name = "STUDY_INSTRUMENTS",
 //            joinColumns = {@JoinColumn(name = "study_id")},
 //            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
@@ -120,15 +120,12 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
         this.surveyProgram = surveyProgram;
     }
 
-    private Set<Instrument> getInstruments() {
+    public Set<Instrument> getInstruments() {
         if (instruments == null)
             instruments = new HashSet<>();
         return instruments;
     }
 
-    public void setInstruments(Set<Instrument> instruments) {
-        this.instruments = instruments;
-    }
 
 
     public Set<TopicGroup> getTopicGroups() {

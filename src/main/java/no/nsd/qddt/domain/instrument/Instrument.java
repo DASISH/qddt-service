@@ -30,7 +30,7 @@ public class Instrument extends AbstractEntityAudit  {
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
     @OrderColumn(name="_idx")
     @JoinColumn(name = "instrument_id")
     private List<InstrumentElement>  sequence = new ArrayList<>();

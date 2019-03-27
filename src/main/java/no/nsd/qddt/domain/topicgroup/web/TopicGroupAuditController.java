@@ -1,9 +1,11 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
+import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,16 +36,19 @@ public class TopicGroupAuditController {
         this.service = service;
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, TopicGroupRevisionJson> getLastRevision(@PathVariable("id") UUID id) {
         return topicRev2Json(service.findLastChange(id));
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, TopicGroupRevisionJson> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return topicRev2Json(service.findRevision(id, revision));
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, TopicGroupRevisionJson>>> allProjects(
             @PathVariable("id") UUID id,
@@ -58,6 +63,7 @@ public class TopicGroupAuditController {
         return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
     }
 
+    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/allinclatest", method = RequestMethod.GET)
     public HttpEntity<PagedResources<Revision<Integer, TopicGroupRevisionJson>>> allIncludinglatest(
             @PathVariable("id") UUID id,

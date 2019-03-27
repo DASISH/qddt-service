@@ -17,12 +17,12 @@ public interface ChangeFeedRepository extends JpaRepository<ChangeFeed,ChangeFee
         (String name, String changeKind, String kind, Pageable pageable);
 
 
-    @Query(value = "SELECT cl.* FROM change_log cl " +
-        "WHERE (  cl.name ILIKE :name or cl.ref_change_kind ILIKE :changeKind or cl.ref_kind ILIKE :kind) "
+    @Query(value = "SELECT cl FROM ChangeFeed cl " +
+        "WHERE  lower(cl.name) like :name or lower(cl.refChangeKind) LIKE :changeKind or lower(cl.refKind) LIKE :kind "
         + "ORDER BY ?#{#pageable}"
-        ,countQuery = "SELECT count(cl) FROM change_log cl " +
-        "WHERE (  cl.name ILIKE :name or cl.ref_change_kind ILIKE :changeKind or cl.ref_kind ILIKE :kind) "
-        ,nativeQuery = true)
+        ,countQuery = "SELECT count(cl) FROM ChangeFeed cl " +
+        "WHERE  lower(cl.name) like :name or lower(cl.refChangeKind) LIKE :changeKind or lower(cl.refKind) LIKE :kind "
+        ,nativeQuery = false)
     Page<ChangeFeed> findByQuery(
         @Param("name")String name,
         @Param("changeKind")String changeKind,

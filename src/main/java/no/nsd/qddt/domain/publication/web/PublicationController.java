@@ -32,7 +32,7 @@ public class PublicationController {
         this.service = service;
     }
 
-    // @JsonView(View.Simple.class)
+    // // @JsonView(View.Simple.class)
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Publication get(@PathVariable("id") UUID id) {

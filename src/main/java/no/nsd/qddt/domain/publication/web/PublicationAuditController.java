@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.publication.web;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
+import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,16 +36,19 @@ public class PublicationAuditController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    // @JsonView(View.Audit.class)
     public Revision<Integer, Publication> getLastRevision(@PathVariable("id") UUID id) {
         return auditService.findLastChange(id);
     }
 
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
+    // @JsonView(View.Audit.class)
     public Revision<Integer, Publication> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision);
     }
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+    // @JsonView(View.Audit.class)
     public HttpEntity<PagedResources<Revision<Integer, Publication>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")

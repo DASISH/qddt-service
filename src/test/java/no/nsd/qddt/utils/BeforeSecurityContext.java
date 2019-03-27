@@ -11,7 +11,7 @@ import org.springframework.security.core.context.*;
  * annotated by the {@link org.aspectj.lang.annotation.Before} annotation.
  *
  * All inserts need a {@link no.nsd.qddt.domain.user.User} attached as can be seen
- * in {@link no.nsd.qddt.domain.EntityCreatedModifiedDateAuditEventConfiguration} listener.
+ * in {@link no.nsd.qddt.configuration.EntityCreatedModifiedDateAuditEventConfiguration} listener.
  * Created by Dag Østgulen Heradstveit.
  */
 public class BeforeSecurityContext {

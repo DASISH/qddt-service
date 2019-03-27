@@ -56,9 +56,10 @@ class StudyServiceImpl implements StudyService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Study findOne(UUID uuid) {
-        return studyRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Study.class)
-        );    }
+        return postLoadProcessing(
+            studyRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException(uuid, Study.class))
+        );
+    }
 
 
     @Override

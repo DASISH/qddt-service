@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.changefeed;
 
-import com.google.common.base.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -27,18 +25,23 @@ public class ChangeFeedKey implements Serializable {
         this.refRev = refRev;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         ChangeFeedKey that = (ChangeFeedKey) o;
-        return Objects.equal( refId, that.refId ) &&
-            Objects.equal( refRev, that.refRev );
+
+        if (!refId.equals( that.refId )) return false;
+        return refRev.equals( that.refRev );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( refId, refRev );
+        int result = refId.hashCode();
+        result = 31 * result + refRev.hashCode();
+        return result;
     }
 }
 

@@ -108,10 +108,16 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {
         assert  (instance != null);
         try{
+
+            instance.getStudies().forEach( study ->
+                Hibernate.initialize(study.getInstruments()));
+
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 instance.getStudies().forEach(  study ->
                     study.getTopicGroups().forEach( this::loadTopic ));
             }
+
+
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
         }

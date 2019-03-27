@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -58,14 +59,18 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
 
     @Override
     public Page<ChangeFeed> findAllPageable(Pageable pageable) {
-//        PageRequest sort = defaultOrModifiedSort( pageable, "refModified DESC" );
-        return repository.findAll( pageable );
+        return repository.findAll( defaultOrModifiedSort( pageable, "refModified DESC" ) );
     }
 
     @Override
     public Page<ChangeFeed> filterbyPageable(String name, String change, String kind, Pageable pageable) {
-//        PageRequest sort = defaultOrModifiedSort( pageable, "refModified DESC" );
+
 //        return repository.findByNameLikeIgnoreCaseOrRefChangeKindLikeIgnoreCaseOrRefKindLikeIgnoreCase
-        return repository.findByQuery( likeify(name),likeify(change),likeify(kind),pageable );
+        return repository.findByQuery(
+            likeify(name),
+            likeify(change),
+            likeify(kind),
+            pageable);
+//            defaultOrModifiedSort( pageable, "refModified DESC" ) );
     }
 }

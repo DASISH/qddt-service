@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.borders.DottedBorder;
 import com.itextpdf.layout.element.Cell;
@@ -14,6 +15,7 @@ import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.jsonviews.View;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -75,6 +77,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
 
+    // @JsonView(View.Edit.class)
     @Type(type="pg-uuid")
     @Column(name = "schema_id", unique = true )
     @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
@@ -87,6 +90,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
     @CollectionTable(name = "CODE", joinColumns = @JoinColumn(name="responsedomain_id",  referencedColumnName = "id"))
     private List<Code> codes = new ArrayList<>();
 
+    // @JsonView(View.Edit.class)
     @Column(name = "description", length = 2000, nullable = false)
     private String description;
 
@@ -95,18 +99,22 @@ public class ResponseDomain extends AbstractEntityAudit  {
      *   the managed representation is never reused (as was intended),
      *   so we want to remove it when the responseDomain is removed. ->  CascadeType.REMOVE
      */
+    // @JsonView(View.Edit.class)
     @ManyToOne( fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name="category_id")
     private Category managedRepresentation;
 
+    // @JsonView(View.Edit.class)
     private String displayLayout;
 
+    // @JsonView(View.Edit.class)
     @Enumerated(EnumType.STRING)
     private ResponseKind responseKind;
 
     /**
      * Allows the designation of the minimum and maximum number of responses allowed for this response domain.
      */
+    // @JsonView(View.Edit.class)
     @Embedded
     private ResponseCardinality responseCardinality;
 

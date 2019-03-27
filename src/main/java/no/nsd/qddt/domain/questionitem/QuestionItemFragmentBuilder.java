@@ -60,7 +60,6 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
             entity.getName(),
             entity.getIntent(),
             entity.getQuestion(),
-            entity.getXmlLang(),
             responseBuilder.getEntityRef(),
             getConceptRef());
     }

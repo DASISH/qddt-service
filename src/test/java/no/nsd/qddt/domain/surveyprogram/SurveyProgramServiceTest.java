@@ -28,7 +28,7 @@ public class SurveyProgramServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testCount() throws Exception {
+    public void testCount()  {
         SurveyProgram surveyProgram = new SurveyProgram();
         surveyProgram.setName("Test SurveyProgramService One");
         surveyProgramService.save(surveyProgram);
@@ -46,7 +46,7 @@ public class SurveyProgramServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testExists() throws Exception {
+    public void testExists()  {
         SurveyProgram surveyProgram = new SurveyProgram();
         surveyProgram.setName("Existing surveyProgramService");
         surveyProgram = surveyProgramService.save(surveyProgram);
@@ -55,7 +55,7 @@ public class SurveyProgramServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testFindOne() throws Exception {
+    public void testFindOne()  {
         SurveyProgram surveyProgram = new SurveyProgram();
         surveyProgram.setName("Existing surveyProgramService");
         surveyProgram = surveyProgramService.save(surveyProgram);
@@ -64,7 +64,7 @@ public class SurveyProgramServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testSave() throws Exception {
+    public void testSave()  {
         SurveyProgram surveyProgram = new SurveyProgram();
         surveyProgram.setName("Existing surveyProgramService");
         assertNotNull("SurveyProgramService should be saved", surveyProgramService.save(surveyProgram));
