@@ -36,7 +36,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public OtherMaterial saveFile(MultipartFile multipartFile, UUID ownerId) throws IOException {
-
+        LOG.info( ownerId.toString() );
         OtherMaterial om= new OtherMaterial( multipartFile ).setOriginalOwner( ownerId );
         Path filePath = Paths.get(getFolder(ownerId.toString()),om.getFileName());
         if (Files.exists(filePath)) {

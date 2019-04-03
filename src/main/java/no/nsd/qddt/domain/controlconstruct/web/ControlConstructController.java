@@ -96,13 +96,13 @@ public class ControlConstructController extends AbstractController {
 
         if (files != null && files.length > 0) {
             LOG.info( "got new files!!!" );
-            if (null == instance.getId())
-                instance = service.save( instance );
-
+            if (null == instance.getId()) {
+                instance.setId( UUID.randomUUID() );
+            }
             for (MultipartFile multipartFile : files) {
                 instance.getOtherMaterials().add(omService.saveFile( multipartFile, instance.getId() ));
             }
-            if (instance.getChangeKind().equals( CREATED ))
+            if (CREATED.equals( instance.getChangeKind() ))
                 instance.setChangeKind( null );
         }
 

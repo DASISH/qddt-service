@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -218,13 +217,15 @@ class ControlConstructServiceImpl implements ControlConstructService {
             QuestionConstruct qc = (QuestionConstruct)instance;
             qc.populateInstructions();                // instructions has to be unpacked into pre and post instructions
             try {
-                Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
-                    qc.getQuestionItemUUID(),
-                    qc.getQuestionItemRevision() );
+                if (qc.getQuestionItemUUID() != null) {
+                    Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
+                        qc.getQuestionItemUUID(),
+                        qc.getQuestionItemRevision() );
 
-                qc.setQuestionItemRevision( rev.getRevisionNumber() );
-                qc.setQuestionItem( rev.getEntity() );
-            } catch (JpaSystemException ex) {
+                    qc.setQuestionItemRevision( rev.getRevisionNumber() );
+                    qc.setQuestionItem( rev.getEntity() );
+                }
+            } catch (Exception ex) {
                 ((QuestionConstruct) instance).setQuestionItemRevision( 0 );
                 LOG.error( "CCS QI revision not found, resetting to latest.", ex );
             }
