@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.CREATED;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -95,9 +96,14 @@ public class ControlConstructController extends AbstractController {
 
         if (files != null && files.length > 0) {
             LOG.info( "got new files!!!" );
+            if (null == instance.getId())
+                instance = service.save( instance );
+
             for (MultipartFile multipartFile : files) {
                 instance.getOtherMaterials().add(omService.saveFile( multipartFile, instance.getId() ));
             }
+            if (instance.getChangeKind().equals( CREATED ))
+                instance.setChangeKind( null );
         }
 
         return  service.save(instance);
