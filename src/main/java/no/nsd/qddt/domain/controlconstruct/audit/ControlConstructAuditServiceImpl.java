@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
@@ -18,9 +17,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -119,9 +116,9 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
 
-        List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
+//        List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
 
-        instance.setComments(new ArrayList<>(coms));
+//        instance.setComments(new ArrayList<>(coms));
 
         return  instance.getClassKind().equals("QUESTION_CONSTRUCT")?postLoadProcessing( (QuestionConstruct) instance ): instance;
     }

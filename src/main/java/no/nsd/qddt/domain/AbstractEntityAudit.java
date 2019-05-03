@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.agency.Agency;
@@ -12,7 +11,6 @@ import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
-import no.nsd.qddt.jsonviews.View;
 import no.nsd.qddt.security.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
@@ -138,6 +136,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private String xmlLang;
 
     @NotAudited
+    @Transient
     // @JsonView(View.Edit.class)
     @OrderBy("owner_idx desc")
     @OrderColumn(name="owner_idx")

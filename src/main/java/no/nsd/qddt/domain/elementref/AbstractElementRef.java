@@ -97,7 +97,12 @@ public abstract class AbstractElementRef implements IElementRef {
 
     @JsonSerialize
     public IEntityAuditXmlRef getElement() {
-        return (IEntityAuditXmlRef)element;
+        try {
+            return (IEntityAuditXmlRef) element;
+        } catch (Exception ex ) {
+            System.out.println(element.toString());
+            return null;
+        }
     }
     public void setElement(Object element) {
         this.element = element;
