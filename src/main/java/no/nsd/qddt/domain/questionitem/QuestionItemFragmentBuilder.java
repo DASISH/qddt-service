@@ -26,7 +26,6 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
             "\t\t<r:Content xml:lang=\"%7$s\" isPlainText=\"false\">%6$s</r:Content>\n" +
             "\t</QuestionText>\n" +
             "\t%8$s" +
-            "\t%9$s" +
         "</d:QuestionItem>\n";
 
 
