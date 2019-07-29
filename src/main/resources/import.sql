@@ -368,6 +368,178 @@ CREATE VIEW public.uuidpath (id, path, name, user_id) AS
     survey_program.user_id
   FROM public.survey_program;
 
+DROP TABLE IF EXISTS public.change_log;
+DROP VIEW IF  EXISTS public.change_log;
+
+CREATE VIEW public.change_log (ref_id, ref_rev, ref_kind, ref_change_kind, ref_modified, ref_modified_by, ref_action, element_id, element_revision, element_kind, name) AS  SELECT ca.id AS ref_id,
+    ca.rev AS ref_rev,
+    'CONCEPT'::text AS ref_kind,
+    ca.change_kind AS ref_change_kind,
+    ca.updated AS ref_modified,
+    ca.user_id AS ref_modified_by,
+    ca.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(ca.name, 'Deleted'::character varying) AS name
+   FROM audit.concept_aud ca
+UNION
+ SELECT cc.id AS ref_id,
+    cc.rev AS ref_rev,
+    'CONTROL_CONSTRUCT'::text AS ref_kind,
+    cc.change_kind AS ref_change_kind,
+    cc.updated AS ref_modified,
+    cc.user_id AS ref_modified_by,
+    cc.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(cc.name, 'Deleted'::character varying) AS name
+   FROM audit.control_construct_aud cc
+UNION
+ SELECT ai.id AS ref_id,
+    ai.rev AS ref_rev,
+    'INSTRUMENT'::text AS ref_kind,
+    ai.change_kind AS ref_change_kind,
+    ai.updated AS ref_modified,
+    ai.user_id AS ref_modified_by,
+    ai.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(ai.name, 'Deleted'::character varying) AS name
+   FROM audit.instrument_aud ai
+UNION
+ SELECT qi.id AS ref_id,
+    qi.rev AS ref_rev,
+    'QUESTION_ITEM'::text AS ref_kind,
+    qi.change_kind AS ref_change_kind,
+    qi.updated AS ref_modified,
+    qi.user_id AS ref_modified_by,
+    qi.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(qi.name, 'Deleted'::character varying) AS name
+   FROM audit.question_item_aud qi
+UNION
+ SELECT rd.id AS ref_id,
+    rd.rev AS ref_rev,
+    'RESPONSEDOMAIN'::text AS ref_kind,
+    rd.change_kind AS ref_change_kind,
+    rd.updated AS ref_modified,
+    rd.user_id AS ref_modified_by,
+    rd.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(rd.name, 'Deleted'::character varying) AS name
+   FROM audit.responsedomain_aud rd
+UNION
+ SELECT sa.id AS ref_id,
+    sa.rev AS ref_rev,
+    'STUDY'::text AS ref_kind,
+    sa.change_kind AS ref_change_kind,
+    sa.updated AS ref_modified,
+    sa.user_id AS ref_modified_by,
+    sa.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(sa.name, 'Deleted'::character varying) AS name
+   FROM audit.study_aud sa
+UNION
+ SELECT asp.id AS ref_id,
+    asp.rev AS ref_rev,
+    'SURVEY_PROGRAM'::text AS ref_kind,
+    asp.change_kind AS ref_change_kind,
+    asp.updated AS ref_modified,
+    asp.user_id AS ref_modified_by,
+    asp.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(asp.name, 'Deleted'::character varying) AS name
+   FROM audit.survey_program_aud asp
+UNION
+ SELECT atg.id AS ref_id,
+    atg.rev AS ref_rev,
+    'TOPIC_GROUP'::text AS ref_kind,
+    atg.change_kind AS ref_change_kind,
+    atg.updated AS ref_modified,
+    atg.user_id AS ref_modified_by,
+    atg.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(atg.name, 'Deleted'::character varying) AS name
+   FROM audit.topic_group_aud atg
+UNION
+ SELECT ap.id AS ref_id,
+    ap.rev AS ref_rev,
+    'PUBLICATION'::text AS ref_kind,
+    ap.change_kind AS ref_change_kind,
+    ap.updated AS ref_modified,
+    ap.user_id AS ref_modified_by,
+    ap.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    NULL::character varying AS element_kind,
+    COALESCE(ap.name, 'Deleted'::character varying) AS name
+   FROM audit.publication_aud ap
+UNION
+ SELECT cqi.concept_id AS ref_id,
+    cqi.rev AS ref_rev,
+    'CONCEPT'::text AS ref_kind,
+    NULL::character varying AS ref_change_kind,
+    NULL::timestamp without time zone AS ref_modified,
+    NULL::uuid AS ref_modified_by,
+    cqi.revtype AS ref_action,
+    cqi.element_id,
+    cqi.element_revision,
+    cqi.element_kind,
+    COALESCE(cqi.name, 'Deleted'::character varying) AS name
+   FROM audit.concept_question_item_aud cqi
+UNION
+ SELECT tgqi.topicgroup_id AS ref_id,
+    tgqi.rev AS ref_rev,
+    'TOPIC_GROUP'::text AS ref_kind,
+    NULL::character varying AS ref_change_kind,
+    NULL::timestamp without time zone AS ref_modified,
+    NULL::uuid AS ref_modified_by,
+    tgqi.revtype AS ref_action,
+    tgqi.element_id,
+    tgqi.element_revision,
+    tgqi.element_kind,
+    COALESCE(tgqi.name, 'Deleted'::character varying) AS name
+   FROM audit.topic_group_question_item_aud tgqi
+UNION
+ SELECT ccom.owner_id AS ref_id,
+    ccom.rev AS ref_rev,
+    'CONTROL_CONSTRUCT'::text AS ref_kind,
+    NULL::character varying AS ref_change_kind,
+    NULL::timestamp without time zone AS ref_modified,
+    NULL::uuid AS ref_modified_by,
+    ccom.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    'OTHER_MATERIAL'::text AS element_kind,
+    ccom.original_name AS name
+   FROM audit.control_construct_other_material_aud ccom
+UNION
+ SELECT tgom.owner_id AS ref_id,
+    tgom.rev AS ref_rev,
+    'TOPIC_GROUP'::text AS ref_kind,
+    NULL::character varying AS ref_change_kind,
+    NULL::timestamp without time zone AS ref_modified,
+    NULL::uuid AS ref_modified_by,
+    tgom.revtype AS ref_action,
+    NULL::uuid AS element_id,
+    NULL::integer AS element_revision,
+    'OTHER_MATERIAL'::text AS element_kind,
+    tgom.original_name AS name
+   FROM audit.topic_group_other_material_aud tgom;
+
 
 --Add primary agency
 INSERT INTO public.agency (id, updated, name) VALUES('1359ded1-9f18-11e5-8994-feff819cdc9f','2018-01-01', 'Admin-qddt');
