@@ -20,3 +20,4 @@ https://dasish.github.io/qddt-service/
 https://github.com/DASISH/qddt-client/wiki
 
 
+[![dependencies Status](https://david-dm.org/DASISH/qddt-service/status.svg)](https://david-dm.org/DASISH/qddt-service)
