@@ -1,20 +1,13 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.jsonviews.View;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -49,14 +42,12 @@ public class ControlConstructAuditController {
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, ControlConstruct>>> allProjects(
+    public Page<Revision<Integer, ControlConstruct>> allProjects(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
-                    Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT") Collection<AbstractEntityAudit.ChangeKind> changekinds,
+            Pageable pageable) {
 
-        Page<Revision<Integer, ControlConstruct>> entities = auditService.findRevisionsByChangeKindNotIn(id,changekinds, pageable);
-        return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
+         return  auditService.findRevisionsByChangeKindNotIn(id,changekinds, pageable);
     }
 
     @ResponseBody

@@ -9,16 +9,11 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,7 +78,7 @@ public class ControlConstructController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-    public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") String jsonString) throws FileUploadException, IOException {
+    public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") String jsonString) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         int index = jsonString.indexOf("\"classKind\":\"QUESTION_CONSTRUCT\"");
@@ -129,23 +124,21 @@ public class ControlConstructController extends AbstractController {
 
 
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE })
-    public HttpEntity<PagedResources<ConstructJsonView>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
+    public Page<ConstructJsonView> getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                                @RequestParam(value = "description",defaultValue = "") String description,
                                                                @RequestParam(value = "questionText",defaultValue = "") String questionText,
                                                                @RequestParam(value = "questionName",defaultValue = "") String questionName,
                                                                @RequestParam(value = "constructKind",defaultValue = "QUESTION_CONSTRUCT") String kind,
                                                                @RequestParam(value = "sequenceKind", defaultValue = "") String sequenceKind,
-                                                               Pageable pageable, PagedResourcesAssembler assembler) {
+                                                               Pageable pageable) {
 
-        Page<ConstructJsonView> controlConstructs;
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it necessary to distinguish
-        if (kind.equals("QUESTION_CONSTRUCT")) {
-            controlConstructs = service.findQCBySearch( likeify(name), likeify(questionName), likeify(questionText), pageable ); //.map( source -> Converter.mapConstruct( source ));
-        } else {
-            controlConstructs = service.findBySearcAndControlConstructKind( kind, sequenceKind, likeify(name), likeify(description), pageable );
-        }
-        return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
+        if (kind.equals("QUESTION_CONSTRUCT"))
+            return service.findQCBySearch( likeify(name), likeify(questionName), likeify(questionText), pageable ); //.map( source -> Converter.mapConstruct( source ));
+
+        return service.findBySearcAndControlConstructKind( kind, sequenceKind, likeify(name), likeify(description), pageable );
+
     }
 
     @ResponseBody

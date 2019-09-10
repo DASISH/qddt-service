@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return topicGroupRepository.exists(uuid);
+        return topicGroupRepository.existsById(uuid);
     }
 
     @Override
@@ -105,7 +106,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     public TopicGroup copy(UUID id, Integer rev, UUID parentId) {
 //        EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev ).getEntity();
-        TopicGroup target = new TopicGroupFactory().copy(source, rev);
+        TopicGroup target = new TopicGroupFactory().copy(source, Optional.of( rev));
         studyService.findOne( parentId ).addTopicGroup( target );
 //        entityManager.detach( target );
 //        target.setParentU(parentId);
@@ -120,21 +121,21 @@ class TopicGroupServiceImpl implements TopicGroupService {
     public void delete(UUID uuid) {
         if (topicGroupRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
-        topicGroupRepository.delete(uuid);
+        topicGroupRepository.deleteById(uuid);
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<TopicGroup> instances) {
-        topicGroupRepository.delete(instances);
+        topicGroupRepository.deleteAll(instances);
     }
 
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(TopicGroup instance) {
-        topicGroupRepository.delete(instance.getId());
+        topicGroupRepository.deleteById(instance.getId());
     }
 
     @Override

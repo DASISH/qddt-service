@@ -56,7 +56,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return userRepository.exists(uuid);
+        return userRepository.existsById(uuid);
     }
 
     @Override
@@ -81,13 +81,13 @@ class UserServiceImpl implements UserService {
     public void delete(UUID uuid) {
         if (searchService.findByUserId( uuid ).size() > 0)
             throw new ReferenceInUseException( uuid.toString() );
-        userRepository.delete(uuid);
+        userRepository.deleteById(uuid);
     }
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(List<User> instances) {
-        userRepository.delete(instances);
+        userRepository.deleteAll(instances);
     }
 
 

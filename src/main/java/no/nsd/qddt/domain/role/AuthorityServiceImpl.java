@@ -31,13 +31,13 @@ class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return authorityRepository.exists(uuid);
+        return authorityRepository.existsById(uuid);
     }
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Authority findOne(UUID uuid) {
-        return authorityRepository.findOne(uuid);
+        return authorityRepository.findById(uuid).get();
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -57,13 +57,13 @@ class AuthorityServiceImpl implements AuthorityService {
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
-        authorityRepository.delete(uuid);
+        authorityRepository.deleteById(uuid);
     }
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(List<Authority> instances) throws DataAccessException {
-        authorityRepository.delete(instances);
+        authorityRepository.deleteAll(instances);
     }
 
     private Authority prePersistProcessing(Authority instance) {

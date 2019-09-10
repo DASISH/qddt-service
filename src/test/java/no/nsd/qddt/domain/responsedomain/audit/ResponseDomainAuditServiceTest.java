@@ -6,9 +6,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 
 import static org.hamcrest.Matchers.is;
@@ -40,37 +38,28 @@ public class ResponseDomainAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveSurveyWithAudit() {
         entity = responseDomainService.findOne(entity.getId());
 
-        // Find the last revision based on the entity id
-        Revision<Integer, ResponseDomain> revision = responseDomainAuditService.findLastChange(entity.getId());
-
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, ResponseDomain>> revisions = responseDomainAuditService.findRevisions(
-                entity.getId(), new PageRequest(0, 10));
+        var revisions = responseDomainAuditService.findRevisions(entity.getId(), PageRequest.of(0, 10));
 
-        Revisions<Integer, ResponseDomain> wrapper = new Revisions<>(revisions.getContent());
+        var wrapper =  Revisions.of( revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), entity.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
     @Test
-    public void getAllRevisionsTest() throws Exception {
-        Page<Revision<Integer, ResponseDomain>> revisions =
-                responseDomainAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
-
-        assertEquals("Excepted four revisions.",
-                revisions.getNumberOfElements(), 4);
+    public void getAllRevisionsTest() {
+        var revisions = responseDomainAuditService.findRevisions(entity.getId(), PageRequest.of(0, 20));
+        assertEquals("Excepted four revisions.", revisions.getNumberOfElements(), 4);
     }
 
     @Test
-    public void getLastRevisionTest() throws Exception {
-        Revision<Integer, ResponseDomain> revision = responseDomainAuditService.findLastChange(entity.getId());
-
-        assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity().hashCode(), entity.hashCode());
+    public void getLastRevisionTest() {
+        var revision = responseDomainAuditService.findLastChange(entity.getId());
+        assertEquals("Excepted initial ResponseDomain Object.", revision.getEntity().hashCode(), entity.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

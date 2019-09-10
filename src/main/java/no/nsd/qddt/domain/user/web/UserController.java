@@ -8,12 +8,8 @@ import no.nsd.qddt.security.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -46,11 +42,8 @@ public class UserController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<UserJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                          Pageable pageable, PagedResourcesAssembler assembler) {
-//        pageable = defaultOrModifiedSort(pageable, "name ASC", "updated DESC");
-        Page<UserJsonEdit> items = userService.getByName(name, pageable).map( c -> new UserJsonEdit(c) );
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+    public Page<UserJsonEdit> getBy(@RequestParam(value = "name",defaultValue = "%") String name, Pageable pageable) {
+        return  userService.getByName(name, pageable).map( c -> new UserJsonEdit(c) );
     }
 
     @ResponseStatus(value = HttpStatus.OK)

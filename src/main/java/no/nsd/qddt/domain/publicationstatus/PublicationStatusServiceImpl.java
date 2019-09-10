@@ -28,12 +28,12 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
     @Override
     public boolean exists(Long id) {
-        return repository.exists(id);
+        return repository.existsById(id);
     }
 
     @Override
     public PublicationStatus findOne(Long id) {
-        return repository.findOne(id);
+        return repository.findById(id).get();
     }
 
     @Override
@@ -52,13 +52,13 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(Long id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<PublicationStatus> instances) {
-        repository.delete(instances);
+        repository.deleteAll(instances);
     }
 
 

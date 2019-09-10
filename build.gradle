@@ -8,21 +8,21 @@ buildscript {
 }
 
 plugins {
-    id "org.springframework.boot" version "1.5.19.RELEASE"
+    id "org.springframework.boot" version "2.1.7.RELEASE"
     id "org.asciidoctor.convert" version "1.5.8.1"
     id "org.hidetake.ssh" version "2.2.0"
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-//apply plugin: 'spring-boot'ø
 
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
 
 
 idea {
     project {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
@@ -49,23 +49,22 @@ dependencies {
         exclude module: "spring-boot-starter-tomcat"
     }
 
-    compile("org.springframework.hateoas:spring-hateoas")
+//    compile("org.springframework.hateoas:spring-hateoas")
     compile("org.springframework.security.oauth:spring-security-oauth2:2.0.16.RELEASE")
-    compile("org.springframework.cloud:spring-cloud-security:1.0.2.RELEASE")
-    compile("org.jadira.usertype:usertype.extended:5.0.0.GA")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.9.4")
+//    compile("org.springframework.cloud:spring-cloud-security")
+//    compile("org.jadira.usertype:usertype.extended")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5")
 //    compile("com.github.bohnman:squiggly-filter-jackson:1.3.11")
-    compile("net.logstash.logback:logstash-logback-encoder:3.5")
+    compile("net.logstash.logback:logstash-logback-encoder:6.2")
 
-    compile("org.springframework.data:spring-data-envers:1.1.18.RELEASE")
-    compile("org.springframework.data:spring-data-jpa:1.11.18.RELEASE")
-    compile("org.springframework.data:spring-data-commons:1.13.18.RELEASE")
+    compile("org.springframework.data:spring-data-envers")
+    compile("org.springframework.data:spring-data-jpa")
+    compile("org.springframework.data:spring-data-commons")
 
-    compile("org.hibernate:hibernate-core:5.1.16.Final")
-    compile("org.hibernate:hibernate-envers:5.1.16.Final")
-    compile("org.hibernate:hibernate-entitymanager:5.1.16.Final")
-    compile("org.hibernate:hibernate-validator")
+    compile("org.hibernate:hibernate-core")
+    compile("org.hibernate:hibernate-envers")
+    compile("org.hibernate.validator:hibernate-validator")
 
     compile("joda-time:joda-time")
     compile("javax.json:javax.json-api:1.1.2")
@@ -77,10 +76,10 @@ dependencies {
     compile("com.itextpdf:html2pdf:2.0.2")
 
 
-    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-    compile group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-    compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
-    compile group: 'javax.activation', name: 'activation', version: '1.1.1'
+//    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+//    compile group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+//    compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+//    compile group: 'javax.activation', name: 'activation', version: '1.1.1'
 
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
     testCompile(
@@ -92,36 +91,36 @@ dependencies {
     )
 }
 
-//asciidoctor {
-//    sourceDir = file('docs')
-//    outputDir = file('build/docs')
+asciidoctor {
+    sourceDir = file('docs')
+    outputDir = file('build/docs')
+}
+
+//
+//remotes {
+//    web01 {
+//        role 'masterNode'
+//        host = 'qddt-dev.nsd.no'
+//        user = System.properties['user.name']
+//        agent = true
+////		identity = file("${System.properties['user.home']}/.ssh/puttyPrivKey.ppk")
+////		knownHosts = file("${System.properties['user.home']}/.ssh/known_hosts")
+//    }
 //}
-
-
-remotes {
-    web01 {
-        role 'masterNode'
-        host = 'qddt-dev.nsd.no'
-        user = System.properties['user.name']
-        agent = true
-//		identity = file("${System.properties['user.home']}/.ssh/puttyPrivKey.ppk")
-//		knownHosts = file("${System.properties['user.home']}/.ssh/known_hosts")
-    }
-}
-
-
-
-tasks.register("deploy") {
-    doLast {
-        ssh.run {
-            session(remotes.web01) {
-                execute 'cat /etc/*-release', ignoreError: true
-                execute 'cp ../deploy/deployment/test/QDDT.jar ../deploy/deployment/test/QDDT.jar.2019.old'
-                put from: file("$buildDir/libs/QDDT.jar"), into: '../deploy/deployment/test/QDDT.jar'
-				execute 'sudo systemctl restart qddt-test'
-            }
-        }
-    }
-}
-
-deploy.onlyIf { project.hasProperty('deployTest')}
+//
+//
+//
+//tasks.register("deploy") {
+//    doLast {
+//        ssh.run {
+//            session(remotes.web01) {
+//                execute 'cat /etc/*-release', ignoreError: true
+//                execute 'cp ../deploy/deployment/test/QDDT.jar ../deploy/deployment/test/QDDT.jar.2019.old'
+//                put from: file("$buildDir/libs/QDDT.jar"), into: '../deploy/deployment/test/QDDT.jar'
+//				execute 'sudo systemctl restart qddt-test'
+//            }
+//        }
+//    }
+//}
+//
+//deploy.onlyIf { project.hasProperty('deployTest')}

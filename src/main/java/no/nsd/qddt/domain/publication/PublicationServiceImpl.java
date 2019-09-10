@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -56,14 +57,14 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return repository.exists(uuid);
+        return repository.existsById(uuid);
     }
 
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public Publication findOne(UUID uuid) {
-        return postLoadProcessing(repository.findOne(uuid));
+        return postLoadProcessing(repository.findById(uuid).get());
     }
 
 
@@ -87,7 +88,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        repository.delete(uuid);
+        repository.deleteById(uuid);
     }
 
 
@@ -95,7 +96,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Publication> instances) {
-        repository.delete(instances);
+        repository.deleteAll(instances);
     }
 
     @Override
@@ -147,7 +148,7 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     protected Publication prePersistProcessing(Publication instance) {
-        Integer rev = null;
+        Optional<Integer> rev = null;
         if(instance.isBasedOn())
             rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
 

@@ -6,9 +6,7 @@ import no.nsd.qddt.domain.instruction.InstructionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 
 import static org.hamcrest.Matchers.is;
@@ -43,37 +41,30 @@ public class InstructionAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void testSaveInstructionWithAudit() throws Exception {
+    public void testSaveInstructionWithAudit() {
         instruction = instructionService.findOne(instruction.getId());
 
-        // Find the last revision based on the entity id
-        Revision<Integer, Instruction> revision = instructionAuditService.findLastChange(instruction.getId());
-
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, Instruction>> revisions = instructionAuditService.findRevisions(
-                instruction.getId(), new PageRequest(0, 10));
+        var revisions = instructionAuditService.findRevisions(instruction.getId(), PageRequest.of(0, 10));
 
-        Revisions<Integer, Instruction> wrapper = new Revisions<>(revisions.getContent());
+        var wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), instruction.hashCode());
         assertThat(4,is(revisions.getNumberOfElements()));
     }
 
     @Test
-    public void getAllRevisionsTest() throws Exception {
-        Page<Revision<Integer, Instruction>> revisions =
-                instructionAuditService.findRevisions(instruction.getId(), new PageRequest(0, 20));
+    public void getAllRevisionsTest() {
+        var revisions = instructionAuditService.findRevisions(instruction.getId(), PageRequest.of(0, 20));
 
-        assertEquals("Excepted four revisions.",
-                revisions.getNumberOfElements(), 4);
+        assertEquals("Excepted four revisions.",revisions.getNumberOfElements(), 4);
     }
 
     @Test
-    public void getLastRevisionTest() throws Exception {
-        Revision<Integer, Instruction> revision = instructionAuditService.findLastChange(instruction.getId());
+    public void getLastRevisionTest() {
+        var revision = instructionAuditService.findLastChange(instruction.getId());
 
-        assertEquals("Excepted initial ResponseDomain Object.",
-                revision.getEntity().hashCode(), instruction.hashCode());
+        assertEquals("Excepted initial ResponseDomain Object.",revision.getEntity().hashCode(), instruction.hashCode());
         assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
     }
 }

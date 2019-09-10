@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private final InstructionService iService;
     private final UniverseService uService;
     private final QuestionItemAuditService qiAuditService;
-    // private final OtherMaterialService oService;
 
 
     @Autowired
@@ -49,7 +49,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
                                        ControlConstructAuditService controlConstructAuditService,
                                        InstructionService iService,
                                        UniverseService uService,
-                                    //    OtherMaterialService oService,
                                        QuestionItemAuditService questionAuditService
     ) {
         this.controlConstructRepository = ccRepository;
@@ -57,7 +56,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
         this.iService = iService;
         this.uService = uService;
         this.qiAuditService = questionAuditService;
-        // this.oService = oService;
     }
 
     @Override
@@ -67,7 +65,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return controlConstructRepository.exists(uuid);
+        return controlConstructRepository.existsById(uuid);
     }
 
     @Override
@@ -100,14 +98,14 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        controlConstructRepository.delete(uuid);
+        controlConstructRepository.deleteById(uuid);
     }
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<ControlConstruct> instances) {
-        controlConstructRepository.delete(instances);
+        controlConstructRepository.deleteAll(instances);
     }
 
     @Override
@@ -145,69 +143,53 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
+        Optional<Integer> rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+        if (!instance.isBasedOn() && !instance.isNewCopy()) {
+            return instance;
+        }
 
         switch (instance.getClassKind()) {
             case "QUESTION_CONSTRUCT":
                 if (instance instanceof QuestionConstruct) {
-                    QuestionConstruct qc = (QuestionConstruct)instance;
+                    QuestionConstruct qc = (QuestionConstruct) instance;
                     qc.populateControlConstructInstructions();
 
-                    qc.getControlConstructInstructions().forEach(cqi->{
+                    qc.getControlConstructInstructions().forEach( cqi -> {
                         if (cqi.getInstruction().getId() == null)
-                            cqi.setInstruction(iService.save(cqi.getInstruction()));
-                    });
+                            cqi.setInstruction( iService.save( cqi.getInstruction() ) );
+                    } );
 
-                    qc.getUniverse().forEach(universe->{
-                        if(universe.getId() == null) {
+                    qc.getUniverse().forEach( universe -> {
+                        if (universe.getId() == null) {
                             uService.save( universe );
                         }
-                    });
+                    } );
 
-                    if (qc.getQuestionItem() != null ) {
+                    if (qc.getQuestionItem() != null) {
                         QuestionItem question = qc.getQuestionItem();
-                        qc.setQuestionName(question.getName());
-                        qc.setQuestionText(question.getQuestion());
+                        qc.setQuestionName( question.getName() );
+                        qc.setQuestionText( question.getQuestion() );
                     }
 
-                    if(qc.isBasedOn() || qc.isNewCopy()) {
-                        Integer rev= auditService.findLastChange(qc.getId()).getRevisionNumber();
-                        qc = new FactoryQuestionConstruct().copy(qc, rev );
-                    }
-                    instance = (S)qc;
+                    return (S) new FactoryQuestionConstruct().copy( qc, rev );
                 }
                 break;
             case "SEQUENCE_CONSTRUCT":
                 if (instance instanceof Sequence) {
-                    if(instance.isBasedOn() || instance.isNewCopy()) {
-
-                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
-                    }
-//                    ((Sequence) instance).getSequence().stream().forEach( e -> {
-//                        e.getElement()
-//                    } );
-
+                    return (S) new FactorySequenceConstruct().copy( (Sequence) instance, rev );
                 }
                 break;
             case "CONDITION_CONSTRUCT":
                 if (instance instanceof ConditionConstruct) {
-                    if(instance.isBasedOn() || instance.isNewCopy()) {
-                        
-                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)new FactoryConditionConstruct().copy((ConditionConstruct)instance, rev );
-                    }
-                }       
-                break; 
-            case "STATEMENT_CONSTRUCT":
-                if (instance instanceof StatementItem) {
-                    if(instance.isBasedOn() || instance.isNewCopy()) {
-                        
-                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)new FactoryStatementConstruct().copy((StatementItem)instance, rev );
-                    }   
+                    return (S) new FactoryConditionConstruct().copy( (ConditionConstruct) instance, rev );
                 }
                 break;
+            case "STATEMENT_CONSTRUCT":
+                if (instance instanceof StatementItem) {
+                    return (S) new FactoryStatementConstruct().copy( (StatementItem) instance, rev );
+                }
         }
+        // This statement shouldn't be reached....
         return instance;
     }
 
@@ -222,11 +204,11 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         qc.getQuestionItemUUID(),
                         qc.getQuestionItemRevision() );
 
-                    qc.setQuestionItemRevision( rev.getRevisionNumber() );
+                    qc.setQuestionItemRevision( rev.getRevisionNumber().get() );
                     qc.setQuestionItem( rev.getEntity() );
                 }
             } catch (Exception ex) {
-                ((QuestionConstruct) instance).setQuestionItemRevision( 0 );
+                ((QuestionConstruct) instance).setQuestionItemRevision(  0 );
                 LOG.error( "CCS QI revision not found, resetting to latest.", ex );
             }
             qc.setChangeComment( null );

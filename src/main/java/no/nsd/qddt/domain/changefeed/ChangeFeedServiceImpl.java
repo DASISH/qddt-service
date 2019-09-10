@@ -39,7 +39,7 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
 
     @Override
     public <S extends ChangeFeed> S findOne(ChangeFeedKey id) {
-        return (S) repository.findOne( id );
+        return (S) repository.findById( id ).get();
     }
 
     @Override
@@ -49,12 +49,12 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
 
     @Override
     public void delete(ChangeFeedKey id) throws DataAccessException {
-        repository.delete( id );
+        repository.deleteById( id );
     }
 
     @Override
     public void delete(List<ChangeFeed> instances) throws DataAccessException {
-        repository.delete( instances );
+        repository.deleteInBatch( instances );
     }
 
     @Override

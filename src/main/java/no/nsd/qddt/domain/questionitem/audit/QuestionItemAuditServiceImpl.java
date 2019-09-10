@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -42,12 +39,12 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 
     @Override
     public Revision<Integer, QuestionItem> findLastChange(UUID uuid) {
-        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, QuestionItem> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -95,7 +92,7 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
         }
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
         instance.getEntity().setComments(new ArrayList<>(coms));
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
 
         return instance;
     }

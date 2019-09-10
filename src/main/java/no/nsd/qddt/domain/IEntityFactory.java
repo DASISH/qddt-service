@@ -2,6 +2,8 @@ package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 
+import java.util.Optional;
+
 /**
  * @author Stig Norland
  */
@@ -14,7 +16,7 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
 
     T copyBody(T source, T dest);
 
-    default T copy(T source,  Integer revision) {
+    default T copy(T source, Optional<Integer> revision) {
         if (source.isNewCopy())
             revision = null;
 
@@ -22,12 +24,12 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
             makeNewCopy(source, revision));
     }
 
-    default T makeNewCopy(T source, Integer revision)
+    default T makeNewCopy(T source, Optional<Integer> revision)
     {
         T retval = create();
-        if (revision != null) {
+        if (revision.isPresent()) {
             retval.setBasedOnObject(source.getId());
-            retval.setBasedOnRevision(revision);
+            retval.setBasedOnRevision(revision.get());
             retval.setChangeKind( ChangeKind.BASED_ON );
             retval.setChangeComment("based on " + source.getName() );
         } else {

@@ -6,12 +6,8 @@ import no.nsd.qddt.domain.universe.UniverseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,13 +55,10 @@ public class UniverseController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<UniverseJsonEdit>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
-                                                              Pageable pageable, PagedResourcesAssembler assembler) {
+    public Page<UniverseJsonEdit> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
+                                                              Pageable pageable) {
 
-//        Page<UniverseJsonView> universes = service.findByDescriptionLike(description, pageable).map( u -> new UniverseJsonView( u ) );
-        Page<UniverseJsonEdit> universes = service.findByDescriptionLike(description, pageable)
-            .map( u -> new UniverseJsonEdit(u) );
-        return new ResponseEntity<>(assembler.toResource(universes), HttpStatus.OK);
+        return service.findByDescriptionLike(description, pageable).map( u -> new UniverseJsonEdit(u) );
     }
 
 

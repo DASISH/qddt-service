@@ -43,9 +43,10 @@ public class Agency implements Comparable<Agency>{
 
 
     @Id
-    @Type(type="pg-uuid")
-    @GeneratedValue(generator ="UUID")
-    @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Type(type = "uuid-binary")
+//    @Type(type="pg-uuid")
     @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 

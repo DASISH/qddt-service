@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -39,12 +36,12 @@ class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,Respons
 
     @Override
     public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
-        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, ResponseDomain> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(responseDomainAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(responseDomainAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override

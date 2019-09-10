@@ -28,12 +28,12 @@ class UniverseAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Unive
 
     @Override
     public Revision<Integer, Universe> findLastChange(UUID uuid) {
-        return universeAuditRepository.findLastChangeRevision(uuid);
+        return universeAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     public Revision<Integer, Universe> findRevision(UUID uuid, Integer revision) {
-        return universeAuditRepository.findRevision(uuid, revision);
+        return universeAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override

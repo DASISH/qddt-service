@@ -8,12 +8,8 @@ import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -66,25 +62,20 @@ public class PublicationController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Publication>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public Page<Publication> getAll(Pageable pageable) {
 
-        Page<Publication> selectables = service.findAllPageable(pageable);
-        return new ResponseEntity<>(assembler.toResource(selectables), HttpStatus.OK);
+        return service.findAllPageable(pageable);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<PublicationJson>> getBy(@RequestParam(value = "name", defaultValue = "") String name,
+    public Page<PublicationJson> getBy(@RequestParam(value = "name", defaultValue = "") String name,
                                                          @RequestParam(value = "purpose", defaultValue = "") String purpose,
                                                          @RequestParam(value = "publicationStatus", defaultValue = "") String publicationStatus,
                                                          @RequestParam(value = "publishedKind") String publishedKind,
-                                                         Pageable pageable, PagedResourcesAssembler assembler) {
+                                                         Pageable pageable) {
 
-        Page<PublicationJson> items =
-                service.findByNameOrPurposeAndStatus(name, purpose, publicationStatus, publishedKind, pageable)
-                .map( c -> new PublicationJson(c));
-
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+        return service.findByNameOrPurposeAndStatus(name, purpose, publicationStatus, publishedKind, pageable).map( c -> new PublicationJson(c));
     }
 
 

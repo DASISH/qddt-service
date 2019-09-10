@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return instrumentRepository.exists(uuid);
+        return instrumentRepository.existsById(uuid);
     }
 
     @Override
@@ -79,13 +80,13 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        instrumentRepository.delete(uuid);
+        instrumentRepository.deleteById(uuid);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Instrument> instances) {
-        instrumentRepository.delete(instances);
+        instrumentRepository.deleteAll(instances);
     }
 
     @Override
@@ -123,7 +124,7 @@ class InstrumentServiceImpl implements InstrumentService {
     protected Instrument prePersistProcessing(Instrument instance) {
         LOG.info("prePersistProcessing");
 
-        Integer rev = null;
+        Optional<Integer> rev = null;
         if(instance.isBasedOn())
             rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
 

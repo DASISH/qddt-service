@@ -28,12 +28,12 @@ class PublicationAuditServiceImpl extends AbstractAuditFilter<Integer,Publicatio
 
     @Override
     public Revision<Integer, Publication> findLastChange(UUID uuid) {
-        return publicationAuditRepository.findLastChangeRevision(uuid);
+        return publicationAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     public Revision<Integer, Publication> findRevision(UUID uuid, Integer revision) {
-        return publicationAuditRepository.findRevision(uuid, revision);
+        return publicationAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override
@@ -60,7 +60,7 @@ class PublicationAuditServiceImpl extends AbstractAuditFilter<Integer,Publicatio
 
     @Override
     protected Revision<Integer, Publication> postLoadProcessing(Revision<Integer, Publication> instance) {
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
 
         return instance;
     }

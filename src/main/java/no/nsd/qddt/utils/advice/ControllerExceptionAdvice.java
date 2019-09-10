@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static net.logstash.logback.encoder.org.apache.commons.lang.exception.ExceptionUtils.getRootCauseMessage;
+import static net.logstash.logback.encoder.org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+
 
 /**
  * Controller-advice to handle exception casted by any requests coming from

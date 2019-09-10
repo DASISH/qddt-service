@@ -57,7 +57,7 @@ public class QuestionItemServiceTest  extends AbstractServiceTest {
     @Test
     @Override
     public void testFindOne() throws Exception {
-         Page result= service.findByNameOrQuestionOrResponseName("","%2%","",new PageRequest(0, 20));
+         Page result= service.findByNameOrQuestionOrResponseName("","%2%","",PageRequest.of(0, 20));
 
         Assert.assertThat("Should be one", result.getTotalElements(),  Is.is(1L));
     }

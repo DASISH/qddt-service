@@ -44,34 +44,34 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveSurveyWithAudit() {
         entity = categoryService.findOne(entity.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, Category> revision = categoryAuditService.findLastChange(entity.getId());
+        categoryAuditService.findLastChange( entity.getId() );
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, Category>> revisions = categoryAuditService.findRevisions(
-                entity.getId(), new PageRequest(0, 10));
+        var revisions = categoryAuditService.findRevisions(
+                entity.getId(), PageRequest.of(0, 10));
 
-        Revisions<Integer, Category> wrapper = new Revisions<>(revisions.getContent());
+        var  wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().getId(), entity.getId());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
     @Test
-    public void getAllRevisionsTest() throws Exception {
-        Page<Revision<Integer, Category>> revisions =
-                categoryAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
+    public void getAllRevisionsTest() {
+        var revisions =
+                categoryAuditService.findRevisions(entity.getId(), PageRequest.of(0, 20));
 
         assertEquals("Excepted four revisions.",
                 revisions.getNumberOfElements(), 4);
     }
 
     @Test
-    public void getfirstAndLastRevisionTest() throws Exception {
-        Revision<Integer, Category> revision = categoryAuditService.findLastChange(entity.getId());
+    public void getfirstAndLastRevisionTest() {
+        var  revision = categoryAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",
                 revision.getEntity().hashCode(), entity.hashCode());

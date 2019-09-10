@@ -26,20 +26,12 @@ public class ElementLoader{
         Revision<Integer, AbstractEntityAudit> revision = get(element.getElementId(), element.getElementRevision() );
         try {
             element.setElement(revision.getEntity());
-            element.setElementRevision( revision.getRevisionNumber() );
+            element.setElementRevision( revision.getRevisionNumber().get());
         } catch (Exception e) {
             LOG.error("ElementLoader setElement, reference has wrong signature");
         }
         return  element;
     }
-
-//    public IElementRef fill(IElementRef ref) throws Exception {
-//        LOG.debug((ref.getElement()!=null)? ref.getElement().toString() : "ELEMENT EMPTY");
-//        Revision<Integer,UUID> revision = get(ref.getElementId(), ref.getElementRevision() );
-//        ref.setElement(revision.getEntity());
-//        ref.setElementRevision( revision.getRevisionNumber() );
-//        return  ref;
-//    }
 
 
     // uses rev Object to facilitate by rev by reference

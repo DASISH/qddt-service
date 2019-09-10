@@ -23,7 +23,7 @@ public class FilterTool {
         else {
             sort = filterSort(pageable.getSort(),"responseDomain.name");
         }
-        return  new PageRequest(pageable.getPageNumber()
+        return  PageRequest.of(pageable.getPageNumber()
             ,pageable.getPageSize()
             ,sort);
     }
@@ -36,12 +36,12 @@ public class FilterTool {
                 orders.add( o );
         });
 
-        return new Sort( orders);
+        return Sort.by( orders);
     }
 
 
     private static Sort defaultSort(String... args){
-        return new Sort(
+        return Sort.by(
             Arrays.stream(args).map(s-> {
                 String[] par = s.split(" ");
                 if (par.length > 1)
@@ -59,7 +59,7 @@ public class FilterTool {
             sort = defaultSort(args);
         else
             sort = modifiedSort(pageable.getSort());
-        return new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),sort);
+        return PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),sort);
 
 //        System.out.println(pageRequest.toString());
 //        if (pageRequest==null) throw new Exception("pageRequest is null");
@@ -84,7 +84,7 @@ public class FilterTool {
             } else
                 orders.add(o);
         });
-        return new Sort(orders);
+        return Sort.by(orders);
     }
 
 }

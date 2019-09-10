@@ -8,11 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,17 +56,16 @@ public class CategoryController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<CategoryJsonEdit>>  getBy(@RequestParam(value = "level", defaultValue = "") String level,
+    public Page<CategoryJsonEdit> getBy(@RequestParam(value = "level", defaultValue = "") String level,
                                                        @RequestParam(value = "categoryKind",defaultValue = "") String categoryKind,
                                                        @RequestParam(value = "name",defaultValue = "") String name,
                                                        @RequestParam(value = "description",defaultValue = "") String description,
                                                        Pageable pageable, PagedResourcesAssembler<CategoryJsonEdit> assembler) {
 
-        Page<CategoryJsonEdit> categories = service.findBy(level,categoryKind, name, description, pageable)
-            .map(converter -> new CategoryJsonEdit(converter));
+        return service.findBy(level,categoryKind, name, description, pageable).map(converter -> new CategoryJsonEdit(converter));
 
         
-        return new ResponseEntity(assembler.toResource(categories), HttpStatus.OK);
+//        return new ResponseEntity(assembler.toResource(categories), HttpStatus.OK);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

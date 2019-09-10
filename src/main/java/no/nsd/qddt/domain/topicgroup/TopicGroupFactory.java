@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.concept.ConceptFactory;
 import no.nsd.qddt.domain.elementref.ElementRef;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +29,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
       ConceptFactory cf = new ConceptFactory();
 
       dest.setConcepts(source.getConcepts().stream()
-          .map(mapper ->  cf.copy(mapper,dest.getBasedOnRevision()))
+          .map(mapper ->  cf.copy(mapper, Optional.of( dest.getBasedOnRevision())))
           .collect(Collectors.toSet()));
 
       dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );

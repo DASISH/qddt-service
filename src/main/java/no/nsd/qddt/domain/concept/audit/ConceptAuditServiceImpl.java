@@ -16,10 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -47,13 +44,13 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
 
     @Override
     public Revision<Integer, Concept> findLastChange(UUID uuid) {
-        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid).get());
     }
 
 
     @Override
     public Revision<Integer, Concept> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -86,10 +83,8 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     @Override
     protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
-        return new Revision<>(
-                instance.getMetadata(),
-                postLoadProcessing(instance.getEntity()));
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
+        return Revision.of( instance.getMetadata(),postLoadProcessing(instance.getEntity()));
     }
 
     private Concept postLoadProcessing(Concept instance) {
@@ -101,11 +96,6 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
             instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             instance.getChildren().forEach(this::postLoadProcessing);
 
-//                cqi.getElement().setConceptRefs(
-//                    findByQuestionItem(cqi.getId()).stream()
-//                        .map( ConceptRef::new )
-//                        .collect( Collectors.toList())
-//                );
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing exception",ex);

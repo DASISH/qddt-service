@@ -11,10 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -34,12 +31,12 @@ class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Ins
 
     @Override
     public Revision<Integer, Instrument> findLastChange(UUID uuid) {
-        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, Instrument> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -68,7 +65,7 @@ class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Ins
     @Override
     protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
         instance.getEntity().setComments(new ArrayList<>(coms));
         return instance;

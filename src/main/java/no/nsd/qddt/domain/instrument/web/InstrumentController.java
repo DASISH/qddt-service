@@ -5,13 +5,10 @@ import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.instrument.InstrumentViewJson;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,21 +56,19 @@ public class InstrumentController  {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<InstrumentViewJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public Page<InstrumentViewJson> getAll(Pageable pageable) {
 
-        return new ResponseEntity<>(assembler.toResource(service.findAllPageable(pageable)), HttpStatus.OK);
+        return service.findAllPageable(pageable);
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<InstrumentViewJson>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
+    public Page<InstrumentViewJson> getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                                 @RequestParam(value = "description",defaultValue = "") String decsription,
                                                                 @RequestParam(value = "kind",defaultValue = "") String strKind,
-                                                                Pageable pageable, PagedResourcesAssembler assembler) {
+                                                                Pageable pageable) {
 
-        return new ResponseEntity<>(
-            assembler.toResource(service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable))
-            , HttpStatus.OK);
+        return service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable);
     }
 
     @ResponseBody

@@ -16,10 +16,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -43,13 +40,13 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Study> findLastChange(UUID uuid) {
-        return studyAuditRepository.findLastChangeRevision(uuid);
+        return studyAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Study> findRevision(UUID uuid, Integer revision) {
-        return studyAuditRepository.findRevision(uuid, revision);
+        return studyAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override
@@ -78,7 +75,7 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
     @Override
     protected Revision<Integer, Study> postLoadProcessing(Revision<Integer, Study> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
         postLoadProcessing(instance.getEntity());
         return instance;
     }

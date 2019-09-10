@@ -1,12 +1,11 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.jsonviews.View;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.slf4j.Logger;
@@ -36,7 +35,8 @@ public abstract class AbstractEntity {
     @GeneratedValue(generator ="UUID")
     @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
     // @JsonView(View.Simple.class)
-    @Column(name ="id", updatable = false, nullable = false)
+    @Type(type = "pg-uuid")
+    @Column(columnDefinition = "uuid",name ="id", updatable = false, nullable = false)
     private UUID id;
 
 

@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.concept;
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.elementref.ElementRef;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 /**
  * @author Stig Norland
@@ -22,7 +23,7 @@ public class ConceptFactory implements IEntityFactory<Concept> {
         dest.setName(source.getName());
 
         dest.setChildren(source.getChildren().stream()
-            .map(mapper -> copy(mapper, dest.getBasedOnRevision()))
+            .map(mapper -> copy(mapper, Optional.of( dest.getBasedOnRevision())))
             .collect(Collectors.toSet()));
 
         dest.getChildren().forEach(action -> action.setParentC(dest));

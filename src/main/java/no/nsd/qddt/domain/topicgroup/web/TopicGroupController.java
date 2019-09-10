@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.topicgroup.web;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
-import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -11,13 +10,10 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -121,14 +117,10 @@ public class TopicGroupController extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                             @RequestParam(value = "description",defaultValue = "%") String description,
-                                                             Pageable pageable, PagedResourcesAssembler assembler) {
-        return new ResponseEntity<>(
-            assembler.toResource(
-                service.findByNameAndDescriptionPageable(name,description, pageable)
-                    .map(TopicGroupJson::new))
-                ,HttpStatus.OK);
+    public Page<TopicGroupJson> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                       @RequestParam(value = "description",defaultValue = "%") String description,
+                                       Pageable pageable) {
+        return service.findByNameAndDescriptionPageable(name,description, pageable).map( TopicGroupJson::new );
     }
 
 
@@ -145,10 +137,6 @@ public class TopicGroupController extends AbstractController {
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex){
             LOG.error("addQuestionItem",ex);
-//            StackTraceFilter.filter(ex.getStackTrace()).stream()
-//                    .map(a->a.toString())
-//                    .forEach(LOG::info);
-
             return null;
         }
     }
@@ -164,9 +152,6 @@ public class TopicGroupController extends AbstractController {
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
             LOG.error("removeQuestionItem",ex);
-//            StackTraceFilter.filter(ex.getStackTrace()).stream()
-//                    .map(a->a.toString())
-//                    .forEach(LOG::info);
             return new TopicGroupJson(topicGroup);
         }
     }

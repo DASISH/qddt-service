@@ -48,7 +48,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return surveyProgramRepository.exists(uuid);
+        return surveyProgramRepository.existsById(uuid);
     }
 
     @Override
@@ -83,13 +83,13 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     public void delete(UUID uuid) {
         if (surveyProgramRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
-        surveyProgramRepository.delete(uuid);
+        surveyProgramRepository.deleteById(uuid);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(List<SurveyProgram> instances) {
-        surveyProgramRepository.delete(instances);
+        surveyProgramRepository.deleteAll(instances);
     }
 
 

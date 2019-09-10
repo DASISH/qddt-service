@@ -7,9 +7,7 @@ import no.nsd.qddt.utils.BeforeSecurityContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 import org.springframework.security.authentication.AuthenticationManager;
 
@@ -53,29 +51,25 @@ public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
 
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveSurveyWithAudit() {
         surveyProgram = surveyProgramService.findOne(surveyProgram.getId());
 
-        // Find the last revision based on the entity id
-        Revision<Integer, SurveyProgram> revision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
 
         // Find all revisions based on the entity id as a page
-        Page<Revision<Integer, SurveyProgram>> revisions = surveyProgramAuditService.findRevisions(
-                surveyProgram.getId(), new PageRequest(0, 10));
+        var revisions = surveyProgramAuditService.findRevisions(surveyProgram.getId(), PageRequest.of(0, 10));
 
-        Revisions<Integer, SurveyProgram> wrapper = new Revisions<>(revisions.getContent());
+        var wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), surveyProgram.hashCode());
         assertThat(revisions.getNumberOfElements(), is(3));
     }
 
     @Test
-    public void findSurveyByRevisionTest() throws Exception {
+    public void findSurveyByRevisionTest() {
         surveyProgram = surveyProgramService.findOne(surveyProgram.getId());
 
-        Revision<Integer, SurveyProgram> surveyRevision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
-
-        Revision<Integer, SurveyProgram> survey = surveyProgramAuditService.findRevision(surveyRevision.getEntity().getId(), surveyRevision.getMetadata().getRevisionNumber());
+        var surveyRevision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
+        var survey = surveyProgramAuditService.findRevision(surveyRevision.getEntity().getId(), surveyRevision.getRevisionNumber().get());
 
         assertThat(survey.getRevisionNumber(),is(surveyRevision.getMetadata().getRevisionNumber()));
     }

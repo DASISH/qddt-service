@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,7 +62,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return conceptRepository.exists(uuid);
+        return conceptRepository.existsById(uuid);
     }
 
     @Override
@@ -92,7 +93,7 @@ class ConceptServiceImpl implements ConceptService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public Concept copy(UUID id, Integer rev, UUID parentId) {
         Concept source = auditService.findRevision(id,rev).getEntity();
-        Concept target = new ConceptFactory().copy(source, rev);
+        Concept target = new ConceptFactory().copy(source, Optional.of(rev));
         TopicGroup tg = tgService.findOne( parentId );
         target = tg.addConcept( target );
         return conceptRepository.save(target);
@@ -105,7 +106,7 @@ class ConceptServiceImpl implements ConceptService {
         if (conceptRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
         try {
-            conceptRepository.delete( uuid );
+            conceptRepository.deleteById( uuid );
         } catch ( Exception ex ) {
             LOG.error( "Concept delete failed ->", ex );
             throw ex;
@@ -115,7 +116,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Concept> instances) {
-        conceptRepository.delete(instances);
+        conceptRepository.deleteAll(instances);
     }
 
 

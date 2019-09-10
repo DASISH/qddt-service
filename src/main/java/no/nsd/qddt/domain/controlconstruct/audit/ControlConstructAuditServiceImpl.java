@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -31,49 +30,42 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
     private final QuestionItemAuditService qiAuditService;
-    private final CommentService commentService;
-    private boolean showPrivateComments;
 
 
     @Autowired
     public ControlConstructAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
-            , QuestionItemAuditService qAuditService
-            , CommentService cService) {
+            , QuestionItemAuditService qAuditService ) {
         this.controlConstructAuditRepository = ccAuditRepository;
         this.qiAuditService = qAuditService;
-        this.commentService = cService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findLastChange(UUID id) {
-        return postLoadProcessing(controlConstructAuditRepository.findLastChangeRevision(id));
+        return postLoadProcessing(controlConstructAuditRepository.findLastChangeRevision(id).get());
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findRevision(UUID id, Integer revision) {
-        return postLoadProcessing(controlConstructAuditRepository.findRevision(id, revision));
+        return postLoadProcessing(controlConstructAuditRepository.findRevision(id, revision).get());
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Revision<Integer, ControlConstruct>> findRevisions(UUID id, Pageable pageable) {
         return controlConstructAuditRepository.findRevisions(id,pageable)
-            .map(this::postLoadProcessing);
+            .map( this::postLoadProcessing );
     }
 
     @Override
     public Revision<Integer, ControlConstruct> findFirstChange(UUID uuid) {
-        PageRequest pageable = new PageRequest(0,1);
-        return  postLoadProcessing(
-                controlConstructAuditRepository.findRevisions(uuid,
-                defaultSort(pageable,"RevisionNumber DESC")).getContent().get(0));
+        PageRequest pageable = PageRequest.of(0,1);
+        return  postLoadProcessing( controlConstructAuditRepository.findRevisions( uuid, defaultSort( pageable, "RevisionNumber DESC" ) ).getContent().get( 0 ) );
     }
 
     @Override
     public void setShowPrivateComment(boolean showPrivate) {
-        showPrivateComments = showPrivate;
     }
 
     @Override
@@ -96,7 +88,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             if(instance.getQuestionItemUUID() != null) {
                 if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
                     Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
-                    instance.setQuestionItemRevision(rev.getRevisionNumber());
+                    instance.setQuestionItemRevision(rev.getRevisionNumber().get());
                     instance.setQuestionItem(rev.getEntity());
                 } else {
                     QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision()).getEntity();
@@ -104,7 +96,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
                 }
             }
             else
-                instance.setQuestionItemRevision(0);
+                instance.setQuestionItemRevision( 0 );
 
         } catch (Exception ex){
             LOG.error("removeQuestionItem",ex);
@@ -126,8 +118,8 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     @Override
     protected Revision<Integer, ControlConstruct> postLoadProcessing(Revision<Integer, ControlConstruct> instance) {
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRequiredRevisionNumber());
 
-        return new Revision<>(instance.getMetadata(), postLoadProcessing(instance.getEntity()));
+        return Revision.of(instance.getMetadata(), postLoadProcessing(instance.getEntity()));
     }
 }

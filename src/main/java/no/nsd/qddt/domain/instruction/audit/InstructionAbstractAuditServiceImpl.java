@@ -27,12 +27,12 @@ class InstructionAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,In
 
     @Override
     public Revision<Integer, Instruction> findLastChange(UUID uuid) {
-        return instructionAuditRepository.findLastChangeRevision(uuid);
+        return instructionAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     public Revision<Integer, Instruction> findRevision(UUID uuid, Integer revision) {
-        return instructionAuditRepository.findRevision(uuid, revision);
+        return instructionAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override

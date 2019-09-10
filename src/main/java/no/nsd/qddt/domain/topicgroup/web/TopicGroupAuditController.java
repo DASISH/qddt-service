@@ -1,21 +1,14 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;
-import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -50,32 +43,27 @@ public class TopicGroupAuditController {
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, TopicGroupRevisionJson>>> allProjects(
+    public Page<Revision<Integer, TopicGroupRevisionJson>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",
                     defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable) {
 
-            Page<Revision<Integer, TopicGroupRevisionJson>> revisions =
-                    service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable).map(this::topicRev2Json);
+           return service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable).map(this::topicRev2Json);
 
-        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
+
     }
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/allinclatest", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, TopicGroupRevisionJson>>> allIncludinglatest(
+    public Page<Revision<Integer, TopicGroupRevisionJson>> allIncludinglatest(
             @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",
-                    defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD,BASED_ON")
+            @RequestParam(value = "ignorechangekinds", defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD,BASED_ON")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable) {
 
-        Page<Revision<Integer, TopicGroupRevisionJson>> revisions =
-                service.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable).map(this::topicRev2Json);
-
-        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
+        return service.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable).map(this::topicRev2Json);
     }
 
     @ResponseBody
@@ -85,8 +73,6 @@ public class TopicGroupAuditController {
     }
 
     private Revision<Integer,TopicGroupRevisionJson> topicRev2Json(Revision<Integer, TopicGroup> revision){
-        return new Revision<>(
-                revision.getMetadata(),
-                new TopicGroupRevisionJson(revision.getEntity()));
+        return Revision.of(revision.getMetadata(),new TopicGroupRevisionJson(revision.getEntity()));
     }
 }

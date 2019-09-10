@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return questionItemRepository.exists(uuid);
+        return questionItemRepository.existsById(uuid);
     }
 
     @Override
@@ -106,7 +107,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<QuestionItem> instances) {
-        questionItemRepository.delete(instances);
+        questionItemRepository.deleteAll(instances);
     }
 
 
@@ -145,7 +146,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(rev.getRevisionNumber());
+                    instance.setResponseDomainRevision(rev.getRevisionNumber().get());
                     instance.setResponseDomain(rev.getEntity());
                 } else {
                     try {
@@ -174,7 +175,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem prePersistProcessing(QuestionItem instance){
 
-        Integer rev = null;
+        Optional<Integer> rev = null;
         if(instance.isBasedOn())
             rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
 
@@ -189,7 +190,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
             if (instance.getResponseDomainRevision() <= 0) {
                 try {
                     Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
+                    instance.setResponseDomainRevision(revnum.getRevisionNumber().get());
                 } catch (Exception ex) {
                     LOG.error("Set default RevisionNumber failed",ex);
                 }

@@ -1,20 +1,13 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
-import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -48,14 +41,14 @@ public class SurveyProgramAuditController {
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> allProjects(
+    public Page<Revision<Integer, SurveyProgram>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable) {
 
-        Page<Revision<Integer, SurveyProgram>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
-        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
+        return service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
+
     }
 
     @ResponseBody
@@ -65,8 +58,8 @@ public class SurveyProgramAuditController {
     }
 
 //    @RequestMapping(value = "/{id}/filteredlist", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-//    public HttpEntity<PagedResources<Revision<Integer, SurveyProgram>>> list(
-//            @PathVariable("id") UUID id, @PathVariable("changeKinds") String[]changes, Pageable pageable, PagedResourcesAssembler assembler){
+//    public Page<Revision<Integer, SurveyProgram>>> list(
+//            @PathVariable("id") UUID id, @PathVariable("changeKinds") String[]changes, Pageable pageable){
 //
 //        Collection<AbstractEntityAudit.ChangeKind> changeKinds = new ArrayList<>();
 //        for (String change:changes) {

@@ -32,13 +32,13 @@ class CategoryAuditServiceImpl  extends AbstractAuditFilter<Integer,Category> im
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Category> findLastChange(UUID uuid) {
-        return categoryAuditRepository.findLastChangeRevision(uuid);
+        return categoryAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Category> findRevision(UUID uuid, Integer revision) {
-        return  categoryAuditRepository.findRevision(uuid, revision);
+        return  categoryAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override

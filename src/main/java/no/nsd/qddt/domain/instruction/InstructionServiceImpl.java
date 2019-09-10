@@ -35,7 +35,7 @@ class InstructionServiceImpl implements InstructionService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return instructionRepository.exists(uuid);
+        return instructionRepository.existsById(uuid);
     }
 
     @Override
@@ -58,14 +58,14 @@ class InstructionServiceImpl implements InstructionService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        instructionRepository.delete(uuid);
+        instructionRepository.deleteById(uuid);
     }
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Instruction> instructions) {
-        instructionRepository.delete(instructions);
+        instructionRepository.deleteInBatch(instructions);
     }
 
 

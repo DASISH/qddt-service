@@ -41,7 +41,7 @@ public class OtherMaterialController {
 
 
     @RequestMapping(value="/files/{root}/{filename}", method=RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
-    @ResponseBody() public FileSystemResource getFile(@PathVariable("root") UUID root, @PathVariable("filename") String fileName ) throws IOException {
+    @ResponseBody() public FileSystemResource getFile(@PathVariable("root") UUID root, @PathVariable("filename") String fileName ) {
         return new FileSystemResource(service.getFile(root, fileName));
     }
 

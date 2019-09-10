@@ -49,7 +49,7 @@ class StudyServiceImpl implements StudyService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return studyRepository.exists(uuid);
+        return studyRepository.existsById(uuid);
     }
 
     @Override
@@ -77,13 +77,13 @@ class StudyServiceImpl implements StudyService {
     public void delete(UUID uuid) {
         if (studyRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
-        studyRepository.delete(uuid);
+        studyRepository.deleteById(uuid);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public void delete(List<Study> instances) {
-        studyRepository.delete(instances);
+        studyRepository.deleteAll(instances);
     }
 
     private Study prePersistProcessing(Study instance) {

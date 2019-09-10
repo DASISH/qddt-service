@@ -30,7 +30,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return authorRepository.exists(uuid);
+        return authorRepository.existsById(uuid);
     }
 
     @Override
@@ -46,12 +46,12 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void delete(UUID uuid) {
-        authorRepository.delete(uuid);
+        authorRepository.deleteById(uuid);
     }
 
     @Override
     public void delete(List<Author> instances) {
-        authorRepository.delete(instances);
+        authorRepository.deleteAll(instances);
     }
 
 

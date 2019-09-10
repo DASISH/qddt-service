@@ -6,11 +6,8 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -41,29 +38,27 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveSurveyWithAudit() {
         // Find all revisions based on the topicGroup id as a page
-        Page<Revision<Integer, TopicGroup>> revisions = topicGroupAuditService.findRevisions(
-                topicGroup.getId(), new PageRequest(0, 10));
+        var revisions = topicGroupAuditService.findRevisions(topicGroup.getId(), PageRequest.of(0, 10));
 
-        Revisions<Integer, TopicGroup> wrapper = new Revisions<>(revisions.getContent());
+        var  wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), topicGroup.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
     @Test
-    public void getAllRevisionsTest() throws Exception {
-        Page<Revision<Integer, TopicGroup>> revisions =
-                topicGroupAuditService.findRevisions(topicGroup.getId(), new PageRequest(0, 20));
+    public void getAllRevisionsTest() {
+        var revisions =topicGroupAuditService.findRevisions(topicGroup.getId(), PageRequest.of(0, 20));
 
         assertEquals("Excepted four revisions.",
                 revisions.getNumberOfElements(), 4);
     }
 
     @Test
-    public void getLastRevisionTest() throws Exception {
-        Revision<Integer, TopicGroup> revision = topicGroupAuditService.findLastChange(topicGroup.getId());
+    public void getLastRevisionTest()  {
+        var  revision = topicGroupAuditService.findLastChange(topicGroup.getId());
 
         assertEquals("Excepted initial TopicGroup object.",
                 revision.getEntity().hashCode(), topicGroup.hashCode());

@@ -51,13 +51,13 @@ public class ControlConstructAuditServiceTest extends AbstractAuditServiceTest {
 //        entity = instrumentQuestionservice.findOne(entity.getId());
 //
 //        // Find the last revision based on the entity id
-//        Revision<Integer, InstrumentQuestion> revision = instrumentQuestionAuditService.findLastChange(entity.getId());
+//        var  revision = instrumentQuestionAuditService.findLastChange(entity.getId());
 //
 //        // Find all revisions based on the entity id as a page
-//        Page<Revision<Integer, InstrumentQuestion>> revisions = instrumentQuestionAuditService.findRevisions(
-//                entity.getId(), new PageRequest(0, 10));
+//        var revisions = instrumentQuestionAuditService.findRevisions(
+//                entity.getId(), PageRequest.of(0, 10));
 //
-//        Revisions<Integer, InstrumentQuestion> wrapper = new Revisions<>(revisions.getContent());
+//        var  wrapper = Revisions.of(revisions.getContent());
 //
 //        assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), entity.hashCode());
 //        assertThat(revisions.getNumberOfElements(), is(4));
@@ -65,8 +65,8 @@ public class ControlConstructAuditServiceTest extends AbstractAuditServiceTest {
 //
 //    @Test
 //    public void getAllRevisionsTest() throws Exception {
-//        Page<Revision<Integer, InstrumentQuestion>> revisions =
-//                instrumentQuestionAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
+//        var revisions =
+//                instrumentQuestionAuditService.findRevisions(entity.getId(), PageRequest.of(0, 20));
 //
 //        assertEquals("Excepted four revisions.",
 //                revisions.getNumberOfElements(), 4);
@@ -74,7 +74,7 @@ public class ControlConstructAuditServiceTest extends AbstractAuditServiceTest {
 //
 //    @Test
 //    public void getLastRevisionTest() throws Exception {
-//        Revision<Integer, InstrumentQuestion> revision = instrumentQuestionAuditService.findLastChange(entity.getId());
+//        var  revision = instrumentQuestionAuditService.findLastChange(entity.getId());
 //
 //        assertEquals("Excepted initial ResponseDomain Object.",
 //                revision.getEntity().hashCode(), entity.hashCode());

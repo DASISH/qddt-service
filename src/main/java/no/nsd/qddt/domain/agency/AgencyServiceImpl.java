@@ -30,7 +30,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return agencyRepository.exists(uuid);
+        return agencyRepository.existsById(uuid);
     }
 
     @Override
@@ -50,7 +50,7 @@ class AgencyServiceImpl implements AgencyService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public List<Agency> save(List<Agency> instances) {
         List<Agency> target = new ArrayList<>();
-        agencyRepository.save(instances).forEach(target::add);
+        agencyRepository.saveAll(instances).forEach(target::add);
         return target;
     }
 
@@ -64,12 +64,12 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public void delete(UUID uuid) {
-        agencyRepository.delete(uuid);
+        agencyRepository.deleteById(uuid);
     }
 
     @Override
     public void delete(List<Agency> instances) {
-        agencyRepository.delete(instances);
+        agencyRepository.deleteAll(instances);
     }
 
     protected Agency prePersistProcessing(Agency instance) {

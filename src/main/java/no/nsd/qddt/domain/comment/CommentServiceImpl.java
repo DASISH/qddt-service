@@ -36,7 +36,7 @@ class CommentServiceImpl  implements CommentService  {
 
     @Override
     public boolean exists(UUID uuid) {
-        return commentRepository.exists(uuid);
+        return commentRepository.existsById(uuid);
     }
 
     @Override
@@ -61,14 +61,14 @@ class CommentServiceImpl  implements CommentService  {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public void delete(UUID uuid) {
-        commentRepository.delete(uuid);
+        commentRepository.deleteById(uuid);
         commentRepository.indexChildren( uuid );
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public void delete(List<Comment> instances) {
-        commentRepository.delete(instances);
+        commentRepository.deleteAll(instances);
     }
 
     protected Comment prePersistProcessing(Comment instance) {

@@ -98,12 +98,12 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
         parent = categoryService.save(parent);
 
-        Category category =  categoryRepository.findOne(parent.getId());
+        var category =  categoryRepository.findById(parent.getId());
 
         assertEquals("Should be equal", parent.hashCode(),category.hashCode());
         assertEquals("Should return 4",  4L,categoryService.count());
 
-        categoryRepository.delete(category);        // no deletions, have children ( CascadeType.PERSIST)
+        categoryRepository.delete(category.get());        // no deletions, have children ( CascadeType.PERSIST)
         assertEquals("Should return 4", 4L, categoryService.count());
 
     }
@@ -140,7 +140,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
         categoryService.save(rootCategory);
 
 
-//        Page<Category> rootList= categoryService.findBy(CategoryType.LIST, "%", new PageRequest(0, 20));
+//        Page<Category> rootList= categoryService.findBy(CategoryType.LIST, "%", PageRequest.of(0, 20));
 //        assertEquals("Skal bare være et element i listen",  1L,rootList.getTotalElements());
 
     }
@@ -162,7 +162,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setLabel("Transperson4").createCategory());
         categoryService.save(rootCategory);
 
-//        Page<Category> list = categoryService.find( "%nne%", new PageRequest(0, 20));
+//        Page<Category> list = categoryService.find( "%nne%", PageRequest.of(0, 20));
 //        assertEquals("Skal ha to elementer", 2L, list.getTotalElements());
 
     }
@@ -184,7 +184,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .setLabel("Transperson5").createCategory());
         categoryService.save(rootCategory);
 
-        Page<Category> rootList= categoryService.findBy("GROUP_ENTITY", "LIST", "%", "%", new PageRequest(0, 20));
+        Page<Category> rootList= categoryService.findBy("GROUP_ENTITY", "LIST", "%", "%", PageRequest.of(0, 20));
         assertEquals("Skal bare være et element i listen",  1L,rootList.getTotalElements());
     }
 
@@ -227,7 +227,7 @@ public class CategoryServiceTest extends AbstractServiceTest {
         root.getChildren().add(group);
         root = categoryService.save(root);
 
-        Page<Category> rootList= categoryService.findBy("GROUP_ENTITY", "LIST", "Kjønn%", "%", new PageRequest(0, 20));
+        Page<Category> rootList= categoryService.findBy("GROUP_ENTITY", "LIST", "Kjønn%", "%", PageRequest.of(0, 20));
 
         assertEquals("Should be 1 element in list",  1L,rootList.getTotalElements());
         assertEquals( root, rootList );

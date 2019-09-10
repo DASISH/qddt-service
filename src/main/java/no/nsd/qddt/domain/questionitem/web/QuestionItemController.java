@@ -9,12 +9,8 @@ import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,24 +55,21 @@ public class QuestionItemController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItemListJson>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public Page<QuestionItemListJson> getAll(Pageable pageable) {
 
-        Page<QuestionItemListJson> questionitems =
-                service.findAllPageable(pageable).map(QuestionItemListJson::new);
-        return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
+        return service.findAllPageable(pageable).map(QuestionItemListJson::new);
+
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<QuestionItemListJson>>  getBy(@RequestParam(value = "name",defaultValue = "") String name,
+    public Page<QuestionItemListJson>  getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                                    @RequestParam(value = "question",defaultValue = "") String question,
                                                                    @RequestParam(value = "responseDomainName",defaultValue = "") String responseName,
-                                                                   Pageable pageable, PagedResourcesAssembler assembler) {
+                                                                   Pageable pageable) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         try {
-            Page<QuestionItemListJson> questionitems
-                = service.findByNameOrQuestionOrResponseName(name, question, responseName, pageable).map(QuestionItemListJson::new);
-            return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
+            return service.findByNameOrQuestionOrResponseName(name, question, responseName, pageable).map(QuestionItemListJson::new);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             throw ex;

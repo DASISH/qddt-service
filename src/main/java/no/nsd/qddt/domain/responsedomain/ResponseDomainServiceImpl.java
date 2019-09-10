@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
@@ -47,7 +48,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return responseDomainRepository.exists(uuid);
+        return responseDomainRepository.existsById(uuid);
     }
 
     @Override
@@ -83,13 +84,13 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        responseDomainRepository.delete(uuid);
+        responseDomainRepository.deleteById(uuid);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<ResponseDomain> instances) {
-        responseDomainRepository.delete(instances);
+        responseDomainRepository.deleteAll(instances);
     }
 
 
@@ -97,7 +98,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
         ResponseDomainFactory rdf = new ResponseDomainFactory();
         if (instance.isBasedOn()) {
-            Integer rev = auditService.findLastChange( instance.getId() ).getRevisionNumber();
+            Optional<Integer> rev = auditService.findLastChange( instance.getId() ).getRevisionNumber();
             instance = rdf.copy( instance, rev );
         } else if (instance.isNewCopy()) {
             instance = rdf.copy( instance, null );

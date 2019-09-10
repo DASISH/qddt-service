@@ -15,10 +15,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -40,13 +37,13 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, SurveyProgram> findLastChange(UUID uuid) {
-        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, SurveyProgram> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(surveyProgramAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(surveyProgramAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -76,7 +73,7 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,
     @Override
     protected Revision<Integer, SurveyProgram> postLoadProcessing(Revision<Integer, SurveyProgram> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
         postLoadProcessing(instance.getEntity());
         return instance;
     }

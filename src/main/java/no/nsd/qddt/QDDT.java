@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
@@ -17,7 +17,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 //import org.springframework.boot.context.web.SpringBootServletInitializer;
 
@@ -37,58 +36,20 @@ public class QDDT extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(QDDT.class);
-        Iterable<ObjectMapper> objectMappers = ctx.getBeansOfType(ObjectMapper.class)
-            .values();
+        Iterable<ObjectMapper> objectMappers = ctx.getBeansOfType(ObjectMapper.class).values();
 
         objectMappers.forEach(mapper -> mapper.registerModule(new Hibernate5Module()));
-
-//        Squiggly.init(objectMappers, new RequestSquigglyContextProvider() {
-//            @Override
-//            public void serializeAsIncludedField(Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer) throws Exception {
-//                if (isFilteringEnabled()) {
-//                    Object value = writer.getMember().getValue(pojo);
-//
-//                    if (value instanceof PersistentCollection) {
-//                        ((PersistentCollection) value).forceInitialization();
-//                    }
-//                }
-//
-//                super.serializeAsIncludedField(pojo, jgen, provider, writer);
-//            }
-//
-//            @Override
-//            protected String customizeFilter(String filter, HttpServletRequest request, Class beanClass) {
-//
-//                if (filter != null && Page.class.isAssignableFrom(beanClass)) {
-//                    filter = "**,content[" + filter + "]";
-//                }
-//
-//                return filter;
-//            }
-//        });
-//
-//
-//        ObjectMapper objectMapper = Iterables.getFirst(objectMappers, null);
-//
-//        // Enable Squiggly for Jackson message converter
-//        if (objectMapper != null) {
-//            for (MappingJackson2HttpMessageConverter converter : ctx.getBeansOfType(MappingJackson2HttpMessageConverter.class).values()) {
-//                converter.setObjectMapper(objectMapper);
-//            }
-//        }
         System.out.println("QDDT ready");
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder applicationBuilder) {
         return applicationBuilder.sources(QDDT.class);
-
     }
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter messageConverter =
-                new MappingJackson2HttpMessageConverter();
+        var messageConverter = new MappingJackson2HttpMessageConverter();
 
         messageConverter.setPrettyPrint(true);
         messageConverter.setPrefixJson(false);
@@ -100,17 +61,9 @@ public class QDDT extends SpringBootServletInitializer {
         return messageConverter;
     }
 
-//    @Bean
-//    public FilterRegistrationBean squigglyRequestFilter() {
-//        FilterRegistrationBean filter = new FilterRegistrationBean();
-//        filter.setFilter(new SquigglyRequestFilter());
-//        filter.setOrder(1);
-//        return filter;
-//    }
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").allowedOrigins(origin);

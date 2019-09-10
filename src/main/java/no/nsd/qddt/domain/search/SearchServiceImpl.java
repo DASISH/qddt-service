@@ -26,7 +26,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public QddtUrl findPath(UUID id) {
-        return repository.findOne( id );
+        return repository.findById( id ).get();
     }
 
     @Override

@@ -35,7 +35,7 @@ class UniverseServiceImpl implements UniverseService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return universeRepository.exists(uuid);
+        return universeRepository.existsById(uuid);
     }
 
     @Override
@@ -63,14 +63,14 @@ class UniverseServiceImpl implements UniverseService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        universeRepository.delete(uuid);
+        universeRepository.deleteById(uuid);
     }
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<Universe> universes) {
-        universeRepository.delete(universes);
+        universeRepository.deleteInBatch(universes);
     }
 
 

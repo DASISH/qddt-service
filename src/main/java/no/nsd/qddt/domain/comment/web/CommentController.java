@@ -7,11 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,10 +56,9 @@ public class CommentController {
     @SuppressWarnings("unchecked")
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/page/by-owner/{ownerId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<CommentJsonEdit>> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable, PagedResourcesAssembler assembler) {
+    public Page<CommentJsonEdit> get(@PathVariable("ownerId")UUID ownerId, Pageable pageable) {
 
-        Page<CommentJsonEdit> comments = service.findAllByOwnerIdPageable(ownerId, true, pageable).map(CommentJsonEdit::new);
-        return new ResponseEntity<>(assembler.toResource(comments), HttpStatus.OK);
+         return service.findAllByOwnerIdPageable(ownerId, true, pageable).map(CommentJsonEdit::new);
     }
 
 

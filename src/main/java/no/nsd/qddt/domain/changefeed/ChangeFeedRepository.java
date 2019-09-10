@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChangeFeedRepository extends JpaRepository<ChangeFeed,ChangeFeedKey> {
 
-    Page<ChangeFeed> findByNameLikeIgnoreCaseOrRefChangeKindLikeIgnoreCaseOrRefKindLikeIgnoreCase
-        (String name, String changeKind, String kind, Pageable pageable);
+//    Page<ChangeFeed> findByNameLikeIgnoreCaseOrRefChangeKindLikeIgnoreCaseOrRefKindLikeIgnoreCase
+//        (String name, String changeKind, String kind, Pageable pageable);
 
 
     @Query(value = "SELECT cl FROM ChangeFeed cl " +
