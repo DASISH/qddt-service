@@ -1,18 +1,19 @@
 package no.nsd.qddt.utils;
 
-import org.apache.commons.codec.binary.Base64;
+import no.nsd.qddt.config.AccessToken;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * Contain all the stuff needed to run unit tests towards the API.
@@ -83,9 +84,8 @@ public class RestfulTestUtils {
                         "&scope=write" +
                         "&redirect_uri=http://localhost:3000/"),
                 HttpMethod.POST,
-                new HttpEntity<String>(createBasicHeader("client", "password")),
-                OAuth2AccessToken.class
-        ).getBody().getValue();
+                new HttpEntity<String>(createBasicHeader("client", "password")), AccessToken.class
+        ).getBody().toString();
     }
 
     /**
@@ -100,8 +100,8 @@ public class RestfulTestUtils {
         return new HttpHeaders(){
             {
                 String auth = username + ":" + password;
-                byte[] encodedAuth = Base64.encodeBase64(
-                        auth.getBytes(Charset.forName("US-ASCII")));
+                byte[] encodedAuth = Base64.getEncoder().encode(
+                    auth.getBytes( StandardCharsets.US_ASCII ));
                 String authHeader = "Basic " + new String(encodedAuth);
                 set("Authorization", authHeader);
             }

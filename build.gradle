@@ -1,61 +1,36 @@
-buildscript {
-    repositories {
-        maven { url "http://repo.spring.io/libs-release" }
-        maven { url "https://plugins.gradle.org/m2/" }
-        mavenCentral()
-        jcenter()
-    }
-}
-
 plugins {
-    id "org.springframework.boot" version "2.1.7.RELEASE"
-    id "org.asciidoctor.convert" version "1.5.8.1"
-    id "org.hidetake.ssh" version "2.2.0"
+    id 'org.springframework.boot' version '2.1.8.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+    id 'org.asciidoctor.jvm.convert' version '2.3.0'
 }
-
-
-
-apply plugin: 'java'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'idea'
-
-
-idea {
-    project {
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}
-
-
 group = 'no.nsd'
-description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
-
-jar {
-    baseName = 'QDDT'
-}
+version = '1.0.5'
+sourceCompatibility = '11'
 
 repositories {
-    mavenLocal()
     mavenCentral()
-    maven { url "http://repo.spring.io/libs-release" }
 }
 
 dependencies {
 
-    compile("org.springframework.boot:spring-boot-starter-jetty")
+//    runtime("org.springframework.boot:spring-boot-properties-migrator")
+
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    compile("org.springframework.boot:spring-boot-starter-json")
+
 
 //    compile("org.springframework.hateoas:spring-hateoas")
-    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.16.RELEASE")
+    compile("org.springframework.security.oauth:spring-security-oauth2:2.3.6.RELEASE")
 //    compile("org.springframework.cloud:spring-cloud-security")
-//    compile("org.jadira.usertype:usertype.extended")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5")
-//    compile("com.github.bohnman:squiggly-filter-jackson:1.3.11")
+//    compile("org.jadira.usertype:usertype.extended")//
+//    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+//    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5")
     compile("net.logstash.logback:logstash-logback-encoder:6.2")
 
     compile("org.springframework.data:spring-data-envers")
@@ -66,9 +41,9 @@ dependencies {
     compile("org.hibernate:hibernate-envers")
     compile("org.hibernate.validator:hibernate-validator")
 
-    compile("joda-time:joda-time")
-    compile("javax.json:javax.json-api:1.1.2")
-    compile("org.glassfish:javax.json:1.1.2")
+//    compile("joda-time:joda-time")
+//    compile("javax.json:javax.json-api:1.1.2")
+//    compile("org.glassfish:javax.json:1.1.2")
     compile("io.jsonwebtoken:jjwt:0.9.0")
 
     compile("org.postgresql:postgresql:42.2.1")
@@ -81,14 +56,14 @@ dependencies {
 //    compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
 //    compile group: 'javax.activation', name: 'activation', version: '1.1.1'
 
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
+
     testCompile(
-            "junit:junit",
             "org.springframework.boot:spring-boot-starter-test",
             "org.springframework.security:spring-security-test",
-            "com.jayway.jsonpath:json-path",
             "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.0.RELEASE",
-    )
+            "com.jayway.jsonpath:json-path",
+            "junit:junit",
+            "com.h2database:h2")
 }
 
 asciidoctor {

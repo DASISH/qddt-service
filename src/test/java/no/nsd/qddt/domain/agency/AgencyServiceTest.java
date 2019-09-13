@@ -39,7 +39,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testCount() throws Exception {
+    public void testCount()  {
         super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Test Agency One");
@@ -58,7 +58,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testExists() throws Exception {
+    public void testExists()  {
         super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");
@@ -68,7 +68,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testFindOne() throws Exception {
+    public void testFindOne()  {
         super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");
@@ -78,7 +78,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testSave() throws Exception {
+    public void testSave()  {
         super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");
@@ -88,7 +88,7 @@ public class AgencyServiceTest extends AbstractServiceTest {
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
-    public void testDelete() throws Exception {
+    public void testDelete()  {
         super.getBeforeSecurityContext();
         Agency agency = new Agency();
         agency.setName("Existing agency");

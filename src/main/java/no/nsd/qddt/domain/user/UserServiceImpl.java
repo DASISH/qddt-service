@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -138,7 +138,7 @@ class UserServiceImpl implements UserService {
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('USER')")
-    public String setPassword(Password instance) {
+    public String setPassword(Password instance) throws AuthenticationException {
         LOG.info("old " + instance.getOldPassword());
 
         User user = userRepository.findById( instance.getId() )
@@ -147,7 +147,7 @@ class UserServiceImpl implements UserService {
         LOG.info("old on server " + user.getPassword());
 
         if (!passwordEncoder().matches( instance.getOldPassword(), user.getPassword() )) {
-            throw new UserDeniedAuthorizationException( "Password mismatch ()" );
+            throw new AuthenticationException( "Password mismatch ()" );
         }
 
         userRepository.setPassword( user.getId(), passwordEncoder().encode( instance.getPassword() ) );

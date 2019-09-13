@@ -87,10 +87,10 @@ public class AuthController extends AbstractController {
         this.userService = userService;
     }
 
-    @Bean
-    private PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    private PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     /**
      * Adds new user and returns authentication token

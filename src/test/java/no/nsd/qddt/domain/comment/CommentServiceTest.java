@@ -25,7 +25,7 @@ public class CommentServiceTest  extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testCount() throws Exception {
+    public void testCount() {
         Comment comment = new Comment();
         comment.setComment("Test Comment One");
         commentService.save(comment);
@@ -43,7 +43,7 @@ public class CommentServiceTest  extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testExists() throws Exception {
+    public void testExists() {
         Comment comment = new Comment();
         comment.setComment("Existing comment");
         comment = commentService.save(comment);
@@ -52,7 +52,7 @@ public class CommentServiceTest  extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testFindOne() throws Exception {
+    public void testFindOne() {
         Comment comment = new Comment();
         comment.setComment("Existing comment");
         comment = commentService.save(comment);
@@ -61,7 +61,7 @@ public class CommentServiceTest  extends AbstractServiceTest {
 
     @Test
     @Override
-    public void testSave() throws Exception {
+    public void testSave() {
         Comment comment = new Comment();
         comment.setComment("Existing comment");
         assertNotNull("Comment should be saved", commentService.save(comment));
@@ -71,7 +71,7 @@ public class CommentServiceTest  extends AbstractServiceTest {
 
     @Test(expected = ResourceNotFoundException.class)
     @Override
-    public void testDelete() throws Exception {
+    public void testDelete() {
         Comment comment = new Comment();
         comment.setComment("Existing comment");
         comment = commentService.save(comment);

@@ -34,44 +34,6 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
     public void setup() {
         super.setup();
         super.getBeforeSecurityContext().createSecurityContext();
-//        category = new Category();
-//        category.setLabel("Test category");
-//        category.setName("A test category");
-//        category = categoryService.save(category);
-//
-//
-//        Category rootCategory = new CategoryBuilder().setName("ROOT")
-//                .setHierarchy(HierarchyLevel.ROOT_ENTITY)
-//                .setType(CategoryType.MIXED)
-//                .setLabel("Root").createCategory();
-//        Category group = new CategoryBuilder().setName("GROUP1")
-//                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-//                .setType(CategoryType.LIST)
-//                .setLabel("Gruppe1").createCategory();
-//        group.addChild(new CategoryBuilder().setName("ENTITY1")
-//                .setType(CategoryType.CODE)
-//                .setLabel("ent1").createCategory());
-//        group.addChild(new CategoryBuilder().setName("ENTITY2")
-//                .setType(CategoryType.CODE)
-//                .setLabel("ent2").createCategory());
-//        rootCategory.addChild(group);
-//
-//        group = new CategoryBuilder().setName("GROUP2")
-//                .setHierarchy(HierarchyLevel.GROUP_ENTITY)
-//                .setType(CategoryType.LIST)
-//                .setLabel("Grupp2").createCategory();
-//        group.addChild(new CategoryBuilder().setName("ENTITY3")
-//                .setType(CategoryType.LIST)
-//                .setLabel("1").createCategory());
-//        group.addChild(new CategoryBuilder().setName("ENTITY4")
-//                .setType(CategoryType.LIST)
-//                .setLabel("2").createCategory());
-//        group.addChild(new CategoryBuilder().setName("ENTITY5")
-//                .setType(CategoryType.LIST)
-//                .setLabel("3").createCategory());
-//        rootCategory.addChild(group);
-//        categoryService.save(rootCategory);
-
         super.getBeforeSecurityContext().destroySecurityContext();
     }
 

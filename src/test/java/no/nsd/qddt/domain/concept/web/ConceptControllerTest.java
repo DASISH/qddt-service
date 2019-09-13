@@ -62,7 +62,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
 
 
     @Test
-    public void testGetAudit() throws Exception {
+    public void testGetAudit()  {
 //        List<> test = entityAuditService.test(entity.getId(),(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT));
 //        mvc.perform(get("/audit/concept/"+entity.getId()).header("Authorization", "Bearer " + accessToken))
 //                .andExpect(status().isOk());

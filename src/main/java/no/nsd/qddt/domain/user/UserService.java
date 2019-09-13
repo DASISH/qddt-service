@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.UUID;
 
 /**
@@ -24,6 +25,6 @@ public interface UserService extends BaseService<User,UUID> {
 
     Page<User> getByName(String name, Pageable pageable);
 
-    String setPassword(Password instance);
+    String setPassword(Password instance) throws AuthenticationException;
 
 }

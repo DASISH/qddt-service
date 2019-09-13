@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.UUID;
 
 /**
@@ -62,7 +63,7 @@ public class UserController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/resetpassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String resetPassword(@RequestBody Password instance) {
+    public String resetPassword(@RequestBody Password instance) throws AuthenticationException {
         return userService.setPassword(instance);
     }
 

@@ -30,7 +30,6 @@ public final class AnnotatingHttpFirewall extends StrictHttpFirewall
     public AnnotatingHttpFirewall()
     {
         super();
-        return;
     }
 
     /**
@@ -75,10 +74,7 @@ public final class AnnotatingHttpFirewall extends StrictHttpFirewall
             return new FirewalledRequest(request)
             {
                 @Override
-                public void reset()
-                {
-                    return;
-                }
+                public void reset() {}
             };
         }
     }

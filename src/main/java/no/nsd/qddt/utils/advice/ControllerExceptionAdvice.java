@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
-import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,14 +71,14 @@ public class ControllerExceptionAdvice {
 
 
     /**
-     * Handle all exceptions of type {@link UserDeniedAuthorizationException}
+     * Handle all exceptions of type {@link AuthorizationServiceException}
      * when they occur from methods executed from the controller.
      * @param req servlet request
      * @param e general exception
      * @return a {@link no.nsd.qddt.exception.ControllerAdviceExceptionMessage} object
      */
     @ResponseStatus(HttpStatus.NOT_MODIFIED)
-    @ExceptionHandler(UserDeniedAuthorizationException.class)
+    @ExceptionHandler(AuthorizationServiceException.class)
     @ResponseBody public ControllerAdviceExceptionMessage handleDeniedAuthorization(HttpServletRequest req, Exception e) {
         ControllerAdviceExceptionMessage message = new ControllerAdviceExceptionMessage(
                 req.getRequestURL().toString(),

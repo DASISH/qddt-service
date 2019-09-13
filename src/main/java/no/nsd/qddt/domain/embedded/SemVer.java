@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.embedded;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-
 /**
  * http://semver.org/
  * MAJOR version when you make incompatible API changes,
@@ -12,7 +10,6 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
  * @author Stig Norland
  */
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SemVer {
     //    implements UserType {
 
