@@ -1,9 +1,9 @@
-package no.nsd.qddt.domain.questionitem.web;
+package no.nsd.qddt.domain.questionitem2.web;
 
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.QuestionItemService;
-import no.nsd.qddt.domain.questionitem.json.QuestionItemJsonEdit;
-import no.nsd.qddt.domain.questionitem.json.QuestionItemListJson;
+import no.nsd.qddt.domain.questionitem2.QuestionItem;
+import no.nsd.qddt.domain.questionitem2.QuestionItemService;
+import no.nsd.qddt.domain.questionitem2.json.QuestionItemJsonEdit;
+import no.nsd.qddt.domain.questionitem2.json.QuestionItemListJson;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;

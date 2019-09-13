@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.parentref;
 
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionitem2.QuestionItem;
 
 import java.util.*;
 

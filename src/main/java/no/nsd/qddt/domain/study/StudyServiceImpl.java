@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.study;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem2.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;

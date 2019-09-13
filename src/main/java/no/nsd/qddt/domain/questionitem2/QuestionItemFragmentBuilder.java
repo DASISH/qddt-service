@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.questionitem;
+package no.nsd.qddt.domain.questionitem2;
 
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;

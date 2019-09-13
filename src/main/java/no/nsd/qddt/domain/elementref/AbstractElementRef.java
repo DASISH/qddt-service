@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.IEntityAuditXmlRef;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionitem2.QuestionItem;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 

@@ -2,8 +2,8 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem2.QuestionItem;
+import no.nsd.qddt.domain.questionitem2.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;

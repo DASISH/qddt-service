@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.questionitem.QuestionItemFragmentBuilder;
+import no.nsd.qddt.domain.questionitem2.QuestionItemFragmentBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 import java.util.List;
