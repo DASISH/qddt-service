@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.questionitem2.json;
+package no.nsd.qddt.domain.questionitem.json;
 
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.questionitem2.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 

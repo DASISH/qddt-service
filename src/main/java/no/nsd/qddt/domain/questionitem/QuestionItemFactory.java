@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.questionitem2;
+package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.IEntityFactory;
 

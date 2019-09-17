@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.questionitem2.web;
+package no.nsd.qddt.domain.questionitem.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.questionitem2.QuestionItem;
-import no.nsd.qddt.domain.questionitem2.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

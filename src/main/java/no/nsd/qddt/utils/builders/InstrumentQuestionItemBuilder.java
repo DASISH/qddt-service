@@ -2,7 +2,7 @@ package no.nsd.qddt.utils.builders;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.questionitem2.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 
 /**
  * @author Dag Østgulen Heradstveit

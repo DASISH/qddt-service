@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
-import no.nsd.qddt.domain.questionitem2.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;

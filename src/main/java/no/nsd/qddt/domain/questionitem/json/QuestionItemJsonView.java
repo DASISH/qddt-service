@@ -1,7 +1,7 @@
-package no.nsd.qddt.domain.questionitem2.json;
+package no.nsd.qddt.domain.questionitem.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
-import no.nsd.qddt.domain.questionitem2.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
 
 /**

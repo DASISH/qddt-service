@@ -137,14 +137,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
 
     @NotAudited
     @Transient
-    // @JsonView(View.Edit.class)
+    @JsonSerialize
     @OrderBy("owner_idx desc")
     @OrderColumn(name="owner_idx")
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
 
-    // @JsonView(View.Simple.class)
     @Transient
     @JsonSerialize
     @JsonDeserialize

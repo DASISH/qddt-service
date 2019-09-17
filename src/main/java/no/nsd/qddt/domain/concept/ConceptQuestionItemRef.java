@@ -10,7 +10,7 @@ import org.hibernate.envers.Audited;
 import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRefTyped;
-import no.nsd.qddt.domain.questionitem2.QuestionItem;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 
 /**
  * @author Stig Norland

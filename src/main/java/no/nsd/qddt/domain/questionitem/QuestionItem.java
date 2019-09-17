@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.questionitem2;
+package no.nsd.qddt.domain.questionitem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
