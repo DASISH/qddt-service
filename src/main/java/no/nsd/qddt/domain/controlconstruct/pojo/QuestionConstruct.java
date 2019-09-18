@@ -50,10 +50,10 @@ public class QuestionConstruct  extends ControlConstruct {
     @Column(name = "questionitem_revision")
     private Integer questionItemRevision;
 
-    @Column(name = "question_name")
+    @Column(name = "question_name", length = 25)
     private String questionName;
 
-    @Column(name = "question_text")
+    @Column(name = "question_text", length = 500 )
     private String questionText;
 
     //------------- End QuestionItem revision early bind "hack"------------------
