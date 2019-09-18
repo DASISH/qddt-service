@@ -44,7 +44,7 @@ public class QuestionConstruct  extends ControlConstruct {
     @Column(name="questionitem_id")
     private UUID questionItemUUID;
 
-    @Column(name = "description")
+    @Column(name = "description",length = 1500)
     private String description;
 
     @Column(name = "questionitem_revision")
