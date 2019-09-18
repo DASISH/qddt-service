@@ -132,7 +132,8 @@ public class QuestionConstruct  extends ControlConstruct {
      * @param questionName the questionName to set
      */
     public void setQuestionName(String questionName) {
-        this.questionName = questionName;
+        int min = Integer.min( questionName.length(), 24);
+        this.questionName = questionName.substring(0,min);
     }
 
     /**
@@ -146,7 +147,8 @@ public class QuestionConstruct  extends ControlConstruct {
      * @param questionText the questionText to set
      */
     public void setQuestionText(String questionText) {
-        this.questionText = questionText;
+        int min = Integer.min( questionName.length(), 500);
+        this.questionText = questionText.substring( 0,min );
     }
 
     public List<Universe> getUniverse() {
