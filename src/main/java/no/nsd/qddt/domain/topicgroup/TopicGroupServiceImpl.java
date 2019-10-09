@@ -175,7 +175,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            instance.getTopicQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
+            instance.getTopicQuestionItems().forEach( qiLoader::fill );
 
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 LOG.debug("PDF -> fetching  concepts ");

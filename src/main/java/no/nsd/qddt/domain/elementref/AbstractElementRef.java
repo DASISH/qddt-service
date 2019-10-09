@@ -82,6 +82,8 @@ public abstract class AbstractElementRef implements IElementRef {
         return name;
     }
     public void setName(String name) {
+        if (name.length() > 255)
+            name = name.substring( 0,250 ) + "...";
         this.name = name;
     }
 
@@ -106,10 +108,12 @@ public abstract class AbstractElementRef implements IElementRef {
     }
     public void setElement(Object element) {
         this.element = element;
+        setValues();
     }
 
 
     public AbstractElementRef setValues() {
+        if (getElement() == null) return this;
         if (getElement() instanceof QuestionItem)
             setName( getElement().getName() + " - " + ((QuestionItem) element).getQuestion() );
         else

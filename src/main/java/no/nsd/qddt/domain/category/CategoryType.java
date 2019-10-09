@@ -10,15 +10,15 @@ public enum CategoryType {
     /**
      *  single USER INPUT Category,
      */
-    DATETIME("DateTime","single USER INPUT Category, input date and time","NOT_IMPLEMENTED:blankIsMissingValue |regExp"),
+    DATETIME("DateTime","Single USER INPUT Category, input date and time","NOT_IMPLEMENTED:blankIsMissingValue |regExp"),
     /*
         single USER INPUT Category, input one line of text    ,NOT_IMPLEMENTED: blankIsMissingValue |maxLength |minLength |regExp
      */
-    TEXT("Text","single USER INPUT Category, input one line of text",""),
+    TEXT("Text","Single USER INPUT Category, input one line of text",""),
     /*
         single USER INPUT Category, input is a number      ,NOT_IMPLEMENTED: blankIsMissingValue |format |scale |decimalPositions |interval
      */
-    NUMERIC("Numeric","single USER INPUT Category, input is a number",""),
+    NUMERIC("Numeric","Single USER INPUT Category, input is a number",""),
     /*
         True or false. Can be represented by 1 and 0 correspondingly.
      */
@@ -30,11 +30,11 @@ public enum CategoryType {
     /*
         Code: single Category, input is CODE/VALUE                  ,
      */
-    CATEGORY("Code","single Category, input is CODE/VALUE","NOT_IMPLEMENTED: blankIsMissingValue"),
+    CATEGORY("Code","Single Category, input is CODE/VALUE","NOT_IMPLEMENTED: blankIsMissingValue"),
     /*
         Missing values: CategoryList/CodeList that are used as missingvalues.
      */
-    MISSING_GROUP("CodeList Missing values","CategoryList/CodeList that are used as missingvalues",""),
+    MISSING_GROUP("Missing values","CategoryList/CodeList that are used as missingvalues",""),
     /*
         List: CategoryList/CodeList                                 ,NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue
      */

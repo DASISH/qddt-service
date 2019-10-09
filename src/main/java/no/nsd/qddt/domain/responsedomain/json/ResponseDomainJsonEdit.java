@@ -51,7 +51,7 @@ public class ResponseDomainJsonEdit  extends AbstractJsonEdit {
         List<Category> leafs = getLeafs( responseDomain.getManagedRepresentation() );
         int size = leafs.size();
         anchorLabel = managedRepresentation.getChildren().stream()
-            .map( c ->  (size > 2 && c.getName().length() > 12 ) ? c.getName().substring( 0,9 )+"..": c.getName() )
+            .map( c ->  (size > 2 && c.getLabel().length() > 12 ) ? c.getLabel().substring( 0,9 )+"..": c.getLabel() )
             .collect( Collectors.joining(" + ") );
         setResponseCardinality(responseDomain.getResponseCardinality());
         setResponseKind(responseDomain.getResponseKind());

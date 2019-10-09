@@ -83,7 +83,7 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public Category save(Category instance) {
         if (_codes.size() >0)
@@ -121,12 +121,12 @@ class CategoryServiceImpl implements CategoryService {
 
             instance.getChildren().forEach(c-> prePersistProcessing(c));
 
-
             if (instance.getId() == null) {
                 Code c = instance.getCode();
                 instance = repository.save( instance );
                 instance.setCode( c );
             }
+
             return instance;
         }catch (Exception e) {
             LOG.error(e.getClass().getName(), e );

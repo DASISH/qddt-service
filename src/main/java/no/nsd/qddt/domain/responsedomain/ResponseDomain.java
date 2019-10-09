@@ -206,12 +206,12 @@ public class ResponseDomain extends AbstractEntityAudit  {
         if (responseCardinality == null)
             setResponseCardinality(managedRepresentation.getInputLimit());
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
-            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(Category::getName).collect(Collectors.joining(" + "))));
+            setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(Category::getLabel).collect(Collectors.joining(" + "))));
         }
-        managedRepresentation.setLabel(getName());
-        managedRepresentation.setName(  managedRepresentation.getCategoryType().getName() +  ":" +  ((getId() != null) ? getId().toString() : Integer.toString( new Random().nextInt() )));
+        managedRepresentation.setLabel( getName() );
+        managedRepresentation.setName(  managedRepresentation.getCategoryType().getName() +  "[" +  ((getId() != null) ? getId().toString() : Integer.toString( new Random().nextInt() )) + "]");
         if (managedRepresentation.getHierarchyLevel() == HierarchyLevel.GROUP_ENTITY)
-        managedRepresentation.setDescription(managedRepresentation.getChildren().stream().map(Category::getName).collect(Collectors.joining(", ")));
+        managedRepresentation.setDescription(managedRepresentation.getChildren().stream().map(Category::getLabel).collect(Collectors.joining(", ")));
         managedRepresentation.setChangeComment(getChangeComment());
         managedRepresentation.setChangeKind(getChangeKind());
         if(!getVersion().isModified()) {

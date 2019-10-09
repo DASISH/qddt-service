@@ -69,6 +69,7 @@ public class CategoryJsonEdit extends AbstractJsonEdit {
         this.label = label;
     }
 
+
     public String getDescription() {
         return description;
     }

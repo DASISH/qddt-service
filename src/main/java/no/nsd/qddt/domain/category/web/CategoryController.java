@@ -61,7 +61,7 @@ public class CategoryController {
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<CategoryJsonEdit>>  getBy(@RequestParam(value = "level", defaultValue = "") String level,
                                                        @RequestParam(value = "categoryKind",defaultValue = "") String categoryKind,
-                                                       @RequestParam(value = "name",defaultValue = "") String name,
+                                                       @RequestParam(value = "label",defaultValue = "") String name,
                                                        @RequestParam(value = "description",defaultValue = "") String description,
                                                        Pageable pageable, PagedResourcesAssembler<CategoryJsonEdit> assembler) {
 

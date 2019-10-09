@@ -59,12 +59,16 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, String anchor, Pageable pageable) {
-        pageable = defaultOrModifiedSort(pageable, "name ASC");
         if (name.isEmpty()  &&  description.isEmpty() && question.isEmpty() && anchor.isEmpty()) {
             name = "%";
         }
-//        likeify(anchor),
-        return  responseDomainRepository.findByQuery(responseKind.toString(), likeify(name),likeify(description),likeify(question), likeify( anchor ), pageable)
+        return  responseDomainRepository.findByQuery(
+                responseKind.toString(),
+                likeify(name),
+                likeify(description),
+                likeify(question),
+                likeify(anchor),
+                defaultOrModifiedSort(pageable, "name ASC"))
             .map( this::postLoadProcessing );
     }
 
@@ -110,6 +114,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 //        if (instance.getManagedRepresentation().getId() == null) {
         instance.beforeUpdate();
         instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
+        instance.getManagedRepresentation().setChangeKind( instance.getChangeKind() );
         instance.setManagedRepresentation(
             categoryService.save(
                 instance.getManagedRepresentation()));

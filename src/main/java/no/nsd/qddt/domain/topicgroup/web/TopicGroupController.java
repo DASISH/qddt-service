@@ -145,10 +145,6 @@ public class TopicGroupController extends AbstractController {
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex){
             LOG.error("addQuestionItem",ex);
-//            StackTraceFilter.filter(ex.getStackTrace()).stream()
-//                    .map(a->a.toString())
-//                    .forEach(LOG::info);
-
             return null;
         }
     }
@@ -164,9 +160,6 @@ public class TopicGroupController extends AbstractController {
             return new TopicGroupJson(service.save(topicGroup));
         } catch (Exception ex) {
             LOG.error("removeQuestionItem",ex);
-//            StackTraceFilter.filter(ex.getStackTrace()).stream()
-//                    .map(a->a.toString())
-//                    .forEach(LOG::info);
             return new TopicGroupJson(topicGroup);
         }
     }

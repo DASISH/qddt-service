@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
+import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;

@@ -18,6 +18,8 @@ public class ChangeFeedKey implements Serializable {
     @Column(name = "ref_rev")
     protected Integer refRev;
 
+    protected ActionKind refAction;
+
     public ChangeFeedKey() {}
 
     public ChangeFeedKey(UUID refId, Integer refRev) {

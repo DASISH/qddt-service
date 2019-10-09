@@ -55,7 +55,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     private Code code;
 
     @ManyToMany(fetch = FetchType.EAGER)
-//    @Cascade( {org.hibernate.annotations.CascadeType.SAVE_UPDATE} )
     @OrderColumn(name="category_idx")
     private List<Category> children = new ArrayList<>();
 
@@ -157,8 +156,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     public void setLabel(String label) {
         this.label = label;
-        if (StringTool.IsNullOrTrimEmpty(super.getName()))
-            setName(label.toUpperCase());
     }
 
     /*
@@ -167,6 +164,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
    Note that comparison of categories is done using the content of description.
     */
     public String getDescription() {
+        if (StringTool.IsNullOrEmpty( description ))
+            description = getCategoryType().getName();
         return StringTool.CapString(description);
     }
 

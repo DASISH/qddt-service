@@ -21,6 +21,8 @@ public class ManagedRepresentationJsonView {
 
     private UUID id;
 
+    private String label;
+
     @Embedded
     private ResponseCardinality inputLimit;
 
@@ -43,6 +45,7 @@ public class ManagedRepresentationJsonView {
 
     public ManagedRepresentationJsonView(Category category) {
         this.id = category.getId();
+        setLabel( category.getLabel() );
         setChildren(category.getChildren().stream().map(CategoryJsonView::new).collect(Collectors.toList()));
         setInputLimit(category.getInputLimit());
         setClassificationLevel(category.getClassificationLevel());
@@ -55,6 +58,13 @@ public class ManagedRepresentationJsonView {
         return this.id;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public ResponseCardinality getInputLimit() {
         return inputLimit;

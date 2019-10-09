@@ -17,13 +17,6 @@ import java.util.UUID;
 @Immutable
 public class ChangeFeed  {
 
-//    @SuppressWarnings("unused")
-//    @Id
-//    private Integer id;
-//
-//    @Column(name = "ref_id")
-//    protected UUID refId;
-//
     @EmbeddedId
     private ChangeFeedKey changeFeedKey;
 
@@ -41,7 +34,6 @@ public class ChangeFeed  {
 
     @ManyToOne
     @JoinColumn(name = "ref_modified_by",  updatable = false)
-//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private User modifiedBy;
 
     @Column(name = "element_id")
@@ -82,6 +74,14 @@ public class ChangeFeed  {
         this.refChangeKind = refChangeKind;
     }
 
+    public ActionKind getRefAction() {
+        return changeFeedKey.refAction;
+    }
+
+    public void setRefAction(ActionKind refAction) {
+        this.changeFeedKey.refAction = refAction;
+    }
+
     public Timestamp getModified() {
         return modified;
     }
@@ -99,7 +99,7 @@ public class ChangeFeed  {
     }
 
     public UUID getElementId() {
-        return elementId;
+        return (elementId == null) ? elementId = UUID.randomUUID() :  elementId;
     }
 
     public void setElementId(UUID elementId) {

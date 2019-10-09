@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
@@ -161,7 +162,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
 
     @JsonIgnore
-    protected List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
+    private List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
         return topicQuestionItems.stream()
             .map(c-> new ElementRefTyped<QuestionItem>(c) )
             .collect( Collectors.toList() );
@@ -203,9 +204,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         setField( "study", newParent );
     }
 
-//    public void setParentU(UUID studyId) {
-//        setField("topicGroupId",studyId );
-//    }
 
     public StudyRef getStudyRef() {
         return new StudyRef(getStudy());
