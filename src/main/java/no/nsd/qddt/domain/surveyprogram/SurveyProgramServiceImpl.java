@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Service("surveyProgramService")
 class SurveyProgramServiceImpl implements SurveyProgramService {
 
-
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final ElementLoader qiLoader;
@@ -57,7 +56,6 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         return postLoadProcessing(surveyProgramRepository.findById(uuid)
             .orElseThrow(() -> new ResourceNotFoundException(uuid, SurveyProgram.class))
         );
-
     }
 
 
@@ -72,7 +70,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
         }catch (Exception ex){
             LOG.error("SAVING SURVEY FAILED ->",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
+                .map( StackTraceElement::toString )
                 .forEach(LOG::info);
             throw ex;
         }
@@ -108,11 +106,14 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     private SurveyProgram postLoadProcessing(SurveyProgram instance) {
         assert  (instance != null);
         try{
+            String tekst = (instance.getComments().size() > 0) ? " has comments": "has NOT comments";
+            System.out.println(instance.getName() +  tekst);
 
             instance.getStudies().forEach( study ->
                 Hibernate.initialize(study.getInstruments()));
 
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
+//                Hibernate.initialize(instance.getComments());
                 instance.getStudies().forEach(  study ->
                     study.getTopicGroups().forEach( this::loadTopic ));
             }
@@ -126,6 +127,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     private void loadTopic(TopicGroup topic){
         topic.getTopicQuestionItems().forEach( qiLoader::fill );
+//        Hibernate.initialize(topic.getComments());
         Hibernate.initialize(topic.getConcepts());
         LOG.debug("PDF -> fetching  concepts ");
         topic.getConcepts().forEach( this::loadConceptQuestion );
@@ -133,6 +135,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     private void loadConceptQuestion(Concept parent) {
         parent.getChildren().forEach( this::loadConceptQuestion );
+//        Hibernate.initialize(parent.getComments());
         parent.getConceptQuestionItems().forEach( qiLoader::fill );
     }
 

@@ -136,11 +136,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private String xmlLang;
 
     @NotAudited
-    @Transient
-    @JsonSerialize
     @OrderBy("owner_idx desc")
     @OrderColumn(name="owner_idx")
-    @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToMany(mappedBy="ownerId", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
 

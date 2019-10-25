@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -76,8 +77,6 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @PreRemove
     private void removeReferencesFromQi(){
-        //getConceptQuestionItems().forEach( CQ-> updateStatusQI(CQ.getConcept()));
-        //getConceptQuestionItems().clear();
         setResponseDomain(null);
     }
 

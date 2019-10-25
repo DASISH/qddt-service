@@ -26,6 +26,8 @@ public class CommentJsonEdit {
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
+    private int size;
+
     private Timestamp modified;
 
     private UserJson modifiedBy;
@@ -43,6 +45,7 @@ public class CommentJsonEdit {
         setComments(comment.getComments().stream().map(CommentJsonEdit::new)
 //            .sorted( Comparator.comparing( Comment::getOwnerIdx))
             .collect(Collectors.toList()));
+        this.size = comment.getSize();
     }
 
 
@@ -84,6 +87,10 @@ public class CommentJsonEdit {
 
     private void setComments(List<CommentJsonEdit> comments) {
         this.comments = comments;
+    }
+
+    public int getSize() {
+        return this.size;
     }
 
     public String getComment() {

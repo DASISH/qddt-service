@@ -173,7 +173,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
 
         int i = 0;
         for (Study study : getStudies()) {
-            study.fillDoc(pdfReport, counter + String.valueOf(++i));
+            study.fillDoc(pdfReport, counter + ++i );
         }
     }
 

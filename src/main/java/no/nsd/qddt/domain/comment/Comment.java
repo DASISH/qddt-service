@@ -32,12 +32,6 @@ public class Comment extends AbstractEntity  {
     @Column(name = "owner_id",columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID ownerId;
 
-//    @Column(name = "owner_idx", updatable = false,insertable = false)
-//    @JsonIgnore
-//    private Integer ownerIdx;
-
-
-//    @OrderBy("owner_idx desc")
     @OrderColumn(name="owner_idx")
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>(0);
@@ -64,14 +58,6 @@ public class Comment extends AbstractEntity  {
     public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
-//
-//    protected Integer getOwnerIdx() {
-//        return ownerIdx;
-//    }
-//
-//    public void setOwnerIdx(Integer ownerIdx) {
-//        this.ownerIdx = ownerIdx;
-//    }
 
     public List<Comment> getComments() {
         return this.comments;
@@ -101,8 +87,8 @@ public class Comment extends AbstractEntity  {
 
     @Transient
     @JsonSerialize()
-    public int getTreeSize(){
-        return (comments == null) ? 0 : comments.stream().mapToInt(c-> c.getTreeSize() + 1).sum();
+    public int getSize(){
+        return (comments == null || comments.size() == 0) ? 0 : comments.stream().mapToInt(c-> c.getSize() + 1 ).sum();
     }
 
     @Override

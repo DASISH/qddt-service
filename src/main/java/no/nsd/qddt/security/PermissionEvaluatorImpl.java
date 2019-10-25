@@ -30,6 +30,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
             LOG.info( "Prereq for hasPermission not fulfilled" );
             return false;
         }
+
         return this.hasPrivilege( (QDDTUserDetails)auth.getPrincipal(), (AbstractEntity)targetDomainObject, ((String) permission).toUpperCase());
     }
 

@@ -4,6 +4,8 @@ import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -38,16 +40,19 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private final ResponseDomainAuditService rdAuditService;
     private final QuestionItemAuditService auditService;
     private final ConceptService conceptService;
+    private final ResponseDomainService responseDomainService;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
                                    ResponseDomainAuditService responseDomainAuditService,
                                    ConceptService conceptService,
-                                   QuestionItemAuditService questionItemAuditService) {
+                                   QuestionItemAuditService questionItemAuditService,
+                                   ResponseDomainService responseDomainService) {
         this.questionItemRepository = questionItemRepository;
         this.rdAuditService = responseDomainAuditService;
         this.auditService = questionItemAuditService;
         this.conceptService = conceptService;
+        this.responseDomainService = responseDomainService;
     }
 
     @Override
@@ -95,6 +100,15 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public void delete(QuestionItem instance) {
         try {
+
+            // At least for now, Mixed responsedomain are not reused, best to delete with QI.
+            // TODO fix auto delete when mixed responsedomiain are reused.
+            if (instance.getResponseDomainUUID() != null) {
+                ResponseDomain rd = responseDomainService.findOne( instance.getResponseDomainUUID() );
+                if (rd.getResponseKind() == ResponseKind.MIXED) {
+                    responseDomainService.delete( instance.getResponseDomainUUID() );
+                }
+            }
             questionItemRepository.delete(instance);
         } catch (Exception ex){
             LOG.error("QI delete ->",ex);
@@ -130,7 +144,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         if (name.isEmpty()  &&  responseName.isEmpty() && question.isEmpty()) {
             name = "%";
         }
-        return questionItemRepository.findByQuery( likeify(name),likeify(question),likeify(responseName),pageable );
+        return questionItemRepository.findByNames( likeify(name),likeify(question),likeify(responseName),pageable );
     }
 
 
