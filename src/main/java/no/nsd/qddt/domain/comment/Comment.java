@@ -10,6 +10,7 @@ import no.nsd.qddt.security.SecurityContext;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -33,7 +34,7 @@ public class Comment extends AbstractEntity  {
     private UUID ownerId;
 
     @OrderColumn(name="owner_idx")
-    @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToMany(mappedBy="ownerId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>(0);
 
     @Column(name = "is_public", columnDefinition = "boolean not null default true")
@@ -88,27 +89,32 @@ public class Comment extends AbstractEntity  {
     @Transient
     @JsonSerialize()
     public int getSize(){
-        return (comments == null || comments.size() == 0) ? 0 : comments.stream().mapToInt(c-> c.getSize() + 1 ).sum();
+        return (comments == null || comments.size() == 0) ? 0 : comments.stream()
+            .filter( Objects::nonNull )
+            .mapToInt( c-> c.getSize() + 1 )
+            .sum();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Comment)) return false;
-        if (!super.equals(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals( o )) return false;
 
         Comment comment1 = (Comment) o;
 
-        if (isPublic != comment1.isPublic) return false;
-        if (ownerId != null ? !ownerId.equals(comment1.ownerId) : comment1.ownerId != null) return false;
-        return comment != null ? comment.equals(comment1.comment) : comment1.comment == null;
+        if (!ownerId.equals( comment1.ownerId )) return false;
+        if (!Objects.equals( comments, comment1.comments )) return false;
+        if (!Objects.equals( isPublic, comment1.isPublic )) return false;
+        return Objects.equals( comment, comment1.comment );
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
-        result = 31 * result + (isPublic ? 1 : 0);
+        result = 31 * result + ownerId.hashCode();
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        result = 31 * result + (isPublic != null ? isPublic.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         return result;
     }
