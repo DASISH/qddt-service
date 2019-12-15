@@ -58,11 +58,12 @@ class CommentServiceImpl  implements CommentService  {
 
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public void delete(UUID uuid) {
         commentRepository.delete(uuid);
-        commentRepository.indexChildren( uuid );
+//        commentRepository.indexChildren( uuid );
+        // TODO fix this; doens't work....
     }
 
     @Override

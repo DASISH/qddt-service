@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,7 @@ public class CommentJsonEdit {
 
     private UserJson modifiedBy;
 
-    public CommentJsonEdit() {
-    }
+    public CommentJsonEdit() { }
 
     public CommentJsonEdit(Comment comment) {
         setId(comment.getId());
@@ -42,7 +42,7 @@ public class CommentJsonEdit {
         setComment(comment.getComment());
         setModified(comment.getModified());
         setModifiedBy(comment.getModifiedBy());
-        setComments(comment.getComments().stream().map(CommentJsonEdit::new)
+        setComments(comment.getComments().stream().filter( Objects::nonNull ).map(CommentJsonEdit::new)
 //            .sorted( Comparator.comparing( Comment::getOwnerIdx))
             .collect(Collectors.toList()));
         this.size = comment.getSize();
