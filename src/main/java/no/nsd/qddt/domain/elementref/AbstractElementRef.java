@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.IEntityAuditXmlRef;
+import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
@@ -114,8 +116,12 @@ public abstract class AbstractElementRef implements IElementRef {
 
     public AbstractElementRef setValues() {
         if (getElement() == null) return this;
-        if (getElement() instanceof QuestionItem)
-            setName( getElement().getName() + " - " + ((QuestionItem) element).getQuestion() );
+        if (element instanceof QuestionItem)
+            setName( getElement().getName() + " ➫ " + ((QuestionItem) element).getQuestion() );
+        else if (element instanceof StatementItem)
+            setName( getElement().getName() + " ➫ " + ((StatementItem) element).getStatement() );
+        else if (element instanceof ConditionConstruct)
+            setName( getElement().getName() + " ➫ " + ((ConditionConstruct) element).getCondition() );
         else
             setName( getElement().getName());
         setVersion( getElement().getVersion() );
