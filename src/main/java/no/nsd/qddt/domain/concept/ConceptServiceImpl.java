@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 import static no.nsd.qddt.utils.StringTool.likeify;
@@ -142,9 +143,10 @@ class ConceptServiceImpl implements ConceptService {
         if (name.isEmpty()  &&  description.isEmpty()) {
             name = "%";
         }
-        Page<Concept> pages = conceptRepository.findByQuery(likeify(name),likeify(description),pageable);
-        pages.map(this::postLoadProcessing);
-        return pages;
+        return conceptRepository.findByQuery(
+            likeify(name),
+            likeify(description),
+            defaultOrModifiedSort(pageable,"name ASC")).map(this::postLoadProcessing);
     }
 
     @Override

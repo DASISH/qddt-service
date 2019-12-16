@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
+
 /**
  * @author Stig Norland
  */
@@ -86,12 +89,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
         }
         return instance;
     }
-
-//    @Transactional
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-//    public List<TopicGroup> save(List<TopicGroup> instances) {
-//        return topicGroupRepository.save(instances);
-//    }
 
     private EntityManagerFactory emf;
 
@@ -158,8 +155,11 @@ class TopicGroupServiceImpl implements TopicGroupService {
         if (name.isEmpty()  &&  description.isEmpty()) {
             name = "%";
         }
-        return topicGroupRepository.findByQuery(name,description,pageable)
-                .map(this::postLoadProcessing);
+        return topicGroupRepository.findByQuery(
+            likeify(name),
+            likeify(description),
+            defaultOrModifiedSort(pageable,"name ASC"))
+            .map(this::postLoadProcessing);
     }
 
     @Override

@@ -111,15 +111,6 @@ public class ConceptController extends AbstractController {
     }
 
 
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    @RequestMapping(value = "/create/{uuid}", method = RequestMethod.POST)
-//    public ConceptJsonEdit createByTopic(@RequestBody Concept concept, @PathVariable("uuid") UUID topicId) {
-//
-//        topicGroupService.findOne(topicId).addConcept(concept);
-//        return concept2Json(service.save(concept));
-//    }
-
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") UUID id) {
@@ -145,7 +136,7 @@ public class ConceptController extends AbstractController {
 
 
     @RequestMapping(value = "/list/by-parent/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<List<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+    public HttpEntity<List<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable) {
 
         Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,pageable).map(ConceptJsonEdit::new);
         return new ResponseEntity<>(concepts.getContent(), HttpStatus.OK);

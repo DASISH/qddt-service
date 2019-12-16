@@ -27,10 +27,10 @@ public  class Converter {
         switch (construct.getClassKind()) {
             case "QUESTION_CONSTRUCT":
                 return (S)new ConstructQuestionJsonView((QuestionConstruct) construct);
-//            case "STATEMENT_CONSTRUCT":
-//                return (S)new ConstructJsonView((StatementItem) construct);
-//            case "CONDITION_CONSTRUCT":
-//                return (S)new ConstructJsonView((ConditionConstruct) construct);
+            case "STATEMENT_CONSTRUCT":
+                return (S)new ConstructStatementJsonView((StatementItem) construct);
+            case "CONDITION_CONSTRUCT":
+                return (S)new ConstructConditionJsonView((ConditionConstruct) construct);
             case "SEQUENCE_CONSTRUCT":
                 return (S)new ConstructSequenceJsonView((Sequence) construct);
             default:

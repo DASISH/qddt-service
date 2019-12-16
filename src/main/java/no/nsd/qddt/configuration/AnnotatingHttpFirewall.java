@@ -53,7 +53,7 @@ public final class AnnotatingHttpFirewall extends StrictHttpFirewall
 
             // Override some of the default behavior because some requests are
             // legitimate.
-            if (requestUrl.contains("/auth/signin"))
+            if (requestUrl.contains("/auth/signin") || requestUrl.contains("/othermaterial/files")  )
             {
                 // Do not block non-cookie serialized sessions. Google's crawler does this often.
             } else {

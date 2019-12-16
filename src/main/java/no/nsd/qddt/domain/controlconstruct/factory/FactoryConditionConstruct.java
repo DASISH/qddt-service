@@ -19,6 +19,8 @@ public class FactoryConditionConstruct implements IEntityFactory<ConditionConstr
     @Override
     public ConditionConstruct copyBody(ConditionConstruct source, ConditionConstruct dest) {
         dest.setLabel(source.getLabel());
+        dest.setCondition( source.getCondition() );
+        dest.setConditionKind( source.getConditionKind() );
         dest.setOtherMaterials(source.getOtherMaterials().stream()
             .map( m -> m.clone())
             .collect(Collectors.toList())); 

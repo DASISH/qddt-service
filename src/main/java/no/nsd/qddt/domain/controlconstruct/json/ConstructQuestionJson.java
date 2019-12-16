@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.instruction.json.InstructionJsonView;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonView;
+import no.nsd.qddt.domain.universe.Universe;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private static final long serialVersionUID = 1L;
 
-	private QuestionItemSimpleJson questionItem;
+	  private QuestionItemSimpleJson questionItem;
 
     private Integer questionItemRevision;
 
@@ -29,9 +30,9 @@ public class ConstructQuestionJson  extends ConstructJson {
         super(construct);
         questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
         questionItemRevision = construct.getQuestionItemRevision();
-        preInstructions = construct.getPreInstructions().stream().map( map -> new InstructionJsonView(map)).collect(Collectors.toList());
-        postInstructions = construct.getPostInstructions().stream().map( map -> new InstructionJsonView(map)).collect(Collectors.toList());
-        universe =  construct.getUniverse().stream().map( s -> s.getDescription() ).collect( Collectors.joining("/ ") );
+        preInstructions = construct.getPreInstructions().stream().map( InstructionJsonView::new ).collect(Collectors.toList());
+        postInstructions = construct.getPostInstructions().stream().map( InstructionJsonView::new ).collect(Collectors.toList());
+        universe =  construct.getUniverse().stream().map( Universe::getDescription ).collect( Collectors.joining("/ ") );
     }
 
     public QuestionItemSimpleJson getQuestionItem() {
