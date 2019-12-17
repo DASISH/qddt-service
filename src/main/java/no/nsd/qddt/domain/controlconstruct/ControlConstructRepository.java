@@ -45,6 +45,18 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
                                                      @Param("questionName")String questionName ,@Param("questionText")String questionText,
                                                      Pageable pageable);
 
+
+    @Query(name ="removeRef1", nativeQuery = true,
+        value = "DELETE cci.* FROM control_construct_instruction cci " +
+                "WHERE cci.control_construct_id = :controlConstructId AND cci.instruction_id = :instructionId")
+//                "UPDATE cci SET =2 FROM control_construct_instruction cci WHERE cci.control_construct_id = :controlConstructId")
+    void removeRef1(@Param("controlConstructId")UUID controlConstructId,@Param("instructionId")UUID instructionId);
+
+    @Query(name ="removeRef2", nativeQuery = true,
+        value = "DELETE ccu.* FROM control_construct_universe ccu " +
+            "WHERE ccu.control_construct_id = :controlConstructId AND ccu.universe_id = :universeId")
+    void removeRef2(@Param("controlConstructId")UUID controlConstructId,@Param("universeId")UUID universeId);
+
 //    @Query(name= "findBySearcAndControlConstructKind", nativeQuery = true,
 //        value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc WHERE cc.control_construct_kind = :kind AND " +
 //            "(cc.control_construct_super_kind = :super or cc.name ILIKE :name or cc.description ILIKE :description ) "

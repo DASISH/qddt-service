@@ -143,6 +143,13 @@ class ControlConstructServiceImpl implements ControlConstructService {
             .map(qi-> mapConstructView(postLoadProcessing(qi)));
     }
 
+    @Override
+    public <S extends ControlConstruct> S removeRef(UUID constructId, UUID refId) {
+        controlConstructRepository.removeRef1( constructId,refId );
+        controlConstructRepository.removeRef2( constructId,refId );
+        return (S) findOne( constructId );
+    }
+
     private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
 

@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.controlconstruct.web;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
@@ -80,6 +82,16 @@ public class ControlConstructController extends AbstractController {
         return service.save(instance);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "constructid", "refid"})
+    public <S extends ControlConstruct> S removeRef(@RequestParam("constructid") UUID constructId, @RequestParam("refid") UUID refId ) {
+        try{
+            return service.removeRef(constructId,refId);
+        } catch (Exception ex) {
+            LOG.error("removeRef",ex);
+            return null;
+        }
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
