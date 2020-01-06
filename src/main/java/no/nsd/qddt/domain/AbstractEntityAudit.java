@@ -54,7 +54,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
         EXTERNAL("RealLifeChange","Real Life Change"),
         OTHER("OtherPurpose","Other Purpose"),
         ADDED_CONTENT("AddContentElement","Added content later on"),
-        ARCHIVED("Archived","READ ONLY");
+        ARCHIVED("Archived","READ ONLY"),
+        TO_BE_DELETED("ToBeDeleted","This has been marked for deletion, but we need to see it a tiny bit longer.");
 
         ChangeKind(String name, String description){
             this.name = name;

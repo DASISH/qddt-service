@@ -11,21 +11,21 @@ public interface IElementRef extends Cloneable {
 
 
     ElementKind getElementKind();
-    void setElementKind(ElementKind elementKind);
+//    void setElementKind(ElementKind elementKind);
 
     UUID getElementId();
-    void setElementId(UUID refId);
+//    void setElementId(UUID refId);
 
     Integer getElementRevision();
-    void setElementRevision(Integer revisionNumber);
+//    void setElementRevision(Integer revisionNumber);
 
     String getName();
-    void setName(String name);
+//    void setName(String name);
 
     Version getVersion();
-    void setVersion(Version version) ;
+//    void setVersion(Version version) ;
 
     Object getElement();
 
-    void setElement(Object element);
+//    void setElement(Object element);
 }

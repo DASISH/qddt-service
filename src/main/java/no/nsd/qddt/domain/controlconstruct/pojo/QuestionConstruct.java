@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import no.nsd.qddt.domain.elementref.IElementRef;
+import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -56,9 +58,13 @@ public class QuestionConstruct  extends ControlConstruct {
     @Column(name = "question_text", length = 500 )
     private String questionText;
 
+    @Embedded
+    public IElementRef questionRef;
+
+
     //------------- End QuestionItem revision early bind "hack"------------------
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade =  {CascadeType.DETACH, CascadeType.REMOVE,CascadeType.PERSIST })
+    @ManyToMany(fetch = FetchType.EAGER, cascade =  { CascadeType.DETACH, CascadeType.PERSIST })
     @OrderColumn(name="universe_idx")
     private List<Universe> universe =new ArrayList<>(0);
 
@@ -69,7 +75,6 @@ public class QuestionConstruct  extends ControlConstruct {
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
         joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>(0);
-
 
 
     @Transient
@@ -96,6 +101,7 @@ public class QuestionConstruct  extends ControlConstruct {
     public void setDescription(String description) {
         this.description = description;
     }
+
 
     public QuestionItem getQuestionItem() {
         return questionItem;

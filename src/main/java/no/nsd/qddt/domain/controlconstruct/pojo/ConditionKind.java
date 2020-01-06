@@ -6,9 +6,10 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 public enum ConditionKind {
     COMPUTATION_ITEM("ComputationItem","JavaScript"),
     IF_THEN_ELSE("IfThenElse","If Then Else"),
-    LOOP("Loop","Loop (exactly the same as RepeatUntil)"),
-    REPEAT_UNTIL("RepeatUntil","Repeat Until (exactly the same as Loop)"),
-    REPEAT_WHILE("RepeatWhile","Repeat While (you could just as well use Loop)");
+    LOOP("ForI","For i = X do X += STEP while i <= X "),
+    LOOP_E("ForEach","For each SOURCES do SEQUENCE"),
+    REPEAT_UNTIL("RepeatUntil","Repeat SEQUENCE Until CONDITION"),
+    REPEAT_WHILE("RepeatWhile","Repeat SEQUENCE While CONDITION");
 
     ConditionKind(String name, String description){
         this.name = name;

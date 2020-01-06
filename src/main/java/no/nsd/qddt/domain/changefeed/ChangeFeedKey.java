@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.changefeed;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ public class ChangeFeedKey implements Serializable {
     @Column(name = "ref_rev")
     protected Integer refRev;
 
+    @Enumerated(EnumType.ORDINAL)
     protected ActionKind refAction;
 
     public ChangeFeedKey() {}
