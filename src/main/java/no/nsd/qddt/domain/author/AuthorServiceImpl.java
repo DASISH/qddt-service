@@ -68,4 +68,9 @@ public class AuthorServiceImpl implements AuthorService {
     public Page<Author> findAllPageable(Pageable pageable) {
         return authorRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<Author> findbyPageable(String name, String about, String email, Pageable pageable) {
+        return authorRepository.findAuthorsByAboutContainingOrNameContainingOrEmailContaining( about,name, email, pageable);
+    }
 }

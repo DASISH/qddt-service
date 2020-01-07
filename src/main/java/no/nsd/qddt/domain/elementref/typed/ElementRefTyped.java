@@ -3,12 +3,18 @@ package no.nsd.qddt.domain.elementref.typed;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.Embeddable;
 
 /**
  * @author Stig Norland
  */
-
+@Audited
+@Embeddable
 public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElementRef {
+
+    public ElementRefTyped() {}
 
     public ElementRefTyped(AbstractElementRef source ) {
         super(source.getElementKind(),source.getElementId(),source.getElementRevision());
@@ -16,10 +22,6 @@ public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElem
         setName( source.getName());
         setElement( source.getElement() );
     }
-
-//    public ElementRefTyped(ElementKind kind, UUID id, Integer rev) {
-//        super( kind, id, rev );
-//    }
 
     @Override
     public T getElement() {

@@ -17,6 +17,7 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     private final String xmlDomain =
         "<d:%1$s>\n" +
             "\t%2$s" +
+            "\t%3$s" +
         "</d:%1$s>\n";
 
 
@@ -36,20 +37,10 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     private String getXmlBody() {
         return String.format( xmlDomain,
             entity.getResponseKind().getDDIName(),
-            getId()+
-            getRationale()+
-            getBasedOn()+
-            entity.getName()+
-            entity.getXmlLang());
+            getId()+ getRationale()+ getBasedOn(),
+            ""
+            );
     }
 
 
-
-//    @Override
-//    public void setEntityBody(Map<UUID, String> fragments) {
-//        fragments.putIfAbsent( entity.getId(), getXmlBody() );
-//        for(ConceptFragmentBuilder child : children) {
-//            child.setEntityBody( fragments );
-//        }
-//    }
 }

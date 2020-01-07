@@ -11,4 +11,7 @@ import java.util.UUID;
  */
 public interface AuthorService extends BaseService<Author,UUID> {
     Page<Author> findAllPageable(Pageable pageable);
+
+    Page<Author> findbyPageable(String name, String about, String email, Pageable pageable);
+
 }

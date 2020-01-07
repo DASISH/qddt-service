@@ -104,7 +104,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
         try{
             for (ElementRef cqi :instance.getTopicQuestionItems()) {
 
-                cqi = qiLoader.fill( cqi );
+                cqi = (ElementRef) qiLoader.fill( cqi );
 
 //                cqi.getElement().setConceptRefs(
 //                    conceptService.findByQuestionItem(cqi.getId(),null).stream()

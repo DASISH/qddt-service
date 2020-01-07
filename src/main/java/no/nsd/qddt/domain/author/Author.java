@@ -1,11 +1,17 @@
 package no.nsd.qddt.domain.author;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.security.SecurityContext;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -37,6 +43,15 @@ public class Author extends AbstractEntity {
 
     private String authorsAffiliation;
 
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private String classKind = "AUTHOR";
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private String xmlLang = "none";
 
     @JsonBackReference(value = "surveyRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
@@ -88,6 +103,14 @@ public class Author extends AbstractEntity {
 
     public void setPicture(URL picture) {
         this.picture = picture;
+    }
+
+    public String getClassKind() {
+        return this.classKind;
+    }
+
+    public String getXmlLang() {
+        return xmlLang;
     }
 
     public Set<SurveyProgram> getSurveyPrograms() {
@@ -196,4 +219,22 @@ public class Author extends AbstractEntity {
         this.authorsAffiliation = authorsAffiliation;
     }
 
+    @PrePersist
+    private void onInsert(){
+        LOG.info("PrePersist " + this.getClass().getSimpleName());
+        User user = SecurityContext.getUserDetails().getUser();
+        setModifiedBy( user );
+
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        try {
+            LOG.info( "PreUpdate " + this.getClass().getSimpleName() + " - " + getName() );
+            User user = SecurityContext.getUserDetails().getUser();
+            setModifiedBy( user );
+        } catch (Exception ex) {
+            //
+        }
+    }
 }

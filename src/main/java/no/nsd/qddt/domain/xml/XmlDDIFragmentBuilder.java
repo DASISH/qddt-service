@@ -14,7 +14,7 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
 
     protected final String xmlRef =
         "<%1$s%2$sReference>\n" +
-        "\t%3$s" +
+        "\t%3$s\n" +
         "\t<%1$sTypeOfObject>%2$s</%1$sTypeOfObject>\n" +
         "</%1$s%2$sReference>\n";
 
@@ -29,14 +29,13 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
 
     private final String xmlBasedOn =
         "<r:BasedOnReference>\n" +
-        "\t%1$s" +
+        "\t%1$s\n" +
         "\t<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
         "</r:BasedOnReference>\n";
 
-    private  final String xmlLang =
-        "<r:xmlLang>\n" +
-            "\t%1$s" +
-        "</r:xmlLang>\n";
+    private  final String xmlLang = "xml:lang=\"%1$s\"";
+
+//        "<r:xmlLang>%1$s</r:xmlLang>\n";
 
     public XmlDDIFragmentBuilder(T entity) {
         super(entity);

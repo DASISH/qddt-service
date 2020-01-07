@@ -20,12 +20,13 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
             "\t\t<r:String>%4$s</r:String>\n" +
             "\t</QuestionItemName>\n" +
             "\t<QuestionIntent>\n" +
-            "\t\t<r:Content xml:lang=\"%7$s\">%5$s</r:Content>\n" +
+            "\t\t<r:Content %7$s ></r:Content>\n" +
             "\t</QuestionIntent>\n" +
             "\t<QuestionText>\n" +
-            "\t\t<r:Content xml:lang=\"%7$s\" isPlainText=\"false\">%6$s</r:Content>\n" +
+            "\t\t<r:Content %7$s isPlainText=\"false\">%6$s</r:Content>\n" +
             "\t</QuestionText>\n" +
             "\t%8$s" +
+            "\t%9$s" +
         "</d:QuestionItem>\n";
 
 
@@ -59,6 +60,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
             entity.getName(),
             entity.getIntent(),
             entity.getQuestion(),
+            this.getXmlLang(),
             responseBuilder.getEntityRef(),
             getConceptRef());
     }

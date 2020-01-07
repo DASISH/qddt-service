@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
+import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
@@ -138,11 +139,10 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public ElementRef getDetail(ElementRef publicationElement) {
-        return new ElementLoader(
-                serviceLoader.getService(
-                    publicationElement.getElementKind() 
-                )).fill( publicationElement );
+    public ElementRef getDetail(AbstractElementRef publicationElement) {
+        return (ElementRef)
+                new ElementLoader(serviceLoader.getService(publicationElement.getElementKind()))
+                .fill( publicationElement );
     }
 
 

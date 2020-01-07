@@ -2,11 +2,13 @@ package no.nsd.qddt.domain.author.web;
 
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.AuthorService;
+import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,12 +59,22 @@ public class AuthorController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/", method = RequestMethod.GET ,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Author>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Author> authors = authorService.findAllPageable(pageable);
-        return new ResponseEntity<>(assembler.toResource(authors), HttpStatus.OK);
+    public HttpEntity<PagedResources<Author>> getAll(Pageable pageable, PagedResourcesAssembler<Author> assembler) {
+//
+//        Page<Author> authors = authorService.findAllPageable(pageable);
+//        return new ResponseEntity<>(assembler.toResource(authors), HttpStatus.OK);
+        return null;
     }
 
+    @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
+    public  PagedResources<Resource<Author>> getBy(@RequestParam(value = "name", defaultValue = "") String name,
+                                                   @RequestParam(value = "about",defaultValue = "") String about,
+                                                   @RequestParam(value = "email",defaultValue = "") String email,
+                                                   Pageable pageable, PagedResourcesAssembler<Author> assembler) {
+
+        Page<Author> authors = authorService.findbyPageable( name, about, email, pageable );
+        return assembler.toResource(authors);
+    }
 /*     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/combine", method = RequestMethod.POST, params = { "authorId" })
     public Author addAuthor(@RequestParam("authorId") UUID authorId

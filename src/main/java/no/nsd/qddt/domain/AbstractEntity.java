@@ -50,7 +50,6 @@ public abstract class AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-//    @NotAudited
     private User modifiedBy;
 
     public UUID getId() {

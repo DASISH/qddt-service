@@ -32,10 +32,14 @@ public abstract class AbstractElementRef implements IElementRef {
     @Column(name = "element_revision")
     private Integer elementRevision;
 
+    @Column(name = "element_name")
     protected String name;
 
+    @Column(name = "element_major")
     private Integer major;
+    @Column(name = "element_minor")
     private Integer minor;
+    @Column(name = "element_version_label")
     private String versionLabel;
 
 
@@ -57,7 +61,6 @@ public abstract class AbstractElementRef implements IElementRef {
         return elementId;
     }
 
-    @Override
     public void setElementId(UUID elementId) {
         this.elementId = elementId;
     }
@@ -67,7 +70,6 @@ public abstract class AbstractElementRef implements IElementRef {
         return elementRevision;
     }
 
-    @Override
     public void setElementRevision(Integer elementRevision) {
         this.elementRevision = elementRevision;
     }

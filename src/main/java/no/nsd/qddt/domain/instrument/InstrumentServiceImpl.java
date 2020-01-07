@@ -158,7 +158,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
         if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
             LOG.info("loadDetail QC");
-            ElementRef ref = ccLoader.fill( element.getElementRef());
+            ElementRef ref = (ElementRef) ccLoader.fill( element.getElementRef());
             element.setElementRef(ref);
         }
         return element;

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
+import no.nsd.qddt.domain.controlconstruct.factory.*;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;

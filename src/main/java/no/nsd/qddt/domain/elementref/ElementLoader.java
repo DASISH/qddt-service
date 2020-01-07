@@ -22,7 +22,7 @@ public class ElementLoader{
         this.serviceAudit = serviceAudit;
     }
 
-    public ElementRef fill(ElementRef element) {
+    public AbstractElementRef fill(AbstractElementRef element) {
         Revision<Integer, AbstractEntityAudit> revision = get(element.getElementId(), element.getElementRevision() );
         try {
             element.setElement(revision.getEntity());
