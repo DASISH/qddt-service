@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -98,9 +99,12 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    @Transactional()
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
+//
+//        controlConstructRepository.removeInstruction( uuid );
+//        controlConstructRepository.removeUniverse( uuid );
         controlConstructRepository.delete(uuid);
     }
 
@@ -144,12 +148,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
             .map(qi-> mapConstructView(postLoadProcessing(qi)));
     }
 
-    @Override
-    public <S extends ControlConstruct> S removeRef(UUID constructId, UUID refId) {
-        controlConstructRepository.removeRef1( constructId,refId );
-        controlConstructRepository.removeRef2( constructId,refId );
-        return (S) findOne( constructId );
-    }
 
     private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);

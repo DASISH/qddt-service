@@ -8,7 +8,6 @@ import no.nsd.qddt.domain.questionitem.QuestionItemService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.utils.builders.InstrumentBuilder;
-import no.nsd.qddt.utils.builders.InstrumentQuestionItemBuilder;
 import no.nsd.qddt.utils.builders.QuestionItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,14 +57,6 @@ public class ControlConstructMetaTest {
         qi1 = questionItemService.save(new QuestionItemBuilder().setName("item1").setQuestion("Changed typo").setResponseDomain(r1).createQuestionItem());
         qi2 = questionItemService.save(new QuestionItemBuilder().setName("item2").setQuestion("Changed changed another typo").setResponseDomain(r1).createQuestionItem());
 
-        controlConstructService.save(new InstrumentQuestionItemBuilder().setName("A instrumentQuestion").setChangeComment("Changed because.")
-                        .setQuestion(qi1).setInstrument(i1).createInstrument());
-
-        controlConstructService.save(new InstrumentQuestionItemBuilder().setName("Different instrumentQuestion").setChangeComment("It had to be done at some point!")
-                .setQuestion(qi1).setInstrument(i2).createInstrument());
-
-        controlConstructService.save(new InstrumentQuestionItemBuilder().setName("Totally different instrumentQuestion").setChangeComment("Again, something had to be done!")
-                .setQuestion(qi2).setInstrument(i2).createInstrument());
     }
 
     /**

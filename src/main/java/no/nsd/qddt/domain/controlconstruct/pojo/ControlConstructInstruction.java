@@ -15,7 +15,7 @@ public class ControlConstructInstruction implements java.io.Serializable {
 
     private static final long serialVersionUID = -7261847559839337877L;
 
-    @ManyToOne( cascade =  {CascadeType.DETACH, CascadeType.REMOVE,CascadeType.PERSIST })
+    @ManyToOne( cascade =  {CascadeType.DETACH, CascadeType.PERSIST })
     @JoinColumn(name = "instruction_id")
     private Instruction instruction;
 

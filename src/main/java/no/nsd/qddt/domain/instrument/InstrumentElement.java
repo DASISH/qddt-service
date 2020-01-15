@@ -111,6 +111,7 @@ public class InstrumentElement  implements Cloneable {
                     getParameters().add(new InstrumentParameter(matcher.group( i ), null));
                 }
             }
+            getParameters().add( new InstrumentParameter( qc.getQuestionItem().getResponseDomain().getName(), this.id  ) );
             elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionText()) );
         }
         this.elementRef = elementRef;

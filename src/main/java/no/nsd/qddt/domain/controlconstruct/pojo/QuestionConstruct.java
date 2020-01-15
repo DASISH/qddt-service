@@ -128,7 +128,7 @@ public class QuestionConstruct  extends ControlConstruct {
      * @return the questionName
      */
     public String getQuestionName() {
-        return questionName;
+        return (this.questionItem != null) ? this.questionItem.getName() : questionName;
     }
 
     /**
@@ -147,7 +147,7 @@ public class QuestionConstruct  extends ControlConstruct {
      * @return the questionText
      */
     public String getQuestionText() {
-        return questionText;
+        return (this.questionItem != null) ? this.questionItem.getQuestion() : questionText;
     }
 
     /**

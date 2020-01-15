@@ -46,16 +46,14 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
                                                      Pageable pageable);
 
 
-    @Query(name ="removeRef1", nativeQuery = true,
-        value = "DELETE cci.* FROM control_construct_instruction cci " +
-                "WHERE cci.control_construct_id = :controlConstructId AND cci.instruction_id = :instructionId")
+    @Query(name ="removeInstruction", nativeQuery = true,
+        value = "DELETE FROM control_construct_instruction cci WHERE cci.control_construct_id = :controlConstructId")
 //                "UPDATE cci SET =2 FROM control_construct_instruction cci WHERE cci.control_construct_id = :controlConstructId")
-    void removeRef1(@Param("controlConstructId")UUID controlConstructId,@Param("instructionId")UUID instructionId);
+    void removeInstruction(@Param("controlConstructId")UUID controlConstructId);
 
-    @Query(name ="removeRef2", nativeQuery = true,
-        value = "DELETE ccu.* FROM control_construct_universe ccu " +
-            "WHERE ccu.control_construct_id = :controlConstructId AND ccu.universe_id = :universeId")
-    void removeRef2(@Param("controlConstructId")UUID controlConstructId,@Param("universeId")UUID universeId);
+    @Query(name ="removeUniverse", nativeQuery = true,
+        value = "DELETE FROM control_construct_universe ccu WHERE ccu.question_construct_id = :controlConstructId")
+    void removeUniverse(@Param("controlConstructId")UUID controlConstructId);
 
 //    @Query(name= "findBySearcAndControlConstructKind", nativeQuery = true,
 //        value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc WHERE cc.control_construct_kind = :kind AND " +

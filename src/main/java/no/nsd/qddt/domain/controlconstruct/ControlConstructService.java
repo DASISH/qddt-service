@@ -25,5 +25,4 @@ public interface ControlConstructService extends BaseService<ControlConstruct, U
 
     <S extends ConstructJsonView> Page<S> findQCBySearch(String name, String questionName, String questionText, Pageable pageable);
 
-    <S extends ControlConstruct> S removeRef(UUID constructId, UUID refId);
 }

@@ -63,7 +63,8 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
     public void setLabel(String label) {
-        setName(label.toUpperCase());
+        if (getName() == null)
+            setName(label.toUpperCase());
         this.label = label;
     }
 

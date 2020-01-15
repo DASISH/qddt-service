@@ -156,11 +156,11 @@ class InstrumentServiceImpl implements InstrumentService {
 
     private InstrumentElement loadDetail(InstrumentElement element) {
 
-        if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
-            LOG.info("loadDetail QC");
-            ElementRef ref = (ElementRef) ccLoader.fill( element.getElementRef());
-            element.setElementRef(ref);
-        }
+//        if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
+//            LOG.info("loadDetail QC");
+//            ElementRef ref = (ElementRef) ccLoader.fill( element.getElementRef());
+//            element.setElementRef(ref);
+//        }
         return element;
     }
 

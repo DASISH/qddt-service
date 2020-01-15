@@ -83,17 +83,6 @@ public class ControlConstructController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/decombine", method = RequestMethod.POST, params = { "constructid", "refid"})
-    public <S extends ControlConstruct> S removeRef(@RequestParam("constructid") UUID constructId, @RequestParam("refid") UUID refId ) {
-        try{
-            return service.removeRef(constructId,refId);
-        } catch (Exception ex) {
-            LOG.error("removeRef",ex);
-            return null;
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public ControlConstruct createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("controlconstruct") String jsonString) throws FileUploadException, IOException {
 
