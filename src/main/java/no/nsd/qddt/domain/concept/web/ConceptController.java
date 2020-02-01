@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
@@ -138,7 +139,7 @@ public class ConceptController extends AbstractController {
     @RequestMapping(value = "/list/by-parent/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<List<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable) {
 
-        Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,pageable).map(ConceptJsonEdit::new);
+        Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,new PageRequest(0,100,pageable.getSort())).map(ConceptJsonEdit::new);
         return new ResponseEntity<>(concepts.getContent(), HttpStatus.OK);
     }
 
