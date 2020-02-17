@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.agency;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
@@ -55,6 +57,12 @@ public class Agency implements Comparable<Agency>{
     @Column(name = "updated", nullable = false)
     @Version
     private Timestamp modified;
+
+    @Transient
+    @JsonSerialize
+    @JsonDeserialize
+    private String classKind = "AGENCY";
+    //ElementKind.getEnum( this.getClass().getSimpleName() ).toString();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
@@ -138,6 +146,15 @@ public class Agency implements Comparable<Agency>{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public String getClassKind() {
+        return classKind;
+    }
+
+    public void setClassKind(String classKind) {
+        this.classKind = classKind;
     }
 
     public Set<SurveyProgram> getSurveyPrograms() {
@@ -261,4 +278,5 @@ public class Agency implements Comparable<Agency>{
 
         return this.getId().compareTo(o.getId());
     }
+
 }

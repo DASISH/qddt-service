@@ -51,6 +51,19 @@ public class FilterTool {
             }).collect(Collectors.toList()));
     }
 
+    public static PageRequest referencedSort(Pageable pageable) {
+        assert pageable != null;
+        List<Sort.Order> orders = new LinkedList<>();
+        pageable.getSort().forEach(o-> {
+            if (!o.getProperty().equals( "modified" )) {
+                orders.add( o );
+            }
+        });
+        if (orders.size() == 0)
+            orders.add(new Sort.Order(Sort.Direction.ASC, "kind"));
+            orders.add(new Sort.Order(Sort.Direction.ASC, "antall"));
+        return new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),new Sort(orders));
+    }
 
     public static PageRequest defaultOrModifiedSort(Pageable pageable, String... args) {
         assert pageable != null;
@@ -60,10 +73,6 @@ public class FilterTool {
         else
             sort = modifiedSort(pageable.getSort());
         return new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),sort);
-
-//        System.out.println(pageRequest.toString());
-//        if (pageRequest==null) throw new Exception("pageRequest is null");
-//        return pageRequest;
     }
 
     private static Sort modifiedSort(Sort sort){

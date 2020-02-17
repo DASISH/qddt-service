@@ -211,7 +211,7 @@ public class ResponseDomain extends AbstractEntityAudit  {
         managedRepresentation.setLabel( getName() );
         managedRepresentation.setName(  managedRepresentation.getCategoryType().getName() +  "[" +  ((getId() != null) ? getId().toString() : Integer.toString( new Random().nextInt() )) + "]");
         if (managedRepresentation.getHierarchyLevel() == HierarchyLevel.GROUP_ENTITY)
-        managedRepresentation.setDescription(managedRepresentation.getChildren().stream().map(Category::getLabel).collect(Collectors.joining(", ")));
+            managedRepresentation.setDescription( managedRepresentation.getCategoryType().getDescription() );
         managedRepresentation.setChangeComment(getChangeComment());
         managedRepresentation.setChangeKind(getChangeKind());
         if(!getVersion().isModified()) {
@@ -257,8 +257,17 @@ public class ResponseDomain extends AbstractEntityAudit  {
 
     @Override
     public String toString() {
-
-        return " \"ResponseDomain\" : { " + super.toString() +  getManagedRepresentation().toString() + "}, ";
+        return "{" +
+            "\"id\":" + (getId() == null ? "null" : "\"" + getId() +"\"" ) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
+            "\"displayLayout\":" + (displayLayout == null ? "null" : "\"" + displayLayout + "\"") + ", " +
+            "\"responseKind\":" + (responseKind == null ? "null" : responseKind) + ", " +
+            "\"responseCardinality\":" + (responseCardinality == null ? "null" : responseCardinality) + ", " +
+            "\"managedRepresentation\":" + (managedRepresentation == null ? "null" : managedRepresentation) + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
+            "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
+            "}";
     }
 
     @Override

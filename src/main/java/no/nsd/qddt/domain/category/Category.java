@@ -1,6 +1,9 @@
 package no.nsd.qddt.domain.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
@@ -15,10 +18,7 @@ import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.SafeString;
@@ -66,8 +66,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     @Column(name = "description", length = 2000)
     private String description;
 
-
-    @Column(name = "input_limit")
     @Embedded
     private ResponseCardinality inputLimit;
 
@@ -270,19 +268,24 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
 
     @Override
     public String toString() {
-        return "{\"Category\":"
-            + super.toString()
-            + ", \"code\":" + code
-            + ", \"children\": [" + children.stream().map( c -> c.toString() ).collect( Collectors.joining(", ") ) + "]"
-            + ", \"label\":\"" + label + "\""
-            + ", \"description\":\"" + description + "\""
-            + ", \"inputLimit\":" + inputLimit
-            + ", \"classificationLevel\":\"" + classificationLevel + "\""
-            + ", \"format\":\"" + format + "\""
-            + ", \"hierarchyLevel\":\"" + hierarchyLevel + "\""
-            + ", \"categoryType\":\"" + categoryType + "\""
-            + ", \"_Index\":\"" + _Index + "\""
-            + "}";
+        if (categoryType == CategoryType.CATEGORY) return "{" +
+            "\"label\":" + (label == null ? "null" : "\"" + label + "\"") + ", " +
+            "\"code\":" + (code == null ? "null" : code.getCodeValue()) +
+            "}";
+
+        return "{" +
+            "\"id\":" + (getId() == null ? "null" : "\"" + getId() +"\"" ) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"label\":" + (label == null ? "null" : "\"" + label + "\"") + ", " +
+            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
+            "\"classificationLevel\":" + (classificationLevel == null ? "null" : classificationLevel) + ", " +
+            "\"format\":" + (format == null ? "null" : "\"" + format + "\"") + ", " +
+            "\"categoryType\":" + (categoryType == null ? "null" : categoryType) + ", " +
+            "\"inputLimit\":" + (inputLimit == null ? "null" : inputLimit) + ", " +
+            "\"children\":" + (children == null ? "null" : Arrays.toString( children.toArray() )) + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
+            "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
+            "}";
     }
 
 
@@ -294,7 +297,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             case TEXT:
             case NUMERIC:
             case BOOLEAN:
-            case URI:
             case CATEGORY:
                 document.add(new Paragraph("Category " + getLabel()));
                 document.add(new Paragraph("Type " + getCategoryType().name()));
@@ -324,7 +326,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
                 case TEXT:
                 case NUMERIC:
                 case BOOLEAN:
-                case URI:
                     return (children.size() == 0 && inputLimit.isValid());
                 case CATEGORY:
                     return (children.size() == 0
@@ -393,7 +394,6 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
             switch (getCategoryType()) {
                 case DATETIME:
                 case BOOLEAN:
-                case URI:
                 case TEXT:
                 case NUMERIC:
                 case CATEGORY:

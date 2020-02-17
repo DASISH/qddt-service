@@ -1,5 +1,7 @@
-package no.nsd.qddt.domain.category;
+package no.nsd.qddt.domain.responsedomain;
 
+import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 import java.util.Map;
@@ -8,48 +10,40 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
+public class ManagedRepFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     private final String xmlResponseCategory =
         "%1$s" +
-            "\t<l:CategoryName>\n" +
-            "\t\t<r:String %2$s>%3$s</r:String>\n" +
-            "\t</l:CategoryName>" +
             "\t<r:Label>\n" +
-            "\t\t<Content %2$s >%4$s</Content>\n" +
+            "\t\t<Content %2$s >%3$s</Content>\n" +
             "\t</Label>\n" +
-        "%5$s";
+            "%3$s";
 
     private final String xmlDomainReference =
         "<d:%1$sDomainReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
             "\t%2$s" +
             "\t<r:TypeOfObject>Managed%1$sRepresentation</r:TypeOfObject>\n" +
-        "</d:%1$sDomainReference>";
+            "</d:%1$sDomainReference>";
 
-    public CategoryFragmentBuilder(Category category) {
-        super(category);
+
+    public ManagedRepFragmentBuilder(Category entity) {
+        super( entity );
     }
 
     @Override
     public void addFragments(Map<UUID, String> fragments) {
-        if (entity.getCategoryType() == CategoryType.CATEGORY)
+        if (entity.getCategoryType() != CategoryType.CATEGORY)
             fragments.putIfAbsent( entity.getId(), getXmlFragment() );
     }
 
     @Override
     public String getXmlFragment() {
-//        if (entity.getCategoryType() == CategoryType.CATEGORY)
         return String.format( xmlResponseCategory,
             getHeader( entity ),
             getXmlLang(entity),
-            entity.getName(),
             entity.getLabel(),
             getFooter( entity )
-            );
-//        else
-//            return "";
-
+        );
     }
-
 
     @Override
     public String getEntityRef() {

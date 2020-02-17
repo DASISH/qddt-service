@@ -12,22 +12,18 @@ import java.util.stream.Collectors;
  */
 public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionItem> {
     private final String xmlQuestionItem =
-        "<d:QuestionItem>\n" +
-            "\t%1$s" +
-            "\t%2$s" +
-            "\t%3$s" +
+        "%1$s" +
             "\t<QuestionItemName>\n" +
-            "\t\t<r:String>%4$s</r:String>\n" +
+            "\t\t<r:String>%2$s</r:String>\n" +
             "\t</QuestionItemName>\n" +
             "\t<QuestionIntent>\n" +
-            "\t\t<r:Content %7$s ></r:Content>\n" +
+            "\t\t<r:Content %3$s isPlainText=\"false\">%4$s</r:Content>\n" +
             "\t</QuestionIntent>\n" +
             "\t<QuestionText>\n" +
-            "\t\t<r:Content %7$s isPlainText=\"false\">%6$s</r:Content>\n" +
+            "\t\t<r:Content %3$s isPlainText=\"false\">%5$s</r:Content>\n" +
             "\t</QuestionText>\n" +
-            "\t%8$s" +
-            "\t%9$s" +
-        "</d:QuestionItem>\n";
+            "\t%6$s" +
+        "%7$s";
 
 
     private final AbstractXmlBuilder responseBuilder;
@@ -40,28 +36,28 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
     protected String getConceptRef() {
         return entity.getConceptRefs().stream()
             .map(cr ->{
-                String urn = String.format(xmlURN1, cr.getAgency(),cr.getId(),cr.getVersion().toDDIXml());
-                return String.format( xmlRef, xmlTagPreFix, "Concept", urn);
+                String urn = String.format(xmlURN, cr.getAgency(),cr.getId(),cr.getVersion().toDDIXml());
+                return String.format( xmlRef, "", "Concept", urn);
                 })
             .collect( Collectors.joining());
     }
 
     @Override
-    public void setEntityBody(Map<UUID, String> fragments) {
-        fragments.putIfAbsent( entity.getId(), getXmlBody() );
-        responseBuilder.setEntityBody( fragments );
+    public void addFragments(Map<UUID, String> fragments) {
+        fragments.putIfAbsent( entity.getId(), getXmlFragment() );
+        responseBuilder.addFragments( fragments );
     }
 
-    private String getXmlBody() {
+    @Override
+    public String getXmlFragment() {
         return String.format( xmlQuestionItem,
-            getId(),
-            getRationale(),
-            getBasedOn(),
+            getHeader(entity),
             entity.getName(),
+            getXmlLang( entity ),
             entity.getIntent(),
             entity.getQuestion(),
-            this.getXmlLang(),
-            responseBuilder.getEntityRef(),
-            getConceptRef());
+            responseBuilder.getEntityRef()+ getConceptRef(),
+            getFooter(entity));
     }
+
 }

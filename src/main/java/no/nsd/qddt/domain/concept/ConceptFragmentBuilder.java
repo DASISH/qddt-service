@@ -44,21 +44,21 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
         
         
             @Override
-            public void setEntityBody(Map<UUID, String> fragments) {
-                fragments.putIfAbsent( entity.getId(), getXmlBody() );
+            public void addFragments(Map<UUID, String> fragments) {
+                fragments.putIfAbsent( entity.getId(), getXmlFragment() );
                 for(QuestionItemFragmentBuilder question: questions) {
-                    question.setEntityBody( fragments );
+                    question.addFragments( fragments );
                 }
                 for(ConceptFragmentBuilder child : children) {
-                    child.setEntityBody( fragments );
+                    child.addFragments( fragments );
                 }
             }
         
-            private String getXmlBody() {
+            public String getXmlFragment() {
                 return String.format( xmlConcept,
-                    getId(),
-                    getRationale(),
-                    getBasedOn(),
+                    getURN(entity),
+                    getRationale(entity),
+                    getBasedOn(entity),
                     entity.getName(),
                     entity.getDescription(),
                     questions.stream()

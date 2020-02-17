@@ -15,7 +15,7 @@ import java.util.Objects;
 @Embeddable
 public class Version implements Comparable<Version> {
 
-    private static final String versionFormat = "%1$s.%2$s %3$s";
+    private static final String versionFormat = "%1$s.%2$s%3$s";
     private Integer major=1;
     private Integer minor=0;
     private String versionLabel="";
@@ -23,7 +23,7 @@ public class Version implements Comparable<Version> {
     @Transient
     @JsonSerialize
     @JsonDeserialize
-    @Column(name ="rev")
+//    @Column(name ="rev")
     private Integer revision;
 
     @JsonIgnore
@@ -127,7 +127,7 @@ public class Version implements Comparable<Version> {
 
     @Override
     public String toString() {
-        return String.format( versionFormat, major, minor, versionLabel );
+        return String.format( versionFormat, major, minor, " "+versionLabel );
     }
 
 
@@ -145,6 +145,6 @@ public class Version implements Comparable<Version> {
     }
 
     public String toDDIXml() {
-        return String.format( versionFormat, major, minor, "" ).trim();
+        return String.format( versionFormat, major, minor, (revision != null) ? "."+revision : "" ).trim();
     }
 }

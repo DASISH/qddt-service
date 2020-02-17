@@ -35,7 +35,6 @@ public abstract class AbstractEntity {
     @Id
     @GeneratedValue(generator ="UUID")
     @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
-    // @JsonView(View.Simple.class)
     @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
@@ -99,8 +98,8 @@ public abstract class AbstractEntity {
 
     @Override
     public String toString() {
-        return "\"id\": \"" + (id == null ? "null" : id) + "\", " +
-                "\"modified\":\"" + (modified == null ? "null" : modified) + "\", " +
+        return "\"id\": \"" + (id == null ? "null" :  "\"" + id + "\"" ) + "\", " +
+                "\"modified\":" + (modified == null ? "null" :  "\"" + modified +  "\"") + ", " +
                 "\"modifiedBy\":" + (modifiedBy == null ? "null" : modifiedBy)+ ", ";
 
     }

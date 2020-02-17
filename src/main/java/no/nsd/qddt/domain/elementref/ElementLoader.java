@@ -33,15 +33,6 @@ public class ElementLoader{
         return  element;
     }
 
-//    public IElementRef fill(IElementRef ref) throws Exception {
-//        LOG.debug((ref.getElement()!=null)? ref.getElement().toString() : "ELEMENT EMPTY");
-//        Revision<Integer,UUID> revision = get(ref.getElementId(), ref.getElementRevision() );
-//        ref.setElement(revision.getEntity());
-//        ref.setElementRevision( revision.getRevisionNumber() );
-//        return  ref;
-//    }
-
-
     // uses rev Object to facilitate by rev by reference
     private Revision get(UUID id, Number rev){
         try {

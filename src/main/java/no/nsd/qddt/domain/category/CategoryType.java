@@ -24,29 +24,25 @@ public enum CategoryType {
      */
     BOOLEAN("Boolean","True or false. Can be represented by 1 and 0 correspondingly",""),
     /*
-        A Uniform Resource Identifier such as ftp, http or mailto, e.g., http://www.w3.org/TR/xmlschema-2.
-     */
-    URI("Uniform Resource Identifier","A Uniform Resource Identifier such as ftp, http or mailto",""),
-    /*
         Code: single Category, input is CODE/VALUE                  ,
      */
-    CATEGORY("Code","Single Category, input is CODE/VALUE","NOT_IMPLEMENTED: blankIsMissingValue"),
+    CATEGORY("Category","Single Category, input is CODE/VALUE","NOT_IMPLEMENTED: blankIsMissingValue"),
     /*
         Missing values: CategoryList/CodeList that are used as missingvalues.
      */
-    MISSING_GROUP("Missing values","CategoryList/CodeList that are used as missingvalues",""),
+    MISSING_GROUP("MissingValues","CategoryList/CodeList that are used as missingvalues",""),
     /*
         List: CategoryList/CodeList                                 ,NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue
      */
-    LIST("CodeList","CategoryList/CodeList","NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue"),
+    LIST("Code","CategoryList/CodeList","NOT_IMPLEMENTED: isMaintainable |isSystemMissingValue"),
     /*
         CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs,NOT_IMPLEMENTED: blankIsMissingValue
      */
-    SCALE("ScaleDomain","CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs",""),
+    SCALE("Scale","CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs",""),
     /*
         ONLY for CategoryRoot -> a collection of different responsedomains
      */
-    MIXED("Mixed Mananged representation","ONLY for CategoryRoot -> a collection of different responsedomains","");
+    MIXED("MixedManRep","Mixed Mananged representation -> a collection of mananged representations","");
 
     CategoryType(String name, String description,String ddiComment){
         this.name = name;
@@ -81,3 +77,7 @@ public enum CategoryType {
     }
 
 }
+    /*
+        A Uniform Resource Identifier such as ftp, http or mailto, e.g., http://www.w3.org/TR/xmlschema-2.
+     */
+//    URI("Uniform Resource Identifier","A Uniform Resource Identifier such as ftp, http or mailto",""),

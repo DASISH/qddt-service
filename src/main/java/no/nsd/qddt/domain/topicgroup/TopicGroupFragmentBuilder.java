@@ -36,18 +36,18 @@ public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup>
 
 
     @Override
-    public void setEntityBody(Map<UUID, String> fragments) {
-        fragments.putIfAbsent( entity.getId(), getXmlBody() );
+    public void addFragments(Map<UUID, String> fragments) {
+        fragments.putIfAbsent( entity.getId(), getXmlFragment() );
         for(ConceptFragmentBuilder child : children) {
-            child.setEntityBody( fragments );
+            child.addFragments( fragments );
         }
     }
 
-    private String getXmlBody() {
+    public String getXmlFragment() {
         return String.format( xmlTopic,
-            getId(),
-            getRationale(),
-            getBasedOn(),
+            getURN(entity),
+            getRationale(entity),
+            getBasedOn(entity),
             entity.getName(),
             entity.getDescription(),
             entity.getXmlLang(),

@@ -43,7 +43,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
 
 
     private boolean hasPrivilege(QDDTUserDetails details, AbstractEntity entity, String permission){
-        LOG.info( details.getUsername() + " - " + entity + " - " + permission );
+        LOG.info( details.getUsername() + ": " + permission + ": " + toJson((AbstractEntityAudit)entity)  );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
@@ -80,4 +80,12 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         return false;
     }
 
+    public String toJson(AbstractEntityAudit entity) {
+        return "{" +
+            "\"id\":" + (entity.getId() == null ? "null" : "\"" + entity.getId() +"\"" ) + ", " +
+            "\"modified\":" + (entity.getModified() == null ? "null" : "\"" + entity.getModified()+ "\"" ) + " , " +
+            "\"classKind\":" + (entity.getClassKind() == null ? "null" : "\"" + entity.getClassKind() + "\"") + ", " +
+            "\"name\":" + (entity.getName() == null ? "null" : "\"" + entity.getName() + "\"") +
+            "}";
+    }
 }

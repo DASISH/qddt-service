@@ -100,8 +100,6 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public void delete(QuestionItem instance) {
         try {
-
-            // At least for now, Mixed responsedomain are not reused, best to delete with QI.
             // TODO fix auto delete when mixed responsedomiain are reused.
             if (instance.getResponseDomainUUID() != null) {
                 ResponseDomain rd = responseDomainService.findOne( instance.getResponseDomainUUID() );

@@ -134,7 +134,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private String changeComment;
 
     // @JsonView(View.Simple.class)
-    private String xmlLang;
+
+    @Column(nullable = false)
+    private String xmlLang = "en-GB";
 
     @NotAudited
     @OrderBy("owner_idx desc")
@@ -245,6 +247,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     }
 
     public void setXmlLang(String xmlLang) {
+        if (!StringTool.IsNullOrTrimEmpty( xmlLang ))
         this.xmlLang = xmlLang;
     }
 
@@ -377,14 +380,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
 
     @Override
     public String toString() {
-        return  super.toString() +
-                "\"version\":" + (version == null ? "null" : version) + ", " +
-//                "\"changeKind\":" + (changeKind == null ? "null" : changeKind) + ", " +
-//                "\"changeComment\":" + (changeComment == null ? "null" : "\"" + changeComment + "\"") + ", " +
-                "\"basedOnObject\":" + (basedOnObject == null ? "null" : basedOnObject) + ", " +
-                "\"basedOnRevision\":" + (basedOnRevision == null ? "null" : "\"" + basedOnRevision + "\"") + ", " +
-                "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
-                "\"agency\":" + (agency == null ? "null" : agency) + ", ";
+        return "{" +
+            "\"id\":" + (getId() == null ? "null" : "\"" + getId() +"\"" ) + ", " +
+            "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+            "\"classKind\":" + (classKind == null ? "null" : "\"" + classKind + "\"") + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
+            "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
+            "}";
     }
 
 

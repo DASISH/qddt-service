@@ -86,8 +86,8 @@ class CategoryServiceImpl implements CategoryService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public Category save(Category instance) {
-        if (_codes.size() >0)
-            LOG.error( "_codes not intilaized empty" );
+//        if (_codes.size() >0)
+//            LOG.error( "_codes not intilaized empty" );
         return postLoadProcessing( 
             repository.save(
                 prePersistProcessing(instance)));

@@ -248,13 +248,17 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @Override
     public String toString() {
-        return "{\"Concept\":"
-                + super.toString()
-                + ", \"conceptQuestionItems\":" + conceptQuestionItems
-                + ", \"label\":\"" + label + "\""
-                + ", \"description\":\"" + description + "\""
-                + ", \"children\":" + children
-                + "}";
+        return "{" +
+            "\"id\":" + (getId() == null ? "null" : "\"" + getId() +"\"" ) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"label\":" + (label == null ? "null" : "\"" + label + "\"") + ", " +
+            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
+            "\"topicGroupId\":" + (topicGroupId == null ? "null" : topicGroupId) + ", " +
+            "\"conceptQuestionItems\":" + (conceptQuestionItems == null ? "null" : Arrays.toString( conceptQuestionItems.toArray() )) + ", " +
+            "\"children\":" + (children == null ? "null" : Arrays.toString( children.toArray() )) + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
+            "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
+            "}";
     }
 
 

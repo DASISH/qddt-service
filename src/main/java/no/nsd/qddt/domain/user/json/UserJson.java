@@ -31,7 +31,7 @@ public class UserJson {
         setEmail(user.getEmail());
         setName(user.getUsername());
         setModified( user.getModified() );
-        setAgencyName( (user.getAgency() != null) ? user.getAgency().getName() : "IS NULL" );
+        setAgencyName( (user.getAgency() != null) ? user.getAgency().getName() : "NOT_FETCHED" );
     }
 
 
@@ -73,5 +73,14 @@ public class UserJson {
 
     private void setAgencyName(String agencyName) {
         this.agencyName = agencyName;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+            "\"agencyName\":" + (agencyName == null ? "null" : "\"" + agencyName + "\"") + ", " +
+            "\"modified\":" + (modified == null ? "null" :  "\"" + modified +  "\"") +
+            "}";
     }
 }

@@ -8,7 +8,9 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class XmlDDIInstanceBuilder<T extends AbstractEntityAudit> extends AbstractXmlBuilder<T> {
+public class XmlDDIInstanceBuilder<T extends AbstractEntityAudit> extends AbstractXmlBuilder {
+
+    protected final T instance;
 
     private final String ddiXmlRoot =
         "<DDIInstance \n" +
@@ -23,22 +25,26 @@ public class XmlDDIInstanceBuilder<T extends AbstractEntityAudit> extends Abstra
             "    xmlns:s=\"ddi:studyunit:3_2\"\n" +
             "    xsi:schemaLocation=\"ddi:instance:3_2 http://www.ddialliance.org/Specification/DDI-Lifecycle/3.2/XMLSchema/instance.xsd\">\n";
 
-    public XmlDDIInstanceBuilder(T entity) {
-        super( entity );
+    public XmlDDIInstanceBuilder(T instance) {
+       this.instance = instance;
     }
 
-    @Override
     protected String getId() {
         return null;
     }
 
     @Override
-    public void setEntityBody(Map<UUID, String> fragments) {
+    public void addFragments(Map<UUID, String> fragments) {
 
     }
 
     @Override
     public String getEntityRef() {
+        return null;
+    }
+
+    @Override
+    public String getXmlFragment() {
         return null;
     }
 

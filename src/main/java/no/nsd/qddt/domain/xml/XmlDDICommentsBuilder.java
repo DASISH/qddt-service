@@ -8,24 +8,26 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class XmlDDICommentsBuilder extends AbstractXmlBuilder<Comment> {
+public class XmlDDICommentsBuilder extends AbstractXmlBuilder {
 
-    public XmlDDICommentsBuilder(Comment entity) {
-        super( entity );
+    protected final Comment comment;
+
+    public XmlDDICommentsBuilder(Comment comment) {
+        this.comment = comment;
     }
 
-    @Override
-    protected String getId() {
-        return null;
-    }
-
-    @Override
-    public void setEntityBody(Map<UUID, String> fragments) {
+      @Override
+    public void addFragments(Map<UUID, String> fragments) {
 
     }
 
     @Override
     public String getEntityRef() {
+        return null;
+    }
+
+    @Override
+    public String getXmlFragment() {
         return null;
     }
 

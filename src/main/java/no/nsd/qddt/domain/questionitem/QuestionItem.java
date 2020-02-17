@@ -75,10 +75,10 @@ public class QuestionItem extends AbstractEntityAudit {
 
     // Start pre remove ----------------------------------------------
 
-    @PreRemove
-    private void removeReferencesFromQi(){
-        setResponseDomain(null);
-    }
+//    @PreRemove
+//    private void removeReferencesFromQi(){
+//        setResponseDomain(null);
+//    }
 
     public void updateStatusQI() {
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
@@ -93,20 +93,22 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     public void setResponseDomain(ResponseDomain responseDomain) {
-        if (responseDomain!=null && (
-                responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.BOOLEAN
-                & responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.CATEGORY
-                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.DATETIME
-                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.NUMERIC
-                &  responseDomain.getManagedRepresentation().getCategoryType() != CategoryType.TEXT)
-            & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
-            LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
-        }
+//        CategoryType mrCat = responseDomain.getManagedRepresentation().getCategoryType();
+//        if (responseDomain!=null &&
+//            (mrCat != CategoryType.BOOLEAN & mrCat != CategoryType.CATEGORY &  mrCat != CategoryType.DATETIME &  mrCat != CategoryType.NUMERIC &  mrCat != CategoryType.TEXT)
+//            & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
+//            LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
+//        }
+        if (responseDomain != null) {
             this.responseDomain = responseDomain;
-        if (this.responseDomain != null) {
             setResponseDomainName( responseDomain.getName() );
             this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
+        } else {
+            setResponseDomainName(null);
+            setResponseDomainRevision( null );
+            setResponseDomainUUID( null );
         }
+
     }
 
     public Integer getResponseDomainRevision() {
@@ -191,12 +193,15 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @Override
     public String toString() {
-        return "QuestionItem{" + super.toString() +
-                ", question='" + question + '\'' +
-                ", responseDomain=" +  (responseDomain != null ? responseDomain.getName(): "?")  + '\'' +
-                ", responseUUID=" + responseDomainUUID + '\'' +
-                ", responseRev" + responseDomainRevision  + '\'' +
-                "} " + System.lineSeparator();
+        return "{" +
+            "\"id\":" + (getId() == null ? "null" : "\"" + getId() +"\"" ) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"intent\":" + (intent == null ? "null" : "\"" + intent + "\"") + ", " +
+            "\"question\":" + (question == null ? "null" : "\"" + question + "\"") + ", " +
+            "\"responseDomainName\":" + (responseDomainName == null ? "null" : "\"" + responseDomainName + "\"") + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
+            "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
+            "}";
     }
 
     @Override

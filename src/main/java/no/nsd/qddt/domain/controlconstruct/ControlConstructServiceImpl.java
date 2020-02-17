@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.controlconstruct.factory.*;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
@@ -102,9 +103,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-//
-//        controlConstructRepository.removeInstruction( uuid );
-//        controlConstructRepository.removeUniverse( uuid );
         controlConstructRepository.delete(uuid);
     }
 
@@ -189,10 +187,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
                         instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
                     }
-//                    ((Sequence) instance).getSequence().stream().forEach( e -> {
-//                        e.getElement()
-//                    } );
-
                 }
                 break;
             case "CONDITION_CONSTRUCT":
@@ -240,6 +234,15 @@ class ControlConstructServiceImpl implements ControlConstructService {
         }
         instance.setChangeComment( null );
         return instance;
+    }
+
+
+    private void loadSequence(Sequence sequence) {
+        sequence.getSequence().forEach( seq -> {
+            if (seq.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT) {
+                seq.setElement( auditService.findRevision(seq.getElementId(),seq.getElementRevision()).getEntity());
+            }
+        });
     }
 
 }
