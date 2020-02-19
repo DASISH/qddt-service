@@ -139,7 +139,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private String xmlLang = "en-GB";
 
     @NotAudited
-    @OrderBy("owner_idx desc")
+    @OrderBy(value = "owner_idx desc")
     @OrderColumn(name="owner_idx")
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -271,6 +271,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private void onUpdate(){
         try {
             LOG.info("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
+            LOG.info(
+                StackTraceFilter.filter(
+                    Thread.currentThread().getStackTrace() ).stream()
+                    .map( e->e.toString() )
+                    .collect( Collectors.joining(",")
+                    ));
             Version ver = version;
             ChangeKind change = changeKind;
             User user = SecurityContext.getUserDetails().getUser();

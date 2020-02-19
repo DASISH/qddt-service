@@ -77,6 +77,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Transactional(propagation = Propagation.NEVER)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public ResponseDomain save(ResponseDomain instance) {
+
+        LOG.info(Thread.currentThread().getStackTrace().toString());
         return postLoadProcessing(
                 responseDomainRepository.save(
                         prePersistProcessing(instance)));

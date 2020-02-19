@@ -39,7 +39,8 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
             "WHERE cc.control_construct_kind = :kind AND " +
             "( cc.control_construct_super_kind = :superKind or cc.name ILIKE :name or cc.description ILIKE :description " +
             "or qi.name ILIKE :questionName or qi.question ILIKE :questionText ) "
-        )
+        + " ORDER BY ?#{#pageable}"
+    )
     <S extends ControlConstruct> Page<S> findByQuery(@Param("kind")String kind, @Param("superKind")String superKind,
                                                      @Param("name")String name, @Param("description")String desc,
                                                      @Param("questionName")String questionName ,@Param("questionText")String questionText,

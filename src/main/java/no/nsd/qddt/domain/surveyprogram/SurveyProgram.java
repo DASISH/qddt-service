@@ -11,7 +11,9 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,8 +50,8 @@ import java.util.Set;
 public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchived {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    @OrderBy(value = "name ASC")
-    private Set<Study> studies = new HashSet<>();
+    @OrderColumn(name="survey_idx")
+    private List<Study> studies = new ArrayList<>();
 
     @Column(length = 10000)
     private String description;
@@ -88,11 +90,11 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
         authors.add(user);
     }
 
-    public Set<Study> getStudies() {
+    public List<Study> getStudies() {
         return studies;
     }
 
-    public void setStudies(Set<Study> studies) {
+    public void setStudies(List<Study> studies) {
         this.studies = studies;
     }
 

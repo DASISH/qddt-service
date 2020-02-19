@@ -25,6 +25,7 @@ public interface PublicationRepository extends BaseRepository<Publication,UUID> 
             "SELECT count(p.*) FROM publication p " +
             "LEFT JOIN publication_status ps ON p.status_id = ps.id " +
             "WHERE ( ps.published = :publishedKind and (ps.label similar to :publicationStatus or p.name ILIKE :name or p.purpose ILIKE :purpose) ) "
+            + " ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<Publication> findByQuery(
         @Param("name")String name,

@@ -311,12 +311,4 @@ public class ResponseDomain extends AbstractEntityAudit  {
         pdfReport.getTheDocument().add(table);
     }
 
-
-    public UUID getSchemaId() {
-        return schemaId;
-    }
-
-    public void setSchemaId(UUID schemaId) {
-        this.schemaId = schemaId;
-    }
 }

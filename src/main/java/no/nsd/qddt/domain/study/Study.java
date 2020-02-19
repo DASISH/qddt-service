@@ -15,9 +15,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <ul class="inheritance">
@@ -64,14 +62,11 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     private String description;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH } , mappedBy = "study")
-//    @JoinTable(name = "STUDY_INSTRUMENTS",
-//            joinColumns = {@JoinColumn(name = "study_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "instruments_id")})
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "study", fetch = FetchType.LAZY)
-    @OrderBy(value = "name ASC")
-    private Set<TopicGroup> topicGroups = new HashSet<>(0);
+    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE }, mappedBy = "study", fetch = FetchType.LAZY)
+    @OrderColumn(name="study_idx")
+    private List<TopicGroup> topicGroups = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "STUDY_AUTHORS",
@@ -128,11 +123,11 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
 
 
 
-    public Set<TopicGroup> getTopicGroups() {
+    public List<TopicGroup> getTopicGroups() {
         return topicGroups;
     }
 
-    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+    public void setTopicGroups(List<TopicGroup> topicGroups) {
         this.topicGroups = topicGroups;
     }
 

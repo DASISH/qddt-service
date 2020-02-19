@@ -24,12 +24,13 @@ interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
     @Query(value = "SELECT RD.* FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
         "( RD.name ILIKE :name or RD.description ILIKE :description OR " +
         "RD.category_id in (select distinct c.id FROM category c WHERE c.description ILIKE :anchor ) OR " +
-        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) " +
-        "ORDER BY ?#{#pageable}"
+        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) "
+        + " ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(RD.*)  FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
         "(RD.name ILIKE :name or RD.description ILIKE :description OR " +
         "RD.category_id in (select distinct c.id FROM category c WHERE c.description ILIKE :anchor ) OR " +
         "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) "
+        + " ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<ResponseDomain> findByQuery( @Param("responseKind")String responseKind,
                                      @Param("name")String name,
