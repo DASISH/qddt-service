@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface IElementRef extends Cloneable {
+public interface IElementRef<T> extends Cloneable {
 
 
     ElementKind getElementKind();
@@ -17,7 +17,7 @@ public interface IElementRef extends Cloneable {
 //    void setElementId(UUID refId);
 
     Integer getElementRevision();
-//    void setElementRevision(Integer revisionNumber);
+    void setElementRevision(Integer revisionNumber);
 
     String getName();
 //    void setName(String name);
@@ -25,7 +25,6 @@ public interface IElementRef extends Cloneable {
     Version getVersion();
 //    void setVersion(Version version) ;
 
-    Object getElement();
-
-//    void setElement(Object element);
+    T getElement();
+    void setElement(T element);
 }

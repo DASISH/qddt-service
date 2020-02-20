@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class ElementLoader{
+public class ElementLoader<T extends AbstractEntityAudit>{
 
     protected final Logger LOG = LoggerFactory.getLogger( this.getClass() );
 
@@ -22,22 +22,22 @@ public class ElementLoader{
         this.serviceAudit = serviceAudit;
     }
 
-    public AbstractElementRef fill(AbstractElementRef element) {
-        Revision<Integer, AbstractEntityAudit> revision = get(element.getElementId(), element.getElementRevision() );
+    public IElementRef<T>fill(IElementRef<T> element) {
+        Revision<Integer, T> revision = get(element.getElementId(), element.getElementRevision() );
         try {
-            element.setElement(revision.getEntity());
             element.setElementRevision( revision.getRevisionNumber() );
+            element.setElement(revision.getEntity());
         } catch (Exception e) {
             LOG.error("ElementLoader setElement, reference has wrong signature");
         }
-        return  element;
+        return element;
     }
 
     // uses rev Object to facilitate by rev by reference
-    private Revision get(UUID id, Number rev){
+    private Revision<Integer,T> get(UUID id, Number rev){
         try {
             
-            return (rev == null) ? serviceAudit.findLastChange( id ) :  serviceAudit.findRevision( id,rev );
+            return (rev == null || rev.intValue() == 0) ? serviceAudit.findLastChange( id ) :  serviceAudit.findRevision( id,rev );
 
         } catch (RevisionDoesNotExistException e) {
             if (rev == null) throw e;

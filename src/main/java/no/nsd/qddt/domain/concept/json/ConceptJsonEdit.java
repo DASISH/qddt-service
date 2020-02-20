@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 
@@ -25,7 +26,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     private String description;
 
-    private List<ElementRef> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
@@ -83,11 +84,11 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         this.children = children;
     }
 
-    public List<ElementRef> getConceptQuestionItems() {
+    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(List<ElementRef> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

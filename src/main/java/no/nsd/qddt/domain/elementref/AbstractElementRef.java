@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Audited
 @MappedSuperclass
-public abstract class AbstractElementRef implements IElementRef {
+public abstract class AbstractElementRef<T extends IEntityAuditXmlRef> implements IElementRef<T> {
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
@@ -45,7 +45,7 @@ public abstract class AbstractElementRef implements IElementRef {
 
     @Transient
     @JsonSerialize
-    protected Object element;
+    protected T element;
 
     public AbstractElementRef() {}
 
@@ -102,21 +102,21 @@ public abstract class AbstractElementRef implements IElementRef {
 
 
     @JsonSerialize
-    public IEntityAuditXmlRef getElement() {
+    public T getElement() {
         try {
-            return (IEntityAuditXmlRef) element;
+            return  element;
         } catch (Exception ex ) {
             System.out.println(element.toString());
             return null;
         }
     }
-    public void setElement(Object element) {
+    public void setElement(T element) {
         this.element = element;
         setValues();
     }
 
 
-    public AbstractElementRef setValues() {
+    private AbstractElementRef setValues() {
         if (getElement() == null) return this;
         if (element instanceof QuestionItem)
             setName( getElement().getName() + " ➫ " + ((QuestionItem) element).getQuestion() );

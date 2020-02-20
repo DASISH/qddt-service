@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.parentref.ConceptRef;
-import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +13,15 @@ import java.util.List;
  */
 public class QuestionItemJsonEdit extends AbstractJsonEdit {
 
-        private ResponseDomainJsonEdit responseDomain;
+    private ResponseDomainRefJsonEdit responseDomainRef;
 
-        private Integer responseDomainRevision;
+    private String question;
 
-        private String question;
+    private String intent;
 
-        private String intent;
+    private List<CommentJsonEdit> comments = new ArrayList<>();
 
-        private List<CommentJsonEdit> comments = new ArrayList<>();
-
-        private List<ConceptRef> conceptRefs;
+    private List<ConceptRef> conceptRefs;
 
 
     public QuestionItemJsonEdit() {
@@ -38,27 +35,17 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
         setComments(questionItem.getComments());
         setQuestion(questionItem.getQuestion());
         setIntent(questionItem.getIntent());
-        if (questionItem.getResponseDomain() != null)
-            setResponseDomain(new ResponseDomainJsonEdit(questionItem.getResponseDomain()));
-        setResponseDomainRevision(questionItem.getResponseDomainRevision());
+        setResponseDomainRef( new ResponseDomainRefJsonEdit(questionItem.getResponsedomainRef()));
         setConceptRefs(questionItem.getConceptRefs());
 
     }
 
-    public ResponseDomainJsonEdit getResponseDomain() {
-        return responseDomain;
+    public ResponseDomainRefJsonEdit getResponseDomainRef() {
+        return responseDomainRef;
     }
 
-    private void setResponseDomain(ResponseDomainJsonEdit responseDomain) {
-        this.responseDomain = responseDomain;
-    }
-
-    public Integer getResponseDomainRevision() {
-        return responseDomainRevision;
-    }
-
-    private void setResponseDomainRevision(Integer responseDomainRevision) {
-        this.responseDomainRevision = responseDomainRevision;
+    public void setResponseDomainRef(ResponseDomainRefJsonEdit responseDomainRef) {
+        this.responseDomainRef = responseDomainRef;
     }
 
     public String getQuestion() {

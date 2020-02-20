@@ -104,14 +104,14 @@ public class InstrumentElement  implements Cloneable {
                     getParameters().add(new InstrumentParameter(matcher.group( i ), null));
                 }
             }
-            String rd = qc.getQuestionItem().getResponseDomain().toString();
+            String rd = qc.getQuestionItem().getResponsedomainRef().getElement().toString();
             matcher = TAGS.matcher(rd);
             if (matcher.find()) {
                 for (int i = 0; i < matcher.groupCount() ; i++) {
                     getParameters().add(new InstrumentParameter(matcher.group( i ), null));
                 }
             }
-            getParameters().add( new InstrumentParameter( qc.getQuestionItem().getResponseDomain().getName(), this.id  ) );
+            getParameters().add( new InstrumentParameter( qc.getQuestionItem().getResponsedomainRef().getElement().getName(), this.id  ) );
             elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionText()) );
         }
         this.elementRef = elementRef;

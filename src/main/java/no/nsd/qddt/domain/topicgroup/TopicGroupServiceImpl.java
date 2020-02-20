@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
@@ -25,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -35,7 +38,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    private final ElementLoader qiLoader;
+    private final ElementLoader<QuestionItem> qiLoader;
     private final TopicGroupRepository topicGroupRepository;
     private final TopicGroupAuditService auditService;
     private final StudyService studyService;
@@ -46,7 +49,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                                  QuestionItemAuditService questionItemAuditService,
                                  StudyService studyService) {
 
-        this.qiLoader = new ElementLoader( questionItemAuditService );
+        this.qiLoader = new ElementLoader<>( questionItemAuditService );
         this.topicGroupRepository = topicGroupRepository;
         this.auditService = topicGroupAuditService;
         this.studyService = studyService;
@@ -175,14 +178,15 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            instance.getTopicQuestionItems().forEach( qiLoader::fill );
+            for (ElementRef<QuestionItem> tqi : instance.getTopicQuestionItems()) {
+                if (IsNullOrTrimEmpty( tqi.getName() ))  qiLoader.fill( tqi );
+            }
 
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
+//                instance.getTopicQuestionItems().forEach( qiLoader::fill );
                 LOG.debug("PDF -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( this::loadConceptQuestion );
-
-                // when we print hierarchy we don't need qi concept reference....
             }
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);

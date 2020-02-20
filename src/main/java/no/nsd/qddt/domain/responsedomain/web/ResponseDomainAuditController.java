@@ -1,11 +1,8 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.sun.tools.javac.util.List;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
-import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.*;
@@ -68,7 +68,7 @@ public class ResponseDomainAuditController {
     @RequestMapping(value = "/{id}/latestversion", method = RequestMethod.GET)
     public Revision<Integer, ResponseDomain> getLatestVersion(@PathVariable("id") UUID id ){
         Collection<AbstractEntityAudit.ChangeKind> changekinds =
-            List.of(IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION, UPDATED_PARENT,UPDATED_CHILD);
+            Arrays.asList(IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION, UPDATED_PARENT,UPDATED_CHILD);
 
         Pageable pageable = new PageRequest(0,1, new Sort(new Sort.Order( Sort.Direction.ASC, "updated"))  );
         Page<Revision<Integer, ResponseDomain>> revisions = auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);

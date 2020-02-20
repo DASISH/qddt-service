@@ -20,7 +20,7 @@ public class QuestionItemJsonView extends AbstractJsonEdit {
         if (questionItem == null) return;
         question = questionItem.getQuestion();
         intent = questionItem.getIntent();
-        setResponseDomain(new ResponseDomainJsonView(questionItem.getResponseDomain()));
+        setResponseDomain(new ResponseDomainJsonView(questionItem.getResponsedomainRef().getElement()));
     }
 
     public String getQuestion() {

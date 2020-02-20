@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.IElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.parentref.TopicRef;
@@ -59,11 +60,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     private UUID topicGroupId;
 
     @OrderColumn(name="concept_idx")
-    @OrderBy("concept_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
         joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
-    private List<ElementRef>  conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef<QuestionItem>>  conceptQuestionItems = new ArrayList<>();
 
     private String label;
 
@@ -91,11 +91,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
 
-    public List<ElementRef> getConceptQuestionItems() {
+    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRef> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
@@ -291,13 +291,13 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                             LOG.info( cqi.toString() );
                             return null;
                         }
-                        return (QuestionItem)cqi.getElement();
+                        return cqi.getElement();
                     } )
                     .forEach( item -> {
                         pdfReport.addheader2( item.getName(), String.format( "Version %s", item.getVersion() ) );
                         pdfReport.addParagraph( item.getQuestion() );
-                        if (item.getResponseDomain() != null)
-                            item.getResponseDomain().fillDoc( pdfReport, "" );
+                        if (item.getResponsedomainRef().getElement() != null)
+                            item.getResponsedomainRef().getElement().fillDoc( pdfReport, "" );
                 });
             }
 

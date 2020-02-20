@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 
 import java.util.stream.Collectors;
 /**

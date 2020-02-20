@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
@@ -40,7 +41,7 @@ public class ConceptJsonView {
     @Embedded
     private Version version;
 
-    private List<ElementRef> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
@@ -114,15 +115,14 @@ public class ConceptJsonView {
     public AgencyJsonView getAgency() {
         return agency;
     }
-    
-    public List<ElementRef> getConceptQuestionItems() {
+
+    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    private void setConceptQuestionItems(List<ElementRef> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
-
 
     public List<CommentJsonEdit> getComments() {
         return comments;

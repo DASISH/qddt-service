@@ -12,22 +12,14 @@ import javax.persistence.Embeddable;
  */
 @Audited
 @Embeddable
-public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElementRef {
+public class ElementRefTyped<T extends AbstractEntityAudit> extends AbstractElementRef<T> {
 
     public ElementRefTyped() {}
 
-    public ElementRefTyped(AbstractElementRef source ) {
+    public ElementRefTyped(AbstractElementRef<T> source ) {
         super(source.getElementKind(),source.getElementId(),source.getElementRevision());
-        setVersion(source.getVersion() );
-        setName( source.getName());
         setElement( source.getElement() );
     }
-
-    @Override
-    public T getElement() {
-        return (T)super.element;
-    }
-
 
     @Override
     public ElementRefTyped<T> clone() {

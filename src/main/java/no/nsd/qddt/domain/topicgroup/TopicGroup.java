@@ -73,10 +73,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
 
     @OrderColumn(name="topicgroup_idx")
-    @OrderBy("topicgroup_idx ASC")
+//    @OrderBy("topicgroup_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
-    private List<ElementRef>  topicQuestionItems = new ArrayList<>();
+    private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>();
 
 
 
@@ -87,7 +87,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Author> authors = new HashSet<>();
 
     @OrderColumn(name="owner_idx")
-    @OrderBy("owner_idx ASC")
+//    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
@@ -161,19 +161,12 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
 
 
-    @JsonIgnore
-    private List<ElementRefTyped<QuestionItem>> getTopicQuestionItemsT() {
-        return topicQuestionItems.stream()
-            .map(c-> new ElementRefTyped<QuestionItem>(c) )
-            .collect( Collectors.toList() );
-    }
-
-    public List<ElementRef> getTopicQuestionItems() {
+    public List<ElementRef<QuestionItem>> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRef> conceptQuestionItems) {
-        this.topicQuestionItems = conceptQuestionItems;
+    public void setTopicQuestionItems(List<ElementRef<QuestionItem>> topicQuestionItems) {
+        this.topicQuestionItems = topicQuestionItems;
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
@@ -265,11 +258,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
-            for (ElementRefTyped<QuestionItem> item : getTopicQuestionItemsT()) {
+            for (ElementRef<QuestionItem> item : getTopicQuestionItems()) {
                 pdfReport.addheader2(item.getElement().getName(), String.format("Version %s",item.getElement().getVersion()));
                 pdfReport.addParagraph(item.getElement().getQuestion());
-                if (item.getElement().getResponseDomain() != null)
-                    item.getElement().getResponseDomain().fillDoc(pdfReport, "");
+                if (item.getElement().getResponsedomainRef().getElement() != null)
+                    item.getElement().getResponsedomainRef().getElement().fillDoc(pdfReport, "");
 //                // pdfReport.addPadding();
             }
         }

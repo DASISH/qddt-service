@@ -144,17 +144,17 @@ class InstrumentServiceImpl implements InstrumentService {
     private Instrument loadDetail(Instrument instrument) {
         instrument.setChangeComment( null );
         Hibernate.initialize(instrument.getSequence());
-        instrument.getSequence().stream().forEach( this::loadDetails );
+//        instrument.getSequence().stream().forEach( this::loadDetails );
         return  instrument;
     }
 
     private InstrumentElement loadDetails(InstrumentElement instance) {
-        LOG.info("loadDetails");
         instance.getSequence().stream().forEach( this::loadDetails );
         return  loadDetail( instance) ;
     }
 
     private InstrumentElement loadDetail(InstrumentElement element) {
+//        LOG.info("loadDetails " + element.getElementRef().getName());
 
 //        if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
 //            LOG.info("loadDetail QC");

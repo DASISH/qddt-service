@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parentref.StudyRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private String abstractDescription;
 
-    private List<ElementRef> topicQuestionItems;
+    private List<ElementRef<QuestionItem>> topicQuestionItems;
 
     private Set<Author> authors = new HashSet<>();
 
@@ -53,11 +54,11 @@ public class TopicGroupJson extends AbstractJsonEdit {
         this.abstractDescription = abstractDescription;
     }
 
-    public List<ElementRef> getTopicQuestionItems() {
+    public List<ElementRef<QuestionItem>> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRef> topicQuestionItems) {
+    public void setTopicQuestionItems(List<ElementRef<QuestionItem>> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
 

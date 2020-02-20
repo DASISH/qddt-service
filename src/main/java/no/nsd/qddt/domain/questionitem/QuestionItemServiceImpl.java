@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -38,10 +39,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final QuestionItemRepository questionItemRepository;
-    private final ResponseDomainAuditService rdAuditService;
     private final QuestionItemAuditService auditService;
     private final ConceptService conceptService;
     private final ResponseDomainService responseDomainService;
+    private final ElementLoader rdLoader;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
@@ -50,10 +51,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
                                    QuestionItemAuditService questionItemAuditService,
                                    ResponseDomainService responseDomainService) {
         this.questionItemRepository = questionItemRepository;
-        this.rdAuditService = responseDomainAuditService;
         this.auditService = questionItemAuditService;
         this.conceptService = conceptService;
         this.responseDomainService = responseDomainService;
+        this.rdLoader =  new ElementLoader( responseDomainAuditService );
     }
 
     @Override
@@ -102,10 +103,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public void delete(QuestionItem instance) {
         try {
             // TODO fix auto delete when mixed responsedomiain are reused.
-            if (instance.getResponseDomainUUID() != null) {
-                ResponseDomain rd = responseDomainService.findOne( instance.getResponseDomainUUID() );
+            if (instance.getResponsedomainRef().getElementId()!= null) {
+                ResponseDomain rd = responseDomainService.findOne( instance.getResponsedomainRef().getElementId() );
                 if (rd.getResponseKind() == ResponseKind.MIXED) {
-                    responseDomainService.delete( instance.getResponseDomainUUID() );
+                    responseDomainService.delete( instance.getResponsedomainRef().getElementId());
                 }
             }
             questionItemRepository.delete(instance);
@@ -155,24 +156,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem postLoadProcessing(QuestionItem instance){
         try{
-            if(instance.getResponseDomainUUID() != null) {
-                if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
-                    Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(rev.getRevisionNumber());
-                    instance.setResponseDomain(rev.getEntity());
-                } else {
-                    try {
-                        ResponseDomain rd = rdAuditService.findRevision(instance.getResponseDomainUUID(), instance.getResponseDomainRevision()).getEntity();
-                        instance.setResponseDomain(rd);
-                    } catch (Exception ex){
-                        LOG.error(ex.getMessage());
-                        instance.setResponseDomainRevision(0);
-                    }
-                }
+            if(instance.getResponsedomainRef().getElementId()!= null) {
+                rdLoader.fill( instance.getResponsedomainRef() );
             }
-            else
-                instance.setResponseDomainRevision(0);
-
             instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
                 .map( ConceptRef::new )
                 .collect( Collectors.toList()) );
@@ -195,23 +181,23 @@ class QuestionItemServiceImpl implements QuestionItemService {
             instance = new QuestionItemFactory().copy(instance, rev );
 
 
-        if (instance.getResponseDomain() != null | instance.getResponseDomainUUID() != null) {
-            if (instance.getResponseDomainUUID() == null) {
-                instance.setResponseDomainUUID(instance.getResponseDomain().getId());
-            }
-            if (instance.getResponseDomainRevision() <= 0) {
-                try {
-                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
-                } catch (Exception ex) {
-                    LOG.error("Set default RevisionNumber failed",ex);
-                }
-            }
-        }
-        else {
-            instance.setResponseDomainRevision(0);
-            LOG.info("no repsonsedomain returned from web");
-        }
+//        if (instance.getResponseDomain() != null | instance.getResponsedomainRef().getElementId()!= null) {
+//            if (instance.getResponsedomainRef().getElementId()== null) {
+//                instance.setResponseDomainUUID(instance.getResponseDomain().getId());
+//            }
+//            if (instance.getResponsedomainRef().getElementRevision() <= 0) {
+//                try {
+//                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponsedomainRef().getElementId());
+//                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
+//                } catch (Exception ex) {
+//                    LOG.error("Set default RevisionNumber failed",ex);
+//                }
+//            }
+//        }
+//        else {
+//            instance.setResponseDomainRevision(0);
+//            LOG.info("no repsonsedomain returned from web");
+//        }
          return instance;
     }
 }

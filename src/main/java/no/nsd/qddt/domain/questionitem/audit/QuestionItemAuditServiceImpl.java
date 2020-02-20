@@ -4,7 +4,9 @@ import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.domain.responsedomain.web.ResponseDomainAuditController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -28,15 +32,17 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final QuestionItemAuditRepository questionItemAuditRepository;
-    private final ResponseDomainAuditController rdAuditController;
+
     private final CommentService commentService;
+    private final ElementLoader rdLoader;
+
     private boolean showPrivateComments;
 
     @Autowired
-    public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditController rdAuditController,
+    public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditService responseDomainAuditService,
                                         CommentService commentService) {
         this.questionItemAuditRepository = questionItemAuditRepository;
-        this.rdAuditController = rdAuditController;
+        this.rdLoader =  new ElementLoader( responseDomainAuditService );
         this.commentService = commentService;
     }
 
@@ -87,11 +93,8 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 
     @Override
     protected Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> instance){
-        if (instance.getEntity().getResponseDomainUUID() != null) {
-            instance.getEntity().setResponseDomain(
-                rdAuditController.getByRevision(
-                    instance.getEntity().getResponseDomainUUID(),
-                    instance.getEntity().getResponseDomainRevision()).getEntity());
+        if (instance.getEntity().getResponsedomainRef().getElementId() != null) {
+            rdLoader.fill( instance.getEntity().getResponsedomainRef() );
         }
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
         instance.getEntity().setComments(new ArrayList<>(coms));

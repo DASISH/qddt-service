@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.parentref.ConceptRef;
@@ -42,7 +43,7 @@ class ConceptServiceImpl implements ConceptService {
     private final ConceptRepository conceptRepository;
     private final ConceptAuditService auditService;
     private final TopicGroupService tgService;
-    private final ElementLoader qiLoader;
+    private final ElementLoader<QuestionItem> qiLoader;
 
     @Autowired
       ConceptServiceImpl(ConceptRepository conceptRepository
@@ -52,7 +53,7 @@ class ConceptServiceImpl implements ConceptService {
         this.conceptRepository = conceptRepository;
         this.auditService = conceptAuditService;
         this.tgService = tgService;
-        this.qiLoader = new ElementLoader( questionAuditService );
+        this.qiLoader = new ElementLoader<>( questionAuditService );
     }
 
     @Override
@@ -170,15 +171,6 @@ class ConceptServiceImpl implements ConceptService {
 
     private Concept prePersistProcessing(Concept instance) {
         try {
-            instance.getConceptQuestionItems().forEach(
-                cqi -> {
-                    if (IsNullOrTrimEmpty( cqi.getName()))
-                        qiLoader.fill( cqi ).setValues();
-                });
-
-            // children are saved to hold revision info... i guess, these saves shouldn't
-            // if (instance.isBasedOn() == false)
-
             instance.getChildren().stream().forEach( this::setChildChangeStatus );
 
         } catch (NullPointerException npe) {
@@ -202,8 +194,7 @@ class ConceptServiceImpl implements ConceptService {
             } else {
                 instance.getConceptQuestionItems().forEach( cqi -> {
                     if (IsNullOrTrimEmpty(cqi.getName())) {
-
-                        ((QuestionItem)qiLoader.fill(cqi).getElement()).setConceptRefs(
+                        qiLoader.fill(cqi).getElement().setConceptRefs(
                             findByQuestionItem(cqi.getElementId(),null).stream()
                             .map( ConceptRef::new )
                             .collect( Collectors.toList()));

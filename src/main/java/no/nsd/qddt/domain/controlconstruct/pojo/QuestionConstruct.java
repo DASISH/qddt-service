@@ -264,7 +264,7 @@ public class QuestionConstruct  extends ControlConstruct {
         pdfReport.addheader2("Question Item");
         pdfReport.addParagraph(getQuestionItem().getQuestion());
 
-        getQuestionItem().getResponseDomain().fillDoc(pdfReport,"");
+        getQuestionItem().getResponsedomainRef().getElement().fillDoc(pdfReport,"");
 
         if (getPostInstructions().size() > 0)
             pdfReport.addheader2("Post Instructions");

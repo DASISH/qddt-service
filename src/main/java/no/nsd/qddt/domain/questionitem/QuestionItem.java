@@ -1,24 +1,16 @@
 package no.nsd.qddt.domain.questionitem;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.parentref.ConceptRef;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomain.ResponseKind;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.utils.StringTool;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Question Item is a container for Question (text) and responsedomain
@@ -37,25 +29,8 @@ import java.util.UUID;
 public class QuestionItem extends AbstractEntityAudit {
 
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    private ResponseDomain responseDomain;
-
-    /**
-     * This field must be available "raw" in order to set and query  responsedomain by ID
-     */
-    @JsonIgnore
-    @Type(type="pg-uuid")
-    @Column(name="responsedomain_id")
-    private UUID responseDomainUUID;
-
-    @Column(name = "responsedomain_revision")
-    private Integer responseDomainRevision;
-
-    @Column(name = "responsedomain_name")
-    private String responseDomainName;
-
+    @Embedded
+    private ResponseDomainRef responsedomainRef;
 
     @Column(name = "question", length = 2000)
     private String question;
@@ -87,56 +62,37 @@ public class QuestionItem extends AbstractEntityAudit {
 
     // End pre remove ----------------------------------------------
 
-
-    public ResponseDomain getResponseDomain() {
-        return responseDomain;
+    public ResponseDomainRef getResponsedomainRef() {
+        return responsedomainRef;
     }
 
-    public void setResponseDomain(ResponseDomain responseDomain) {
-//        CategoryType mrCat = responseDomain.getManagedRepresentation().getCategoryType();
-//        if (responseDomain!=null &&
-//            (mrCat != CategoryType.BOOLEAN & mrCat != CategoryType.CATEGORY &  mrCat != CategoryType.DATETIME &  mrCat != CategoryType.NUMERIC &  mrCat != CategoryType.TEXT)
-//            & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
-//            LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
+    public void setResponsedomainRef(ResponseDomainRef responsedomainRef) {
+        this.responsedomainRef = responsedomainRef;
+    }
+
+
+//    public ResponseDomain getResponseDomain() {
+//        return responseDomain;
+//    }
+//
+//    public void setResponseDomain(ResponseDomain responseDomain) {
+////        CategoryType mrCat = responseDomain.getManagedRepresentation().getCategoryType();
+////        if (responseDomain!=null &&
+////            (mrCat != CategoryType.BOOLEAN & mrCat != CategoryType.CATEGORY &  mrCat != CategoryType.DATETIME &  mrCat != CategoryType.NUMERIC &  mrCat != CategoryType.TEXT)
+////            & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
+////            LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
+////        }
+//        if (responseDomain != null) {
+//            this.responseDomain = responseDomain;
+//            setResponseDomainName( responseDomain.getName() );
+//            this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
+//        } else {
+//            setResponseDomainName(null);
+//            setResponseDomainRevision( null );
+//            setResponseDomainUUID( null );
 //        }
-        if (responseDomain != null) {
-            this.responseDomain = responseDomain;
-            setResponseDomainName( responseDomain.getName() );
-            this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
-        } else {
-            setResponseDomainName(null);
-            setResponseDomainRevision( null );
-            setResponseDomainUUID( null );
-        }
-
-    }
-
-    public Integer getResponseDomainRevision() {
-        return responseDomainRevision == null? 0:responseDomainRevision;
-    }
-
-    public void setResponseDomainRevision(Integer responseDomainRevision) {
-        this.responseDomainRevision = responseDomainRevision;
-    }
-
-    public UUID getResponseDomainUUID() {
-        return responseDomainUUID;
-    }
-
-    public void setResponseDomainUUID(UUID responseDomainUUID) {
-        this.responseDomainUUID = responseDomainUUID;
-    }
-
-    public String getResponseDomainName() {
-        if (responseDomainName == null && responseDomain != null ) {
-            responseDomainName = responseDomain.getName();
-        }
-        return responseDomainName;
-    }
-
-    public void setResponseDomainName(String responseDomainName) {
-        this.responseDomainName = responseDomainName;
-    }
+//
+//    }
 
     public String getQuestion() {
         return question;
@@ -166,25 +122,22 @@ public class QuestionItem extends AbstractEntityAudit {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof QuestionItem)) return false;
-        if (!super.equals(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals( o )) return false;
 
         QuestionItem that = (QuestionItem) o;
 
-        if (!Objects.equals( responseDomainUUID, that.responseDomainUUID ))
+        if (responsedomainRef != null ? !responsedomainRef.equals( that.responsedomainRef ) : that.responsedomainRef != null)
             return false;
-        if (!Objects.equals( responseDomainRevision, that.responseDomainRevision ))
-            return false;
-        if (!Objects.equals( question, that.question )) return false;
-        if (!Objects.equals( intent, that.intent )) return false;
-        return Objects.equals( conceptRefs, that.conceptRefs );
+        if (question != null ? !question.equals( that.question ) : that.question != null) return false;
+        if (intent != null ? !intent.equals( that.intent ) : that.intent != null) return false;
+        return conceptRefs != null ? conceptRefs.equals( that.conceptRefs ) : that.conceptRefs == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responseDomainUUID != null ? responseDomainUUID.hashCode() : 0);
-        result = 31 * result + (responseDomainRevision != null ? responseDomainRevision.hashCode() : 0);
+        result = 31 * result + (responsedomainRef != null ? responsedomainRef.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (conceptRefs != null ? conceptRefs.hashCode() : 0);
@@ -198,7 +151,7 @@ public class QuestionItem extends AbstractEntityAudit {
             "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
             "\"intent\":" + (intent == null ? "null" : "\"" + intent + "\"") + ", " +
             "\"question\":" + (question == null ? "null" : "\"" + question + "\"") + ", " +
-            "\"responseDomainName\":" + (responseDomainName == null ? "null" : "\"" + responseDomainName + "\"") + ", " +
+            "\"responseDomainName\":" + (responsedomainRef == null ? "null" : "\"" + responsedomainRef.getName() + "\"") + ", " +
             "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
             "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
             "}";
@@ -219,8 +172,8 @@ public class QuestionItem extends AbstractEntityAudit {
             pdfReport.addheader2("Intent")
             .add(new Paragraph(this.getIntent()));
         }
-        if (getResponseDomain() != null) {
-            this.getResponseDomain().fillDoc( pdfReport, "" );
+        if (getResponsedomainRef().getElement() != null) {
+            this.getResponsedomainRef().getElement().fillDoc( pdfReport, "" );
         }
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");
