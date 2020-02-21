@@ -93,8 +93,8 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 
     @Override
     protected Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> instance){
-        if (instance.getEntity().getResponsedomainRef().getElementId() != null) {
-            rdLoader.fill( instance.getEntity().getResponsedomainRef() );
+        if (instance.getEntity().getResponseDomainRef().getElementId() != null) {
+            rdLoader.fill( instance.getEntity().getResponseDomainRef() );
         }
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
         instance.getEntity().setComments(new ArrayList<>(coms));

@@ -103,10 +103,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
     public void delete(QuestionItem instance) {
         try {
             // TODO fix auto delete when mixed responsedomiain are reused.
-            if (instance.getResponsedomainRef().getElementId()!= null) {
-                ResponseDomain rd = responseDomainService.findOne( instance.getResponsedomainRef().getElementId() );
+            if (instance.getResponseDomainRef().getElementId()!= null) {
+                ResponseDomain rd = responseDomainService.findOne( instance.getResponseDomainRef().getElementId() );
                 if (rd.getResponseKind() == ResponseKind.MIXED) {
-                    responseDomainService.delete( instance.getResponsedomainRef().getElementId());
+                    responseDomainService.delete( instance.getResponseDomainRef().getElementId());
                 }
             }
             questionItemRepository.delete(instance);
@@ -156,8 +156,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem postLoadProcessing(QuestionItem instance){
         try{
-            if(instance.getResponsedomainRef().getElementId()!= null) {
-                rdLoader.fill( instance.getResponsedomainRef() );
+            if(instance.getResponseDomainRef().getElementId()!= null) {
+                rdLoader.fill( instance.getResponseDomainRef() );
             }
             instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
                 .map( ConceptRef::new )
@@ -181,13 +181,13 @@ class QuestionItemServiceImpl implements QuestionItemService {
             instance = new QuestionItemFactory().copy(instance, rev );
 
 
-//        if (instance.getResponseDomain() != null | instance.getResponsedomainRef().getElementId()!= null) {
-//            if (instance.getResponsedomainRef().getElementId()== null) {
+//        if (instance.getResponseDomain() != null | instance.getResponseDomainRef().getElementId()!= null) {
+//            if (instance.getResponseDomainRef().getElementId()== null) {
 //                instance.setResponseDomainUUID(instance.getResponseDomain().getId());
 //            }
-//            if (instance.getResponsedomainRef().getElementRevision() <= 0) {
+//            if (instance.getResponseDomainRef().getElementRevision() <= 0) {
 //                try {
-//                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponsedomainRef().getElementId());
+//                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainRef().getElementId());
 //                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
 //                } catch (Exception ex) {
 //                    LOG.error("Set default RevisionNumber failed",ex);

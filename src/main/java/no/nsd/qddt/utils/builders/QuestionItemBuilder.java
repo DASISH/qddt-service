@@ -29,7 +29,7 @@ public class QuestionItemBuilder {
     public QuestionItem createQuestionItem() {
         QuestionItem questionItem = new QuestionItem();
         questionItem.setQuestion(question);
-        questionItem.getResponsedomainRef().setElement(responseDomain);
+        questionItem.getResponseDomainRef().setElement(responseDomain);
         return questionItem;
     }
 }

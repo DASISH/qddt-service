@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
@@ -43,7 +44,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private final ControlConstructAuditService auditService;
     private final InstructionService iService;
     private final UniverseService uService;
-    private final QuestionItemAuditService qiAuditService;
+    private final ElementLoader<QuestionItem> qidLoader;
     // private final OtherMaterialService oService;
 
 
@@ -52,15 +53,13 @@ class ControlConstructServiceImpl implements ControlConstructService {
                                        ControlConstructAuditService controlConstructAuditService,
                                        InstructionService iService,
                                        UniverseService uService,
-                                    //    OtherMaterialService oService,
                                        QuestionItemAuditService questionAuditService
     ) {
         this.controlConstructRepository = ccRepository;
         this.auditService = controlConstructAuditService;
         this.iService = iService;
         this.uService = uService;
-        this.qiAuditService = questionAuditService;
-        // this.oService = oService;
+        this.qidLoader = new ElementLoader<>( questionAuditService);        // this.oService = oService;
     }
 
     @Override
@@ -117,7 +116,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<ConstructQuestionJson> findByQuestionItems(List<UUID> questionItemIds) {
         assert (questionItemIds.size() > 0);
-        return controlConstructRepository.findByquestionItemUUID(questionItemIds.get(0)).stream()
+        return controlConstructRepository.findByQuestionItemRefElementId(questionItemIds.get(0)).stream()
             .map(c-> (ConstructQuestionJson)mapConstruct(postLoadProcessing(c)))
             .collect(Collectors.toList());
     }
@@ -167,11 +166,11 @@ class ControlConstructServiceImpl implements ControlConstructService {
                         }
                     });
 
-                    if (qc.getQuestionItem() != null ) {
-                        QuestionItem question = qc.getQuestionItem();
-                        qc.setQuestionName(question.getName());
-                        qc.setQuestionText(question.getQuestion());
-                    }
+//                    if (qc.getQuestionItem() != null ) {
+//                        QuestionItem question = qc.getQuestionItem();
+//                        qc.setQuestionName(question.getName());
+//                        qc.setQuestionText(question.getQuestion());
+//                    }
 
                     if(qc.isBasedOn() || qc.isNewCopy()) {
                         Integer rev= auditService.findLastChange(qc.getId()).getRevisionNumber();
@@ -217,16 +216,10 @@ class ControlConstructServiceImpl implements ControlConstructService {
             QuestionConstruct qc = (QuestionConstruct)instance;
             qc.populateInstructions();                // instructions has to be unpacked into pre and post instructions
             try {
-                if (qc.getQuestionItemUUID() != null) {
-                    Revision<Integer, QuestionItem> rev = qiAuditService.getQuestionItemLastOrRevision(
-                        qc.getQuestionItemUUID(),
-                        qc.getQuestionItemRevision() );
-
-                    qc.setQuestionItemRevision( rev.getRevisionNumber() );
-                    qc.setQuestionItem( rev.getEntity() );
+                if(qc.getQuestionItemRef().getElementId() != null) {
+                    qidLoader.fill( qc.getQuestionItemRef() );
                 }
             } catch (Exception ex) {
-                ((QuestionConstruct) instance).setQuestionItemRevision( 0 );
                 LOG.error( "CCS QI revision not found, resetting to latest.", ex );
             }
             qc.setChangeComment( null );

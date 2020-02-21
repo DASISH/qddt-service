@@ -35,7 +35,7 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
         setComments(questionItem.getComments());
         setQuestion(questionItem.getQuestion());
         setIntent(questionItem.getIntent());
-        setResponseDomainRef( new ResponseDomainRefJsonEdit(questionItem.getResponsedomainRef()));
+        setResponseDomainRef( new ResponseDomainRefJsonEdit(questionItem.getResponseDomainRef()));
         setConceptRefs(questionItem.getConceptRefs());
 
     }

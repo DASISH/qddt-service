@@ -21,9 +21,7 @@ public class FactoryQuestionConstruct implements IEntityFactory<QuestionConstruc
     public QuestionConstruct copyBody(QuestionConstruct source, QuestionConstruct dest) {
 
         dest.setLabel(source.getLabel());
-        dest.setQuestionItem(source.getQuestionItem());
-        dest.setQuestionItemUUID(source.getQuestionItemUUID());
-        dest.setQuestionItemRevision(source.getQuestionItemRevision());
+        dest.setQuestionItemRef( source.getQuestionItemRef() );
         dest.setOtherMaterials(source.getOtherMaterials().stream()
             .map( m -> m.clone()).collect(Collectors.toList()));
 

@@ -97,22 +97,24 @@ public class InstrumentElement  implements Cloneable {
         if (elementRef.getElement() instanceof QuestionConstruct) {
             QuestionConstruct qc = (QuestionConstruct) elementRef.getElement();
             parameters.clear();
-            String question = qc.getQuestionText();
+            String question = qc.getQuestionItemRef().getText();
             Matcher matcher = TAGS.matcher(question);
             if (matcher.find()) {
                 for (int i = 0; i < matcher.groupCount() ; i++) {
                     getParameters().add(new InstrumentParameter(matcher.group( i ), null));
+                    System.out.println("param added " + elementRef.getName());
                 }
             }
-            String rd = qc.getQuestionItem().getResponsedomainRef().getElement().toString();
+            String rd = qc.getQuestionItemRef().getElement().getResponseDomainRef().getElement().toString();
             matcher = TAGS.matcher(rd);
             if (matcher.find()) {
                 for (int i = 0; i < matcher.groupCount() ; i++) {
                     getParameters().add(new InstrumentParameter(matcher.group( i ), null));
+                    System.out.println("param added " + elementRef.getName());
                 }
             }
-            getParameters().add( new InstrumentParameter( qc.getQuestionItem().getResponsedomainRef().getElement().getName(), this.id  ) );
-            elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionText()) );
+            getParameters().add( new InstrumentParameter( qc.getQuestionItemRef().getElement().getResponseDomainRef().getElement().getName(), this.id  ) );
+            elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionItemRef().getText()));
         }
         this.elementRef = elementRef;
     }

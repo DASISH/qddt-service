@@ -26,39 +26,13 @@ import java.util.stream.Collectors;
 @Audited
 @DiscriminatorValue("QUESTION_CONSTRUCT")
 public class QuestionConstruct  extends ControlConstruct {
-    //------------- Begin QuestionItem revision early bind "hack" ---------------
-
-    /**
-     * This field will be populated with the correct version of a QI,
-     * but should never be persisted.
-     */
-    @JsonSerialize
-    @JsonDeserialize
-    @Transient
-    private QuestionItem questionItem;
-
-    /**
-     * This field must be available "raw" in order to set and query
-     * questionitem by ID
-     */
-    @JsonIgnore
-    @Type(type="pg-uuid")
-    @Column(name="questionitem_id")
-    private UUID questionItemUUID;
-
     @Column(name = "description",length = 1500)
     private String description;
 
-    @Column(name = "questionitem_revision")
-    private Integer questionItemRevision;
+    @Embedded
+    private QuestionItemRef questionItemRef;
 
-    @Column(name = "question_name", length = 25)
-    private String questionName;
-
-    @Column(name = "question_text", length = 500 )
-    private String questionText;
-
-
+    //------------- Begin QuestionItem revision early bind "hack" ---------------
     //------------- End QuestionItem revision early bind "hack"------------------
 
     @ManyToMany(fetch = FetchType.EAGER, cascade =  { CascadeType.DETACH, CascadeType.MERGE })
@@ -99,67 +73,12 @@ public class QuestionConstruct  extends ControlConstruct {
         this.description = description;
     }
 
-
-    public QuestionItem getQuestionItem() {
-        return questionItem;
+    public QuestionItemRef getQuestionItemRef() {
+        return questionItemRef;
     }
 
-    public void setQuestionItem(QuestionItem question) {
-        this.questionItem = question;
-    }
-
-    public Integer getQuestionItemRevision() {
-        return (questionItemRevision==null) ? 0 :questionItemRevision;
-    }
-
-    public void setQuestionItemRevision(Integer questionItemRevision) {
-        this.questionItemRevision = questionItemRevision;
-    }
-
-    public UUID getQuestionItemUUID() {
-        return questionItemUUID;
-    }
-
-    public void setQuestionItemUUID(UUID questionItem) {
-        questionItemUUID = questionItem;
-    }
-
-    /**
-     * @return the questionName
-     */
-    public String getQuestionName() {
-        return (this.questionItem != null) ? this.questionItem.getName() : questionName;
-    }
-
-    /**
-     * @param questionName the questionName to set
-     */
-    public void setQuestionName(String questionName) {
-        if (questionName != null) {
-            int min = Integer.min( questionName.length(), 24 );
-            this.questionName = questionName.substring( 0, min );
-        } else {
-            this.questionName = null;
-        }
-    }
-
-    /**
-     * @return the questionText
-     */
-    public String getQuestionText() {
-        return (this.questionItem != null) ? this.questionItem.getQuestion() : questionText;
-    }
-
-    /**
-     * @param questionText the questionText to set
-     */
-    public void setQuestionText(String questionText) {
-        if (questionText != null) {
-            int min = Integer.min( questionName.length(), 500 );
-            this.questionText = questionText.substring( 0, min );
-        } else {
-            this.questionText = null;
-        }
+    public void setQuestionItemRef(QuestionItemRef questionItemRef) {
+        this.questionItemRef = questionItemRef;
     }
 
     public List<Universe> getUniverse() {
@@ -189,8 +108,6 @@ public class QuestionConstruct  extends ControlConstruct {
 
         harvestInstructions( ControlConstructInstructionRank.PRE, getPreInstructions());
         harvestInstructions(ControlConstructInstructionRank.POST, getPostInstructions());
-        if (this.getQuestionItem() != null)
-            setQuestionItemUUID(this.getQuestionItem().getId());
     }
 
     private void harvestInstructions(ControlConstructInstructionRank rank,List<Instruction> instructions) {
@@ -262,9 +179,9 @@ public class QuestionConstruct  extends ControlConstruct {
         }
 
         pdfReport.addheader2("Question Item");
-        pdfReport.addParagraph(getQuestionItem().getQuestion());
+        pdfReport.addParagraph(getQuestionItemRef().getElement().getQuestion());
 
-        getQuestionItem().getResponsedomainRef().getElement().fillDoc(pdfReport,"");
+        getQuestionItemRef().getElement().getResponseDomainRef().getElement().fillDoc(pdfReport,"");
 
         if (getPostInstructions().size() > 0)
             pdfReport.addheader2("Post Instructions");
@@ -287,38 +204,32 @@ public class QuestionConstruct  extends ControlConstruct {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof QuestionConstruct)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals( o )) return false;
 
         QuestionConstruct that = (QuestionConstruct) o;
 
-        if (questionItemUUID != null ? !questionItemUUID.equals( that.questionItemUUID ) : that.questionItemUUID != null)
-            return false;
-        if (questionItemRevision != null ? !questionItemRevision.equals( that.questionItemRevision ) : that.questionItemRevision != null)
-            return false;
-        if (universe != null ? !universe.equals( that.universe ) : that.universe != null) return false;
-        return controlConstructInstructions != null ? controlConstructInstructions.equals( that.controlConstructInstructions ) : that.controlConstructInstructions == null;
+        if (description != null ? !description.equals( that.description ) : that.description != null) return false;
+        return questionItemRef != null ? questionItemRef.equals( that.questionItemRef ) : that.questionItemRef == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (questionItemUUID != null ? questionItemUUID.hashCode() : 0);
-        result = 31 * result + (questionItemRevision != null ? questionItemRevision.hashCode() : 0);
-        result = 31 * result + (universe != null ? universe.hashCode() : 0);
-        result = 31 * result + (controlConstructInstructions != null ? controlConstructInstructions.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (questionItemRef != null ? questionItemRef.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "{\"QuestionConstruct\":"
-            + super.toString()
-            + ", \"questionItemUUID\":" + questionItemUUID
-            + ", \"questionItemRevision\":\"" + questionItemRevision + "\""
-            + ", \"universe\":" + universe
-            + ", \"controlConstructInstructions\":" + controlConstructInstructions
-            + "}";
+        return "{ " +
+            "\"id\":" + (getId() == null ? "null" : getId()) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
+            "\"questionItemRef\":" + (questionItemRef == null ? "null" : questionItemRef) + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : getModified()) +
+            "}";
     }
 
 

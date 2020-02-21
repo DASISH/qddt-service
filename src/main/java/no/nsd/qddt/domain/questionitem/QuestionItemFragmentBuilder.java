@@ -30,7 +30,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
 
     public QuestionItemFragmentBuilder(QuestionItem questionItem) {
         super(questionItem);
-        responseBuilder = questionItem.getResponsedomainRef().getElement().getXmlBuilder();
+        responseBuilder = questionItem.getResponseDomainRef().getElement().getXmlBuilder();
     }
 
     protected String getConceptRef() {

@@ -53,7 +53,7 @@ public class QuestionItemListJson {
         modifiedBy = entity.getModifiedBy();
         question = entity.getQuestion();
         intent = entity.getIntent();
-        responseDomainName = entity.getResponsedomainRef().getName();
+        responseDomainName = entity.getResponseDomainRef().getName();
         classKind = "QUESTION_ITEM";
 //        responseDomain = new ResponseDomainJsonView(entity.getResponseDomain());
 //        responseDomain.getVersion().setRevision(entity.getResponseDomainRevision());

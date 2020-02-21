@@ -261,8 +261,8 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
             for (ElementRef<QuestionItem> item : getTopicQuestionItems()) {
                 pdfReport.addheader2(item.getElement().getName(), String.format("Version %s",item.getElement().getVersion()));
                 pdfReport.addParagraph(item.getElement().getQuestion());
-                if (item.getElement().getResponsedomainRef().getElement() != null)
-                    item.getElement().getResponsedomainRef().getElement().fillDoc(pdfReport, "");
+                if (item.getElement().getResponseDomainRef().getElement() != null)
+                    item.getElement().getResponseDomainRef().getElement().fillDoc(pdfReport, "");
 //                // pdfReport.addPadding();
             }
         }

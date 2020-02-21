@@ -30,7 +30,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
 
     @Embedded
-    private ResponseDomainRef responsedomainRef;
+    private ResponseDomainRef responseDomainRef;
 
     @Column(name = "question", length = 2000)
     private String question;
@@ -62,12 +62,12 @@ public class QuestionItem extends AbstractEntityAudit {
 
     // End pre remove ----------------------------------------------
 
-    public ResponseDomainRef getResponsedomainRef() {
-        return responsedomainRef;
+    public ResponseDomainRef getResponseDomainRef() {
+        return responseDomainRef;
     }
 
-    public void setResponsedomainRef(ResponseDomainRef responsedomainRef) {
-        this.responsedomainRef = responsedomainRef;
+    public void setResponseDomainRef(ResponseDomainRef responseDomainRef) {
+        this.responseDomainRef = responseDomainRef;
     }
 
 
@@ -127,7 +127,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
         QuestionItem that = (QuestionItem) o;
 
-        if (responsedomainRef != null ? !responsedomainRef.equals( that.responsedomainRef ) : that.responsedomainRef != null)
+        if (responseDomainRef != null ? !responseDomainRef.equals( that.responseDomainRef ) : that.responseDomainRef != null)
             return false;
         if (question != null ? !question.equals( that.question ) : that.question != null) return false;
         if (intent != null ? !intent.equals( that.intent ) : that.intent != null) return false;
@@ -137,7 +137,7 @@ public class QuestionItem extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responsedomainRef != null ? responsedomainRef.hashCode() : 0);
+        result = 31 * result + (responseDomainRef != null ? responseDomainRef.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (conceptRefs != null ? conceptRefs.hashCode() : 0);
@@ -151,7 +151,7 @@ public class QuestionItem extends AbstractEntityAudit {
             "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
             "\"intent\":" + (intent == null ? "null" : "\"" + intent + "\"") + ", " +
             "\"question\":" + (question == null ? "null" : "\"" + question + "\"") + ", " +
-            "\"responseDomainName\":" + (responsedomainRef == null ? "null" : "\"" + responsedomainRef.getName() + "\"") + ", " +
+            "\"responseDomainName\":" + (responseDomainRef == null ? "null" : "\"" + responseDomainRef.getName() + "\"") + ", " +
             "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
             "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
             "}";
@@ -172,8 +172,8 @@ public class QuestionItem extends AbstractEntityAudit {
             pdfReport.addheader2("Intent")
             .add(new Paragraph(this.getIntent()));
         }
-        if (getResponsedomainRef().getElement() != null) {
-            this.getResponsedomainRef().getElement().fillDoc( pdfReport, "" );
+        if (getResponseDomainRef().getElement() != null) {
+            this.getResponseDomainRef().getElement().fillDoc( pdfReport, "" );
         }
         if(getComments().size()>0)
             pdfReport.addheader2("Comments");

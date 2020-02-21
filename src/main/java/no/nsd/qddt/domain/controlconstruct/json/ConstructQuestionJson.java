@@ -28,8 +28,8 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     public ConstructQuestionJson(QuestionConstruct construct) {
         super(construct);
-        questionItem = new QuestionItemSimpleJson(construct.getQuestionItem());
-        questionItemRevision = construct.getQuestionItemRevision();
+        questionItem = new QuestionItemSimpleJson(construct.getQuestionItemRef().getElement());
+        questionItemRevision = construct.getQuestionItemRef().getElementRevision();
         preInstructions = construct.getPreInstructions().stream().map( InstructionJsonView::new ).collect(Collectors.toList());
         postInstructions = construct.getPostInstructions().stream().map( InstructionJsonView::new ).collect(Collectors.toList());
         universe =  construct.getUniverse().stream().map( Universe::getDescription ).collect( Collectors.joining("/ ") );

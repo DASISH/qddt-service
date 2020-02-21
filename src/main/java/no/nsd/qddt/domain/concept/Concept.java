@@ -296,8 +296,8 @@ public class Concept extends AbstractEntityAudit implements IArchived {
                     .forEach( item -> {
                         pdfReport.addheader2( item.getName(), String.format( "Version %s", item.getVersion() ) );
                         pdfReport.addParagraph( item.getQuestion() );
-                        if (item.getResponsedomainRef().getElement() != null)
-                            item.getResponsedomainRef().getElement().fillDoc( pdfReport, "" );
+                        if (item.getResponseDomainRef().getElement() != null)
+                            item.getResponseDomainRef().getElement().fillDoc( pdfReport, "" );
                 });
             }
 

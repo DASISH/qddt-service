@@ -24,7 +24,7 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
      * @param questionId
      * @return
      */
-    List<QuestionConstruct> findByquestionItemUUID(UUID questionId);
+    List<QuestionConstruct> findByQuestionItemRefElementId(UUID questionId);
 
 
     @Query(name="findByQuery", nativeQuery = true,

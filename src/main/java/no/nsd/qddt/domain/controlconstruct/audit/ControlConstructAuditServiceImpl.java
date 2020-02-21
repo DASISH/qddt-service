@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
+import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import org.slf4j.Logger;
@@ -30,18 +31,17 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
-    private final QuestionItemAuditService qiAuditService;
-    private final CommentService commentService;
+    private final ElementLoader<QuestionItem> qidLoader;
+//    private final CommentService commentService;
     private boolean showPrivateComments;
 
 
     @Autowired
     public ControlConstructAuditServiceImpl(ControlConstructAuditRepository ccAuditRepository
-            , QuestionItemAuditService qAuditService
-            , CommentService cService) {
+            , QuestionItemAuditService qAuditService) {
         this.controlConstructAuditRepository = ccAuditRepository;
-        this.qiAuditService = qAuditService;
-        this.commentService = cService;
+        this.qidLoader = new ElementLoader<>( qAuditService);
+//        this.commentService = cService;
     }
 
     @Override
@@ -93,18 +93,9 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             // https://github.com/DASISH/qddt-client/issues/350
             instance.populateInstructions();
 
-            if(instance.getQuestionItemUUID() != null) {
-                if (instance.getQuestionItemRevision() == null || instance.getQuestionItemRevision() <= 0) {
-                    Revision<Integer, QuestionItem> rev = qiAuditService.findLastChange(instance.getQuestionItemUUID());
-                    instance.setQuestionItemRevision(rev.getRevisionNumber());
-                    instance.setQuestionItem(rev.getEntity());
-                } else {
-                    QuestionItem qi  =qiAuditService.findRevision(instance.getQuestionItemUUID(), instance.getQuestionItemRevision()).getEntity();
-                    instance.setQuestionItem(qi);
-                }
+            if(instance.getQuestionItemRef().getElementId() != null) {
+                qidLoader.fill( instance.getQuestionItemRef() );
             }
-            else
-                instance.setQuestionItemRevision(0);
 
         } catch (Exception ex){
             LOG.error("removeQuestionItem",ex);

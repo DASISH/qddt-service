@@ -17,7 +17,7 @@ public class QuestionItemFactory implements IEntityFactory<QuestionItem> {
 	@Override
 	public QuestionItem copyBody(QuestionItem source, QuestionItem dest) {
         dest.setName(source.getName());
-        dest.setResponsedomainRef( source.getResponsedomainRef() );
+        dest.setResponseDomainRef( source.getResponseDomainRef() );
         dest.setQuestion(source.getQuestion());
         dest.setIntent(source.getIntent());
 
