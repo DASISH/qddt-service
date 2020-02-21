@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.questionitem;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.embedded.ResponseDomainRef;
 import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.utils.StringTool;
@@ -69,30 +70,6 @@ public class QuestionItem extends AbstractEntityAudit {
     public void setResponseDomainRef(ResponseDomainRef responseDomainRef) {
         this.responseDomainRef = responseDomainRef;
     }
-
-
-//    public ResponseDomain getResponseDomain() {
-//        return responseDomain;
-//    }
-//
-//    public void setResponseDomain(ResponseDomain responseDomain) {
-////        CategoryType mrCat = responseDomain.getManagedRepresentation().getCategoryType();
-////        if (responseDomain!=null &&
-////            (mrCat != CategoryType.BOOLEAN & mrCat != CategoryType.CATEGORY &  mrCat != CategoryType.DATETIME &  mrCat != CategoryType.NUMERIC &  mrCat != CategoryType.TEXT)
-////            & responseDomain.getManagedRepresentation().getChildren().isEmpty()){
-////            LOG.info("MISSING ManagedRepresentation "+ responseDomain.getManagedRepresentation());
-////        }
-//        if (responseDomain != null) {
-//            this.responseDomain = responseDomain;
-//            setResponseDomainName( responseDomain.getName() );
-//            this.responseDomain.getVersion().setRevision(this.responseDomainRevision);
-//        } else {
-//            setResponseDomainName(null);
-//            setResponseDomainRevision( null );
-//            setResponseDomainUUID( null );
-//        }
-//
-//    }
 
     public String getQuestion() {
         return question;

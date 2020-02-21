@@ -3,20 +3,16 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.elementref.IElementRef;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
+import no.nsd.qddt.domain.embedded.QuestionItemRef;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.exception.StackTraceFilter;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +31,7 @@ public class QuestionConstruct  extends ControlConstruct {
     //------------- Begin QuestionItem revision early bind "hack" ---------------
     //------------- End QuestionItem revision early bind "hack"------------------
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade =  { CascadeType.DETACH, CascadeType.MERGE })
+    @ManyToMany(fetch = FetchType.EAGER)
     @OrderColumn(name="universe_idx")
     private List<Universe> universe =new ArrayList<>(0);
 

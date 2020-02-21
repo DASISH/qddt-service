@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.questionitem.json;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.IElementRef;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.questionitem.ResponseDomainRef;
+import no.nsd.qddt.domain.embedded.ResponseDomainRef;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.UUID;
@@ -52,6 +52,7 @@ public class ResponseDomainRefJsonEdit implements IElementRef<ResponseDomainJson
 
     @Override
     public ResponseDomainJsonEdit getElement() {
+        if (this.responseDomainRef.getElement() == null) return null;
         return new ResponseDomainJsonEdit(this.responseDomainRef.getElement());
     }
 

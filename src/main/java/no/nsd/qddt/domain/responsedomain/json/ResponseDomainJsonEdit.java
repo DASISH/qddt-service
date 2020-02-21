@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;

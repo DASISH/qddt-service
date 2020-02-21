@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.elementref;
 
+import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.IEntityAuditXmlRef;
 import org.hibernate.envers.Audited;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
  */
 @Audited
 @Embeddable
-public class ElementRef<T extends IEntityAuditXmlRef> extends AbstractElementRef<T> {
+public class ElementRef<T extends IElementRefType> extends AbstractElementRef<T> {
 
     public ElementRef() {
     }
@@ -23,12 +24,10 @@ public class ElementRef<T extends IEntityAuditXmlRef> extends AbstractElementRef
 
     @Override
     public ElementRef<T> clone() {
-        ElementRef<T> retval = new ElementRef<T>(getElementKind(), getElementId(),getElementRevision());
+        ElementRef<T> retval = new ElementRef<>(getElementKind(), getElementId(),getElementRevision());
         retval.setVersion( getVersion() );
         retval.setName( getName() );
         return retval;
     }
-
-
 
 }

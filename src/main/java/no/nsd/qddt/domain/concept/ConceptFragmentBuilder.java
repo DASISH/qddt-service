@@ -34,7 +34,7 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
             public ConceptFragmentBuilder(Concept concept) {
                 super(concept);
                 questions = concept.getConceptQuestionItems().stream()
-                .map( cqi ->   (QuestionItemFragmentBuilder)cqi.getElement().getXmlBuilder() )
+                .map( cqi ->   cqi.getElement().getXmlBuilder() )
                 .collect( Collectors.toList() );
 
                 children = concept.getChildren().stream()
@@ -62,10 +62,10 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
                     entity.getName(),
                     entity.getDescription(),
                     questions.stream()
-                        .map(q -> q.getEntityRef())
+                        .map( XmlDDIFragmentBuilder::getEntityRef )
                         .collect( Collectors.joining() ),
                     children.stream()
-                        .map(c -> c.getEntityRef())
+                        .map( XmlDDIFragmentBuilder::getEntityRef )
                         .collect( Collectors.joining()),
                     entity.getXmlLang());
             }

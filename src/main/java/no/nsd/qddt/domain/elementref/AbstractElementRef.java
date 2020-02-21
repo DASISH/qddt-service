@@ -7,6 +7,7 @@ package no.nsd.qddt.domain.elementref;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.IEntityAuditXmlRef;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
@@ -21,7 +22,7 @@ import java.util.UUID;
 
 @Audited
 @MappedSuperclass
-public abstract class AbstractElementRef<T extends IEntityAuditXmlRef> implements IElementRef<T> {
+public abstract class AbstractElementRef<T extends IElementRefType> implements IElementRef<T> {
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
@@ -100,23 +101,18 @@ public abstract class AbstractElementRef<T extends IEntityAuditXmlRef> implement
         versionLabel = version.getVersionLabel();
     }
 
-
-    @JsonSerialize
+    @Override
     public T getElement() {
-        try {
-            return  element;
-        } catch (Exception ex ) {
-            System.out.println(element.toString());
-            return null;
-        }
+        return element;
     }
+
+    @Override
     public void setElement(T element) {
         this.element = element;
         setValues();
     }
 
-
-    private AbstractElementRef setValues() {
+    private AbstractElementRef<T> setValues() {
         if (getElement() == null) return this;
         if (element instanceof QuestionItem)
             setName( getElement().getName() + " ➫ " + ((QuestionItem) element).getQuestion() );

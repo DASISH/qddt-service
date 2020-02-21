@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.controlconstruct.factory.*;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
+import no.nsd.qddt.domain.controlconstruct.json.Converter;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementLoader;
@@ -130,7 +131,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         }
 
         return controlConstructRepository.findByQuery(kind, superKind, likeify(name), likeify(description), "", "",pageable)
-            .map(qi -> mapConstructView(qi));
+            .map( Converter::mapConstructView );
     }
 
     @Override
@@ -165,12 +166,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
                             uService.save( universe );
                         }
                     });
-
-//                    if (qc.getQuestionItem() != null ) {
-//                        QuestionItem question = qc.getQuestionItem();
-//                        qc.setQuestionName(question.getName());
-//                        qc.setQuestionText(question.getQuestion());
-//                    }
 
                     if(qc.isBasedOn() || qc.isNewCopy()) {
                         Integer rev= auditService.findLastChange(qc.getId()).getRevisionNumber();
@@ -216,8 +211,9 @@ class ControlConstructServiceImpl implements ControlConstructService {
             QuestionConstruct qc = (QuestionConstruct)instance;
             qc.populateInstructions();                // instructions has to be unpacked into pre and post instructions
             try {
-                if(qc.getQuestionItemRef().getElementId() != null) {
+                if(qc.getQuestionItemRef().getElementId()!= null && qc.getQuestionItemRef().getElement() == null) {
                     qidLoader.fill( qc.getQuestionItemRef() );
+                    LOG.info( "QI loaded " + qc.getQuestionItemRef().getElement());
                 }
             } catch (Exception ex) {
                 LOG.error( "CCS QI revision not found, resetting to latest.", ex );

@@ -1,12 +1,11 @@
-package no.nsd.qddt.domain.controlconstruct.pojo;
+package no.nsd.qddt.domain.embedded;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.IElementRef;
-import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
+import org.springframework.data.history.Revision;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -23,15 +22,10 @@ public class QuestionItemRef implements IElementRef<QuestionItem> {
      * This field will be populated with the correct version of a QI,
      * but should never be persisted.
      */
-    @JsonSerialize
     @Transient
+    @JsonSerialize
     private QuestionItem element;
 
-    /**
-     * This field must be available "raw" in order to set and query
-     * questionitem by ID
-     */
-    @JsonIgnore
     @Type(type="pg-uuid")
     @Column(name="questionitem_id")
     private UUID elementId;
@@ -45,8 +39,18 @@ public class QuestionItemRef implements IElementRef<QuestionItem> {
     @Column(name = "question_text", length = 500 )
     private String text;
 
+    public QuestionItemRef() {
+    }
 
+    public QuestionItemRef(QuestionItem questionItem ) {
+        setElement( questionItem );
+    }
+    public QuestionItemRef(Revision<Integer,QuestionItem> revision ) {
+        setElementRevision( revision.getRevisionNumber() );
+        setElement( revision.getEntity() );
+    }
     @Override
+    @Transient
     public ElementKind getElementKind() {
         return ElementKind.QUESTION_ITEM;
     }
@@ -56,6 +60,9 @@ public class QuestionItemRef implements IElementRef<QuestionItem> {
         return this.elementId;
     }
 
+    private void setElementId(UUID id) {
+        this.elementId = id;
+    }
     @Override
     public Integer getElementRevision() {
         return this.elementRevision;
@@ -105,7 +112,19 @@ public class QuestionItemRef implements IElementRef<QuestionItem> {
 
     @Override
     public void setElement(QuestionItem element) {
-        this.element = element;
+        this.element =  element;
+
+        if (element != null) {
+            setElementId( element.getId() );
+            setName( element.getName() );
+            setText( element.getQuestion() );
+            this.getVersion().setRevision(this.elementRevision);
+        } else {
+            setName(null);
+            setText( null );
+            setElementRevision( null );
+            setElementId( null );
+        }
     }
 
     @Override

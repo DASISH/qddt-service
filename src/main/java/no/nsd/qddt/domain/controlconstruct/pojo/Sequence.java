@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
+import no.nsd.qddt.domain.IElementRefType;
+import no.nsd.qddt.domain.IEntityAuditXmlRef;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.envers.Audited;
 
@@ -22,7 +24,7 @@ public class Sequence extends ControlConstruct {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_SEQUENCE",
         joinColumns = @JoinColumn(name="sequence_id", referencedColumnName = "id"))
-    private List<ElementRef> sequence = new ArrayList<>();
+    private List<ElementRef<IElementRefType>> sequence = new ArrayList<>();
 
 
     @Enumerated(EnumType.STRING)
@@ -48,11 +50,11 @@ public class Sequence extends ControlConstruct {
         this.description = description;
     }
 
-    public List<ElementRef> getSequence() {
+    public List<ElementRef<IElementRefType>> getSequence() {
         return sequence;
     }
 
-    public void setSequence(List<ElementRef> sequence) {
+    public void setSequence(List<ElementRef<IElementRefType>> sequence) {
         this.sequence = sequence;
     }
 

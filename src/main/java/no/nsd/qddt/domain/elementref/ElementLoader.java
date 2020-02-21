@@ -25,8 +25,8 @@ public class ElementLoader<T extends AbstractEntityAudit>{
     public IElementRef<T>fill(IElementRef<T> element) {
         Revision<Integer, T> revision = get(element.getElementId(), element.getElementRevision() );
         try {
-            element.setElementRevision( revision.getRevisionNumber() );
             element.setElement(revision.getEntity());
+            element.setElementRevision( revision.getRevisionNumber() );
         } catch (Exception e) {
             LOG.error("ElementLoader setElement, reference has wrong signature");
         }

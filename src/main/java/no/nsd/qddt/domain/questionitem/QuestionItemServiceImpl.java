@@ -42,7 +42,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private final QuestionItemAuditService auditService;
     private final ConceptService conceptService;
     private final ResponseDomainService responseDomainService;
-    private final ElementLoader rdLoader;
+    private final ElementLoader<ResponseDomain> rdLoader;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
@@ -156,8 +156,10 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem postLoadProcessing(QuestionItem instance){
         try{
-            if(instance.getResponseDomainRef().getElementId()!= null) {
+            if(instance.getResponseDomainRef().getElementId()!= null && instance.getResponseDomainRef().getElement() == null) {
                 rdLoader.fill( instance.getResponseDomainRef() );
+            } else {
+                LOG.info( "no RD in this QI" );
             }
             instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
                 .map( ConceptRef::new )
@@ -180,24 +182,6 @@ class QuestionItemServiceImpl implements QuestionItemService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new QuestionItemFactory().copy(instance, rev );
 
-
-//        if (instance.getResponseDomain() != null | instance.getResponseDomainRef().getElementId()!= null) {
-//            if (instance.getResponseDomainRef().getElementId()== null) {
-//                instance.setResponseDomainUUID(instance.getResponseDomain().getId());
-//            }
-//            if (instance.getResponseDomainRef().getElementRevision() <= 0) {
-//                try {
-//                    Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainRef().getElementId());
-//                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
-//                } catch (Exception ex) {
-//                    LOG.error("Set default RevisionNumber failed",ex);
-//                }
-//            }
-//        }
-//        else {
-//            instance.setResponseDomainRevision(0);
-//            LOG.info("no repsonsedomain returned from web");
-//        }
          return instance;
     }
 }

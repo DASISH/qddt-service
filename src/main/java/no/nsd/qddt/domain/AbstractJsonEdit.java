@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public  abstract class AbstractJsonEdit implements Serializable {
+public  abstract class AbstractJsonEdit implements Serializable, IElementRefType {
 
 
 	protected final Logger LOG = LoggerFactory.getLogger(this.getClass());

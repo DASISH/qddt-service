@@ -1,9 +1,8 @@
-package no.nsd.qddt.domain.questionitem;
+package no.nsd.qddt.domain.embedded;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.IElementRef;
-import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.annotations.Type;
 import org.springframework.data.history.Revision;
