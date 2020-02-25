@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -19,12 +20,16 @@ public interface PublicationRepository extends BaseRepository<Publication,UUID> 
         value =
             "SELECT p.*  FROM publication p " +
             "LEFT JOIN publication_status ps ON p.status_id = ps.id " +
-            "WHERE ( ps.published = :publishedKind and (ps.label similar to :publicationStatus or p.name ILIKE :name or p.purpose ILIKE :purpose) ) "
+            "WHERE ( ps.published = :publishedKind " +
+                "and (p.agency_id = :agencyId  or 'EXTERNAL_PUBLICATION'  = :publishedKind) " +
+                "and (ps.label similar to :publicationStatus or p.name ILIKE :name or p.purpose ILIKE :purpose) ) "
             + "ORDER BY ?#{#pageable}"
         ,countQuery =
             "SELECT count(p.*) FROM publication p " +
             "LEFT JOIN publication_status ps ON p.status_id = ps.id " +
-            "WHERE ( ps.published = :publishedKind and (ps.label similar to :publicationStatus or p.name ILIKE :name or p.purpose ILIKE :purpose) ) "
+                "WHERE ( ps.published = :publishedKind " +
+                "and (p.agency_id = :agencyId  or 'EXTERNAL_PUBLICATION'  = :publishedKind) " +
+                "and (ps.label similar to :publicationStatus or p.name ILIKE :name or p.purpose ILIKE :purpose) ) "
             + " ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<Publication> findByQuery(
@@ -32,6 +37,7 @@ public interface PublicationRepository extends BaseRepository<Publication,UUID> 
         @Param("purpose")String purpose,
         @Param("publicationStatus")String publicationStatus,
         @Param("publishedKind")String publishedKind,
+        @Param( "agencyId") UUID agencyId,
         @Param("pageable")Pageable pageable);
 
 

@@ -1,27 +1,20 @@
 package no.nsd.qddt.domain.publication;
 
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-
-import org.hibernate.envers.Audited;
-
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 /**
  * @author Stig Norland
@@ -32,10 +25,13 @@ import no.nsd.qddt.exception.StackTraceFilter;
 public class Publication extends AbstractEntityAudit {
 
     private String purpose;
-//https://www.baeldung.com/jackson-json-view-annotation
+
+    @Column(name="status_id", nullable = false)
+    private Long statusId;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @Audited(targetAuditMode = NOT_AUDITED)
-    @JoinColumn(name="status_id", nullable = false)
+    @JoinColumn(name="status_id", updatable = false, insertable = false)
     private PublicationStatus status;
 
     @OrderColumn(name="publication_idx")
@@ -53,13 +49,25 @@ public class Publication extends AbstractEntityAudit {
         this.purpose = purpose;
     }
 
+    public Long getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
+    }
 
     public PublicationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(PublicationStatus status) {
+    protected void setStatus(PublicationStatus status) {
         this.status = status;
+    }
+
+    @Transient
+    public boolean isPublished() {
+        return this.status.getPublished() == PublicationStatus.Published.EXTERNAL_PUBLICATION;
     }
 
     public List<ElementRef> getPublicationElements() {

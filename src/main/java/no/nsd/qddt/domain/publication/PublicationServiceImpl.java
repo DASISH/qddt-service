@@ -102,14 +102,6 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public Page<Publication> findAllPageable(Pageable pageable) {
-        return repository.findAll(defaultSort(pageable,"name","modified"));
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public Page<Publication> findByNameOrPurposeAndStatus(String name, String purpose, String publicationStatus, String publishedKind, Pageable pageable) {
 
         if (name.isEmpty()  &&  purpose.isEmpty() && publicationStatus.isEmpty()) {
@@ -132,7 +124,7 @@ public class PublicationServiceImpl implements PublicationService {
             published = Published.INTERNAL_PUBLICATION;
         }
 
-        return repository.findByQuery(likeify(name),likeify(purpose),statuses, published.name() ,defaultOrModifiedSort(pageable,"name"));
+        return repository.findByQuery(likeify(name),likeify(purpose),statuses, published.name(),SecurityContext.getUserDetails().getUser().getAgency().getId() ,defaultOrModifiedSort(pageable,"name"));
 
     }
 

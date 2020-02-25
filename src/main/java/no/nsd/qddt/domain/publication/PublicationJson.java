@@ -16,19 +16,25 @@ private static final long serialVersionUID = 1L;
 
 private String purpose;
 
+private Long statusId;
+
 private PublicationStatus status;
 
-private List<ElementRef>  publicationElements = new ArrayList<>();
+private List<ElementRef>  publicationElements;
 
 public PublicationJson(Publication publication) {
     super(publication);
     this.purpose = publication.getPurpose();
     this.status = publication.getStatus();
+    this.statusId = publication.getStatusId();
     this.publicationElements = publication.getPublicationElements();
 }
 
+    public Long getStatusId() {
+        return statusId;
+    }
 
-public String getPurpose() {
+    public String getPurpose() {
     return purpose;
 }
 

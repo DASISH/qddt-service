@@ -19,6 +19,7 @@ public class PublicationFactory implements IEntityFactory<Publication> {
     @Override
     public Publication copyBody(Publication source, Publication dest) {
         dest.setPurpose( source.getPurpose() );
+        dest.setStatusId( source.getStatusId() );
         dest.setStatus( source.getStatus() );
         dest.setPublicationElements(
             source.getPublicationElements().stream().map( ElementRef::clone ).collect( Collectors.toList() ) );

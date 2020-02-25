@@ -64,13 +64,6 @@ public class PublicationController {
         service.delete(id);
     }
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/page", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<Publication>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
-
-        Page<Publication> selectables = service.findAllPageable(pageable);
-        return new ResponseEntity<>(assembler.toResource(selectables), HttpStatus.OK);
-    }
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
