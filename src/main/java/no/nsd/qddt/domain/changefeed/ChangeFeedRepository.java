@@ -22,6 +22,7 @@ public interface ChangeFeedRepository extends JpaRepository<ChangeFeed,ChangeFee
         + "ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(cl) FROM ChangeFeed cl " +
         "WHERE  lower(cl.name) like :name or lower(cl.refChangeKind) LIKE :changeKind or lower(cl.refKind) LIKE :kind "
+        + "ORDER BY ?#{#pageable}"
         ,nativeQuery = false)
     Page<ChangeFeed> findByQuery(
         @Param("name")String name,

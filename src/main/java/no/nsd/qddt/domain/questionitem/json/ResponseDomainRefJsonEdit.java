@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.IElementRef;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.embedded.ResponseDomainRef;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.UUID;
@@ -13,51 +14,63 @@ import java.util.UUID;
  */
 public class ResponseDomainRefJsonEdit implements IElementRef<ResponseDomainJsonEdit> {
 
-    private ResponseDomainRef responseDomainRef;
+    private ElementKind elementKind;
+    private UUID elementId;
+    private Integer elementRevision;
+    private ResponseDomainJsonEdit element;
+    private String name;
+    private Version version;
+
 
     public ResponseDomainRefJsonEdit(ResponseDomainRef responseDomainRef) {
         if (responseDomainRef == null) return;
-        this.responseDomainRef = responseDomainRef;
+        elementKind = responseDomainRef.getElementKind();
+        elementId = responseDomainRef.getElementId();
+        elementRevision = responseDomainRef.getElementRevision();
+        if (responseDomainRef.getElement() != null)
+            element =  new ResponseDomainJsonEdit(responseDomainRef.getElement());
+        name = responseDomainRef.getName();
+        version = responseDomainRef.getVersion();
     }
 
     @Override
     public ElementKind getElementKind() {
-        return this.responseDomainRef.getElementKind();
+        return this.elementKind;
     }
 
     @Override
     public UUID getElementId() {
-        return this.responseDomainRef.getElementId();
+        return this.elementId;
     }
 
     @Override
     public Integer getElementRevision() {
-        return this.responseDomainRef.getElementRevision();
+        return this.elementRevision;
     }
 
     @Override
     public void setElementRevision(Integer revisionNumber) {
-        this.responseDomainRef.setElementRevision( revisionNumber );
+        this.elementRevision = revisionNumber;
     }
 
     @Override
     public String getName() {
-        return this.responseDomainRef.getName();
+        return this.name;
     }
 
     @Override
     public Version getVersion() {
-        return this.responseDomainRef.getVersion();
+        return this.version;
     }
 
     @Override
     public ResponseDomainJsonEdit getElement() {
-        if (this.responseDomainRef.getElement() == null) return null;
-        return new ResponseDomainJsonEdit(this.responseDomainRef.getElement());
+        return this.element;
     }
 
     @Override
     public void setElement(ResponseDomainJsonEdit element) {
-
+        this.element = element;
     }
+
 }
