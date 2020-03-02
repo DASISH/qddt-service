@@ -16,7 +16,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
             "\t</l:CategoryName>" +
             "\t<r:Label>\n" +
             "\t\t<Content %2$s >%4$s</Content>\n" +
-            "\t</Label>\n" +
+            "\t</r:Label>\n" +
         "%5$s";
 
     private final String xmlDomainReference =

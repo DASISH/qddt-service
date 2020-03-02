@@ -12,6 +12,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -64,8 +65,12 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH } , mappedBy = "study")
     private Set<Instrument> instruments = new HashSet<>();
 
-    @OneToMany( cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE }, mappedBy = "study", fetch = FetchType.LAZY)
+    @Column(name = "survey_idx", insertable = false, updatable = false)
+    private int surveyIdx;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "study", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderColumn(name="study_idx")
+    @AuditMappedBy(mappedBy = "study", positionMappedBy = "studyIdx")
     private List<TopicGroup> topicGroups = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
@@ -120,8 +125,6 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
             instruments = new HashSet<>();
         return instruments;
     }
-
-
 
     public List<TopicGroup> getTopicGroups() {
         return topicGroups;

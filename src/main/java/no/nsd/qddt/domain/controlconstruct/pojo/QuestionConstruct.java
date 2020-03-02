@@ -137,7 +137,6 @@ public class QuestionConstruct  extends ControlConstruct {
             .collect(Collectors.toList()));
     }
 
-
     public List<Instruction> getPreInstructions() {
         return preInstructions;
     }
@@ -153,8 +152,6 @@ public class QuestionConstruct  extends ControlConstruct {
     private void setPostInstructions(List<Instruction> postInstructions) {
         this.postInstructions = postInstructions;
     }
-
-
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter)  {

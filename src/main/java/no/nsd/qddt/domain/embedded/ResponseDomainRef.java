@@ -38,6 +38,7 @@ public class ResponseDomainRef implements IElementRef<ResponseDomain> {
     public ResponseDomainRef(ResponseDomain responseDomain ) {
         setElement( responseDomain );
     }
+
     public ResponseDomainRef(Revision<Integer,ResponseDomain>revision ) {
         setElementRevision( revision.getRevisionNumber() );
         setElement( revision.getEntity() );

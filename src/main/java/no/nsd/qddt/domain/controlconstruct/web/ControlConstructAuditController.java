@@ -1,10 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.jsonviews.View;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

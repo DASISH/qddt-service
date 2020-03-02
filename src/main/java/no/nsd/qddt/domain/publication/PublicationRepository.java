@@ -37,7 +37,7 @@ public interface PublicationRepository extends BaseRepository<Publication,UUID> 
         @Param("purpose")String purpose,
         @Param("publicationStatus")String publicationStatus,
         @Param("publishedKind")String publishedKind,
-        @Param( "agencyId") UUID agencyId,
+        @Param("agencyId") UUID agencyId,
         @Param("pageable")Pageable pageable);
 
 

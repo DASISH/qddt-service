@@ -128,7 +128,7 @@ public class QuestionItem extends AbstractEntityAudit {
             "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
             "\"intent\":" + (intent == null ? "null" : "\"" + intent + "\"") + ", " +
             "\"question\":" + (question == null ? "null" : "\"" + question + "\"") + ", " +
-            "\"responseDomainName\":" + (responseDomainRef == null ? "null" : "\"" + responseDomainRef.getName() + "\"") + ", " +
+            "\"responseDomainName\":" + (responseDomainRef.getName() == null ? "null" : "\"" + responseDomainRef.getName() + "\"") + ", " +
             "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
             "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
             "}";

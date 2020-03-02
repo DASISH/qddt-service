@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -51,6 +52,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderColumn(name="survey_idx")
+    @AuditMappedBy(mappedBy = "surveyProgram", positionMappedBy = "surveyIdx")
     private List<Study> studies = new ArrayList<>();
 
     @Column(length = 10000)

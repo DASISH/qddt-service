@@ -24,7 +24,7 @@ public class ConceptFactory implements IEntityFactory<Concept> {
 
         dest.setChildren(source.getChildren().stream()
             .map(mapper -> copy(mapper, dest.getBasedOnRevision()))
-            .collect(Collectors.toSet()));
+            .collect(Collectors.toList()));
 
         dest.getChildren().forEach(action -> action.setParentC(dest));
 

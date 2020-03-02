@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
 
@@ -91,8 +93,14 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
         try{
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
+//            Hibernate.initialize(instance.getControlConstructInstructions());
             instance.populateInstructions();
 
+            if (instance.getControlConstructInstructions().size() > 0 ) {
+                LOG.info("here they are: " + instance.getControlConstructInstructions().stream()
+                    .map( p -> p.getInstruction().getName() )
+                    .collect( Collectors.joining(", ")));
+            }
             if(instance.getQuestionItemRef().getElementId() != null) {
                 qidLoader.fill( instance.getQuestionItemRef() );
             }
@@ -108,7 +116,6 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
         assert  (instance != null);
 
 //        List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
-
 //        instance.setComments(new ArrayList<>(coms));
 
         return  instance.getClassKind().equals("QUESTION_CONSTRUCT")?postLoadProcessing( (QuestionConstruct) instance ): instance;

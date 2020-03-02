@@ -104,6 +104,7 @@ class ConceptServiceImpl implements ConceptService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
+        LOG.info( "deleting " + uuid );
         if (conceptRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
         try {
@@ -151,6 +152,13 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
+    public List<Concept> findByTopicGroup(UUID id) {
+        return tgService.findOne(id).getConcepts().stream()
+            .map( this::postLoadProcessing)
+            .collect(Collectors.toList());
+    }
+
+    @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<Concept> findByQuestionItem(UUID id, Integer rev) {
         return conceptRepository.findByConceptQuestionItemsElementId(id);
@@ -172,7 +180,18 @@ class ConceptServiceImpl implements ConceptService {
     private Concept prePersistProcessing(Concept instance) {
         try {
             instance.getChildren().stream().forEach( this::setChildChangeStatus );
-
+            if (instance.hasTopicGroup()) {
+                if(instance.getParentTopicGroup() == null) {
+                    LOG.info( "Topicgroup not set !!!" );
+//                    tgService.findOne( instance. )
+                    instance.getParentTopicGroup().addConcept( instance );
+                } else if (instance.getId() == null) {
+                    instance.getParentTopicGroup().addConcept( instance );
+                } else {
+                    if (!instance.getParentTopicGroup().getConcepts().stream().anyMatch( p -> p.getId() == instance.getId() ))
+                        instance.getParentTopicGroup().addConcept( instance );
+                }
+            }
         } catch (NullPointerException npe) {
             LOG.error("ConceptService-> prePersistProcessing " + npe);
         } catch(Exception ex) {

@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -102,12 +104,18 @@ public class ConceptController extends AbstractController {
     public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("uuid") UUID parentId) {
 
         if (service.exists( parentId )) {
-             service.findOne( parentId ).addChildren( concept );
-            return concept2Json( service.save( concept ) );
+            return concept2Json(
+                service.save(
+                    service
+                        .findOne(parentId)
+                        .addChildren(concept)));
 
         } else {
-            topicGroupService.findOne(parentId).addConcept(concept);
-            return concept2Json(service.save(concept));
+            return concept2Json(
+                service.save(
+                    topicGroupService
+                        .findOne(parentId)
+                        .addConcept(concept)));
         }
     }
 
@@ -137,10 +145,9 @@ public class ConceptController extends AbstractController {
 
 
     @RequestMapping(value = "/list/by-parent/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<List<ConceptJsonEdit>> getbyTopicId(@PathVariable("topicId") UUID id, Pageable pageable) {
+    public List<ConceptJsonEdit> getbyTopicId(@PathVariable("topicId") UUID id) {
 
-        Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,new PageRequest(0,100,pageable.getSort())).map(ConceptJsonEdit::new);
-        return new ResponseEntity<>(concepts.getContent(), HttpStatus.OK);
+        return service.findByTopicGroup(id).stream().map( p -> new ConceptJsonEdit(p) ).collect( Collectors.toList());
     }
 
 

@@ -25,6 +25,7 @@ interface TopicGroupRepository extends BaseArchivedRepository<TopicGroup,UUID> {
         + "ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(tg.*) FROM topic_group tg " +
         "WHERE (  tg.change_kind !='BASED_ON' and (tg.name ILIKE :name or tg.description ILIKE :description) ) "
+        + "ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<TopicGroup> findByQuery(@Param("name")String name, @Param("description")String description, Pageable pageable);
 

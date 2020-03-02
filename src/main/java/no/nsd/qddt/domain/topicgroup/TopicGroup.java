@@ -17,6 +17,7 @@ import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -57,23 +58,21 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @Column(name = "description", length = 10000)
     private String description;
 
-//    @JsonIgnore
-    @JsonBackReference(value = "studyRef")
     @ManyToOne()
+    @JsonBackReference(value = "studyRef")
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
-    @Column(name = "study_id", insertable = false, updatable = false)
-    private UUID studyId;
+    @Column(name = "study_idx", insertable = false, updatable = false)
+    private int studyIdx;
 
-    @JsonIgnore
-    @OrderBy(value = "name asc")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "topicGroup", cascade = { CascadeType.MERGE, CascadeType.REMOVE })
-    private Set<Concept> concepts = new HashSet<>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @OrderColumn(name="concept_idx")
+    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "conceptIdx")
+    private List<Concept> concepts = new ArrayList<>(0);
 
 
     @OrderColumn(name="topicgroup_idx")
-//    @OrderBy("topicgroup_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
     private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>();
@@ -87,7 +86,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     private Set<Author> authors = new HashSet<>();
 
     @OrderColumn(name="owner_idx")
-//    @OrderBy("owner_idx ASC")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
@@ -126,19 +124,20 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
 
     public Concept addConcept(Concept concept){
-        concept.setTopicGroup(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");
+        concepts.add(concept);
+        concept.setTopicGroup(this);
         return concept;
     }
 
-    public Set<Concept> getConcepts() {
+    public List<Concept> getConcepts() {
         return concepts;
     }
-    public void setConcepts(Set<Concept> concepts) {
+
+    public void setConcepts(List<Concept> concepts) {
         this.concepts = concepts;
     }
-
 
     public List<OtherMaterial> getOtherMaterials() {
         try {

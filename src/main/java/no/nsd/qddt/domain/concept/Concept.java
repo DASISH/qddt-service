@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
-import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.elementref.IElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.parentref.TopicRef;
@@ -19,6 +17,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -37,27 +36,28 @@ import java.util.*;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements IArchived {
 
-
-    @JsonBackReference(value = "parentRef")
     @ManyToOne()
-    @JoinColumn(name = "concept_id",updatable = false,insertable = false)
+    @JsonBackReference(value = "parentRef")
+    @JoinColumn(name="concept_id",updatable = false)
     private Concept parentReferenceOnly;
 
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @OrderBy(value = "name asc")
-    @JoinColumn(name = "concept_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly")
-    private Set<Concept> children = new HashSet<>(0);
-
-
-    @JsonBackReference(value = "topicGroupRef")
     @ManyToOne()
-    @JoinColumn(name = "topicgroup_id",updatable = false)
+    @JsonBackReference(value = "topicGroupRef")
+    @JoinColumn(name="topicgroup_id",updatable = false)
     private TopicGroup topicGroup;
 
     @Column(name = "topicgroup_id", insertable = false, updatable = false)
     private UUID topicGroupId;
+
+    @Column(name = "concept_idx", insertable = false, updatable = false)
+    private int conceptIdx;
+
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentReferenceOnly", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @OrderColumn(name="concept_idx")
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "conceptIdx")
+    private List<Concept> children = new ArrayList<>(0);
+
 
     @OrderColumn(name="concept_idx")
     @ElementCollection(fetch = FetchType.EAGER)
@@ -128,20 +128,20 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             LOG.debug("ConceptQuestionItem not inserted, match found" );
     }
 
-
-    public Set<Concept> getChildren() {
+    public List<Concept> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<Concept> children) {
+    public void setChildren(List<Concept> children) {
         this.children = children;
     }
 
-    public void addChildren(Concept concept){
+    public Concept addChildren(Concept concept){
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
         this.children.add(concept);
         this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
+        return concept;
     }
 
 
@@ -207,6 +207,9 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return current.getTopicGroup();
     }
 
+    public boolean hasTopicGroup() {
+        return (topicGroupId != null);
+    }
 
     private List<AbstractEntityAudit> getParents() {
         List<AbstractEntityAudit> retvals = new ArrayList<>( 1 );
@@ -268,7 +271,15 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return new ConceptFragmentBuilder(this);
     }
 
-
+    @PreRemove
+    public void remove(){
+        LOG.debug(" Concept pre remove");
+        if (this.getParentRef() != null) {
+            this.getParentRef().getChildren().removeIf(p->p.getId() == this.getId());
+            AtomicInteger i= new AtomicInteger();
+//            this.getParentRef().getChildren().forEach( c -> c.concept_idx = i.getAndIncrement() );
+        }
+    }
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter ) {
@@ -318,8 +329,14 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             throw ex;
         }
     }
+
     @Override
-    protected void beforeUpdate() {}
+    protected void beforeUpdate() {
+        if(topicGroupId !=null &&  getTopicGroup() == null) {
+            LOG.info( "topicGroup not set " );
+        }
+    }
+
     @Override
     protected void beforeInsert() {}
 
