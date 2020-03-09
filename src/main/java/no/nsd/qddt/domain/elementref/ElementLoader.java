@@ -22,7 +22,7 @@ public class ElementLoader<T extends AbstractEntityAudit>{
         this.serviceAudit = serviceAudit;
     }
 
-    public IElementRef<T>fill(IElementRef<T> element) {
+    public IElementRef<T> fill(IElementRef<T> element) {
         Revision<Integer, T> revision = get(element.getElementId(), element.getElementRevision() );
         try {
             element.setElement(revision.getEntity());

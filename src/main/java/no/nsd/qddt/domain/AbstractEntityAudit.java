@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.elementref.IEntityRef;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  implements IEntityAuditXmlRef ,IElementRefType{
+public abstract class AbstractEntityAudit extends AbstractEntity  implements IEntityXml, IEntityRef,  IEntityKind {
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -139,7 +140,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private String xmlLang = "en-GB";
 
     @NotAudited
-    @OrderBy(value = "owner_idx desc")
     @OrderColumn(name="owner_idx")
     @OneToMany(mappedBy="ownerId", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -271,12 +271,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private void onUpdate(){
         try {
             LOG.info("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
-            LOG.info(
-                StackTraceFilter.filter(
-                    Thread.currentThread().getStackTrace() ).stream()
-                    .map( e->e.toString() )
-                    .collect( Collectors.joining(",")
-                    ));
             Version ver = version;
             ChangeKind change = changeKind;
             User user = SecurityContext.getUserDetails().getUser();
@@ -323,7 +317,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
             beforeUpdate();
         } catch (Exception ex){
             LOG.error("AbstractEntityAudit::onUpdate",ex);
-
         }
     }
 

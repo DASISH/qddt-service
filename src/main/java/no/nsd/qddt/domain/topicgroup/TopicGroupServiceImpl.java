@@ -103,13 +103,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public TopicGroup copy(UUID id, Integer rev, UUID parentId) {
-//        EntityManager entityManager = this.emf.createEntityManager();
         TopicGroup source = auditService.findRevision( id, rev ).getEntity();
         TopicGroup target = new TopicGroupFactory().copy(source, rev);
         studyService.findOne( parentId ).addTopicGroup( target );
-//        entityManager.detach( target );
-//        target.setParentU(parentId);
-//        entityManager.merge( target );
         return topicGroupRepository.save(target);
     }
 
@@ -171,7 +167,11 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
-        
+        if (instance.getId() == null) {
+            if (instance.studyId != null){
+                studyService.findOne(instance.studyId).addTopicGroup(instance);
+            }
+        }
         return doArchive( instance ) ;
     }
 

@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.publication;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;

@@ -43,7 +43,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
 
 
     private boolean hasPrivilege(QDDTUserDetails details, AbstractEntity entity, String permission){
-        LOG.info( details.getUsername() + ": " + permission + ": " + toJson((AbstractEntityAudit)entity)  );
+        LOG.info( details.getUsername() + ": " + permission + ": " + toJson(entity)  );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
@@ -53,6 +53,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
             case USER:
                 return isUser( details.getUser(), entity );
             case AGENCY:
+
                 return isMemberOfAgency( details.getUser().getAgency(), (AbstractEntityAudit )entity );
             default:
                 LOG.info( "hasPrivilege default: fail" );
@@ -80,12 +81,11 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         return false;
     }
 
-    public String toJson(AbstractEntityAudit entity) {
+    public String toJson(AbstractEntity entity) {
         return "{" +
             "\"id\":" + (entity.getId() == null ? "null" : "\"" + entity.getId() +"\"" ) + ", " +
             "\"modified\":" + (entity.getModified() == null ? "null" : "\"" + entity.getModified()+ "\"" ) + " , " +
-            "\"classKind\":" + (entity.getClassKind() == null ? "null" : "\"" + entity.getClassKind() + "\"") + ", " +
-            "\"name\":" + (entity.getName() == null ? "null" : "\"" + entity.getName() + "\"") +
+            "\"classKind\":" + entity.getClass().getSimpleName() + "\"" +
             "}";
     }
 }

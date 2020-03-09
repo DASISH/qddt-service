@@ -2,12 +2,10 @@ package no.nsd.qddt.domain.questionitem.audit;
 
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
-import no.nsd.qddt.domain.responsedomain.web.ResponseDomainAuditController;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
-
-import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 
 
 /**
@@ -33,17 +27,14 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final QuestionItemAuditRepository questionItemAuditRepository;
 
-    private final CommentService commentService;
     private final ElementLoader rdLoader;
 
     private boolean showPrivateComments;
 
     @Autowired
-    public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditService responseDomainAuditService,
-                                        CommentService commentService) {
+    public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditService responseDomainAuditService) {
         this.questionItemAuditRepository = questionItemAuditRepository;
         this.rdLoader =  new ElementLoader( responseDomainAuditService );
-        this.commentService = commentService;
     }
 
     @Override
@@ -96,8 +87,7 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
         if (instance.getEntity().getResponseDomainRef().getElementId() != null) {
             rdLoader.fill( instance.getEntity().getResponseDomainRef() );
         }
-        List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
-        instance.getEntity().setComments(new ArrayList<>(coms));
+        Hibernate.initialize( instance.getEntity().getComments() );
         instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
 
         return instance;

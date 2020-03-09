@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.responsedomain.audit;
 
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -14,9 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,13 +24,11 @@ class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,Respons
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final ResponseDomainAuditRepository responseDomainAuditRepository;
-    private final CommentService commentService;
     private boolean showPrivateComments;
 
     @Autowired
-    public ResponseDomainAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository, CommentService commentService) {
+    public ResponseDomainAuditServiceImpl(ResponseDomainAuditRepository responseDomainAuditRepository) {
         this.responseDomainAuditRepository = responseDomainAuditRepository;
-        this.commentService = commentService;
     }
 
     @Override
@@ -74,8 +68,7 @@ class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,Respons
     protected Revision<Integer, ResponseDomain> postLoadProcessing(Revision<Integer, ResponseDomain> instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
-            instance.getEntity().setComments(new ArrayList<>(coms));
+            Hibernate.initialize( instance.getEntity().getComments() );
             Hibernate.initialize(instance.getEntity().getManagedRepresentation());  //Lazy loading trick... (we want the MRep when locking at a revision).
         } catch (Exception ex) {
             LOG.error("postLoadProcessing", ex);

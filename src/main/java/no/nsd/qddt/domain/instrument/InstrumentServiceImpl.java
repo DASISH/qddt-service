@@ -1,9 +1,7 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.hibernate.Hibernate;

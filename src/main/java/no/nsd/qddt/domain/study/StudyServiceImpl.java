@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -31,11 +32,14 @@ class StudyServiceImpl implements StudyService {
     private final ElementLoader qiLoader;
 
     private final StudyRepository studyRepository;
+    private final SurveyProgramService surveyService;
 
     @Autowired
     public StudyServiceImpl(StudyRepository studyRepository,
+                            SurveyProgramService surveyProgramService,
                             QuestionItemAuditService questionItemAuditService) {
         this.qiLoader = new ElementLoader( questionItemAuditService );
+        this.surveyService = surveyProgramService;
         this.studyRepository = studyRepository;
     }
 
@@ -57,7 +61,8 @@ class StudyServiceImpl implements StudyService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Study findOne(UUID uuid) {
         return postLoadProcessing(
-            studyRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException(uuid, Study.class))
+            studyRepository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException(uuid, Study.class))
         );
     }
 
@@ -67,8 +72,8 @@ class StudyServiceImpl implements StudyService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')  and hasPermission(#instance,'AGENCY')")
     public Study save(Study instance) {
         return postLoadProcessing(
-                studyRepository.save(
-                        prePersistProcessing(instance)));
+            studyRepository.save(
+                prePersistProcessing(instance)));
     }
 
     @Override
@@ -89,7 +94,11 @@ class StudyServiceImpl implements StudyService {
     private Study prePersistProcessing(Study instance) {
 
         instance = doArchive( instance ) ;
-
+        if (instance.getId() == null) {
+            if (instance.surveyId != null){
+                surveyService.findOne(instance.surveyId).addStudy(instance);
+            }
+        }
         if (instance.getTopicGroups() != null & !instance.isArchived())
             instance.getTopicGroups().forEach(c->{
                 c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);

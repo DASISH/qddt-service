@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.borders.DottedBorder;
 import com.itextpdf.layout.element.Cell;
@@ -9,13 +8,13 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.IEntityRef;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.jsonviews.View;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -72,7 +71,7 @@ import static no.nsd.qddt.utils.StringTool.IsNullOrEmpty;
 @Audited
 @Entity
 @Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id","based_on_object"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
-public class ResponseDomain extends AbstractEntityAudit  {
+public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
     /**
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */

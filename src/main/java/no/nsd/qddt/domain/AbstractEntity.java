@@ -1,11 +1,9 @@
 package no.nsd.qddt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.jsonviews.View;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -13,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
@@ -22,10 +19,8 @@ import java.util.UUID;
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
  */
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Audited
 @MappedSuperclass
-//@EntityListeners(EntityCreatedModifiedDateAuditEventConfiguration.class)
 public abstract class AbstractEntity {
 
     @Transient
@@ -39,13 +34,10 @@ public abstract class AbstractEntity {
     private UUID id;
 
 
-    // @JsonView(View.Simple.class)
     @Column(name = "updated")
     @Version()
     private Timestamp modified;
 
-
-    // @JsonView(View.Simple.class)
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -106,22 +98,5 @@ public abstract class AbstractEntity {
 
     @JsonIgnore
     public abstract AbstractXmlBuilder getXmlBuilder();
-
-
-    /*
-    Set Properties without notifying Hibernate, good for circumvent auto HiberFix hell.
-     */
-    protected void setField(String fieldname, Object value) {
-        try {
-            Class<?> clazz = getClass();
-            Field field = clazz.getDeclaredField(fieldname);
-            field.setAccessible(true);
-            field.set(this, value);
-        } catch (NoSuchFieldException e) {
-            LOG.error("IMPOSSIBLE! ", e );
-        } catch (IllegalAccessException e) {
-            LOG.error("IMPOSSIBLE! ", e );
-        }
-    }
 
 }

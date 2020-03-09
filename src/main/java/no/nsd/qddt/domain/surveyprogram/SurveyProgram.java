@@ -101,15 +101,11 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
     }
 
     public Study addStudy(Study study){
-//        System.out.println("Study ["+ study.getName() + "] added to Survey [" + this.getName() +"]");
+        this.studies.add( study );
         study.setSurveyProgram(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Study ["+ study.getName() +"] added");
         return study;
-    }
-
-    public void removeStudy(Study study) {
-
     }
 
     public boolean isArchived() {

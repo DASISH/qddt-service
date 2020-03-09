@@ -1,12 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.IElementRefType;
-import no.nsd.qddt.domain.IEntityAuditXmlRef;
+import no.nsd.qddt.domain.elementref.IEntityRef;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.controlconstruct.pojo.SequenceKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +12,7 @@ import java.util.List;
  */
 public class ConstructSequenceJson extends ConstructJson {
 
-    private List<ElementRef<IElementRefType>> sequence;
+    private List<ElementRef<IEntityRef>> sequence;
 
     private String description;
 
@@ -35,7 +33,7 @@ public class ConstructSequenceJson extends ConstructJson {
         return sequenceKind;
     }
 
-    public List<ElementRef<IElementRefType>> getSequence() {
+    public List<ElementRef<IEntityRef>> getSequence() {
         return sequence;
     }
 

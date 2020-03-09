@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.elementref;
 
-import no.nsd.qddt.domain.IElementRefType;
-import no.nsd.qddt.domain.IEntityAuditXmlRef;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;
@@ -13,7 +11,7 @@ import java.util.UUID;
  */
 @Audited
 @Embeddable
-public class ElementRef<T extends IElementRefType> extends AbstractElementRef<T> {
+public class ElementRef<T extends IEntityRef> extends AbstractElementRef<T> {
 
     public ElementRef() {
     }

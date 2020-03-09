@@ -15,6 +15,7 @@ import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.IEntityKind;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -41,7 +42,7 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 @Audited
 @Entity
 @Table(name = "AGENCY")
-public class Agency implements Comparable<Agency>{
+public class Agency implements Comparable<Agency>, IEntityKind {
 
 
     @Id
@@ -256,9 +257,9 @@ public class Agency implements Comparable<Agency>{
 
     }
 
-    public String toDDIXml(){
-        return "<ID type='ID'>" + getId().toString() + "</ID>";
-    }
+//    public String toDDIXml(){
+//        return "<ID type='ID'>" + getId().toString() + "</ID>";
+//    }
 
 
     @Override

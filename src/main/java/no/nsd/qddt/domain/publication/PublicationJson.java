@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.publication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;

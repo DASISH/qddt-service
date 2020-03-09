@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
-import no.nsd.qddt.domain.IElementRefType;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;
@@ -13,7 +12,6 @@ import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

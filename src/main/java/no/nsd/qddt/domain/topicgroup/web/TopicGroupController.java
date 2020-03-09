@@ -35,13 +35,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/topicgroup")
 public class TopicGroupController extends AbstractController {
 
-    @Autowired
-    private TopicGroupService service;
-    @Autowired
-    private StudyService studyService;
-    @Autowired
-    private OtherMaterialService omService;
+    private final TopicGroupService service;
+    private final StudyService studyService;
+    private final OtherMaterialService ioService;
 
+
+    @Autowired
+    public TopicGroupController(TopicGroupService service, StudyService sService, OtherMaterialService omService) {
+        this.service = service;
+        this.studyService = sService;
+        this.ioService = omService;
+    }
 
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -66,7 +70,7 @@ public class TopicGroupController extends AbstractController {
 
         if (files != null && files.length > 0) {
             for (MultipartFile multipartFile : files) {
-                instance.getOtherMaterials().add(omService.saveFile( multipartFile, instance.getId() ));
+                instance.getOtherMaterials().add( ioService.saveFile( multipartFile, instance.getId() ));
             }
         }
         
@@ -75,19 +79,14 @@ public class TopicGroupController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
-    public TopicGroupJson create(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID studyId) {
-
-        if (instance.getStudy() == null){
-            studyService.findOne(studyId).addTopicGroup(instance);
-        }
-
-        return new TopicGroupJson(service.save( instance ));
-//        Study study = studyService.findOne(studyId);
-//        study.addTopicGroup(instance.getStudyIndex(), instance);
-//        instance = studyService.save( study ).getTopicGroups().stream()
-//            .max( Comparator.comparing(TopicGroup::getModified)).get();
-
+    public TopicGroupJson createByParent(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID parentId) {
+        return new TopicGroupJson(
+            service.save(
+                studyService
+                    .findOne(parentId)
+                    .addTopicGroup(instance)));
     }
+
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
     public TopicGroupJson copy(@PathVariable("uuid") UUID sourceId ,

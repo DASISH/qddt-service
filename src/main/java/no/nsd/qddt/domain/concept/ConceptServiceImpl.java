@@ -2,10 +2,9 @@ package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
@@ -205,18 +204,22 @@ class ConceptServiceImpl implements ConceptService {
         thus we need to populate some elements ourselves.
      */
     protected Concept postLoadProcessing(Concept instance) {
-        assert  (instance != null);
+        if (instance == null) return null;
         try {
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 LOG.debug("PDF -> fetching  QuestionItems ");
                 instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             } else {
                 instance.getConceptQuestionItems().forEach( cqi -> {
-                    if (IsNullOrTrimEmpty(cqi.getName())) {
-                        qiLoader.fill(cqi).getElement().setConceptRefs(
+                    if (cqi == null) {
+                        LOG.error( "WUT?!?!?!" );
+                    }
+                    if (IsNullOrTrimEmpty( cqi.getName() )) {
+                        qiLoader.fill( cqi );
+                        cqi.getElement().setConceptRefs(
                             findByQuestionItem(cqi.getElementId(),null).stream()
-                            .map( ConceptRef::new )
-                            .collect( Collectors.toList()));
+                                .map( ConceptRef::new )
+                                .collect( Collectors.toList()));
                     }
                 });
             }

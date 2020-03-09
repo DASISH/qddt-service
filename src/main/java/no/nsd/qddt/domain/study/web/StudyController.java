@@ -44,12 +44,11 @@ public class StudyController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{surveyId}", method = RequestMethod.POST)
-    public Study create(@RequestBody Study instance, @PathVariable("surveyId")UUID surveyId) {
-
-        if (instance.getSurveyProgram() == null){
-            surveyProgramService.findOne(surveyId).addStudy(instance);
-        }
-        return service.save(instance);
+    public Study createByParent(@RequestBody Study instance, @PathVariable("surveyId")UUID parentId) {
+        return service.save(
+            surveyProgramService
+                .findOne(parentId)
+                .addStudy(instance));
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -71,10 +70,4 @@ public class StudyController extends AbstractController {
         return service.findOne(id).makePdf().toByteArray();
     }
 
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(value = "/xml/{id}", method = RequestMethod.GET)
-//    public String getXml(@PathVariable("id") UUID id) {
-//        return new XmlFragmentAssembler<Study>(service.findOne(id)).compileToXml();
-//
-//    }
 }

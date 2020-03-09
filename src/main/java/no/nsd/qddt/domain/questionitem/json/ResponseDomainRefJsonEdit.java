@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.IElementRef;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.embedded.ResponseDomainRef;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.UUID;

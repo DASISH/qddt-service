@@ -34,7 +34,6 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     private final ControlConstructAuditRepository controlConstructAuditRepository;
     private final ElementLoader<QuestionItem> qidLoader;
-//    private final CommentService commentService;
     private boolean showPrivateComments;
 
 
@@ -43,7 +42,6 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             , QuestionItemAuditService qAuditService) {
         this.controlConstructAuditRepository = ccAuditRepository;
         this.qidLoader = new ElementLoader<>( qAuditService);
-//        this.commentService = cService;
     }
 
     @Override
@@ -114,9 +112,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
-
-//        List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
-//        instance.setComments(new ArrayList<>(coms));
+//            Hibernate.initialize(instance.getComments());
 
         return  instance.getClassKind().equals("QUESTION_CONSTRUCT")?postLoadProcessing( (QuestionConstruct) instance ): instance;
     }

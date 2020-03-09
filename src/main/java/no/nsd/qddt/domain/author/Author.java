@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -54,16 +52,18 @@ public class Author extends AbstractEntity {
     private String xmlLang = "none";
 
     @JsonBackReference(value = "surveyRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
     private Set<SurveyProgram> surveyPrograms = new HashSet<>();
 
     @JsonBackReference(value = "studyRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
     private Set<Study> studies = new HashSet<>();
 
     @JsonBackReference(value = "topicRef")
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.ALL)
-    private final Set<TopicGroup> topicGroups = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+    private Set<TopicGroup> topicGroups = new HashSet<>();
+
+//--------------------------------------------------------------------------------
 
     public String getName() {
         return name;
@@ -105,6 +105,15 @@ public class Author extends AbstractEntity {
         this.picture = picture;
     }
 
+    public String getAuthorsAffiliation() {
+        return authorsAffiliation;
+    }
+
+    public void setAuthorsAffiliation(String authorsAffiliation) {
+        this.authorsAffiliation = authorsAffiliation;
+    }
+
+
     public String getClassKind() {
         return this.classKind;
     }
@@ -129,41 +138,49 @@ public class Author extends AbstractEntity {
         this.studies = studies;
     }
 
-    public void addSurvey(SurveyProgram surveyProgram){
-        if (!surveyPrograms.contains(surveyProgram)) {
-            surveyPrograms.add(surveyProgram);
-        }
+    public Set<TopicGroup> getTopicGroups() {
+        return topicGroups;
     }
 
-    public void addStudy(Study study){
-        if (!studies.contains(study)) {
-            this.studies.add(study);
-        }
+    public void setTopicGroups(Set<TopicGroup> topicGroups) {
+        this.topicGroups = topicGroups;
     }
 
-    public void addTopic(TopicGroup topicGroup){
-        if (!topicGroups.contains(topicGroup)) {
-            this.topicGroups.add(topicGroup);
-        }
-    }
-    
-
-    public void removeSurvey(SurveyProgram surveyProgram){
-        if (surveyPrograms.contains(surveyProgram))
-            surveyPrograms.remove(surveyProgram);
-    }
-
-    public void removeStudy(Study study){
-        if (studies.contains(study)) {
-            this.studies.remove(study);
-        }
-    }
-
-    public void removeTopic(TopicGroup topicGroup){
-        if (topicGroups.contains(topicGroup)) {
-            this.topicGroups.remove(topicGroup);
-        }
-    }
+    //    public void addSurvey(SurveyProgram survey){
+//        if (!surveyPrograms.contains(survey)) {
+//            surveyPrograms.add(survey);
+//        }
+//    }
+//
+//    public void addStudy(Study study){
+//        if (!studies.contains(study)) {
+//            this.studies.add(study);
+//        }
+//    }
+//
+//    public void addTopic(TopicGroup topic){
+//        if (!topicGroups.contains(topic)) {
+//            this.topicGroups.add(topic);
+//        }
+//    }
+//
+//
+//    public void removeSurvey(SurveyProgram surveyProgram){
+//        if (surveyPrograms.contains(surveyProgram))
+//            surveyPrograms.remove(surveyProgram);
+//    }
+//
+//    public void removeStudy(Study study){
+//        if (studies.contains(study)) {
+//            this.studies.remove(study);
+//        }
+//    }
+//
+//    public void removeTopic(TopicGroup topicGroup){
+//        if (topicGroups.contains(topicGroup)) {
+//            this.topicGroups.remove(topicGroup);
+//        }
+//    }
 
 
 
@@ -211,20 +228,11 @@ public class Author extends AbstractEntity {
         return null;
     }
 
-    public String getAuthorsAffiliation() {
-        return authorsAffiliation;
-    }
-
-    public void setAuthorsAffiliation(String authorsAffiliation) {
-        this.authorsAffiliation = authorsAffiliation;
-    }
-
     @PrePersist
     private void onInsert(){
         LOG.info("PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         setModifiedBy( user );
-
     }
 
     @PreUpdate

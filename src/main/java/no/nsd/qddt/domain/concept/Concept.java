@@ -7,9 +7,9 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;
@@ -18,6 +18,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,12 +39,12 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @ManyToOne()
     @JsonBackReference(value = "parentRef")
-    @JoinColumn(name="concept_id",updatable = false)
+    @JoinColumn(name="concept_id",insertable = false, updatable = false)
     private Concept parentReferenceOnly;
 
     @ManyToOne()
     @JsonBackReference(value = "topicGroupRef")
-    @JoinColumn(name="topicgroup_id",updatable = false)
+    @JoinColumn(name="topicgroup_id",insertable = false, updatable = false)
     private TopicGroup topicGroup;
 
     @Column(name = "topicgroup_id", insertable = false, updatable = false)
@@ -52,8 +53,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @Column(name = "concept_idx", insertable = false, updatable = false)
     private int conceptIdx;
 
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentReferenceOnly", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentReferenceOnly", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
     @OrderColumn(name="concept_idx")
     @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "conceptIdx")
     private List<Concept> children = new ArrayList<>(0);
@@ -63,7 +63,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
         joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
-    private List<ElementRef<QuestionItem>>  conceptQuestionItems = new ArrayList<>();
+    private List<ElementRef<QuestionItem>>  conceptQuestionItems = new ArrayList<>(0);
 
     private String label;
 
@@ -92,6 +92,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
 
     public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
+        if (conceptQuestionItems == null) {
+            LOG.info( "conceptQuestionItems IS NULL " );
+            conceptQuestionItems = new ArrayList<>( 0);
+        }
         return conceptQuestionItems;
     }
 
@@ -99,10 +103,8 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
-    // no update for QI when removing (it is bound to a revision anyway...).
-    public void removeQuestionItem(UUID questionItemId, Integer rev) {
-        ElementRef toDelete = new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev );
-        if (conceptQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
+    public void removeQuestionItem(UUID id, Integer rev) {
+        if (conceptQuestionItems.removeIf( q -> q.getElementId() == id && q.getElementRevision() == rev )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
             this.setChangeComment( "QuestionItem assosiation removed" );
             this.getParents().forEach( p -> {
@@ -112,11 +114,11 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         }
     }
 
-    public void addQuestionItem(UUID questionItemId, Integer rev) {
-        addQuestionItem( new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
+    public void addQuestionItem(UUID id, Integer rev) {
+        addQuestionItem( new ElementRef<>( ElementKind.QUESTION_ITEM, id,rev ) );
     }
 
-    public void addQuestionItem(ElementRef qef) {
+    public void addQuestionItem(ElementRef<QuestionItem> qef) {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
 
             conceptQuestionItems.add(qef);
@@ -129,7 +131,13 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
     public List<Concept> getChildren() {
-        return children;
+        if (children == null) {
+            LOG.info( "children IS NULL " );
+            children = new ArrayList<>( 0);
+        }
+        return children.stream()
+            .filter( Objects::nonNull )
+            .collect( Collectors.toList());
     }
 
     public void setChildren(List<Concept> children) {
@@ -137,9 +145,9 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
     public Concept addChildren(Concept concept){
+        getChildren().add(concept);
         this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
-        this.children.add(concept);
         this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         return concept;
     }
@@ -181,22 +189,16 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         }
     }
 
-
     public TopicRef getTopicRef() {
         if (topicRef == null) {
             TopicGroup topicGroup = getParentTopicGroup();
             if (topicGroup == null) {
-               topicRef = new TopicRef();
+                topicRef = new TopicRef();
             } else
                 topicRef = new TopicRef(topicGroup);
         }
 
         return topicRef;
-    }
-
-
-    protected Concept getParentRef(){
-        return this.parentReferenceOnly;
     }
 
     protected TopicGroup getParentTopicGroup(){
@@ -205,6 +207,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
             current = current.getParentRef();
         }
         return current.getTopicGroup();
+    }
+
+    protected Concept getParentRef(){
+        return this.parentReferenceOnly;
     }
 
     public boolean hasTopicGroup() {
@@ -222,10 +228,9 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         return retvals; // .stream().filter( f -> f != null ).collect( Collectors.toList());
     }
 
-
-    protected void setParentC(Concept newParent)  {
-        setField("parentReferenceOnly",newParent );
-    }
+//    protected void setParentC(Concept newParent)  {
+//        setField("parentReferenceOnly",newParent );
+//    }
 
 
     @Override
@@ -269,16 +274,6 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @JsonIgnore
     public AbstractXmlBuilder getXmlBuilder() {
         return new ConceptFragmentBuilder(this);
-    }
-
-    @PreRemove
-    public void remove(){
-        LOG.debug(" Concept pre remove");
-        if (this.getParentRef() != null) {
-            this.getParentRef().getChildren().removeIf(p->p.getId() == this.getId());
-            AtomicInteger i= new AtomicInteger();
-//            this.getParentRef().getChildren().forEach( c -> c.concept_idx = i.getAndIncrement() );
-        }
     }
 
     @Override
@@ -330,6 +325,16 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         }
     }
 
+    @PreRemove
+    public void remove(){
+        LOG.debug(" Concept pre remove");
+        if (this.getParentRef() != null) {
+            this.getParentRef().getChildren().removeIf(p->p.getId() == this.getId());
+            AtomicInteger i= new AtomicInteger();
+//            this.getParentRef().getChildren().forEach( c -> c.concept_idx = i.getAndIncrement() );
+        }
+    }
+
     @Override
     protected void beforeUpdate() {
         if(topicGroupId !=null &&  getTopicGroup() == null) {
@@ -339,6 +344,5 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @Override
     protected void beforeInsert() {}
-
 
 }

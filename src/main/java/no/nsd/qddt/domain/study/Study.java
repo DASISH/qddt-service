@@ -59,24 +59,28 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     @JoinColumn(name="survey_id",updatable = false)
     private SurveyProgram surveyProgram;
 
+    @Column(name = "survey_id", insertable = false, updatable = false)
+    protected UUID surveyId;
+
+    @Column(name = "survey_idx", insertable = false, updatable = false)
+    private Integer surveyIdx;
+
     @Column(length = 10000)
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH } , mappedBy = "study")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "study", cascade = { CascadeType.MERGE, CascadeType.DETACH } )
     private Set<Instrument> instruments = new HashSet<>();
 
-    @Column(name = "survey_idx", insertable = false, updatable = false)
-    private int surveyIdx;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "study", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    @OrderColumn(name="study_idx")
+    @OrderColumn(name="study_idx",nullable = false)
     @AuditMappedBy(mappedBy = "study", positionMappedBy = "studyIdx")
     private List<TopicGroup> topicGroups = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "STUDY_AUTHORS",
-            joinColumns = {@JoinColumn(name ="study_id")},
-            inverseJoinColumns = {@JoinColumn(name = "author_id")})
+            joinColumns = { @JoinColumn(name ="study_id") },
+            inverseJoinColumns = { @JoinColumn(name = "author_id") })
     private Set<Author> authors = new HashSet<>();
 
 
@@ -98,10 +102,8 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     }
 
     @Override
-    public void addAuthor(Author user) {
-        //user.addStudy(this); would this work?
-        authors.add(user);
-        user.addStudy(this);
+    public void addAuthor(Author author) {
+        authors.add(author);
     }
 
     public Set<Author> getAuthors() {
@@ -135,13 +137,12 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     }
 
     public TopicGroup addTopicGroup(TopicGroup topicGroup){
-        LOG.debug("TopicGroup ["+ topicGroup.getName() + "] added to Study [" + this.getName() +"]");
+        this.topicGroups.add( topicGroup );
         topicGroup.setStudy(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("TopicGroup ["+ topicGroup.getName() +"] added");
         return topicGroup;
     }
-
 
     @Override
     public boolean isArchived() {
@@ -241,8 +242,23 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
     }
 
     @Override
-    protected void beforeUpdate() {}
+    protected void beforeUpdate() {
+        LOG.info("Study beforeUpdate");
+        if (this.surveyIdx == null) {
+            LOG.info( "Setting surveyIdx" );
+            this.surveyIdx = this.getSurveyProgram().getStudies().indexOf( this );
+        }
+    }
+
     @Override
-    protected void beforeInsert() {}
+    protected void beforeInsert() {
+        LOG.info("Study beforeInsert");
+        if (this.getSurveyProgram() != null && this.surveyIdx == null) {
+            LOG.info("Setting surveyIdx");
+            this.surveyIdx = this.getSurveyProgram().getStudies().indexOf( this );
+        } else {
+            LOG.debug("no survey reference, cannot add..");
+        }
+    }
 
 }

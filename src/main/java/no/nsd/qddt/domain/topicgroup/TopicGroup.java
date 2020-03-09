@@ -1,20 +1,17 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.elementref.typed.ElementRefTyped;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;
@@ -63,8 +60,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @JoinColumn(name="study_id",updatable = false)
     private Study study;
 
+    @Column(name = "study_id", insertable = false, updatable = false)
+    protected UUID studyId;
+
     @Column(name = "study_idx", insertable = false, updatable = false)
-    private int studyIdx;
+    private Integer studyIdx;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderColumn(name="concept_idx")
@@ -76,7 +76,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
     private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>();
-
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -124,15 +123,18 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
 
     public Concept addConcept(Concept concept){
-        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-        setChangeComment("Concept ["+ concept.getName() +"] added");
+        if(concept == null) return null;
         concepts.add(concept);
         concept.setTopicGroup(this);
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        setChangeComment("Concept ["+ concept.getName() +"] added");
         return concept;
     }
 
     public List<Concept> getConcepts() {
-        return concepts;
+        return concepts.stream()
+            .filter( Objects::nonNull )
+            .collect( Collectors.toList());
     }
 
     public void setConcepts(List<Concept> concepts) {
@@ -190,10 +192,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
         }
         else
             LOG.debug("ConceptQuestionItem not inserted, match found" );
-    }
-
-    public void setParent(Study newParent) {
-        setField( "study", newParent );
     }
 
 
@@ -303,7 +301,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     }
 
     @Override
-    protected void beforeUpdate() {}
+    protected void beforeUpdate() {
+//        if (concepts.size() > 0) {
+//            setConcepts( concepts.stream().filter( Objects::nonNull ).collect( Collectors.toList()) );
+//        }
+    }
     @Override
     protected void beforeInsert() {}
 

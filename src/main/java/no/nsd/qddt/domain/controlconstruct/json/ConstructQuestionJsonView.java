@@ -23,10 +23,14 @@ public class ConstructQuestionJsonView  extends ConstructJsonView {
 
     public ConstructQuestionJsonView(QuestionConstruct construct) {
         super(construct);
-        questionItemUUID = construct.getQuestionItemRef().getElementId();
-        questionName = construct.getQuestionItemRef().getName();
-        questionText = construct.getQuestionItemRef().getText();
-        questionItemRevision = construct.getQuestionItemRef().getElementRevision();
+        if (construct.getQuestionItemRef() != null) {
+            questionItemUUID = construct.getQuestionItemRef().getElementId();
+            questionName = construct.getQuestionItemRef().getName();
+            questionText = construct.getQuestionItemRef().getText();
+            questionItemRevision = construct.getQuestionItemRef().getElementRevision();
+        } else {
+            questionName = "?";
+        }
         universe =  construct.getUniverse().stream().map( s -> s.getDescription() ).collect( Collectors.joining("/ ") );
     }
 
