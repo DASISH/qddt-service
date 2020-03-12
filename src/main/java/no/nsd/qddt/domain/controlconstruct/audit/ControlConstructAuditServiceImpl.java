@@ -2,13 +2,11 @@ package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.FilterTool.defaultSort;
@@ -81,7 +81,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
         return getPage(controlConstructAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
-
+    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
@@ -101,6 +101,24 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             }
             if(instance.getQuestionItemRef().getElementId() != null) {
                 qidLoader.fill( instance.getQuestionItemRef() );
+                String question = instance.getQuestionItemRef().getText();
+                Matcher matcher = TAGS.matcher(question);
+                if (matcher.find()) {
+                    for (int i = 0; i < matcher.groupCount() ; i++) {
+                        instance.getParameter().add( matcher.group(i) );
+                    }
+                }
+
+                String rd = instance.getQuestionItemRef()
+                    .getElement().getResponseDomainRef()
+                    .getElement().getManagedRepresentationFlatten()
+                    .stream().map( c -> c.getLabel() ).collect( Collectors.joining( " "));
+                matcher = TAGS.matcher(rd);
+                if (matcher.find()) {
+                    for (int i = 0; i < matcher.groupCount() ; i++) {
+                        instance.getParameter().add(matcher.group( i ));
+                    }
+                }
             }
 
         } catch (Exception ex){

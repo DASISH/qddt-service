@@ -8,22 +8,19 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.IEntityRef;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.HierarchyLevel;
+import no.nsd.qddt.domain.elementref.IEntityRef;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.CapString;
@@ -76,13 +73,6 @@ public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */
 
-    // @JsonView(View.Edit.class)
-    @Type(type="pg-uuid")
-    @Column(name = "schema_id", unique = true )
-    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid-gen")    
-    private UUID schemaId;
-    
     @JsonIgnore
     @OrderColumn(name="responsedomain_idx")
     @ElementCollection(fetch = FetchType.EAGER)
@@ -182,6 +172,11 @@ public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
             managedRepresentation.setCodes( getCodes() );
         return managedRepresentation;
     }
+
+    public List<Category> getManagedRepresentationFlatten(){
+        return  getFlatManagedRepresentation( getManagedRepresentation() );
+    }
+
 
     protected List<Category> getFlatManagedRepresentation(Category current){
         List<Category> retval = new ArrayList<>();

@@ -24,9 +24,6 @@ public class InstrumentElement  implements Cloneable {
 
     @JsonIgnore
     @Transient
-    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
-    @JsonIgnore
-    @Transient
     private final Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
 
     @Id
@@ -93,27 +90,9 @@ public class InstrumentElement  implements Cloneable {
 
 
     public void setElementRef(ElementRef elementRef) {
-        System.out.println("setElementRef " + elementRef.getName());
+        System.out.println("setElementRef " + elementRef);
         if (elementRef.getElement() instanceof QuestionConstruct) {
             QuestionConstruct qc = (QuestionConstruct) elementRef.getElement();
-            parameters.clear();
-            String question = qc.getQuestionItemRef().getText();
-            Matcher matcher = TAGS.matcher(question);
-            if (matcher.find()) {
-                for (int i = 0; i < matcher.groupCount() ; i++) {
-                    getParameters().add(new InstrumentParameter(matcher.group( i ), null));
-                    System.out.println("param added " + elementRef.getName());
-                }
-            }
-            String rd = qc.getQuestionItemRef().getElement().getResponseDomainRef().getElement().toString();
-            matcher = TAGS.matcher(rd);
-            if (matcher.find()) {
-                for (int i = 0; i < matcher.groupCount() ; i++) {
-                    getParameters().add(new InstrumentParameter(matcher.group( i ), null));
-                    System.out.println("param added " + elementRef.getName());
-                }
-            }
-            getParameters().add( new InstrumentParameter( qc.getQuestionItemRef().getElement().getResponseDomainRef().getElement().getName(), this.id  ) );
             elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionItemRef().getText()));
         }
         this.elementRef = elementRef;

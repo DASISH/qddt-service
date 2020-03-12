@@ -72,11 +72,7 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 
     @Override
     public Revision<Integer, QuestionItem> getQuestionItemLastOrRevision(UUID id, Integer revision) {
-        Revision<Integer, QuestionItem> retval;
-        if (revision == null || revision <= 0)
-            retval = findLastChange(id);
-        else
-            retval = findRevision(id, revision);
+        Revision<Integer, QuestionItem> retval = (revision == null || revision <= 0) ? findLastChange( id ) : findRevision( id, revision );
         if (retval == null)
             LOG.info("getQuestionItemLastOrRevision returned with null (" + id + "," + revision + ")");
         return retval;
@@ -84,7 +80,7 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 
     @Override
     protected Revision<Integer, QuestionItem> postLoadProcessing(Revision<Integer, QuestionItem> instance){
-        if (instance.getEntity().getResponseDomainRef().getElementId() != null) {
+        if (instance.getEntity().getResponseDomainRef() != null && instance.getEntity().getResponseDomainRef().getElementId() != null) {
             rdLoader.fill( instance.getEntity().getResponseDomainRef() );
         }
         Hibernate.initialize( instance.getEntity().getComments() );

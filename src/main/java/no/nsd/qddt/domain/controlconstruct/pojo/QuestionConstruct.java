@@ -12,7 +12,9 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -22,11 +24,16 @@ import java.util.stream.Collectors;
 @Audited
 @DiscriminatorValue("QUESTION_CONSTRUCT")
 public class QuestionConstruct  extends ControlConstruct {
+
     @Column(name = "description",length = 1500)
     private String description;
 
     @Embedded
     private QuestionItemRef questionItemRef;
+
+    @Transient
+    @JsonSerialize
+    private Set<String> parameter = new HashSet<>(0);
 
     //------------- Begin QuestionItem revision early bind "hack" ---------------
     //------------- End QuestionItem revision early bind "hack"------------------
@@ -77,6 +84,14 @@ public class QuestionConstruct  extends ControlConstruct {
         this.questionItemRef = questionItemRef;
     }
 
+    public Set<String> getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Set<String> parameter) {
+        this.parameter = parameter;
+    }
+
     public List<Universe> getUniverse() {
         return universe;
     }
@@ -103,7 +118,7 @@ public class QuestionConstruct  extends ControlConstruct {
             controlConstructInstructions.clear();
 
         harvestInstructions( ControlConstructInstructionRank.PRE, getPreInstructions());
-        harvestInstructions(ControlConstructInstructionRank.POST, getPostInstructions());
+        harvestInstructions( ControlConstructInstructionRank.POST, getPostInstructions());
     }
 
     private void harvestInstructions(ControlConstructInstructionRank rank,List<Instruction> instructions) {

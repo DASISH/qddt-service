@@ -1,13 +1,11 @@
-FROM openjdk:8-alpine
+FROM openjdk:11-jre-slim
+
 MAINTAINER NSD <support@nsd.no>
 
-ENV PROFILE=production
-ENV DB_HOST=postgres
+ENV PROFILE=stage
 EXPOSE 5001
-EXPOSE 5002
 VOLUME /home/deploy/deployment/test/uploads-to-qddt/
-VOLUME /home/deploy/deployment/prod/uploads-to-qddt/
 
-COPY build/libs/QTTD.jar /QTTD.jar
+COPY ./build/libs/QDDT.jar /QDDT.jar
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=${PROFILE}", "/QTTD.jar"]
+ENTRYPOINT exec java $JAVA_OPTS -jar /QDDT.jar

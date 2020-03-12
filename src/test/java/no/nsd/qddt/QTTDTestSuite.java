@@ -1,6 +1,5 @@
 package no.nsd.qddt;
 
-import no.nsd.qddt.domain.SemVer.SemVerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -90,7 +89,6 @@ import org.junit.runners.Suite;
 
         // ====== Misc ======
 //        ExtractResourceIdFromExceptionTest.class,
-    SemVerTest.class
 })
 public class QTTDTestSuite {
 }

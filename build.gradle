@@ -98,30 +98,30 @@ dependencies {
 //}
 
 
-remotes {
-    web01 {
-        role 'masterNode'
-        host = 'qddt-dev.nsd.no'
-        user = System.properties['user.name']
-        agent = true
-//		identity = file("${System.properties['user.home']}/.ssh/puttyPrivKey.ppk")
-//		knownHosts = file("${System.properties['user.home']}/.ssh/known_hosts")
-    }
-}
-
-
-
-tasks.register("deploy") {
-    doLast {
-        ssh.run {
-            session(remotes.web01) {
-                execute 'cat /etc/*-release', ignoreError: true
-                execute 'cp ../deploy/deployment/test/QDDT.jar ../deploy/deployment/test/QDDT.jar.2019.old'
-                put from: file("$buildDir/libs/QDDT.jar"), into: '../deploy/deployment/test/QDDT.jar'
-				execute 'sudo systemctl restart qddt-test'
-            }
-        }
-    }
-}
-
-deploy.onlyIf { project.hasProperty('deployTest')}
+//remotes {
+//    web01 {
+//        role 'masterNode'
+//        host = 'qddt-dev.nsd.no'
+//        user = System.properties['user.name']
+//        agent = true
+////		identity = file("${System.properties['user.home']}/.ssh/puttyPrivKey.ppk")
+////		knownHosts = file("${System.properties['user.home']}/.ssh/known_hosts")
+//    }
+//}
+//
+//
+//
+//tasks.register("deploy") {
+//    doLast {
+//        ssh.run {
+//            session(remotes.web01) {
+//                execute 'cat /etc/*-release', ignoreError: true
+//                execute 'cp ../deploy/deployment/test/QDDT.jar ../deploy/deployment/test/QDDT.jar.2019.old'
+//                put from: file("$buildDir/libs/QDDT.jar"), into: '../deploy/deployment/test/QDDT.jar'
+//				execute 'sudo systemctl restart qddt-test'
+//            }
+//        }
+//    }
+//}
+//
+//deploy.onlyIf { project.hasProperty('deployTest')}

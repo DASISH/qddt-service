@@ -34,13 +34,16 @@ public class ElementLoader<T extends AbstractEntityAudit>{
     }
 
     // uses rev Object to facilitate by rev by reference
-    private Revision<Integer,T> get(UUID id, Number rev){
+    private Revision get(UUID id, Number rev){
         try {
             
-            return (rev == null || rev.intValue() == 0) ? serviceAudit.findLastChange( id ) :  serviceAudit.findRevision( id,rev );
+            return (rev == null || rev.intValue() == 0) ?
+                serviceAudit.findLastChange( id ) :
+                serviceAudit.findRevision( id,rev );
 
         } catch (RevisionDoesNotExistException e) {
-            if (rev == null) throw e;
+            if (rev == null) throw e;       // if we get an RevisionDoesNotExistException with rev == null, we have already tried to get last change, exiting function
+
             LOG.warn( "ElementLoader - RevisionDoesNotExist fallback, fetching latest -> " + id);
             return get(id, null);
 

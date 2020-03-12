@@ -39,7 +39,6 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
             ((IArchived)retval).setArchived(false);
         retval.setClassKind( source.getClassKind() );
         retval.setName( source.getName() );
-//        retval.setId( UUID.randomUUID());
         return retval;
     }
 

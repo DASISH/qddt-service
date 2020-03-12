@@ -28,4 +28,13 @@ public class ElementRef<T extends IEntityRef> extends AbstractElementRef<T> {
         return retval;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"version\":" + (getVersion() == null ? "null" : getVersion()) + ", " +
+            "\"Kind\":" + (getElementKind() == null ? "null" : getElementKind()) + ", " +
+            "\"element\":" + (getElement() == null ? "null" : getElement().getName()) +
+            "}";
+    }
 }

@@ -1,7 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.controlconstruct.factory.*;
+import no.nsd.qddt.domain.controlconstruct.factory.FactoryConditionConstruct;
+import no.nsd.qddt.domain.controlconstruct.factory.FactoryQuestionConstruct;
+import no.nsd.qddt.domain.controlconstruct.factory.FactorySequenceConstruct;
+import no.nsd.qddt.domain.controlconstruct.factory.FactoryStatementConstruct;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.json.Converter;
@@ -18,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.history.Revision;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -45,8 +47,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private final ControlConstructAuditService auditService;
     private final InstructionService iService;
     private final UniverseService uService;
-    private final ElementLoader<QuestionItem> qidLoader;
-    // private final OtherMaterialService oService;
+    private final ElementLoader<QuestionItem> qiLoader;
 
 
     @Autowired
@@ -60,7 +61,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         this.auditService = controlConstructAuditService;
         this.iService = iService;
         this.uService = uService;
-        this.qidLoader = new ElementLoader<>( questionAuditService);        // this.oService = oService;
+        this.qiLoader = new ElementLoader<>( questionAuditService);        // this.oService = oService;
     }
 
     @Override
@@ -149,80 +150,82 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
+        if (instance instanceof QuestionConstruct) {
+            QuestionConstruct qc = (QuestionConstruct)instance;
+            qc.populateControlConstructInstructions();
 
-        switch (instance.getClassKind()) {
-            case "QUESTION_CONSTRUCT":
-                if (instance instanceof QuestionConstruct) {
-                    QuestionConstruct qc = (QuestionConstruct)instance;
-                    qc.populateControlConstructInstructions();
+            qc.getControlConstructInstructions().stream()
+                .filter( cqi -> cqi.getInstruction().getId() == null )
+                .forEach( cqi -> cqi.setInstruction( iService.save( cqi.getInstruction() ) ) );
 
-                    qc.getControlConstructInstructions().forEach(cqi->{
-                        if (cqi.getInstruction().getId() == null)
-                            cqi.setInstruction(iService.save(cqi.getInstruction()));
-                    });
+            qc.getUniverse().stream()
+                .filter( universe -> universe.getId() == null )
+                .forEach( uService::save );
 
-                    qc.getUniverse().forEach(universe->{
-                        if(universe.getId() == null) {
-                            uService.save( universe );
-                        }
-                    });
+            instance = (S)qc;
+        }
 
-                    if(qc.isBasedOn() || qc.isNewCopy()) {
-                        Integer rev= auditService.findLastChange(qc.getId()).getRevisionNumber();
-                        qc = new FactoryQuestionConstruct().copy(qc, rev );
-                    }
-                    instance = (S)qc;
-                }
-                break;
-            case "SEQUENCE_CONSTRUCT":
-                if (instance instanceof Sequence) {
-                    if(instance.isBasedOn() || instance.isNewCopy()) {
-
-                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
-                    }
-                }
-                break;
-            case "CONDITION_CONSTRUCT":
-                if (instance instanceof ConditionConstruct) {
-                    if(instance.isBasedOn() || instance.isNewCopy()) {
-                        
-                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)new FactoryConditionConstruct().copy((ConditionConstruct)instance, rev );
-                    }
-                }       
-                break; 
-            case "STATEMENT_CONSTRUCT":
-                if (instance instanceof StatementItem) {
-                    if(instance.isBasedOn() || instance.isNewCopy()) {
-                        
-                        Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-                        instance =  (S)new FactoryStatementConstruct().copy((StatementItem)instance, rev );
-                    }   
-                }
-                break;
+        if(instance.isBasedOn() || instance.isNewCopy()) {
+            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            switch (instance.getClassKind()) {
+                case "QUESTION_CONSTRUCT":
+                    instance = (S) new FactoryQuestionConstruct().copy((QuestionConstruct)instance, rev );
+                    break;
+                case "SEQUENCE_CONSTRUCT":
+                    instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
+                    break;
+                case "CONDITION_CONSTRUCT":
+                    instance =  (S)new FactoryConditionConstruct().copy((ConditionConstruct)instance, rev );
+                    break;
+                case "STATEMENT_CONSTRUCT":
+                    instance =  (S)new FactoryStatementConstruct().copy((StatementItem)instance, rev );
+                    break;
+            }
         }
         return instance;
     }
 
+
     private  <S extends ControlConstruct> S  postLoadProcessing(S instance) {
         assert  (instance != null);
         if ( instance instanceof QuestionConstruct) {
-            QuestionConstruct qc = (QuestionConstruct)instance;
-            qc.populateInstructions();                // instructions has to be unpacked into pre and post instructions
-            try {
-                if(qc.getQuestionItemRef().getElementId()!= null && qc.getQuestionItemRef().getElement() == null) {
-                    qidLoader.fill( qc.getQuestionItemRef() );
-                    LOG.info( "QI loaded " + qc.getQuestionItemRef().getElement());
-                }
-            } catch (Exception ex) {
-                LOG.error( "CCS QI revision not found, resetting to latest.", ex );
-            }
-            qc.setChangeComment( null );
-            return (S)qc;
+            return loadQuestionConstruct( (QuestionConstruct) instance );
         }
         instance.setChangeComment( null );
         return instance;
+    }
+
+//    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
+
+    private <S extends ControlConstruct> S loadQuestionConstruct(QuestionConstruct instance) {
+        instance.populateInstructions();                // instructions has to be unpacked into pre and post instructions
+        try {
+            if(instance.getQuestionItemRef() != null &&
+                instance.getQuestionItemRef().getElementId()!= null &&
+                instance.getQuestionItemRef().getElement() == null) {
+
+                qiLoader.fill( instance.getQuestionItemRef() );
+
+//                String question = instance.getQuestionItemRef().getText();
+//                Matcher matcher = TAGS.matcher(question);
+//                if (matcher.find()) {
+//                    for (int i = 0; i < matcher.groupCount() ; i++) {
+//                        instance.getParameter().add(matcher.group( i ));
+//                    }
+//                }
+//                String rd = instance.getQuestionItemRef().getElement().getResponseDomainRef().getElement().toString();
+//                matcher = TAGS.matcher(rd);
+//                if (matcher.find()) {
+//                    for (int i = 0; i < matcher.groupCount() ; i++) {
+//                        instance.getParameter().add(matcher.group( i ));
+//                    }
+//                }
+            }
+        } catch (Exception ex) {
+            LOG.error( "CCS QI revision not found " + ex.getMessage() );
+        }
+        instance.setChangeComment( null );
+        return (S) instance;
     }
 
 

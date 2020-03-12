@@ -44,8 +44,8 @@ public class AuthorableSurveyTest extends AbstractServiceTest {
     public void testCount() throws Exception {
 
         Author user1 = new Author();
-            user1.setName("TestUser1");
-            user1.setEmail("test1@example.org");
+        user1.setName("TestUser1");
+        user1.setEmail("test1@example.org");
         user1 = userService.save(user1);
 
         Author user2 = new Author();
@@ -64,9 +64,7 @@ public class AuthorableSurveyTest extends AbstractServiceTest {
 
         survey.setChangeKind(AbstractEntityAudit.ChangeKind.TYPO);
         survey = surveyProgramService.save(survey );
-        user1.addSurvey(survey);
         userService.save(user1);
-        user2.addSurvey(survey);
         userService.save(user2);
         assertThat("Should be 2L ", surveyProgramService.findOne(survey.getId()).getAuthors().size(), is(2));
 

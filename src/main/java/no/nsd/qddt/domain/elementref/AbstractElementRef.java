@@ -7,8 +7,6 @@ package no.nsd.qddt.domain.elementref;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.IElementRefType;
-import no.nsd.qddt.domain.IEntityAuditXmlRef;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 import no.nsd.qddt.domain.embedded.Version;
@@ -22,7 +20,7 @@ import java.util.UUID;
 
 @Audited
 @MappedSuperclass
-public abstract class AbstractElementRef<T extends IElementRefType> implements IElementRef<T> {
+public abstract class AbstractElementRef<T extends IEntityRef> implements IElementRef<T> {
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
