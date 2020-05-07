@@ -30,7 +30,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     }
 
     @Override
-    public void addFragments(Map<UUID, String> fragments) {
+    public void addXmlFragments(Map<UUID, String> fragments) {
         if (entity.getCategoryType() == CategoryType.CATEGORY)
             fragments.putIfAbsent( entity.getId(), getXmlFragment() );
     }
@@ -39,11 +39,11 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     public String getXmlFragment() {
 //        if (entity.getCategoryType() == CategoryType.CATEGORY)
         return String.format( xmlResponseCategory,
-            getHeader( entity ),
+            getXmlHeader( entity ),
             getXmlLang(entity),
             entity.getName(),
             entity.getLabel(),
-            getFooter( entity )
+            getXmlFooter( entity )
             );
 //        else
 //            return "";
@@ -52,10 +52,10 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
 
 
     @Override
-    public String getEntityRef() {
+    public String getXmlEntityRef() {
         if (entity.getCategoryType()== CategoryType.CATEGORY)
-            return super.getEntityRef();
-        return String.format( xmlDomainReference, entity.getCategoryType().getName(), getURN(entity));
+            return super.getXmlEntityRef();
+        return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity));
     }
 
 }

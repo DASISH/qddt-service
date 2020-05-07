@@ -1,11 +1,9 @@
 package no.nsd.qddt.domain.xml;
 
-import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -30,18 +28,18 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
     private final T rootElement;
     private final AbstractXmlBuilder builder;
 
-    private Map<UUID,String> fragments = new HashMap<>();
+    private Map<String,String> fragments = new HashMap<>();
 
     public XmlDDIFragmentAssembler(T rootElement) {
         this.rootElement = rootElement;
         builder = rootElement.getXmlBuilder();
-        builder.addFragments( fragments );
+        builder.addXmlFragments( fragments );
     }
 
 
     protected String getTopLevelReference(String typeOfObject){
         return "<ddi:TopLevelReference isExternal=\"false\" externalReferenceDefaultURI=\"false\" isReference=\"true\" lateBound=\"false\" objectLanguage=\"eng-GB\">\n" +
-            "\t" + builder.getURN(rootElement) +
+            "\t" + builder.getXmlURN(rootElement) +
             "\t<r:TypeOfObject>" + typeOfObject + "</r:TypeOfObject>\n" +
             "</ddi:TopLevelReference>\n";
     }

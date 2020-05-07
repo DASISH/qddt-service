@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.embedded.ResponseDomainRef;
 import no.nsd.qddt.domain.parentref.ConceptRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
@@ -135,7 +136,7 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
     @Override
-    public QuestionItemFragmentBuilder getXmlBuilder() {
+    public AbstractXmlBuilder getXmlBuilder() {
         return new QuestionItemFragmentBuilder(this);
     }
 

@@ -17,12 +17,12 @@ public class XmlDDICommentsBuilder extends AbstractXmlBuilder {
     }
 
       @Override
-    public void addFragments(Map<UUID, String> fragments) {
+    public void addXmlFragments(Map<UUID, String> fragments) {
 
     }
 
     @Override
-    public String getEntityRef() {
+    public String getXmlEntityRef() {
         return null;
     }
 

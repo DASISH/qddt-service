@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.audit;
 
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.elementref.ElementLoader;
@@ -81,6 +82,17 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
         return getPage(controlConstructAuditRepository.findRevisions(id),changeKinds,pageable);
     }
 
+    @Override
+    protected Revision<Integer, ControlConstruct> postLoadProcessing(Revision<Integer, ControlConstruct> instance) {
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        return new Revision<>(instance.getMetadata(), postLoadProcessing(instance.getEntity()));
+    }
+
+    private ControlConstruct postLoadProcessing(ControlConstruct instance) {
+        assert  (instance != null);
+        return  instance.getClassKind().equals("QUESTION_CONSTRUCT") ? postLoadProcessing( (QuestionConstruct) instance ) : instance;
+    }
+
     private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
@@ -91,7 +103,6 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
         try{
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
-//            Hibernate.initialize(instance.getControlConstructInstructions());
             instance.populateInstructions();
 
             if (instance.getControlConstructInstructions().size() > 0 ) {
@@ -102,6 +113,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             if(instance.getQuestionItemRef().getElementId() != null) {
                 qidLoader.fill( instance.getQuestionItemRef() );
                 String question = instance.getQuestionItemRef().getText();
+
                 Matcher matcher = TAGS.matcher(question);
                 if (matcher.find()) {
                     for (int i = 0; i < matcher.groupCount() ; i++) {
@@ -112,11 +124,12 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
                 String rd = instance.getQuestionItemRef()
                     .getElement().getResponseDomainRef()
                     .getElement().getManagedRepresentationFlatten()
-                    .stream().map( c -> c.getLabel() ).collect( Collectors.joining( " "));
+                    .stream().map( Category::getLabel ).collect( Collectors.joining( " "));
+
                 matcher = TAGS.matcher(rd);
                 if (matcher.find()) {
                     for (int i = 0; i < matcher.groupCount() ; i++) {
-                        instance.getParameter().add(matcher.group( i ));
+                        instance.getParameter().add( matcher.group(i) );
                     }
                 }
             }
@@ -127,19 +140,4 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
         return instance;
     }
 
-
-    private ControlConstruct postLoadProcessing(ControlConstruct instance) {
-        assert  (instance != null);
-//            Hibernate.initialize(instance.getComments());
-
-        return  instance.getClassKind().equals("QUESTION_CONSTRUCT")?postLoadProcessing( (QuestionConstruct) instance ): instance;
-    }
-
-
-    @Override
-    protected Revision<Integer, ControlConstruct> postLoadProcessing(Revision<Integer, ControlConstruct> instance) {
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
-
-        return new Revision<>(instance.getMetadata(), postLoadProcessing(instance.getEntity()));
-    }
 }

@@ -20,9 +20,14 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         this.entity = entity;
     }
 
+
+    public String getUrnId() {
+        return  String.format( "%1$s:%2$s:%3$s",  entity.getAgency().getName() , entity.getId() , entity.getVersion().toDDIXml());
+    }
+
     @Override
-    public String getEntityRef() {
-        return String.format( xmlRef,  entity.getClass().getSimpleName(), getURN(entity) );
+    public String getXmlEntityRef() {
+        return String.format( xmlRef,  entity.getClass().getSimpleName(), getXmlURN(entity) );
     }
 
 

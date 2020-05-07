@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.IEntityFactory;
 
-import java.util.List;
-
 
 /**
  * @author Stig Norland
@@ -21,7 +19,8 @@ public class ResponseDomainFactory implements IEntityFactory<ResponseDomain> {
         dest.setName(source.getName());
         dest.setDescription(source.getDescription());
         dest.setDisplayLayout(source.getDisplayLayout());
-        List<Code>  codes = source.getCodes();
+//        List<Code>  codes = source.getCodes();
+        dest.setCodes(source.getCodes() );
         dest.setManagedRepresentation(source.getManagedRepresentation().clone());
 				dest.setResponseKind( source.getResponseKind() );
 				dest.setResponseCardinality( source.getResponseCardinality() );

@@ -173,6 +173,7 @@ public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
         return managedRepresentation;
     }
 
+    @JsonIgnore
     public List<Category> getManagedRepresentationFlatten(){
         return  getFlatManagedRepresentation( getManagedRepresentation() );
     }
@@ -227,43 +228,6 @@ public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
             this.codes = codes;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ResponseDomain)) return false;
-        if (!super.equals(o)) return false;
-
-        ResponseDomain that = (ResponseDomain) o;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-
-        return getResponseKind() == that.getResponseKind();
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-            "\"id\":" + (getId() == null ? "null" : "\"" + getId() +"\"" ) + ", " +
-            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
-            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
-            "\"displayLayout\":" + (displayLayout == null ? "null" : "\"" + displayLayout + "\"") + ", " +
-            "\"responseKind\":" + (responseKind == null ? "null" : responseKind) + ", " +
-            "\"responseCardinality\":" + (responseCardinality == null ? "null" : responseCardinality) + ", " +
-            "\"managedRepresentation\":" + (managedRepresentation == null ? "null" : managedRepresentation) + ", " +
-            "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
-            "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
-            "}";
-    }
-
     @Override
     public AbstractXmlBuilder getXmlBuilder() {
         return new ResponseDomainFragmentBuilder(this);
@@ -303,6 +267,43 @@ public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
                     .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
             }
         pdfReport.getTheDocument().add(table);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ResponseDomain)) return false;
+        if (!super.equals(o)) return false;
+
+        ResponseDomain that = (ResponseDomain) o;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+
+        return getResponseKind() == that.getResponseKind();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (responseKind != null ? responseKind.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            "\"id\":" + (getId() == null ? "null" : "\"" + getId() +"\"" ) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
+            "\"displayLayout\":" + (displayLayout == null ? "null" : "\"" + displayLayout + "\"") + ", " +
+            "\"responseKind\":" + (responseKind == null ? "null" : responseKind) + ", " +
+            "\"responseCardinality\":" + (responseCardinality == null ? "null" : responseCardinality) + ", " +
+            "\"managedRepresentation\":" + (managedRepresentation == null ? "null" : managedRepresentation) + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
+            "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
+            "}";
     }
 
 }

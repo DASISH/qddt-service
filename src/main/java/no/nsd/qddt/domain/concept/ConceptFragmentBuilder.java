@@ -1,11 +1,10 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.questionitem.QuestionItemFragmentBuilder;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -28,8 +27,8 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
             "\t%7$s" +
         "</d:Concept>\n";
 
-            private List<ConceptFragmentBuilder> children;
-            private List<QuestionItemFragmentBuilder> questions;
+            private List<AbstractXmlBuilder> children;
+            private List<AbstractXmlBuilder> questions;
 
             public ConceptFragmentBuilder(Concept concept) {
                 super(concept);
@@ -38,34 +37,34 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
                 .collect( Collectors.toList() );
 
                 children = concept.getChildren().stream()
-                    .map( c -> (ConceptFragmentBuilder)c.getXmlBuilder() )
+                    .map( c -> c.getXmlBuilder() )
                     .collect( Collectors.toList() );
             }
         
         
             @Override
-            public void addFragments(Map<UUID, String> fragments) {
-                fragments.putIfAbsent( entity.getId(), getXmlFragment() );
-                for(QuestionItemFragmentBuilder question: questions) {
-                    question.addFragments( fragments );
+            public void addXmlFragments(Map<String, String> fragments) {
+                fragments.putIfAbsent( getUrnId(), getXmlFragment() );
+                for(AbstractXmlBuilder question: questions) {
+                    question.addXmlFragments( fragments );
                 }
-                for(ConceptFragmentBuilder child : children) {
-                    child.addFragments( fragments );
+                for(AbstractXmlBuilder child : children) {
+                    child.addXmlFragments( fragments );
                 }
             }
         
             public String getXmlFragment() {
                 return String.format( xmlConcept,
-                    getURN(entity),
-                    getRationale(entity),
-                    getBasedOn(entity),
+                    getXmlURN(entity),
+                    getXmlRationale(entity),
+                    getXmlBasedOn(entity),
                     entity.getName(),
                     entity.getDescription(),
                     questions.stream()
-                        .map( XmlDDIFragmentBuilder::getEntityRef )
+                        .map( q -> q.getXmlEntityRef() )
                         .collect( Collectors.joining() ),
                     children.stream()
-                        .map( XmlDDIFragmentBuilder::getEntityRef )
+                        .map( c -> c.getXmlEntityRef() )
                         .collect( Collectors.joining()),
                     entity.getXmlLang());
             }

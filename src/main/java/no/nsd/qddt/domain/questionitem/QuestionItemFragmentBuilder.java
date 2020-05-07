@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +24,9 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
             "\t%6$s" +
         "%7$s";
 
+//    r:ConceptReference/r:URN"/>
+//    r:ConceptReference/r:TypeOfObject" defaultValue="Concept" fixedValue="true"/>
+
 
     private final AbstractXmlBuilder responseBuilder;
 
@@ -33,31 +35,31 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
         responseBuilder = questionItem.getResponseDomainRef().getElement().getXmlBuilder();
     }
 
-    protected String getConceptRef() {
-        return entity.getConceptRefs().stream()
-            .map(cr ->{
-                String urn = String.format(xmlURN, cr.getAgency(),cr.getId(),cr.getVersion().toDDIXml());
-                return String.format( xmlRef, "", "Concept", urn);
-                })
-            .collect( Collectors.joining());
-    }
-
     @Override
-    public void addFragments(Map<UUID, String> fragments) {
-        fragments.putIfAbsent( entity.getId(), getXmlFragment() );
-        responseBuilder.addFragments( fragments );
+    public void addXmlFragments(Map<String, String> fragments) {
+        fragments.putIfAbsent( getUrnId(), getXmlFragment() );
+        responseBuilder.addXmlFragments( fragments );
     }
 
     @Override
     public String getXmlFragment() {
         return String.format( xmlQuestionItem,
-            getHeader(entity),
+            getXmlHeader(entity),
             entity.getName(),
             getXmlLang( entity ),
             entity.getIntent(),
             entity.getQuestion(),
-            responseBuilder.getEntityRef()+ getConceptRef(),
-            getFooter(entity));
+            responseBuilder.getXmlEntityRef() + getConceptRef(),
+            getXmlFooter(entity));
+    }
+
+    protected String getConceptRef() {
+        return entity.getConceptRefs().stream()
+            .map(cr ->{
+                String urn = String.format(xmlURN, cr.getAgency(),cr.getId(),cr.getVersion().toDDIXml());
+                return String.format( xmlRef, "", "Concept", urn);
+            })
+            .collect( Collectors.joining());
     }
 
 }

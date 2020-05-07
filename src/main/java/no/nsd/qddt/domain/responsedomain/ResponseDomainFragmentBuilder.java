@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -14,7 +14,9 @@ import java.util.stream.Collectors;
  */
 public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<ResponseDomain> {
 
-    private Map<UUID,Category> rdContent;
+//    private Map<UUID,Category> rdContent;
+
+    private List<AbstractXmlBuilder> children;
 
     private final String xmlBody =
         "%1$s" +
@@ -43,14 +45,30 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
             "\t\t\t\t<r:Low>%8$s</r:Low>\n" +
             "\t\t\t\t<r:High>%9$s</r:High>\n" +
             "\t\t\t</r:NumberRange>\n" +
-            "<r:Anchor value=\"0\">\n" +
-            "\t<r:CategoryReference>\n" +
-            "\t\t<r:URN>urn:ddi:int.esseric:80e1f38c-1c54-4d74-91d9-7c3590b194b9:1.0</r:URN>\n" +
-            "\t\t<r:TypeOfObject>Category</r:TypeOfObject>\n" +
-            "\t</r:CategoryReference>\n" +
-            "</r:Anchor>\n" +
+            "\t\t\t%10$s" +
             "\t\t\t</r:ScaleDimension>\n" +
         "</r:Managed%1$sRepresentation>";
+
+
+//    d:ScaleDomainReference/r:TypeOfObject" defaultValue="ManagedScaleRepresentation" fixedValue="true"/>
+//    d:CodeDomain/r:CodeListReference/r:TypeOfObject" defaultValue="CodeList" fixedValue="true"/>
+//    d:TextDomainReference/r:TypeOfObject" defaultValue="ManagedTextRepresentation" fixedValue="true"/>
+//    d:NumericDomainReference/r:TypeOfObject" defaultValue="ManagedNumericRepresentation" fixedValue="true"/>
+//    d:DateTimeDomainReference/r:TypeOfObject" defaultValue="ManagedDateTimeRepresentation" fixedValue="true"/>
+//
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed"/>
+//
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:CodeDomain"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:CodeDomain/r:CodeListReference/r:URN"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:CodeDomain/r:CodeListReference/r:TypeOfObject" defaultValue="CodeList" fixedValue="true"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:ScaleDomainReference/r:TypeOfObject" defaultValue="ManagedScaleRepresentation" fixedValue="true"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:TextDomainReference/r:TypeOfObject" defaultValue="ManagedTextRepresentation" fixedValue="true"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:NumericDomainReference/r:TypeOfObject" defaultValue="ManagedNumericRepresentation" fixedValue="true"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:DateTimeDomainReference/r:TypeOfObject" defaultValue="ManagedDateTimeRepresentation" fixedValue="true"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:MissingValueDomainReference/r:TypeOfObject" defaultValue="MissingCodeRepresentation" fixedValue="true"/>
+//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed/d:MissingValueDomainReference/r:TypeOfObject" defaultValue="MissingCodeRepresentation" fixedValue="true"/>
+
+
 
 //		<r:ManagedScaleRepresentation scopeOfUniqueness="Agency" isUniversallyUnique="true" versionDate="2017-02-01" isVersionable="true">
 //
@@ -81,7 +99,7 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 //			</r:ScaleDimension>
 //		</r:ManagedScaleRepresentation>
 
-//    		<l:CodeList scopeOfUniqueness="Agency" isUniversallyUnique="true" versionDate="2017-02-01" externalReferenceDefaultURI="" isPublished="true" xml:lang="en-GB" isMaintainable="true" isSystemMissingValue="false">
+//  <l:CodeList scopeOfUniqueness="Agency" isUniversallyUnique="true" versionDate="2017-02-01" externalReferenceDefaultURI="" isPublished="true" xml:lang="en-GB" isMaintainable="true" isSystemMissingValue="false">
 
 //			<l:CodeListName><r:String>REFDK</r:String></l:CodeListName>
 //			<r:Label><r:Content>Refusal; Don't know</r:Content></r:Label>
@@ -108,41 +126,56 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 
     public ResponseDomainFragmentBuilder(ResponseDomain responseDomain) {
         super(responseDomain);
-        rdContent = responseDomain.getFlatManagedRepresentation( responseDomain.getManagedRepresentation() ).stream()
-            .collect( Collectors.toMap( AbstractEntity::getId, c->c ));
+        children = responseDomain.getManagedRepresentationFlatten().stream()
+            .map( c -> c.getXmlBuilder() )
+            .collect( Collectors.toList() );
+//        rdContent = responseDomain.getFlatManagedRepresentation( responseDomain.getManagedRepresentation() ).stream()
+//            .collect( Collectors.toMap( AbstractEntity::getId, c->c ));
     }
 
     @Override
-    public void addFragments(Map<UUID, String> fragments) {
+    public void addXmlFragments(Map<String, String> fragments) {
         if (entity.getResponseKind() != ResponseKind.MIXED)
-            fragments.putIfAbsent( entity.getId(), getXmlFragment() );
+            fragments.putIfAbsent( getUrnId(), getXmlFragment() );
         else {
-            entity.getManagedRepresentation().getChildren().forEach( man -> fragments.putIfAbsent(man.getId(),man.getXmlBuilder().getXmlFragment()  ) );
+            entity.getManagedRepresentation().getChildren().forEach( man -> {
+                XmlDDIFragmentBuilder<Category> cb = (XmlDDIFragmentBuilder<Category>) man.getXmlBuilder();
+                fragments.putIfAbsent(cb.getUrnId() ,man.getXmlBuilder().getXmlFragment()  );
+            } );
         }
-        rdContent.forEach( (id, cat) -> cat.getXmlBuilder().addFragments( fragments ) );
+        for(AbstractXmlBuilder child : children) {
+            child.addXmlFragments( fragments );
+        }
     }
 
     @Override
-    public String getEntityRef() {
+    public String getXmlEntityRef() {
         if (entity.getResponseKind() == ResponseKind.MIXED) {
             return String.format( xmlMixedRef,  getInMixedRef() );
         }
-        return String.format( xmlRef,  entity.getResponseKind().getDDIName(), getURN(entity) );
+        return String.format( xmlRef,  entity.getResponseKind().getDDIName(), getXmlURN(entity) );
     }
 
     @Override
-    protected <S extends AbstractEntityAudit> String getHeader(S instance){
-        return String.format(xmlHeader, entity.getResponseKind().getDDIName(), entity.getModified(), getURN(entity)+ getUserId(entity)+ getRationale(entity)+ getBasedOn(entity));
+    protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
+        return String.format(xmlHeader, entity.getResponseKind().getDDIName(), entity.getModified(), getXmlURN(entity)+ getXmlUserId(entity)+ getXmlRationale(entity)+ getXmlBasedOn(entity));
     }
 
     @Override
-    protected <S extends AbstractEntityAudit> String getFooter(S instance){
+    protected <S extends AbstractEntityAudit> String getXmlFooter(S instance){
         return String.format( xmlFooter, instance.getClass().getSimpleName() );
     }
 
     @Override
     public String getXmlFragment() {
-        return String.format( xmlFooter, entity.getClass().getSimpleName() );
+        return String.format( xmlManaged,
+            entity.getName(),
+            entity.getDescription(),
+            children.stream()
+                .map( q -> q.getXmlEntityRef() )
+                .collect( Collectors.joining() ),
+
+            entity.getXmlLang());
     }
 
     protected String getXmlManagedRepresentation() {
@@ -152,7 +185,7 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 
     private String getInMixedRef() {
         return entity.getManagedRepresentation().getChildren().stream()
-            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getEntityRef()  ) )
+            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getXmlEntityRef()  ) )
             .collect( Collectors.joining());
     }
 

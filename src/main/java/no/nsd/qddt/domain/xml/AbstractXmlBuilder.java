@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -31,26 +30,26 @@ public abstract class AbstractXmlBuilder {
             "\t\t\t<r:String xml:lang=\"en\">%2$s</r:String>\n" +
             "\t\t</r:RationaleDescription>\n" +
             "\t\t<r:RationaleCode>%3$s</r:RationaleCode>\n" +
-            "\t</r:VersionRationale>\n";
+        "\t</r:VersionRationale>\n";
 
     private final String xmlBasedOn =
         "<r:BasedOnReference>\n" +
             "\t%1$s\n" +
             "\t<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
-            "</r:BasedOnReference>\n";
+        "</r:BasedOnReference>\n";
 
 
-    public abstract void addFragments(Map<UUID,String> fragments);
+    public abstract void addXmlFragments(Map<String,String> fragments);
 
-    public abstract String getEntityRef();
+    public abstract String getXmlEntityRef();
 
     public abstract String getXmlFragment();
 
-    protected <S extends AbstractEntityAudit> String getHeader(S instance){
-        return String.format(xmlHeader, instance.getClass().getSimpleName(), instance.getModified(), getURN(instance)+ getUserId(instance)+ getRationale(instance)+ getBasedOn(instance));
+    protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
+        return String.format(xmlHeader, instance.getClass().getSimpleName(), instance.getModified(), getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
     }
 
-    protected <S extends AbstractEntityAudit> String getFooter(S instance){
+    protected <S extends AbstractEntityAudit> String getXmlFooter(S instance){
         return String.format( xmlFooter, instance.getClass().getSimpleName() );
     }
 
@@ -59,22 +58,22 @@ public abstract class AbstractXmlBuilder {
         return String.format( xmlLang, instance.getXmlLang() );
     }
 
-    protected  <S extends AbstractEntityAudit> String getURN(S instance) {
+    protected  <S extends AbstractEntityAudit> String getXmlURN(S instance) {
         return  String.format( xmlURN, instance.getAgency().getName(),instance.getId(),instance.getVersion().toDDIXml());
     }
 
-    protected  <S extends AbstractEntity> String getUserId(S instance) {
+    protected  <S extends AbstractEntity> String getXmlUserId(S instance) {
         return  String.format( xmlUserId,  instance.getModifiedBy().getId());
     }
 
-    protected <S extends AbstractEntityAudit> String getRationale(S instance) {
+    protected <S extends AbstractEntityAudit> String getXmlRationale(S instance) {
         return  String.format( xmlRationale,  instance.getModifiedBy().getName() + "@" + instance.getAgency().getName(),
             "["+ instance.getChangeKind().getDescription() + "] ➫ " + instance.getChangeComment(), instance.getChangeKind().name() );
     }
 
-    protected <S extends AbstractEntityAudit> String getBasedOn(S instance) {
+    protected <S extends AbstractEntityAudit> String getXmlBasedOn(S instance) {
         if (instance.getBasedOnObject() == null) return "";
-        return String.format( xmlBasedOn, getURN(instance),instance.getClass().getSimpleName() );
+        return String.format( xmlBasedOn, getXmlURN(instance),instance.getClass().getSimpleName() );
     }
 
     protected String html5toXML(String html5){
