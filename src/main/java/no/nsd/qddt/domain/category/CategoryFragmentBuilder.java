@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.category;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -30,9 +29,8 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     }
 
     @Override
-    public void addXmlFragments(Map<UUID, String> fragments) {
-        if (entity.getCategoryType() == CategoryType.CATEGORY)
-            fragments.putIfAbsent( entity.getId(), getXmlFragment() );
+    public void addXmlFragments(Map<String, String> fragments) {
+        fragments.putIfAbsent( getUrnId(), getXmlFragment() );
     }
 
     @Override
@@ -49,6 +47,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
 //            return "";
 
     }
+
 
 
     @Override
