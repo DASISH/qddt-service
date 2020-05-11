@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.xml;
 
-import no.nsd.qddt.domain.comment.Comment;
-
 import java.util.Map;
-import java.util.UUID;
+
+import no.nsd.qddt.domain.comment.Comment;
 
 /**
  * @author Stig Norland
@@ -17,7 +16,7 @@ public class XmlDDICommentsBuilder extends AbstractXmlBuilder {
     }
 
       @Override
-    public void addXmlFragments(Map<UUID, String> fragments) {
+    public void addXmlFragments(Map<String, String> fragments) {
 
     }
 

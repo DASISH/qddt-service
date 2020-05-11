@@ -23,8 +23,8 @@ public class Referenced {
     public Timestamp modified;
     public Long antall;
 
-    @Type(type = "no.nsd.qddt.utils.GenericArrayType")
-    public UUID[] refs;
+    // @Type(type = "no.nsd.qddt.utils.GenericArrayType")
+    // public UUID[] refs;
 
     public UUID getEntity() {
         return entity;
@@ -58,13 +58,13 @@ public class Referenced {
         this.antall = antall;
     }
 
-    public UUID[] getRefs() {
-        return refs;
-    }
+    // public UUID[] getRefs() {
+    //     return refs;
+    // }
 
-    public void setRefs(UUID[] refs) {
-        this.refs = refs;
-    }
+    // public void setRefs(UUID[] refs) {
+    //     this.refs = refs;
+    // }
 
     @Override
     public boolean equals(Object o) {

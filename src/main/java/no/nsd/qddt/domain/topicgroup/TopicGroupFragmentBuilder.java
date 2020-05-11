@@ -1,12 +1,11 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.concept.ConceptFragmentBuilder;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
-
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
+
+import no.nsd.qddt.domain.concept.ConceptFragmentBuilder;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 /**
  * @author Stig Norland
@@ -36,8 +35,8 @@ public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup>
 
 
     @Override
-    public void addXmlFragments(Map<UUID, String> fragments) {
-        fragments.putIfAbsent( entity.getId(), getXmlFragment() );
+    public void addXmlFragments(Map<String, String> fragments) {
+        fragments.putIfAbsent( getUrnId(), getXmlFragment() );
         for(ConceptFragmentBuilder child : children) {
             child.addXmlFragments( fragments );
         }

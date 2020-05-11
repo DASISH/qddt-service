@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.xml;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-
 import java.util.Map;
-import java.util.UUID;
+
+import no.nsd.qddt.domain.AbstractEntityAudit;
 
 /**
  * @author Stig Norland
@@ -34,7 +33,7 @@ public class XmlDDIInstanceBuilder<T extends AbstractEntityAudit> extends Abstra
     }
 
     @Override
-    public void addXmlFragments(Map<UUID, String> fragments) {
+    public void addXmlFragments(Map<String, String> fragments) {
 
     }
 
