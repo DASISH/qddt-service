@@ -1,10 +1,12 @@
 package no.nsd.qddt.domain.responsedomain;
 
+
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,36 +17,35 @@ import java.util.stream.Collectors;
 public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<ResponseDomain> {
 
     private final String xmlBody = 
-        "<%1$s missingValue=\"\" blankIsMissingValue=\"false\" classificationLevel=%2$s >\n" +
-            "Content: \n" +
-        "</%1$s>";
+        "\t<%1$s blankIsMissingValue=\"false\" %2$s >\n" +
+        "%3$s" +
+        "\t</%1$s>\n";
 
-        private final String xmlConcept =
-        "<d:Concept>\n" +
-            "\t%1$s"+
-            "\t%2$s"+
-            "\t%3$s"+
-            "\t<r:Name maxLength=\"250\">\n" +
-            "\t\t<r:Content xml:lang=\"%8$s\">%4$s</r:Content>\n" +
-            "\t</r:Name>\n" +
-            "\t<r:Description maxLength=\"10000\">\n" +
-            "\t\t<r:Content xml:lang=\"%8$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
-            "\t</r:Description>\n" +
-            "\t%6$s" +
-            "\t%7$s" +
-        "</d:Concept>\n";        
+//        private final String xmlCodeDomain =
+//        "<d:%1$s blankIsMissingValue=\"false\" classificationLevel=\"\" >\n" +
+//            "\t%2$s"+
+//            "\t%3$s"+
+//            "\t<r:Name maxLength=\"250\">\n" +
+//            "\t\t<r:Content xml:lang=\"%8$s\">%4$s</r:Content>\n" +
+//            "\t</r:Name>\n" +
+//            "\t<r:Description maxLength=\"10000\">\n" +
+//            "\t\t<r:Content xml:lang=\"%8$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
+//            "\t</r:Description>\n" +
+//            "\t%6$s" +
+//            "\t%7$s" +
+//        "</d:%1$s>\n";
 
 //    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed"/>
 
     private final String xmlMixedRef =
-        "\t<d:StructuredMixedResponseDomain>\n" +
+        "\t\t<d:StructuredMixedResponseDomain>\n" +
             "%1$s" +
-        "\t</d:StructuredMixedResponseDomain>\n";
+        "\t\t</d:StructuredMixedResponseDomain>\n";
 
     private final String xmlInMixed =
-        "\t\t<d:ResponseDomainInMixed>\n" +
+        "\t\t\t<d:ResponseDomainInMixed>\n" +
             "%1$s" +
-        "\t\t</d:ResponseDomainInMixed>\n";
+        "\t\t\t</d:ResponseDomainInMixed>\n";
 
 
 //    d:ScaleDomainReference/r:TypeOfObject" defaultValue="ManagedScaleRepresentation" fixedValue="true"/>
@@ -71,12 +72,12 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     public ResponseDomainFragmentBuilder(ResponseDomain responseDomain) {
         super(responseDomain);
 
-        List<Category> children =  entity.getResponseKind() == ResponseKind.MIXED ? 
+        List<Category> children =  entity.getResponseKind() == ResponseKind.MIXED ?
             responseDomain.getManagedRepresentation().getChildren() : 
             List.of(responseDomain.getManagedRepresentation());
 
         manRep = children.stream()
-            .map( FragmentBuilderManageRep::new )
+            .map(item ->  new FragmentBuilderManageRep(item, this.entity.getDisplayLayout() ))
             .collect( Collectors.toList() );
     }
 
@@ -87,11 +88,12 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     }
 
     @Override
-    public String getXmlEntityRef() {
+    public String getXmlEntityRef(int depth) {
         if (entity.getResponseKind() == ResponseKind.MIXED) {
             return String.format( xmlMixedRef,  getInMixedRef() );
         }
-        return String.format( xmlRef,  entity.getResponseKind().getDDIName(), getXmlURN(entity) );
+        return String.format( xmlRef, entity.getResponseKind().getDDIName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth, "\t")));
+//        return String.format( xmlRef,  entity.getResponseKind().getDDIName(), getXmlURN(entity) );
     }
 
     @Override
@@ -106,40 +108,21 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 
     @Override
     public String getXmlFragment() {
-        return String.format( xmlConcept,
-            getXmlURN(entity),
-            getXmlRationale(entity),
-            getXmlBasedOn(entity),
-            entity.getName(),
-            entity.getDescription(),
-            questions.stream()
-                .map( q -> q.getXmlEntityRef() )
-                .collect( Collectors.joining() ),
-            children.stream()
-                .map( c -> c.getXmlEntityRef() )
-                .collect( Collectors.joining()),
-            entity.getXmlLang());
 
-        return String.format( xmlManaged,
-            entity.getClass().getSimpleName(),
-            entity.getModified(),
-            entity.getName(),
-            entity.getDescription(),
-            entity.getXmlLang(), "5", "6", "7", "8", "9", "10",
+        return String.format( xmlBody,
+            entity.getResponseKind().getDDIName(),
+            "classificationLevel=\"Ordinal\"",
             manRep.stream()
-                .map( q -> q.getXmlEntityRef() )
+                .map( q -> q.getXmlEntityRef(2) )
                 .collect( Collectors.joining() )
             );
     }
 
-    protected String getXmlManagedRepresentation() {
-        return "";
-    }
 
 
     private String getInMixedRef() {
         return entity.getManagedRepresentation().getChildren().stream()
-            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getXmlEntityRef()  ) )
+            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getXmlEntityRef(4)  ) )
             .collect( Collectors.joining());
     }
 

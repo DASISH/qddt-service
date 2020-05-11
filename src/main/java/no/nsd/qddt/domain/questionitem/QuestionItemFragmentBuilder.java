@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
 public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionItem> {
     private final String xmlQuestionItem =
         "%1$s" +
-            "\t<QuestionItemName>\n" +
-            "\t\t<r:String>%2$s</r:String>\n" +
-            "\t</QuestionItemName>\n" +
-            "\t<QuestionIntent>\n" +
-            "\t\t<r:Content %3$s isPlainText=\"false\">%4$s</r:Content>\n" +
-            "\t</QuestionIntent>\n" +
-            "\t<QuestionText>\n" +
-            "\t\t<r:Content %3$s isPlainText=\"false\">%5$s</r:Content>\n" +
-            "\t</QuestionText>\n" +
-            "\t%6$s" +
+        "\t\t\t<QuestionItemName>\n" +
+        "\t\t\t\t<r:String>%2$s</r:String>\n" +
+        "\t\t\t</QuestionItemName>\n" +
+        "\t\t\t<QuestionIntent>\n" +
+        "\t\t\t\t<r:Content %3$s isPlainText=\"false\">%4$s</r:Content>\n" +
+        "\t\t\t</QuestionIntent>\n" +
+        "\t\t\t<QuestionText>\n" +
+        "\t\t\t\t<r:Content %3$s isPlainText=\"false\">%5$s</r:Content>\n" +
+        "\t\t\t</QuestionText>\n" +
+        "%6$s" +
         "%7$s";
 
 //    r:ConceptReference/r:URN"/>
@@ -49,7 +49,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
             getXmlLang( entity ),
             entity.getIntent(),
             entity.getQuestion(),
-            responseBuilder.getXmlEntityRef() + getConceptRef(),
+            responseBuilder.getXmlEntityRef(3) + getConceptRef(),
             getXmlFooter(entity));
     }
 
@@ -57,7 +57,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
         return entity.getConceptRefs().stream()
             .map(cr ->{
                 String urn = String.format(xmlURN, cr.getAgency(),cr.getId(),cr.getVersion().toDDIXml());
-                return String.format( xmlRef, "", "Concept", urn);
+                return String.format( xmlRef, "Concept", urn, "\t\t\t" );
             })
             .collect( Collectors.joining());
     }

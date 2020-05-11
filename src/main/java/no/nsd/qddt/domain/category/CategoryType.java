@@ -34,11 +34,11 @@ public enum CategoryType {
     /*
         List: CategoryList/CodeList                                 ,NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue
      */
-    LIST("Code","CategoryList/CodeList","NOT_IMPLEMENTED: isMaintainable |isSystemMissingValue"),
+    LIST("CodeList","CategoryList/CodeList","NOT_IMPLEMENTED: isMaintainable |isSystemMissingValue"),
     /*
         CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs,NOT_IMPLEMENTED: blankIsMissingValue
      */
-    SCALE("Scale","CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs",""),
+    SCALE("ScaleDomain","CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs",""),
     /*
         ONLY for CategoryRoot -> a collection of different responsedomains
      */

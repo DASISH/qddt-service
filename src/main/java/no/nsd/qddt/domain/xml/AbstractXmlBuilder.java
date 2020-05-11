@@ -15,38 +15,39 @@ public abstract class AbstractXmlBuilder {
 
     protected final String xmlURN = "<r:URN type=\"URN\" typeOfIdentifier=\"Canonical\">urn:ddi:%1$s:%2$s:%3$s</r:URN>\n";
 
-    protected final String xmlHeader = "<d:%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isVersionable=\"true\">\n%3$s";
+    protected final String xmlHeader = "\t\t<d:%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isVersionable=\"true\">\n" +
+                                        "%3$s";
 
-    protected final String xmlFooter = "</d:%1$s>\n";
+    protected final String xmlFooter = "\t\t</d:%1$s>\n";
 
     private final String xmlLang = "xml:lang=\"%1$s\"";
 
-    private final String xmlUserId ="<r:UserID typeOfUserID=\"User.Id\">%1$s</r:UserID>\n";
+    private final String xmlUserId ="\t\t\t<r:UserID typeOfUserID=\"User.Id\">%1$s</r:UserID>\n";
 
     private final String xmlRationale =
-        "\t<r:VersionResponsibility>%1$s</r:VersionResponsibility>\n" +
-            "\t<r:VersionRationale>\n" +
-            "\t\t<r:RationaleDescription>\n" +
-            "\t\t\t<r:String xml:lang=\"en\">%2$s</r:String>\n" +
-            "\t\t</r:RationaleDescription>\n" +
-            "\t\t<r:RationaleCode>%3$s</r:RationaleCode>\n" +
-        "\t</r:VersionRationale>\n";
+        "\t\t\t<r:VersionResponsibility>%1$s</r:VersionResponsibility>\n" +
+        "\t\t\t<r:VersionRationale>\n" +
+        "\t\t\t\t<r:RationaleDescription>\n" +
+        "\t\t\t\t\t<r:String xml:lang=\"en\">%2$s</r:String>\n" +
+        "\t\t\t\t</r:RationaleDescription>\n" +
+        "\t\t\t\t<r:RationaleCode>%3$s</r:RationaleCode>\n" +
+        "\t\t\t</r:VersionRationale>\n";
 
     private final String xmlBasedOn =
-        "<r:BasedOnReference>\n" +
-            "\t%1$s\n" +
-            "\t<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
-        "</r:BasedOnReference>\n";
+        "\t\t\t<r:BasedOnReference>\n" +
+        "\t\t\t\t%1$s\n" +
+        "\t\t\\tt<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
+        "\t\t\t</r:BasedOnReference>\n";
 
 
     public abstract void addXmlFragments(Map<String,String> fragments);
 
-    public abstract String getXmlEntityRef();
+    public abstract String getXmlEntityRef(int depth);
 
     public abstract String getXmlFragment();
 
     protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
-        return String.format(xmlHeader, instance.getClass().getSimpleName(), instance.getModified(), getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+        return String.format(xmlHeader, instance.getClass().getSimpleName(), instance.getModified(), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
     }
 
     protected <S extends AbstractEntityAudit> String getXmlFooter(S instance){

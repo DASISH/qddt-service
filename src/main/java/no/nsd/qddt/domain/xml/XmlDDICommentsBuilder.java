@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.xml;
 
-import java.util.Map;
-
 import no.nsd.qddt.domain.comment.Comment;
+
+import java.util.Map;
 
 /**
  * @author Stig Norland
@@ -21,7 +21,7 @@ public class XmlDDICommentsBuilder extends AbstractXmlBuilder {
     }
 
     @Override
-    public String getXmlEntityRef() {
+    public String getXmlEntityRef(int depth) {
         return null;
     }
 

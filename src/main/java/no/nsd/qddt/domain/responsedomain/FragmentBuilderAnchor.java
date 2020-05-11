@@ -1,18 +1,18 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.category.CategoryFragmentBuilder;
 
 import java.util.Map;
 
 /**
  * @author Stig Norland
  */
-public class FragmentBuilderAnchor extends XmlDDIFragmentBuilder<Category> {
+public class FragmentBuilderAnchor extends CategoryFragmentBuilder {
     private final String xmlAnchor =
-        "<r:Anchor value=\"%1$s\">\n" +
+        "\t\t<r:Anchor value=\"%1$s\">\n" +
         "%2$s"+
-        "</r:Anchor>\n";
+        "\t\t</r:Anchor>\n";
 
     public FragmentBuilderAnchor(Category entity) {
         super( entity );
@@ -25,9 +25,26 @@ public class FragmentBuilderAnchor extends XmlDDIFragmentBuilder<Category> {
     }
 
     @Override
-    public String getXmlFragment() {
-        return String.format( xmlAnchor, entity.getCode().getCodeValue(), getXmlEntityRef()
-        );
+    public String getXmlEntityRef(int depth) {
+        return String.format( xmlAnchor, entity.getCode().getCodeValue(), super.getXmlEntityRef( 3 ) );
     }
-
+//    public String getXmlFragment() {
+//        return String.format( xmlAnchor, entity.getCode().getCodeValue(), getXmlEntityRef(3)
+//        );
+//    }
+//
+//    @Override
+//    public String getXmlFragment() {
+////        if (entity.getCategoryType() == CategoryType.CATEGORY)
+//        return String.format( xmlResponseCategory,
+//            getXmlHeader( entity ),
+//            getXmlLang(entity),
+//            entity.getName(),
+//            entity.getLabel(),
+//            getXmlFooter( entity )
+//        );
+////        else
+////            return "";
+//
+//    }
 }

@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.xml;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 
+import java.util.Collections;
+
 /**
  * @author Stig Norland
  */
@@ -10,10 +12,10 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
     protected final T entity;
 
     protected final String xmlRef =
-        "<r:%1$sReference>\n" +
-        "\t%2$s" +
-        "\t<r:TypeOfObject>%1$s</r:TypeOfObject>\n" +
-        "</r:%1$sReference>\n";
+        "%3$s<r:%1$sReference>\n" +
+        "%3$s\t%2$s" +
+        "%3$s\t<r:TypeOfObject>%1$s</r:TypeOfObject>\n" +
+        "%3$s</r:%1$sReference>\n";
 
 
     public XmlDDIFragmentBuilder(T entity) {
@@ -26,8 +28,8 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
     }
 
     @Override
-    public String getXmlEntityRef() {
-        return String.format( xmlRef,  entity.getClass().getSimpleName(), getXmlURN(entity) );
+    public String getXmlEntityRef(int depth) {
+        return String.format( xmlRef,  entity.getClass().getSimpleName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth, "\t")) );
     }
 
 

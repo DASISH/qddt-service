@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.xml;
 
-import java.util.Map;
-
 import no.nsd.qddt.domain.AbstractEntityAudit;
+
+import java.util.Map;
 
 /**
  * @author Stig Norland
@@ -12,7 +12,7 @@ public class XmlDDIInstanceBuilder<T extends AbstractEntityAudit> extends Abstra
     protected final T instance;
 
     private final String ddiXmlRoot =
-        "<DDIInstance \n" +
+        "\n<DDIInstance \n" +
             "    xmlns:g=\"ddi:group:3_2\" \n" +
             "    xmlns:d=\"ddi:datacollection:3_2\"\n" +
             "    xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n" +
@@ -38,7 +38,7 @@ public class XmlDDIInstanceBuilder<T extends AbstractEntityAudit> extends Abstra
     }
 
     @Override
-    public String getXmlEntityRef() {
+    public String getXmlEntityRef(int depth) {
         return null;
     }
 

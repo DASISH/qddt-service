@@ -1,12 +1,17 @@
 package no.nsd.qddt.domain.responsedomain;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 
 //		<r:ManagedScaleRepresentation scopeOfUniqueness="Agency" isUniversallyUnique="true" versionDate="2017-02-01" isVersionable="true">
 //
@@ -68,31 +73,42 @@ import java.util.stream.Collectors;
  */
 public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
 
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
     private final String xmlManaged =
-        "<r:Managed%1$sRepresentation scopeOfUniqueness=\"Agency\" isUniversallyUnique=\"true\" versionDate=\"%2$s\" isVersionable=\"true\">\n" +
-            "\t<r:Managed%1$sRepresentationName><r:String %3$s>%4$s</r:String></r:Managed%1$sRepresentationName>\n" +
-            "\t\t<r:Description>\n" +
-            "\t\t\t<r:Content %3$s>%5$s</r:Content>\n" +
-            "\t\t</r:Description>\n" +
-            "\t\t<r:ScaleDimension dimensionNumber=\"1\" degreeSlopeFromHorizontal=\"%6$s\">\n" +
-            "\t\t\t<r:NumberRange>\n" +
-            "\t\t\t\t<r:Low>%7$s</r:Low>\n" +
-            "\t\t\t\t<r:High>%8$s</r:High>\n" +
-            "\t\t\t</r:NumberRange>\n" +
-                        "t%9$s" +
-            "\t\t\t</r:ScaleDimension>\n" +
-        "</r:Managed%1$sRepresentation>";
+//        "\t\t<r:Managed%1$sRepresentation scopeOfUniqueness=\"Agency\" isUniversallyUnique=\"true\" versionDate=\"%2$s\" isVersionable=\"true\">\n" +
+        "%9$s" +
+        "\t\t\t<r:Managed%1$sRepresentationName>\n" +
+        "\t\t\t\t<r:String %3$s>%4$s</r:String>\n" +
+        "\t\t\t</r:Managed%1$sRepresentationName>\n" +
+        "\t\t\t<r:Description>\n" +
+        "\t\t\t\t<r:Content %3$s>%5$s</r:Content>\n" +
+        "\t\t\t</r:Description>\n" +
+        "\t\t\t<r:ScaleDimension dimensionNumber=\"1\" degreeSlopeFromHorizontal=\"%6$s\">\n" +
+        "\t\t\t\t<r:NumberRange>\n" +
+        "\t\t\t\t\t<r:Low>%7$s</r:Low>\n" +
+        "\t\t\t\t\t<r:High>%8$s</r:High>\n" +
+        "\t\t\t\t</r:NumberRange>\n" +
+        "%10$s" +
+        "\t\t\t</r:ScaleDimension>\n" +
+        "\t\t</r:Managed%1$sRepresentation>\n";
 
     private final List<AbstractXmlBuilder> children;
+    private final String degreeSlopeFromHorizontal;
 
-
-    public FragmentBuilderManageRep(Category entity) {
+    public FragmentBuilderManageRep(Category entity, String degreeSlopeFromHorizontal) {
         super( entity );
+        this.degreeSlopeFromHorizontal = degreeSlopeFromHorizontal;
         children = entity.getChildren().stream()
         .map( c -> getBuilder(c) )
         .collect( Collectors.toList() );
     }
 
+
+    @Override
+    protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
+        return String.format(xmlHeader, entity.getCategoryType().getName(), instance.getModified(), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+    }
 
     @Override
     public void addXmlFragments(Map<String, String> fragments) {
@@ -103,27 +119,36 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
     @Override
     public String getXmlFragment() {
         return String.format( xmlManaged,
-        entity.getClass().getSimpleName(),
+        entity.getCategoryType().getName(),
         entity.getModified(),
         entity.getXmlLang(),
         entity.getName(),
         entity.getDescription(),
-        "90",
+        degreeSlopeFromHorizontal,
         entity.getInputLimit().getMinimum(),
         entity.getInputLimit().getMaximum(),
+        getXmlHeader( entity ),
         children.stream()
-            .map( q -> q.getXmlEntityRef() )
+            .map( q -> q.getXmlEntityRef(4) )
             .collect( Collectors.joining() )
         );
     }
 
+    @Override
+    public String getXmlEntityRef(int depth) {
+        return String.format( xmlRef,  entity.getCategoryType().getName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth, "\t")) );
+    }
+
+
     private AbstractXmlBuilder getBuilder(Category category) {
+        LOG.info(entity.getCategoryType().getName() );
         switch (entity.getCategoryType()) {
             case SCALE:
                 return new FragmentBuilderAnchor(category);
             case LIST:
                 return new FragmentBuilderCode(category);
             default:
+                LOG.info("getbuilder get default");
                 return category.getXmlBuilder();
         }
     }

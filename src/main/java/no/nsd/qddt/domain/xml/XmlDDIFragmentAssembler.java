@@ -13,7 +13,7 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
 
     private final String XMLDEF = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private final String xmlFragHeader =
-        "<ddi:FragmentInstance \n" +
+        "\n<ddi:FragmentInstance \n" +
             "\txmlns:c=\"ddi:conceptualcomponent:3_2\" \n" +
             "\txmlns:d=\"ddi:datacollection:3_2\" \n" +
             "\txmlns:ddi=\"ddi:instance:3_2\" \n" +
@@ -38,10 +38,10 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
 
 
     protected String getTopLevelReference(String typeOfObject){
-        return "<ddi:TopLevelReference isExternal=\"false\" externalReferenceDefaultURI=\"false\" isReference=\"true\" lateBound=\"false\" objectLanguage=\"eng-GB\">\n" +
-            "\t" + builder.getXmlURN(rootElement) +
-            "\t<r:TypeOfObject>" + typeOfObject + "</r:TypeOfObject>\n" +
-            "</ddi:TopLevelReference>\n";
+        return "\t<ddi:TopLevelReference isExternal=\"false\" externalReferenceDefaultURI=\"false\" isReference=\"true\" lateBound=\"false\" objectLanguage=\"eng-GB\">\n" +
+            "\t\t" + builder.getXmlURN(rootElement) +
+            "\t\t<r:TypeOfObject>" + typeOfObject + "</r:TypeOfObject>\n" +
+            "\t</ddi:TopLevelReference>\n";
     }
 
     protected String getFooter() {
@@ -55,7 +55,7 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
         return sb.append( XMLDEF )
             .append( xmlFragHeader )
             .append( getTopLevelReference( (rootElement.getClass().getSimpleName() == "TopicGroup" ? "ConceptGroup" : rootElement.getClass().getSimpleName() ) ))
-            .append( fragments.values().stream().collect( Collectors.joining("</ddi:Fragment>\n<ddi:Fragment>\n","<ddi:Fragment>\n","</ddi:Fragment>\n") ))
+            .append( fragments.values().stream().collect( Collectors.joining("\t</ddi:Fragment>\n\t<ddi:Fragment>\n","\t<ddi:Fragment>\n","\t</ddi:Fragment>\n") ))
             .append( getFooter() )
             .toString();
     }
