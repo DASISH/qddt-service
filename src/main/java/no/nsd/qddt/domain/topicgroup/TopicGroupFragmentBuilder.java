@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.topicgroup;
 import no.nsd.qddt.domain.concept.ConceptFragmentBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,18 +14,18 @@ import java.util.stream.Collectors;
 public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup> {
 
     private final String xmlTopic =
-        "\t<d:ConceptGroup isOrdered= \"false\" isAdministrativeOnly=\"true\">\n" +
-        "%1$s" +
+        "\t\t<d:ConceptGroup isOrdered= \"false\" isAdministrativeOnly=\"true\">\n" +
+        "\t\t\t%1$s" +
         "%2$s" +
         "%3$s" +
-        "\t\t<r:ConceptGroupName maxLength=\"250\">\n" +
-        "\t\t\t<r:Content xml:lang=\"%6$s\">%4$s</r:Content>\n" +
-        "\t\t</r:ConceptGroupName>\n" +
-        "\t\t<r:Description maxLength=\"10000\">\n" +
-        "\t\t\t<r:Content xml:lang=\"%6$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
-        "\t\t</r:Description>\n" +
+        "\t\t\t<r:ConceptGroupName maxLength=\"250\">\n" +
+        "\t\t\t\t<r:Content xml:lang=\"%6$s\">%4$s</r:Content>\n" +
+        "\t\t\t</r:ConceptGroupName>\n" +
+        "\t\t\t<r:Description maxLength=\"10000\">\n" +
+        "\t\t\t\t<r:Content xml:lang=\"%6$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
+        "\t\t\t</r:Description>\n" +
         "%7$s" +
-        "\t</d:ConceptGroup>\n";
+        "\t\t</d:ConceptGroup>\n";
 
     private List<ConceptFragmentBuilder> children;
 
@@ -42,6 +43,11 @@ public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup>
         }
     }
 
+    @Override
+    public String getXmlEntityRef(int depth) {
+        return String.format( xmlRef,  "ConceptGroup", getXmlURN(entity)  , String.join("", Collections.nCopies(depth, "\t")) );
+    }
+
     public String getXmlFragment() {
         return String.format( xmlTopic,
             getXmlURN(entity),
@@ -51,7 +57,7 @@ public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup>
             entity.getDescription(),
             entity.getXmlLang(),
             children.stream()
-                .map(c -> c.getXmlEntityRef(2))
+                .map(c -> c.getXmlEntityRef(3))
                 .collect( Collectors.joining()) );
     }
 

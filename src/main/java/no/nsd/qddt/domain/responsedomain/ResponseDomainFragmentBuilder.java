@@ -17,9 +17,11 @@ import java.util.stream.Collectors;
 public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<ResponseDomain> {
 
     private final String xmlBody = 
-        "\t<%1$s blankIsMissingValue=\"false\" %2$s >\n" +
-        "%3$s" +
-        "\t</%1$s>\n";
+        "\t\t\t<%1$s blankIsMissingValue=\"false\" %2$s >\n" +
+        "\t\t\t\t<r:Label>%3$s</r:Label>\n" +
+        "\t\t\t\t<r:Description>%4$s</r:Description>\n" +
+        "%5$s" +
+        "\t\t\t</%1$s>\n";
 
 //        private final String xmlCodeDomain =
 //        "<d:%1$s blankIsMissingValue=\"false\" classificationLevel=\"\" >\n" +
@@ -38,14 +40,14 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 //    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed"/>
 
     private final String xmlMixedRef =
-        "\t\t<d:StructuredMixedResponseDomain>\n" +
+        "\t\t\t<d:StructuredMixedResponseDomain>\n" +
             "%1$s" +
-        "\t\t</d:StructuredMixedResponseDomain>\n";
+        "\t\t\t</d:StructuredMixedResponseDomain>\n";
 
     private final String xmlInMixed =
-        "\t\t\t<d:ResponseDomainInMixed>\n" +
+        "\t\t\t\t<d:ResponseDomainInMixed>\n" +
             "%1$s" +
-        "\t\t\t</d:ResponseDomainInMixed>\n";
+        "\t\t\t\t</d:ResponseDomainInMixed>\n";
 
 
 //    d:ScaleDomainReference/r:TypeOfObject" defaultValue="ManagedScaleRepresentation" fixedValue="true"/>
@@ -72,7 +74,7 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     public ResponseDomainFragmentBuilder(ResponseDomain responseDomain) {
         super(responseDomain);
 
-        List<Category> children =  entity.getResponseKind() == ResponseKind.MIXED ?
+        List<Category> children =  entity.getResponseKind().equals( ResponseKind.MIXED) ?
             responseDomain.getManagedRepresentation().getChildren() : 
             List.of(responseDomain.getManagedRepresentation());
 
@@ -83,7 +85,7 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 
     @Override
     public void addXmlFragments(Map<String, String> fragments) {
-        fragments.putIfAbsent( getUrnId(), getXmlFragment() );
+//        fragments.putIfAbsent( getUrnId(), getXmlFragment() );
         manRep.forEach(c -> c.addXmlFragments(fragments));
     }
 
@@ -91,9 +93,16 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     public String getXmlEntityRef(int depth) {
         if (entity.getResponseKind() == ResponseKind.MIXED) {
             return String.format( xmlMixedRef,  getInMixedRef() );
+        } else if (entity.getResponseKind() == ResponseKind.LIST) {
+            return String.format( xmlBody, entity.getResponseKind().getDDIName(), "classificationLevel=\"Ordinal\"",
+                    entity.getName(),
+                    entity.getDescription(),
+                    manRep.stream()
+                        .map( q -> q.getXmlEntityRef(4) )
+                        .collect( Collectors.joining() )
+            );
         }
         return String.format( xmlRef, entity.getResponseKind().getDDIName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth, "\t")));
-//        return String.format( xmlRef,  entity.getResponseKind().getDDIName(), getXmlURN(entity) );
     }
 
     @Override
@@ -108,22 +117,22 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 
     @Override
     public String getXmlFragment() {
-
-        return String.format( xmlBody,
-            entity.getResponseKind().getDDIName(),
-            "classificationLevel=\"Ordinal\"",
-            manRep.stream()
-                .map( q -> q.getXmlEntityRef(2) )
-                .collect( Collectors.joining() )
-            );
+        return "";
+//        return String.format( xmlBody,
+//            entity.getResponseKind().getDDIName(),
+//            "classificationLevel=\"Ordinal\"",
+//            manRep.stream()
+//                .map( q -> q.getXmlEntityRef(2) )
+//                .collect( Collectors.joining() )
+//            );
     }
 
 
 
     private String getInMixedRef() {
         return entity.getManagedRepresentation().getChildren().stream()
-            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getXmlEntityRef(4)  ) )
-            .collect( Collectors.joining());
+            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getXmlEntityRef(5)  ) )
+            .collect( Collectors.joining( ));
     }
 
 }

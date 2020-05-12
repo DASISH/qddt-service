@@ -29,4 +29,12 @@ public class QddtUrlController extends AbstractController {
 
         return service.findPath( id);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
+    public QddtUrl getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
+        QddtUrl url = service.findPath( id);
+        url.setRevision( revision );
+        return url;
+    }
 }

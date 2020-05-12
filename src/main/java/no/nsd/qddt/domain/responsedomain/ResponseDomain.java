@@ -14,7 +14,7 @@ import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.elementref.IEntityRef;
 import no.nsd.qddt.domain.embedded.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -229,7 +229,7 @@ public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
     }
 
     @Override
-    public AbstractXmlBuilder getXmlBuilder() {
+    public XmlDDIFragmentBuilder<ResponseDomain> getXmlBuilder() {
         return new ResponseDomainFragmentBuilder(this);
     }
 

@@ -1,11 +1,9 @@
 package no.nsd.qddt.domain.search;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
@@ -18,6 +16,10 @@ public class QddtUrl {
     @Type(type="pg-uuid")
     @Id
     UUID id;
+    @Transient
+    @JsonSerialize
+//    @JsonDeserialize
+    Integer revision;
     String path;
     String name;
 
@@ -30,6 +32,14 @@ public class QddtUrl {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public Integer getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Integer revision) {
+        this.revision = revision;
     }
 
     public String getPath() {

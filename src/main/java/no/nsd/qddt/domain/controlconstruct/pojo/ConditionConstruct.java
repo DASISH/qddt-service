@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * @author Stig Norland
@@ -47,7 +48,7 @@ public class ConditionConstruct extends ControlConstruct {
 
         ConditionConstruct that = (ConditionConstruct) o;
 
-        if (condition != null ? !condition.equals( that.condition ) : that.condition != null) return false;
+        if (!Objects.equals( condition, that.condition )) return false;
         return conditionKind == that.conditionKind;
     }
 

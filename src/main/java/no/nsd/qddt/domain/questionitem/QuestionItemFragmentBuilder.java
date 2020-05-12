@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.questionitem;
 
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
 import java.util.Map;
@@ -28,7 +28,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
 //    r:ConceptReference/r:TypeOfObject" defaultValue="Concept" fixedValue="true"/>
 
 
-    private final AbstractXmlBuilder responseBuilder;
+    private final  XmlDDIFragmentBuilder<ResponseDomain>  responseBuilder;
 
     public QuestionItemFragmentBuilder(QuestionItem questionItem) {
         super(questionItem);
@@ -38,6 +38,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
     @Override
     public void addXmlFragments(Map<String, String> fragments) {
         fragments.putIfAbsent( getUrnId(), getXmlFragment() );
+        entity.getConceptRefs().forEach( c -> c.getEntity().getXmlBuilder().addXmlFragments( fragments ) );
         responseBuilder.addXmlFragments( fragments );
     }
 

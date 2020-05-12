@@ -104,7 +104,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
     public void removeQuestionItem(UUID id, Integer rev) {
-        if (conceptQuestionItems.removeIf( q -> q.getElementId() == id && q.getElementRevision() == rev )) {
+        if (conceptQuestionItems.removeIf( q -> q.getElementId().equals( id) && q.getElementRevision().equals( rev ))) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
             this.setChangeComment( "QuestionItem assosiation removed" );
             this.getParents().forEach( p -> {

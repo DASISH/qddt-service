@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.responsedomain;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryFragmentBuilder;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -10,9 +11,9 @@ import java.util.Map;
  */
 public class FragmentBuilderAnchor extends CategoryFragmentBuilder {
     private final String xmlAnchor =
-        "\t\t<r:Anchor value=\"%1$s\">\n" +
+        "%3$s<r:Anchor value=\"%1$s\">\n" +
         "%2$s"+
-        "\t\t</r:Anchor>\n";
+        "%3$s</r:Anchor>\n";
 
     public FragmentBuilderAnchor(Category entity) {
         super( entity );
@@ -26,7 +27,7 @@ public class FragmentBuilderAnchor extends CategoryFragmentBuilder {
 
     @Override
     public String getXmlEntityRef(int depth) {
-        return String.format( xmlAnchor, entity.getCode().getCodeValue(), super.getXmlEntityRef( 3 ) );
+        return String.format( xmlAnchor, entity.getCode().getCodeValue(), super.getXmlEntityRef( depth +1 ) , String.join("", Collections.nCopies(depth, "\t")));
     }
 //    public String getXmlFragment() {
 //        return String.format( xmlAnchor, entity.getCode().getCodeValue(), getXmlEntityRef(3)

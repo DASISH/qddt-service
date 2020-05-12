@@ -34,11 +34,14 @@ public abstract class AbstractXmlBuilder {
         "\t\t\t</r:VersionRationale>\n";
 
     private final String xmlBasedOn =
-        "\t\t\t<r:BasedOnReference>\n" +
-        "\t\t\t\t%1$s\n" +
-        "\t\t\\tt<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
+        "\t\t\t<r:BasedOnReference isExternal=\"true\"  externalReferenceDefaultURI=\"%3$s\">\n" +
+        "\t\t\t\t%1$s" +
+        "\t\t\t\t<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
         "\t\t\t</r:BasedOnReference>\n";
 
+
+//    @Value("${api.rooturl}")
+//    private String rooturl;
 
     public abstract void addXmlFragments(Map<String,String> fragments);
 
@@ -74,7 +77,8 @@ public abstract class AbstractXmlBuilder {
 
     protected <S extends AbstractEntityAudit> String getXmlBasedOn(S instance) {
         if (instance.getBasedOnObject() == null) return "";
-        return String.format( xmlBasedOn, getXmlURN(instance),instance.getClass().getSimpleName() );
+        String uri = "https://qddt.nsd.no/search/" + instance.getBasedOnObject() + "/" + instance.getBasedOnRevision();
+        return String.format( xmlBasedOn, getXmlURN(instance),instance.getClass().getSimpleName(), uri );
     }
 
     protected String html5toXML(String html5){

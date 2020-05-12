@@ -34,6 +34,7 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
                 super(concept);
                 // TODO fix questions, add them to export, then reference Concept
                 questions = concept.getConceptQuestionItems().stream()
+                .filter(f ->  f.getElement() != null )
                 .map( cqi ->   cqi.getElement().getXmlBuilder() )
                 .collect( Collectors.toList() );
 
@@ -61,9 +62,7 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
                     getXmlBasedOn(entity),
                     entity.getName(),
                     entity.getDescription(),
-                    questions.stream()
-                        .map( q -> q.getXmlEntityRef(3) )
-                        .collect( Collectors.joining() ),
+                    "",
                     children.stream()
                         .map( c -> c.getXmlEntityRef(3) )
                         .collect( Collectors.joining()),

@@ -6,6 +6,7 @@ import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Transient;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,10 @@ abstract class BaseRef<T> implements IRefs<T> {
     private String agency;
 
     private String name;
+
+    @Transient
+    public AbstractEntityAudit entity;
+
 
     @Override
     public UUID getId() {
@@ -40,6 +45,10 @@ abstract class BaseRef<T> implements IRefs<T> {
         return agency;
     }
 
+    public AbstractEntityAudit getEntity() {
+        return entity;
+    }
+
     BaseRef(AbstractEntityAudit entity){
         assert entity != null;
         try {
@@ -47,6 +56,7 @@ abstract class BaseRef<T> implements IRefs<T> {
             id = entity.getId();
             version = entity.getVersion();
             agency = entity.getAgency().getName();
+            this.entity = entity;
         } catch (NullPointerException npe){
             LOG.error("BaseRef NullPointerException");
         } catch (Exception ex){

@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -19,10 +20,10 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
         "%5$s";
 
     private final String xmlDomainReference =
-        "<d:%1$sDomainReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
-        "\t%2$s" +
-        "\t<r:TypeOfObject>Managed%1$sRepresentation</r:TypeOfObject>\n" +
-        "</d:%1$sDomainReference>";
+        "%3$s<d:%1$sDomainReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
+        "%3$s\t%2$s" +
+        "%3$s\t<r:TypeOfObject>Managed%1$sRepresentation</r:TypeOfObject>\n" +
+        "%3$s</d:%1$sDomainReference>\n";
 
     public CategoryFragmentBuilder(Category category) {
         super(category);
@@ -50,7 +51,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     public String getXmlEntityRef(int depth) {
         if (entity.getCategoryType()== CategoryType.CATEGORY)
             return super.getXmlEntityRef(depth);
-        return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity), depth);
+        return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity),  String.join("", Collections.nCopies(depth, "\t")));
     }
 
 }

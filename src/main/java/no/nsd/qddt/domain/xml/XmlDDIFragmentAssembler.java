@@ -30,6 +30,8 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
 
     private Map<String,String> fragments = new HashMap<>();
 
+//    private Map<String,<>>
+
     public XmlDDIFragmentAssembler(T rootElement) {
         this.rootElement = rootElement;
         builder = rootElement.getXmlBuilder();
@@ -50,11 +52,11 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
 
 
     public String compileToXml() {
-
+        String typeofObject =  rootElement.getClass().getSimpleName().equals( "TopicGroup" ) ? "ConceptGroup" : rootElement.getClass().getSimpleName();
         StringBuilder sb = new StringBuilder( );
         return sb.append( XMLDEF )
             .append( xmlFragHeader )
-            .append( getTopLevelReference( (rootElement.getClass().getSimpleName() == "TopicGroup" ? "ConceptGroup" : rootElement.getClass().getSimpleName() ) ))
+            .append( getTopLevelReference( typeofObject ))
             .append( fragments.values().stream().collect( Collectors.joining("\t</ddi:Fragment>\n\t<ddi:Fragment>\n","\t<ddi:Fragment>\n","\t</ddi:Fragment>\n") ))
             .append( getFooter() )
             .toString();
