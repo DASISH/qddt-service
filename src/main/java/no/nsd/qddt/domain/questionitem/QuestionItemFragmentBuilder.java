@@ -12,15 +12,17 @@ import java.util.stream.Collectors;
 public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionItem> {
     private final String xmlQuestionItem =
         "%1$s" +
-        "\t\t\t<QuestionItemName>\n" +
+        "\t\t\t<d:QuestionItemName>\n" +
         "\t\t\t\t<r:String>%2$s</r:String>\n" +
-        "\t\t\t</QuestionItemName>\n" +
-        "\t\t\t<QuestionIntent>\n" +
+        "\t\t\t</d:QuestionItemName>\n" +
+        "\t\t\t<d:QuestionText isStructureRequired=\"false\">\n" +
+        "\t\t\t\t<d:LiteralText>\n" +
+        "\t\t\t\t\t<d:Text xml:lang=\"nb-NO\" isPlainText=\"false\" xml:space=\"default\">%5$s</d:Text>\n" +
+        "\t\t\t\t</d:LiteralText>\n" +
+        "\t\t\t</d:QuestionText>\n" +
+        "\t\t\t<d:QuestionIntent>\n" +
         "\t\t\t\t<r:Content %3$s isPlainText=\"false\">%4$s</r:Content>\n" +
-        "\t\t\t</QuestionIntent>\n" +
-        "\t\t\t<QuestionText>\n" +
-        "\t\t\t\t<r:Content %3$s isPlainText=\"false\">%5$s</r:Content>\n" +
-        "\t\t\t</QuestionText>\n" +
+        "\t\t\t</d:QuestionIntent>\n" +
         "%6$s" +
         "%7$s";
 

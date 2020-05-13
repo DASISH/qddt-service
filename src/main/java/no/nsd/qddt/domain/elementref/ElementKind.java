@@ -4,31 +4,34 @@ package no.nsd.qddt.domain.elementref;
  * @author Stig Norland
  */
 public enum ElementKind {
-    SURVEY_PROGRAM("Survey","SurveyProgram"),
-    STUDY("Study","Study"),
-    TOPIC_GROUP("Module","TopicGroup"),
-    CONCEPT("Concept","Concept"),
-    QUESTION_ITEM("Question Item","QuestionItem"),
-    RESPONSEDOMAIN("Response Domain","ResponseDomain"),
-    CATEGORY("Category","Category"),
-    INSTRUMENT("Instrument","Instrument"),
-    PUBLICATION("Publication","Publication"),
-    CONTROL_CONSTRUCT("Control Construct","ControlConstruct"),
-    QUESTION_CONSTRUCT("Question Construct","QuestionConstruct"),
-    STATEMENT_CONSTRUCT("Statement","StatementItem"),
-    CONDITION_CONSTRUCT("Condition","ConditionConstruct"),
-    SEQUENCE_CONSTRUCT("Sequence","Sequence"),
-    INSTRUCTION("Instruction","Instruction"),
-    UNIVERSE("Universe","Universe");
+    SURVEY_PROGRAM("Survey","SurveyProgram",""),
+    STUDY("Study","Study",""),
+    TOPIC_GROUP("Module","TopicGroup","c"),
+    CONCEPT("Concept","Concept","c"),
+    QUESTION_ITEM("Question Item","QuestionItem", "d"),
+    RESPONSEDOMAIN("Response Domain","ResponseDomain","r"),
+    CATEGORY("Category","Category" ,"l"),
+    INSTRUMENT("Instrument","Instrument", "c"),
+    PUBLICATION("Publication","Publication", "c"),
+    CONTROL_CONSTRUCT("Control Construct","ControlConstruct", "d"),
+    QUESTION_CONSTRUCT("Question Construct","QuestionConstruct", "d"),
+    STATEMENT_CONSTRUCT("Statement","StatementItem", "d"),
+    CONDITION_CONSTRUCT("Condition","ConditionConstruct", "d"),
+    SEQUENCE_CONSTRUCT("Sequence","Sequence" ,"c"),
+    INSTRUCTION("Instruction","Instruction", "d"),
+    UNIVERSE("Universe","Universe", "d");
 
 
     private final String description;
     private final String className;
+    private final String ddiPreFix;
 
-    ElementKind(String description, String className) {
+    ElementKind(String description, String className, String ddiPreFix) {
         this.description = description;
         this.className = className;
+        this.ddiPreFix = ddiPreFix;
     }
+
 
     public String getDescription() {
         return this.description;
@@ -36,6 +39,10 @@ public enum ElementKind {
 
     public String getClassName() {
         return className;
+    }
+
+    public String getDdiPreFix() {
+        return ddiPreFix;
     }
 
     public static ElementKind getEnum(String className) {

@@ -15,7 +15,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
         "\t\t\t\t<r:String %2$s>%3$s</r:String>\n" +
         "\t\t\t</l:CategoryName>\n" +
         "\t\t\t<r:Label>\n" +
-        "\t\t\t\t<Content %2$s >%4$s</Content>\n" +
+        "\t\t\t\t<r:Content %2$s>%4$s</r:Content>\n" +
         "\t\t\t</r:Label>\n" +
         "%5$s";
 
@@ -24,6 +24,11 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
         "%3$s\t%2$s" +
         "%3$s\t<r:TypeOfObject>Managed%1$sRepresentation</r:TypeOfObject>\n" +
         "%3$s</d:%1$sDomainReference>\n";
+
+    private final String xmlCodeDomain =
+        "%2$s<d:CodeDomain>\n" +
+        "%1s$" +
+        "%2$s</d:CodeDomain>\n";
 
     public CategoryFragmentBuilder(Category category) {
         super(category);
@@ -51,7 +56,10 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     public String getXmlEntityRef(int depth) {
         if (entity.getCategoryType()== CategoryType.CATEGORY)
             return super.getXmlEntityRef(depth);
-        return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity),  String.join("", Collections.nCopies(depth, "\t")));
+        else if (entity.getCategoryType()== CategoryType.LIST)
+            return String.format( xmlCodeDomain, super.getXmlEntityRef(depth+1), String.join("", Collections.nCopies(depth, "\t")) );
+        else
+            return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity),  String.join("", Collections.nCopies(depth, "\t")));
     }
 
 }

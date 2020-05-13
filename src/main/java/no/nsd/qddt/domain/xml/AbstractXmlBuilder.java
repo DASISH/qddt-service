@@ -3,6 +3,8 @@ package no.nsd.qddt.domain.xml;
 
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ElementKind;
+import org.joda.time.DateTime;
 
 import java.util.Map;
 import java.util.regex.MatchResult;
@@ -15,10 +17,10 @@ public abstract class AbstractXmlBuilder {
 
     protected final String xmlURN = "<r:URN type=\"URN\" typeOfIdentifier=\"Canonical\">urn:ddi:%1$s:%2$s:%3$s</r:URN>\n";
 
-    protected final String xmlHeader = "\t\t<d:%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isVersionable=\"true\">\n" +
-                                        "%3$s";
+    protected final String xmlHeader = "\t\t<%1$s:%2$s isUniversallyUnique=\"true\" versionDate=\"%3$s\" isVersionable=\"true\">\n" +
+                                        "%4$s";
 
-    protected final String xmlFooter = "\t\t</d:%1$s>\n";
+    protected final String xmlFooter = "\t\t</%1$s:%2$s>\n";
 
     private final String xmlLang = "xml:lang=\"%1$s\"";
 
@@ -28,16 +30,20 @@ public abstract class AbstractXmlBuilder {
         "\t\t\t<r:VersionResponsibility>%1$s</r:VersionResponsibility>\n" +
         "\t\t\t<r:VersionRationale>\n" +
         "\t\t\t\t<r:RationaleDescription>\n" +
-        "\t\t\t\t\t<r:String xml:lang=\"en\">%2$s</r:String>\n" +
+        "\t\t\t\t\t<r:String xml:lang=\"en-GB\">%2$s</r:String>\n" +
         "\t\t\t\t</r:RationaleDescription>\n" +
         "\t\t\t\t<r:RationaleCode>%3$s</r:RationaleCode>\n" +
         "\t\t\t</r:VersionRationale>\n";
 
     private final String xmlBasedOn =
-        "\t\t\t<r:BasedOnReference isExternal=\"true\"  externalReferenceDefaultURI=\"%3$s\">\n" +
-        "\t\t\t\t%1$s" +
-        "\t\t\t\t<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
-        "\t\t\t</r:BasedOnReference>\n";
+        "\t\t\t<r:BasedOnObject>\n" +
+        "\t\t\t\t<r:BasedOnReference isExternal=\"true\" externalReferenceDefaultURI=\"%3$s\">\n" +
+        "\t\t\t\t\t%1$s" +
+        "\t\t\t\t\t<r:TypeOfObject>%2$s</r:TypeOfObject>\n"+
+        "\t\t\t\t</r:BasedOnReference>\n" +
+        "\t\t\t\t<r:BasedOnRationaleDescription><r:String/></r:BasedOnRationaleDescription>\n" +
+        "\t\t\t\t<r:BasedOnRationaleCode></r:BasedOnRationaleCode>\n" +
+        "\t\t\t</r:BasedOnObject>\n";
 
 
 //    @Value("${api.rooturl}")
@@ -50,11 +56,14 @@ public abstract class AbstractXmlBuilder {
     public abstract String getXmlFragment();
 
     protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
-        return String.format(xmlHeader, instance.getClass().getSimpleName(), instance.getModified(), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+        String prefix = ElementKind.getEnum(instance.getClass().getSimpleName()).getDdiPreFix();
+        return String.format(xmlHeader, prefix, instance.getClass().getSimpleName(), getInstanceDate(instance), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
     }
 
     protected <S extends AbstractEntityAudit> String getXmlFooter(S instance){
-        return String.format( xmlFooter, instance.getClass().getSimpleName() );
+        String prefix = ElementKind.getEnum(instance.getClass().getSimpleName()).getDdiPreFix();
+
+        return String.format( xmlFooter, prefix, instance.getClass().getSimpleName() );
     }
 
     protected <S extends AbstractEntityAudit>String getXmlLang(S instance) {
@@ -79,6 +88,10 @@ public abstract class AbstractXmlBuilder {
         if (instance.getBasedOnObject() == null) return "";
         String uri = "https://qddt.nsd.no/search/" + instance.getBasedOnObject() + "/" + instance.getBasedOnRevision();
         return String.format( xmlBasedOn, getXmlURN(instance),instance.getClass().getSimpleName(), uri );
+    }
+
+    protected  <S extends AbstractEntityAudit> String getInstanceDate(S instance){
+        return new DateTime(instance.getModified().getTime()).toString("YYYY-MM-DD'T'HH:mm:ss");
     }
 
     protected String html5toXML(String html5){

@@ -11,10 +11,11 @@ import java.util.Map;
  */
 public class FragmentBuilderCode extends CategoryFragmentBuilder {
     private final String xmlCode =
-        "%3$s<l:Code scopeOfUniqueness=\"Agency\" isUniversallyUnique=\"true\" isIdentifiable=\"true\" isDiscrete=\"true\" levelNumber=\"1\"  isTotal=\"false\">\n" +
-        "%1$s"+
-        "%3$s\t<r:Value xml:space=\"default\">%2$s</r:Value>\n" +
-        "%3$s</l:Code>\n";
+        "%4$s<l:Code scopeOfUniqueness=\"Agency\" isUniversallyUnique=\"true\" isIdentifiable=\"true\" isDiscrete=\"true\" levelNumber=\"1\"  isTotal=\"false\">\n" +
+        "%4$s\t%1$s"+
+        "%2$s"+
+        "%4$s\t<r:Value xml:space=\"default\">%3$s</r:Value>\n" +
+        "%4$s</l:Code>\n";
 
 
     public FragmentBuilderCode(Category entity) {
@@ -27,14 +28,10 @@ public class FragmentBuilderCode extends CategoryFragmentBuilder {
         fragments.putIfAbsent( getUrnId() , getXmlFragment() );
     }
 
-//    @Override
-//    public String getXmlFragment() {
-//        return String.format(xmlCode, getCodeURN(), getXmlEntityRef(3),   entity.getCode().getCodeValue());
-//    }
 
     @Override
     public String getXmlEntityRef(int depth) {
-        return String.format( xmlCode,  super.getXmlEntityRef( depth+1 ) , entity.getCode().getCodeValue() , String.join("", Collections.nCopies(depth, "\t")) );
+        return String.format( xmlCode, getCodeURN(), super.getXmlEntityRef( depth+1 ) , entity.getCode().getCodeValue() , String.join("", Collections.nCopies(depth, "\t")) );
     }
 
     @Override

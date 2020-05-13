@@ -1,9 +1,6 @@
 package no.nsd.qddt.domain.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.Document;
@@ -90,7 +87,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         code = new Code();
         hierarchyLevel = HierarchyLevel.ENTITY;
         setCategoryType(CategoryType.CATEGORY);
-        setInputLimit("0","1");
+        setInputLimit(0,1,1);
     }
 
     /***
@@ -185,7 +182,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
      */
     public ResponseCardinality getInputLimit() {
         if (inputLimit == null)
-            setInputLimit("0","1");
+            setInputLimit(0,1,1);
         return inputLimit;
     }
 
@@ -193,8 +190,8 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
         this.inputLimit = inputLimit;
     }
 
-    public void setInputLimit(String minimum, String maximum) {
-        this.inputLimit = new ResponseCardinality(minimum,maximum) ;
+    public void setInputLimit(Integer minimum, Integer maximum, Integer step) {
+        this.inputLimit = new ResponseCardinality(minimum,maximum,step) ;
     }
 
     public CategoryRelationCodeType getClassificationLevel() {
@@ -381,7 +378,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
     protected void beforeUpdate() {
         LOG.debug("Category beforeUpdate " + getName());
         if (inputLimit == null)
-            setInputLimit("0","1");
+            setInputLimit(0,1,1);
         beforeInsert();
     }
 

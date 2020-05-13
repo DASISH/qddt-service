@@ -13,19 +13,19 @@ import java.util.stream.Collectors;
 public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
 
     private final String xmlConcept =
-        "\t\t<d:Concept>\n" +
+        "\t\t<c:Concept>\n" +
         "\t\t\t%1$s"+
         "%2$s"+
         "%3$s"+
-        "\t\t\t<r:Name maxLength=\"250\">\n" +
-        "\t\t\t\t<r:Content xml:lang=\"%8$s\">%4$s</r:Content>\n" +
-        "\t\t\t</r:Name>\n" +
-        "\t\t\t<r:Description maxLength=\"10000\">\n" +
+        "\t\t\t<c:ConceptName>\n" +
+        "\t\t\t\t<r:String xml:lang=\"%8$s\">%4$s</r:String>\n" +
+        "\t\t\t</c:ConceptName>\n"+
+        "\t\t\t<r:Description>\n" +
         "\t\t\t\t<r:Content xml:lang=\"%8$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
         "\t\t\t</r:Description>\n" +
         "%6$s" +
         "%7$s" +
-        "\t\t</d:Concept>\n";
+        "\t\t</c:Concept>\n";
 
             private List<AbstractXmlBuilder> children;
             private List<AbstractXmlBuilder> questions;
