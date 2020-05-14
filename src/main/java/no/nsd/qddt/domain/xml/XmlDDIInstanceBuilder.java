@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.xml;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ElementKind;
 
 import java.util.Map;
 
@@ -32,8 +33,9 @@ public class XmlDDIInstanceBuilder<T extends AbstractEntityAudit> extends Abstra
         return null;
     }
 
+
     @Override
-    public void addXmlFragments(Map<String, String> fragments) {
+    public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
 
     }
 

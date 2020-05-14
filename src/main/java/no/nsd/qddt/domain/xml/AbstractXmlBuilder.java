@@ -49,7 +49,7 @@ public abstract class AbstractXmlBuilder {
 //    @Value("${api.rooturl}")
 //    private String rooturl;
 
-    public abstract void addXmlFragments(Map<String,String> fragments);
+    public abstract void addXmlFragments( Map<ElementKind,Map<String,String>> fragments);
 
     public abstract String getXmlEntityRef(int depth);
 

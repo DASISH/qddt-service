@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
@@ -70,7 +71,7 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     }
 
     @Override
-    public void addXmlFragments(Map<String, String> fragments) {
+    public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
         manRep.forEach(c -> c.addXmlFragments(fragments));
     }
 

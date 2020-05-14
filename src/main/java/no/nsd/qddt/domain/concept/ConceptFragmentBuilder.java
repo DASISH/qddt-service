@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
@@ -45,8 +46,9 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
         
         
             @Override
-            public void addXmlFragments(Map<String, String> fragments) {
-                fragments.putIfAbsent( getUrnId(), getXmlFragment() );
+            public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
+                super.addXmlFragments( fragments );
+//                fragments.putIfAbsent( getUrnId(), getXmlFragment() );
                 for(AbstractXmlBuilder question: questions) {
                     question.addXmlFragments( fragments );
                 }

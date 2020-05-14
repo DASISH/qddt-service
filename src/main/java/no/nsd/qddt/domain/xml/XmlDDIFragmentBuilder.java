@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.xml;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ElementKind;
 
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Stig Norland
@@ -22,6 +24,17 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         this.entity = entity;
     }
 
+    @Override
+    public void addXmlFragments( Map<ElementKind, Map<String,String>> fragments) {
+        ElementKind kind=null;
+        try {
+            kind = ElementKind.getEnum( entity.getClass().getSimpleName() );
+        } catch (Exception ex) {
+            kind = ElementKind.getEnum( entity.getClassKind() );
+        } finally {
+            fragments.get( kind ).putIfAbsent( getUrnId(), getXmlFragment() );
+        }
+    }
 
     public String getUrnId() {
         return  String.format( "%1$s:%2$s:%3$s",  entity.getAgency().getName() , entity.getId() , entity.getVersion().toDDIXml());

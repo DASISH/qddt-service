@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.xml;
 
 import no.nsd.qddt.domain.comment.Comment;
+import no.nsd.qddt.domain.elementref.ElementKind;
 
 import java.util.Map;
 
@@ -15,9 +16,11 @@ public class XmlDDICommentsBuilder extends AbstractXmlBuilder {
         this.comment = comment;
     }
 
-      @Override
-    public void addXmlFragments(Map<String, String> fragments) {
 
+    @Override
+    public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
+//        add nothing  ATM
+//        fragments.get(ElementKind.getEnum( entity.getClassKind())).putIfAbsent( getUrnId(), getXmlFragment() );
     }
 
     @Override

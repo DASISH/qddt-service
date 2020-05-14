@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.responsedomain;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.slf4j.Logger;
@@ -102,7 +103,19 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
 
 //    d:CodeDomain/r:CodeListReference
 
-
+    private final String xmlCodeList =
+        "%2$s" +
+        "\t\t\t<l:CodeListName>\n" +
+        "\t\t\t\t<r:String xml:lang=\"%3$s\">%4$s</r:String>\n" +
+        "\t\t\t</l:CodeListName>\n" +
+        "\t\t\t<r:Label>\n" +
+        "\t\t\t\t<r:Content xml:lang=\"%3$s\">%6$s</r:Content>\n" +
+        "\t\t\t</r:Label>\n" +
+        "\t\t\t<r:Description>\n" +
+        "\t\t\t\t<r:Content xml:lang=\"%3$s\">%5$s</r:Content>\n" +
+        "\t\t\t</r:Description>\n" +
+        "%7$s" +
+        "\t\t</l:CodeList>\n";
 
 
     protected final String xmlHeader = "\t\t<d:%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isMaintainable=\"true\">\n" +
@@ -129,21 +142,24 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
     }
 
     @Override
-    public void addXmlFragments(Map<String, String> fragments) {
-        fragments.putIfAbsent( getUrnId() , getXmlFragment() );
-        children.forEach(c -> c.addXmlFragments(fragments));
+    public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
+       super.addXmlFragments( fragments );
+       children.forEach(c -> c.addXmlFragments(fragments));
     }
 
     @Override
     public String getXmlFragment() {
-        return String.format( xmlManaged,
-        entity.getCategoryType().getName(),
-        getXmlHeader( entity ),
-        entity.getXmlLang(),
-        entity.getName(),
-        entity.getDescription(),
-        entity.getLabel(),
-        this.getXmlScaleMan());
+        if (entity.getCategoryType() == CategoryType.LIST)
+            return getXmlCodeList();
+        else
+            return String.format( xmlManaged,
+            entity.getCategoryType().getName(),
+            getXmlHeader( entity ),
+            entity.getXmlLang(),
+            entity.getName(),
+            entity.getDescription(),
+            entity.getLabel(),
+            this.getXmlScaleMan());
     }
 
     private String getXmlScaleMan() {
@@ -163,16 +179,27 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
 
     }
 
-
-    @Override
-    public String getXmlEntityRef(int depth) {
-
-////        String ref =  String.format( xmlRef,  entity.getCategoryType().getName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth+1, "\t")) );;
-//        if (entity.getCategoryType().equals( CategoryType.LIST )) {
-//            return String.format( xmlCodeDomain, super.getXmlEntityRef( depth +1) ,String.join("", Collections.nCopies(depth, "\t")));
-//        }
-        return super.getXmlEntityRef( depth );
+    private String getXmlCodeList() {
+        return String.format( xmlCodeList,
+            entity.getCategoryType().getName(),
+            getXmlHeader( entity ),
+            entity.getXmlLang(),
+            entity.getName(),
+            entity.getDescription(),
+            entity.getLabel(),
+            this.getXmlScaleMan());
     }
+
+
+//    @Override
+//    public String getXmlEntityRef(int depth) {
+//
+//////        String ref =  String.format( xmlRef,  entity.getCategoryType().getName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth+1, "\t")) );;
+////        if (entity.getCategoryType().equals( CategoryType.LIST )) {
+////            return String.format( xmlCodeDomain, super.getXmlEntityRef( depth +1) ,String.join("", Collections.nCopies(depth, "\t")));
+////        }
+//        return super.getXmlEntityRef( depth );
+//    }
 
 
     private AbstractXmlBuilder getBuilder(Category category) {

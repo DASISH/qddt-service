@@ -1,7 +1,10 @@
 package no.nsd.qddt.domain.xml;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ElementKind;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,14 +31,13 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
     private final T rootElement;
     private final AbstractXmlBuilder builder;
 
-    private Map<String,String> fragments = new HashMap<>();
-
-//    private Map<String,<>>
+    private Map<ElementKind,Map<String,String>> orderedFragments = new HashMap<>();
 
     public XmlDDIFragmentAssembler(T rootElement) {
         this.rootElement = rootElement;
         builder = rootElement.getXmlBuilder();
-        builder.addXmlFragments( fragments );
+        Arrays.asList(ElementKind.values()).forEach( kind -> orderedFragments.put( kind, new HashMap<>()) );
+        builder.addXmlFragments( orderedFragments );
     }
 
 
@@ -57,7 +59,12 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
         return sb.append( XMLDEF )
             .append( xmlFragHeader )
             .append( getTopLevelReference( typeofObject ))
-            .append( fragments.values().stream().collect( Collectors.joining("\t</ddi:Fragment>\n\t<ddi:Fragment>\n","\t<ddi:Fragment>\n","\t</ddi:Fragment>\n") ))
+            .append( orderedFragments.entrySet().stream()
+                .filter( p -> !p.getValue().isEmpty())
+                .sorted( Comparator.comparing( Map.Entry::getKey ) )
+                .map( f -> f.getValue().values().stream()
+                    .sorted( Comparator.comparing( s -> s.substring( 0, 16 ) ) )
+                    .collect( Collectors.joining("\t</ddi:Fragment>\n\t<ddi:Fragment>\n","\t<ddi:Fragment>\n","\t</ddi:Fragment>\n"))).collect( Collectors.joining()) )
             .append( getFooter() )
             .toString();
     }

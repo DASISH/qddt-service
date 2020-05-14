@@ -4,7 +4,6 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryFragmentBuilder;
 
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author Stig Norland
@@ -19,11 +18,6 @@ public class FragmentBuilderAnchor extends CategoryFragmentBuilder {
         super( entity );
     }
 
-
-    @Override
-    public void addXmlFragments(Map<String, String> fragments) {
-        fragments.putIfAbsent( getUrnId() , getXmlFragment() );
-    }
 
     @Override
     public String getXmlEntityRef(int depth) {

@@ -19,7 +19,8 @@ public enum ElementKind {
     CONDITION_CONSTRUCT("Condition","ConditionConstruct", "d"),
     SEQUENCE_CONSTRUCT("Sequence","Sequence" ,"c"),
     INSTRUCTION("Instruction","Instruction", "d"),
-    UNIVERSE("Universe","Universe", "d");
+    UNIVERSE("Universe","Universe", "d"),
+    COMMENT("Comment","Comment", "c");
 
 
     private final String description;
@@ -47,9 +48,13 @@ public enum ElementKind {
 
     public static ElementKind getEnum(String className) {
         if(className == null)
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("className not spesified.");
         for(ElementKind v : values())
             if(className.equalsIgnoreCase(v.getClassName())) return v;
-        throw new IllegalArgumentException();
+
+        for(ElementKind v : values())
+            if(ElementKind.valueOf(className) == v) return v;
+
+        throw new IllegalArgumentException("className not found. [" + className + "]");
     }
 }
