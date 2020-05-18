@@ -9,7 +9,7 @@ import static no.nsd.qddt.domain.responsedomain.ResponseKind.*;
 /**
  * @author Stig Norland
  */
-public class ResponseDomainFragment {
+public class ResponseDomainFragmentCollector {
 
 
     private static final Map<ResponseKind, Map<String,String>> myMap;
