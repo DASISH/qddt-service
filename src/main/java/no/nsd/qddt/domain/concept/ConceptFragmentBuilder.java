@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
@@ -14,18 +15,14 @@ import java.util.stream.Collectors;
 public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
 
     private final String xmlConcept =
-        "\t\t<c:Concept>\n" +
-        "\t\t\t%1$s"+
-        "%2$s"+
-        "%3$s"+
+        "%1$s"+
         "\t\t\t<c:ConceptName>\n" +
-        "\t\t\t\t<r:String xml:lang=\"%8$s\">%4$s</r:String>\n" +
+        "\t\t\t\t<r:String xml:lang=\"%5$s\">%2$s</r:String>\n" +
         "\t\t\t</c:ConceptName>\n"+
         "\t\t\t<r:Description>\n" +
-        "\t\t\t\t<r:Content xml:lang=\"%8$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
+        "\t\t\t\t<r:Content xml:lang=\"%5$s\" isPlainText=\"false\">%3$s</r:Content>\n" +
         "\t\t\t</r:Description>\n" +
-        "%6$s" +
-        "%7$s" +
+        "%4$s" +
         "\t\t</c:Concept>\n";
 
             private List<AbstractXmlBuilder> children;
@@ -43,12 +40,20 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
                     .map( c -> c.getXmlBuilder() )
                     .collect( Collectors.toList() );
             }
-        
-        
+ 
+            @Override
+            protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
+                String prefix = ElementKind.getEnum(instance.getClass().getSimpleName()).getDdiPreFix();
+                String child =  (((Concept)instance).getChildren().isEmpty()) ? "" : " isCharacteristic =\"true\"";
+                return String.format(xmlHeader, prefix, 
+                    instance.getClass().getSimpleName(),
+                    getInstanceDate(instance),
+                    child,
+                    "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+            }        
             @Override
             public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
                 super.addXmlFragments( fragments );
-//                fragments.putIfAbsent( getUrnId(), getXmlFragment() );
                 for(AbstractXmlBuilder question: questions) {
                     question.addXmlFragments( fragments );
                 }
@@ -59,12 +64,9 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
         
             public String getXmlFragment() {
                 return String.format( xmlConcept,
-                    getXmlURN(entity),
-                    getXmlRationale(entity),
-                    getXmlBasedOn(entity),
+                    getXmlHeader(entity),
                     entity.getName(),
                     entity.getDescription(),
-                    "",
                     children.stream()
                         .map( c -> c.getXmlEntityRef(3) )
                         .collect( Collectors.joining()),

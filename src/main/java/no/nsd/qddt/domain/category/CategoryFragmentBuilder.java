@@ -8,6 +8,7 @@ import java.util.Collections;
  * @author Stig Norland
  */
 public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
+
     private final String xmlResponseCategory =
         "%1$s" +
         "\t\t\t<l:CategoryName>\n" +
