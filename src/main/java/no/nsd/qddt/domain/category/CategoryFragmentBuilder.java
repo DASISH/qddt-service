@@ -26,10 +26,10 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
 
     private final String xmlCodeDomain =
         "%2$s<d:CodeDomain>\n" +
-        "%2$s\t<r:CodelistReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
+        "%2$s\t<r:CodeListReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
         "%2$s\t\t%1$s" +
-        "%2$s\t\t<r:TypeOfObject>Codelist</r:TypeOfObject>\n" +
-        "%2$s\t</r:CodelistReference>\n"+
+        "%2$s\t\t<r:TypeOfObject>CodeLlist</r:TypeOfObject>\n" +
+        "%2$s\t</r:CodeListReference>\n"+
         "%2$s</d:CodeDomain>\n";
 
     public CategoryFragmentBuilder(Category category) {
