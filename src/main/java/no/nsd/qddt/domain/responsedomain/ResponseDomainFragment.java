@@ -10,15 +10,6 @@ import static no.nsd.qddt.domain.responsedomain.ResponseKind.*;
  * @author Stig Norland
  */
 public class ResponseDomainFragment {
-    private final String xmlDomain =
-        "<d:%1$s>\n" +
-            "\t%2$s" +
-        "</d:%1$s>\n";
-
-    private final String xmlDomainRef =
-        "<d:%1$s>\n" +
-            "\t%2$s" +
-        "</d:%1$s>\n";
 
 
     private static final Map<ResponseKind, Map<String,String>> myMap;

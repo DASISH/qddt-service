@@ -17,8 +17,8 @@ public abstract class AbstractXmlBuilder {
 
     protected final String xmlURN = "<r:URN type=\"URN\" typeOfIdentifier=\"Canonical\">urn:ddi:%1$s:%2$s:%3$s</r:URN>\n";
 
-    protected final String xmlHeader = "\t\t<%1$s:%2$s isUniversallyUnique=\"true\" versionDate=\"%3$s\" isVersionable=\"true\">\n" +
-                                        "%4$s";
+    protected final String xmlHeader = "\t\t<%1$s:%2$s isUniversallyUnique=\"true\" versionDate=\"%3$s\" isVersionable=\"true\" %4$s >\n" +
+                                        "%5$s";
 
     protected final String xmlFooter = "\t\t</%1$s:%2$s>\n";
 
@@ -57,7 +57,11 @@ public abstract class AbstractXmlBuilder {
 
     protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
         String prefix = ElementKind.getEnum(instance.getClass().getSimpleName()).getDdiPreFix();
-        return String.format(xmlHeader, prefix, instance.getClass().getSimpleName(), getInstanceDate(instance), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+        return String.format(xmlHeader, prefix, 
+            instance.getClass().getSimpleName(),
+            getInstanceDate(instance),
+            "",
+            "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
     }
 
     protected <S extends AbstractEntityAudit> String getXmlFooter(S instance){
