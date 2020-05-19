@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.search;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -25,6 +26,10 @@ public class QddtUrl {
 
     @Column(name = "user_id")
     UUID userId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "elementkind")
+    ElementKind elementKind;
 
     public UUID getId() {
         return id;
@@ -68,6 +73,14 @@ public class QddtUrl {
 
     public void setUserId(UUID userId) {
         this.userId = userId;
+    }
+
+    public ElementKind getElementKind() {
+        return elementKind;
+    }
+
+    public void setElementKind(ElementKind elementKind) {
+        this.elementKind = elementKind;
     }
 
     @Override

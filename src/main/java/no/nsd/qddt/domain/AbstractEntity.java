@@ -64,6 +64,8 @@ public abstract class AbstractEntity {
     }
 
     public void setModifiedBy(User modifiedBy) {
+        LOG.info( modifiedBy.toString() );
+        LOG.info( (this.modifiedBy==null) ? "NULL": this.modifiedBy.toString() );
         this.modifiedBy = modifiedBy;
     }
 

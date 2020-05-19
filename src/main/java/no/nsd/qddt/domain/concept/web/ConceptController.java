@@ -4,12 +4,10 @@ import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
@@ -111,6 +109,11 @@ public class ConceptController extends AbstractController {
                         .addChildren(concept)));
 
         } else {
+//            TopicGroup tp = topicGroupService.findOne(parentId);
+//            concept = tp.addConcept( concept );
+//            topicGroupService.save(tp);
+//            return concept2Json(concept);
+
             return concept2Json(
                 service.save(
                     topicGroupService

@@ -113,7 +113,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
             instance.populateCodes();
 
 
-//        if (instance.getManagedRepresentation().getId() == null) {
+// TODO fix replicated framework func
         instance.beforeUpdate();
         instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
         instance.getManagedRepresentation().setChangeKind( instance.getChangeKind() );

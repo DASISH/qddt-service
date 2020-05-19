@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 import static no.nsd.qddt.utils.StringTool.SafeString;
 
 /**
@@ -27,7 +28,7 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 
 @Entity
 @Audited
-@Table(name = "USER_ACCOUNT", uniqueConstraints = {@UniqueConstraint(columnNames = {"email" },name = "UNQ_USER_EMAIL")})
+@Table(name = "USER_ACCOUNT", uniqueConstraints = { @UniqueConstraint(columnNames = {"email" },name = "UNQ_USER_EMAIL") } )
 public class User  {
 
     @Transient
@@ -86,20 +87,11 @@ public class User  {
         setPassword(password);
     }
 
-//    public User(UserJsonEdit instance) {
-//        setId( instance.getId() );
-//        setUsername( instance.getName() );
-//        setEmail( instance.getEmail() );
-//        setEnabled( instance.isEnabled() );
-//        setAuthorities( new HashSet<>( Arrays.asList( instance.getAuthority()) ));
-//        setAgency( instance.getAgency() );
-//        setModified( instance.getModified() );
-//    }
-
     @PrePersist
     public void onPrePersist() {
         LOG.debug("USER INSERT");
-        setPassword("$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW");    // set password = password
+        if (IsNullOrTrimEmpty( password))
+            setPassword("$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW");    // set password = password
     }
 
     @PreUpdate
@@ -213,7 +205,7 @@ public class User  {
 
     @Override
     public String toString() {
-        return " \"User \" : \"" + getUsername() + "@" + (agency!=null ? agency.getName(): "?") + ", ";
+        return " \"User \" : \"" + getUsername() + "@" + (agency!=null ? agency.getName(): "?") + ":->" + getModified() +", ";
     }
 
 }

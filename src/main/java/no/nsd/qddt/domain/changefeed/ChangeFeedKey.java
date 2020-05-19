@@ -21,6 +21,7 @@ public class ChangeFeedKey implements Serializable {
     protected Integer refRev;
 
     @Enumerated(EnumType.ORDINAL)
+    @Column(columnDefinition = "int2")
     protected ActionKind refAction;
 
     public ChangeFeedKey() {}

@@ -4,23 +4,23 @@ package no.nsd.qddt.domain.elementref;
  * @author Stig Norland
  */
 public enum ElementKind {
-    SURVEY_PROGRAM("Survey","SurveyProgram",""),
-    STUDY("Study","Study",""),
-    TOPIC_GROUP("Module","TopicGroup","c"),
-    CONCEPT("Concept","Concept","c"),
-    QUESTION_ITEM("Question Item","QuestionItem", "d"),
-    RESPONSEDOMAIN("Response Domain","ResponseDomain","r"),
-    CATEGORY("Category","Category" ,"l"),
-    INSTRUMENT("Instrument","Instrument", "c"),
-    PUBLICATION("Publication","Publication", "c"),
-    CONTROL_CONSTRUCT("Control Construct","ControlConstruct", "d"),
-    QUESTION_CONSTRUCT("Question Construct","QuestionConstruct", "d"),
-    STATEMENT_CONSTRUCT("Statement","StatementItem", "d"),
-    CONDITION_CONSTRUCT("Condition","ConditionConstruct", "d"),
-    SEQUENCE_CONSTRUCT("Sequence","Sequence" ,"c"),
-    INSTRUCTION("Instruction","Instruction", "d"),
-    UNIVERSE("Universe","Universe", "d"),
-    COMMENT("Comment","Comment", "c");
+    SURVEY_PROGRAM      ("Survey","SurveyProgram",""),
+    STUDY               ("Study","Study",""),
+    TOPIC_GROUP         ("Module","TopicGroup","c"),
+    CONCEPT             ("Concept","Concept","c"),
+    QUESTION_ITEM       ("Question Item","QuestionItem", "d"),
+    RESPONSEDOMAIN      ("Response Domain","ResponseDomain","r"),
+    CATEGORY            ("Category","Category" ,"l"),
+    INSTRUMENT          ("Instrument","Instrument", "c"),
+    PUBLICATION         ("Publication","Publication", "c"),
+    CONTROL_CONSTRUCT   ("Control Construct","ControlConstruct", "d"),
+    QUESTION_CONSTRUCT  ("Question Construct","QuestionConstruct", "d"),
+    STATEMENT_CONSTRUCT ("Statement","StatementItem", "d"),
+    CONDITION_CONSTRUCT ("Condition","ConditionConstruct", "d"),
+    SEQUENCE_CONSTRUCT  ("Sequence","Sequence" ,"c"),
+    INSTRUCTION         ("Instruction","Instruction", "d"),
+    UNIVERSE            ("Universe","Universe", "d"),
+    COMMENT             ("Comment","Comment", "c");
 
 
     private final String description;
@@ -52,9 +52,8 @@ public enum ElementKind {
         for(ElementKind v : values())
             if(className.equalsIgnoreCase(v.getClassName())) return v;
 
-        for(ElementKind v : values())
-            if(ElementKind.valueOf(className) == v) return v;
+        return ElementKind.valueOf( className );
 
-        throw new IllegalArgumentException("className not found. [" + className + "]");
+//        throw new IllegalArgumentException("className not found. [" + className + "]");
     }
 }

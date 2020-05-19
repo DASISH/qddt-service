@@ -124,7 +124,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
 
     public Concept addConcept(Concept concept){
         if(concept == null) return null;
-        concepts.add(concept);
+        getConcepts().add(concept);
         concept.setTopicGroup(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");

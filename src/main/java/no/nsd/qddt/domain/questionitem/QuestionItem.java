@@ -65,7 +65,8 @@ public class QuestionItem extends AbstractEntityAudit {
     // End pre remove ----------------------------------------------
 
     public ResponseDomainRef getResponseDomainRef() {
-        return responseDomainRef;
+
+        return (responseDomainRef==null) ? new ResponseDomainRef(): responseDomainRef;
     }
 
     public void setResponseDomainRef(ResponseDomainRef responseDomainRef) {

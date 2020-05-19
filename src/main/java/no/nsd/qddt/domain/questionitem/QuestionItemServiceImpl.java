@@ -53,7 +53,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         this.auditService = questionItemAuditService;
         this.conceptService = conceptService;
         this.responseDomainService = responseDomainService;
-        this.rdLoader =  new ElementLoader( responseDomainAuditService );
+        this.rdLoader =  new ElementLoader<>( responseDomainAuditService );
     }
 
     @Override
@@ -79,9 +79,9 @@ class QuestionItemServiceImpl implements QuestionItemService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public QuestionItem save(QuestionItem instance) {
         try {
-            QuestionItem qi =  questionItemRepository.save(
-                prePersistProcessing(instance));
-            return postLoadProcessing(qi);
+            return postLoadProcessing(
+                questionItemRepository.save(
+                    prePersistProcessing(instance)));
         } catch (Exception ex){
             LOG.error("QI save ->",ex);
             throw ex;
@@ -154,6 +154,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     */
 
     private QuestionItem postLoadProcessing(QuestionItem instance){
+        LOG.info( "POST LOAD" );
         try{
             if(instance.getResponseDomainRef().getElementId()!= null && instance.getResponseDomainRef().getElement() == null) {
                 rdLoader.fill( instance.getResponseDomainRef() );
@@ -172,14 +173,17 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
 
     private QuestionItem prePersistProcessing(QuestionItem instance){
+        LOG.info( "PRE PERSIST" );
 
         Integer rev = null;
-        if(instance.isBasedOn())
-            rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
-
-        if (instance.isBasedOn() || instance.isNewCopy())
-            instance = new QuestionItemFactory().copy(instance, rev );
-
+        if(instance.isBasedOn()) {
+            LOG.info( "PRE PERSIST -> BASED ON" );
+            rev =   (instance.getBasedOnRevision() != null) ? instance.getBasedOnRevision() : auditService.findLastChange( instance.getId() ).getRevisionNumber();
+        }
+        if (instance.isBasedOn() || instance.isNewCopy()) {
+            LOG.info( "PRE PERSIST -> MAKE A COPY" );
+            instance = new QuestionItemFactory().copy( instance, rev );
+        }
          return instance;
     }
 }

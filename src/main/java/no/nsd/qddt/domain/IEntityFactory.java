@@ -29,7 +29,10 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
             retval.setBasedOnObject(source.getId());
             retval.setBasedOnRevision(revision);
             retval.setChangeKind( ChangeKind.BASED_ON );
-            retval.setChangeComment("based on " + source.getName() );
+            if (source.getChangeComment() == null)
+                retval.setChangeComment("based on " + source.getName() );
+            else
+                retval.setChangeComment(source.getChangeComment());
         } else {
             retval.setChangeKind(ChangeKind.NEW_COPY);
             retval.setChangeComment("copy of " + source.getName() );
@@ -39,6 +42,7 @@ public interface IEntityFactory<T extends AbstractEntityAudit> {
             ((IArchived)retval).setArchived(false);
         retval.setClassKind( source.getClassKind() );
         retval.setName( source.getName() );
+        retval.setXmlLang( source.getXmlLang() );
         return retval;
     }
 

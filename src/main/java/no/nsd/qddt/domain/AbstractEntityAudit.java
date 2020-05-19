@@ -99,8 +99,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
      * What am I?
      */
 
-//    @NotAudited
-    // @JsonView(View.Edit.class)
+
     @ManyToOne
     @JoinColumn(name = "agency_id",updatable = false, nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -120,24 +119,18 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     @Column(name = "based_on_revision",updatable = false)
     private Integer basedOnRevision;
 
-
-    // @JsonView(View.Edit.class)
     @Embedded
     private Version version;
 
-    // @JsonView(View.Edit.class)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ChangeKind changeKind;
 
     @Column(name = "change_comment",nullable = false)
-    // @JsonView(View.Audit.class)
     private String changeComment;
 
-    // @JsonView(View.Simple.class)
-
-    @Column(nullable = false)
-    private String xmlLang = "en-GB";
+    @Column(name = "xml_lang",nullable = false)
+    private String xmlLang;
 
     @NotAudited
     @OrderColumn(name="owner_idx")
@@ -153,7 +146,9 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
 
     protected AbstractEntityAudit() {
         try {
-            classKind =ElementKind.getEnum( this.getClass().getSimpleName() ).toString();
+            setChangeKind( ChangeKind.CREATED);
+            setChangeComment( ChangeKind.CREATED.getDescription() );
+            setClassKind( ElementKind.getEnum( this.getClass().getSimpleName() ).toString());
         } catch (Exception e) {
             classKind = this.getClass().getSimpleName();
         }
@@ -243,11 +238,10 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     }
 
     public String getXmlLang() {
-        return StringTool.IsNullOrEmpty(xmlLang)? "en-GB": xmlLang ;
+        return xmlLang;
     }
 
     public void setXmlLang(String xmlLang) {
-        if (!StringTool.IsNullOrTrimEmpty( xmlLang ))
         this.xmlLang = xmlLang;
     }
 
@@ -258,10 +252,12 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
         User user = SecurityContext.getUserDetails().getUser();
         setAgency( user.getAgency() );
         setModifiedBy( user );
-
+        // if empty, we need to apply a default (CREATED),
+        // if an existing entity tries to create itself (except for BASEDON), we need to set changeKind to CREATED
         if (changeKind == null || changeKind.ordinal() > ChangeKind.REFERENCED.ordinal()) {
-            changeKind = ChangeKind.CREATED;
-            changeComment = ChangeKind.CREATED.description;
+            LOG.info("AstractEntityAudit PrePersist - changeKind = ChangeKind.CREATED");
+            setChangeKind( ChangeKind.CREATED);
+            setChangeComment( ChangeKind.CREATED.description);
         }
         version = new Version(true);
         beforeInsert();
@@ -276,16 +272,36 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
             User user = SecurityContext.getUserDetails().getUser();
             setModifiedBy( user );
 
-            if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() & !ver.isNew()) {
+            // it is illegal to update an entity with "Creator statuses" (CREATED...BASEDON)
+            if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() &    !ver.isNew()) {
                 change = ChangeKind.IN_DEVELOPMENT;
                 setChangeKind( change );
             }
             if (StringTool.IsNullOrTrimEmpty(changeComment))        // insert default comment if none was supplied, (can occur with auto touching (hierarchy updates etc))
                 setChangeComment( change.description );
             switch (change) {
+                case CREATED:
+                    if (getChangeComment() == null)
+                        setChangeComment( change.getDescription() );
+                    break;
                 case BASED_ON:
+                case NEW_COPY:
                 case TRANSLATED:
                     ver = new Version();
+                    break;
+                case REFERENCED:
+                    break;
+                case UPDATED_PARENT:
+                case UPDATED_CHILD:
+                case UPDATED_HIERARCHY_RELATION:
+                    ver.setVersionLabel("");
+                    break;
+                case IN_DEVELOPMENT:
+                    ver.setVersionLabel(ChangeKind.IN_DEVELOPMENT.getName());
+                    break;
+                case TYPO:
+                    ver.incMinor();
+                    ver.setVersionLabel("");
                     break;
                 case CONCEPTUAL:
                 case EXTERNAL:
@@ -294,25 +310,14 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
                     ver.incMajor();
                     ver.setVersionLabel("");
                     break;
-                case TYPO:
-                    ver.incMinor();
-                    ver.setVersionLabel("");
-                    break;
                 case ARCHIVED:
                     ((IArchived)this).setArchived(true);
                     ver.setVersionLabel("");
-                case CREATED:
                     break;
-                case IN_DEVELOPMENT:
-                    ver.setVersionLabel(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.getName());
-                    break;
-                case UPDATED_PARENT:
-                    ver.setVersionLabel("");
-                    break;
-                default:        // UPDATED_PARENT / UPDATED_CHILD / UPDATED_HIERARCHY_RELATION
-                    ver.setVersionLabel("Changes in hierarchy");
+                case TO_BE_DELETED:
                     break;
             }
+
             setVersion (ver);
             beforeUpdate();
         } catch (Exception ex){
@@ -326,34 +331,17 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
 
     @JsonIgnore
     public boolean isBasedOn(){
-        return (getChangeKind() == ChangeKind.BASED_ON | getChangeKind() == ChangeKind.TRANSLATED);
+        return (getChangeKind() == ChangeKind.BASED_ON
+            || getChangeKind() == ChangeKind.NEW_COPY
+            || getChangeKind() == ChangeKind.TRANSLATED
+            || getChangeKind() == ChangeKind.REFERENCED);
     }
 
     @JsonIgnore
     public boolean isNewCopy(){
-        return (getChangeKind() == ChangeKind.NEW_COPY )
-                | (getId() == null & getChangeKind() != null & getChangeKind()!= ChangeKind.CREATED)
-                | (!getVersion().isNew() & getId() == null );
-    }
-
-    @JsonIgnore
-    @Transient
-    protected boolean hasRun = false;
-
-    @JsonIgnore
-    /*
-    This function should contain all copy code needed to make a complete copy of hierarchy under this element
-    (an override should propagate downward and call makeNewCopy on it's children).
-     */
-    public void makeNewCopy(Integer revision){
-        if (hasRun) return;
-        if (revision != null) {
-            setBasedOnObject(getId());
-            setBasedOnRevision(revision);
-            version.setVersionLabel("COPY OF [" + getName() + "]");
-        }
-        setId(UUID.randomUUID());
-        hasRun = true;
+        return (getChangeKind().equals( ChangeKind.NEW_COPY )
+                || (getId() == null && getChangeKind() != null && getChangeKind()!= ChangeKind.CREATED)
+                );
     }
 
     @Override

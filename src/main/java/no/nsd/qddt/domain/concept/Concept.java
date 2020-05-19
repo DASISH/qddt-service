@@ -42,16 +42,18 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     @JoinColumn(name="concept_id",insertable = false, updatable = false)
     private Concept parentReferenceOnly;
 
+    @Column(name = "concept_idx", insertable = false, updatable = false)
+    private int conceptIdx;
+
+
     @ManyToOne()
     @JsonBackReference(value = "topicGroupRef")
-    @JoinColumn(name="topicgroup_id",insertable = false, updatable = false)
+    @JoinColumn(name="topicgroup_id", updatable = false)
     private TopicGroup topicGroup;
 
     @Column(name = "topicgroup_id", insertable = false, updatable = false)
     private UUID topicGroupId;
 
-    @Column(name = "concept_idx", insertable = false, updatable = false)
-    private int conceptIdx;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentReferenceOnly", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
     @OrderColumn(name="concept_idx")
