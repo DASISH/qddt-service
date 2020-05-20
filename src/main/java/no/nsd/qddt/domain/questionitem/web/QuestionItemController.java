@@ -71,11 +71,12 @@ public class QuestionItemController {
     public HttpEntity<PagedResources<QuestionItemListJson>>  getBy(@RequestParam(value = "name",defaultValue = "") String name,
                                                                    @RequestParam(value = "question",defaultValue = "") String question,
                                                                    @RequestParam(value = "responseDomainName",defaultValue = "") String responseName,
+                                                                   @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
                                                                    Pageable pageable, PagedResourcesAssembler assembler) {
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         try {
             Page<QuestionItemListJson> questionitems
-                = service.findByNameOrQuestionOrResponseName(name, question, responseName, pageable).map(QuestionItemListJson::new);
+                = service.findByNameOrQuestionOrResponseName(name, question, responseName, xmlLang, pageable).map(QuestionItemListJson::new);
             return new ResponseEntity<>(assembler.toResource(questionitems), HttpStatus.OK);
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());

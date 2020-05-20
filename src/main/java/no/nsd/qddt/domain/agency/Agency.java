@@ -63,7 +63,9 @@ public class Agency implements Comparable<Agency>, IEntityKind {
     @JsonSerialize
     @JsonDeserialize
     private String classKind = "AGENCY";
-    //ElementKind.getEnum( this.getClass().getSimpleName() ).toString();
+
+    @Column(name = "xml_lang")
+    private String defaultXmlLang;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
@@ -122,7 +124,7 @@ public class Agency implements Comparable<Agency>, IEntityKind {
     private Set<PublicationStatus> statuses = new HashSet<>();
 
     public Agency(){
-
+        setDefaultXmlLang( "en-GB");
     }
 
     public UUID getId() {
@@ -156,6 +158,14 @@ public class Agency implements Comparable<Agency>, IEntityKind {
 
     public void setClassKind(String classKind) {
         this.classKind = classKind;
+    }
+
+    public String getDefaultXmlLang() {
+        return defaultXmlLang;
+    }
+
+    public void setDefaultXmlLang(String defaultXmlLang) {
+        this.defaultXmlLang = defaultXmlLang;
     }
 
     public Set<SurveyProgram> getSurveyPrograms() {

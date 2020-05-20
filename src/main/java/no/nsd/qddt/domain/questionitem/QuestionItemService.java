@@ -14,6 +14,6 @@ public interface QuestionItemService extends BaseService<QuestionItem, UUID> {
 
     Page<QuestionItem> findAllPageable(Pageable pageable);
 
-    Page<QuestionItem> findByNameOrQuestionOrResponseName(String name, String question, String responseName, Pageable pageable);
+    Page<QuestionItem> findByNameOrQuestionOrResponseName(String name, String question, String responseName, String xmlLang, Pageable pageable);
 
 }

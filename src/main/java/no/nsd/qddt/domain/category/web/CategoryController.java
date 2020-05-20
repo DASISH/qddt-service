@@ -63,9 +63,10 @@ public class CategoryController {
                                                        @RequestParam(value = "categoryKind",defaultValue = "") String categoryKind,
                                                        @RequestParam(value = "label",defaultValue = "") String name,
                                                        @RequestParam(value = "description",defaultValue = "") String description,
+                                                       @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
                                                        Pageable pageable, PagedResourcesAssembler<CategoryJsonEdit> assembler) {
 
-        Page<CategoryJsonEdit> categories = service.findBy(level,categoryKind, name, description, pageable)
+        Page<CategoryJsonEdit> categories = service.findBy(level,categoryKind, name, description, xmlLang, pageable)
             .map(converter -> new CategoryJsonEdit(converter));
 
         

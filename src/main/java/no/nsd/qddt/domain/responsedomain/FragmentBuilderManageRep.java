@@ -118,7 +118,7 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
         "\t\t</l:CodeList>\n";
 
 
-    protected final String xmlHeader = "\t\t<d:%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isMaintainable=\"true\">\n" +
+    protected final String xmlHeader = "\t\t<%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isMaintainable=\"true\">\n" +
         "%3$s";
 
     private final List<AbstractXmlBuilder> children;
@@ -136,7 +136,7 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
     @Override
     protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
         if (entity.getCategoryType().equals( CategoryType.LIST )) {
-            return String.format(xmlHeader,  entity.getCategoryType().getName() ,  getInstanceDate(instance), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+            return String.format(xmlHeader,  "l:" + entity.getCategoryType().getName() ,  getInstanceDate(instance), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
         }
         return String.format(xmlHeader, "Managed" +  entity.getCategoryType().getName() + "Representation" ,  getInstanceDate(instance), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
     }

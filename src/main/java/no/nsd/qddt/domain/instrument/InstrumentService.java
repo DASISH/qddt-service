@@ -16,6 +16,6 @@ public interface InstrumentService extends BaseService<Instrument, UUID> {
 
     Page<InstrumentViewJson> findAllPageable(Pageable pageable);
 
-    Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable);
+    Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description,String strKind, String xmlLang,Pageable pageable);
 
 }

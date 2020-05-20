@@ -66,13 +66,14 @@ public class InstrumentController  {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<InstrumentViewJson>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
+    public HttpEntity<PagedResources<InstrumentViewJson>> getBy(@RequestParam(value = "label",defaultValue = "") String name,
                                                                 @RequestParam(value = "description",defaultValue = "") String decsription,
                                                                 @RequestParam(value = "kind",defaultValue = "") String strKind,
+                                                                @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
                                                                 Pageable pageable, PagedResourcesAssembler assembler) {
 
         return new ResponseEntity<>(
-            assembler.toResource(service.findByNameAndDescriptionPageable(name,decsription,strKind, pageable))
+            assembler.toResource(service.findByNameAndDescriptionPageable(name,decsription,strKind, xmlLang, pageable))
             , HttpStatus.OK);
     }
 

@@ -79,11 +79,12 @@ public class ResponseDomainController extends AbstractController {
                                                                     @RequestParam(value = "question",defaultValue = "") String question,
                                                                     @RequestParam(value = "name",defaultValue = "") String name,
                                                                     @RequestParam(value = "anchor",defaultValue = "") String anchor,
+                                                                    @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
                                                                     Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
-            responseDomains = service.findBy(response, name, description, question, anchor, pageable).map(this::responseDomain2Json);
+            responseDomains = service.findBy(response, name, description, question, anchor, xmlLang, pageable).map(this::responseDomain2Json);
 
         } catch (Exception ex){
             LOG.error("getBy",ex);

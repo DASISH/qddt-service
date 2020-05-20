@@ -58,7 +58,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, String anchor, Pageable pageable) {
+    public Page<ResponseDomain> findBy(ResponseKind responseKind, String name, String description, String question, String anchor, String xmlLang, Pageable pageable) {
         if (name.isEmpty()  &&  description.isEmpty() && question.isEmpty() && anchor.isEmpty()) {
             name = "%";
         }
@@ -68,6 +68,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
                 likeify(description),
                 likeify(question),
                 likeify(anchor),
+                likeify( xmlLang ),
                 defaultOrModifiedSort(pageable, "name ASC"))
             .map( this::postLoadProcessing );
     }

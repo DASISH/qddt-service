@@ -22,14 +22,14 @@ interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
 // TODO fix query ---> 
 
     @Query(value = "SELECT RD.* FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
-        "( RD.name ILIKE :name or RD.description ILIKE :description OR " +
+        "(RD.xml_lang ILIKE :xmlLang AND  ( RD.name ILIKE :name or RD.description ILIKE :description OR " +
         "RD.category_id in (select distinct c.id FROM category c WHERE c.description ILIKE :anchor ) OR " +
-        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) "
+        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) )"
         + " ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(RD.*)  FROM RESPONSEDOMAIN RD WHERE RD.response_kind = :responseKind AND " +
-        "(RD.name ILIKE :name or RD.description ILIKE :description OR " +
+        "(RD.xml_lang ILIKE :xmlLang AND  ( RD.name ILIKE :name or RD.description ILIKE :description OR " +
         "RD.category_id in (select distinct c.id FROM category c WHERE c.description ILIKE :anchor ) OR " +
-        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) "
+        "RD.id in (select distinct qi.responsedomain_id FROM question_item qi WHERE qi.name ILIKE :question OR qi.question ILIKE :question ) ) )"
         + " ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<ResponseDomain> findByQuery( @Param("responseKind")String responseKind,
@@ -37,5 +37,6 @@ interface ResponseDomainRepository extends BaseRepository<ResponseDomain,UUID> {
                                      @Param("description")String description,
                                      @Param("question")String question,
                                      @Param("anchor")String anchor,
+                                     @Param("xmlLang")String xmlLang,
                                      Pageable pageable);
 }

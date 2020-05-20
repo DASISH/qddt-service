@@ -3,8 +3,6 @@ package no.nsd.qddt.domain.controlconstruct.web;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nsd.qddt.domain.AbstractController;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
@@ -136,15 +134,16 @@ public class ControlConstructController extends AbstractController {
                                                                @RequestParam(value = "questionName",defaultValue = "") String questionName,
                                                                @RequestParam(value = "constructKind",defaultValue = "QUESTION_CONSTRUCT") String kind,
                                                                @RequestParam(value = "sequenceKind", defaultValue = "") String sequenceKind,
+                                                               @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
                                                                Pageable pageable, PagedResourcesAssembler assembler) {
 
         Page<ConstructJsonView> controlConstructs;
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
         // Change in frontEnd usage made it necessary to distinguish
         if (kind.equals("QUESTION_CONSTRUCT")) {
-            controlConstructs = service.findQCBySearch( likeify(name), likeify(questionName), likeify(questionText), pageable ); //.map( source -> Converter.mapConstruct( source ));
+            controlConstructs = service.findQCBySearch( likeify(name), likeify(questionName), likeify(questionText), likeify( xmlLang ), pageable ); //.map( source -> Converter.mapConstruct( source ));
         } else {
-            controlConstructs = service.findBySearcAndControlConstructKind( kind, sequenceKind, likeify(name), likeify(description), pageable );
+            controlConstructs = service.findBySearcAndControlConstructKind( kind, sequenceKind, likeify(name), likeify(description), likeify( xmlLang ), pageable );
         }
         return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
     }

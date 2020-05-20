@@ -252,6 +252,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
         User user = SecurityContext.getUserDetails().getUser();
         setAgency( user.getAgency() );
         setModifiedBy( user );
+        if (xmlLang==null)
+            setXmlLang( user.getAgency().getDefaultXmlLang() );
         // if empty, we need to apply a default (CREATED),
         // if an existing entity tries to create itself (except for BASEDON), we need to set changeKind to CREATED
         if (changeKind == null || changeKind.ordinal() > ChangeKind.REFERENCED.ordinal()) {

@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
-import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.hibernate.Hibernate;
@@ -19,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -31,19 +29,15 @@ class InstrumentServiceImpl implements InstrumentService {
 
     private final InstrumentRepository instrumentRepository;
     private final InstrumentAuditService auditService;
-    private final ElementLoader ccLoader;
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-
     @Autowired
     public InstrumentServiceImpl(InstrumentRepository instrumentRepository
-                                ,InstrumentAuditService instrumentAuditService
-                                ,ControlConstructAuditService controlConstructService) {
-                                    
+                                ,InstrumentAuditService instrumentAuditService) {
+
         this.instrumentRepository = instrumentRepository;
         this.auditService = instrumentAuditService;
-        this.ccLoader = new ElementLoader( controlConstructService );
     }
 
     @Override
@@ -97,23 +91,30 @@ class InstrumentServiceImpl implements InstrumentService {
     @Transactional(readOnly = true)
     public Page<InstrumentViewJson> findAllPageable(Pageable pageable) {
 
-        pageable = defaultSort(pageable, "name ASC", "modified DESC");
+        pageable = defaultOrModifiedSort(pageable, "name ASC", "modified DESC");
         return instrumentRepository.findAll(pageable).map( this::loadListDetail);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description,String strKind, Pageable pageable) {
+    public Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description,String strKind, String xmlLang, Pageable pageable) {
 
-        pageable = defaultSort(pageable, "name ASC", "modified DESC");
+        pageable = defaultOrModifiedSort(pageable, "name ASC", "modified DESC");
         if (name.isEmpty()  &&  description.isEmpty()) {
             name = "%";
         }
-        InstrumentKind kind = Arrays.stream( InstrumentKind.values() )
+        List<String> kinds = Arrays.stream( InstrumentKind.values() )
             .filter( f -> f.getName().toLowerCase().contains( strKind.toLowerCase() ) && strKind.length() > 1)
-            .findFirst().orElse( null );
+            .map( i -> i.toString() )
+            .collect( Collectors.toList() );
 
-        return instrumentRepository.findByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrInstrumentKind(likeify(name),likeify(description),kind ,pageable)
+        LOG.info( kinds.stream().collect( Collectors.joining(", ")) );
+        LOG.info( pageable.toString() );
+        if (kinds.size() > 0)
+            return instrumentRepository.findByQueryAndKinds(likeify(name),likeify(description), kinds, likeify( xmlLang ), pageable)
+                .map( this::loadListDetail);
+
+        return instrumentRepository.findByQuery(likeify(name),likeify(description), likeify( xmlLang ), pageable)
             .map( this::loadListDetail);
     }
 

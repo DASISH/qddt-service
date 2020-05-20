@@ -39,7 +39,7 @@ class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<Category> findBy(String level, String type, String name, String description, Pageable pageable) {
+    public Page<Category> findBy(String level, String type, String name, String description, String xmlLang, Pageable pageable) {
 
         if (IsNullOrTrimEmpty(name)  &&  IsNullOrTrimEmpty(description) ) {
             name = "%";
@@ -55,7 +55,7 @@ class CategoryServiceImpl implements CategoryService {
 
 //        LOG.info( "level:'" + level + "' - type:'" + type + "' -name:'" +  likeify(name) + "' - desc:'" +  likeify(description) + "' - sort:" +  sort.toString());
 
-        return  repository.findByQuery(  type, level, likeify(name), likeify(description), sort);
+        return  repository.findByQuery(  type, level, likeify(name), likeify(description), likeify( xmlLang ), sort);
 
     }
 

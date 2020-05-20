@@ -17,16 +17,17 @@ import java.util.UUID;
 interface CategoryRepository extends BaseRepository<Category,UUID> {
 
     @Query(value = "SELECT ca.* FROM category ca WHERE ( ca.category_kind ILIKE :categoryType OR ca.hierarchy_level ILIKE :hierarchyLevel ) " +
-        "AND ( ca.name ILIKE :name or ca.label ILIKE :name  or ca.description ILIKE :description ) " +
+        "AND ( ca.xml_lang ILIKE :xmlLang AND (ca.name ILIKE :name or ca.label ILIKE :name  or ca.description ILIKE :description ) )" +
         "ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(ca.*) FROM category ca WHERE ( ca.category_kind ILIKE :categoryType OR ca.hierarchy_level ILIKE :hierarchyLevel ) " +
-        "AND ( ca.name ILIKE :name  or ca.label ILIKE :name or ca.description ILIKE :description ) "
+        "AND ( ca.xml_lang ILIKE :xmlLang AND (ca.name ILIKE :name or ca.label ILIKE :name  or ca.description ILIKE :description ) )"
         + " ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<Category> findByQuery(@Param("categoryType")String categoryType,
                                      @Param("hierarchyLevel")String hierarchyLevel,
                                      @Param("name")String name,
                                      @Param("description")String description,
+                                     @Param("xmlLang")String xmlLang,
                                      Pageable pageable);
 
 }
