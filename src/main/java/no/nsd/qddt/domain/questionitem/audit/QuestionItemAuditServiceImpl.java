@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -25,16 +26,16 @@ import java.util.UUID;
 class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionItem> implements QuestionItemAuditService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
-    private final QuestionItemAuditRepository questionItemAuditRepository;
 
-    private final ElementLoader rdLoader;
+    private final QuestionItemAuditRepository questionItemAuditRepository;
+    private final ElementLoader<ResponseDomain> rdLoader;
 
     private boolean showPrivateComments;
 
     @Autowired
     public QuestionItemAuditServiceImpl(QuestionItemAuditRepository questionItemAuditRepository, ResponseDomainAuditService responseDomainAuditService) {
         this.questionItemAuditRepository = questionItemAuditRepository;
-        this.rdLoader =  new ElementLoader( responseDomainAuditService );
+        this.rdLoader =  new ElementLoader<>( responseDomainAuditService );
     }
 
     @Override
@@ -83,6 +84,18 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
         if (instance.getEntity().getResponseDomainRef() != null && instance.getEntity().getResponseDomainRef().getElementId() != null) {
             rdLoader.fill( instance.getEntity().getResponseDomainRef() );
         }
+
+
+//        Hibernate.initialize( instance.getEntity().get) );
+//        List<BaseRef<?>> list = conceptService.findByQuestionItem(instance.getId(),null).stream()
+//            .map( ConceptRef::new )
+//            .collect( Collectors.toList());
+//
+//        list.addAll(topicGroupService.findByQuestionItem(instance.getId(),null).stream()
+//            .map( TopicRef::new )
+//            .collect( Collectors.toList()));
+//
+//        instance.setParentRefs( list);
         Hibernate.initialize( instance.getEntity().getComments() );
         instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
 

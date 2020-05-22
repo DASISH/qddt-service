@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
@@ -162,8 +162,9 @@ class TopicGroupServiceImpl implements TopicGroupService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<TopicGroup> findByQuestionItem(UUID id, Integer rev) {
-        return null;
+        return topicGroupRepository.findByTopicQuestionItemsElementId(id);
     }
 
     private TopicGroup prePersistProcessing(TopicGroup instance) {
@@ -178,16 +179,32 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-            for (ElementRef<QuestionItem> tqi : instance.getTopicQuestionItems()) {
-                if (IsNullOrTrimEmpty( tqi.getName() ))  qiLoader.fill( tqi );
-            }
+            Hibernate.initialize(instance.getTopicQuestionItems());
 
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
-//                instance.getTopicQuestionItems().forEach( qiLoader::fill );
-                LOG.debug("PDF -> fetching  concepts ");
+                LOG.info("PDF-XML -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( this::loadConceptQuestion );
+//                instance.getTopicQuestionItems().forEach( qiLoader::fill );
+                instance.getTopicQuestionItems().forEach( cqi -> {
+                    qiLoader.fill( cqi );
+                    cqi.getElement().setParentRefs(
+                        findByQuestionItem( cqi.getElementId(), null ).stream()
+                            .map( TopicRef::new )
+                            .collect( Collectors.toList() ) );
+                });
+
+            } else {
+                instance.getTopicQuestionItems().stream()
+                    .filter( p -> IsNullOrTrimEmpty(p.getName()) )
+                    .forEach( qiLoader::fill );
             }
+
+            if (instance.getParentRef() == null)
+                LOG.error( "no parentRef!" );
+            else
+                LOG.info(instance.getParentRef().toString());
+
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
             throw ex;

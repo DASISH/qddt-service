@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.questionitem;
 
+import no.nsd.qddt.domain.IEntityXml;
 import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.parentref.BaseRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
@@ -42,7 +44,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
     public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
         super.addXmlFragments( fragments );
 //        fragments.putIfAbsent( getUrnId(), getXmlFragment() );
-        entity.getConceptRefs().forEach( c -> c.getEntity().getXmlBuilder().addXmlFragments( fragments ) );
+        entity.getParentRefs().stream().forEach( c -> ((IEntityXml)c.getEntity()).getXmlBuilder().addXmlFragments( fragments ) );
         responseBuilder.addXmlFragments( fragments );
     }
 
@@ -59,7 +61,7 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
     }
 
     protected String getConceptRef() {
-        return entity.getConceptRefs().stream()
+        return entity.getParentRefs().stream()
             .map(cr ->{
                 String urn = String.format(xmlURN, cr.getAgency(),cr.getId(),cr.getVersion().toDDIXml());
                 return String.format( xmlRef, "Concept", urn, "\t\t\t" );

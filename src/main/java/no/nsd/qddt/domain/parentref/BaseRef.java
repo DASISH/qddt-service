@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.parentref;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -12,7 +11,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-abstract class BaseRef<T> implements IRefs<T> {
+public abstract class BaseRef<T extends  IParentRef> implements IRefs {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private UUID id;
@@ -20,9 +19,29 @@ abstract class BaseRef<T> implements IRefs<T> {
     private String agency;
 
     private String name;
+    private IRefs parentRef;
 
     @Transient
-    public AbstractEntityAudit entity;
+    public T entity;
+
+    BaseRef(T entity){
+        assert entity != null;
+        try {
+            name = entity.getName();
+            id = entity.getId();
+            version = entity.getVersion();
+            agency = entity.getAgency().getName();
+            parentRef = entity.getParentRef();
+            this.entity = entity;
+        } catch (NullPointerException npe){
+            LOG.error("BaseRef NullPointerException");
+        } catch (Exception ex){
+            LOG.error(ex.getMessage());
+            StackTraceFilter.filter(ex.getStackTrace()).stream()
+                .map(a->a.toString())
+                .forEach(LOG::info);
+        }
+    }
 
 
     @Override
@@ -45,29 +64,33 @@ abstract class BaseRef<T> implements IRefs<T> {
         return agency;
     }
 
-    public AbstractEntityAudit getEntity() {
+    @Override
+    public IRefs getParentRef() {
+        return parentRef;
+    }
+
+//    @Override
+//    public int compareTo(IRefs iRefs) {
+//        int i = -1;
+//        if (iRefs == null)
+//            return  i;
+//        try {
+//            i =  (this.getParentRef() != null) ? this.getParentRef().compareTo(iRefs.getParentRef()) : 0 ;
+//            if (i == 0)
+//                i = getName().compareToIgnoreCase(iRefs.getName());
+//            if (i == 0)
+//                i = getId().compareTo(iRefs.getId());
+//            if (i == 0)
+//                i = getVersion().compareTo(iRefs.getVersion());
+//        } catch (NullPointerException ex) {
+//            i = -1;
+//        }
+//        return i;
+//    }
+
+    public T getEntity() {
         return entity;
     }
-
-    BaseRef(AbstractEntityAudit entity){
-        assert entity != null;
-        try {
-            name = entity.getName();
-            id = entity.getId();
-            version = entity.getVersion();
-            agency = entity.getAgency().getName();
-            this.entity = entity;
-        } catch (NullPointerException npe){
-            LOG.error("BaseRef NullPointerException");
-        } catch (Exception ex){
-            LOG.error(ex.getMessage());
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
-        }
-    }
-
-    BaseRef(){}
 
     @Override
     public boolean equals(Object o) {
@@ -95,11 +118,5 @@ abstract class BaseRef<T> implements IRefs<T> {
                 ", id=" + id +
                 '}';
     }
-
-//    public int compareTo(BaseRef o) {
-//        if (o==null) return 1;
-//        return this.getName().compareToIgnoreCase(o.getName());
-//    }
-
 
 }

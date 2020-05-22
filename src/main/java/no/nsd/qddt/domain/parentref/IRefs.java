@@ -5,10 +5,10 @@ package no.nsd.qddt.domain.parentref;
  * A ref is a simple interface which is intended to help reporting backreferences
  * without ending up with a circular reference loop.
  */
-interface IRefs<T> extends Comparable<T>, IUrnDDI {
+public interface IRefs extends  IUrnDDI {  //Comparable<IRefs>,
 
     String getName();
 
-    IRefs<?> getParent();
+    IRefs getParentRef();
 
 }

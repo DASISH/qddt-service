@@ -207,16 +207,13 @@ class ConceptServiceImpl implements ConceptService {
         if (instance == null) return null;
         try {
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
-                LOG.debug("PDF -> fetching  QuestionItems ");
+                LOG.debug("PDF-XML -> fetching  QuestionItems ");
                 instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             } else {
                 instance.getConceptQuestionItems().forEach( cqi -> {
-                    if (cqi == null) {
-                        LOG.error( "WUT?!?!?!" );
-                    }
                     if (IsNullOrTrimEmpty( cqi.getName() )) {
                         qiLoader.fill( cqi );
-                        cqi.getElement().setConceptRefs(
+                        cqi.getElement().setParentRefs(
                             findByQuestionItem(cqi.getElementId(),null).stream()
                                 .map( ConceptRef::new )
                                 .collect( Collectors.toList()));

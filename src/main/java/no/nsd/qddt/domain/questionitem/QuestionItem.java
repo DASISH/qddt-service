@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.embedded.ResponseDomainRef;
-import no.nsd.qddt.domain.parentref.ConceptRef;
+import no.nsd.qddt.domain.parentref.BaseRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
@@ -28,7 +28,7 @@ import java.util.List;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit {
+public class QuestionItem extends AbstractEntityAudit  {
 
 
     @Embedded
@@ -43,7 +43,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
     @Transient
     @JsonSerialize
-    private List<ConceptRef> conceptRefs = new ArrayList<>( 0 );
+    private List<BaseRef<?>> parentRefs = new ArrayList<>( 0 );
 
 
     public QuestionItem() {
@@ -90,12 +90,12 @@ public class QuestionItem extends AbstractEntityAudit {
     }
 
 
-    public List<ConceptRef> getConceptRefs(){
-        return conceptRefs;
+    public List<BaseRef<?>> getParentRefs() {
+        return parentRefs;
     }
 
-    public void setConceptRefs(List<ConceptRef> conceptRefs) {
-        this.conceptRefs = conceptRefs;
+    public void setParentRefs(List<BaseRef<?>> parentRefs) {
+        this.parentRefs = parentRefs;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class QuestionItem extends AbstractEntityAudit {
             return false;
         if (question != null ? !question.equals( that.question ) : that.question != null) return false;
         if (intent != null ? !intent.equals( that.intent ) : that.intent != null) return false;
-        return conceptRefs != null ? conceptRefs.equals( that.conceptRefs ) : that.conceptRefs == null;
+        return parentRefs != null ? parentRefs.equals( that.parentRefs ) : that.parentRefs == null;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class QuestionItem extends AbstractEntityAudit {
         result = 31 * result + (responseDomainRef != null ? responseDomainRef.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
-        result = 31 * result + (conceptRefs != null ? conceptRefs.hashCode() : 0);
+        result = 31 * result + (parentRefs != null ? parentRefs.hashCode() : 0);
         return result;
     }
 
@@ -140,8 +140,6 @@ public class QuestionItem extends AbstractEntityAudit {
     public AbstractXmlBuilder getXmlBuilder() {
         return new QuestionItemFragmentBuilder(this);
     }
-
-
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {

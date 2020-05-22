@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -33,21 +33,18 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final TopicGroupAuditRepository topicGroupAuditRepository;
-//    private final ConceptService conceptService;
     private final CommentService commentService;
-    private final ElementLoader qiLoader;
+    private final ElementLoader<QuestionItem> qiLoader;
     private boolean showPrivateComments;
 
 
     @Autowired
     public TopicGroupAuditServiceImpl(TopicGroupAuditRepository topicGroupAuditRepository,
                                       QuestionItemAuditService questionItemAuditService,
-//                                      ConceptService conceptService,
                                       CommentService commentService ) {
         this.topicGroupAuditRepository = topicGroupAuditRepository;
         this.commentService = commentService;
-//        this.conceptService = conceptService;
-        this.qiLoader = new ElementLoader( questionItemAuditService );
+        this.qiLoader = new ElementLoader<>( questionItemAuditService );
     }
 
     @Override
@@ -100,21 +97,21 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
-        LOG.info( "postload topic " + instance.getId() );
         try{
-            for (ElementRef cqi :instance.getTopicQuestionItems()) {
 
-                cqi = (ElementRef) qiLoader.fill( cqi );
+            Hibernate.initialize( instance.getStudy() );
 
-//                cqi.getElement().setConceptRefs(
-//                    conceptService.findByQuestionItem(cqi.getId(),null).stream()
-//                        .map( ConceptRef::new )
-//                        .collect( Collectors.toList())
-//                );
+            if (instance.getParentRef() == null)
+                LOG.error( "no parentRef!" );
+            else
+                LOG.info(instance.getParentRef().toString());
 
-            }
             Hibernate.initialize(instance.getConcepts());
             instance.getConcepts().forEach(this::postLoadProcessing);
+
+            Hibernate.initialize(instance.getTopicQuestionItems());
+            instance.getTopicQuestionItems().forEach( qiLoader::fill );
+
             instance.setComments(loadComments(instance.getId()));
 
         } catch (Exception ex){
@@ -128,13 +125,10 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
-        LOG.info( "postload concept " + instance.getId() );
         try{
-            instance.setComments(loadComments(instance.getId()));
-            instance.getConceptQuestionItems()
-                .forEach( qiLoader::fill );
-
             instance.getChildren().forEach(this::postLoadProcessing);
+            instance.setComments(loadComments(instance.getId()));
+            instance.getConceptQuestionItems().forEach( qiLoader::fill );
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);

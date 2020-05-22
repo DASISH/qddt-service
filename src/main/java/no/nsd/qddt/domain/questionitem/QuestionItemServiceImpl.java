@@ -2,12 +2,15 @@ package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.parentref.BaseRef;
 import no.nsd.qddt.domain.parentref.ConceptRef;
+import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -42,16 +45,20 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private final ConceptService conceptService;
     private final ResponseDomainService responseDomainService;
     private final ElementLoader<ResponseDomain> rdLoader;
+    private final TopicGroupService topicGroupService
+        ;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
                                    ResponseDomainAuditService responseDomainAuditService,
                                    ConceptService conceptService,
+                                   TopicGroupService topicGroupService,
                                    QuestionItemAuditService questionItemAuditService,
                                    ResponseDomainService responseDomainService) {
         this.questionItemRepository = questionItemRepository;
         this.auditService = questionItemAuditService;
         this.conceptService = conceptService;
+        this.topicGroupService = topicGroupService;
         this.responseDomainService = responseDomainService;
         this.rdLoader =  new ElementLoader<>( responseDomainAuditService );
     }
@@ -161,9 +168,16 @@ class QuestionItemServiceImpl implements QuestionItemService {
             } else {
                 LOG.info( "no RD in this QI" );
             }
-            instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
+            List<BaseRef<?>> list = conceptService.findByQuestionItem(instance.getId(),null).stream()
                 .map( ConceptRef::new )
-                .collect( Collectors.toList()) );
+                .collect( Collectors.toList());
+
+            list.addAll(topicGroupService.findByQuestionItem(instance.getId(),null).stream()
+                .map( TopicRef::new )
+                .collect( Collectors.toList()));
+
+            instance.setParentRefs( list);
+
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
             System.out.println(ex.getMessage());

@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
@@ -47,7 +47,7 @@ public class ConceptJsonView {
 
     private Set<ConceptJsonView> children = new HashSet<>();
 
-    private TopicRef topicRef;
+    private IRefs parentRef;
 
 	private String classKind;
 
@@ -64,7 +64,7 @@ public class ConceptJsonView {
         setChildren(concept.getChildren().stream().map(ConceptJsonView::new).collect(Collectors.toSet()));
         setConceptQuestionItems(concept.getConceptQuestionItems());
         setComments(concept.getComments());
-        setTopicRef(concept.getTopicRef());
+        setParentRef(concept.getParentRef());
         classKind = concept.getClassKind();
     }
 
@@ -140,12 +140,12 @@ public class ConceptJsonView {
         this.children = children;
     }
 
-    public TopicRef getTopicRef() {
-        return topicRef;
+    public IRefs getParentRef() {
+        return parentRef;
     }
 
-    private void setTopicRef(TopicRef topicRef) {
-        this.topicRef = topicRef;
+    public void setParentRef(IRefs parentRef) {
+        this.parentRef = parentRef;
     }
 
     public String getClassKind() {

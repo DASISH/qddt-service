@@ -7,6 +7,8 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.parentref.IParentRef;
+import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.parentref.TopicRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements IArchived {
+public class Concept extends AbstractEntityAudit implements IArchived, IParentRef {
 
     @ManyToOne()
     @JsonBackReference(value = "parentRef")
@@ -74,7 +76,7 @@ public class Concept extends AbstractEntityAudit implements IArchived {
 
     @Transient
     @JsonDeserialize
-    private TopicRef topicRef;
+    private IRefs parentRef;
 
     private boolean isArchived;
 
@@ -191,27 +193,22 @@ public class Concept extends AbstractEntityAudit implements IArchived {
         }
     }
 
-    public TopicRef getTopicRef() {
-        if (topicRef == null) {
-            TopicGroup topicGroup = getParentTopicGroup();
-            if (topicGroup == null) {
-                topicRef = new TopicRef();
-            } else
-                topicRef = new TopicRef(topicGroup);
-        }
-
-        return topicRef;
+    @Override
+    public IRefs getParentRef() {
+        if (parentRef == null )
+            parentRef = new TopicRef(getParentTopicGroup());
+        return parentRef;
     }
 
     protected TopicGroup getParentTopicGroup(){
         Concept current = this;
-        while(current.getParentRef() !=  null){
-            current = current.getParentRef();
+        while(current.getParent() !=  null){
+            current = current.getParent();
         }
         return current.getTopicGroup();
     }
 
-    protected Concept getParentRef(){
+    protected Concept getParent(){
         return this.parentReferenceOnly;
     }
 
@@ -222,18 +219,13 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     private List<AbstractEntityAudit> getParents() {
         List<AbstractEntityAudit> retvals = new ArrayList<>( 1 );
         Concept current = this;
-        while(current.getParentRef() !=  null){
-            current = current.getParentRef();
+        while(current.getParent() !=  null){
+            current = current.getParent();
             retvals.add( current );
         }
         retvals.add( current.getTopicGroup() );         //this will fail for Concepts that return from clients.
         return retvals; // .stream().filter( f -> f != null ).collect( Collectors.toList());
     }
-
-//    protected void setParentC(Concept newParent)  {
-//        setField("parentReferenceOnly",newParent );
-//    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -328,10 +320,10 @@ public class Concept extends AbstractEntityAudit implements IArchived {
     }
 
     @PreRemove
-    public void remove(){
+    public void beforeRemove(){
         LOG.debug(" Concept pre remove");
-        if (this.getParentRef() != null) {
-            this.getParentRef().getChildren().removeIf(p->p.getId() == this.getId());
+        if (this.getParent() != null) {
+            this.getParent().getChildren().removeIf(p->p.getId() == this.getId());
             AtomicInteger i= new AtomicInteger();
 //            this.getParentRef().getChildren().forEach( c -> c.concept_idx = i.getAndIncrement() );
         }

@@ -6,6 +6,9 @@ import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.parentref.IParentRef;
+import no.nsd.qddt.domain.parentref.IRefs;
+import no.nsd.qddt.domain.parentref.SurveyRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -51,7 +54,7 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
+public class Study extends AbstractEntityAudit implements IAuthor, IArchived, IParentRef {
 
 //    @JsonIgnore
     @ManyToOne()
@@ -261,4 +264,8 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived {
         }
     }
 
+    @Override
+    public IRefs getParentRef() {
+        return new SurveyRef(getSurveyProgram());
+    }
 }

@@ -7,56 +7,18 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
  */
 
 
-public class TopicRef extends BaseRef<TopicRef>{
-
-    private final StudyRef parent;
-
-    public TopicRef(){
-        super();
-        parent = new StudyRef();
-    }
+public class TopicRef extends BaseRef<TopicGroup>{
 
 
     public TopicRef(TopicGroup topicGroup) {
         super(topicGroup);
-        parent = new StudyRef(topicGroup.getStudy());
-    }
-
-    @Override
-    public StudyRef getParent() {
-        return parent;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TopicRef)) return false;
-        if (!super.equals(o)) return false;
-
-        TopicRef topicRef = (TopicRef) o;
-
-        return parent != null ? parent.equals(topicRef.parent) : topicRef.parent == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (parent != null ? parent.hashCode() : 0);
-        return result;
     }
 
     @Override
     public String toString() {
         return "TopicRef{" +
-                "studyRef=" + parent +
+                "studyRef=" + getParentRef() +
                 "} " + super.toString();
-    }
-
-    @Override
-    public int compareTo(TopicRef o) {
-        return this.getName().compareToIgnoreCase(o.getName());
     }
 
 }

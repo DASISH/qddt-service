@@ -4,7 +4,7 @@ import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
@@ -34,7 +34,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     private boolean isArchived;
 
-    private TopicRef topicRef;
+    private IRefs parentRef;
 
     public ConceptJsonEdit() {
     }
@@ -51,7 +51,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
             setLabel(concept.getLabel());
             setArchived(concept.isArchived());
             setConceptQuestionItems(concept.getConceptQuestionItems());
-            setTopicRef(concept.getTopicRef());
+            setParentRef(concept.getParentRef() );
         } catch (Exception ex) {
             LOG.error("ConceptJsonEdit exception",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
@@ -116,12 +116,12 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         this.comments = comments;
     }
 
-    public TopicRef getTopicRef() {
-        return topicRef;
+    public IRefs getParentRef() {
+        return parentRef;
     }
 
-    private void setTopicRef(TopicRef topicRef) {
-        this.topicRef = topicRef;
+    public void setParentRef(IRefs parentRef) {
+        this.parentRef = parentRef;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         if (label != null ? !label.equals(that.label) : that.label != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (comments != null ? !comments.equals(that.comments) : that.comments != null) return false;
-        return topicRef != null ? topicRef.equals(that.topicRef) : that.topicRef == null;
+        return parentRef != null ? parentRef.equals(that.parentRef) : that.parentRef == null;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
     public String toString() {
         return String.format(
                 "ConceptJsonEdit (id=%s, name=%s, children=%s, conceptQuestionItems=%s, label=%s, description=%s, comments=%s, topicRef=%s)",
-                this.id, this.name, this.children, this.conceptQuestionItems, this.label, this.description, this.comments, this.topicRef);
+                this.id, this.name, this.children, this.conceptQuestionItems, this.label, this.description, this.comments, this.parentRef);
     }
 
 

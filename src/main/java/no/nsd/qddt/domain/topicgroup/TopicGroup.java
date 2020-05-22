@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
@@ -9,6 +10,8 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
+import no.nsd.qddt.domain.parentref.IParentRef;
+import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -50,7 +53,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived {
+public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchived, IParentRef {
 
     @Column(name = "description", length = 10000)
     private String description;
@@ -89,6 +92,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
         private List<OtherMaterial> otherMaterials = new ArrayList<>();
+
+    @Transient
+    @JsonDeserialize
+    private IRefs parentRef;
 
 
     private boolean isArchived;
@@ -194,9 +201,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor,IArchived
             LOG.debug("ConceptQuestionItem not inserted, match found" );
     }
 
-
-    public StudyRef getStudyRef() {
-        return new StudyRef(getStudy());
+    @Override
+    public IRefs getParentRef() {
+        if (parentRef == null )
+            parentRef = new  StudyRef(getStudy());
+        return parentRef;
     }
 
     @Override

@@ -4,6 +4,8 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
+import no.nsd.qddt.domain.parentref.IParentRef;
+import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
@@ -48,7 +50,7 @@ import java.util.Set;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchived {
+public class SurveyProgram extends AbstractEntityAudit implements IAuthor, IArchived, IParentRef {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderColumn(name="survey_idx")
@@ -182,4 +184,8 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor,IArchi
     @Override
     protected void beforeInsert() {}
 
+    @Override
+    public IRefs getParentRef() {
+        return null;
+    }
 }

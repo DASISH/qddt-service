@@ -2,8 +2,8 @@ package no.nsd.qddt.domain.questionitem.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
+import no.nsd.qddt.domain.parentref.BaseRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.parentref.ConceptRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +21,7 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
-    private List<ConceptRef> conceptRefs;
-
-
-    public QuestionItemJsonEdit() {
-
-    }
+    private List<BaseRef<?>> parentRefs = new ArrayList<>( 0 );
 
 
     public QuestionItemJsonEdit(QuestionItem questionItem) {
@@ -36,7 +31,7 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
         setQuestion(questionItem.getQuestion());
         setIntent(questionItem.getIntent());
         setResponseDomainRef( new ResponseDomainRefJsonEdit(questionItem.getResponseDomainRef()));
-        setConceptRefs(questionItem.getConceptRefs());
+        setParentRefs(questionItem.getParentRefs());
 
     }
 
@@ -72,12 +67,12 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
         this.comments = comments;
     }
 
-    public List<ConceptRef> getConceptRefs() {
-        return conceptRefs;
+    public List<BaseRef<?>> getParentRefs() {
+        return parentRefs;
     }
 
-    private void setConceptRefs(List<ConceptRef> conceptRefs) {
-        this.conceptRefs = conceptRefs;
+    public void setParentRefs(List<BaseRef<?>> parentRefs) {
+        this.parentRefs = parentRefs;
     }
 }
 
