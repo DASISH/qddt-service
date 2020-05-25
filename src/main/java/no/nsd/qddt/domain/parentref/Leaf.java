@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public abstract class BaseRef<T extends  IParentRef> implements IRefs {
+public class Leaf<T extends  IParentRef> implements IRefs {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private UUID id;
@@ -24,7 +24,7 @@ public abstract class BaseRef<T extends  IParentRef> implements IRefs {
     @Transient
     public T entity;
 
-    BaseRef(T entity){
+    public Leaf(T entity){
         assert entity != null;
         try {
             name = entity.getName();
@@ -34,7 +34,7 @@ public abstract class BaseRef<T extends  IParentRef> implements IRefs {
             parentRef = entity.getParentRef();
             this.entity = entity;
         } catch (NullPointerException npe){
-            LOG.error("BaseRef NullPointerException");
+            LOG.error("LeafRef NullPointerException");
         } catch (Exception ex){
             LOG.error(ex.getMessage());
             StackTraceFilter.filter(ex.getStackTrace()).stream()
@@ -69,25 +69,6 @@ public abstract class BaseRef<T extends  IParentRef> implements IRefs {
         return parentRef;
     }
 
-//    @Override
-//    public int compareTo(IRefs iRefs) {
-//        int i = -1;
-//        if (iRefs == null)
-//            return  i;
-//        try {
-//            i =  (this.getParentRef() != null) ? this.getParentRef().compareTo(iRefs.getParentRef()) : 0 ;
-//            if (i == 0)
-//                i = getName().compareToIgnoreCase(iRefs.getName());
-//            if (i == 0)
-//                i = getId().compareTo(iRefs.getId());
-//            if (i == 0)
-//                i = getVersion().compareTo(iRefs.getVersion());
-//        } catch (NullPointerException ex) {
-//            i = -1;
-//        }
-//        return i;
-//    }
-
     public T getEntity() {
         return entity;
     }
@@ -95,9 +76,9 @@ public abstract class BaseRef<T extends  IParentRef> implements IRefs {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BaseRef)) return false;
+        if (!(o instanceof Leaf)) return false;
 
-        BaseRef baseRef = (BaseRef) o;
+        Leaf baseRef = (Leaf) o;
 
         if (name != null ? !name.equals(baseRef.name) : baseRef.name != null) return false;
         return id != null ? id.equals(baseRef.id) : baseRef.id == null;
@@ -113,10 +94,11 @@ public abstract class BaseRef<T extends  IParentRef> implements IRefs {
 
     @Override
     public String toString() {
-        return "{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                '}';
+        return "Ref {\n" +
+        "   id=" + id + ",\n" +
+        "   name='" + name + "',\n" +
+        "   parent=" + getParentRef() +
+        "}\n";
     }
 
 }

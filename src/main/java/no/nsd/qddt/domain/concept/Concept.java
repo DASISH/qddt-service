@@ -1,26 +1,45 @@
 package no.nsd.qddt.domain.concept;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.PreRemove;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.parentref.IParentRef;
 import no.nsd.qddt.domain.parentref.IRefs;
-import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.parentref.Leaf;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import org.hibernate.envers.AuditMappedBy;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 
 /**
@@ -196,7 +215,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IParentRe
     @Override
     public IRefs getParentRef() {
         if (parentRef == null )
-            parentRef = new TopicRef(getParentTopicGroup());
+            parentRef = new Leaf<TopicGroup>(getParentTopicGroup());
         return parentRef;
     }
 
@@ -279,11 +298,9 @@ public class Concept extends AbstractEntityAudit implements IArchived, IParentRe
             if (getComments().size() > 0) {
                 pdfReport.addheader2("Comments");
                 pdfReport.addComments(getComments());
-                // pdfReport.addPadding();
             }
 
             if (getConceptQuestionItems().size() > 0) {
-                // pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
                 getConceptQuestionItems().stream()
                     .map( cqi ->  {
@@ -325,7 +342,6 @@ public class Concept extends AbstractEntityAudit implements IArchived, IParentRe
         if (this.getParent() != null) {
             this.getParent().getChildren().removeIf(p->p.getId() == this.getId());
             AtomicInteger i= new AtomicInteger();
-//            this.getParentRef().getChildren().forEach( c -> c.concept_idx = i.getAndIncrement() );
         }
     }
 

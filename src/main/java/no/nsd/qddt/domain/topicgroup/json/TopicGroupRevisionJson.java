@@ -21,7 +21,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
 	private String abstractDescription;
 
-    private List<ElementRef<QuestionItem>> topicQuestionItems;
+    private List<ElementRef<QuestionItem>> topicQuestionItems = new ArrayList<>();
 
     private Set<ConceptJsonView> concepts = new HashSet<>();
 

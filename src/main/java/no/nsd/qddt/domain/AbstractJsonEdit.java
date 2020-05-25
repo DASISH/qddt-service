@@ -21,8 +21,7 @@ import java.util.UUID;
  */
 public  abstract class AbstractJsonEdit implements Serializable, IEntityRef {
 
-
-	protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Type(type="pg-uuid")
     private UUID id;

@@ -1,7 +1,37 @@
 package no.nsd.qddt.domain.topicgroup;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.PreRemove;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
@@ -12,17 +42,11 @@ import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.parentref.IParentRef;
 import no.nsd.qddt.domain.parentref.IRefs;
-import no.nsd.qddt.domain.parentref.StudyRef;
+import no.nsd.qddt.domain.parentref.Leaf;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import org.hibernate.envers.AuditMappedBy;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -94,8 +118,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
         private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
     @Transient
-    @JsonDeserialize
-    private IRefs parentRef;
+    private Leaf<Study> parentRef;
 
 
     private boolean isArchived;
@@ -204,7 +227,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     @Override
     public IRefs getParentRef() {
         if (parentRef == null )
-            parentRef = new  StudyRef(getStudy());
+            parentRef = new Leaf<Study>(getStudy());
         return parentRef;
     }
 
@@ -240,7 +263,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
                 "\"description\":" + (description == null ? "null" : "\"" + description + "\"") +
                 "\"concepts\":" + (getConcepts() == null ? "null" : Arrays.toString(getConcepts().toArray())) + ", " +
                 "\"authors\":" + (authors == null ? "null" : Arrays.toString(authors.toArray())) + ", " +
-//                "\"otherMaterials\":" + (otherMaterials == null ? "null" : Arrays.toString(otherMaterials.toArray())) + ", " +
                 "}";
     }
 
@@ -259,7 +281,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
         if(getComments().size()>0) {
             pdfReport.addheader2("Comments");
             pdfReport.addComments(getComments());
-//            // pdfReport.addPadding();
         }
 
         if (getTopicQuestionItems().size() > 0) {
@@ -269,7 +290,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
                 pdfReport.addParagraph(item.getElement().getQuestion());
                 if (item.getElement().getResponseDomainRef().getElement() != null)
                     item.getElement().getResponseDomainRef().getElement().fillDoc(pdfReport, "");
-//                // pdfReport.addPadding();
             }
         }
         pdfReport.addPadding();
@@ -301,7 +321,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
         if (archived) {
             LOG.info( getName() + " isArchived(" + getConcepts().size() +")" );
             setChangeKind(ChangeKind.ARCHIVED);
-//            Hibernate.initialize(this.getConcepts());
             for (Concept concept : getConcepts()) {
                 if (!concept.isArchived())
                     concept.setArchived(archived);
@@ -311,9 +330,6 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
     @Override
     protected void beforeUpdate() {
-//        if (concepts.size() > 0) {
-//            setConcepts( concepts.stream().filter( Objects::nonNull ).collect( Collectors.toList()) );
-//        }
     }
     @Override
     protected void beforeInsert() {}

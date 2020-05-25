@@ -130,7 +130,7 @@ public abstract class AbstractElementRef<T extends IEntityRef> implements IEleme
         if (this == o) return true;
         if (!(o instanceof AbstractElementRef)) return false;
 
-        AbstractElementRef that = (AbstractElementRef) o;
+        AbstractElementRef<T> that = (AbstractElementRef) o;
 
         if (elementKind != that.elementKind) return false;
         if (!Objects.equals( elementId, that.elementId )) return false;

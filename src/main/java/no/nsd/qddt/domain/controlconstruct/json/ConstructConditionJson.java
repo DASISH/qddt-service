@@ -8,6 +8,10 @@ import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
  */
 public class ConstructConditionJson extends ConstructJson {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 8040983806216492534L;
     private String condition;
 
 

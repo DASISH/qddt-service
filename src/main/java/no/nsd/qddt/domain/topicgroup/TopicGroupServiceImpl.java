@@ -1,15 +1,16 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.parentref.TopicRef;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.study.StudyService;
-import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
-import no.nsd.qddt.exception.DescendantsArchivedException;
-import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.StackTraceFilter;
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.StringTool.likeify;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +21,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
-import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
-import static no.nsd.qddt.utils.StringTool.likeify;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.parentref.Leaf;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.study.StudyService;
+import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
+import no.nsd.qddt.exception.DescendantsArchivedException;
+import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 
 /**
  * @author Stig Norland
@@ -185,12 +187,11 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 LOG.info("PDF-XML -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( this::loadConceptQuestion );
-//                instance.getTopicQuestionItems().forEach( qiLoader::fill );
                 instance.getTopicQuestionItems().forEach( cqi -> {
                     qiLoader.fill( cqi );
                     cqi.getElement().setParentRefs(
                         findByQuestionItem( cqi.getElementId(), null ).stream()
-                            .map( TopicRef::new )
+                            .map( Leaf<TopicGroup>::new )
                             .collect( Collectors.toList() ) );
                 });
 

@@ -63,7 +63,7 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .setHierarchy(HierarchyLevel.GROUP_ENTITY)
                 .setType(CategoryType.SCALE)
                 .setLabel("Scale 1-5 with labels").createCategory();
-                group.setInputLimit(1,5);
+                group.setInputLimit(1,5,1);
         group.getChildren().add(new CategoryBuilder()
                 .setLabel("Very Happy").createCategory());
         group.getChildren().add(new CategoryBuilder()

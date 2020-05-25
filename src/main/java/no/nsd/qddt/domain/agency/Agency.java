@@ -267,11 +267,6 @@ public class Agency implements Comparable<Agency>, IEntityKind {
 
     }
 
-//    public String toDDIXml(){
-//        return "<ID type='ID'>" + getId().toString() + "</ID>";
-//    }
-
-
     @Override
     public int hashCode() {
         return  31 * super.hashCode() + (name != null ? name.hashCode() : 0);
