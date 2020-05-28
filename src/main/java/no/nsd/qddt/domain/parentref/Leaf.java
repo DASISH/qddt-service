@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.parentref;
 
-import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.embedded.Urn;
-import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.exception.StackTraceFilter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,7 @@ public class Leaf<T extends IRefs> implements IRefsDDI {
     @Transient
     public T entity;
 
-    public Leaf(final T entity) {
+    public  Leaf(final T entity) {
         assert entity != null;
         try {
             name = entity.getName();

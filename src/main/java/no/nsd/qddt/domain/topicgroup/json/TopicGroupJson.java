@@ -32,7 +32,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
-    private IRefs parentRef;
+    private ParentRef parentRef;
 
     public TopicGroupJson(TopicGroup topicGroup) {
         super(topicGroup);
