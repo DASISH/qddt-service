@@ -8,9 +8,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 public interface IEntityRef {
-
     UUID getId();
-    String getName();
     Version getVersion();
-
+    String getName();
 }

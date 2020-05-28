@@ -53,8 +53,6 @@ class CategoryServiceImpl implements CategoryService {
 
         PageRequest sort = defaultOrModifiedSort( pageable, "name ASC", "updated DESC" );
 
-//        LOG.info( "level:'" + level + "' - type:'" + type + "' -name:'" +  likeify(name) + "' - desc:'" +  likeify(description) + "' - sort:" +  sort.toString());
-
         return  repository.findByQuery(  type, level, likeify(name), likeify(description), likeify( xmlLang ), sort);
 
     }
@@ -86,8 +84,6 @@ class CategoryServiceImpl implements CategoryService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public Category save(Category instance) {
-//        if (_codes.size() >0)
-//            LOG.error( "_codes not intilaized empty" );
         return postLoadProcessing( 
             repository.save(
                 prePersistProcessing(instance)));
@@ -130,7 +126,6 @@ class CategoryServiceImpl implements CategoryService {
             return instance;
         }catch (Exception e) {
             LOG.error(e.getClass().getName(), e );
-//            System.out.println(e.getClass().getName() + '-' +  e.getMessage());
             throw e;
         }
     }

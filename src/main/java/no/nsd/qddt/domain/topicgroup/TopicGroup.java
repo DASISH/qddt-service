@@ -26,8 +26,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
@@ -40,7 +38,6 @@ import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.parentref.IParentRef;
 import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.parentref.Leaf;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -77,7 +74,7 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchived, IParentRef {
+public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchived, IRefs {
 
     @Column(name = "description", length = 10000)
     private String description;
@@ -330,8 +327,11 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
     @Override
     protected void beforeUpdate() {
+        // no extra handling
     }
     @Override
-    protected void beforeInsert() {}
+    protected void beforeInsert() {
+        // no extra handling
+    }
 
 }

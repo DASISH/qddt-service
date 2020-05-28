@@ -17,7 +17,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Embeddable
-public class Urn {
+public class Urn implements IUrn {
 
     @Id
     @Type(type="pg-uuid")

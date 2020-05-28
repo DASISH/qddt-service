@@ -11,5 +11,5 @@ import java.util.UUID;
  */
 public interface UniverseService extends BaseService<Universe, UUID> {
 
-    Page<Universe> findByDescriptionLike(String description, Pageable pageable);
+    Page<Universe> findByDescriptionLike(String description, String xmlLang, Pageable pageable);
 }

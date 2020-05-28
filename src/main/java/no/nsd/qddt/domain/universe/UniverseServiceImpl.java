@@ -84,7 +84,7 @@ class UniverseServiceImpl implements UniverseService {
     }
 
     @Override
-    public Page<Universe> findByDescriptionLike(String description, Pageable pageable) {
-        return universeRepository.findByDescriptionIgnoreCaseLike(likeify(description),pageable);
+    public Page<Universe> findByDescriptionLike(String description, String xmlLang, Pageable pageable) {
+        return universeRepository.findByDescriptionIgnoreCaseLikeAndXmlLangLike(likeify(description), likeify(xmlLang), pageable);
     }
 }

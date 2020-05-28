@@ -9,19 +9,14 @@ import java.util.UUID;
  */
 public interface IElementRef<T extends IEntityRef> extends Cloneable {
 
-
     ElementKind getElementKind();
-
+    String getName();
+    Version getVersion();
     UUID getElementId();
 
     Integer getElementRevision();
     void setElementRevision(Integer revisionNumber);
 
-    String getName();
-
-    Version getVersion();
-
     T getElement();
-
-     void setElement(T element);
+    void setElement(T element);
 }

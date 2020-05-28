@@ -31,7 +31,6 @@ import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.instrument.Instrument;
-import no.nsd.qddt.domain.parentref.IParentRef;
 import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.parentref.Leaf;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -73,7 +72,7 @@ import no.nsd.qddt.exception.StackTraceFilter;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements IAuthor, IArchived, IParentRef {
+public class Study extends AbstractEntityAudit implements IAuthor, IArchived, IRefs {
 
 //    @JsonIgnore
     @ManyToOne()

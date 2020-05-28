@@ -207,8 +207,12 @@ public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
         managedRepresentation.setName(  managedRepresentation.getCategoryType().getName() +  "[" +  ((getId() != null) ? getId().toString() : Integer.toString( new Random().nextInt() )) + "]");
         if (managedRepresentation.getHierarchyLevel() == HierarchyLevel.GROUP_ENTITY)
             managedRepresentation.setDescription( managedRepresentation.getCategoryType().getDescription() );
+        else
+            managedRepresentation.setDescription( getDescription() );
         managedRepresentation.setChangeComment(getChangeComment());
         managedRepresentation.setChangeKind(getChangeKind());
+        managedRepresentation.setXmlLang( getXmlLang());
+
         if(!getVersion().isModified()) {
             LOG.debug("onUpdate not run yet ♣♣♣ ");
         }

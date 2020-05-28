@@ -33,7 +33,6 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.parentref.IParentRef;
 import no.nsd.qddt.domain.parentref.IRefs;
 import no.nsd.qddt.domain.parentref.Leaf;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -56,7 +55,7 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements IArchived, IParentRef {
+public class Concept extends AbstractEntityAudit implements IArchived, IRefs {
 
     @ManyToOne()
     @JsonBackReference(value = "parentRef")

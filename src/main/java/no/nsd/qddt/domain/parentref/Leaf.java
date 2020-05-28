@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.parentref;
 
+import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.embedded.Urn;
 import no.nsd.qddt.domain.embedded.Version;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -11,57 +13,43 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class Leaf<T extends  IParentRef> implements IRefs {
+public class Leaf<T extends IRefs> implements IRefsDDI {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    private UUID id;
-    private Version version;
-    private String agency;
-
+    private Urn urn;
     private String name;
     private IRefs parentRef;
 
     @Transient
     public T entity;
 
-    public Leaf(T entity){
+    public Leaf(final T entity) {
         assert entity != null;
         try {
             name = entity.getName();
-            id = entity.getId();
+    
+            urn.uid = entity.getId();
             version = entity.getVersion();
             agency = entity.getAgency().getName();
             parentRef = entity.getParentRef();
             this.entity = entity;
-        } catch (NullPointerException npe){
+        } catch (final NullPointerException npe) {
             LOG.error("LeafRef NullPointerException");
-        } catch (Exception ex){
+        } catch (final Exception ex) {
             LOG.error(ex.getMessage());
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
+            StackTraceFilter.filter(ex.getStackTrace()).stream().map(a -> a.toString()).forEach(LOG::info);
         }
     }
 
-
     @Override
-    public UUID getId() {
-        return id;
+    public IUrnDDI getUrn() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public Version getVersion() {
-        return version;
-    }
-
-    @Override
-    public String getAgency() {
-        return agency;
     }
 
     @Override
@@ -74,11 +62,13 @@ public class Leaf<T extends  IParentRef> implements IRefs {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Leaf)) return false;
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Leaf))
+            return false;
 
-        Leaf baseRef = (Leaf) o;
+        final Leaf baseRef = (Leaf) o;
 
         if (name != null ? !name.equals(baseRef.name) : baseRef.name != null) return false;
         return id != null ? id.equals(baseRef.id) : baseRef.id == null;

@@ -71,8 +71,8 @@ class InstructionServiceImpl implements InstructionService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Page<Instruction> findByDescriptionLike(String description, Pageable pageable) {
-        return instructionRepository.findByDescriptionIgnoreCaseLike(likeify(description),pageable);
+    public Page<Instruction> findByDescriptionLike(String description, String xmlLang, Pageable pageable) {
+        return instructionRepository.findByDescriptionIgnoreCaseLikeAndXmlLangLike(likeify(description), likeify(xmlLang), pageable);
     }
 
 
