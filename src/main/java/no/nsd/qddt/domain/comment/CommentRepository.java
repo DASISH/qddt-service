@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.comment;
 
-import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.interfaces.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;

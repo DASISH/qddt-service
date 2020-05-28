@@ -1,7 +1,8 @@
 package no.nsd.qddt.domain.elementref;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.BaseServiceAudit;
+import no.nsd.qddt.domain.interfaces.BaseServiceAudit;
+import no.nsd.qddt.domain.interfaces.IElementRef;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

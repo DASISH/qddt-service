@@ -1,14 +1,16 @@
 package no.nsd.qddt.domain.concept;
 
-import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
-import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
-import static no.nsd.qddt.utils.StringTool.likeify;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
+import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
+import no.nsd.qddt.exception.DescendantsArchivedException;
+import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +20,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
-import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
-import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.parentref.Leaf;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.exception.DescendantsArchivedException;
-import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.StackTraceFilter;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -216,7 +215,7 @@ class ConceptServiceImpl implements ConceptService {
                         qiLoader.fill( cqi );
                         cqi.getElement().setParentRefs(
                             findByQuestionItem(cqi.getElementId(),null).stream()
-                                .map( Leaf<Concept>::new )
+                                .map( ParentRef<Concept>::new )
                                 .collect( Collectors.toList()));
                     }
                 });

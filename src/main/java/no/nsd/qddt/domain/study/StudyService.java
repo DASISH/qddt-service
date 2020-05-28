@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.study;
 
-import no.nsd.qddt.domain.BaseArchivedService;
+import no.nsd.qddt.domain.interfaces.BaseArchivedService;
 
 /**
  * @author Dag Østgulen Heradstveit

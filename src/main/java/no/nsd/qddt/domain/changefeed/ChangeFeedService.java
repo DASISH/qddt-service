@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.changefeed;
 
-import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.interfaces.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.questionitem.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.parentref.Leaf;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
-    private List<Leaf<?>> parentRefs = new ArrayList<>( 0 );
+    private List<ParentRef<?>> parentRefs = new ArrayList<>( 0 );
 
 
     public QuestionItemJsonEdit(QuestionItem questionItem) {
@@ -67,11 +67,11 @@ public class QuestionItemJsonEdit extends AbstractJsonEdit {
         this.comments = comments;
     }
 
-    public List<Leaf<?>> getParentRefs() {
+    public List<ParentRef<?>> getParentRefs() {
         return parentRefs;
     }
 
-    public void setParentRefs(List<Leaf<?>> parentRefs) {
+    public void setParentRefs(List<ParentRef<?>> parentRefs) {
         this.parentRefs = parentRefs;
     }
 }

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.interfaces.BaseRepository;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import org.springframework.data.domain.Page;

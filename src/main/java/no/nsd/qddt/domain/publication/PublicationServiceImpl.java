@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.publication;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
-import no.nsd.qddt.domain.elementref.IElementRef;
+import no.nsd.qddt.domain.interfaces.IElementRef;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus.Published;
 import no.nsd.qddt.security.SecurityContext;

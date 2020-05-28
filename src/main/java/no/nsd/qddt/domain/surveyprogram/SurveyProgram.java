@@ -1,34 +1,21 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.author.Author;
+import no.nsd.qddt.domain.author.IAuthor;
+import no.nsd.qddt.domain.interfaces.IArchived;
+import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.IArchived;
-import no.nsd.qddt.domain.author.Author;
-import no.nsd.qddt.domain.author.IAuthor;
-import no.nsd.qddt.domain.parentref.IRefs;
-import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <ul class="inheritance">
@@ -61,7 +48,7 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 @Audited
 @Entity
 @Table(name = "SURVEY_PROGRAM")
-public class SurveyProgram extends AbstractEntityAudit implements IAuthor, IArchived, IRefs {
+public class SurveyProgram extends AbstractEntityAudit implements IAuthor, IArchived {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderColumn(name="survey_idx")
@@ -139,6 +126,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor, IArch
     }
 
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -195,8 +183,6 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor, IArch
     @Override
     protected void beforeInsert() {}
 
-    @Override
-    public IRefs getParentRef() {
-        return null;
-    }
+
+
 }

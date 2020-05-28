@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.BaseArchivedRepository;
+import no.nsd.qddt.domain.interfaces.BaseArchivedRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

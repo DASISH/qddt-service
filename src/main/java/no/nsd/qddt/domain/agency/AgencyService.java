@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.interfaces.BaseService;
 
 /**
  * @author Stig Norland

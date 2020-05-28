@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.elementref;
 
-import no.nsd.qddt.domain.BaseServiceAudit;
+import no.nsd.qddt.domain.interfaces.BaseServiceAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;

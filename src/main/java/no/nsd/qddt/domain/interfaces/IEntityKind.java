@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain;
+package no.nsd.qddt.domain.interfaces;
 
 import java.sql.Timestamp;
 import java.util.UUID;

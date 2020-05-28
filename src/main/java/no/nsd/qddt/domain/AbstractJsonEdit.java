@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.AgencyJsonView;
-import no.nsd.qddt.domain.elementref.IEntityRef;
-import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.interfaces.IEntityRef;
+import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;

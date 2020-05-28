@@ -3,8 +3,8 @@ package no.nsd.qddt.domain.questionitem;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.embedded.ResponseDomainRef;
-import no.nsd.qddt.domain.parentref.Leaf;
+import no.nsd.qddt.domain.elementref.ResponseDomainRef;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
@@ -43,7 +43,7 @@ public class QuestionItem extends AbstractEntityAudit  {
 
     @Transient
     @JsonSerialize
-    private List<Leaf<?>> parentRefs = new ArrayList<>( 0 );
+    private List<ParentRef<?>> parentRefs = new ArrayList<>( 0 );
 
 
     public QuestionItem() {
@@ -90,11 +90,11 @@ public class QuestionItem extends AbstractEntityAudit  {
     }
 
 
-    public List<Leaf<?>> getParentRefs() {
+    public List<ParentRef<?>> getParentRefs() {
         return parentRefs;
     }
 
-    public void setParentRefs(List<Leaf<?>> parentRefs) {
+    public void setParentRefs(List<ParentRef<?>> parentRefs) {
         this.parentRefs = parentRefs;
     }
 

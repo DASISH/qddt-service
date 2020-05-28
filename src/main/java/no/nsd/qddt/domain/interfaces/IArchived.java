@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain;
+package no.nsd.qddt.domain.interfaces;
 
 /**
  * @author Stig Norland

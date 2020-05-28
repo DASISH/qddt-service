@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.domain.BaseArchivedRepository;
+import no.nsd.qddt.domain.interfaces.BaseArchivedRepository;
 import no.nsd.qddt.domain.agency.Agency;
 import org.springframework.stereotype.Repository;
 

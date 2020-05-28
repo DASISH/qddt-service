@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instruction.audit;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.BaseServiceAudit;
+import no.nsd.qddt.domain.interfaces.BaseServiceAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

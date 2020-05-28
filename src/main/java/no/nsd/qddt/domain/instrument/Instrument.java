@@ -1,31 +1,16 @@
 package no.nsd.qddt.domain.instrument;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import org.hibernate.envers.Audited;
-
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.parentref.IRefs;
-import no.nsd.qddt.domain.parentref.Leaf;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * You change your meaning by emphasizing different words in your sentence. ex:
@@ -114,9 +99,9 @@ public class Instrument extends AbstractEntityAudit {
     }
 
     @Transient
-    public IRefs getStudyRef() {
+    public ParentRef<Study> getParentRef() {
         try{
-            return  new Leaf<Study>(getStudy());
+            return new ParentRef<>( getStudy() );
         } catch (Exception ex ) {
             return null;
         }

@@ -1,49 +1,26 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.PreRemove;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import org.hibernate.envers.AuditMappedBy;
-import org.hibernate.envers.Audited;
-
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.IArchived;
+import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.parentref.IRefs;
-import no.nsd.qddt.domain.parentref.Leaf;
+import no.nsd.qddt.domain.interfaces.IRefs;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -115,7 +92,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
         private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
     @Transient
-    private Leaf<Study> parentRef;
+    private ParentRef<Study> parentRef;
 
 
     private boolean isArchived;
@@ -222,9 +199,9 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     }
 
     @Override
-    public IRefs getParentRef() {
+    public ParentRef<Study> getParentRef() {
         if (parentRef == null )
-            parentRef = new Leaf<Study>(getStudy());
+            parentRef = new ParentRef<>( getStudy() );
         return parentRef;
     }
 

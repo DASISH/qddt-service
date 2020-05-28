@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.elementref;
 
+import no.nsd.qddt.domain.interfaces.IEntityRef;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;

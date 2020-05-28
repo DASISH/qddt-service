@@ -1,44 +1,25 @@
 package no.nsd.qddt.domain.concept;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.PreRemove;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import org.hibernate.envers.AuditMappedBy;
-import org.hibernate.envers.Audited;
-
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.IArchived;
+import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.parentref.IRefs;
-import no.nsd.qddt.domain.parentref.Leaf;
+import no.nsd.qddt.domain.interfaces.IRefs;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -94,7 +75,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IRefs {
 
     @Transient
     @JsonDeserialize
-    private IRefs parentRef;
+    private ParentRef<TopicGroup> parentRef;
 
     private boolean isArchived;
 
@@ -212,9 +193,9 @@ public class Concept extends AbstractEntityAudit implements IArchived, IRefs {
     }
 
     @Override
-    public IRefs getParentRef() {
+    public ParentRef<TopicGroup> getParentRef() {
         if (parentRef == null )
-            parentRef = new Leaf<TopicGroup>(getParentTopicGroup());
+            parentRef = new ParentRef<>( getParentTopicGroup() );
         return parentRef;
     }
 

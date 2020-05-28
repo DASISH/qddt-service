@@ -1,6 +1,6 @@
-package no.nsd.qddt.domain.elementref;
+package no.nsd.qddt.domain.interfaces;
 
-import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.elementref.ElementKind;
 
 import java.util.UUID;
 

@@ -1,13 +1,12 @@
-package no.nsd.qddt.domain.embedded;
-
-import java.util.Objects;
-
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+package no.nsd.qddt.domain.interfaces;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
+import java.util.Objects;
 
 /**
  * @author Stig Norland

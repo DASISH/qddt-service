@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
-import no.nsd.qddt.domain.elementref.IEntityRef;
+import no.nsd.qddt.domain.interfaces.IEntityRef;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.envers.Audited;
 

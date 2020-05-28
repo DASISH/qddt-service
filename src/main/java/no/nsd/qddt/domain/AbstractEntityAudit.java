@@ -7,8 +7,11 @@ import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.IEntityRef;
-import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.interfaces.IEntityRef;
+import no.nsd.qddt.domain.interfaces.IArchived;
+import no.nsd.qddt.domain.interfaces.IEntityKind;
+import no.nsd.qddt.domain.interfaces.IEntityXml;
+import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -32,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  implements IEntityXml, IEntityRef,  IEntityKind {
+public abstract class AbstractEntityAudit extends AbstractEntity  implements IEntityXml, IEntityRef, IEntityKind {
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -120,7 +123,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private Integer basedOnRevision;
 
     @Embedded
-    private Version version;
+    private no.nsd.qddt.domain.interfaces.Version version;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -187,13 +190,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
         this.basedOnRevision = basedOnRevision;
     }
 
-    public Version getVersion() {
+    public no.nsd.qddt.domain.interfaces.Version getVersion() {
         if (version == null)
             version = new Version(true);
         return version;
     }
 
-    public void setVersion(Version version) {
+    public void setVersion(no.nsd.qddt.domain.interfaces.Version version) {
         this.version = version;
     }
 
@@ -261,7 +264,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
             setChangeKind( ChangeKind.CREATED);
             setChangeComment( ChangeKind.CREATED.description);
         }
-        version = new Version(true);
+        version = new no.nsd.qddt.domain.interfaces.Version(true);
         beforeInsert();
     }
 
@@ -269,7 +272,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     private void onUpdate(){
         try {
             LOG.info("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
-            Version ver = version;
+            no.nsd.qddt.domain.interfaces.Version ver = version;
             ChangeKind change = changeKind;
             User user = SecurityContext.getUserDetails().getUser();
             setModifiedBy( user );
@@ -289,7 +292,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
                 case BASED_ON:
                 case NEW_COPY:
                 case TRANSLATED:
-                    ver = new Version();
+                    ver = new no.nsd.qddt.domain.interfaces.Version();
                     break;
                 case REFERENCED:
                     break;

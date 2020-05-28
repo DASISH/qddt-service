@@ -1,14 +1,18 @@
 package no.nsd.qddt.domain.questionitem;
 
-import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
-import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
-import static no.nsd.qddt.utils.StringTool.likeify;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.ConceptService;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
+import no.nsd.qddt.domain.responsedomain.ResponseKind;
+import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.topicgroup.TopicGroupService;
+import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +23,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.ConceptService;
-import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.parentref.Leaf;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
-import no.nsd.qddt.domain.responsedomain.ResponseKind;
-import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.StackTraceFilter;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -169,12 +168,12 @@ class QuestionItemServiceImpl implements QuestionItemService {
             } else {
                 LOG.info( "no RD in this QI" );
             }
-            List<Leaf<?>> list = conceptService.findByQuestionItem(instance.getId(),null).stream()
-                .map( Leaf<Concept>::new )
+            List<ParentRef<?>> list = conceptService.findByQuestionItem(instance.getId(),null).stream()
+                .map( ParentRef<Concept>::new )
                 .collect( Collectors.toList());
 
             list.addAll(topicGroupService.findByQuestionItem(instance.getId(),null).stream()
-                .map( Leaf<TopicGroup>::new )
+                .map(   ParentRef<TopicGroup>::new )
                 .collect( Collectors.toList()));
 
             instance.setParentRefs( list);
