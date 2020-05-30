@@ -104,7 +104,7 @@ super.setBaseRepositories(conceptRepository);
         Concept concept = new Concept();
         concept.setName("FIRST");
         concept = conceptService.save(concept);
-        ElementRef ref = new ElementRef();
+        ElementRef<QuestionItem> ref = new <QuestionItem>ElementRef();
         ref.setElement( questionItem);
         concept.addQuestionItem(ref);
 

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.elementref.IEntityRef;
+import no.nsd.qddt.domain.interfaces.IEntityRef;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.controlconstruct.pojo.SequenceKind;
 import no.nsd.qddt.domain.elementref.ElementRef;

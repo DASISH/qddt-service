@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.publicationstatus;
 
-import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.interfaces.BaseService;
 
 import java.util.List;
 

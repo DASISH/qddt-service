@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.universe;
 
-import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.interfaces.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -13,6 +13,8 @@ import java.util.UUID;
 @Repository
 interface UniverseRepository extends BaseRepository<Universe, UUID> {
 
-    Page<Universe> findByDescriptionIgnoreCaseLike(String description, Pageable pageable);
+    Page<Universe> findByDescriptionIgnoreCaseLikeAndXmlLangLike(String description, String xmlLang,  Pageable pageable);
+
+
 }
 

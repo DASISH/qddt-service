@@ -1,6 +1,6 @@
-package no.nsd.qddt.domain.elementref;
+package no.nsd.qddt.domain.interfaces;
 
-import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.elementref.ElementKind;
 
 import java.util.UUID;
 
@@ -9,19 +9,14 @@ import java.util.UUID;
  */
 public interface IElementRef<T extends IEntityRef> extends Cloneable {
 
-
     ElementKind getElementKind();
-
+    String getName();
+    Version getVersion();
     UUID getElementId();
 
     Integer getElementRevision();
     void setElementRevision(Integer revisionNumber);
 
-    String getName();
-
-    Version getVersion();
-
     T getElement();
-
-     void setElement(T element);
+    void setElement(T element);
 }

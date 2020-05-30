@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.IArchived;
+import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.parentref.IParentRef;
-import no.nsd.qddt.domain.parentref.IRefs;
-import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.interfaces.IRefs;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements IArchived, IParentRef {
+public class Concept extends AbstractEntityAudit implements IArchived, IRefs {
 
     @ManyToOne()
     @JsonBackReference(value = "parentRef")
@@ -76,7 +75,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IParentRe
 
     @Transient
     @JsonDeserialize
-    private IRefs parentRef;
+    private ParentRef<TopicGroup> parentRef;
 
     private boolean isArchived;
 
@@ -194,9 +193,9 @@ public class Concept extends AbstractEntityAudit implements IArchived, IParentRe
     }
 
     @Override
-    public IRefs getParentRef() {
+    public ParentRef<TopicGroup> getParentRef() {
         if (parentRef == null )
-            parentRef = new TopicRef(getParentTopicGroup());
+            parentRef = new ParentRef<>( getParentTopicGroup() );
         return parentRef;
     }
 
@@ -279,11 +278,9 @@ public class Concept extends AbstractEntityAudit implements IArchived, IParentRe
             if (getComments().size() > 0) {
                 pdfReport.addheader2("Comments");
                 pdfReport.addComments(getComments());
-                // pdfReport.addPadding();
             }
 
             if (getConceptQuestionItems().size() > 0) {
-                // pdfReport.addPadding();
                 pdfReport.addheader2("QuestionItem(s)");
                 getConceptQuestionItems().stream()
                     .map( cqi ->  {
@@ -325,7 +322,6 @@ public class Concept extends AbstractEntityAudit implements IArchived, IParentRe
         if (this.getParent() != null) {
             this.getParent().getChildren().removeIf(p->p.getId() == this.getId());
             AtomicInteger i= new AtomicInteger();
-//            this.getParentRef().getChildren().forEach( c -> c.concept_idx = i.getAndIncrement() );
         }
     }
 

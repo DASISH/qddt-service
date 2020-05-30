@@ -116,12 +116,9 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
 // TODO fix replicated framework func
         instance.beforeUpdate();
-        instance.getManagedRepresentation().setChangeComment(instance.getChangeComment());
-        instance.getManagedRepresentation().setChangeKind( instance.getChangeKind() );
         instance.setManagedRepresentation(
             categoryService.save(
                 instance.getManagedRepresentation()));
-//        } else
 
         return instance;
     }

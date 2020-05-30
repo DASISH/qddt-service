@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
-import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.interfaces.IElementRef;
+import no.nsd.qddt.domain.interfaces.IEntityRef;
+import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -130,7 +132,7 @@ public abstract class AbstractElementRef<T extends IEntityRef> implements IEleme
         if (this == o) return true;
         if (!(o instanceof AbstractElementRef)) return false;
 
-        AbstractElementRef that = (AbstractElementRef) o;
+        AbstractElementRef<T> that = (AbstractElementRef) o;
 
         if (elementKind != that.elementKind) return false;
         if (!Objects.equals( elementId, that.elementId )) return false;

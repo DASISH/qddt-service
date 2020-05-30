@@ -1,4 +1,6 @@
-package no.nsd.qddt.domain;
+package no.nsd.qddt.domain.interfaces;
+
+import no.nsd.qddt.domain.AbstractEntityAudit;
 
 import java.util.UUID;
 

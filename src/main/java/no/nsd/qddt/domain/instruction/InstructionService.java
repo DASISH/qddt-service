@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instruction;
 
-import no.nsd.qddt.domain.BaseService;
+import no.nsd.qddt.domain.interfaces.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -8,8 +8,9 @@ import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
+ * @author Stig Norland
  */
 public interface InstructionService extends BaseService<Instruction, UUID> {
 
-    Page<Instruction> findByDescriptionLike(String description, Pageable pageable);
+    Page<Instruction> findByDescriptionLike(String description, String xmlLang, Pageable pageable);
 }

@@ -1,15 +1,15 @@
 package no.nsd.qddt.domain.questionitem;
 
+import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.parentref.BaseRef;
-import no.nsd.qddt.domain.parentref.ConceptRef;
-import no.nsd.qddt.domain.parentref.TopicRef;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -168,12 +168,12 @@ class QuestionItemServiceImpl implements QuestionItemService {
             } else {
                 LOG.info( "no RD in this QI" );
             }
-            List<BaseRef<?>> list = conceptService.findByQuestionItem(instance.getId(),null).stream()
-                .map( ConceptRef::new )
+            List<ParentRef<?>> list = conceptService.findByQuestionItem(instance.getId(),null).stream()
+                .map( ParentRef<Concept>::new )
                 .collect( Collectors.toList());
 
             list.addAll(topicGroupService.findByQuestionItem(instance.getId(),null).stream()
-                .map( TopicRef::new )
+                .map(   ParentRef<TopicGroup>::new )
                 .collect( Collectors.toList()));
 
             instance.setParentRefs( list);

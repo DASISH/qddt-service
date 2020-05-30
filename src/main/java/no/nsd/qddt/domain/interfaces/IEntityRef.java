@@ -1,6 +1,4 @@
-package no.nsd.qddt.domain.elementref;
-
-import no.nsd.qddt.domain.embedded.Version;
+package no.nsd.qddt.domain.interfaces;
 
 import java.util.UUID;
 
@@ -8,9 +6,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 public interface IEntityRef {
-
     UUID getId();
-    String getName();
     Version getVersion();
-
+    String getName();
 }

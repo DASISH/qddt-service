@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.publicationstatus;
 
-import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.interfaces.BaseRepository;
 import no.nsd.qddt.domain.agency.Agency;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;

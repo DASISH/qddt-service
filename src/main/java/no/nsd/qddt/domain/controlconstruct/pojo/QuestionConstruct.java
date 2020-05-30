@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.embedded.QuestionItemRef;
+import no.nsd.qddt.domain.elementref.QuestionItemRef;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.universe.Universe;

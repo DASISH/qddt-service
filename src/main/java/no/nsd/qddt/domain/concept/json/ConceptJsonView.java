@@ -4,9 +4,10 @@ import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.embedded.Version;
-import no.nsd.qddt.domain.parentref.IRefs;
+import no.nsd.qddt.domain.interfaces.Version;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
@@ -47,9 +48,9 @@ public class ConceptJsonView {
 
     private Set<ConceptJsonView> children = new HashSet<>();
 
-    private IRefs parentRef;
+	  private String classKind;
 
-	private String classKind;
+    private ParentRef<TopicGroup> parentRef;
 
 
     public ConceptJsonView(Concept concept) {
@@ -140,11 +141,11 @@ public class ConceptJsonView {
         this.children = children;
     }
 
-    public IRefs getParentRef() {
+    public ParentRef<TopicGroup> getParentRef() {
         return parentRef;
     }
 
-    public void setParentRef(IRefs parentRef) {
+    public void setParentRef(ParentRef<TopicGroup> parentRef) {
         this.parentRef = parentRef;
     }
 

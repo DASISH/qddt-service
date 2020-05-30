@@ -2,8 +2,8 @@ package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.parentref.StudyRef;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * You change your meaning by emphasizing different words in your sentence. ex: "I never said she stole my money" has 7 meanings.
+ * You change your meaning by emphasizing different words in your sentence. ex:
+ * "I never said she stole my money" has 7 meanings.
  *
  * @author Stig Norland
  * @author Dag Østgulen Heradstveit
@@ -22,18 +23,17 @@ import java.util.List;
 @Audited
 @Entity
 @Table(name = "INSTRUMENT")
-public class Instrument extends AbstractEntityAudit  {
-
+public class Instrument extends AbstractEntityAudit {
 
     @JsonBackReference(value = "studyRef")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="study_id",updatable = false)
+    @JoinColumn(name = "study_id", updatable = false)
     private Study study;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @OrderColumn(name="_idx")
+    @OrderColumn(name = "_idx")
     @JoinColumn(name = "instrument_id")
-    private List<InstrumentElement>  sequence = new ArrayList<>();
+    private List<InstrumentElement> sequence = new ArrayList<>();
 
     private String description;
 
@@ -41,14 +41,12 @@ public class Instrument extends AbstractEntityAudit  {
 
     private String externalInstrumentLocation;
 
-    @Column(name="instrument_kind")
+    @Column(name = "instrument_kind")
     @Enumerated(EnumType.STRING)
     private InstrumentKind instrumentKind;
 
-
     public Instrument() {
     }
-
 
     public String getDescription() {
         return description;
@@ -101,9 +99,9 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
     @Transient
-    public StudyRef getStudyRef() {
+    public ParentRef<Study> getParentRef() {
         try{
-            return  new StudyRef(getStudy());
+            return new ParentRef<>( getStudy() );
         } catch (Exception ex ) {
             return null;
         }
@@ -169,14 +167,10 @@ public class Instrument extends AbstractEntityAudit  {
     }
 
     @Override
-    protected void beforeUpdate() {
-
-    }
+    protected void beforeUpdate() {}
 
     @Override
-    protected void beforeInsert() {
-
-    }
+    protected void beforeInsert() {}
 
 
 }

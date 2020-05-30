@@ -1,8 +1,7 @@
 package no.nsd.qddt.domain.questionitem;
 
-import no.nsd.qddt.domain.IEntityXml;
+import no.nsd.qddt.domain.interfaces.IEntityXml;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.parentref.BaseRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 

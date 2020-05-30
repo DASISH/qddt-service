@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.AgencyJsonView;
-import no.nsd.qddt.domain.elementref.IEntityRef;
-import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.interfaces.IEntityRef;
+import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
@@ -21,8 +21,7 @@ import java.util.UUID;
  */
 public  abstract class AbstractJsonEdit implements Serializable, IEntityRef {
 
-
-	protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Type(type="pg-uuid")
     private UUID id;

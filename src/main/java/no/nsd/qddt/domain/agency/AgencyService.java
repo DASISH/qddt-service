@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.agency;
 
-import no.nsd.qddt.domain.BaseService;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.UUID;
+import no.nsd.qddt.domain.interfaces.BaseService;
 
 /**
  * @author Stig Norland

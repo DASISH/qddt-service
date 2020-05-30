@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct;
 
-import no.nsd.qddt.domain.BaseRepository;
+import no.nsd.qddt.domain.interfaces.BaseRepository;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import org.springframework.data.domain.Page;
@@ -59,14 +59,5 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
         value = "DELETE FROM control_construct_universe ccu WHERE ccu.question_construct_id = :controlConstructId")
     void removeUniverse(@Param("controlConstructId")UUID controlConstructId);
 
-//    @Query(name= "findBySearcAndControlConstructKind", nativeQuery = true,
-//        value = "SELECT cc.* FROM CONTROL_CONSTRUCT cc WHERE cc.control_construct_kind = :kind AND " +
-//            "(cc.control_construct_super_kind = :super or cc.name ILIKE :name or cc.description ILIKE :description ) "
-//            + "ORDER BY ?#{#pageable}"
-//        ,countQuery = "SELECT count(cc.*)  FROM CONTROL_CONSTRUCT cc " +
-//            "WHERE cc.control_construct_kind = :kind AND " +
-//            "(cc.control_construct_super_kind = :super or cc.name ILIKE :name or cc.description ILIKE :description ) ")
-//    <S extends ControlConstruct> Page<S> findBySearcAndControlConstructKind(@Param("kind")String kind,@Param("super")String superKind,
-//                                                     @Param("name")String name,@Param("description")String desc,
-//                                                     Pageable pageable);
+
 }

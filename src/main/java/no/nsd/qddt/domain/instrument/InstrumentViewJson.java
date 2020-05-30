@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.embedded.Version;
+import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 

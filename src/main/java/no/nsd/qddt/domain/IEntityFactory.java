@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
+import no.nsd.qddt.domain.interfaces.IArchived;
 
 /**
  * @author Stig Norland

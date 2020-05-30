@@ -60,11 +60,11 @@ public class UniverseController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<UniverseJsonEdit>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
-                                                              Pageable pageable, PagedResourcesAssembler assembler) {
+                                                        @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
+                                                        Pageable pageable, PagedResourcesAssembler assembler) {
 
-//        Page<UniverseJsonView> universes = service.findByDescriptionLike(description, pageable).map( u -> new UniverseJsonView( u ) );
-        Page<UniverseJsonEdit> universes = service.findByDescriptionLike(description, pageable)
-            .map( u -> new UniverseJsonEdit(u) );
+        Page<UniverseJsonEdit> universes = service.findByDescriptionLike(description, xmlLang, pageable)
+            .map( UniverseJsonEdit::new );
         return new ResponseEntity<>(assembler.toResource(universes), HttpStatus.OK);
     }
 

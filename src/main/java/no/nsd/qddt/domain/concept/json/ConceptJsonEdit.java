@@ -4,8 +4,9 @@ import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.parentref.IRefs;
+import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 
@@ -34,7 +35,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     private boolean isArchived;
 
-    private IRefs parentRef;
+    private ParentRef<TopicGroup> parentRef;
 
     public ConceptJsonEdit() {
     }
@@ -116,11 +117,11 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         this.comments = comments;
     }
 
-    public IRefs getParentRef() {
+    public ParentRef<TopicGroup> getParentRef() {
         return parentRef;
     }
 
-    public void setParentRef(IRefs parentRef) {
+    public void setParentRef(ParentRef<TopicGroup> parentRef) {
         this.parentRef = parentRef;
     }
 

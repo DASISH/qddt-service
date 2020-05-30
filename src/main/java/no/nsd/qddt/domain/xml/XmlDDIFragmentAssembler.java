@@ -1,13 +1,14 @@
 package no.nsd.qddt.domain.xml;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.ElementKind;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
 /**
  * @author Stig Norland
@@ -42,7 +43,7 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
 
 
     protected String getTopLevelReference(String typeOfObject){
-        return "\t<ddi:TopLevelReference isExternal=\"false\" externalReferenceDefaultURI=\"false\" isReference=\"true\" lateBound=\"false\" objectLanguage=\"eng-GB\">\n" +
+        return "\t<ddi:TopLevelReference isExternal=\"false\" externalReferenceDefaultURI=\"false\" isReference=\"true\" lateBound=\"false\" objectLanguage=\"en-GB\">\n" +
             "\t\t" + builder.getXmlURN(rootElement) +
             "\t\t<r:TypeOfObject>" + typeOfObject + "</r:TypeOfObject>\n" +
             "\t</ddi:TopLevelReference>\n";
@@ -54,7 +55,8 @@ public class XmlDDIFragmentAssembler<T extends AbstractEntityAudit> {
 
 
     public String compileToXml() {
-        String typeofObject =  rootElement.getClass().getSimpleName().equals( "TopicGroup" ) ? "ConceptGroup" : rootElement.getClass().getSimpleName();
+        // rootElement.getClass().getSimpleName().equals( "TopicGroup" )
+        String typeofObject =  (rootElement instanceof TopicGroup)  ? "ConceptGroup" : rootElement.getClass().getSimpleName();
         StringBuilder sb = new StringBuilder( );
         return sb.append( XMLDEF )
             .append( xmlFragHeader )

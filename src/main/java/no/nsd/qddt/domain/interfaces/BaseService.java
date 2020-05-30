@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain;
+package no.nsd.qddt.domain.interfaces;
 
 import org.springframework.dao.DataAccessException;
 

@@ -60,9 +60,10 @@ public class InstructionController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public HttpEntity<PagedResources<InstructionJsonEdit>> getBy(@RequestParam(value = "description",defaultValue = "%") String description,
-                                                      Pageable pageable, PagedResourcesAssembler assembler) {
+                                                          @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
+                                                          Pageable pageable, PagedResourcesAssembler assembler) {
 
-        Page<InstructionJsonEdit> instructions = service.findByDescriptionLike(description, pageable)
+        Page<InstructionJsonEdit> instructions = service.findByDescriptionLike(description, xmlLang, pageable)
             .map( i -> new InstructionJsonEdit(i)  );
         return new ResponseEntity<>(assembler.toResource(instructions), HttpStatus.OK);
     }

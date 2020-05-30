@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.embedded;
+package no.nsd.qddt.domain;
 
 import org.hibernate.validator.constraints.NotBlank;
 

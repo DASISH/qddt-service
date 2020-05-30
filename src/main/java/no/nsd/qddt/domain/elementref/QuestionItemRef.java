@@ -1,9 +1,9 @@
-package no.nsd.qddt.domain.embedded;
+package no.nsd.qddt.domain.elementref;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.IElementRef;
-import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import no.nsd.qddt.domain.interfaces.IElementRef;
+import no.nsd.qddt.domain.interfaces.Version;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
 import org.springframework.data.history.Revision;
 
@@ -16,53 +16,87 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @Embeddable
-public class ResponseDomainRef implements IElementRef<ResponseDomain> {
+public class QuestionItemRef implements IElementRef<QuestionItem> {
 
+    /**
+     * This field will be populated with the correct version of a QI,
+     * but should never be persisted.
+     */
     @Transient
     @JsonSerialize
-    private ResponseDomain element;
-    //    @JsonIgnore
+    private QuestionItem element;
+
     @Type(type="pg-uuid")
-    @Column(name="responsedomain_id")
+    @Column(name="questionitem_id")
     private UUID elementId;
 
-    @Column(name = "responsedomain_revision")
+    @Column(name = "questionitem_revision")
     private Integer elementRevision;
 
-    @Column(name = "responsedomain_name")
+    @Column(name = "question_name", length = 25)
     private String name;
 
-    public ResponseDomainRef() {
+    @Column(name = "question_text", length = 500 )
+    private String text;
+
+    public QuestionItemRef() {
     }
 
-    public ResponseDomainRef(ResponseDomain responseDomain ) {
-        setElement( responseDomain );
+    public QuestionItemRef(QuestionItem questionItem ) {
+        setElement( questionItem );
     }
-
-    public ResponseDomainRef(Revision<Integer,ResponseDomain>revision ) {
+    public QuestionItemRef(Revision<Integer,QuestionItem> revision ) {
         setElementRevision( revision.getRevisionNumber() );
         setElement( revision.getEntity() );
     }
-
     @Override
     @Transient
     public ElementKind getElementKind() {
-        return ElementKind.RESPONSEDOMAIN;
+        return ElementKind.QUESTION_ITEM;
     }
 
     @Override
     public UUID getElementId() {
-        return elementId;
+        return this.elementId;
     }
 
+    private void setElementId(UUID id) {
+        this.elementId = id;
+    }
     @Override
     public Integer getElementRevision() {
-        return elementRevision;
+        return this.elementRevision;
     }
 
     @Override
+    public void setElementRevision(Integer revisionNumber) {
+        this.elementRevision = revisionNumber;
+    }
+    @Override
     public String getName() {
-        return name;
+        return this.name;
+    }
+
+    public void setName(String name) {
+        if (name != null) {
+            int min = Integer.min( name.length(), 24 );
+            this.name = name.substring( 0, min );
+        } else {
+            this.name = null;
+        }
+    }
+
+    public void setText(String text) {
+        if (text != null) {
+            int min = Integer.min( text.length(), 500 );
+            this.text = text.substring( 0, min );
+        } else {
+            this.text = null;
+        }
+    }
+
+    public String getText() {
+        return (this.element != null) ? this.element.getQuestion() : this.text;
     }
 
     @Override
@@ -72,35 +106,25 @@ public class ResponseDomainRef implements IElementRef<ResponseDomain> {
     }
 
     @Override
-    public ResponseDomain getElement() {
+    public QuestionItem getElement() {
         return element;
     }
 
-    public void setElement(ResponseDomain element) {
-        this.element = element;
+    @Override
+    public void setElement(QuestionItem element) {
+        this.element =  element;
 
         if (element != null) {
-            setElementId( this.getElement().getId() );
-            setName( this.element.getName() );
+            setElementId( element.getId() );
+            setName( element.getName() );
+            setText( element.getQuestion() );
             this.getVersion().setRevision(this.elementRevision);
         } else {
             setName(null);
+            setText( null );
             setElementRevision( null );
             setElementId( null );
         }
-    }
-
-
-    public void setElementId(UUID elementId) {
-        this.elementId = elementId;
-    }
-
-    public void setElementRevision(Integer elementRevision) {
-        this.elementRevision = elementRevision;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -108,13 +132,14 @@ public class ResponseDomainRef implements IElementRef<ResponseDomain> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ResponseDomainRef that = (ResponseDomainRef) o;
+        QuestionItemRef that = (QuestionItemRef) o;
 
         if (element != null ? !element.equals( that.element ) : that.element != null) return false;
         if (elementId != null ? !elementId.equals( that.elementId ) : that.elementId != null) return false;
         if (elementRevision != null ? !elementRevision.equals( that.elementRevision ) : that.elementRevision != null)
             return false;
-        return name != null ? name.equals( that.name ) : that.name == null;
+        if (name != null ? !name.equals( that.name ) : that.name != null) return false;
+        return text != null ? text.equals( that.text ) : that.text == null;
     }
 
     @Override
@@ -123,6 +148,7 @@ public class ResponseDomainRef implements IElementRef<ResponseDomain> {
         result = 31 * result + (elementId != null ? elementId.hashCode() : 0);
         result = 31 * result + (elementRevision != null ? elementRevision.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
     }
 

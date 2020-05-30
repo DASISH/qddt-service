@@ -7,7 +7,11 @@ import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
  */
 public class ConstructStatementJson extends ConstructJson {
 
-    private  String statement;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1580182686378733470L;
+    private String statement;
 
     public ConstructStatementJson(StatementItem construct){
         super(construct);

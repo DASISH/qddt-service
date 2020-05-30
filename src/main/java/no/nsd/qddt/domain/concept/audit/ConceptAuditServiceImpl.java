@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final ConceptAuditRepository conceptAuditRepository;
     private final CommentService commentService;
-    private final ElementLoader qiLoader;
+    private final ElementLoader<QuestionItem> qiLoader;
 
     private boolean showPrivateComments;
 
@@ -42,7 +43,7 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     ){
         this.conceptAuditRepository = conceptAuditRepository;
         this.commentService = commentService;
-        this.qiLoader = new ElementLoader( questionAuditService );
+        this.qiLoader = new ElementLoader<>( questionAuditService );
     }
 
     @Override

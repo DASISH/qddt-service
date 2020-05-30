@@ -118,8 +118,12 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
         "\t\t</l:CodeList>\n";
 
 
-    protected final String xmlHeader = "\t\t<%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isMaintainable=\"true\">\n" +
-        "%3$s";
+    protected final String xmlHeaderMR = "\t\t<%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isMaintainable=\"true\" %3$s>\n" +
+        "%4$s";
+
+    private final String xmlNumeric = " format=\"%1$s\" scale=1 interval=%2$s classificationLevel=\"Continuous\" ";
+    private final String xmlText = " maxLength=%1$s minLength=%2$s classificationLevel=\"Nominal\" ";
+
 
     private final List<AbstractXmlBuilder> children;
     private final String degreeSlopeFromHorizontal;
@@ -135,10 +139,18 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
 
     @Override
     protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
+        Category ref = (Category)instance;
+        String attr =
+        (entity.getCategoryType() == CategoryType.NUMERIC) ?
+            String.format(xmlNumeric, ref.getFormat(), ref.getInputLimit().getStepUnit()) : 
+            (entity.getCategoryType() == CategoryType.TEXT) ?
+                String.format(xmlText, ref.getInputLimit().getMaximum(), ref.getInputLimit().getMinimum())
+                : "";
+
         if (entity.getCategoryType().equals( CategoryType.LIST )) {
-            return String.format(xmlHeader,  "l:" + entity.getCategoryType().getName() ,  getInstanceDate(instance), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
-        }
-        return String.format(xmlHeader, "Managed" +  entity.getCategoryType().getName() + "Representation" ,  getInstanceDate(instance), "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+            return String.format(xmlHeaderMR,  "l:" + entity.getCategoryType().getName() ,  getInstanceDate(instance), "", "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+        } else
+            return String.format(xmlHeaderMR, "d:Managed" +  entity.getCategoryType().getName() + "Representation" ,  getInstanceDate(instance), attr, "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
     }
 
     @Override
@@ -189,17 +201,6 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
             entity.getLabel(),
             this.getXmlScaleMan());
     }
-
-
-//    @Override
-//    public String getXmlEntityRef(int depth) {
-//
-//////        String ref =  String.format( xmlRef,  entity.getCategoryType().getName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth+1, "\t")) );;
-////        if (entity.getCategoryType().equals( CategoryType.LIST )) {
-////            return String.format( xmlCodeDomain, super.getXmlEntityRef( depth +1) ,String.join("", Collections.nCopies(depth, "\t")));
-////        }
-//        return super.getXmlEntityRef( depth );
-//    }
 
 
     private AbstractXmlBuilder getBuilder(Category category) {

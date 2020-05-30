@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 

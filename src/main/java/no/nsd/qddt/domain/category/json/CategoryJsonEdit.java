@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryRelationCodeType;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.embedded.ResponseCardinality;
+import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.Code;
 
 import javax.persistence.Embedded;
