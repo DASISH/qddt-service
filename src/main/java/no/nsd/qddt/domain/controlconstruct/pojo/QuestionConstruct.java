@@ -12,9 +12,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,9 +29,7 @@ public class QuestionConstruct  extends ControlConstruct {
     @Embedded
     private QuestionItemRef questionItemRef;
 
-    @Transient
-    @JsonSerialize
-    private Set<String> parameter = new HashSet<>(0);
+
 
     //------------- Begin QuestionItem revision early bind "hack" ---------------
     //------------- End QuestionItem revision early bind "hack"------------------
@@ -84,13 +80,6 @@ public class QuestionConstruct  extends ControlConstruct {
         this.questionItemRef = questionItemRef;
     }
 
-    public Set<String> getParameter() {
-        return parameter;
-    }
-
-    public void setParameter(Set<String> parameter) {
-        this.parameter = parameter;
-    }
 
     public List<Universe> getUniverse() {
         return universe;

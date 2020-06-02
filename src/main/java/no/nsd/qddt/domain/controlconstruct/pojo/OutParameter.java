@@ -1,35 +1,28 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.controlconstruct.pojo;
 
-import no.nsd.qddt.domain.controlconstruct.pojo.IParameter;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.Embeddable;
 import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
-@Audited
-@Embeddable
-public class InstrumentParameter implements Cloneable, IParameter {
-
+public class OutParameter implements IParameter {
     private String name;
-
     private UUID referencedId;
 
-    public InstrumentParameter() {}
-
-    public InstrumentParameter(String name, UUID id) {
-        setName(name);
-        setReferencedId(id);
+    public OutParameter() {
     }
-    
+
+    public OutParameter(String name, UUID referencedId) {
+        this.name = name;
+        this.referencedId = referencedId;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name.trim();
+        this.name = name;
     }
 
     public UUID getReferencedId() {
@@ -43,9 +36,9 @@ public class InstrumentParameter implements Cloneable, IParameter {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InstrumentParameter)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        InstrumentParameter that = (InstrumentParameter) o;
+        OutParameter that = (OutParameter) o;
 
         if (name != null ? !name.equals( that.name ) : that.name != null) return false;
         return referencedId != null ? referencedId.equals( that.referencedId ) : that.referencedId == null;
@@ -60,13 +53,11 @@ public class InstrumentParameter implements Cloneable, IParameter {
 
     @Override
     public String toString() {
-        return "{\"ElementParameter\":{"
-            + "\"name\":\"" + name + "\""
-            + "}}";
+        return "\"OutParameter\": { " +
+            "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+            "\"referencedId\":" + (referencedId == null ? "null" : referencedId) +
+            "}";
     }
 
-    public InstrumentParameter clone() {
-        return new InstrumentParameter( name, referencedId );
-    }
 
 }

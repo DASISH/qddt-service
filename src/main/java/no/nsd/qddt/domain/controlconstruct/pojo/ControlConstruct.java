@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -10,7 +11,9 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Instrument is the significant relation.
@@ -38,6 +41,13 @@ public class ControlConstruct extends AbstractEntityAudit {
     @CollectionTable(name = "CONTROL_CONSTRUCT_OTHER_MATERIAL", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
     private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
+    @Transient
+    @JsonSerialize
+    private Set<String> inParameter = new HashSet<>(0);
+
+    @Transient
+    @JsonSerialize
+    private Set<OutParameter> outParameter = new HashSet<>(0);
 
     public ControlConstruct() {
         super();
@@ -63,6 +73,24 @@ public class ControlConstruct extends AbstractEntityAudit {
     public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
     }
+
+
+    public Set<String> getInParameter() {
+        return inParameter;
+    }
+
+    public void setInParameter(Set<String> inParameter) {
+        this.inParameter = inParameter;
+    }
+
+    public Set<OutParameter> getOutParameter() {
+        return outParameter;
+    }
+
+    public void setOutParameter(Set<OutParameter> outParameter) {
+        this.outParameter = outParameter;
+    }
+
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {  }

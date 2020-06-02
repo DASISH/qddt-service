@@ -11,6 +11,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * You change your meaning by emphasizing different words in your sentence. ex:
@@ -108,11 +109,11 @@ public class Instrument extends AbstractEntityAudit {
     }
 
 //    TODO implement outparams....
-//    @Transient
-//    public List<InstrumentParameter> getOutParameter() {
-//        this.sequence.stream().collect( TreeMap::new, TreeMap::putAll,
-//            (map1, map2) -> { map1.putAll(map2); return map1; });
-//    }
+    @Transient
+    public List<InstrumentParameter> getOutParameter() {
+        this.sequence.stream().map( seq -> seq.getParameters() ) .collect( TreeMap::new, TreeMap::putAll,
+            (map1, map2) -> { map1.putAll(map2); return map1; });
+    }
 
 
     @Override

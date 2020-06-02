@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.annotations.GenericGenerator;
@@ -51,8 +52,8 @@ public class InstrumentElement  implements Cloneable {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
-        joinColumns = @JoinColumn(name="instrument_element_id", referencedColumnName = "id"))
-    private Set<InstrumentParameter> parameters = new HashSet<>();
+        joinColumns = @JoinColumn(name = "instrument_element_id", referencedColumnName = "id"))
+    public Set<InstrumentParameter> parameters = new HashSet<>();
 
 
     @Embedded
@@ -91,10 +92,21 @@ public class InstrumentElement  implements Cloneable {
 
     public void setElementRef(ElementRef elementRef) {
         System.out.println("setElementRef " + elementRef);
+        if (elementRef.getElement() instanceof ControlConstruct) {
+            parameters.addAll(
+            ((ControlConstruct) elementRef.getElement()).getOutParameter().stream()
+                .map( o -> new InstrumentParameter(o.getName(), o.getReferencedId() ))
+                .collect( Collectors.toSet()) );
+            parameters.addAll(
+                ((ControlConstruct) elementRef.getElement()).getInParameter().stream()
+                    .map( p -> new InstrumentParameter(p,null) )
+                    .collect( Collectors.toSet()) );
+        }
         if (elementRef.getElement() instanceof QuestionConstruct) {
             QuestionConstruct qc = (QuestionConstruct) elementRef.getElement();
             elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionItemRef().getText()));
         }
+
         this.elementRef = elementRef;
     }
 
@@ -107,8 +119,12 @@ public class InstrumentElement  implements Cloneable {
     public InstrumentElement clone(){
         InstrumentElement clone = new InstrumentElement();
         clone.setElementRef( this.elementRef.clone() );
-        clone.setParameters( this.getParameters().stream().map( InstrumentParameter::clone ).collect( Collectors.toSet() ) );
-        clone.setSequence( this.sequence.stream().map( InstrumentElement::clone ).collect( Collectors.toList() ) );
+        clone.setParameters( this.getParameters().stream()
+            .map(p ->  new InstrumentParameter(p.getName(), p.getReferencedId()) )
+            .collect( Collectors.toSet() ) );
+        clone.setSequence( this.sequence.stream()
+            .map( InstrumentElement::clone )
+            .collect( Collectors.toList() ) );
         return clone;
     }
 }

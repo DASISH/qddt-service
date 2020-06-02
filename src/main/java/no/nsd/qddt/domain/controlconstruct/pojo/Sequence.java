@@ -1,12 +1,13 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
-import no.nsd.qddt.domain.interfaces.IEntityRef;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -23,7 +24,7 @@ public class Sequence extends ControlConstruct {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_SEQUENCE",
         joinColumns = @JoinColumn(name="sequence_id", referencedColumnName = "id"))
-    private List<ElementRef<IEntityRef>> sequence = new ArrayList<>();
+    private List<ElementRef<ControlConstruct>> sequence = new ArrayList<>();
 
 
     @Enumerated(EnumType.STRING)
@@ -49,11 +50,11 @@ public class Sequence extends ControlConstruct {
         this.description = description;
     }
 
-    public List<ElementRef<IEntityRef>> getSequence() {
+    public List<ElementRef<ControlConstruct>> getSequence() {
         return sequence;
     }
 
-    public void setSequence(List<ElementRef<IEntityRef>> sequence) {
+    public void setSequence(List<ElementRef<ControlConstruct>> sequence) {
         this.sequence = sequence;
     }
 
@@ -64,4 +65,21 @@ public class Sequence extends ControlConstruct {
     public void setSequenceKind(SequenceKind sequenceKind) {
         this.sequenceKind = sequenceKind;
     }
+
+    @Override
+    public Set<String> getInParameter() {
+        return getSequence().stream()
+            .filter( p -> p.getElement() != null )
+            .flatMap( s -> s.getElement().getInParameter().stream() )
+            .collect( Collectors.toSet()) ;
+    }
+
+    public Set<OutParameter> getOutParameter() {
+        return getSequence().stream()
+            .filter( p -> p.getElement() != null )
+            .flatMap( s -> s.getElement().getOutParameter().stream() )
+            .collect( Collectors.toSet()) ;
+    }
+
+
 }
