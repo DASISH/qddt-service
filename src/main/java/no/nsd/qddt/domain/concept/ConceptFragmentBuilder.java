@@ -20,7 +20,7 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
         "\t\t\t\t<r:String xml:lang=\"%5$s\">%2$s</r:String>\n" +
         "\t\t\t</c:ConceptName>\n"+
         "\t\t\t<r:Description>\n" +
-        "\t\t\t\t<r:Content xml:lang=\"%5$s\" isPlainText=\"false\">%3$s</r:Content>\n" +
+        "\t\t\t\t<r:Content xml:lang=\"%5$s\" isPlainText=\"false\"><![CDATA[%3$s]]></r:Content>\n" +
         "\t\t\t</r:Description>\n" +
         "%4$s" +
         "\t\t</c:Concept>\n";

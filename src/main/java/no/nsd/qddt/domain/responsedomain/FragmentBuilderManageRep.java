@@ -99,7 +99,7 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
         "\t\t\t\t<r:Content xml:lang=\"%3$s\">%5$s</r:Content>\n" +
         "\t\t\t</r:Description>\n" +
         "%7$s" +
-        "\t\t</d:Managed%1$sRepresentation>\n";
+        "\t\t</r:Managed%1$sRepresentation>\n";
 
 //    d:CodeDomain/r:CodeListReference
 

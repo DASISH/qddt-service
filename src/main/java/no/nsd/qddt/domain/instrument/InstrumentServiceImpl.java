@@ -129,9 +129,9 @@ class InstrumentServiceImpl implements InstrumentService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );
 
-        instance.getSequence().stream().forEach( seq -> {
-            seq.getParameters()
-        } );
+//        instance.getSequence().stream().forEach( seq -> {
+//            seq.getParameters()
+//        } );
         // Nødvendig???
 //        instance.getSequence().stream().forEach( this::loadDetails );
         return instance;

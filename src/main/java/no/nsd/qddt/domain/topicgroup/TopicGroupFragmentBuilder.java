@@ -16,18 +16,18 @@ import java.util.stream.Collectors;
 public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup> {
 
     private final String xmlTopic =
-        "\t\t<d:ConceptGroup isOrdered= \"false\" isAdministrativeOnly=\"true\">\n" +
+        "\t\t<c:ConceptGroup isOrdered= \"false\" isAdministrativeOnly=\"true\">\n" +
         "\t\t\t%1$s" +
         "%2$s" +
         "%3$s" +
-        "\t\t\t<r:ConceptGroupName maxLength=\"250\">\n" +
-        "\t\t\t\t<r:Content xml:lang=\"%6$s\">%4$s</r:Content>\n" +
-        "\t\t\t</r:ConceptGroupName>\n" +
-        "\t\t\t<r:Description maxLength=\"10000\">\n" +
+        "\t\t\t<c:ConceptGroupName>\n" +
+        "\t\t\t\t<r:String xml:lang=\"%6$s\">%4$s</r:String>\n" +
+        "\t\t\t</c:ConceptGroupName>\n" +
+        "\t\t\t<r:Description>\n" +
         "\t\t\t\t<r:Content xml:lang=\"%6$s\" isPlainText=\"false\">%5$s</r:Content>\n" +
         "\t\t\t</r:Description>\n" +
         "%7$s" +
-        "\t\t</d:ConceptGroup>\n";
+        "\t\t</c:ConceptGroup>\n";
 
     private List<ConceptFragmentBuilder> children;
     private List<QuestionItemFragmentBuilder> questions;

@@ -4,8 +4,11 @@ package no.nsd.qddt.domain.xml;
 import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import org.joda.time.DateTime;
+import no.nsd.qddt.domain.interfaces.Version;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -91,11 +94,15 @@ public abstract class AbstractXmlBuilder {
     protected <S extends AbstractEntityAudit> String getXmlBasedOn(S instance) {
         if (instance.getBasedOnObject() == null) return "";
         String uri = "https://qddt.nsd.no/search/" + instance.getBasedOnObject() + "/" + instance.getBasedOnRevision();
-        return String.format( xmlBasedOn, getXmlURN(instance),instance.getClass().getSimpleName(), uri );
+        String urn =  String.format( xmlURN, instance.getAgency().getName(),instance.getBasedOnObject(),new Version(1,0,instance.getBasedOnRevision(),"").toDDIXml());
+        return String.format( xmlBasedOn, urn ,instance.getClass().getSimpleName(), uri );
     }
 
     protected  <S extends AbstractEntityAudit> String getInstanceDate(S instance){
-        return new DateTime(instance.getModified().getTime()).toString("YYYY-MM-DD'T'HH:mm:ss");
+        return instance.getModified().toLocalDateTime()
+            .atZone( ZoneId.systemDefault() )
+            .withZoneSameInstant( ZoneOffset.UTC )
+            .format( DateTimeFormatter.ISO_DATE_TIME );
     }
 
     protected String html5toXML(String html5){
