@@ -13,7 +13,7 @@ import java.util.UUID;
  * @author Stig Norland
  */
 @RestController
-@RequestMapping("/search")
+@RequestMapping("/preview")
 public class QddtUrlController extends AbstractController {
 
     private final SearchService service;

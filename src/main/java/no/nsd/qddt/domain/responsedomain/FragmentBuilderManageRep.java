@@ -118,6 +118,13 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
         "\t\t</l:CodeList>\n";
 
 
+    //        "\t\t\t\t<r:CodeListReference>\n" +
+    private final String xmlMissingValue =
+        "\t\t\t<r:MissingCodeRepresentation>\n" +
+                "%1$s" +
+        "\t\t\t</r:MissingCodeRepresentation>\n";
+
+
     protected final String xmlHeaderMR = "\t\t<%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isMaintainable=\"true\" %3$s>\n" +
         "%4$s";
 
@@ -132,7 +139,7 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
         super( entity );
         this.degreeSlopeFromHorizontal = degreeSlopeFromHorizontal;
         children = entity.getChildren().stream()
-        .map( c -> getBuilder(c) )
+        .map( this::getBuilder )
         .collect( Collectors.toList() );
     }
 
@@ -141,16 +148,16 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
     protected <S extends AbstractEntityAudit> String getXmlHeader(S instance){
         Category ref = (Category)instance;
         String attr =
-        (entity.getCategoryType() == CategoryType.NUMERIC) ?
-            String.format(xmlNumeric, ref.getFormat(), ref.getInputLimit().getStepUnit()) : 
+            (entity.getCategoryType() == CategoryType.NUMERIC) ?
+                String.format(xmlNumeric, ref.getFormat(), ref.getInputLimit().getStepUnit()) :
             (entity.getCategoryType() == CategoryType.TEXT) ?
-                String.format(xmlText, ref.getInputLimit().getMaximum(), ref.getInputLimit().getMinimum())
-                : "";
+                String.format(xmlText, ref.getInputLimit().getMaximum(), ref.getInputLimit().getMinimum()) :
+                "";
 
         if (entity.getCategoryType().equals( CategoryType.LIST )) {
             return String.format(xmlHeaderMR,  "l:" + entity.getCategoryType().getName() ,  getInstanceDate(instance), "", "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
         } else
-            return String.format(xmlHeaderMR, "d:Managed" +  entity.getCategoryType().getName() + "Representation" ,  getInstanceDate(instance), attr, "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
+            return String.format(xmlHeaderMR, "r:Managed" +  entity.getCategoryType().getName() + "Representation" ,  getInstanceDate(instance), attr, "\t\t\t"+ getXmlURN(instance)+ getXmlUserId(instance)+ getXmlRationale(instance)+ getXmlBasedOn(instance));
     }
 
     @Override
@@ -209,6 +216,7 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
             case SCALE:
                 return new FragmentBuilderAnchor(category);
             case MISSING_GROUP:
+                return new FragmentBuilderMissing(category);
             case LIST:
                 return new FragmentBuilderCode(category);
             default:

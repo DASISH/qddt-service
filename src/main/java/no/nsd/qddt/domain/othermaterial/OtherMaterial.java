@@ -1,10 +1,13 @@
 package no.nsd.qddt.domain.othermaterial;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.UUID;
 
 
@@ -79,8 +82,9 @@ public class OtherMaterial implements Cloneable {
     public String getDescription() {
         return description;
     }
-    private void setDescription(String description) {
+    private OtherMaterial setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public String getOriginalName() {
@@ -146,9 +150,34 @@ public class OtherMaterial implements Cloneable {
 
 
 
+
     @Override
     public OtherMaterial clone() {
         return new OtherMaterial(originalName,fileType, size, description).setOriginalOwner(this.originalOwner );
     }
 
+    private static String OM_REF_FORMAT=
+        "%1$s<OtherMaterial objectSource = \"%2$s\" scopeOfUniqueness = \"Maintainable\" isUniversallyUnique = \"false\">\n" +
+        "%1$s\t%3$s\n" +
+        "%1$s\t<MaintainableObject>\n" +
+        "%1$s\t\t<TypeOfObject>%4$s</TypeOfObject>\n" +
+        "%1$s\t\t<MaintainableID type=\"ID\">%5$s</MaintainableID>\n" +
+        "%1$s\t</MaintainableObject>\n" +
+        "%1$s\t<Description>%6$s</Description>\n" +
+        "%1$s\t<ExternalURLReference>%7$s</ExternalURLReference>\n" +
+        "%1$s\t<MIMEType>%8$s</MIMEType>\n" +
+        "%1$s</OtherMaterial>\n";
+
+    public String toDDIXml(AbstractEntityAudit entity, String tabs) {
+
+        return String.format( OM_REF_FORMAT, tabs,
+            entity.getId() + ":" + entity.getVersion().toDDIXml(),
+            "<URN></URN>",
+            ElementKind.getEnum( entity.getClassKind()).getClassName(),
+            entity.getId() + ":" + entity.getVersion().toDDIXml(),
+            getDescription(),
+            "REF::",
+            getFileType()
+        ).trim();
+    }
 }

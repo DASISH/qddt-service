@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
+
 import java.util.UUID;
 
 /**
@@ -57,6 +59,15 @@ public class OutParameter implements IParameter {
             "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
             "\"referencedId\":" + (referencedId == null ? "null" : referencedId) +
             "}";
+    }
+//        "us.mpc:GI_Age_Cohort:1 " +
+    private static String PARAM_FORMAT=
+        "%3$s<r:OutParameter isIdentifiable=\"true\" scopeOfUniqueness=\"Maintainable\" isArray=\"false\">\n" +
+        "%3$s\t<r:URN>urn:ddi:%1$s</r:URN>\n" +
+        "%3$s\t<r:Alias>%2$s</r:Alias>\n" +
+        "%3$s</r:OutParameter>\n";
+    public String toDDIXml(AbstractEntityAudit entity, String tabs) {
+        return String.format( PARAM_FORMAT,  entity.getAgency().getName() + ":" + entity.getVersion().toDDIXml() , getName(),tabs).trim();
     }
 
 

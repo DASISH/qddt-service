@@ -128,11 +128,17 @@ public class ControlConstruct extends AbstractEntityAudit {
             + ", \"label\":\"" + label + "}";
     }
 
-
     @Override
     public AbstractXmlBuilder getXmlBuilder() {
-        return null;
-	}
+
+        return new ControlConstructFragmentBuilder<>(this);
+    }
+
+
+//    @Override
+//    public AbstractXmlBuilder getXmlBuilder() {
+//        return new ControlConstructFragmentBuilder(this);
+//	}
 
 
 }

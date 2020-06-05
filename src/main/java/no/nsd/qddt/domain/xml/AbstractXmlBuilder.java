@@ -78,7 +78,7 @@ public abstract class AbstractXmlBuilder {
         return String.format( xmlLang, instance.getXmlLang() );
     }
 
-    protected  <S extends AbstractEntityAudit> String getXmlURN(S instance) {
+    public <S extends AbstractEntityAudit> String getXmlURN(S instance) {
         return  String.format( xmlURN, instance.getAgency().getName(),instance.getId(),instance.getVersion().toDDIXml());
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractXmlBuilder {
 
     protected <S extends AbstractEntityAudit> String getXmlBasedOn(S instance) {
         if (instance.getBasedOnObject() == null) return "";
-        String uri = "https://qddt.nsd.no/search/" + instance.getBasedOnObject() + "/" + instance.getBasedOnRevision();
+        String uri = "https://qddt.nsd.no/preview/" + instance.getBasedOnObject() + "/" + instance.getBasedOnRevision();
         String urn =  String.format( xmlURN, instance.getAgency().getName(),instance.getBasedOnObject(),new Version(1,0,instance.getBasedOnRevision(),"").toDDIXml());
         return String.format( xmlBasedOn, urn ,instance.getClass().getSimpleName(), uri );
     }

@@ -9,7 +9,7 @@ import java.util.Collections;
  */
 public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
 
-    private final String xmlResponseCategory =
+    private final String xmlCategory =
         "%1$s" +
         "\t\t\t<l:CategoryName>\n" +
         "\t\t\t\t<r:String %2$s>%3$s</r:String>\n" +
@@ -18,18 +18,18 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
         "\t\t\t\t<r:Content %2$s>%4$s</r:Content>\n" +
         "\t\t\t</r:Label>\n" +
         "%5$s";
-
     private final String xmlDomainReference =
         "%3$s<d:%1$sDomainReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
-        "%3$s\t%2$s" +
-        "%3$s\t<r:TypeOfObject>Managed%1$sRepresentation</r:TypeOfObject>\n" +
-        "%3$s</d:%1$sDomainReference>\n";
+            "%3$s\t%2$s" +
+            "%3$s\t<r:TypeOfObject>Managed%1$sRepresentation</r:TypeOfObject>\n" +
+            "%3$s</d:%1$sDomainReference>\n";
+
 
     private final String xmlCodeDomain =
         "%2$s<d:CodeDomain>\n" +
         "%2$s\t<r:CodeListReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
         "%2$s\t\t%1$s" +
-        "%2$s\t\t<r:TypeOfObject>CodeLlist</r:TypeOfObject>\n" +
+        "%2$s\t\t<r:TypeOfObject>CodeList</r:TypeOfObject>\n" +
         "%2$s\t</r:CodeListReference>\n"+
         "%2$s</d:CodeDomain>\n";
 
@@ -40,7 +40,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
 
     @Override
     public String getXmlFragment() {
-        return String.format( xmlResponseCategory,
+        return String.format( xmlCategory,
             getXmlHeader( entity ),
             getXmlLang(entity),
             entity.getName(),
@@ -55,7 +55,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     public String getXmlEntityRef(int depth) {
         if (entity.getCategoryType()== CategoryType.CATEGORY)
             return super.getXmlEntityRef(depth);
-        else if (entity.getCategoryType()== CategoryType.LIST)
+        else if (entity.getCategoryType()== CategoryType.LIST ||entity.getCategoryType()== CategoryType.MISSING_GROUP )
             return String.format( xmlCodeDomain,  getXmlURN(entity), String.join("", Collections.nCopies(depth, "\t")) );
         else
             return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity),  String.join("", Collections.nCopies(depth, "\t")));

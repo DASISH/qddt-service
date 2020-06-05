@@ -10,7 +10,7 @@ import java.util.Collections;
  */
 public class FragmentBuilderCode extends CategoryFragmentBuilder {
     private final String xmlCode =
-        "%4$s<l:Code scopeOfUniqueness=\"Agency\" isUniversallyUnique=\"true\" isIdentifiable=\"true\" isDiscrete=\"true\" levelNumber=\"1\"  isTotal=\"false\">\n" +
+        "%4$s<l:Code scopeOfUniqueness=\"Maintainable\" isUniversallyUnique=\"false\" isIdentifiable=\"true\" isDiscrete=\"true\" levelNumber=\"1\"  isTotal=\"false\">\n" +
         "%4$s\t%1$s"+
         "%2$s"+
         "%4$s\t<r:Value xml:space=\"default\">%3$s</r:Value>\n" +
@@ -33,7 +33,7 @@ public class FragmentBuilderCode extends CategoryFragmentBuilder {
     }
 
     private String getCodeURN() {
-        return  String.format( xmlURN, entity.getAgency().getName(),entity.getId(),"0000");
+        return  String.format( xmlURN, entity.getAgency().getName(),entity.getCode().getCodeValue(),"");
     }
 
 }

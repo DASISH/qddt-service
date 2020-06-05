@@ -7,6 +7,7 @@ import no.nsd.qddt.domain.elementref.QuestionItemRef;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.universe.Universe;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
 
@@ -229,5 +230,9 @@ public class QuestionConstruct  extends ControlConstruct {
             "}";
     }
 
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ControlConstructFragmentBuilder<>( this );
+    }
 
 }

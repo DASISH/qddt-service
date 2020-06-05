@@ -42,7 +42,6 @@ public class QuestionItemFragmentBuilder extends XmlDDIFragmentBuilder<QuestionI
     @Override
     public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
         super.addXmlFragments( fragments );
-//        fragments.putIfAbsent( getUrnId(), getXmlFragment() );
         entity.getParentRefs().stream().forEach( c -> ((IEntityXml)c.getEntity()).getXmlBuilder().addXmlFragments( fragments ) );
         responseBuilder.addXmlFragments( fragments );
     }
