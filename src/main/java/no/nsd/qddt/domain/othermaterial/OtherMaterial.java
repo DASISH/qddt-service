@@ -157,27 +157,31 @@ public class OtherMaterial implements Cloneable {
     }
 
     private static String OM_REF_FORMAT=
-        "%1$s<OtherMaterial objectSource = \"%2$s\" scopeOfUniqueness = \"Maintainable\" isUniversallyUnique = \"false\">\n" +
+        "%1$s<r:ExternalAid scopeOfUniqueness = \"Maintainable\" isUniversallyUnique = \"true\">\n" +
         "%1$s\t%3$s\n" +
         "%1$s\t<MaintainableObject>\n" +
         "%1$s\t\t<TypeOfObject>%4$s</TypeOfObject>\n" +
         "%1$s\t\t<MaintainableID type=\"ID\">%5$s</MaintainableID>\n" +
         "%1$s\t</MaintainableObject>\n" +
         "%1$s\t<Description>%6$s</Description>\n" +
-        "%1$s\t<ExternalURLReference>%7$s</ExternalURLReference>\n" +
+        "%1$s\t<ExternalURLReference>https://qddt.nsd.no/preview/%7$s</ExternalURLReference>\n" +
         "%1$s\t<MIMEType>%8$s</MIMEType>\n" +
-        "%1$s</OtherMaterial>\n";
+        "%1$s</r:ExternalAid>\n";
 
     public String toDDIXml(AbstractEntityAudit entity, String tabs) {
 
         return String.format( OM_REF_FORMAT, tabs,
-            entity.getId() + ":" + entity.getVersion().toDDIXml(),
-            "<URN></URN>",
+            "",
+            "<r:URN type=\"URN\" typeOfIdentifier=\"Canonical\">urn:ddi:" +getUrnId(entity) + "</r:URN>",
             ElementKind.getEnum( entity.getClassKind()).getClassName(),
             entity.getId() + ":" + entity.getVersion().toDDIXml(),
             getDescription(),
-            "REF::",
+            entity.getId().toString() + '/' + this.fileName ,
             getFileType()
-        ).trim();
+        );
+    }
+
+    public String getUrnId(AbstractEntityAudit entity) {
+        return  String.format( "%1$s:%2$s:%3$s",  entity.getAgency().getName() , entity.getId() , this.fileName);
     }
 }

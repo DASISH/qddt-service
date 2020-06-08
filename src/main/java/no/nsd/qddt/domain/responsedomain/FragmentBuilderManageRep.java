@@ -211,7 +211,7 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
 
 
     private AbstractXmlBuilder getBuilder(Category category) {
-        LOG.info(entity.getCategoryType().getName() );
+//        LOG.info(entity.getCategoryType().getName() );
         switch (entity.getCategoryType()) {
             case SCALE:
                 return new FragmentBuilderAnchor(category);

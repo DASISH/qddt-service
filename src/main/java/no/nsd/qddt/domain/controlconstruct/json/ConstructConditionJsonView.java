@@ -1,12 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
 
 import java.util.StringJoiner;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland

@@ -161,7 +161,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     */
 
     private QuestionItem postLoadProcessing(QuestionItem instance){
-        LOG.info( "POST LOAD" );
+//        LOG.info( "POST LOAD" );
         try{
             if(instance.getResponseDomainRef().getElementId()!= null && instance.getResponseDomainRef().getElement() == null) {
                 rdLoader.fill( instance.getResponseDomainRef() );
@@ -187,7 +187,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
 
     private QuestionItem prePersistProcessing(QuestionItem instance){
-        LOG.info( "PRE PERSIST" );
+//        LOG.info( "PRE PERSIST" );
 
         Integer rev = null;
         if(instance.isBasedOn()) {

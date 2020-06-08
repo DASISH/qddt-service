@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -55,5 +56,9 @@ public class StatementItem extends ControlConstruct {
             + "}";
     }
 
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ControlConstructFragmentBuilder<>( this );
+    }
 
 }

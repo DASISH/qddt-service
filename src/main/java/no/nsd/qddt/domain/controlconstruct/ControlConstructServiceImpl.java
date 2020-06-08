@@ -9,13 +9,13 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.json.Converter;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
-import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.universe.UniverseService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,6 +151,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
         if (instance instanceof QuestionConstruct) {
+
             QuestionConstruct qc = (QuestionConstruct)instance;
             qc.populateControlConstructInstructions();
 
@@ -182,6 +183,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     break;
             }
         }
+        LOG.info("ChangeComment: " + instance.getChangeComment() );
         return instance;
     }
 
@@ -190,12 +192,11 @@ class ControlConstructServiceImpl implements ControlConstructService {
         assert  (instance != null);
         if ( instance instanceof QuestionConstruct) {
             return loadQuestionConstruct( (QuestionConstruct) instance );
+        } else if ( instance instanceof Sequence) {
+            loadSequence( (Sequence) instance );
         }
-        instance.setChangeComment( null );
         return instance;
     }
-
-//    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
 
     private <S extends ControlConstruct> S loadQuestionConstruct(QuestionConstruct instance) {
         instance.populateInstructions();                // instructions has to be unpacked into pre and post instructions
@@ -206,35 +207,21 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
                 qiLoader.fill( instance.getQuestionItemRef() );
 
-//                String question = instance.getQuestionItemRef().getText();
-//                Matcher matcher = TAGS.matcher(question);
-//                if (matcher.find()) {
-//                    for (int i = 0; i < matcher.groupCount() ; i++) {
-//                        instance.getParameter().add(matcher.group( i ));
-//                    }
-//                }
-//                String rd = instance.getQuestionItemRef().getElement().getResponseDomainRef().getElement().toString();
-//                matcher = TAGS.matcher(rd);
-//                if (matcher.find()) {
-//                    for (int i = 0; i < matcher.groupCount() ; i++) {
-//                        instance.getParameter().add(matcher.group( i ));
-//                    }
-//                }
             }
         } catch (Exception ex) {
             LOG.error( "CCS QI revision not found " + ex.getMessage() );
         }
-        instance.setChangeComment( null );
         return (S) instance;
     }
 
 
     private void loadSequence(Sequence sequence) {
-        sequence.getSequence().forEach( seq -> {
-            if (seq.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT) {
-                seq.setElement( auditService.findRevision(seq.getElementId(),seq.getElementRevision()).getEntity());
-            }
-        });
+        if (StackTraceFilter.stackContains( "getPdf", "getXml" )) {
+            sequence.getSequence().forEach( seq -> {
+                seq.setElement( postLoadProcessing(
+                    auditService.findRevision( seq.getElementId(), seq.getElementRevision() ).getEntity() ));
+            LOG.info( "PDF-XML -> fetched " + seq.getElement().getName() );
+            } );
+        }
     }
-
 }

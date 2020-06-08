@@ -251,7 +251,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
 
     @PrePersist
     private void onInsert(){
-        LOG.info("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
+//        LOG.info("AstractEntityAudit PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         setAgency( user.getAgency() );
         setModifiedBy( user );
@@ -271,7 +271,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IEn
     @PreUpdate
     private void onUpdate(){
         try {
-            LOG.info("AbstractEntityAudit PreUpdate " + this.getClass().getSimpleName() + " - " + getName());
             no.nsd.qddt.domain.interfaces.Version ver = version;
             ChangeKind change = changeKind;
             User user = SecurityContext.getUserDetails().getUser();

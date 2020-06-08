@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +94,8 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
+        Hibernate.initialize(instance.getOtherMaterials());
+        LOG.info( String.valueOf( instance.getOtherMaterials().size() ) );
         return  instance.getClassKind().equals("QUESTION_CONSTRUCT") ? postLoadProcessing( (QuestionConstruct) instance ) : instance;
     }
 
@@ -108,11 +111,11 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             // https://github.com/DASISH/qddt-client/issues/350
             instance.populateInstructions();
 
-            if (instance.getControlConstructInstructions().size() > 0 ) {
-                LOG.info("here they are: " + instance.getControlConstructInstructions().stream()
-                    .map( p -> p.getInstruction().getName() )
-                    .collect( Collectors.joining(", ")));
-            }
+//            if (instance.getControlConstructInstructions().size() > 0 ) {
+//                LOG.info("here they are: " + instance.getControlConstructInstructions().stream()
+//                    .map( p -> p.getInstruction().getName() )
+//                    .collect( Collectors.joining(", ")));
+//            }
             if(instance.getQuestionItemRef().getElementId() != null) {
                 qidLoader.fill( instance.getQuestionItemRef() );
                 String question = instance.getQuestionItemRef().getText();

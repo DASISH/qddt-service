@@ -80,6 +80,6 @@ public class Universe extends AbstractEntityAudit {
 
     @Override
     public AbstractXmlBuilder getXmlBuilder() {
-        return null;
+        return new UniverseFragmentBuilder( this );
 	}
 }

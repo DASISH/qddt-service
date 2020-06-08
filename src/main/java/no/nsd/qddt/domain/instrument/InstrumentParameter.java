@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.controlconstruct.pojo.IParameter;
+import no.nsd.qddt.domain.interfaces.IParameter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;

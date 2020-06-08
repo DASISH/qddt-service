@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.QuestionItemRef;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -14,6 +15,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -232,7 +234,25 @@ public class QuestionConstruct  extends ControlConstruct {
 
     @Override
     public AbstractXmlBuilder getXmlBuilder() {
-        return new ControlConstructFragmentBuilder<>( this );
+        return new ControlConstructFragmentBuilder<QuestionConstruct>( this ) {
+            @Override
+            public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
+                super.addXmlFragments( fragments );
+                if (children.size() == 0) addChildren();
+                children.stream().forEach( c -> c.addXmlFragments( fragments ) );
+            }
+            @Override
+            public String getXmlFragment() {
+                if (children.size() == 0) addChildren();
+                return super.getXmlFragment();
+            }
+
+            private void addChildren() {
+                children.add( getQuestionItemRef().getElement().getXmlBuilder()  );
+                children.addAll( getUniverse().stream().map( u -> u.getXmlBuilder() ).collect( Collectors.toList()) );
+                children.addAll( getControlConstructInstructions().stream().map( u -> u.getInstruction().getXmlBuilder() ).collect( Collectors.toList()) );
+            }
+        };
     }
 
 }

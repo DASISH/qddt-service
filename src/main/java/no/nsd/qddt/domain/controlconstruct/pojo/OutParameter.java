@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.interfaces.IParameter;
 
 import java.util.UUID;
 

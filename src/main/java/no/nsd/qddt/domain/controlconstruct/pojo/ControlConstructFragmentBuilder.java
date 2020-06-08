@@ -38,7 +38,7 @@ public class ControlConstructFragmentBuilder<T extends ControlConstruct> extends
     @Override
     public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
         super.addXmlFragments( fragments );
-        children.stream().forEach( c -> c.addXmlFragments( fragments ) );
+//        children.stream().forEach( c -> c.addXmlFragments( fragments ) );
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ControlConstructFragmentBuilder<T extends ControlConstruct> extends
             getXmlLang( entity ),
             entity.getName(),
             entity.getLabel(),
-            entity.getOtherMaterials().stream().map( o -> o.toDDIXml(entity,"\t\t\t") ).collect( Collectors.joining("","","\n")),
+            entity.getOtherMaterials().stream().map( o -> o.toDDIXml(entity,"\t\t\t") ).collect( Collectors.joining()),
             children.stream().map( c -> c.getXmlEntityRef( 3 ) ).collect( Collectors.joining() ),
             getXmlFooter(entity));
     }

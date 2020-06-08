@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.controlconstruct.pojo;
+package no.nsd.qddt.domain.interfaces;
 
 import java.util.UUID;
 

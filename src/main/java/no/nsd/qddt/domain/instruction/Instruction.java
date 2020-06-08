@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.instruction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -78,8 +79,9 @@ public class Instruction extends AbstractEntityAudit {
     }
 
     @Override
+    @JsonIgnore
     public AbstractXmlBuilder getXmlBuilder() {
-        return null;
+        return new InstructionFragmentBuilder(this);
 	}
 
 }

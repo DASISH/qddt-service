@@ -1,11 +1,14 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -81,5 +84,24 @@ public class Sequence extends ControlConstruct {
             .collect( Collectors.toSet()) ;
     }
 
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ControlConstructFragmentBuilder<Sequence>( this ) {
+            @Override
+            public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
+                super.addXmlFragments( fragments );
+                if (children.size() == 0) addChildren();
+                children.stream().forEach( c -> c.addXmlFragments( fragments ) );
+            }
+            @Override
+            public String getXmlFragment() {
+                if (children.size() == 0) addChildren();
+                return super.getXmlFragment();
+            }
 
+            private void addChildren() {
+                children.addAll( getSequence().stream().map( seq -> seq.getElement().getXmlBuilder() ).collect( Collectors.toList())   );
+            }
+        };
+    }
 }
