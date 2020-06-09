@@ -78,14 +78,21 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
 
     private final String xmlScaleMan =
         "\t\t\t<r:ScaleDimension dimensionNumber=\"1\" degreeSlopeFromHorizontal=\"%1$s\">\n" +
-            "\t\t\t\t<r:Range>\n" +
-            "\t\t\t\t\t<r:RangeUnit>\"%2$s\"</r:RangeUnit>\n" +
-            "\t\t\t\t\t<r:MinimumValue>\"%3$s\"</r:MinimumValue>\n" +
-            "\t\t\t\t\t<r:MaximumValue>\"%4$s\"</r:MaximumValue>\n" +
-            "\t\t\t\t</r:Range>\n" +
-            "%5$s" +
-            "\t\t\t</r:ScaleDimension>\n" ;
+        "\t\t\t\t<r:Range>\n" +
+        "\t\t\t\t\t<r:RangeUnit>\"%2$s\"</r:RangeUnit>\n" +
+        "\t\t\t\t\t<r:MinimumValue>\"%3$s\"</r:MinimumValue>\n" +
+        "\t\t\t\t\t<r:MaximumValue>\"%4$s\"</r:MaximumValue>\n" +
+        "\t\t\t\t</r:Range>\n" +
+        "%5$s" +
+        "\t\t\t</r:ScaleDimension>\n" ;
 
+    private final String xmlMissingMan =
+        "%1$s<r:MissingCodeRepresentation blankIsMissingValue =\"false\">\n" +
+        "%1$s\t<r:CodeListReference>\n" +
+        "%1$s\t\t%2$s"+
+        "%1$s\t\t<r:TypeOfObject>CodeList</r:TypeOfObject>\n" +
+        "%1$s\t</r:CodeListReference>\n" +
+        "%1$s</r:MissingCodeRepresentation>\n";
 
     private final String xmlManaged =
         "%2$s" +
@@ -118,12 +125,11 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
         "\t\t</l:CodeList>\n";
 
 
-    //        "\t\t\t\t<r:CodeListReference>\n" +
-    private final String xmlMissingValue =
-        "\t\t\t<r:MissingCodeRepresentation>\n" +
-                "%1$s" +
-        "\t\t\t</r:MissingCodeRepresentation>\n";
-
+    private final String xmlMissingCodeListFragment =
+        "%1$s<l:CodeList scopeOfUniqueness=\"Maintainable\" isUniversallyUnique=\"false\">\n" +
+        "%1$s\t%2$s"+
+        "%3$s"+
+        "%1$s</l:CodeList>\n";
 
     protected final String xmlHeaderMR = "\t\t<%1$s isUniversallyUnique=\"true\" versionDate=\"%2$s\" isMaintainable=\"true\" %3$s>\n" +
         "%4$s";
@@ -163,8 +169,11 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
     @Override
     public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
        super.addXmlFragments( fragments );
+       if (entity.getCategoryType() == CategoryType.MISSING_GROUP )
+           fragments.get( ElementKind.CATEGORY ).putIfAbsent( getMissingCodeURN(), getXmlMissingCodeListFragment() );
        children.forEach(c -> c.addXmlFragments(fragments));
     }
+
 
     @Override
     public String getXmlFragment() {
@@ -178,10 +187,10 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
             entity.getName(),
             entity.getDescription(),
             entity.getLabel(),
-            this.getXmlScaleMan());
+            this.getXmlRefs());
     }
 
-    private String getXmlScaleMan() {
+    private String getXmlRefs() {
         if (entity.getCategoryType().equals( CategoryType.SCALE ))
             return String.format( xmlScaleMan,
                 degreeSlopeFromHorizontal,
@@ -192,10 +201,12 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
                     .map( q -> q.getXmlEntityRef(4) )
                     .collect( Collectors.joining() )
             );
-        return children.stream()
-            .map( q -> q.getXmlEntityRef(3) )
-            .collect( Collectors.joining() );
-
+        else if (entity.getCategoryType().equals( CategoryType.MISSING_GROUP ))
+            return String.format( xmlMissingMan,getTabs( 3 ),getMissingCodeURN(),getMissingXmlEntityRef(4));
+        else
+            return children.stream()
+                .map( q -> q.getXmlEntityRef(3) )
+                .collect( Collectors.joining() );
     }
 
     private String getXmlCodeList() {
@@ -206,23 +217,41 @@ public class FragmentBuilderManageRep extends XmlDDIFragmentBuilder<Category> {
             entity.getName(),
             entity.getDescription(),
             entity.getLabel(),
-            this.getXmlScaleMan());
+            children.stream()
+                .map( q -> q.getXmlEntityRef(3) )
+                .collect( Collectors.joining() ));
     }
 
 
     private AbstractXmlBuilder getBuilder(Category category) {
-//        LOG.info(entity.getCategoryType().getName() );
         switch (entity.getCategoryType()) {
             case SCALE:
                 return new FragmentBuilderAnchor(category);
             case MISSING_GROUP:
-                return new FragmentBuilderMissing(category);
             case LIST:
                 return new FragmentBuilderCode(category);
             default:
                 LOG.info("getbuilder get default");
                 return category.getXmlBuilder();
         }
+    }
+
+    private String getMissingCodeURN() {
+        return  String.format( xmlURN, entity.getAgency().getName(),entity.getId(),  entity.getName());
+    }
+
+    private String getXmlMissingCodeListFragment() {
+        return String.format( xmlMissingCodeListFragment,
+            getTabs( 2 ),
+            getMissingCodeURN(),
+            children.stream()
+                .map( q -> q.getXmlEntityRef(3) )
+                .collect( Collectors.joining() ));
+
+    }
+
+    private String getMissingXmlEntityRef(int depth) {
+        return String.format( xmlMissingMan, getTabs( depth ), getMissingCodeURN() );
     }
 
 

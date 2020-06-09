@@ -404,6 +404,7 @@ public class Category extends AbstractEntityAudit  implements Comparable<Categor
                     setHierarchyLevel(HierarchyLevel.GROUP_ENTITY);
                     break;
             }
+        this.setName(this.getName().trim());
     }
 
     // /used to keep track of current item in the recursive call populateCatCodes

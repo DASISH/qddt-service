@@ -9,6 +9,7 @@ import no.nsd.qddt.domain.interfaces.Version;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -103,6 +104,10 @@ public abstract class AbstractXmlBuilder {
             .atZone( ZoneId.systemDefault() )
             .withZoneSameInstant( ZoneOffset.UTC )
             .format( DateTimeFormatter.ISO_DATE_TIME );
+    }
+
+    protected String getTabs(int depth) {
+        return String.join( "", Collections.nCopies( depth, "\t" ) );
     }
 
     protected String html5toXML(String html5){

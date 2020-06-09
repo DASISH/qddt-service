@@ -3,8 +3,6 @@ package no.nsd.qddt.domain.responsedomain;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryFragmentBuilder;
 
-import java.util.Collections;
-
 /**
  * @author Stig Norland
  */
@@ -24,7 +22,7 @@ public class FragmentBuilderCode extends CategoryFragmentBuilder {
 
     @Override
     public String getXmlEntityRef(int depth) {
-        return String.format( xmlCode, getCodeURN(), super.getXmlEntityRef( depth+1 ) , entity.getCode().getCodeValue() , String.join("", Collections.nCopies(depth, "\t")) );
+        return String.format( xmlCode, getCodeURN(), super.getXmlEntityRef( depth+1 ) , entity.getCode().getCodeValue().trim() , getTabs( depth ) );
     }
 
     @Override
@@ -33,7 +31,7 @@ public class FragmentBuilderCode extends CategoryFragmentBuilder {
     }
 
     private String getCodeURN() {
-        return  String.format( xmlURN, entity.getAgency().getName(),entity.getCode().getCodeValue(),"");
+        return  String.format( xmlURN, entity.getAgency().getName(),entity.getId(),  entity.getCode().getCodeValue());
     }
 
 }

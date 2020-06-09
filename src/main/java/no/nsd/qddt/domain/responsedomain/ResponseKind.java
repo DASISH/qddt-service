@@ -27,8 +27,8 @@ public enum ResponseKind {
     LIST("CodeDomain","Codelist"),
     SCALE("ScaleDomain","ManagedScaleRepresentation"),
     MIXED("ResponseDomainInMixed","");
-    ResponseKind(String name, String ddiRepresentation){
-        this.name = name;
+    ResponseKind(String ddiName, String ddiRepresentation){
+        this.name = ddiName;
         this.ddiRepresentation = ddiRepresentation;
     }
 

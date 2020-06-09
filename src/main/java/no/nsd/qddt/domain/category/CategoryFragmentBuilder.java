@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
-import java.util.Collections;
-
 /**
  * @author Stig Norland
  */
@@ -33,6 +31,7 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
         "%2$s\t</r:CodeListReference>\n"+
         "%2$s</d:CodeDomain>\n";
 
+
     public CategoryFragmentBuilder(Category category) {
         super(category);
     }
@@ -55,10 +54,10 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
     public String getXmlEntityRef(int depth) {
         if (entity.getCategoryType()== CategoryType.CATEGORY)
             return super.getXmlEntityRef(depth);
-        else if (entity.getCategoryType()== CategoryType.LIST ||entity.getCategoryType()== CategoryType.MISSING_GROUP )
-            return String.format( xmlCodeDomain,  getXmlURN(entity), String.join("", Collections.nCopies(depth, "\t")) );
+        else if (entity.getCategoryType()== CategoryType.LIST)
+            return String.format( xmlCodeDomain,  getXmlURN(entity), getTabs( depth ) );
         else
-            return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity),  String.join("", Collections.nCopies(depth, "\t")));
+            return String.format( xmlDomainReference, entity.getCategoryType().getName(), getXmlURN(entity),  getTabs( depth ));
     }
 
 }

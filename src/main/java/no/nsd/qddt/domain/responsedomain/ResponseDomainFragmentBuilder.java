@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,15 +15,21 @@ import java.util.stream.Collectors;
  */
 public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<ResponseDomain> {
 
-//    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed"/>
+    //    d:StructuredMixedResponseDomain/d:ResponseDomainInMixed"/>
     private final String xmlMixedRef =
         "\t\t\t<d:StructuredMixedResponseDomain>\n" +
-            "%1$s" +
+        "%1$s" +
         "\t\t\t</d:StructuredMixedResponseDomain>\n";
+
+    private final String xmlCodeDomRef =
+        "%1$s<d:CodeDomain blankIsMissingValue = \"false\" classificationLevel = \"%2$s>\"\n" +
+        "%3$s" +
+        "%4$s" +
+        "%1$s</d:CodeDomain>\n";
 
     private final String xmlInMixed =
         "\t\t\t\t<d:ResponseDomainInMixed>\n" +
-            "%1$s" +
+        "%1$s" +
         "\t\t\t\t</d:ResponseDomainInMixed>\n";
 
 
@@ -68,11 +73,24 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
 
     @Override
     public String getXmlEntityRef(int depth) {
-        if (entity.getResponseKind() == ResponseKind.MIXED) {
-            return String.format( xmlMixedRef,  getInMixedRef() );
-        } else
-            return String.format( xmlRef,  entity.getResponseKind().getDdiRepresentation(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth, "\t")) );
-            
+        if (entity.getResponseKind() == ResponseKind.MIXED)
+            return String.format( xmlMixedRef, getInMixedRef(depth) );
+        else if (entity.getResponseKind() == ResponseKind.LIST)
+            return String.format( xmlCodeDomRef, getTabs( depth ),
+                entity.getManagedRepresentation().getClassificationLevel().name(),
+                getResponseCardinality(depth),
+                String.format( xmlRef,  entity.getResponseKind().getDdiRepresentation(), getXmlURN(entity) , getTabs( depth+1 ) ));
+        else
+            return String.format( xmlRef,  entity.getResponseKind().getDDIName(), getXmlURN(entity)  , getTabs( depth ) );
+    }
+
+
+
+    private String getResponseCardinality(int depth) {
+        return String.format("%3$s<r:ResponseCardinality minimumResponses = %1$s maximumResponses = %2$s />\n",
+            entity.getResponseCardinality().getMinimum(),
+            entity.getResponseCardinality().getMaximum(),
+            getTabs( depth ));
     }
 
     @Override
@@ -91,9 +109,9 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     }
 
 
-    private String getInMixedRef() {
+    private String getInMixedRef(int depth) {
         return entity.getManagedRepresentation().getChildren().stream()
-            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getXmlEntityRef(5)  ) )
+            .map( ref -> String.format( xmlInMixed, ref.getXmlBuilder().getXmlEntityRef(depth+2)  ) )
             .collect( Collectors.joining( ));
     }
 

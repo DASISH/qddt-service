@@ -33,7 +33,7 @@ public class Code implements Comparable<Code> {
 
 
     public String getCodeValue() {
-        return codeValue;
+        return  codeValue.trim();
     }
 
     private void setCodeValue(String codeValue) {
