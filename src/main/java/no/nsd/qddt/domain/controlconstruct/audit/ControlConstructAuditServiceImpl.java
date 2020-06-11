@@ -3,10 +3,10 @@ package no.nsd.qddt.domain.controlconstruct.audit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.OutParameter;
-import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
+import no.nsd.qddt.domain.category.CategoryType;
+import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.interfaces.IParameter;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -95,11 +95,16 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
         assert  (instance != null);
         Hibernate.initialize(instance.getOtherMaterials());
-        LOG.info( String.valueOf( instance.getOtherMaterials().size() ) );
-        return  instance.getClassKind().equals("QUESTION_CONSTRUCT") ? postLoadProcessing( (QuestionConstruct) instance ) : instance;
+        return  instance.getClassKind().equals("QUESTION_CONSTRUCT") ?
+                postLoadProcessing( (QuestionConstruct) instance ) :
+            instance.getClassKind().equals("CONDITION_CONSTRUCT") ?
+                postLoadProcessing( (ConditionConstruct) instance ) :
+            instance.getClassKind().equals("STATEMENT_CONSTRUCT") ?
+                postLoadProcessing( (StatementItem) instance ) :
+            instance;
     }
 
-    private final Pattern TAGS = Pattern.compile("\\[(.{1,50}?)\\]");
+    private final Pattern TAGS = Pattern.compile("\\[(.{1,25}?)\\]");
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
@@ -111,35 +116,32 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             // https://github.com/DASISH/qddt-client/issues/350
             instance.populateInstructions();
 
-//            if (instance.getControlConstructInstructions().size() > 0 ) {
-//                LOG.info("here they are: " + instance.getControlConstructInstructions().stream()
-//                    .map( p -> p.getInstruction().getName() )
-//                    .collect( Collectors.joining(", ")));
-//            }
             if(instance.getQuestionItemRef().getElementId() != null) {
                 qidLoader.fill( instance.getQuestionItemRef() );
                 String question = instance.getQuestionItemRef().getText();
 
                 Matcher matcher = TAGS.matcher(question);
-                if (matcher.find()) {
-                    for (int i = 0; i < matcher.groupCount() ; i++) {
-                        instance.getInParameter().add( matcher.group(i) );
-                    }
+
+                while(matcher.find())
+                {
+                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
                 }
 
                 ResponseDomain rd = instance.getQuestionItemRef().getElement().getResponseDomainRef().getElement();
 
-                String rds = rd.getManagedRepresentationFlatten()
-                    .stream().map( Category::getLabel ).collect( Collectors.joining( " "));
+                String rds = rd.getManagedRepresentationFlatten().stream()
+                    .filter( category -> category.getCategoryType() != CategoryType.MIXED )
+                    .map( Category::getLabel ).collect( Collectors.joining( " "));
 
                 matcher = TAGS.matcher(rds);
-                if (matcher.find()) {
-                    for (int i = 0; i < matcher.groupCount() ; i++) {
-                        instance.getInParameter().add( matcher.group(i) );
-                    }
+                while(matcher.find())
+                {
+                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
                 }
 
-                instance.setOutParameter( Set.of(new OutParameter( rd.getName(), rd.getId() )) );
+                Set<IParameter> outParameters = new java.util.HashSet<>();
+                outParameters.add( new OutParameter( instance.getName(), instance.getId() ) );
+                instance.setOutParameter( outParameters );
 
             }
 
@@ -149,4 +151,32 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
         return instance;
     }
 
+
+    private ConditionConstruct postLoadProcessing(ConditionConstruct instance){
+
+        Matcher matcher = TAGS.matcher(instance.getCondition());
+
+        while(matcher.find())
+        {
+            instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
+        }
+
+        Set<IParameter> outParameters = new java.util.HashSet<>();
+        outParameters.add( new OutParameter( instance.getName(), instance.getId() ) );
+        instance.setOutParameter( outParameters );
+        return instance;
+    }
+
+
+    private StatementItem postLoadProcessing(StatementItem instance){
+
+        Matcher matcher = TAGS.matcher(instance.getStatement());
+
+        while(matcher.find())
+        {
+            instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
+        }
+
+        return instance;
+    }
 }

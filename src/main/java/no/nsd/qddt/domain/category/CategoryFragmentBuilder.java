@@ -16,6 +16,14 @@ public class CategoryFragmentBuilder extends XmlDDIFragmentBuilder<Category> {
         "\t\t\t\t<r:Content %2$s>%4$s</r:Content>\n" +
         "\t\t\t</r:Label>\n" +
         "%5$s";
+
+
+//    d:ScaleDomainReference/r:TypeOfObject" defaultValue="ManagedScaleRepresentation" />
+//    d:TextDomainReference/r:TypeOfObject" defaultValue="ManagedTextRepresentation" />
+//    d:NumericDomainReference/r:TypeOfObject" defaultValue="ManagedNumericRepresentation"/>
+//    d:DateTimeDomainReference/r:TypeOfObject" defaultValue="ManagedDateTimeRepresentation" />
+
+
     private final String xmlDomainReference =
         "%3$s<d:%1$sDomainReference isExternal=\"false\"  isReference=\"true\" lateBound=\"false\">\n" +
             "%3$s\t%2$s" +

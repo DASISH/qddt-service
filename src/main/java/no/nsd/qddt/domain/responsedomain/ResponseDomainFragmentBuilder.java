@@ -22,7 +22,7 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
         "\t\t\t</d:StructuredMixedResponseDomain>\n";
 
     private final String xmlCodeDomRef =
-        "%1$s<d:CodeDomain blankIsMissingValue = \"false\" classificationLevel = \"%2$s>\"\n" +
+        "%1$s<d:CodeDomain blankIsMissingValue = \"false\" classificationLevel = \"%2$s\">\n" +
         "%3$s" +
         "%4$s" +
         "%1$s</d:CodeDomain>\n";
@@ -57,9 +57,14 @@ public class ResponseDomainFragmentBuilder extends XmlDDIFragmentBuilder<Respons
     public ResponseDomainFragmentBuilder(ResponseDomain responseDomain) {
         super(responseDomain);
 
-        List<Category> children =  entity.getResponseKind().equals( ResponseKind.MIXED) ?
-            responseDomain.getManagedRepresentation().getChildren() : 
-            List.of(responseDomain.getManagedRepresentation());
+        List<Category> children;
+        if (entity.getResponseKind().equals( ResponseKind.MIXED )) {
+            children = responseDomain.getManagedRepresentation().getChildren();
+        } else {
+            List<Category> categories = new java.util.ArrayList<>();
+            categories.add( responseDomain.getManagedRepresentation() );
+            children = categories;
+        }
 
         manRep = children.stream()
             .map(item ->  new FragmentBuilderManageRep(item, this.entity.getDisplayLayout() ))

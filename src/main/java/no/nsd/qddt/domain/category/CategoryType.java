@@ -30,7 +30,7 @@ public enum CategoryType {
     /*
         Missing values: CategoryList/CodeList that are used as missingvalues.
      */
-    MISSING_GROUP("MissingValues","CategoryList/CodeList that are used as missingvalues",""),
+    MISSING_GROUP("MissingValue","CategoryList/CodeList that are used as missingvalues",""),
     /*
         List: CategoryList/CodeList                                 ,NOT_IMPLEMENTED: xml:lang |isMaintainable |isSystemMissingValue
      */
@@ -38,7 +38,7 @@ public enum CategoryType {
     /*
         CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs,NOT_IMPLEMENTED: blankIsMissingValue
      */
-    SCALE("ScaleDomain","CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs",""),
+    SCALE("Scale","CategoryGroup/root -> ScaleDomain/ input is CODE/VALUE pairs",""),
     /*
         ONLY for CategoryRoot -> a collection of different responsedomains
      */

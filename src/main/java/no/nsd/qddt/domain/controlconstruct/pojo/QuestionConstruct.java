@@ -47,7 +47,7 @@ public class QuestionConstruct  extends ControlConstruct {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
         joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
-    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>(0);
+    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
 
     @Transient

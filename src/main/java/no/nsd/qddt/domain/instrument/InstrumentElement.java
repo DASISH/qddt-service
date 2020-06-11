@@ -99,7 +99,7 @@ public class InstrumentElement  implements Cloneable {
                 .collect( Collectors.toSet()) );
             parameters.addAll(
                 ((ControlConstruct) elementRef.getElement()).getInParameter().stream()
-                    .map( p -> new InstrumentParameter(p,null) )
+                    .map( p -> new InstrumentParameter(p.getName(),null) )
                     .collect( Collectors.toSet()) );
         }
         if (elementRef.getElement() instanceof QuestionConstruct) {

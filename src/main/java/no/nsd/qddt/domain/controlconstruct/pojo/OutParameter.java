@@ -68,7 +68,7 @@ public class OutParameter implements IParameter {
         "%3$s\t<r:Alias>%2$s</r:Alias>\n" +
         "%3$s</r:OutParameter>\n";
     public String toDDIXml(AbstractEntityAudit entity, String tabs) {
-        return String.format( PARAM_FORMAT,  entity.getAgency().getName() + ":" + entity.getVersion().toDDIXml() , getName(),tabs).trim();
+        return String.format( PARAM_FORMAT,  entity.getAgency().getName() + ":" + entity.getVersion().toDDIXml() , getName(),tabs);
     }
 
 

@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.interfaces.IParameter;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
@@ -70,14 +71,14 @@ public class Sequence extends ControlConstruct {
     }
 
     @Override
-    public Set<String> getInParameter() {
+    public Set<IParameter> getInParameter() {
         return getSequence().stream()
             .filter( p -> p.getElement() != null )
             .flatMap( s -> s.getElement().getInParameter().stream() )
             .collect( Collectors.toSet()) ;
     }
 
-    public Set<OutParameter> getOutParameter() {
+    public Set<IParameter> getOutParameter() {
         return getSequence().stream()
             .filter( p -> p.getElement() != null )
             .flatMap( s -> s.getElement().getOutParameter().stream() )
