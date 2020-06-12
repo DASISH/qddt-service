@@ -133,6 +133,7 @@ public class QuestionConstruct  extends ControlConstruct {
      this function is useful for populating ControlConstructInstructions after loading from DB
       */
     public void populateInstructions(){
+        LOG.info("ConstructInstructions size" + getControlConstructInstructions().size() );
         setPreInstructions(getControlConstructInstructions().stream()
             .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
             .map(ControlConstructInstruction::getInstruction)

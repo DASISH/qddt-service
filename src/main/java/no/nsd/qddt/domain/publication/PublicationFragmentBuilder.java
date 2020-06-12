@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
@@ -12,25 +12,21 @@ import java.util.stream.Collectors;
 /**
  * @author Stig Norland
  */
-public class InstrumentFragmentBuilder extends XmlDDIFragmentBuilder<Instrument> {
-    private final String xmlInstrument=
+public class PublicationFragmentBuilder extends XmlDDIFragmentBuilder<Publication> {
+    private final String xmlPublication=
         "%1$s" +
-        "\t\t\t<d:ConstructName>\n" +
-        "\t\t\t\t<r:String>%3$s</r:String>\n" +
-        "\t\t\t</d:ConstructName>\n" +
-        "\t\t\t<r:Label>\n" +
-        "\t\t\t\t<r:Content %2$s>%4$s</r:Content>\n" +
-        "\t\t\t</r:Label>\n" +
-        "%5$s" +
-        "%6$s" +
-        "%7$s";
+        "\t\t\t<d:PublicationName>\n" +
+        "\t\t\t\t<r:String>%2$s</r:String>\n" +
+        "\t\t\t</d:PublicationName>\n" +
+        "%3$s" +
+        "%4$s";
 
 //    r:ConceptReference/r:URN"/>
 //    r:ConceptReference/r:TypeOfObject" defaultValue="Concept" fixedValue="true"/>
 
     protected List<AbstractXmlBuilder> children;
 
-    public InstrumentFragmentBuilder(Instrument entity) {
+    public PublicationFragmentBuilder(Publication entity) {
         super(entity);
         children = new LinkedList<>();
     }
@@ -39,11 +35,9 @@ public class InstrumentFragmentBuilder extends XmlDDIFragmentBuilder<Instrument>
     @Override
     public String getXmlFragment() {
         if (children.size() == 0) addChildren( );
-        return String.format( xmlInstrument,
+        return String.format( xmlPublication,
             getXmlHeader(entity),
-            getXmlLang( entity ),
             entity.getName(),
-            entity.getLabel(),
             children.stream().map( c -> c.getXmlEntityRef( 3 ) ).collect( Collectors.joining() ),
             getXmlFooter(entity));
     }
@@ -56,8 +50,8 @@ public class InstrumentFragmentBuilder extends XmlDDIFragmentBuilder<Instrument>
     }
 
     private void addChildren() {
-        children.addAll( entity.getSequence().stream()
-            .map( seq -> seq.getElementRef().getElement().getXmlBuilder()  )
+        children.addAll( entity.getPublicationElements().stream()
+            .map( pel -> pel.getElement().getXmlBuilder()  )
             .collect( Collectors.toList()) );
     }
 

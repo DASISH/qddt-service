@@ -1,10 +1,11 @@
 package no.nsd.qddt.domain.publication;
 
-import java.util.List;
-
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+
+import java.util.List;
 
 /**
  * @author Stig Norland
@@ -19,7 +20,7 @@ private Long statusId;
 
 private PublicationStatus status;
 
-private List<ElementRef>  publicationElements;
+private List<ElementRef<AbstractEntityAudit>>  publicationElements;
 
 public PublicationJson(Publication publication) {
     super(publication);
@@ -43,7 +44,7 @@ public PublicationStatus getStatus() {
 }
 
 
-public List<ElementRef> getPublicationElements() {
+public List<ElementRef<AbstractEntityAudit>> getPublicationElements() {
     return publicationElements;
 }
 

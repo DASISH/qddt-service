@@ -1,12 +1,15 @@
 package no.nsd.qddt.domain.publication;
 
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.interfaces.IElementRef;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus.Published;
+import no.nsd.qddt.exception.StackTraceFilter;
 import no.nsd.qddt.security.SecurityContext;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,9 +133,9 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public ElementRef getDetail(IElementRef publicationElement) {
-        return (ElementRef)
-                new ElementLoader(serviceLoader.getService(publicationElement.getElementKind()))
+    public ElementRef<?> getDetail(IElementRef publicationElement) {
+        return (ElementRef<?>)
+            new ElementLoader<>( serviceLoader.getService( publicationElement.getElementKind() ) )
                 .fill( publicationElement );
     }
 
@@ -153,9 +156,19 @@ public class PublicationServiceImpl implements PublicationService {
     private Publication postLoadProcessing(Publication instance) {
         if (instance.getStatus().getPublished().ordinal() > Published.NOT_PUBLISHED.ordinal())
             showPrivate = false;
-
+        Hibernate.initialize(instance.getPublicationElements());
+        if (StackTraceFilter.stackContains( "getPdf", "getXml" )) {
+            instance.getPublicationElements().forEach( this::loadDetail );
+        }
         instance.setChangeComment( null );
         return instance;
+    }
+
+
+    public ElementRef<AbstractEntityAudit> loadDetail(ElementRef<AbstractEntityAudit> element) {
+        return (ElementRef<AbstractEntityAudit>)
+            new ElementLoader<>(
+                serviceLoader.getService( element.getElementKind() ) ).fill( element );
     }
 
 

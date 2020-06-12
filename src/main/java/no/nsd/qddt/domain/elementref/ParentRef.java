@@ -26,7 +26,7 @@ public class ParentRef<T extends IRefs> implements IParentRef {
     public T entity;
 
     public ParentRef(final T entity) {
-        assert entity != null;
+        if (entity == null) return;
         try {
             name = entity.getName();
             id = entity.getId();
@@ -35,7 +35,7 @@ public class ParentRef<T extends IRefs> implements IParentRef {
             parentRef = entity.getParentRef();
             this.entity = entity;
         } catch (final NullPointerException npe) {
-            LOG.error("ParentRef NullPointerException");
+            LOG.error(StackTraceFilter.filter(npe.getStackTrace()).stream().map(a -> a.toString()).findFirst().get());
         } catch (final Exception ex) {
             LOG.error(ex.getMessage());
             StackTraceFilter.filter(ex.getStackTrace()).stream().map(a -> a.toString()).forEach(LOG::info);

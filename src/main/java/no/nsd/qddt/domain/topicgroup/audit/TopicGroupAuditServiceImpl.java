@@ -101,16 +101,13 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
             Hibernate.initialize( instance.getStudy() );
 
-            if (instance.getParentRef() == null)
-                LOG.error( "no parentRef!" );
-            else
-                LOG.info(instance.getParentRef().toString());
-
             Hibernate.initialize(instance.getConcepts());
             instance.getConcepts().forEach(this::postLoadProcessing);
 
             Hibernate.initialize(instance.getTopicQuestionItems());
             instance.getTopicQuestionItems().forEach( qiLoader::fill );
+
+            Hibernate.initialize(instance.getOtherMaterials());
 
             instance.setComments(loadComments(instance.getId()));
 

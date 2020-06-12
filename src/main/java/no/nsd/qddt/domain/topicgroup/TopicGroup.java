@@ -15,6 +15,7 @@ import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
@@ -75,8 +76,9 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
     @OrderColumn(name="topicgroup_idx")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
-    private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>();
+    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",
+        joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
+    private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>(0);
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -89,11 +91,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_OTHER_MATERIAL",
         joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
-        private List<OtherMaterial> otherMaterials = new ArrayList<>();
+    private List<OtherMaterial> otherMaterials = new ArrayList<>(0);
 
     @Transient
     private ParentRef<Study> parentRef;
-
 
     private boolean isArchived;
 
@@ -146,16 +147,23 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     }
 
     public List<OtherMaterial> getOtherMaterials() {
-        try {
-            return otherMaterials;
-        } catch (Exception ex ){
-            LOG.error( ex.getMessage() );
-            return null;
-        }
+        return otherMaterials;
     }
 
     public void setOtherMaterials(List<OtherMaterial> otherMaterials) {
         this.otherMaterials = otherMaterials;
+    }
+
+    public void addOtherMaterial(OtherMaterial otherMaterial) {
+        if (this.otherMaterials.stream().noneMatch(cqi->cqi.equals( otherMaterial ))) {
+
+            otherMaterials.add(otherMaterial);
+            this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+            if (StringTool.IsNullOrEmpty( getChangeComment()))
+                this.setChangeComment("Other material added");
+        }
+        else
+            LOG.debug("OtherMaterial not inserted, match found" );
     }
 
     public String getDescription() {
@@ -200,7 +208,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
     @Override
     public ParentRef<Study> getParentRef() {
-        if (parentRef == null )
+        if (parentRef == null && getStudy() != null )
             parentRef = new ParentRef<>( getStudy() );
         return parentRef;
     }

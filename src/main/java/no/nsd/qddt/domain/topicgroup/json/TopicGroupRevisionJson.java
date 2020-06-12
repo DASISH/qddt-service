@@ -19,7 +19,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
 
     private static final long serialVersionUID = 2435677656441L;
 
-	private String abstractDescription;
+	  private String abstractDescription;
 
     private List<ElementRef<QuestionItem>> topicQuestionItems = new ArrayList<>();
 
@@ -125,7 +125,7 @@ public class TopicGroupRevisionJson extends AbstractJsonEdit {
     public String toString() {
         return String.format(
                 "TopicGroupRevisionJson (abstractDescription=%s, topicQuestions=%s, concepts=%s, authors=%s, otherMaterials=%s, comments=%s)",
-                this.abstractDescription, this.topicQuestionItems, this.concepts, this.authors, this.otherMaterials, this.comments);
+                this.abstractDescription, this.topicQuestionItems, this.concepts, this.authors, this.otherMaterials.size(), this.comments);
     }
 
     public boolean isArchived() {

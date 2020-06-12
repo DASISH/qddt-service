@@ -57,7 +57,7 @@ public class InstrumentElement  implements Cloneable {
 
 
     @Embedded
-    private ElementRef elementRef;
+    private ElementRef<ControlConstruct> elementRef;
 
     public InstrumentElement() {
         super();
@@ -85,23 +85,21 @@ public class InstrumentElement  implements Cloneable {
         this.parameters = parameters;
     }
 
-    public ElementRef getElementRef() {
+    public ElementRef<ControlConstruct> getElementRef() {
         return elementRef;
     }
 
 
-    public void setElementRef(ElementRef elementRef) {
+    public void setElementRef(ElementRef<ControlConstruct> elementRef) {
         System.out.println("setElementRef " + elementRef);
-        if (elementRef.getElement() instanceof ControlConstruct) {
             parameters.addAll(
-            ((ControlConstruct) elementRef.getElement()).getOutParameter().stream()
+            (elementRef.getElement()).getOutParameter().stream()
                 .map( o -> new InstrumentParameter(o.getName(), o.getReferencedId() ))
                 .collect( Collectors.toSet()) );
             parameters.addAll(
-                ((ControlConstruct) elementRef.getElement()).getInParameter().stream()
+                (elementRef.getElement()).getInParameter().stream()
                     .map( p -> new InstrumentParameter(p.getName(),null) )
                     .collect( Collectors.toSet()) );
-        }
         if (elementRef.getElement() instanceof QuestionConstruct) {
             QuestionConstruct qc = (QuestionConstruct) elementRef.getElement();
             elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionItemRef().getText()));

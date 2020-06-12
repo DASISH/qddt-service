@@ -1,7 +1,12 @@
 package no.nsd.qddt.domain.instrument;
 
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
+import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +34,9 @@ class InstrumentServiceImpl implements InstrumentService {
 
     private final InstrumentRepository instrumentRepository;
     private final InstrumentAuditService auditService;
+
+    @Autowired
+    ElementServiceLoader serviceLoader;
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -146,26 +154,29 @@ class InstrumentServiceImpl implements InstrumentService {
     private Instrument loadDetail(Instrument instrument) {
         instrument.setChangeComment( null );
         Hibernate.initialize(instrument.getSequence());
-//        instrument.getSequence().stream().forEach( this::loadDetails );
+        if (StackTraceFilter.stackContains( "getPdf", "getXml" )) {
+            instrument.getSequence().forEach( this::loadDetails );
+        }
         return  instrument;
     }
 
     private InstrumentElement loadDetails(InstrumentElement instance) {
         instance.getSequence().stream().forEach( this::loadDetails );
-        return  loadDetail( instance) ;
+        return loadDetail( instance) ;
     }
 
     private InstrumentElement loadDetail(InstrumentElement element) {
-//        LOG.info("loadDetails " + element.getElementRef().getName());
-
-//        if ( element.getElementRef().getElementKind() == ElementKind.QUESTION_CONSTRUCT) {
-//            LOG.info("loadDetail QC");
-//            ElementRef ref = (ElementRef) ccLoader.fill( element.getElementRef());
-//            element.setElementRef(ref);
-//        }
+            element.setElementRef( getDetail( element.getElementRef()));
         return element;
     }
 
 
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
+    public ElementRef<ControlConstruct> getDetail(ElementRef<ControlConstruct> element) {
+        return (ElementRef<ControlConstruct>)
+            new ElementLoader<ControlConstruct>(
+                serviceLoader.getService( element.getElementKind() ) ).fill( element );
+    }
 
 }

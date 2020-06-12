@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.CREATED;
+
 
 /**
  * @author Stig Norland
@@ -62,19 +64,25 @@ public class TopicGroupController extends AbstractController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/createfile", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-    public TopicGroupJson createWithFile(@RequestParam("files") MultipartFile[] files,@RequestParam("topicgroup") String jsonString) throws IOException {
+    public TopicGroupJson createWithFile(@RequestParam("files") MultipartFile[] multipartFiles,@RequestParam("topicgroup") String jsonString) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        TopicGroup topicGroup = mapper.readValue( jsonString, TopicGroup.class );
 
-        TopicGroup instance = mapper.readValue( jsonString, TopicGroup.class );
-
-        if (files != null && files.length > 0) {
-            for (MultipartFile multipartFile : files) {
-                instance.getOtherMaterials().add( ioService.saveFile( multipartFile, instance.getId() ));
+        if (multipartFiles != null && multipartFiles.length > 0) {
+            LOG.info( "got new files!!!" );
+            if (topicGroup.getId() == null) {
+                topicGroup.setId( UUID.randomUUID() );
             }
+            for (MultipartFile file : multipartFiles) {
+                LOG.info( file.getName() );
+                topicGroup.addOtherMaterial(ioService.saveFile( file, topicGroup.getId() ));
+            }
+            if (CREATED.equals( topicGroup.getChangeKind() ))
+                topicGroup.setChangeKind( null );
         }
-        
-        return new TopicGroupJson(service.save(instance));
+
+        return new TopicGroupJson(service.save(topicGroup));
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)

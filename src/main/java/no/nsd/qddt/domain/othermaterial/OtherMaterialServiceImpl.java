@@ -43,6 +43,7 @@ class OtherMaterialServiceImpl implements OtherMaterialService {
             om.setFileName(getNextFileName(filePath));
             filePath = Paths.get(getFolder(ownerId.toString()),om.getFileName());
         }
+
         Files.copy(multipartFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return om;

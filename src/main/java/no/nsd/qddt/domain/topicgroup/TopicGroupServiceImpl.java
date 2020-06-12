@@ -170,6 +170,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     private TopicGroup prePersistProcessing(TopicGroup instance) {
         if (instance.getId() == null) {
             if (instance.studyId != null){
+                LOG.info( "Save topic by study" );
                 studyService.findOne(instance.studyId).addTopicGroup(instance);
             }
         }
@@ -198,11 +199,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
                     .filter( p -> IsNullOrTrimEmpty(p.getName()) )
                     .forEach( qiLoader::fill );
             }
-
-            if (instance.getParentRef() == null)
-                LOG.error( "no parentRef!" );
-            else
-                LOG.info(instance.getParentRef().toString());
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);

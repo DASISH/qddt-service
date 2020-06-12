@@ -16,6 +16,7 @@ import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.universe.UniverseService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,6 +200,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     private <S extends ControlConstruct> S loadQuestionConstruct(QuestionConstruct instance) {
+        Hibernate.initialize( instance.getControlConstructInstructions() );
         instance.populateInstructions();                // instructions has to be unpacked into pre and post instructions
         try {
             if(instance.getQuestionItemRef() != null &&

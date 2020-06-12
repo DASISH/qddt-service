@@ -24,6 +24,7 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         this.entity = entity;
     }
 
+
     @Override
     public void addXmlFragments( Map<ElementKind, Map<String,String>> fragments) {
         ElementKind kind=null;
@@ -36,13 +37,14 @@ public abstract class XmlDDIFragmentBuilder<T extends AbstractEntityAudit> exten
         }
     }
 
-    public String getUrnId() {
-        return  String.format( "%1$s:%2$s:%3$s",  entity.getAgency().getName() , entity.getId() , entity.getVersion().toDDIXml());
-    }
-
     @Override
     public String getXmlEntityRef(int depth) {
         return String.format( xmlRef,  entity.getClass().getSimpleName(), getXmlURN(entity)  , String.join("", Collections.nCopies(depth, "\t")) );
+    }
+
+
+    public String getUrnId() {
+        return  String.format( "%1$s:%2$s:%3$s",  entity.getAgency().getName() , entity.getId() , entity.getVersion().toDDIXml());
     }
 
 

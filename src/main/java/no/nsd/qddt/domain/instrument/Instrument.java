@@ -158,8 +158,9 @@ public class Instrument extends AbstractEntityAudit {
 
     @Override
     public AbstractXmlBuilder getXmlBuilder() {
-        return null;
-	}
+        return new InstrumentFragmentBuilder(this  );
+    }
+
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {

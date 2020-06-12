@@ -19,4 +19,5 @@ public interface IElementRef<T extends IEntityRef> extends Cloneable {
 
     T getElement();
     void setElement(T element);
+
 }
