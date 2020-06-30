@@ -125,7 +125,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
                 while(matcher.find())
                 {
-                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
+                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase()) );
                 }
 
                 ResponseDomain rd = instance.getQuestionItemRef().getElement().getResponseDomainRef().getElement();
@@ -137,11 +137,11 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
                 matcher = TAGS.matcher(rds);
                 while(matcher.find())
                 {
-                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
+                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase()) );
                 }
 
                 Set<IParameter> outParameters = new java.util.HashSet<>();
-                outParameters.add( new OutParameter( instance.getName(), instance.getId() ) );
+                outParameters.add( new OutParameter( instance.getName() ) );
                 instance.setOutParameter( outParameters );
 
             }
@@ -154,17 +154,19 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
 
     private ConditionConstruct postLoadProcessing(ConditionConstruct instance){
+        try {
+            Matcher matcher = TAGS.matcher( instance.getCondition() );
 
-        Matcher matcher = TAGS.matcher(instance.getCondition());
+            while (matcher.find()) {
+                instance.getInParameter().add( new OutParameter( matcher.group( 1 ).toUpperCase() ) );
+            }
 
-        while(matcher.find())
-        {
-            instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
+            Set<IParameter> outParameters = new java.util.HashSet<>();
+            outParameters.add( new OutParameter( instance.getName() ) );
+            instance.setOutParameter( outParameters );
+        } catch (Exception ex) {
+            LOG.error( "postLoadProcessing", ex );
         }
-
-        Set<IParameter> outParameters = new java.util.HashSet<>();
-        outParameters.add( new OutParameter( instance.getName(), instance.getId() ) );
-        instance.setOutParameter( outParameters );
         return instance;
     }
 
@@ -175,9 +177,18 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
         while(matcher.find())
         {
-            instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase(), null) );
+            instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase()) );
         }
 
         return instance;
     }
+
+    private Sequence postLoadProcessing(Sequence instance){
+
+//          instance.getSequence()
+
+        return instance;
+    }
+
+
 }

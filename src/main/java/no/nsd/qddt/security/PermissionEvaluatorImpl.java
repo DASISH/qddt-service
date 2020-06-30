@@ -43,7 +43,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
 
 
     private boolean hasPrivilege(QDDTUserDetails details, AbstractEntity entity, String permission){
-        LOG.info( details.getUsername() + ": " + permission + ": " + toJson(entity)  );
+//        LOG.info( details.getUsername() + ": " + permission + ": " + toJson(entity)  );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
             return true;
@@ -56,7 +56,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
 
                 return isMemberOfAgency( details.getUser().getAgency(), (AbstractEntityAudit )entity );
             default:
-                LOG.info( "hasPrivilege default: fail" );
+                LOG.info( "hasPrivilege default: fail: " + permission );
                 return false;
         }
     }

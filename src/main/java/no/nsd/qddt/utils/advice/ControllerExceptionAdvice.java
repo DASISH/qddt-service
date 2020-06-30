@@ -235,6 +235,8 @@ public class ControllerExceptionAdvice {
 
         message.setUserfriendlyMessage( getRootCauseMessage(e.getCause()));
         logger.error(e.getClass().getSimpleName(),e);
+        logger.error( req.getRequestURI()  );
+        logger.error("stacktrace", e.fillInStackTrace() );
 
         return message;
     }

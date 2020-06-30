@@ -13,17 +13,35 @@ import java.util.UUID;
 @Embeddable
 public class InstrumentParameter implements Cloneable, IParameter {
 
+    private UUID id;
+
     private String name;
 
     private UUID referencedId;
 
     public InstrumentParameter() {}
 
-    public InstrumentParameter(String name, UUID id) {
-        setName(name);
-        setReferencedId(id);
+    public InstrumentParameter(String name, UUID referencedId) {
+        this.id = UUID.randomUUID();
+        this.name = name;
+        this.referencedId = referencedId;
     }
-    
+
+    public InstrumentParameter(UUID id, String name, UUID referencedId) {
+        this.id = id;
+        this.name = name;
+        this.referencedId = referencedId;
+    }
+
+    @Override
+    public UUID getId() {
+        return this.id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -43,19 +61,18 @@ public class InstrumentParameter implements Cloneable, IParameter {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InstrumentParameter)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         InstrumentParameter that = (InstrumentParameter) o;
 
-        if (name != null ? !name.equals( that.name ) : that.name != null) return false;
+        if (!id.equals( that.id )) return false;
+        if (!name.equals( that.name )) return false;
         return referencedId != null ? referencedId.equals( that.referencedId ) : that.referencedId == null;
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (referencedId != null ? referencedId.hashCode() : 0);
-        return result;
+        return id.hashCode();
     }
 
     @Override
@@ -66,7 +83,7 @@ public class InstrumentParameter implements Cloneable, IParameter {
     }
 
     public InstrumentParameter clone() {
-        return new InstrumentParameter( name, referencedId );
+        return new InstrumentParameter( UUID.randomUUID(), name, referencedId );
     }
 
 }

@@ -9,17 +9,34 @@ import java.util.UUID;
  * @author Stig Norland
  */
 public class OutParameter implements IParameter {
+    private UUID id;
     private String name;
     private UUID referencedId;
 
     public OutParameter() {
     }
 
-    public OutParameter(String name, UUID referencedId) {
+
+    public OutParameter(String name) {
+        this.id = UUID.randomUUID();
+        this.name = name;
+    }
+
+    public OutParameter(UUID id, String name, UUID referencedId) {
+        this.id = id;
         this.name = name;
         this.referencedId = referencedId;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -28,6 +45,7 @@ public class OutParameter implements IParameter {
         this.name = name;
     }
 
+    @Override
     public UUID getReferencedId() {
         return referencedId;
     }
@@ -43,15 +61,12 @@ public class OutParameter implements IParameter {
 
         OutParameter that = (OutParameter) o;
 
-        if (name != null ? !name.equals( that.name ) : that.name != null) return false;
-        return referencedId != null ? referencedId.equals( that.referencedId ) : that.referencedId == null;
+        return name != null ? name.equals( that.name ) : that.name == null;
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (referencedId != null ? referencedId.hashCode() : 0);
-        return result;
+        return name != null ? name.hashCode() : 0;
     }
 
     @Override

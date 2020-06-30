@@ -60,7 +60,7 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor, IArch
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OrderBy(value = "name ASC")
+    @OrderBy(value = "name ASC,email DESC")
     @JoinTable(name = "SURVEY_PROGRAM_AUTHORS",
             joinColumns = {@JoinColumn(name ="survey_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
