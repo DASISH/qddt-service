@@ -318,12 +318,12 @@ public class Concept extends AbstractEntityAudit implements IArchived, IRefs {
 
     @PreRemove
     public void beforeRemove(){
-        LOG.debug(" Concept pre remove");
-        if (this.getParent() != null) {
-            this.getParent().getChildren().removeIf(p->p.getId() == this.getId());
-            AtomicInteger i= new AtomicInteger();
-        }
-    }
+    //     LOG.debug(" Concept pre remove");
+    //     if (this.getParent() != null) {
+    //         this.getParent().getChildren().removeIf(p->p.getId() == this.getId());
+    //         AtomicInteger i= new AtomicInteger();
+    //     }
+    // }
 
     @Override
     protected void beforeUpdate() {

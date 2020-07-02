@@ -1,10 +1,8 @@
 package no.nsd.qddt.domain.instruction.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.domain.instruction.audit.InstructionAuditService;
-import no.nsd.qddt.jsonviews.View;
+import java.util.Collection;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +13,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-import java.util.UUID;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.instruction.Instruction;
+import no.nsd.qddt.domain.instruction.audit.InstructionAuditService;
 
 /**
  * @author Stig Norland

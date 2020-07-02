@@ -1,10 +1,8 @@
 package no.nsd.qddt.domain.universe.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.universe.Universe;
-import no.nsd.qddt.domain.universe.audit.UniverseAuditService;
-import no.nsd.qddt.jsonviews.View;
+import java.util.Collection;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +13,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-import java.util.UUID;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.universe.Universe;
+import no.nsd.qddt.domain.universe.audit.UniverseAuditService;
 
 /**
  * @author Stig Norland
@@ -35,20 +39,19 @@ public class UniverseAuditController {
     }
 
 
-    // @JsonView(View.Audit.class)
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public Revision<Integer, Universe> getLastRevision(@PathVariable("id") UUID id) {
         return auditService.findLastChange(id);
     }
 
     // @JsonView(View.Audit.class)
-    @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}/{revision}")
     public Revision<Integer, Universe> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision);
     }
 
     // @JsonView(View.Audit.class)
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}/all")
     public HttpEntity<PagedResources<Revision<Integer, Universe>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",

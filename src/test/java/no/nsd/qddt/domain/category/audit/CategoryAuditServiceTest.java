@@ -70,7 +70,7 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void getfirstAndLastRevisionTest() throws Exception {
+    public void getFirstAndLastRevisionTest() throws Exception {
         Revision<Integer, Category> revision = categoryAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",

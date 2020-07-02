@@ -146,44 +146,6 @@ public class Author extends AbstractEntity {
         this.topicGroups = topicGroups;
     }
 
-    //    public void addSurvey(SurveyProgram survey){
-//        if (!surveyPrograms.contains(survey)) {
-//            surveyPrograms.add(survey);
-//        }
-//    }
-//
-//    public void addStudy(Study study){
-//        if (!studies.contains(study)) {
-//            this.studies.add(study);
-//        }
-//    }
-//
-//    public void addTopic(TopicGroup topic){
-//        if (!topicGroups.contains(topic)) {
-//            this.topicGroups.add(topic);
-//        }
-//    }
-//
-//
-//    public void removeSurvey(SurveyProgram surveyProgram){
-//        if (surveyPrograms.contains(surveyProgram))
-//            surveyPrograms.remove(surveyProgram);
-//    }
-//
-//    public void removeStudy(Study study){
-//        if (studies.contains(study)) {
-//            this.studies.remove(study);
-//        }
-//    }
-//
-//    public void removeTopic(TopicGroup topicGroup){
-//        if (topicGroups.contains(topicGroup)) {
-//            this.topicGroups.remove(topicGroup);
-//        }
-//    }
-
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -230,7 +192,7 @@ public class Author extends AbstractEntity {
 
     @PrePersist
     private void onInsert(){
-        LOG.info("PrePersist " + this.getClass().getSimpleName());
+        // LOG.info("PrePersist " + this.getClass().getSimpleName());
         User user = SecurityContext.getUserDetails().getUser();
         setModifiedBy( user );
     }
@@ -238,7 +200,7 @@ public class Author extends AbstractEntity {
     @PreUpdate
     private void onUpdate() {
         try {
-            LOG.info( "PreUpdate " + this.getClass().getSimpleName() + " - " + getName() );
+            // LOG.info( "PreUpdate " + this.getClass().getSimpleName() + " - " + getName() );
             User user = SecurityContext.getUserDetails().getUser();
             setModifiedBy( user );
         } catch (Exception ex) {

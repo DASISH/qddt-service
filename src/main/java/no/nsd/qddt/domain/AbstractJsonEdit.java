@@ -21,6 +21,11 @@ import java.util.UUID;
  */
 public  abstract class AbstractJsonEdit implements Serializable, IEntityRef {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Type(type="pg-uuid")
@@ -50,7 +55,7 @@ public  abstract class AbstractJsonEdit implements Serializable, IEntityRef {
         if (entity == null){
             LOG.error("Entity is null");
             StackTraceFilter.nsdStack().stream()
-                .map(a->a.toString())
+                .map(StackTraceElement::toString)
                 .forEach(LOG::info);
             return;
         }

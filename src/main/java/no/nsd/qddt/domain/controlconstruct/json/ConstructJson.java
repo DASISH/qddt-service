@@ -11,6 +11,11 @@ import java.util.List;
  */
 public class ConstructJson  extends AbstractJsonEdit {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6589197591383740935L;
+
     private String label;
 
     private List<OtherMaterial> otherMaterials;

@@ -12,6 +12,11 @@ import java.util.List;
  */
 public class ConstructSequenceJson extends ConstructJson {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7704864346435586898L;
+
     private List<ElementRef<ControlConstruct>> sequence;
 
     private String description;

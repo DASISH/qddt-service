@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
-import org.springframework.transaction.annotation.Transactional;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -58,7 +56,7 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
                 topicGroupAuditService.findRevisions(topicGroup.getId(), new PageRequest(0, 20));
 
         assertEquals("Excepted four revisions.",
-                revisions.getNumberOfElements(), 4);
+                4, revisions.getNumberOfElements());
     }
 
     @Test
@@ -67,7 +65,7 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
 
         assertEquals("Excepted initial TopicGroup object.",
                 revision.getEntity().hashCode(), topicGroup.hashCode());
-        assertEquals("Expected Name to be 'Third'", revision.getEntity().getName(), "Third");
+        assertEquals("Expected Name to be 'Third'", "Third", revision.getEntity().getName());
     }
 }
 

@@ -69,7 +69,7 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         group.getChildren().add(new CategoryBuilder()
                 .setLabel("Happy").createCategory());
         group.getChildren().add(new CategoryBuilder()
-                .setLabel("Inbetween").createCategory());
+                .setLabel("Between").createCategory());
         group.getChildren().add(new CategoryBuilder()
                 .setLabel("UnHappy").createCategory());
         group.getChildren().add(new CategoryBuilder()
@@ -161,7 +161,7 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
         aEntity.setManagedRepresentation(categoryService.findOne(UUID.fromString(groupId)));
         aEntity =entityService.save(aEntity);
 
-        mvc.perform(get("/responsedomain/createmixed?responseDomaindId="+aEntity.getId()+"&missingId="+missingId).header("Authorization", "Bearer " + accessToken))
+        mvc.perform(get("/responsedomain/createmixed?responseDomainId="+aEntity.getId()+"&missingId="+missingId).header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isCreated())
                 .andDo(print());
 

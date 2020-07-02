@@ -47,7 +47,7 @@ public class StudyAuditServiceTest  extends AbstractAuditServiceTest {
         study = studyService.findOne(study.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, Study> revision = studyAuditService.findLastChange(study.getId());
+        // Revision<Integer, Study> revision = studyAuditService.findLastChange(study.getId());
 
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, Study>> revisions = studyAuditService.findRevisions(

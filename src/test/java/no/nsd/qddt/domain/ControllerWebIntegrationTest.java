@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain;
 
-import no.nsd.qddt.domain.agency.AgencyService;
-import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.utils.BeforeSecurityContext;
 import no.nsd.qddt.utils.RestfulTestUtils;
 import org.junit.Before;
@@ -59,11 +57,11 @@ public abstract class ControllerWebIntegrationTest {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserService userService;
+    // @Autowired
+    // private UserService userService;
 
-    @Autowired
-    private AgencyService agencyService;
+    // @Autowired
+    // private AgencyService agencyService;
 
     @Before
     public void setup() {

@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
  */
 public class FileDownloadException extends RuntimeException {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2602852740974424455L;
     private static final Logger logger = LoggerFactory.getLogger(FileDownloadException.class);
 
     public FileDownloadException(String path) {

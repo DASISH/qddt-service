@@ -18,7 +18,12 @@ import java.util.stream.Collectors;
  */
 public class ConceptJsonEdit extends AbstractJsonEdit {
 
-    @Type(type="pg-uuid")
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5561643053338543873L;
+
+    @Type(type = "pg-uuid")
     private UUID id;
 
     private String name;

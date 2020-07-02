@@ -11,8 +11,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Map;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 
 /**
  * @author Stig Norland
@@ -49,9 +47,6 @@ public abstract class AbstractXmlBuilder {
         "\t\t\t\t<r:BasedOnRationaleCode></r:BasedOnRationaleCode>\n" +
         "\t\t\t</r:BasedOnObject>\n";
 
-
-//    @Value("${api.rooturl}")
-//    private String rooturl;
 
     public abstract void addXmlFragments( Map<ElementKind,Map<String,String>> fragments);
 
@@ -110,14 +105,15 @@ public abstract class AbstractXmlBuilder {
         return String.join( "", Collections.nCopies( depth, "\t" ) );
     }
 
-    protected String html5toXML(String html5){
-        // https://zenodo.org/record/259546
-        StringBuffer sb = new StringBuffer();
-        Pattern p = Pattern.compile("<[^>]*>",
-            Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        MatchResult result = p.matcher(html5)
-            .appendReplacement(sb,"").toMatchResult();
-        return sb.toString();
-    }
+    // protected String html5toXML(String html5){
+    //     // https://zenodo.org/record/259546
+    //     StringBuffer sb = new StringBuffer();
+    //     Pattern p = Pattern.compile("<[^>]*>",
+    //         Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+    //     MatchResult result = p.matcher(html5)
+    //         .appendReplacement(sb,"").toMatchResult();
+        
+    //     return sb.toString();
+    // }
 
 }

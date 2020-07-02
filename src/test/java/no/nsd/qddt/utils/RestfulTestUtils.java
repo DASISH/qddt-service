@@ -98,6 +98,8 @@ public class RestfulTestUtils {
      */
     private static HttpHeaders createBasicHeader(String username, String password){
         return new HttpHeaders(){
+            private static final long serialVersionUID = -4163461301389642349L;
+
             {
                 String auth = username + ":" + password;
                 byte[] encodedAuth = Base64.encodeBase64(

@@ -170,8 +170,8 @@ public class JwtUtil implements Serializable {
     }
 
     private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        final Date expirationDate = getExpirationDateFromToken(token);
+        return expirationDate.before(new Date());
     }
 
     private String generateToken(Map<String, Object> claims) {

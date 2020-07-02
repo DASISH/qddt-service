@@ -62,7 +62,7 @@ public class ResponseDomainAuditServiceTest extends AbstractAuditServiceTest {
                 responseDomainAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
 
         assertEquals("Excepted four revisions.",
-                revisions.getNumberOfElements(), 4);
+                4, revisions.getNumberOfElements());
     }
 
     @Test

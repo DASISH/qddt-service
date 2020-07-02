@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
+public class SurveyProgramAuditServiceTest extends AbstractAuditServiceTest {
 
     @Autowired
     private SurveyProgramService surveyProgramService;
@@ -57,7 +57,7 @@ public class SurveyProgramAuditServicTest extends AbstractAuditServiceTest {
         surveyProgram = surveyProgramService.findOne(surveyProgram.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, SurveyProgram> revision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
+        // Revision<Integer, SurveyProgram> revision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
 
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, SurveyProgram>> revisions = surveyProgramAuditService.findRevisions(

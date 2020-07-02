@@ -31,8 +31,8 @@ public class OthermaterialAuditServiceTest extends AbstractAuditServiceTest {
 //    @Autowired
 //    private QuestionService questionService;
 
-    @Autowired
-    private ControlConstructService controlConstructService;
+    // @Autowired
+    // private ControlConstructService controlConstructService;
 
 
 
@@ -43,15 +43,6 @@ public class OthermaterialAuditServiceTest extends AbstractAuditServiceTest {
 
 
         instrument = instrumentService.save(new Instrument());
-
-//        Question question = new Question();
-//        question.setQuestion("What does the fox say");
-//        question = questionService.save(question);
-//
-//        InstrumentQuestion instrumentQuestion =  new InstrumentQuestion();
-//        instrumentQuestion.setInstrument(instrument);
-//        instrumentQuestion.setQuestion(question);
-//        instrumentQuestionService.save(instrumentQuestion);
 
         instrument = instrumentService.findOne(instrument.getId());
 

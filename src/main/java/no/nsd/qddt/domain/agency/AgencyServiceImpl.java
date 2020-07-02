@@ -17,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import no.nsd.qddt.domain.user.UserService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 
 /**
@@ -29,12 +28,10 @@ class AgencyServiceImpl implements AgencyService {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private final AgencyRepository agencyRepository;
-    private final UserService userService;
 
     @Autowired
-    AgencyServiceImpl(AgencyRepository agencyRepository, UserService userService){
+    AgencyServiceImpl(AgencyRepository agencyRepository) {
         this.agencyRepository = agencyRepository;
-        this.userService = userService;
     }
 
     @Override
@@ -103,7 +100,7 @@ class AgencyServiceImpl implements AgencyService {
         try {
             Hibernate.initialize(instance.getUsers());
         } catch (Exception ex){
-            LOG.error("ConceptService.postLoadProcessing",ex);
+            LOG.error("AgencyService.postLoadProcessing",ex);
         }
         return instance;
     }
