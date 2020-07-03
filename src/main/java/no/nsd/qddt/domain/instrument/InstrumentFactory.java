@@ -24,9 +24,9 @@ public class InstrumentFactory implements IEntityFactory<Instrument> {
         dest.setExternalInstrumentLocation( source.getExternalInstrumentLocation() );
         dest.setInstrumentKind( source.getInstrumentKind() );
         dest.setSequence( source.getSequence().stream()
-            .map( InstrumentElement::clone ).collect( Collectors.toList() ));
-
-//        dest.setStudy( source.getStudy() );
+          .map( InstrumentElement::clone )
+          .collect(Collectors.toList()));
+ // ?? why       dest.setStudy( source.getStudy() );
 
         return dest;
 	}

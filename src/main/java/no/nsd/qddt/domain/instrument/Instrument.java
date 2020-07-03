@@ -6,6 +6,7 @@ import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -30,10 +31,26 @@ public class Instrument extends AbstractEntityAudit {
     @JoinColumn(name = "study_id", updatable = false)
     private Study study;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @OrderColumn(name = "_idx")
-    @JoinColumn(name = "instrument_id")
-    private List<InstrumentElement> sequence = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
+//    @OrderColumn(name = "_idx")
+//    @JoinColumn(name = "instrument_id")
+//    private List<InstrumentElement> sequence = new ArrayList<>();
+
+
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "instrument", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
+    @OrderColumn(name="instrument_element_idx")
+    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "instrumentElementIdx")
+    private List<InstrumentElement> sequence = new ArrayList<>(0);
+
+
+//    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
+//    @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
+//    @JoinColumn(name = "instrument_element_id")
+//    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
+//    private List<InstrumentElement> sequence = new ArrayList<>();
+
+
 
     private String description;
 
@@ -89,6 +106,7 @@ public class Instrument extends AbstractEntityAudit {
     public void setStudy(Study study) {
         this.study = study;
     }
+
 
     public List<InstrumentElement> getSequence() {
         return sequence;

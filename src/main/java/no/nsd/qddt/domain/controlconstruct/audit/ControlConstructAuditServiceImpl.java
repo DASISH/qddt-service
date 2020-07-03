@@ -6,7 +6,6 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.interfaces.IParameter;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -125,7 +124,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
                 while(matcher.find())
                 {
-                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase()) );
+                    instance.getInParameter().add( new InParameter( matcher.group(1).toUpperCase()) );
                 }
 
                 ResponseDomain rd = instance.getQuestionItemRef().getElement().getResponseDomainRef().getElement();
@@ -137,10 +136,10 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
                 matcher = TAGS.matcher(rds);
                 while(matcher.find())
                 {
-                    instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase()) );
+                    instance.getInParameter().add( new InParameter( matcher.group(1).toUpperCase()) );
                 }
 
-                Set<IParameter> outParameters = new java.util.HashSet<>();
+                Set<OutParameter> outParameters = new java.util.HashSet<>();
                 outParameters.add( new OutParameter( instance.getName() ) );
                 instance.setOutParameter( outParameters );
 
@@ -158,10 +157,10 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             Matcher matcher = TAGS.matcher( instance.getCondition() );
 
             while (matcher.find()) {
-                instance.getInParameter().add( new OutParameter( matcher.group( 1 ).toUpperCase() ) );
+                instance.getInParameter().add( new InParameter( matcher.group( 1 ).toUpperCase() ) );
             }
 
-            Set<IParameter> outParameters = new java.util.HashSet<>();
+            Set<OutParameter> outParameters = new java.util.HashSet<>();
             outParameters.add( new OutParameter( instance.getName() ) );
             instance.setOutParameter( outParameters );
         } catch (Exception ex) {
@@ -177,7 +176,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
         while(matcher.find())
         {
-            instance.getInParameter().add( new OutParameter( matcher.group(1).toUpperCase()) );
+            instance.getInParameter().add( new InParameter( matcher.group(1).toUpperCase()) );
         }
 
         return instance;

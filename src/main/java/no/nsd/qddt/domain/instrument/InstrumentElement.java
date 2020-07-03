@@ -1,66 +1,64 @@
 package no.nsd.qddt.domain.instrument;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.domain.controlconstruct.pojo.AbstractParameter;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.OutParameter;
+import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
  */
 @Audited
 @Entity
-public class InstrumentElement  implements Cloneable {
-
-    @JsonIgnore
-    @Transient
-    private final Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
+@Table(name = "INSTRUMENT_ELEMENT")
+public class InstrumentElement extends AbstractElementRef<ControlConstruct> {
 
     @Id
-    @Type(type="pg-uuid")
     @GeneratedValue(generator ="UUID")
     @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
     @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
-
-    @JsonBackReference(value = "parentRef")
     @ManyToOne()
-    @JoinColumn(name = "instrument_element_id",updatable = false,insertable = false)
+    @JsonBackReference(value = "parentRef")
+    @JoinColumn(name="instrument_element_id",insertable = false, updatable = false)
     private InstrumentElement parentReferenceOnly;
 
-    @JsonIgnore
-    @Column(name = "_idx" ,insertable = false, updatable = false)
-    private Integer index;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-    @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
-    @JoinColumn(name = "instrument_element_id")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
-    private List<InstrumentElement> sequence = new ArrayList<>();
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "INSTRUMENT_ELEMENT_PARAMETER",
-        joinColumns = @JoinColumn(name = "instrument_element_id", referencedColumnName = "id"))
-    public Set<InstrumentParameter> parameters = new HashSet<>();
+    @Column(name = "instrument_element_idx", insertable = false, updatable = false)
+    private int instrumentElementIdx;
 
 
-    @Embedded
-    private ElementRef<ControlConstruct> elementRef;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentReferenceOnly", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
+    @OrderColumn(name="instrument_element_idx")
+    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "instrumentElementIdx")
+    private List<InstrumentElement> sequence = new ArrayList<>(0);
+
+
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JsonBackReference(value = "instrumentRef")
+    @JoinColumn(name="instrument_id",updatable = false)
+    private Instrument instrument;
+
+    @OrderColumn(name="instrument_element_idx")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "instrumentElement", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
+    @AuditMappedBy(mappedBy = "instrumentElement", positionMappedBy = "instrumentElementIdx")
+    private Set<OutParameter>parameter = new HashSet<>(0);
 
     public InstrumentElement() {
+    }
+
+    public InstrumentElement(ElementRef<ControlConstruct> elementRef) {
         super();
+        setElement( elementRef.getElement() );
+        setParameter( elementRef.getElement().getInParameter() );
     }
 
     public UUID getId() {
@@ -71,58 +69,72 @@ public class InstrumentElement  implements Cloneable {
         this.id = id;
     }
 
+    public <S extends AbstractParameter>  Set<S> getParameter() {
+        return (Set<S>) parameter;
+    }
+
+    public <S extends AbstractParameter> void setParameter( Set<S>parameter) {
+        this.parameter = (Set<OutParameter>) parameter;
+    }
+
+    public InstrumentElement getParentReferenceOnly() {
+        return parentReferenceOnly;
+    }
+
+    public void setParentReferenceOnly(InstrumentElement parentReferenceOnly) {
+        this.parentReferenceOnly = parentReferenceOnly;
+    }
+
     public List<InstrumentElement> getSequence() {
         return sequence;
     }
+
     public void setSequence(List<InstrumentElement> sequence) {
         this.sequence = sequence;
     }
 
-    public Set<InstrumentParameter> getParameters() {
-        return parameters;
-    }
-    public void setParameters(Set<InstrumentParameter> parameters) {
-        this.parameters = parameters;
-    }
 
-    public ElementRef<ControlConstruct> getElementRef() {
-        return elementRef;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals( o )) return false;
 
+        InstrumentElement that = (InstrumentElement) o;
 
-    public void setElementRef(ElementRef<ControlConstruct> elementRef) {
-        System.out.println("setElementRef " + elementRef);
-            parameters.addAll(
-            (elementRef.getElement()).getOutParameter().stream()
-                .map( o -> new InstrumentParameter(o.getName(), o.getReferencedId() ))
-                .collect( Collectors.toSet()) );
-            parameters.addAll(
-                (elementRef.getElement()).getInParameter().stream()
-                    .map( p -> new InstrumentParameter(p.getName(),null) )
-                    .collect( Collectors.toSet()) );
-        if (elementRef.getElement() instanceof QuestionConstruct) {
-            QuestionConstruct qc = (QuestionConstruct) elementRef.getElement();
-            elementRef.setName( qc.getName() + " - " + removeHtmlTags(qc.getQuestionItemRef().getText()));
-        }
-
-        this.elementRef = elementRef;
+        if (instrumentElementIdx != that.instrumentElementIdx) return false;
+        return parentReferenceOnly != null ? parentReferenceOnly.equals( that.parentReferenceOnly ) : that.parentReferenceOnly == null;
     }
 
-
-    private String removeHtmlTags(String string) {
-        Matcher m = REMOVE_TAGS.matcher(string);
-        return m.replaceAll("");
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (parentReferenceOnly != null ? parentReferenceOnly.hashCode() : 0);
+        result = 31 * result + instrumentElementIdx;
+        return result;
     }
 
-    public InstrumentElement clone(){
-        InstrumentElement clone = new InstrumentElement();
-        clone.setElementRef( this.elementRef.clone() );
-        clone.setParameters( this.getParameters().stream()
-            .map(p ->  new InstrumentParameter(p.getName(), p.getReferencedId()) )
-            .collect( Collectors.toSet() ) );
-        clone.setSequence( this.sequence.stream()
-            .map( InstrumentElement::clone )
-            .collect( Collectors.toList() ) );
-        return clone;
+    @Override
+    public String toString() {
+        return "{\"_class\":\"InstrumentElement\", " +
+            "\"elementId\":" + (getElementId() == null ? "null" : getElementId()) + ", " +
+            "\"elementRevision\":" + (getElementRevision() == null ? "null" : "\"" + getElementRevision() + "\"") + ", " +
+            "\"elementKind\":" + (getElementKind() == null ? "null" : getElementKind()) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+//            "\"inParameter\":" + (inParameter == null ? "null" : Arrays.toString( inParameter.toArray() )) + ", " +
+//            "\"outParameter\":" + (outParameter == null ? "null" : Arrays.toString( outParameter.toArray() )) + ", " +
+            "\"parentReferenceOnly\":" + (parentReferenceOnly == null ? "null" : parentReferenceOnly) + ", " +
+            "\"version\":" + (getVersion() == null ? "null" : getVersion()) +
+            "}";
     }
+
+    @Override
+    public InstrumentElement clone() {
+        InstrumentElement retval = new InstrumentElement();
+        retval.setVersion( getVersion() );
+        retval.setName( getName() );
+        return  retval;
+    }
+
+
 }

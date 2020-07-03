@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.interfaces.IParameter;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -44,11 +43,12 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Transient
     @JsonSerialize
-    private Set<IParameter> inParameter = new HashSet<>(0);
+    private Set<InParameter> inParameter = new HashSet<>(0);
 
     @Transient
     @JsonSerialize
-    private Set<IParameter> outParameter = new HashSet<>(0);
+    private Set<OutParameter> outParameter = new HashSet<>(0);
+
 
     public ControlConstruct() {
         super();
@@ -76,19 +76,19 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
 
-    public Set<IParameter> getInParameter() {
+    public Set<InParameter> getInParameter() {
         return inParameter;
     }
 
-    public void setInParameter(Set<IParameter> inParameter) {
+    public void setInParameter(Set<InParameter> inParameter) {
         this.inParameter = inParameter;
     }
 
-    public Set<IParameter> getOutParameter() {
+    public Set<OutParameter> getOutParameter() {
         return outParameter;
     }
 
-    public void setOutParameter(Set<IParameter> outParameter) {
+    public void setOutParameter(Set<OutParameter> outParameter) {
         this.outParameter = outParameter;
     }
 

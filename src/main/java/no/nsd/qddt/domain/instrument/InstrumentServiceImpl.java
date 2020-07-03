@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -70,7 +70,7 @@ class InstrumentServiceImpl implements InstrumentService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public Instrument save(Instrument instance) {
-        System.out.println("save instrument ");
+//        System.out.println("save instrument ");
 
         return  instrumentRepository.save( prePersistProcessing( instance) );
     }
@@ -137,14 +137,21 @@ class InstrumentServiceImpl implements InstrumentService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );
 
-//        instance.getSequence().stream().forEach( seq -> {
-//            seq.getParameters()
-//        } );
-        // Nødvendig???
-//        instance.getSequence().stream().forEach( this::loadDetails );
+        this.refreshSequence(instance.getSequence());
+
         return instance;
     }
 
+    private void refreshSequence( List<InstrumentElement> elements ){
+        elements.stream().filter( f -> f.getElement() != null)
+            .forEach( el -> {
+                if (Sequence.class.isInstance( el )) {
+                    Sequence seq = Sequence.class.cast( el.getElement() );
+                    el.setSequence( seq.getSequence().stream().map( s -> new InstrumentElement(s))
+                    .collect( Collectors.toList()) );
+                }
+            });
+    }
 
     private InstrumentViewJson loadListDetail(Instrument instrument) {
         return new InstrumentViewJson( instrument );
@@ -155,26 +162,22 @@ class InstrumentServiceImpl implements InstrumentService {
         instrument.setChangeComment( null );
         Hibernate.initialize(instrument.getSequence());
         if (StackTraceFilter.stackContains( "getPdf", "getXml" )) {
-            instrument.getSequence().forEach( this::loadDetails );
+            instrument.getSequence().forEach( this::loadDetail );
         }
+
         return  instrument;
     }
 
-    private InstrumentElement loadDetails(InstrumentElement instance) {
-        instance.getSequence().stream().forEach( this::loadDetails );
-        return loadDetail( instance) ;
-    }
-
     private InstrumentElement loadDetail(InstrumentElement element) {
-            element.setElementRef( getDetail( element.getElementRef()));
+            getDetail( element);
         return element;
     }
 
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public ElementRef<ControlConstruct> getDetail(ElementRef<ControlConstruct> element) {
-        return (ElementRef<ControlConstruct>)
+    public InstrumentElement getDetail(InstrumentElement element) {
+        return (InstrumentElement)
             new ElementLoader<ControlConstruct>(
                 serviceLoader.getService( element.getElementKind() ) ).fill( element );
     }

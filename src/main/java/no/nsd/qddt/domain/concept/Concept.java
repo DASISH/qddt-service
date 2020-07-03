@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.interfaces.IRefs;
 import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.domain.interfaces.IArchived;
+import no.nsd.qddt.domain.interfaces.IRefs;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -18,7 +18,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -317,7 +316,8 @@ public class Concept extends AbstractEntityAudit implements IArchived, IRefs {
     }
 
     @PreRemove
-    public void beforeRemove(){
+    public void beforeRemove() {}
+    //{
     //     LOG.debug(" Concept pre remove");
     //     if (this.getParent() != null) {
     //         this.getParent().getChildren().removeIf(p->p.getId() == this.getId());
