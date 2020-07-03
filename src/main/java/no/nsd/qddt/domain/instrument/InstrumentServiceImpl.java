@@ -147,8 +147,7 @@ class InstrumentServiceImpl implements InstrumentService {
             .forEach( el -> {
                 if (Sequence.class.isInstance( el )) {
                     Sequence seq = Sequence.class.cast( el.getElement() );
-                    el.setSequence( seq.getSequence().stream().map( s -> new InstrumentElement(s))
-                    .collect( Collectors.toList()) );
+                    seq.getSequence().stream().forEach( s -> el.addSequence(new InstrumentElement(s)));
                 }
             });
     }

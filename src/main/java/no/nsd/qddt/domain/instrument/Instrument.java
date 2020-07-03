@@ -116,6 +116,13 @@ public class Instrument extends AbstractEntityAudit {
         this.sequence = sequence;
     }
 
+    public void addSequence(InstrumentElement element)
+    {
+        getSequence().add(element);
+        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+    }
+
+
     @Transient
     public ParentRef<Study> getParentRef() {
         try{

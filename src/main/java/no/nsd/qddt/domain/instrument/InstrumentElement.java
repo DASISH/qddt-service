@@ -93,6 +93,11 @@ public class InstrumentElement extends AbstractElementRef<ControlConstruct> {
         this.sequence = sequence;
     }
 
+    public void addSequence(InstrumentElement element)
+    {
+        getSequence().add(element);
+    }
+
 
     @Override
     public boolean equals(Object o) {
