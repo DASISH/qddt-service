@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
-import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.QuestionItemService;

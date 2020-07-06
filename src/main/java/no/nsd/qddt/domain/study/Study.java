@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
-import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.interfaces.IRefs;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;

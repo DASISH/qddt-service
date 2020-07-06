@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instrument.pojo;
 
 /**
  * @author Stig Norland

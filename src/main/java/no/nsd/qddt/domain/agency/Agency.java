@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.interfaces.IEntityRef;
 import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;

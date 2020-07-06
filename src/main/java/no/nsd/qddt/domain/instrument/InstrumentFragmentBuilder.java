@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 

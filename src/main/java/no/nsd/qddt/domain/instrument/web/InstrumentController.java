@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.instrument.web;
 
-import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
-import no.nsd.qddt.domain.instrument.InstrumentViewJson;
+import no.nsd.qddt.domain.instrument.pojo.InstrumentViewJson;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

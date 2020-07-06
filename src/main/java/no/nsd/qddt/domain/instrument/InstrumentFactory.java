@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.IEntityFactory;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.InstrumentElement;
 
 import java.util.stream.Collectors;
 

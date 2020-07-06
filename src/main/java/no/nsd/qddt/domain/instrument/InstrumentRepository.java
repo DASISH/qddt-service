@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.interfaces.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,10 +31,10 @@ interface InstrumentRepository extends BaseRepository<Instrument,UUID> {
         "ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<Instrument> findByQueryAndKinds(@Param("name")String name,
-                               @Param("description")String description,
-                               @Param("instrumentKinds")List<String> instrumentKinds,
-                               @Param("xmlLang")String xmlLang,
-                               Pageable pageable);
+                                         @Param("description")String description,
+                                         @Param("instrumentKinds")List<String> instrumentKinds,
+                                         @Param("xmlLang")String xmlLang,
+                                         Pageable pageable);
 
 
     @Query(value = "SELECT ins.* FROM public.instrument ins WHERE " +

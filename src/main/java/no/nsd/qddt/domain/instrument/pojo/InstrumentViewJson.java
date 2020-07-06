@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instrument.pojo;
 
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.user.json.UserJson;

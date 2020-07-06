@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.instrument.audit;
 
 import no.nsd.qddt.domain.AbstractAuditServiceTest;
-import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
-import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 //import no.nsd.qddt.domain.question.QuestionService;
 import org.junit.Before;
 import org.junit.Test;

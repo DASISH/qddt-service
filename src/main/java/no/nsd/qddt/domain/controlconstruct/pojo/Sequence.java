@@ -2,6 +2,8 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.instrument.pojo.InParameter;
+import no.nsd.qddt.domain.instrument.pojo.OutParameter;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 

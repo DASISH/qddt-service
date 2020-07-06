@@ -6,6 +6,8 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.domain.instrument.pojo.InParameter;
+import no.nsd.qddt.domain.instrument.pojo.OutParameter;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;

@@ -1,9 +1,7 @@
-package no.nsd.qddt.domain.instrument;
+package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import no.nsd.qddt.domain.controlconstruct.pojo.AbstractParameter;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.OutParameter;
 import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.annotations.GenericGenerator;
@@ -11,7 +9,9 @@ import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -47,10 +47,12 @@ public class InstrumentElement extends AbstractElementRef<ControlConstruct> {
     @JoinColumn(name="instrument_id",updatable = false)
     private Instrument instrument;
 
-    @OrderColumn(name="instrument_element_idx")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "instrumentElement", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
-    @AuditMappedBy(mappedBy = "instrumentElement", positionMappedBy = "instrumentElementIdx")
-    private Set<OutParameter>parameter = new HashSet<>(0);
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "instrumentElement", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+//    @OrderColumn(name="parent_idx")
+//    @AuditMappedBy(mappedBy = "parentElement", positionMappedBy = "parentElementIdx")
+    private List<OutParameter>outParameters = new ArrayList<>(0);
+
 
     public InstrumentElement() {
     }
@@ -58,7 +60,7 @@ public class InstrumentElement extends AbstractElementRef<ControlConstruct> {
     public InstrumentElement(ElementRef<ControlConstruct> elementRef) {
         super();
         setElement( elementRef.getElement() );
-        setParameter( elementRef.getElement().getInParameter() );
+        setOutParameters( new ArrayList<>(elementRef.getElement().getOutParameter()));
     }
 
     public UUID getId() {
@@ -69,20 +71,21 @@ public class InstrumentElement extends AbstractElementRef<ControlConstruct> {
         this.id = id;
     }
 
-    public <S extends AbstractParameter>  Set<S> getParameter() {
-        return (Set<S>) parameter;
+    public List<OutParameter> getOutParameters() {
+        return outParameters;
     }
 
-    public <S extends AbstractParameter> void setParameter( Set<S>parameter) {
-        this.parameter = (Set<OutParameter>) parameter;
+    public void setOutParameters(List<OutParameter> outParameters) {
+        this.outParameters = outParameters;
     }
 
-    public InstrumentElement getParentReferenceOnly() {
-        return parentReferenceOnly;
+
+    public Instrument getInstrument() {
+        return instrument;
     }
 
-    public void setParentReferenceOnly(InstrumentElement parentReferenceOnly) {
-        this.parentReferenceOnly = parentReferenceOnly;
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
     }
 
     public List<InstrumentElement> getSequence() {

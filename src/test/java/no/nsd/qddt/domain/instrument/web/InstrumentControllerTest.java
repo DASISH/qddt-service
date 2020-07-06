@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.instrument.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.instrument.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

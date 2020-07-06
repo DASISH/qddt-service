@@ -1,8 +1,6 @@
-package no.nsd.qddt.domain.controlconstruct.pojo;
+package no.nsd.qddt.domain.instrument.pojo;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.instrument.InstrumentElement;
 import no.nsd.qddt.domain.interfaces.IParameter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
@@ -18,15 +16,16 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "PARAMETER_KIND")
 @Table(name = "INSTRUMENT_PARAMETER")
-public abstract class AbstractParameter implements IParameter {
+public class AbstractParameter implements IParameter {
 
-    @ManyToOne()
-    @JsonBackReference(value = "instrumentElementRef")
-    @JoinColumn(name="instrument_element_id", updatable = false)
-    private InstrumentElement instrumentElement;
+//    @JsonBackReference(value = "parentElementRef")
 
-    @Column(name = "instrument_element_idx", insertable = false, updatable = false)
-    private int instrumentElementIdx;
+//    @JoinColumn(name="instrument_element_id")
+//    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+//    private InstrumentElement instrumentElement;
+
+//    @Column(name = "parent_idx", insertable = false, updatable = false)
+//    private int parentElementIdx;
 
 
     @Id
@@ -46,9 +45,13 @@ public abstract class AbstractParameter implements IParameter {
         this.name = name;
     }
 
-    public InstrumentElement getInstrumentElement() {
-        return instrumentElement;
-    }
+//    public InstrumentElement getInstrumentElement() {
+//        return instrumentElement;
+//    }
+//
+//    public void setInstrumentElement(InstrumentElement instrumentElement) {
+//        this.instrumentElement = instrumentElement;
+//    }
 
     public UUID getId() {
         return id;

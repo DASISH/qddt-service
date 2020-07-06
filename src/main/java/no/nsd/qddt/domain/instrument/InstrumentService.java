@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.instrument;
 
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
+import no.nsd.qddt.domain.instrument.pojo.InstrumentViewJson;
 import no.nsd.qddt.domain.interfaces.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,6 @@ public interface InstrumentService extends BaseService<Instrument, UUID> {
 
     Page<InstrumentViewJson> findAllPageable(Pageable pageable);
 
-    Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description,String strKind, String xmlLang,Pageable pageable);
+    Page<InstrumentViewJson> findByNameAndDescriptionPageable(String name, String description, String strKind, String xmlLang, Pageable pageable);
 
 }
