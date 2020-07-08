@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.interfaces.IEntityRef;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
+import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -16,7 +16,6 @@ import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.interfaces.IEntityKind;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -43,7 +42,7 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 @Audited
 @Entity
 @Table(name = "AGENCY")
-public class Agency implements Comparable<Agency>, IEntityKind, IEntityRef {
+public class Agency implements Comparable<Agency>, IWebMenuPreview {
 
 
     @Id

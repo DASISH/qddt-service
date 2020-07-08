@@ -42,7 +42,7 @@ public class SurveyProgramController {
     public SurveyProgram update(@RequestBody SurveyProgram instance) {
 
         instance.getStudies().forEach(c->{
-            c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+            c.setChangeKind( AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
             c.setChangeComment("touched me to stay in sync...");
         });
         return service.save(instance);

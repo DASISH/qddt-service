@@ -57,9 +57,9 @@ public class InstrumentFragmentBuilder extends XmlDDIFragmentBuilder<Instrument>
     }
 
     private void addChildren() {
-        children.addAll( entity.getSequence().stream()
-            .map( seq -> seq.getElement().getXmlBuilder()  )
-            .collect( Collectors.toList()) );
+//        children.addAll( entity.getSequence().stream()
+//            .map( seq -> seq.getElement().getXmlBuilder()  )
+//            .collect( Collectors.toList()) );
     }
 
 

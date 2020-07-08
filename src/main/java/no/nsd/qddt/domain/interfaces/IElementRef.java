@@ -7,15 +7,18 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface IElementRef<T extends IEntityRef> extends Cloneable {
+public interface IElementRef<T extends IWebMenuPreview> extends Cloneable {
 
-    ElementKind getElementKind();
-    String getName();
-    Version getVersion();
     UUID getElementId();
 
     Integer getElementRevision();
     void setElementRevision(Integer revisionNumber);
+
+    Version getVersion();
+
+    ElementKind getElementKind();
+
+    String getName();
 
     T getElement();
     void setElement(T element);

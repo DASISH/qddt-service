@@ -38,7 +38,7 @@ public class EntityCreatedModifiedDateAuditEventConfiguration {
             if (entity.getModifiedBy() == null) {
                 entity.setModifiedBy( user );
             }
-            if (entity instanceof AbstractEntityAudit ) {
+            if (entity instanceof AbstractEntityAudit) {
                 ((AbstractEntityAudit) entity).setAgency( user.getAgency() );
                 LOG.info( "AbstractEntityAudit EventConfiguration CreateOrUpdate done " + entity.getClass().getSimpleName() );
             }

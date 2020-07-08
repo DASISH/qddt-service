@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
@@ -92,13 +91,6 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     public void delete(UUID uuid) {
         responseDomainRepository.delete(uuid);
     }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<ResponseDomain> instances) {
-        responseDomainRepository.delete(instances);
-    }
-
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {
 

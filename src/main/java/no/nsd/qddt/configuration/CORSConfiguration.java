@@ -28,6 +28,7 @@ public class CORSConfiguration {
         config.addAllowedHeader("*");
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("GET");
+        config.addAllowedMethod("PUT");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("DELETE");
         source.registerCorsConfiguration("/**", config);

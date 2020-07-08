@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 /**
  * @author Stig Norland
  */
-public interface IEntityXml {
+public interface IXmlBuilder {
     AbstractXmlBuilder getXmlBuilder();
 }
 

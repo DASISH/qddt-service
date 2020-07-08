@@ -115,13 +115,6 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<Concept> instances) {
-        conceptRepository.delete(instances);
-    }
-
-
-    @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<Concept> findAllPageable(Pageable pageable) {
         Page<Concept> pages = conceptRepository.findAll(defaultSort(pageable,"name ASC"));

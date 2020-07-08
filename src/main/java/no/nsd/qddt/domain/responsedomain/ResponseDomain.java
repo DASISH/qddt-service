@@ -11,7 +11,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.HierarchyLevel;
-import no.nsd.qddt.domain.interfaces.IEntityRef;
+import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
 import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
@@ -68,7 +68,7 @@ import static no.nsd.qddt.utils.StringTool.IsNullOrEmpty;
 @Audited
 @Entity
 @Table(name = "RESPONSEDOMAIN", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","category_id","based_on_object"},name = "UNQ_RESPONSEDOMAIN_NAME")})         //also -> based_on_object?
-public class ResponseDomain extends AbstractEntityAudit implements IEntityRef {
+public class ResponseDomain extends AbstractEntityAudit implements IWebMenuPreview {
     /**
     *   Can't have two responsedomain with the same template and the same name, unless they are based on
     */

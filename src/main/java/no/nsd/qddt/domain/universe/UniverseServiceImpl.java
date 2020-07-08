@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.StringTool.likeify;
@@ -53,24 +52,11 @@ class UniverseServiceImpl implements UniverseService {
     }
 
 
-//    @Transactional()
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-//    public List<Universe> save(List<Universe> universes) {
-//        return universeRepository.save(universes);
-//    }
-
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         universeRepository.delete(uuid);
-    }
-
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<Universe> universes) {
-        universeRepository.delete(universes);
     }
 
 

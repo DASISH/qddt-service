@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthoriza
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -82,12 +81,6 @@ class UserServiceImpl implements UserService {
         if (searchService.findByUserId( uuid ).size() > 0)
             throw new ReferenceInUseException( uuid.toString() );
         userRepository.delete(uuid);
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(List<User> instances) {
-        userRepository.delete(instances);
     }
 
 

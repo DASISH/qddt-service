@@ -66,12 +66,6 @@ class CommentServiceImpl  implements CommentService  {
         // TODO fix this; doens't work....
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-    public void delete(List<Comment> instances) {
-        commentRepository.delete(instances);
-    }
-
     protected Comment prePersistProcessing(Comment instance) {
         return instance;
     }

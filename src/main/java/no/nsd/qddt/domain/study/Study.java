@@ -2,12 +2,12 @@ package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
-import no.nsd.qddt.domain.instrument.pojo.Instrument;
-import no.nsd.qddt.domain.interfaces.IRefs;
 import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.domain.instrument.pojo.Instrument;
+import no.nsd.qddt.domain.interfaces.IArchived;
+import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -53,7 +53,7 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "STUDY")
-public class Study extends AbstractEntityAudit implements IAuthor, IArchived, IRefs {
+public class Study extends AbstractEntityAudit implements IAuthor, IArchived, IDomainObjectParentRef {
 
 //    @JsonIgnore
     @ManyToOne()

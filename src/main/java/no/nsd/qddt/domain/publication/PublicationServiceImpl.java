@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -91,14 +90,6 @@ public class PublicationServiceImpl implements PublicationService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         repository.delete(uuid);
-    }
-
-
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<Publication> instances) {
-        repository.delete(instances);
     }
 
     @Override

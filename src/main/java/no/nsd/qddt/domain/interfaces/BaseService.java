@@ -2,8 +2,6 @@ package no.nsd.qddt.domain.interfaces;
 
 import org.springframework.dao.DataAccessException;
 
-import java.util.List;
-
 /**
  * @author Stig Norland
  */
@@ -50,6 +48,6 @@ public interface BaseService<T,ID> {
      * @param instances list of entity IDs
      */
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    void delete(List<T> instances) throws DataAccessException;
+//    void delete(List<T> instances) throws DataAccessException;
 
 }

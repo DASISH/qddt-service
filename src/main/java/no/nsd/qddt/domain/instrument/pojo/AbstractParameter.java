@@ -18,16 +18,6 @@ import java.util.UUID;
 @Table(name = "INSTRUMENT_PARAMETER")
 public class AbstractParameter implements IParameter {
 
-//    @JsonBackReference(value = "parentElementRef")
-
-//    @JoinColumn(name="instrument_element_id")
-//    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//    private InstrumentElement instrumentElement;
-
-//    @Column(name = "parent_idx", insertable = false, updatable = false)
-//    private int parentElementIdx;
-
-
     @Id
     @GeneratedValue(generator ="UUID")
     @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
@@ -44,14 +34,6 @@ public class AbstractParameter implements IParameter {
         this.id = UUID.randomUUID();
         this.name = name;
     }
-
-//    public InstrumentElement getInstrumentElement() {
-//        return instrumentElement;
-//    }
-//
-//    public void setInstrumentElement(InstrumentElement instrumentElement) {
-//        this.instrumentElement = instrumentElement;
-//    }
 
     public UUID getId() {
         return id;

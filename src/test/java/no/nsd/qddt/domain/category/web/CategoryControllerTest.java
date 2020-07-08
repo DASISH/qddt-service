@@ -90,7 +90,7 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(category)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(category.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
 
@@ -113,7 +113,7 @@ public class CategoryControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(group)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(group.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
 

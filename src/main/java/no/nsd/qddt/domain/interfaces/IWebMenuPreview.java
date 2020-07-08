@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public interface IEntityRef {
+public interface IWebMenuPreview {
     UUID getId();
     Version getVersion();
     String getName();

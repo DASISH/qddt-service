@@ -41,7 +41,7 @@ public class OthermaterialAuditServiceTest extends AbstractAuditServiceTest {
     public void setUp() {
 
 
-        instrument = instrumentService.save(new Instrument());
+        instrument = instrumentService.save(new Instrument( root ));
 
         instrument = instrumentService.findOne(instrument.getId());
 

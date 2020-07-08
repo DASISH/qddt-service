@@ -30,15 +30,15 @@ public class InstrumentServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testCount() throws Exception {
-        Instrument instrument = new Instrument();
+        Instrument instrument = new Instrument( root );
         instrument.setName("Test Instrument One");
         instrumentService.save(instrument);
 
-        instrument = new Instrument();
+        instrument = new Instrument( root );
         instrument.setName("Test Instrument Two");
         instrumentService.save(instrument);
 
-        instrument = new Instrument();
+        instrument = new Instrument( root );
         instrument.setName("Test Instrument Three");
         instrumentService.save(instrument);
 
@@ -48,7 +48,7 @@ public class InstrumentServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testExists() throws Exception {
-        Instrument instrument = new Instrument();
+        Instrument instrument = new Instrument( root );
         instrument.setName("Existing instrument");
         instrument = instrumentService.save(instrument);
         assertTrue("Instrument should exist", instrumentService.exists(instrument.getId()));
@@ -57,7 +57,7 @@ public class InstrumentServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testFindOne() throws Exception {
-        Instrument instrument = new Instrument();
+        Instrument instrument = new Instrument( root );
         instrument.setName("Existing instrument");
         instrument = instrumentService.save(instrument);
         assertNotNull("Instrument should not be null", instrumentService.findOne(instrument.getId()));
@@ -66,7 +66,7 @@ public class InstrumentServiceTest extends AbstractServiceTest {
     @Test
     @Override
     public void testSave() throws Exception {
-        Instrument instrument = new Instrument();
+        Instrument instrument = new Instrument( root );
         instrument.setName("Existing instrument");
         assertNotNull("Instrument should be saved", instrumentService.save(instrument));
     }
@@ -76,7 +76,7 @@ public class InstrumentServiceTest extends AbstractServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     @Override
     public void testDelete() throws Exception {
-        Instrument instrument = new Instrument();
+        Instrument instrument = new Instrument( root );
         instrument.setName("Existing instrument");
         instrument = instrumentService.save(instrument);
         instrumentService.delete(instrument.getId());

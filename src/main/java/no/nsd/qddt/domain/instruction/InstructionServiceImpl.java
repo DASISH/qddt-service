@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import static no.nsd.qddt.utils.StringTool.likeify;
@@ -59,13 +58,6 @@ class InstructionServiceImpl implements InstructionService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
         instructionRepository.delete(uuid);
-    }
-
-    @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<Instruction> instructions) {
-        instructionRepository.delete(instructions);
     }
 
 

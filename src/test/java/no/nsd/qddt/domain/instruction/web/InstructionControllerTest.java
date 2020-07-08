@@ -54,7 +54,7 @@ public class InstructionControllerTest  extends ControllerWebIntegrationTest {
                 .content(rest.json(instruction)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(instruction.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
 
@@ -68,7 +68,7 @@ public class InstructionControllerTest  extends ControllerWebIntegrationTest {
                 .content(rest.json(aInstruction)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(aInstruction.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
 

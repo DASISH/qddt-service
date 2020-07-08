@@ -77,7 +77,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(entity)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(entity.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
 
@@ -95,7 +95,7 @@ public class ConceptControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(aEntity.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
 

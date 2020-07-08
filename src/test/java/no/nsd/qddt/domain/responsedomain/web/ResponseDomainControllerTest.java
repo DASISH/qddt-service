@@ -149,7 +149,7 @@ public class ResponseDomainControllerTest extends ControllerWebIntegrationTest {
                 .content(rest.json(aEntity)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(aEntity.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.CREATED.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.CREATED.toString())))
                 .andExpect(status().isCreated());
     }
 

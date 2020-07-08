@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.elementref;
 
+import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
 import no.nsd.qddt.domain.interfaces.IParentRef;
-import no.nsd.qddt.domain.interfaces.IRefs;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.slf4j.Logger;
@@ -13,14 +13,16 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public class ParentRef<T extends IRefs> implements IParentRef {
+public class ParentRef<T extends IDomainObjectParentRef> implements IParentRef {
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private UUID id;
     private Version version;
-    private String agency;
     private String name;
+
     private IParentRef parentRef;
+
+    private String agency;
 
     @Transient
     public T entity;
@@ -28,9 +30,9 @@ public class ParentRef<T extends IRefs> implements IParentRef {
     public ParentRef(final T entity) {
         if (entity == null) return;
         try {
-            name = entity.getName();
             id = entity.getId();
             version = entity.getVersion();
+            name = entity.getName();
             agency = entity.getAgency().getName();
             parentRef = entity.getParentRef();
             this.entity = entity;
@@ -53,21 +55,21 @@ public class ParentRef<T extends IRefs> implements IParentRef {
         return version;
     }
 
-
     @Override
     public String getName() {
         return name;
     }
 
     @Override
+    public IParentRef getParentRef() {
+        return parentRef;
+    }
+
+
     public String getAgency() {
         return agency;
     }
 
-    @Override
-    public IParentRef getParentRef() {
-        return parentRef;
-    }
 
     public T getEntity() {
         return entity;

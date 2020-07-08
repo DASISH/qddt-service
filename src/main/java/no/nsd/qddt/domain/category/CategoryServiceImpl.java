@@ -97,13 +97,6 @@ class CategoryServiceImpl implements CategoryService {
     }
 
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<Category> instances) {
-        repository.delete(instances);
-    }
-
-  
     private List<Code> _codes = new ArrayList<>( 0 );
 
     private Category prePersistProcessing(Category instance) {

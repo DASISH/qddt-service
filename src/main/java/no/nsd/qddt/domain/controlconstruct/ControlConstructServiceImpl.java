@@ -109,13 +109,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    @Transactional()
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<ControlConstruct> instances) {
-        controlConstructRepository.delete(instances);
-    }
-
-    @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<ConstructQuestionJson> findByQuestionItems(List<UUID> questionItemIds) {
         assert (questionItemIds.size() > 0);

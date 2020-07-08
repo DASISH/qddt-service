@@ -1,16 +1,13 @@
 package no.nsd.qddt.domain.interfaces;
 
-import java.sql.Timestamp;
-import java.util.UUID;
-
 /**
  * @author Stig Norland
  *
  * Has ClassKind and are between AbstractEntity and AbstractEntityAudit
  */
-public interface IEntityKind {
-    UUID getId();
-    String getName();
-    Timestamp getModified();
-    String getClassKind();
-}
+//public interface IEntityKind {
+//    UUID getId();
+//    String getName();
+//    Timestamp getModified();
+//    String getClassKind();
+//}

@@ -28,7 +28,7 @@ import java.util.List;
 @Audited
 @Entity
 @Table(name = "QUESTION_ITEM")
-public class QuestionItem extends AbstractEntityAudit  {
+public class QuestionItem extends AbstractEntityAudit {
 
 
     @Embedded

@@ -2,17 +2,20 @@ package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.instrument.InstrumentFragmentBuilder;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.treenode.TreeNode;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * You change your meaning by emphasizing different words in your sentence. ex:
@@ -32,25 +35,19 @@ public class Instrument extends AbstractEntityAudit {
     @JoinColumn(name = "study_id", updatable = false)
     private Study study;
 
-//    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-//    @OrderColumn(name = "_idx")
-//    @JoinColumn(name = "instrument_id")
-//    private List<InstrumentElement> sequence = new ArrayList<>();
+//    @OneToOne(fetch = FetchType.EAGER, targetEntity = TreeNode.class)
+//    private TreeNode<ControlConstruct> root;
 
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = TreeNode.class)
+    private List<TreeNode<ControlConstruct>> sequence = new ArrayList<>(0);
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @MapKey(name = "id")
+    private Map<UUID, OutParameter> outParameters;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "instrument", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
-    @OrderColumn(name="instrument_element_idx")
-    @AuditMappedBy(mappedBy = "instrument", positionMappedBy = "instrumentElementIdx")
-    private List<InstrumentElement> sequence = new ArrayList<>(0);
-
-
-//    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE })
-//    @OrderColumn(name="_idx")       // _idx is shared between instrument & InstrumentElement (parent/child)
-//    @JoinColumn(name = "instrument_element_id")
-//    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "index")
-//    private List<InstrumentElement> sequence = new ArrayList<>();
-
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @MapKey(name = "id")
+    private Map<UUID, InParameter> inParameters;
 
 
     private String description;
@@ -64,6 +61,7 @@ public class Instrument extends AbstractEntityAudit {
     private InstrumentKind instrumentKind;
 
     public Instrument() {
+//        root = new TreeNode<>(new Sequence());
     }
 
     public String getDescription() {
@@ -108,21 +106,29 @@ public class Instrument extends AbstractEntityAudit {
         this.study = study;
     }
 
-
-    public List<InstrumentElement> getSequence() {
+    public List<TreeNode<ControlConstruct>> getSequence() {
         return sequence;
     }
 
-    public void setSequence(List<InstrumentElement> sequence) {
+    public void setSequence(List<TreeNode<ControlConstruct>> sequence) {
         this.sequence = sequence;
     }
 
-    public void addSequence(InstrumentElement element)
-    {
-        getSequence().add(element);
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+    public Map<UUID, OutParameter> getOutParameters() {
+        return outParameters;
     }
 
+    public void setOutParameters(Map<UUID, OutParameter> outParameters) {
+        this.outParameters = outParameters;
+    }
+
+    public Map<UUID, InParameter> getInParameters() {
+        return inParameters;
+    }
+
+    public void setInParameters(Map<UUID, InParameter> inParameters) {
+        this.inParameters = inParameters;
+    }
 
     @Transient
     public ParentRef<Study> getParentRef() {
@@ -133,11 +139,15 @@ public class Instrument extends AbstractEntityAudit {
         }
     }
 
-//    TODO implement outparams....
+////    TODO implement outparams....
 //    @Transient
-//    public List<InstrumentParameter> getOutParameter() {
-//        this.sequence.stream().map( seq -> seq.getParameters() ) .collect( TreeMap::new, TreeMap::putAll,
-//            (map1, map2) -> { map1.putAll(map2); return map1; });
+//    @JsonSerialize
+//    public Map<String,OutParameter> getOutParameter() {
+//        this.sequence.stream()
+//            .flatMap( p -> p.getOutParameters().stream() )
+//            .collect( Collectors.toMap(OutParameter::getId, op -> op ) )
+//            .values()
+//            .collect( TreeMap::new, TreeMap::putAll, (map1, map2) -> { map1.putAll(map2); return map1; });
 //    }
 
 
@@ -150,7 +160,7 @@ public class Instrument extends AbstractEntityAudit {
         Instrument that = (Instrument) o;
 
         if (study != null ? !study.equals( that.study ) : that.study != null) return false;
-        if (sequence != null ? !sequence.equals( that.sequence ) : that.sequence != null) return false;
+//        if (sequence != null ? !sequence.equals( that.sequence ) : that.sequence != null) return false;
         if (description != null ? !description.equals( that.description ) : that.description != null) return false;
         if (label != null ? !label.equals( that.label ) : that.label != null) return false;
         if (externalInstrumentLocation != null ? !externalInstrumentLocation.equals( that.externalInstrumentLocation ) : that.externalInstrumentLocation != null)
@@ -161,7 +171,7 @@ public class Instrument extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (sequence != null ? sequence.size() : 0);
+//        result = 31 * result + (sequence != null ? sequence.size() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (externalInstrumentLocation != null ? externalInstrumentLocation.hashCode() : 0);
@@ -174,7 +184,7 @@ public class Instrument extends AbstractEntityAudit {
         return "{\"Instrument\":"
             + super.toString()
             + ", \"study\":" + study
-            + ", \"sequence\":" + sequence
+//            + ", \"sequence\":" + sequence
             + ", \"description\":\"" + description + "\""
             + ", \"label\":\"" + label + "\""
             + ", \"externalInstrumentLocation\":\"" + externalInstrumentLocation + "\""

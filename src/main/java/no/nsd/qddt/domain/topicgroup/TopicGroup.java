@@ -2,15 +2,15 @@ package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.interfaces.IRefs;
 import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.domain.interfaces.IArchived;
+import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "TOPIC_GROUP")
-public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchived, IRefs {
+public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchived, IDomainObjectParentRef {
 
     @Column(name = "description", length = 10000)
     private String description;

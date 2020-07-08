@@ -58,7 +58,7 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
                 .content(rest.json(entity)))
                 .andExpect(content().contentType(rest.getContentType()))
                 .andExpect(jsonPath("$.name", is(entity.getName())))
-                .andExpect(jsonPath("$.changeKind", is(AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
+                .andExpect(jsonPath("$.changeKind", is( AbstractEntityAudit.ChangeKind.IN_DEVELOPMENT.toString())))
                 .andExpect(status().isOk());
     }
 

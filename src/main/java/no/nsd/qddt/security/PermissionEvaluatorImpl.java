@@ -1,8 +1,7 @@
 package no.nsd.qddt.security;
 
-import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.agency.Agency;
+import no.nsd.qddt.domain.interfaces.IDomainObject;
 import no.nsd.qddt.domain.user.QDDTUserDetails;
 import no.nsd.qddt.domain.user.User;
 import org.slf4j.Logger;
@@ -26,12 +25,12 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     public boolean hasPermission( Authentication auth, Object targetDomainObject, Object permission) {
         if ((auth == null) || (targetDomainObject == null) ||
             !(permission instanceof String) ||
-            !(targetDomainObject instanceof AbstractEntity) ){
+            !(targetDomainObject instanceof IDomainObject) ){
             LOG.info( "Prereq for hasPermission not fulfilled" );
             return false;
         }
 
-        return this.hasPrivilege( (QDDTUserDetails)auth.getPrincipal(), (AbstractEntity)targetDomainObject, ((String) permission).toUpperCase());
+        return this.hasPrivilege( (QDDTUserDetails)auth.getPrincipal(), (IDomainObject)targetDomainObject, ((String) permission).toUpperCase());
     }
 
 
@@ -42,7 +41,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
 
-    private boolean hasPrivilege(QDDTUserDetails details, AbstractEntity entity, String permission){
+    private boolean hasPrivilege(QDDTUserDetails details, IDomainObject entity, String permission){
 //        LOG.info( details.getUsername() + ": " + permission + ": " + toJson(entity)  );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
@@ -54,25 +53,25 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
                 return isUser( details.getUser(), entity );
             case AGENCY:
 
-                return isMemberOfAgency( details.getUser().getAgency(), (AbstractEntityAudit )entity );
+                return isMemberOfAgency( details.getUser().getAgency(), entity );
             default:
                 LOG.info( "hasPrivilege default: fail: " + permission );
                 return false;
         }
     }
 
-    private boolean isOwner(User user, AbstractEntity entity) {
+    private boolean isOwner(User user, IDomainObject entity) {
         assert entity.getModifiedBy() != null;
         return user.getId().equals( entity.getModifiedBy().getId() );
     }
 
     // entity is a User entity
-    private boolean isUser(User user, AbstractEntity entity) {
+    private boolean isUser(User user, IDomainObject entity) {
         assert entity.getId() != null;
         return ( user.getId().equals( entity.getId() ));
     }
 
-    private boolean isMemberOfAgency(Agency agency, AbstractEntityAudit entity) {
+    private boolean isMemberOfAgency(Agency agency, IDomainObject entity) {
         assert entity.getAgency() != null;
         if (agency.getId().equals( entity.getAgency().getId()))
             return true;
@@ -81,11 +80,11 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         return false;
     }
 
-    public String toJson(AbstractEntity entity) {
-        return "{" +
-            "\"id\":" + (entity.getId() == null ? "null" : "\"" + entity.getId() +"\"" ) + ", " +
-            "\"modified\":" + (entity.getModified() == null ? "null" : "\"" + entity.getModified()+ "\"" ) + " , " +
-            "\"classKind\":" + entity.getClass().getSimpleName() + "\"" +
-            "}";
-    }
+//    public String toJson(IDomainObject entity) {
+//        return "{" +
+//            "\"id\":" + (entity.getId() == null ? "null" : "\"" + entity.getId() +"\"" ) + ", " +
+//            "\"modified\":" + (entity.getModified() == null ? "null" : "\"" + entity.getModified()+ "\"" ) + " , " +
+//            "\"classKind\":" + entity.getClass().getSimpleName() + "\"" +
+//            "}";
+//    }
 }

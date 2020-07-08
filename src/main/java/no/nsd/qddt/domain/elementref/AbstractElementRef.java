@@ -6,11 +6,12 @@ package no.nsd.qddt.domain.elementref;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 import no.nsd.qddt.domain.interfaces.IElementRef;
-import no.nsd.qddt.domain.interfaces.IEntityRef;
+import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
@@ -22,7 +23,7 @@ import java.util.UUID;
 
 @Audited
 @MappedSuperclass
-public abstract class AbstractElementRef<T extends IEntityRef> implements IElementRef<T> {
+public abstract class AbstractElementRef<T extends IWebMenuPreview> implements IElementRef<T> {
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
@@ -46,6 +47,7 @@ public abstract class AbstractElementRef<T extends IEntityRef> implements IEleme
 
     @Transient
     @JsonSerialize
+    @JsonDeserialize
     protected T element;
 
     public AbstractElementRef() {}

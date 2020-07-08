@@ -62,7 +62,7 @@ public class AuthorableSurveyTest extends AbstractServiceTest {
 //        survey.addAuthor(user2);
 //        surveyList.add(survey);
 
-        survey.setChangeKind(AbstractEntityAudit.ChangeKind.TYPO);
+        survey.setChangeKind( AbstractEntityAudit.ChangeKind.TYPO);
         survey = surveyProgramService.save(survey );
         userService.save(user1);
         userService.save(user2);

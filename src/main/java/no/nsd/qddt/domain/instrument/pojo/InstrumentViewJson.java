@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
-
 import java.sql.Timestamp;
 import java.util.UUID;
 

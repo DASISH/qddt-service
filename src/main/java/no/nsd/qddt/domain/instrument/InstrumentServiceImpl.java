@@ -1,17 +1,11 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
-import no.nsd.qddt.domain.elementref.ElementLoader;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
-import no.nsd.qddt.domain.instrument.pojo.InstrumentElement;
 import no.nsd.qddt.domain.instrument.pojo.InstrumentKind;
 import no.nsd.qddt.domain.instrument.pojo.InstrumentViewJson;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.exception.StackTraceFilter;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,12 +81,6 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<Instrument> instances) {
-        instrumentRepository.delete(instances);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<InstrumentViewJson> findByStudy(UUID studyId) {
         return instrumentRepository.findByStudy(studyId).stream()
@@ -141,48 +129,48 @@ class InstrumentServiceImpl implements InstrumentService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );
 
-        this.refreshSequence(instance.getSequence());
+//        this.refreshSequence(instance.getSequence());
 
         return instance;
     }
 
-    private void refreshSequence( List<InstrumentElement> elements ){
-        elements.stream().filter( f -> f.getElement() != null)
-            .forEach( el -> {
-                if (Sequence.class.isInstance( el )) {
-                    Sequence seq = Sequence.class.cast( el.getElement() );
-                    seq.getSequence().stream().forEach( s -> el.addSequence(new InstrumentElement(s)));
-                }
-            });
-    }
-
+//    private void refreshSequence( List<InstrumentElement> elements ){
+//        elements.stream().filter( f -> f.getElement() != null)
+//            .forEach( el -> {
+//                if (Sequence.class.isInstance( el )) {
+//                    Sequence seq = Sequence.class.cast( el.getElement() );
+//                    seq.getSequence().stream().forEach( s -> el.addSequence(new InstrumentElement(s)));
+//                }
+//            });
+//    }
+//
     private InstrumentViewJson loadListDetail(Instrument instrument) {
         return new InstrumentViewJson( instrument );
     }
-
-
+//
+//
     private Instrument loadDetail(Instrument instrument) {
         instrument.setChangeComment( null );
-        Hibernate.initialize(instrument.getSequence());
-        if (StackTraceFilter.stackContains( "getPdf", "getXml" )) {
-            instrument.getSequence().forEach( this::loadDetail );
-        }
+//        Hibernate.initialize(instrument.getSequence());
+//        if (StackTraceFilter.stackContains( "getPdf", "getXml" )) {
+//            instrument.getSequence().forEach( this::loadDetail );
+//        }
 
         return  instrument;
     }
-
-    private InstrumentElement loadDetail(InstrumentElement element) {
-            getDetail( element);
-        return element;
-    }
-
-
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public InstrumentElement getDetail(InstrumentElement element) {
-        return (InstrumentElement)
-            new ElementLoader<ControlConstruct>(
-                serviceLoader.getService( element.getElementKind() ) ).fill( element );
-    }
+//
+//    private InstrumentElement loadDetail(InstrumentElement element) {
+//            getDetail( element);
+//        return element;
+//    }
+//
+//
+//    @Transactional(readOnly = true)
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
+//    public InstrumentElement getDetail(InstrumentElement element) {
+//        return (InstrumentElement)
+//            new ElementLoader<ControlConstruct>(
+//                serviceLoader.getService( element.getElementKind() ) ).fill( element );
+//    }
 
 }

@@ -1,12 +1,6 @@
 package no.nsd.qddt.domain.agency;
 
-import static no.nsd.qddt.utils.FilterTool.defaultSort;
-import static no.nsd.qddt.utils.StringTool.likeify;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +11,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import no.nsd.qddt.exception.ResourceNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static no.nsd.qddt.utils.FilterTool.defaultSort;
+import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
  * @author Stig Norland
@@ -86,10 +85,6 @@ class AgencyServiceImpl implements AgencyService {
         agencyRepository.delete(uuid);
     }
 
-    @Override
-    public void delete(List<Agency> instances) {
-        agencyRepository.delete(instances);
-    }
 
     protected Agency prePersistProcessing(Agency instance) {
         return instance;

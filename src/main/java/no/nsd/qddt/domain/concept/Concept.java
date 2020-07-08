@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.interfaces.IArchived;
-import no.nsd.qddt.domain.interfaces.IRefs;
+import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @Audited
 @Entity
 @Table(name = "CONCEPT")
-public class Concept extends AbstractEntityAudit implements IArchived, IRefs {
+public class Concept extends AbstractEntityAudit implements IArchived, IDomainObjectParentRef {
 
     @ManyToOne()
     @JsonBackReference(value = "parentRef")

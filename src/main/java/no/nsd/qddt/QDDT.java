@@ -26,6 +26,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 /**
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
+ *
+ * https://stackoverflow.com/questions/2143637/what-should-a-developer-know-before-building-an-api-for-a-community-based-website
  */
 @EnableJpaRepositories(repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @EnableJpaAuditing
@@ -37,45 +39,10 @@ public class QDDT extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(QDDT.class);
-        Iterable<ObjectMapper> objectMappers = ctx.getBeansOfType(ObjectMapper.class)
-            .values();
 
-        objectMappers.forEach(mapper -> mapper.registerModule(new Hibernate5Module()));
+        ctx.getBeansOfType(ObjectMapper.class).values()
+            .forEach(mapper -> mapper.registerModule(new Hibernate5Module()));
 
-//        Squiggly.init(objectMappers, new RequestSquigglyContextProvider() {
-//            @Override
-//            public void serializeAsIncludedField(Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer) throws Exception {
-//                if (isFilteringEnabled()) {
-//                    Object value = writer.getMember().getValue(pojo);
-//
-//                    if (value instanceof PersistentCollection) {
-//                        ((PersistentCollection) value).forceInitialization();
-//                    }
-//                }
-//
-//                super.serializeAsIncludedField(pojo, jgen, provider, writer);
-//            }
-//
-//            @Override
-//            protected String customizeFilter(String filter, HttpServletRequest request, Class beanClass) {
-//
-//                if (filter != null && Page.class.isAssignableFrom(beanClass)) {
-//                    filter = "**,content[" + filter + "]";
-//                }
-//
-//                return filter;
-//            }
-//        });
-//
-//
-//        ObjectMapper objectMapper = Iterables.getFirst(objectMappers, null);
-//
-//        // Enable Squiggly for Jackson message converter
-//        if (objectMapper != null) {
-//            for (MappingJackson2HttpMessageConverter converter : ctx.getBeansOfType(MappingJackson2HttpMessageConverter.class).values()) {
-//                converter.setObjectMapper(objectMapper);
-//            }
-//        }
         System.out.println("QDDT ready");
     }
 
@@ -99,14 +66,6 @@ public class QDDT extends SpringBootServletInitializer {
 
         return messageConverter;
     }
-
-//    @Bean
-//    public FilterRegistrationBean squigglyRequestFilter() {
-//        FilterRegistrationBean filter = new FilterRegistrationBean();
-//        filter.setFilter(new SquigglyRequestFilter());
-//        filter.setOrder(1);
-//        return filter;
-//    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {

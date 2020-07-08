@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,12 +47,6 @@ public class AuthorServiceImpl implements AuthorService {
     public void delete(UUID uuid) {
         authorRepository.delete(uuid);
     }
-
-    @Override
-    public void delete(List<Author> instances) {
-        authorRepository.delete(instances);
-    }
-
 
     protected Author prePersistProcessing(Author instance) {
         return instance;

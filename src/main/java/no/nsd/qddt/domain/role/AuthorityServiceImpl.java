@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.role;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -58,12 +57,6 @@ class AuthorityServiceImpl implements AuthorityService {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(UUID uuid) {
         authorityRepository.delete(uuid);
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(List<Authority> instances) throws DataAccessException {
-        authorityRepository.delete(instances);
     }
 
     private Authority prePersistProcessing(Authority instance) {

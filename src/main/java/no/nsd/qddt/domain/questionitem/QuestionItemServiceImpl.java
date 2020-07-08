@@ -122,14 +122,6 @@ class QuestionItemServiceImpl implements QuestionItemService {
         }
     }
 
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<QuestionItem> instances) {
-        questionItemRepository.delete(instances);
-    }
-
-
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public Page<QuestionItem> findAllPageable(Pageable pageable){

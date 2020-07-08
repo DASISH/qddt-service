@@ -8,10 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-
-import static no.nsd.qddt.utils.FilterTool.referencedSort;
 
 /**
  * @author Stig Norland
@@ -49,11 +46,6 @@ public class ReferencedServiceImpl implements ReferencedService {
 
     @Override
     public void delete(UUID uuid) throws DataAccessException {
-
-    }
-
-    @Override
-    public void delete(List<Referenced> instances) throws DataAccessException {
 
     }
 

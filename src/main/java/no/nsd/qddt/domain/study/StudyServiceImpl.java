@@ -17,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -85,12 +84,6 @@ class StudyServiceImpl implements StudyService {
         studyRepository.delete(uuid);
     }
 
-    @Override
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public void delete(List<Study> instances) {
-        studyRepository.delete(instances);
-    }
-
     private Study prePersistProcessing(Study instance) {
 
         instance = doArchive( instance ) ;
@@ -101,7 +94,7 @@ class StudyServiceImpl implements StudyService {
         }
         if (instance.getTopicGroups() != null & !instance.isArchived())
             instance.getTopicGroups().forEach(c->{
-                c.setChangeKind(AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
+                c.setChangeKind( AbstractEntityAudit.ChangeKind.UPDATED_PARENT);
                 c.setChangeComment("");
             });
         return instance;

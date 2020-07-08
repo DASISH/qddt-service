@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain;
 
 import no.nsd.qddt.domain.agency.AgencyJsonView;
-import no.nsd.qddt.domain.interfaces.IEntityRef;
+import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  * @author Stig Norland
  */
-public  abstract class AbstractJsonEdit implements Serializable, IEntityRef {
+public  abstract class AbstractJsonEdit implements Serializable, IWebMenuPreview {
 
     /**
      *

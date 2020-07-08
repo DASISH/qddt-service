@@ -2,9 +2,6 @@ package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
-import no.nsd.qddt.domain.instrument.pojo.InstrumentElement;
-
-import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -25,9 +22,9 @@ public class InstrumentFactory implements IEntityFactory<Instrument> {
 
         dest.setExternalInstrumentLocation( source.getExternalInstrumentLocation() );
         dest.setInstrumentKind( source.getInstrumentKind() );
-        dest.setSequence( source.getSequence().stream()
-          .map( InstrumentElement::clone )
-          .collect(Collectors.toList()));
+//        dest.setSequence( source.getSequence().stream()
+//          .map( InstrumentElement::clone )
+//          .collect(Collectors.toList()));
  // ?? why       dest.setStudy( source.getStudy() );
 
         return dest;

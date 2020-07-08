@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.instrument.pojo;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 /**
  * @author Stig Norland
@@ -15,12 +15,6 @@ import javax.persistence.*;
 @DiscriminatorValue("OUT")
 public class OutParameter extends AbstractParameter {
 
-    @JoinColumn(name="instrument_element_id")
-    @JsonBackReference("parentIERef")
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private InstrumentElement instrumentElement;
-
-
     public OutParameter() {
     }
 
@@ -28,16 +22,6 @@ public class OutParameter extends AbstractParameter {
         super( name );
     }
 
-
-
-    public InstrumentElement getInstrumentElement() {
-        return instrumentElement;
-    }
-
-
-    public void setInstrumentElement(InstrumentElement instrumentElement) {
-        this.instrumentElement = instrumentElement;
-    }
 
     @Override
     public String toString() {

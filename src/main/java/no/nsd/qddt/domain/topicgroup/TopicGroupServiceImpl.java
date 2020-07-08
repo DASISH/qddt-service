@@ -119,14 +119,6 @@ class TopicGroupServiceImpl implements TopicGroupService {
         topicGroupRepository.delete(uuid);
     }
 
-    @Override
-    @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(List<TopicGroup> instances) {
-        topicGroupRepository.delete(instances);
-    }
-
-
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(TopicGroup instance) {

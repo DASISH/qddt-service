@@ -18,7 +18,7 @@ public class InstrumentBuilder {
     }
 
     public Instrument createInstrument() {
-        Instrument instrument = new Instrument();
+        Instrument instrument = new Instrument(  );
         instrument.setName(this.name);
         instrument.setChangeComment(this.changeComment);
 

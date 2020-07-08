@@ -1,10 +1,8 @@
 package no.nsd.qddt.domain.publication.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
-import no.nsd.qddt.jsonviews.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
