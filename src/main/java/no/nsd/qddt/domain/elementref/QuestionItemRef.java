@@ -5,7 +5,6 @@ import no.nsd.qddt.domain.interfaces.IElementRef;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
-import org.springframework.data.history.Revision;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -45,12 +44,10 @@ public class QuestionItemRef implements IElementRef<QuestionItem> {
     public QuestionItemRef(QuestionItem questionItem ) {
         setElement( questionItem );
     }
-    public QuestionItemRef(Revision<Integer,QuestionItem> revision ) {
-        setElementRevision( revision.getRevisionNumber() );
-        setElement( revision.getEntity() );
-    }
+
     @Override
     @Transient
+    @JsonSerialize
     public ElementKind getElementKind() {
         return ElementKind.QUESTION_ITEM;
     }
