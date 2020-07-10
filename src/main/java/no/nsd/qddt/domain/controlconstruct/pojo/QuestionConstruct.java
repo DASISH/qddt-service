@@ -33,7 +33,6 @@ public class QuestionConstruct  extends ControlConstruct {
     private QuestionItemRef questionItemRef;
 
 
-
     //------------- Begin QuestionItem revision early bind "hack" ---------------
     //------------- End QuestionItem revision early bind "hack"------------------
 

@@ -6,9 +6,7 @@ import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
@@ -38,6 +36,11 @@ public class QuestionItemRef implements IElementRef<QuestionItem> {
     @Column(name = "question_text", length = 500 )
     private String text;
 
+    @Transient
+    @JsonSerialize
+    @Enumerated(EnumType.STRING)
+    private ElementKind elementKind = ElementKind.QUESTION_ITEM;
+
     public QuestionItemRef() {
     }
 
@@ -46,10 +49,8 @@ public class QuestionItemRef implements IElementRef<QuestionItem> {
     }
 
     @Override
-    @Transient
-    @JsonSerialize
     public ElementKind getElementKind() {
-        return ElementKind.QUESTION_ITEM;
+        return this.elementKind;
     }
 
     @Override
