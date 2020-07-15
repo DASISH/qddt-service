@@ -1,15 +1,12 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.QuestionItemRef;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -41,26 +38,25 @@ public class QuestionConstruct  extends ControlConstruct {
     private List<Universe> universe =new ArrayList<>(0);
 
 
-    @JsonIgnore
     @OrderColumn(name="instruction_idx")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER )
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
         joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
 
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    @OneToMany
-    private List<Instruction> preInstructions =new ArrayList<>();
-
-
-    @Transient
-    @JsonSerialize
-    @JsonDeserialize
-    @OneToMany
-    private List<Instruction> postInstructions =new ArrayList<>();
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+//    @OneToMany
+//    private List<Instruction> preInstructions =new ArrayList<>();
+//
+//
+//    @Transient
+//    @JsonSerialize
+//    @JsonDeserialize
+//    @OneToMany
+//    private List<Instruction> postInstructions =new ArrayList<>();
 
     public QuestionConstruct() {
         super();
@@ -99,66 +95,74 @@ public class QuestionConstruct  extends ControlConstruct {
         this.controlConstructInstructions = controlConstructInstructions;
     }
 
-    /*
-    fetches pre and post instructions and add them to ControlConstructInstruction
-     */
-    public void populateControlConstructInstructions() {
-        if (controlConstructInstructions == null)
-            controlConstructInstructions = new ArrayList<>();
-        else
-            controlConstructInstructions.clear();
-
-        harvestInstructions( ControlConstructInstructionRank.PRE, getPreInstructions());
-        harvestInstructions( ControlConstructInstructionRank.POST, getPostInstructions());
-    }
-
-    private void harvestInstructions(ControlConstructInstructionRank rank,List<Instruction> instructions) {
-        try {
-            for (Instruction instruction : instructions) {
-                ControlConstructInstruction cci = new ControlConstructInstruction();
-                cci.setInstruction(instruction);
-                cci.setInstructionRank(rank);
-                this.getControlConstructInstructions().add(cci);
-            }
-        }catch (Exception ex){
-            LOG.error("harvestPostInstructions exception",ex);
-            StackTraceFilter.filter(ex.getStackTrace()).stream()
-                .map(a->a.toString())
-                .forEach(LOG::info);
-        }
-    }
-
-    /*
-     this function is useful for populating ControlConstructInstructions after loading from DB
-      */
-    public void populateInstructions(){
-        LOG.info("ConstructInstructions size" + getControlConstructInstructions().size() );
-        setPreInstructions(getControlConstructInstructions().stream()
+//    /*
+//    fetches pre and post instructions and add them to ControlConstructInstruction
+//     */
+//    public void populateControlConstructInstructions() {
+//        if (controlConstructInstructions == null)
+//            controlConstructInstructions = new ArrayList<>();
+//        else
+//            controlConstructInstructions.clear();
+//
+//        harvestInstructions( ControlConstructInstructionRank.PRE, getPreInstructions());
+//        harvestInstructions( ControlConstructInstructionRank.POST, getPostInstructions());
+//    }
+//
+//    private void harvestInstructions(ControlConstructInstructionRank rank,List<Instruction> instructions) {
+//        try {
+//            for (Instruction instruction : instructions) {
+//                ControlConstructInstruction cci = new ControlConstructInstruction();
+//                cci.setInstruction(instruction);
+//                cci.setInstructionRank(rank);
+//                this.getControlConstructInstructions().add(cci);
+//            }
+//        }catch (Exception ex){
+//            LOG.error("harvestPostInstructions exception",ex);
+//            StackTraceFilter.filter(ex.getStackTrace()).stream()
+//                .map(a->a.toString())
+//                .forEach(LOG::info);
+//        }
+//    }
+//
+//    /*
+//     this function is useful for populating ControlConstructInstructions after loading from DB
+//      */
+//    public void populateInstructions(){
+//        LOG.info("ConstructInstructions size: " + getControlConstructInstructions().size() + " - " + getName());
+//        setPreInstructions(getControlConstructInstructions().stream()
+//            .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
+//            .map(ControlConstructInstruction::getInstruction)
+//            .collect( Collectors.toList()));
+//
+//        setPostInstructions(getControlConstructInstructions().stream()
+//            .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
+//            .map(ControlConstructInstruction::getInstruction)
+//            .collect(Collectors.toList()));
+//    }
+//
+    @JsonIgnore
+    public List<Instruction> getPreInstructions() {
+        return getControlConstructInstructions().stream()
             .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
             .map(ControlConstructInstruction::getInstruction)
-            .collect( Collectors.toList()));
-
-        setPostInstructions(getControlConstructInstructions().stream()
+            .collect( Collectors.toList());
+    }
+//
+//    private void setPreInstructions(List<Instruction> preInstructions) {
+//        this.preInstructions = preInstructions;
+//    }
+//
+    @JsonIgnore
+    public List<Instruction> getPostInstructions() {
+        return getControlConstructInstructions().stream()
             .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
             .map(ControlConstructInstruction::getInstruction)
-            .collect(Collectors.toList()));
+            .collect( Collectors.toList());
     }
-
-    public List<Instruction> getPreInstructions() {
-        return preInstructions;
-    }
-
-    private void setPreInstructions(List<Instruction> preInstructions) {
-        this.preInstructions = preInstructions;
-    }
-
-    public List<Instruction> getPostInstructions() {
-        return postInstructions;
-    }
-
-    private void setPostInstructions(List<Instruction> postInstructions) {
-        this.postInstructions = postInstructions;
-    }
+//
+//    private void setPostInstructions(List<Instruction> postInstructions) {
+//        this.postInstructions = postInstructions;
+//    }
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter)  {

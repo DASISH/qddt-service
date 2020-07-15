@@ -8,19 +8,19 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
-import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static no.nsd.qddt.utils.StringTool.CapString;
@@ -203,8 +203,9 @@ public class ResponseDomain extends AbstractEntityAudit implements IWebMenuPrevi
         if (managedRepresentation.getCategoryType() == CategoryType.MIXED){
             setName(String.format("Mixed [%s]", managedRepresentation.getChildren().stream().map(Category::getLabel).collect(Collectors.joining(" + "))));
         }
-        managedRepresentation.setLabel( getName() );
-        managedRepresentation.setName(  managedRepresentation.getCategoryType().getName() +  "[" +  ((getId() != null) ? getId().toString() : Integer.toString( new Random().nextInt() )) + "]");
+        if (StringTool.IsNullOrTrimEmpty( managedRepresentation.getLabel()))
+            managedRepresentation.setLabel( getName() );
+        managedRepresentation.setName(  managedRepresentation.getCategoryType().getName() +  "[" +  ((getId() != null) ? getId().toString() : getName())  + "]");
         if (managedRepresentation.getHierarchyLevel() == HierarchyLevel.GROUP_ENTITY)
             managedRepresentation.setDescription( managedRepresentation.getCategoryType().getDescription() );
         else
@@ -261,7 +262,7 @@ public class ResponseDomain extends AbstractEntityAudit implements IWebMenuPrevi
                     .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
                 table.addCell( new Cell()
                     .setTextAlignment( TextAlignment.CENTER )
-                    .add( new Paragraph( cat.getCode() != null ? cat.getCode().getCodeValue() : cat.getCategoryType().name() ) )
+                    .add( new Paragraph( cat.getCode() != null ? cat.getCode().getValue() : cat.getCategoryType().name() ) )
                     .setBorder( new DottedBorder( ColorConstants.GRAY, 1 ) ) );
             } else {
                 table.addCell( new Cell().add( new Paragraph( cat.getCategoryType().name() ) )

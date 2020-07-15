@@ -83,6 +83,6 @@ public class ResponseCardinality {
 
     @Transient
     public boolean isValid() {
-        return  (minimum != null && maximum != null &&  minimum <= maximum && stepUnit > 0);
+        return  (minimum != null && maximum != null &&  minimum <= maximum && stepUnit >= 0);
     }
 }

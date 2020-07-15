@@ -116,7 +116,8 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
             Hibernate.initialize( instance.getControlConstructInstructions() );
-            instance.populateInstructions();
+            instance.getControlConstructInstructions().stream()
+                .forEach( element -> LOG.info("LOADING FINE " + element.getInstruction().getDescription()) );
 
             if(instance.getQuestionItemRef().getElementId() != null) {
                 qidLoader.fill( instance.getQuestionItemRef() );

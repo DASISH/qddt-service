@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 import no.nsd.qddt.domain.interfaces.IElementRef;
 import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
@@ -120,12 +121,16 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
             setName( getElement().getName() + " ➫ " + ((QuestionItem) element).getQuestion() );
         else if (element instanceof StatementItem)
             setName( getElement().getName() + " ➫ " + ((StatementItem) element).getStatement() );
-        else if (element instanceof ConditionConstruct)
+        else if (element instanceof ConditionConstruct) {
             setName( getElement().getName() + " ➫ " + ((ConditionConstruct) element).getCondition() );
-        else
+            System.out.println( ElementKind.getEnum( element.getClass().getSimpleName() )  + " - ConditionConstruct");
+        }else if (element instanceof QuestionConstruct) {
+            System.out.println( ElementKind.getEnum( element.getClass().getSimpleName() ) + " - QuestionConstruct" );
+        } else
             setName( getElement().getName());
         setVersion( getElement().getVersion() );
-        setElementKind(  ElementKind.getEnum( element.getClass().getSimpleName() ) );
+        if (this.elementKind == null)
+            setElementKind( ElementKind.getEnum( element.getClass().getSimpleName() ) );
         return this;
     }
 

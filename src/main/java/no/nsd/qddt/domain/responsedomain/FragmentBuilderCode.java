@@ -22,7 +22,7 @@ public class FragmentBuilderCode extends CategoryFragmentBuilder {
 
     @Override
     public String getXmlEntityRef(int depth) {
-        return String.format( xmlCode, getCodeURN(), super.getXmlEntityRef( depth+1 ) , entity.getCode().getCodeValue().trim() , getTabs( depth ) );
+        return String.format( xmlCode, getCodeURN(), super.getXmlEntityRef( depth+1 ) , entity.getCode().getValue().trim() , getTabs( depth ) );
     }
 
     @Override
@@ -31,7 +31,7 @@ public class FragmentBuilderCode extends CategoryFragmentBuilder {
     }
 
     private String getCodeURN() {
-        return  String.format( xmlURN, entity.getAgency().getName(),entity.getId(),  entity.getCode().getCodeValue());
+        return  String.format( xmlURN, entity.getAgency().getName(),entity.getId(),  entity.getCode().getValue());
     }
 
 }

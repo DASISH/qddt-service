@@ -145,10 +145,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     private <S extends ControlConstruct> S  prePersistProcessing(S instance) {
         assert  (instance != null);
         if (instance instanceof QuestionConstruct) {
-
             QuestionConstruct qc = (QuestionConstruct)instance;
-            qc.populateControlConstructInstructions();
-
             qc.getControlConstructInstructions().stream()
                 .filter( cqi -> cqi.getInstruction().getId() == null )
                 .forEach( cqi -> cqi.setInstruction( iService.save( cqi.getInstruction() ) ) );
@@ -177,7 +174,6 @@ class ControlConstructServiceImpl implements ControlConstructService {
                     break;
             }
         }
-        LOG.info("ChangeComment: " + instance.getChangeComment() );
         return instance;
     }
 
@@ -194,7 +190,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     private <S extends ControlConstruct> S loadQuestionConstruct(QuestionConstruct instance) {
         Hibernate.initialize( instance.getControlConstructInstructions() );
-        instance.populateInstructions();                // instructions has to be unpacked into pre and post instructions
+//        instance.populateInstructions();                // instructions has to be unpacked into pre and post instructions
         try {
             if(instance.getQuestionItemRef() != null &&
                 instance.getQuestionItemRef().getElementId()!= null &&

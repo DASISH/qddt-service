@@ -21,7 +21,7 @@ public class FragmentBuilderAnchor extends CategoryFragmentBuilder {
 
     @Override
     public String getXmlEntityRef(int depth) {
-        return String.format( xmlAnchor, entity.getCode().getCodeValue(), super.getXmlEntityRef( depth +1 ) , String.join("", Collections.nCopies(depth, "\t")));
+        return String.format( xmlAnchor, entity.getCode().getValue(), super.getXmlEntityRef( depth +1 ) , String.join("", Collections.nCopies(depth, "\t")));
     }
 
 }

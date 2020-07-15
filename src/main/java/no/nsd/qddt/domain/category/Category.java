@@ -268,7 +268,7 @@ public class Category extends AbstractEntityAudit implements Comparable<Category
     public String toString() {
         if (categoryType == CategoryType.CATEGORY) return "{" +
             "\"label\":" + (label == null ? "null" : "\"" + label + "\"") + ", " +
-            "\"code\":" + (code == null ? "null" : code.getCodeValue()) +
+            "\"code\":" + (code == null ? "null" : code.getValue()) +
             "}";
 
         return "{" +

@@ -18,76 +18,61 @@ import javax.persistence.Embeddable;
 public class Code implements Comparable<Code> {
 
     @Column(name = "code_value")
-    private String codeValue;
-
-    private String alignment;
+    private String value;
 
     public Code() {
-        codeValue = "";
+        value = "";
     }
 
-
-    public Code(String codeValue){
-        this.setCodeValue(codeValue);
+    public Code(String value) {
+        this.value = value;
     }
 
-
-    public String getCodeValue() {
-        return  codeValue.trim();
+    public String getValue() {
+        return value;
     }
 
-    private void setCodeValue(String codeValue) {
-        this.codeValue = codeValue;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getAlignment() {
-        return alignment;
-    }
-
-    public void setAlignment(String alignment) {
-        this.alignment = alignment;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Code)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Code code = (Code) o;
 
-        if (codeValue != null ? !codeValue.equals(code.codeValue) : code.codeValue != null) return false;
-        return alignment != null ? alignment.equals(code.alignment) : code.alignment == null;
+        return value != null ? value.equals( code.value ) : code.value == null;
     }
 
     @Override
     public int hashCode() {
-        int result = codeValue != null ? codeValue.hashCode() : 0;
-        result = 31 * result + (alignment != null ? alignment.hashCode() : 0);
-        return result;
+        return value != null ? value.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return "{" +
-            "\"codeValue\":" + (codeValue == null ? "null" : "\"" + codeValue + "\"") + ", " +
-            "\"alignment\":" + (alignment == null ? "null" : "\"" + alignment + "\"") +
+        return "{\"_class\":\"Code\", " +
+            "\"value\":" + (value == null ? "null" : "\"" + value + "\"") + ", " +
             "}";
     }
+
 
     @Override
     public int compareTo(Code o) {
         try {
-            Integer a = Integer.parseInt(codeValue);
-            Integer b = Integer.parseInt(o.getCodeValue());
+            Integer a = Integer.parseInt(value);
+            Integer b = Integer.parseInt(o.getValue());
             return a.compareTo(b);
         } catch (NumberFormatException nfe) {
-            return codeValue.compareTo(o.getCodeValue());
+            return value.compareTo(o.getValue());
         }
     }
 
     @JsonIgnore
     public boolean isEmpty() {
-        return StringTool.IsNullOrTrimEmpty( getCodeValue() ) &&
-            StringTool.IsNullOrTrimEmpty( getAlignment() );
-     }
+        return StringTool.IsNullOrTrimEmpty( getValue() );
+    }
 }
