@@ -13,5 +13,6 @@ public interface IDomainObject extends IWebMenuPreview {
     UserJson getModifiedBy();
     Timestamp getModified();
     Agency getAgency();
+    String getClassKind();
 
 }

@@ -30,7 +30,8 @@ public class TreeNode<T extends IDomainObject> extends ElementRef<T> implements 
     @JsonBackReference(value = "parentRef")
     public TreeNode<T> parent;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = TreeNode.class)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = TreeNode.class,
+        cascade = {CascadeType.MERGE,  CascadeType.REMOVE })
     public List<TreeNode<T>> children;
 
     @JsonIgnore

@@ -38,6 +38,7 @@ public class Sequence extends ControlConstruct {
 
     public Sequence() {
         super();
+        setName( "root" );
     }
 
     @PrePersist

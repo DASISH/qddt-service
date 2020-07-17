@@ -109,11 +109,6 @@ public class ConceptController extends AbstractController {
                         .addChildren(concept)));
 
         } else {
-//            TopicGroup tp = topicGroupService.findOne(parentId);
-//            concept = tp.addConcept( concept );
-//            topicGroupService.save(tp);
-//            return concept2Json(concept);
-
             return concept2Json(
                 service.save(
                     topicGroupService
@@ -150,7 +145,7 @@ public class ConceptController extends AbstractController {
     @RequestMapping(value = "/list/by-parent/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<ConceptJsonEdit> getbyTopicId(@PathVariable("topicId") UUID id) {
 
-        return service.findByTopicGroup(id).stream().map( p -> new ConceptJsonEdit(p) ).collect( Collectors.toList());
+        return service.findByTopicGroup(id).stream().map( ConceptJsonEdit::new ).collect( Collectors.toList());
     }
 
 

@@ -69,8 +69,8 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     private Integer studyIdx;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    @OrderColumn(name="concept_idx")
-    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy = "conceptIdx")
+    @OrderColumn(name="topicgroup_idx")
+    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy ="topicgroupIdx")
     private List<Concept> concepts = new ArrayList<>(0);
 
 
@@ -129,7 +129,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
     public Concept addConcept(Concept concept){
         if(concept == null) return null;
-        getConcepts().add(concept);
+        this.concepts.add( concept );
         concept.setTopicGroup(this);
         setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("Concept ["+ concept.getName() +"] added");

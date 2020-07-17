@@ -88,6 +88,7 @@ public class TopicGroupController extends AbstractController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @RequestMapping(value = "/create/{studyId}", method = RequestMethod.POST)
     public TopicGroupJson createByParent(@RequestBody TopicGroup instance, @PathVariable("studyId")UUID parentId) {
+//        LOG.info("TopicGroupJson createByParent");
         return new TopicGroupJson(
             service.save(
                 studyService

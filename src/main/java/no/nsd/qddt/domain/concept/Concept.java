@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
@@ -39,25 +38,31 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
 
     @ManyToOne()
     @JsonBackReference(value = "parentRef")
-    @JoinColumn(name="concept_id",insertable = false, updatable = false)
-    private Concept parentReferenceOnly;
+    @JoinColumn(name="concept_id")
+    private Concept parent;
 
-    @Column(name = "concept_idx", insertable = false, updatable = false)
-    private int conceptIdx;
-
+    // in the @OrderColumn annotation on the referencing entity.
+    @Column( name = "concept_idx", insertable = false, updatable = false)
+    private int parentIdx;
 
     @ManyToOne()
     @JsonBackReference(value = "topicGroupRef")
     @JoinColumn(name="topicgroup_id", updatable = false)
     private TopicGroup topicGroup;
 
+    // in the @OrderColumn annotation on the referencing entity.
+    @Column( name = "topicgroup_idx", insertable = false, updatable = false)
+    private int topicgroupIdx;
+
+
     @Column(name = "topicgroup_id", insertable = false, updatable = false)
     private UUID topicGroupId;
 
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentReferenceOnly", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
-    @OrderColumn(name="concept_idx")
-    @AuditMappedBy(mappedBy = "parentReferenceOnly", positionMappedBy = "conceptIdx")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
+    @OrderColumn(name = "concept_idx")
+    @AuditMappedBy(mappedBy = "parent", positionMappedBy ="parentIdx")
     private List<Concept> children = new ArrayList<>(0);
 
 
@@ -73,7 +78,6 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     private String description;
 
     @Transient
-    @JsonDeserialize
     private ParentRef<TopicGroup> parentRef;
 
     private boolean isArchived;
@@ -91,7 +95,6 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     public void setTopicGroup(TopicGroup topicGroup) {
         this.topicGroup = topicGroup;
     }
-
 
     public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
         if (conceptQuestionItems == null) {
@@ -147,10 +150,12 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     }
 
     public Concept addChildren(Concept concept){
-        getChildren().add(concept);
-        this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
+        if(concept == null) return null;
+        this.children.add( concept );
+        concept.setParent( this);
+        setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
         setChangeComment("SubConcept added");
-        this.getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
+        getParents().forEach(p->p.setChangeKind(ChangeKind.UPDATED_CHILD));
         return concept;
     }
 
@@ -207,7 +212,11 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     }
 
     protected Concept getParent(){
-        return this.parentReferenceOnly;
+        return this.parent;
+    }
+
+    public void setParent(Concept parent) {
+        this.parent = parent;
     }
 
     public boolean hasTopicGroup() {

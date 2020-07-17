@@ -12,8 +12,6 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,20 +33,15 @@ public class Instrument extends AbstractEntityAudit {
     @JoinColumn(name = "study_id", updatable = false)
     private Study study;
 
-//    @OneToOne(fetch = FetchType.EAGER, targetEntity = TreeNode.class)
-//    private TreeNode<ControlConstruct> root;
+    @OneToOne(fetch = FetchType.EAGER,targetEntity = TreeNode.class, cascade =  {CascadeType.REMOVE,CascadeType.PERSIST, CascadeType.MERGE})
+    private TreeNode<ControlConstruct> root;
 
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = TreeNode.class)
-    private List<TreeNode<ControlConstruct>> sequence = new ArrayList<>(0);
+//    @OneToMany(fetch = FetchType.EAGER, targetEntity = TreeNode.class)
+//    private List<TreeNode<ControlConstruct>> sequence = new ArrayList<>(0);
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapKey(name = "id")
     private Map<UUID, OutParameter> outParameters;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @MapKey(name = "id")
-    private Map<UUID, InParameter> inParameters;
-
 
     private String description;
 
@@ -106,13 +99,21 @@ public class Instrument extends AbstractEntityAudit {
         this.study = study;
     }
 
-    public List<TreeNode<ControlConstruct>> getSequence() {
-        return sequence;
+    public TreeNode<ControlConstruct> getRoot() {
+        return root;
     }
 
-    public void setSequence(List<TreeNode<ControlConstruct>> sequence) {
-        this.sequence = sequence;
+    public void setRoot(TreeNode<ControlConstruct> root) {
+        this.root = root;
     }
+
+    //    public List<TreeNode<ControlConstruct>> getSequence() {
+//        return sequence;
+//    }
+//
+//    public void setSequence(List<TreeNode<ControlConstruct>> sequence) {
+//        this.sequence = sequence;
+//    }
 
     public Map<UUID, OutParameter> getOutParameters() {
         return outParameters;
@@ -120,14 +121,6 @@ public class Instrument extends AbstractEntityAudit {
 
     public void setOutParameters(Map<UUID, OutParameter> outParameters) {
         this.outParameters = outParameters;
-    }
-
-    public Map<UUID, InParameter> getInParameters() {
-        return inParameters;
-    }
-
-    public void setInParameters(Map<UUID, InParameter> inParameters) {
-        this.inParameters = inParameters;
     }
 
     @Transient

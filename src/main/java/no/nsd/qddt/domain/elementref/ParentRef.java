@@ -20,9 +20,9 @@ public class ParentRef<T extends IDomainObjectParentRef> implements IParentRef {
     private Version version;
     private String name;
 
-    private IParentRef parentRef;
-
     private String agency;
+
+    private IParentRef parentRef;
 
     @Transient
     public T entity;
@@ -60,20 +60,19 @@ public class ParentRef<T extends IDomainObjectParentRef> implements IParentRef {
         return name;
     }
 
+    public String getAgency() {
+        return agency;
+    }
+
+    public T getEntity() {
+        return entity;
+    }
+
     @Override
     public IParentRef getParentRef() {
         return parentRef;
     }
 
-
-    public String getAgency() {
-        return agency;
-    }
-
-
-    public T getEntity() {
-        return entity;
-    }
 
     public void setId(UUID id) {
         this.id = id;

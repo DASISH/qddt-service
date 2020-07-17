@@ -3,7 +3,6 @@ package no.nsd.qddt.domain.concept;
 import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -95,8 +94,9 @@ class ConceptServiceImpl implements ConceptService {
         Concept source = auditService.findRevision(id,rev).getEntity();
         Concept target = new ConceptFactory().copy(source, rev);
         TopicGroup tg = tgService.findOne( parentId );
-        target = tg.addConcept( target );
-        return conceptRepository.save(target);
+        tg.addConcept( target );
+        tgService.save( tg );
+        return target;
     }
 
 
@@ -173,16 +173,8 @@ class ConceptServiceImpl implements ConceptService {
         try {
             instance.getChildren().stream().forEach( this::setChildChangeStatus );
             if (instance.hasTopicGroup()) {
-                if(instance.getParentTopicGroup() == null) {
-                    LOG.info( "Topicgroup not set !!!" );
-//                    tgService.findOne( instance. )
+                if (!instance.getParentTopicGroup().getConcepts().stream().anyMatch( p -> p.getId() == instance.getId() ))
                     instance.getParentTopicGroup().addConcept( instance );
-                } else if (instance.getId() == null) {
-                    instance.getParentTopicGroup().addConcept( instance );
-                } else {
-                    if (!instance.getParentTopicGroup().getConcepts().stream().anyMatch( p -> p.getId() == instance.getId() ))
-                        instance.getParentTopicGroup().addConcept( instance );
-                }
             }
         } catch (NullPointerException npe) {
             LOG.error("ConceptService-> prePersistProcessing " + npe);
@@ -206,10 +198,10 @@ class ConceptServiceImpl implements ConceptService {
                 instance.getConceptQuestionItems().forEach( cqi -> {
                     if (IsNullOrTrimEmpty( cqi.getName() )) {
                         qiLoader.fill( cqi );
-                        cqi.getElement().setParentRefs(
-                            findByQuestionItem(cqi.getElementId(),null).stream()
-                                .map( ParentRef<Concept>::new )
-                                .collect( Collectors.toList()));
+//                        cqi.getElement().setParentRefs(
+//                            findByQuestionItem(cqi.getElementId(),null).stream()
+//                                .map( ParentRef<Concept>::new )
+//                                .collect( Collectors.toList()));
                     }
                 });
             }
@@ -219,11 +211,6 @@ class ConceptServiceImpl implements ConceptService {
 
         instance.getChildren().forEach(this::postLoadProcessing);
         return instance;
-    }
-
-
-    public boolean hasArchivedContent(UUID id) {
-        return false;
     }
 }
 
