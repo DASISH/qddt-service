@@ -2,18 +2,14 @@ package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.instrument.InstrumentFragmentBuilder;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.treenode.TreeNode;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * You change your meaning by emphasizing different words in your sentence. ex:
@@ -33,15 +29,8 @@ public class Instrument extends AbstractEntityAudit {
     @JoinColumn(name = "study_id", updatable = false)
     private Study study;
 
-    @OneToOne(fetch = FetchType.EAGER,targetEntity = TreeNode.class, cascade =  {CascadeType.REMOVE,CascadeType.PERSIST, CascadeType.MERGE})
-    private TreeNode<ControlConstruct> root;
-
-//    @OneToMany(fetch = FetchType.EAGER, targetEntity = TreeNode.class)
-//    private List<TreeNode<ControlConstruct>> sequence = new ArrayList<>(0);
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @MapKey(name = "id")
-    private Map<UUID, OutParameter> outParameters;
+    @OneToOne(fetch = FetchType.EAGER, cascade =  {CascadeType.REMOVE, CascadeType.MERGE})
+    private InstrumentNode root;
 
     private String description;
 
@@ -54,7 +43,6 @@ public class Instrument extends AbstractEntityAudit {
     private InstrumentKind instrumentKind;
 
     public Instrument() {
-//        root = new TreeNode<>(new Sequence());
     }
 
     public String getDescription() {
@@ -99,29 +87,14 @@ public class Instrument extends AbstractEntityAudit {
         this.study = study;
     }
 
-    public TreeNode<ControlConstruct> getRoot() {
+    public InstrumentNode getRoot() {
         return root;
     }
 
-    public void setRoot(TreeNode<ControlConstruct> root) {
+    public void setRoot(InstrumentNode root) {
         this.root = root;
     }
 
-    //    public List<TreeNode<ControlConstruct>> getSequence() {
-//        return sequence;
-//    }
-//
-//    public void setSequence(List<TreeNode<ControlConstruct>> sequence) {
-//        this.sequence = sequence;
-//    }
-
-    public Map<UUID, OutParameter> getOutParameters() {
-        return outParameters;
-    }
-
-    public void setOutParameters(Map<UUID, OutParameter> outParameters) {
-        this.outParameters = outParameters;
-    }
 
     @Transient
     public ParentRef<Study> getParentRef() {
@@ -164,7 +137,6 @@ public class Instrument extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-//        result = 31 * result + (sequence != null ? sequence.size() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (externalInstrumentLocation != null ? externalInstrumentLocation.hashCode() : 0);
@@ -177,7 +149,6 @@ public class Instrument extends AbstractEntityAudit {
         return "{\"Instrument\":"
             + super.toString()
             + ", \"study\":" + study
-//            + ", \"sequence\":" + sequence
             + ", \"description\":\"" + description + "\""
             + ", \"label\":\"" + label + "\""
             + ", \"externalInstrumentLocation\":\"" + externalInstrumentLocation + "\""

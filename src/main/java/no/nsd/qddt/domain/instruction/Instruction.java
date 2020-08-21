@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.instruction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.pdf.PdfReport;
@@ -7,10 +8,7 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.util.Collections;
 
 import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
@@ -78,6 +76,7 @@ public class Instruction extends AbstractEntityAudit {
     @Override
     protected void beforeInsert() {
     }
+
     @Override
     public AbstractXmlBuilder getXmlBuilder() {
         return new XmlDDIFragmentBuilder<Instruction>( this ) {
@@ -96,6 +95,8 @@ public class Instruction extends AbstractEntityAudit {
         };
     }
 
+    @JsonIgnore
+    @Transient
     protected final String xmlInsRef =
         "%3$s<r:InterviewerInstructionReference>\n" +
             "%3$s\t%2$s" +
@@ -103,6 +104,8 @@ public class Instruction extends AbstractEntityAudit {
             "%3$s\t<InstructionAttachmentLocation><r:Value xml:space=\"default\">%1$s</r:Value></InstructionAttachmentLocation>\n"+
             "%3$s</r:InterviewerInstructionReference>\n";
 
+    @JsonIgnore
+    @Transient
     private final String xmlInstruction =
         "%1$s"+
             "\t\t\t<c:InstructionName>\n" +
@@ -113,10 +116,5 @@ public class Instruction extends AbstractEntityAudit {
             "\t\t\t</r:Description>\n" +
             "\t\t</c:Instruction>\n";
 
-
-//    @Override
-//    public AbstractXmlBuilder getXmlBuilder() {
-//        return new InstructionFragmentBuilder(this);
-//	  }
 
 }

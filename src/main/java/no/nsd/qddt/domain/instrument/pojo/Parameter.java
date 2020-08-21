@@ -1,38 +1,37 @@
 package no.nsd.qddt.domain.instrument.pojo;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.interfaces.IParameter;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.UUID;
 
 /**
  * @author Stig Norland
  */
 @Audited
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "PARAMETER_KIND")
-@Table(name = "INSTRUMENT_PARAMETER")
-public class AbstractParameter implements IParameter {
+@Embeddable
+public class Parameter implements Comparable<Parameter> {
 
-    @Id
-    @GeneratedValue(generator ="UUID")
-    @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
     @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
     private String name;
     private UUID referencedId;
+    private String parameterKind;
 
-    public AbstractParameter() {
+    public Parameter() {
     }
 
 
-    public AbstractParameter(String name) {
+    public Parameter(String name) {
+        this.name = name;
+    }
+
+    public Parameter(String name, String parameterKind) {
         this.id = UUID.randomUUID();
         this.name = name;
+        this.parameterKind = parameterKind;
     }
 
     public UUID getId() {
@@ -43,7 +42,14 @@ public class AbstractParameter implements IParameter {
         this.id = id;
     }
 
-    @Override
+    public String getParameterKind() {
+        return parameterKind;
+    }
+
+    public void setParameterKind(String parameterKind) {
+        this.parameterKind = parameterKind;
+    }
+
     public String getName() {
         return name;
     }
@@ -52,7 +58,6 @@ public class AbstractParameter implements IParameter {
         this.name = name;
     }
 
-    @Override
     public UUID getReferencedId() {
         return referencedId;
     }
@@ -66,7 +71,7 @@ public class AbstractParameter implements IParameter {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AbstractParameter that = (AbstractParameter) o;
+        Parameter that = (Parameter) o;
 
         return name != null ? name.equals( that.name ) : that.name == null;
     }
@@ -79,13 +84,10 @@ public class AbstractParameter implements IParameter {
     @Override
     public String toString() {
         return "{\"_class\":\"Parameter\", " +
-            "\"id\":" + (id == null ? "null" : id) + ", " +
             "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
-            "\"referencedId\":" + (referencedId == null ? "null" : referencedId) +
             "}";
     }
 
-    //        "us.mpc:GI_Age_Cohort:1 " +
     private static String PARAM_FORMAT=
         "%3$s<r:OutParameter isIdentifiable=\"true\" scopeOfUniqueness=\"Maintainable\" isArray=\"false\">\n" +
         "%3$s\t<r:URN>urn:ddi:%1$s</r:URN>\n" +
@@ -96,5 +98,12 @@ public class AbstractParameter implements IParameter {
     }
 
 
-
+    @Override
+    public int compareTo(Parameter parameter) {
+        int i = parameterKind.compareTo( parameter.parameterKind );
+        if (i!=0) return i;
+        return name.compareTo(parameter.name);
+    }
 }
+
+

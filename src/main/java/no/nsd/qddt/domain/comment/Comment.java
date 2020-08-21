@@ -40,7 +40,7 @@ public class Comment extends AbstractEntity  {
     @Column(name = "is_public", columnDefinition = "boolean not null default true")
     private Boolean isPublic;
 
-    @Column(name = "comment",length = 2000)
+    @Column(name = "comment",length = 10000)
     private String comment;
 
 

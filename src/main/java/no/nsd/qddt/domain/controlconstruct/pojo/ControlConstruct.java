@@ -3,8 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.instrument.pojo.InParameter;
-import no.nsd.qddt.domain.instrument.pojo.OutParameter;
+import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -45,11 +44,11 @@ public class ControlConstruct extends AbstractEntityAudit {
 
     @Transient
     @JsonSerialize
-    private Set<InParameter> inParameter = new HashSet<>(0);
+    private Set<Parameter> parameterIn = new HashSet<>(0);
 
     @Transient
     @JsonSerialize
-    private Set<OutParameter> outParameter = new HashSet<>(0);
+    private Set<Parameter> parameterOut = new HashSet<>(0);
 
 
     public ControlConstruct() {
@@ -78,22 +77,21 @@ public class ControlConstruct extends AbstractEntityAudit {
     }
 
 
-    public Set<InParameter> getInParameter() {
-        return inParameter;
+    public Set<Parameter> getParameterIn() {
+        return parameterIn;
     }
 
-    public void setInParameter(Set<InParameter> inParameter) {
-        this.inParameter = inParameter;
+    public void setParameterIn(Set<Parameter> parameterIn) {
+        this.parameterIn = parameterIn;
     }
 
-    public Set<OutParameter> getOutParameter() {
-        return outParameter;
+    public Set<Parameter> getParameterOut() {
+        return parameterOut;
     }
 
-    public void setOutParameter(Set<OutParameter> outParameter) {
-        this.outParameter = outParameter;
+    public void setParameterOut(Set<Parameter> parameterOut) {
+        this.parameterOut = parameterOut;
     }
-
 
     @Override
     public void fillDoc(PdfReport pdfReport,String counter)  {  }

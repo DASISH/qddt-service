@@ -26,6 +26,8 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
     @Type(type = "pg-uuid")
     private UUID id;
 
+    private UUID topicGroupId;
+
     private String name;
 
     private String label;
@@ -50,6 +52,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         super(concept);
         try{
             setId(concept.getId());
+            setTopicGroupId( concept.getTopicGroupId() );
             setName(concept.getName());
             setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toSet()));
             setComments(concept.getComments());
@@ -72,6 +75,15 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     protected void setId(UUID id) {
         this.id = id;
+    }
+
+
+    public UUID getTopicGroupId() {
+        return topicGroupId;
+    }
+
+    public void setTopicGroupId(UUID topicGroupId) {
+        this.topicGroupId = topicGroupId;
     }
 
     public String getName() {

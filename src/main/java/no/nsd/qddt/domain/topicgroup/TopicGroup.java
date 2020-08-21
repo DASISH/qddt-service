@@ -69,8 +69,8 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     private Integer studyIdx;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    @OrderColumn(name="topicgroup_idx")
-    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy ="topicgroupIdx")
+    @OrderColumn(name="concept_idx")
+    @AuditMappedBy(mappedBy = "topicGroup", positionMappedBy ="conceptIdx")
     private List<Concept> concepts = new ArrayList<>(0);
 
 

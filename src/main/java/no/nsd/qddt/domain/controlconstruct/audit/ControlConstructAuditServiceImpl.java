@@ -6,8 +6,7 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.instrument.pojo.InParameter;
-import no.nsd.qddt.domain.instrument.pojo.OutParameter;
+import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -127,7 +126,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
                 while(matcher.find())
                 {
-                    instance.getInParameter().add( new InParameter( matcher.group(1).toUpperCase()) );
+                    instance.getParameterIn().add( new Parameter( matcher.group(1).toUpperCase() , "IN") );
                 }
 
                 ResponseDomain rd = instance.getQuestionItemRef().getElement().getResponseDomainRef().getElement();
@@ -139,12 +138,12 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
                 matcher = TAGS.matcher(rds);
                 while(matcher.find())
                 {
-                    instance.getInParameter().add( new InParameter( matcher.group(1).toUpperCase()) );
+                    instance.getParameterIn().add( new Parameter( matcher.group(1).toUpperCase(), "IN") );
                 }
 
-                Set<OutParameter> outParameters = new java.util.HashSet<>();
-                outParameters.add( new OutParameter( instance.getName() ) );
-                instance.setOutParameter( outParameters );
+                Set<Parameter> parameterOuts = new java.util.HashSet<>();
+                parameterOuts.add( new Parameter( instance.getName(), "OUT" ) );
+                instance.setParameterOut( parameterOuts );
 
             }
 
@@ -160,12 +159,12 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             Matcher matcher = TAGS.matcher( instance.getCondition() );
 
             while (matcher.find()) {
-                instance.getInParameter().add( new InParameter( matcher.group( 1 ).toUpperCase() ) );
+                instance.getParameterIn().add( new Parameter( matcher.group( 1 ).toUpperCase(), "IN" ) );
             }
 
-            Set<OutParameter> outParameters = new java.util.HashSet<>();
-            outParameters.add( new OutParameter( instance.getName() ) );
-            instance.setOutParameter( outParameters );
+            Set<Parameter> parameterOuts = new java.util.HashSet<>();
+            parameterOuts.add( new Parameter( instance.getName(), "OUT" ) );
+            instance.setParameterOut( parameterOuts );
         } catch (Exception ex) {
             LOG.error( "postLoadProcessing", ex );
         }
@@ -179,7 +178,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
         while(matcher.find())
         {
-            instance.getInParameter().add( new InParameter( matcher.group(1).toUpperCase()) );
+            instance.getParameterIn().add( new Parameter( matcher.group(1).toUpperCase(), "IN") );
         }
 
         return instance;

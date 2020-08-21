@@ -36,33 +36,28 @@ import java.util.stream.Collectors;
 @Table(name = "CONCEPT")
 public class Concept extends AbstractEntityAudit implements IArchived, IDomainObjectParentRef {
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "parentRef")
-    @JoinColumn(name="concept_id")
+    @JoinColumn(name="concept_id", nullable = false,updatable = false)
     private Concept parent;
 
     // in the @OrderColumn annotation on the referencing entity.
     @Column( name = "concept_idx", insertable = false, updatable = false)
-    private int parentIdx;
+    private int conceptIdx;
 
-    @ManyToOne()
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "topicGroupRef")
-    @JoinColumn(name="topicgroup_id", updatable = false)
+    @JoinColumn(name="topicgroup_id", nullable = false,updatable = false)
     private TopicGroup topicGroup;
 
-    // in the @OrderColumn annotation on the referencing entity.
-    @Column( name = "topicgroup_idx", insertable = false, updatable = false)
-    private int topicgroupIdx;
-
-
-    @Column(name = "topicgroup_id", insertable = false, updatable = false)
+    @Column(name = "topicgroup_id", insertable = false, updatable = false, nullable = false)
     private UUID topicGroupId;
-
 
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
     @OrderColumn(name = "concept_idx")
-    @AuditMappedBy(mappedBy = "parent", positionMappedBy ="parentIdx")
+    @AuditMappedBy(mappedBy = "parent", positionMappedBy ="conceptIdx")
     private List<Concept> children = new ArrayList<>(0);
 
 
@@ -74,7 +69,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
 
     private String label;
 
-    @Column(name = "description", length = 10000)
+    @Column(name = "description", length = 20000)
     private String description;
 
     @Transient
@@ -87,6 +82,10 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         super();
     }
 
+
+    public UUID getTopicGroupId() {
+        return topicGroupId;
+    }
 
     private TopicGroup getTopicGroup() {
         return topicGroup;
@@ -230,7 +229,8 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
             current = current.getParent();
             retvals.add( current );
         }
-        retvals.add( current.getTopicGroup() );         //this will fail for Concepts that return from clients.
+        if (current.getTopicGroup()!= null)
+            retvals.add( current.getTopicGroup() );         //this will fail for Concepts that return from clients.
         return retvals; // .stream().filter( f -> f != null ).collect( Collectors.toList());
     }
 

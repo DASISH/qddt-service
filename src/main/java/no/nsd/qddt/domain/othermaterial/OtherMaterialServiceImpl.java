@@ -25,7 +25,7 @@ import java.util.UUID;
 @Service("otherMaterialService")
 class OtherMaterialServiceImpl implements OtherMaterialService {
 
-    @Value("${fileroot}")
+    @Value("${api.fileroot}")
     private String fileRoot;
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 

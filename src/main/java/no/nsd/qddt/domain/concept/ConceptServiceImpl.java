@@ -10,6 +10,7 @@ import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +146,9 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public List<Concept> findByTopicGroup(UUID id) {
-        return tgService.findOne(id).getConcepts().stream()
+        TopicGroup tp = tgService.findOne(id);
+        Hibernate.initialize(tp.getConcepts());
+        return tp.getConcepts().stream()
             .map( this::postLoadProcessing)
             .collect(Collectors.toList());
     }

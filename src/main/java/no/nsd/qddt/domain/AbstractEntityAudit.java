@@ -340,7 +340,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IXm
 
     @JsonIgnore
     public boolean isNewCopy(){
-        return (getChangeKind().equals( ChangeKind.NEW_COPY )
+        return (getChangeKind() == ChangeKind.NEW_COPY
                 || (getId() == null && getChangeKind() != null && getChangeKind()!= ChangeKind.CREATED)
                 );
     }

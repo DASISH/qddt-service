@@ -44,20 +44,6 @@ public class QuestionConstruct  extends ControlConstruct {
         joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
     private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
-
-//    @Transient
-//    @JsonSerialize
-//    @JsonDeserialize
-//    @OneToMany
-//    private List<Instruction> preInstructions =new ArrayList<>();
-//
-//
-//    @Transient
-//    @JsonSerialize
-//    @JsonDeserialize
-//    @OneToMany
-//    private List<Instruction> postInstructions =new ArrayList<>();
-
     public QuestionConstruct() {
         super();
     }
@@ -95,51 +81,6 @@ public class QuestionConstruct  extends ControlConstruct {
         this.controlConstructInstructions = controlConstructInstructions;
     }
 
-//    /*
-//    fetches pre and post instructions and add them to ControlConstructInstruction
-//     */
-//    public void populateControlConstructInstructions() {
-//        if (controlConstructInstructions == null)
-//            controlConstructInstructions = new ArrayList<>();
-//        else
-//            controlConstructInstructions.clear();
-//
-//        harvestInstructions( ControlConstructInstructionRank.PRE, getPreInstructions());
-//        harvestInstructions( ControlConstructInstructionRank.POST, getPostInstructions());
-//    }
-//
-//    private void harvestInstructions(ControlConstructInstructionRank rank,List<Instruction> instructions) {
-//        try {
-//            for (Instruction instruction : instructions) {
-//                ControlConstructInstruction cci = new ControlConstructInstruction();
-//                cci.setInstruction(instruction);
-//                cci.setInstructionRank(rank);
-//                this.getControlConstructInstructions().add(cci);
-//            }
-//        }catch (Exception ex){
-//            LOG.error("harvestPostInstructions exception",ex);
-//            StackTraceFilter.filter(ex.getStackTrace()).stream()
-//                .map(a->a.toString())
-//                .forEach(LOG::info);
-//        }
-//    }
-//
-//    /*
-//     this function is useful for populating ControlConstructInstructions after loading from DB
-//      */
-//    public void populateInstructions(){
-//        LOG.info("ConstructInstructions size: " + getControlConstructInstructions().size() + " - " + getName());
-//        setPreInstructions(getControlConstructInstructions().stream()
-//            .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.PRE))
-//            .map(ControlConstructInstruction::getInstruction)
-//            .collect( Collectors.toList()));
-//
-//        setPostInstructions(getControlConstructInstructions().stream()
-//            .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
-//            .map(ControlConstructInstruction::getInstruction)
-//            .collect(Collectors.toList()));
-//    }
-//
     @JsonIgnore
     public List<Instruction> getPreInstructions() {
         return getControlConstructInstructions().stream()
@@ -147,11 +88,7 @@ public class QuestionConstruct  extends ControlConstruct {
             .map(ControlConstructInstruction::getInstruction)
             .collect( Collectors.toList());
     }
-//
-//    private void setPreInstructions(List<Instruction> preInstructions) {
-//        this.preInstructions = preInstructions;
-//    }
-//
+
     @JsonIgnore
     public List<Instruction> getPostInstructions() {
         return getControlConstructInstructions().stream()
@@ -159,10 +96,6 @@ public class QuestionConstruct  extends ControlConstruct {
             .map(ControlConstructInstruction::getInstruction)
             .collect( Collectors.toList());
     }
-//
-//    private void setPostInstructions(List<Instruction> postInstructions) {
-//        this.postInstructions = postInstructions;
-//    }
 
     @Override
     public void fillDoc(PdfReport pdfReport, String counter)  {

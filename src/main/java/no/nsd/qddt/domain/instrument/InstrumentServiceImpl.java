@@ -1,10 +1,7 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
-import no.nsd.qddt.domain.instrument.pojo.Instrument;
-import no.nsd.qddt.domain.instrument.pojo.InstrumentKind;
-import no.nsd.qddt.domain.instrument.pojo.InstrumentViewJson;
+import no.nsd.qddt.domain.instrument.pojo.*;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,18 +29,17 @@ class InstrumentServiceImpl implements InstrumentService {
 
     private final InstrumentRepository instrumentRepository;
     private final InstrumentAuditService auditService;
-
-    @Autowired
-    ElementServiceLoader serviceLoader;
+    private final InstrumentNodeService instrumentNodeService;
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public InstrumentServiceImpl(InstrumentRepository instrumentRepository
-                                ,InstrumentAuditService instrumentAuditService) {
+        , InstrumentAuditService instrumentAuditService, InstrumentNodeService  instrumentNodeService) {
 
         this.instrumentRepository = instrumentRepository;
         this.auditService = instrumentAuditService;
+        this.instrumentNodeService = instrumentNodeService;
     }
 
     @Override
@@ -129,7 +125,9 @@ class InstrumentServiceImpl implements InstrumentService {
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );
 
-//        this.refreshSequence(instance.getSequence());
+        instance.getRoot().checkInNodes();
+
+        instance.setRoot( instrumentNodeService.save( instance.getRoot() ));
 
         return instance;
     }
@@ -151,6 +149,7 @@ class InstrumentServiceImpl implements InstrumentService {
 //
     private Instrument loadDetail(Instrument instrument) {
         instrument.setChangeComment( null );
+        instrument.getRoot().children.forEach( c->  loadDetail( (InstrumentNode) c ) );
 //        Hibernate.initialize(instrument.getSequence());
 //        if (StackTraceFilter.stackContains( "getPdf", "getXml" )) {
 //            instrument.getSequence().forEach( this::loadDetail );
@@ -159,10 +158,11 @@ class InstrumentServiceImpl implements InstrumentService {
         return  instrument;
     }
 //
-//    private InstrumentElement loadDetail(InstrumentElement element) {
-//            getDetail( element);
-//        return element;
-//    }
+    private InstrumentNode loadDetail(InstrumentNode element) {
+        element.getParameters().forEach( p -> ((Parameter)p).setId( element.id ));
+        element.children.forEach( c->  loadDetail( (InstrumentNode) c ) );
+        return element;
+    }
 //
 //
 //    @Transactional(readOnly = true)

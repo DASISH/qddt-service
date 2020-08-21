@@ -34,6 +34,7 @@ public class TreeNode<T extends IDomainObject> extends ElementRef<T> implements 
         cascade = {CascadeType.MERGE,  CascadeType.REMOVE })
     public List<TreeNode<T>> children;
 
+
     @JsonIgnore
     @Transient
     private List<TreeNode<T>> elementsIndex;
@@ -64,9 +65,9 @@ public class TreeNode<T extends IDomainObject> extends ElementRef<T> implements 
             return parent.getLevel() + 1;
     }
 
-//    public UUID getId() {
-//        return id;
-//    }
+    public UUID getId() {
+        return id;
+    }
 
     public TreeNode<T> addChild(T child) {
         TreeNode<T> childNode = new TreeNode<>( child );
@@ -76,11 +77,21 @@ public class TreeNode<T extends IDomainObject> extends ElementRef<T> implements 
         return childNode;
     }
 
+    public void checkInNodes() {
+        this.children.forEach( c -> {
+            c.parent = this;
+            c.checkInNodes();
+        }  );
+    }
+
+
     private void registerChildForSearch(TreeNode<T> node) {
         elementsIndex.add(node);
         if (parent != null)
             parent.registerChildForSearch(node);
     }
+
+
 
     public TreeNode<T> findTreeNode(Comparable<T> cmp) {
         for (TreeNode<T> element : this.elementsIndex) {
