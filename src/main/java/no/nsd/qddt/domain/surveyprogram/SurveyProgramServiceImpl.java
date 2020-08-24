@@ -8,6 +8,7 @@ import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.security.SecurityContext;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +88,23 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     @Override
     // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<SurveyProgram> findByAgency(User user) {
-        return surveyProgramRepository.findByAgencyOrIsArchivedOrderByNameAsc(user.getAgency(), true)
+        return surveyProgramRepository.findByAgencyOrIsArchived(user.getAgency().getId(), true)
+            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional()
+    public List<SurveyProgram> reOrder(List<SurveyOrder> surveyOrders) {
+        if(surveyOrders != null) {
+            LOG.info( surveyOrders.toString() );
+            try {
+                surveyOrders.forEach(item ->  surveyProgramRepository.reOrder(item.uuid,item.index ) );
+            } catch (Exception ex) {
+                LOG.error( ex.getMessage() );
+            }
+        }
+        User user = SecurityContext.getUserDetails().getUser();
+        return surveyProgramRepository.findByAgencyOrderByAgencyIdx(user.getAgency())
             .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 

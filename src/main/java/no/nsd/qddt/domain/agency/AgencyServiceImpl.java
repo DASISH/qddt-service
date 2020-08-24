@@ -46,8 +46,12 @@ class AgencyServiceImpl implements AgencyService {
     @Override
     @Transactional(readOnly = true)
     public Agency findOne(UUID id) {
-        return agencyRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, Agency.class)
+        return agencyRepository.findById(id).map( mapper -> {
+            LOG.debug( " find one " );
+           Hibernate.initialize(mapper.getSurveyPrograms());
+           return  mapper;
+        }).orElseThrow(
+          () -> new ResourceNotFoundException(id, Agency.class)
         );
     }
 
@@ -76,7 +80,9 @@ class AgencyServiceImpl implements AgencyService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public Agency save(Agency instance) {
-        return agencyRepository.save(instance);
+        Agency agent = agencyRepository.save(instance);
+        Hibernate.initialize(agent.getSurveyPrograms());
+        return  agent;
     }
 
 

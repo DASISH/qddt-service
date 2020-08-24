@@ -55,9 +55,11 @@ public class SurveyProgram extends AbstractEntityAudit implements IAuthor, IArch
     @AuditMappedBy(mappedBy = "surveyProgram", positionMappedBy = "surveyIdx")
     private List<Study> studies = new ArrayList<>();
 
-    @Column(length = 10000)
+    @Column(length = 20000)
     private String description;
 
+    @Column(name = "agency_idx", insertable = false, updatable = false)
+    private Integer agencyIdx;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy(value = "name ASC,email DESC")

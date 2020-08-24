@@ -54,9 +54,6 @@ import java.util.stream.Collectors;
 @Table(name = "TOPIC_GROUP")
 public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchived, IDomainObjectParentRef {
 
-    @Column(name = "description", length = 10000)
-    private String description;
-
     @ManyToOne()
     @JsonBackReference(value = "studyRef")
     @JoinColumn(name="study_id",updatable = false)
@@ -67,6 +64,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
     @Column(name = "study_idx", insertable = false, updatable = false)
     private Integer studyIdx;
+
+    @Column(name = "description", length = 20000)
+    private String description;
+
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "topicGroup", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @OrderColumn(name="concept_idx")

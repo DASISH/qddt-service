@@ -67,7 +67,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived, ID
     @Column(name = "survey_idx", insertable = false, updatable = false)
     private Integer surveyIdx;
 
-    @Column(length = 10000)
+    @Column(length = 20000)
     private String description;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "study", cascade = { CascadeType.MERGE, CascadeType.DETACH } )

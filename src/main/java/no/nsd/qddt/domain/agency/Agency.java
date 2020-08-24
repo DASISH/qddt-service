@@ -18,14 +18,13 @@ import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static no.nsd.qddt.utils.StringTool.SafeString;
 
@@ -72,11 +71,12 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
     @NotAudited
     private Set<User> users = new HashSet<>();
 
-
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "surveyProgram", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
-    @NotAudited
-    private Set<SurveyProgram> surveyPrograms = new HashSet<>();
+    @OrderColumn(name="agency_idx")
+    @AuditMappedBy(mappedBy = "agency", positionMappedBy = "agencyIdx")
+    private List<SurveyProgram> surveyPrograms = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
@@ -173,11 +173,11 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
         this.defaultXmlLang = defaultXmlLang;
     }
 
-    public Set<SurveyProgram> getSurveyPrograms() {
+    public List<SurveyProgram> getSurveyPrograms() {
         return surveyPrograms;
     }
 
-    public void setSurveyPrograms(Set<SurveyProgram> surveyPrograms) {
+    public void setSurveyPrograms(List<SurveyProgram> surveyPrograms) {
         this.surveyPrograms = surveyPrograms;
     }
 
