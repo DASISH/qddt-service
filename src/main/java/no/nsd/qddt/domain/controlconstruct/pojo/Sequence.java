@@ -1,8 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
+import no.nsd.qddt.domain.elementref.ConditionRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
+import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
@@ -30,10 +32,20 @@ public class Sequence extends ControlConstruct {
         joinColumns = @JoinColumn(name="sequence_id", referencedColumnName = "id"))
     private List<ElementRef<ControlConstruct>> sequence = new ArrayList<>(0);
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @OrderColumn(name="universe_idx")
+    @JoinTable(name = "CONTROL_CONSTRUCT_UNIVERSE",
+        joinColumns = {@JoinColumn(name ="question_construct_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "universe_id" , referencedColumnName = "id")})
+    private List<Universe> universe =new ArrayList<>(0);
 
     @Enumerated(EnumType.STRING)
     @Column(name = "CONTROL_CONSTRUCT_SUPER_KIND")
     private SequenceKind sequenceKind;
+
+    @Embedded
+    private ConditionRef condition;
+
 
     public Sequence() {
         super();
@@ -55,9 +67,19 @@ public class Sequence extends ControlConstruct {
         this.description = description;
     }
 
+    public ConditionRef getCondition() {
+        return condition;
+    }
+
+    public void setCondition(ConditionRef condition) {
+        this.condition = condition;
+    }
+
     public List<ElementRef<ControlConstruct>> getSequence() {
         if(sequence==null) {
             LOG.info( "sequnece is null" );
+        } else if (getCondition()!=null && !sequence.get(0).equals( getCondition() )) {
+//            sequence.add( 0,getCondition() );
         }
         return sequence;
     }
@@ -74,14 +96,21 @@ public class Sequence extends ControlConstruct {
         this.sequenceKind = sequenceKind;
     }
 
+    public List<Universe> getUniverse() {
+        return universe;
+    }
 
+    public void setUniverse(List<Universe> universe) {
+        this.universe = universe;
+    }
 
     @Override
     public Set<Parameter> getParameterIn() {
-        return getSequence().stream()
+        Set<Parameter> tmp = getSequence().stream()
             .filter( p -> p.getElement() != null )
-            .flatMap( s -> s.getElement().getParameterIn().stream() )
-            .collect( Collectors.toSet()) ;
+            .flatMap( s -> s.getElement().getParameterIn().stream() ).collect( Collectors.toSet()) ;
+        tmp.add( new Parameter(this.getName(), "IN") );
+        return tmp;
     }
 
     public Set<Parameter> getParameterOut() {

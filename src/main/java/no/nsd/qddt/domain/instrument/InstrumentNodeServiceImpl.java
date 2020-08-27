@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.instrument.pojo.InstrumentNode;
+import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.treenode.TreeNode;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,9 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
     protected InstrumentNode prePersistProcessing(InstrumentNode instance) {
 //        instance.addChild(  )
         instance.checkInNodes();
+        if (instance.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT){
+            instance.addParameter( new Parameter(instance.getName(),"IN") );
+        }
         return instance;
     }
 

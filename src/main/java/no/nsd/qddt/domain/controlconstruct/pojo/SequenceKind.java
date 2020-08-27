@@ -5,10 +5,11 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
  */
 public enum SequenceKind {
     NA("N/A","Not Applicable"),
-    QUESTIONNAIRE("Questionnare Sequence","Covers the content of a full questionnaire"),
+//    QUESTIONNAIRE("Questionnare Sequence","Covers the content of a full questionnaire"),
     SECTION("Section Sequence","Covers the content of a section of a questionnaire section"),
     BATTERY("Battery Sequence","Covers content of a questionnaire battery"),
-    UNIVERSE("Universe Sequence","Covers content for a specific universe or population");
+    UNIVERSE("Universe Sequence","Covers content for a specific universe or population"),
+    LOOP("ForEach","For each Response do Sequence");
 
     SequenceKind(String name, String description){
         this.name = name;

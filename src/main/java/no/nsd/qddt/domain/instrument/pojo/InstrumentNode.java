@@ -30,7 +30,7 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
 
     @OrderColumn(name="parent_idx")
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = InstrumentNode.class,
-        cascade = {CascadeType.MERGE,  CascadeType.REMOVE })
+        orphanRemoval = true, cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
     public List<InstrumentNode<T>> children;
 
 
@@ -61,6 +61,12 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
 
     public void setParameters(List<Parameter> parameters) {
         this.parameters = parameters;
+    }
+
+    public void addParameter(Parameter parameter) {
+        if (!this.parameters.stream().anyMatch( p -> p.getName() == parameter.getName()
+            && p.getParameterKind() == parameter.getParameterKind()))
+                this.parameters.add( parameter );
     }
 
     public boolean isRoot() {

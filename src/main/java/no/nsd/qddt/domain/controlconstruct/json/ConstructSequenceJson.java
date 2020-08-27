@@ -4,8 +4,10 @@ import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.controlconstruct.pojo.SequenceKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.universe.Universe;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Stig Norland
@@ -23,11 +25,14 @@ public class ConstructSequenceJson extends ConstructJson {
 
     private SequenceKind sequenceKind;
 
+    private String universe;
+
     public ConstructSequenceJson(Sequence construct) {
         super( construct );
         sequenceKind =  construct.getSequenceKind();
         sequence = construct.getSequence();
         description = construct.getDescription();
+        universe =  construct.getUniverse().stream().map( Universe::getDescription ).collect( Collectors.joining("/ ") );
     }
 
     public String getDescription() {
@@ -42,4 +47,7 @@ public class ConstructSequenceJson extends ConstructJson {
         return sequence;
     }
 
+    public String getUniverse() {
+        return universe;
+    }
 }
