@@ -3,11 +3,19 @@ package no.nsd.qddt.domain.instrument.pojo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
+import no.nsd.qddt.domain.interfaces.IConditionNode;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -89,6 +97,11 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
         return id;
     }
 
+
+    public List<InstrumentNode<T>> getChildren() {
+        return children;
+    }
+
     public InstrumentNode<T> addChild(T child) {
         InstrumentNode<T> childNode = new InstrumentNode<>( child );
         childNode.parent = this;
@@ -97,7 +110,40 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
         return childNode;
     }
 
+    private ConditionNode createConditionNode() {
+        try {
+            return new ConditionNode( (IConditionNode) getClass().getMethod("getElement").invoke(this ) );
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void checkInNodes() {
+        if (getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  getElement() != null) {
+            System.out.println( getName() + "-01" );
+
+            ConditionNode ref = createConditionNode();
+            JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
+                .add( "id", getId().toString() )
+                .add( "name", ref.getName() )
+                .add( "classKind", ref.getClassKind() )
+                .add( "conditionKind", ref.getConditionKind().getName() )
+                .add( "condition", ref.getCondition() );
+            JsonObject jsonObject = objectBuilder.build();
+
+            try (Writer writer = new StringWriter()) {
+                Json.createWriter( writer ).write( jsonObject );
+                setName( writer.toString() );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println( getName() + "-02" );
+        }
         this.children.forEach( c -> {
             c.parent = this;
             c.checkInNodes();

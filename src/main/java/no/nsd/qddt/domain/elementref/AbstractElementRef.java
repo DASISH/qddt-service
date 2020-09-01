@@ -35,7 +35,7 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
     @Column(name = "element_revision")
     private Integer elementRevision;
 
-    @Column(name = "element_name")
+    @Column(name = "element_name", length = 500)
     protected String name;
 
     @Column(name = "element_major")

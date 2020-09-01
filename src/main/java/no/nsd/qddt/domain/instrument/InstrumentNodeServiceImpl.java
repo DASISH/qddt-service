@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.instrument;
 
+import no.nsd.qddt.domain.controlconstruct.pojo.ConditionKind;
 import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.instrument.pojo.ConditionNode;
 import no.nsd.qddt.domain.instrument.pojo.InstrumentNode;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.treenode.TreeNode;
@@ -10,6 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.StringReader;
 import java.util.UUID;
 
 /**
@@ -41,7 +47,10 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public <S extends InstrumentNode> S save(S instance) {
-        return instrumentNodeRepository.saveAndFlush( instance );
+        System.out.println("InstrumentNode::save");
+        return (S) postLoadProcessing(
+            instrumentNodeRepository.saveAndFlush(
+                prePersistProcessing( instance )));
     }
 
 
@@ -49,7 +58,9 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
     @Override
     @Transactional(readOnly = true)
     public InstrumentNode<?> findOne(UUID uuid) {
-        return instrumentNodeRepository.findById(uuid).orElseThrow(
+        return instrumentNodeRepository.findById(uuid)
+            .map( this::postLoadProcessing )
+            .orElseThrow(
             () -> new ResourceNotFoundException(uuid, TreeNode.class));
     }
 
@@ -61,18 +72,39 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
         instrumentNodeRepository.delete(uuid);
     }
 
-
-    protected InstrumentNode prePersistProcessing(InstrumentNode instance) {
-//        instance.addChild(  )
+    private <S extends InstrumentNode> S  prePersistProcessing(S instance) {
+        assert  (instance != null);
+//        if (instance instanceof QuestionConstruct)
+//            QuestionConstruct qc = (QuestionConstruct)instance;
         instance.checkInNodes();
+        System.out.println(instance.getName());
         if (instance.getElementKind() == ElementKind.SEQUENCE_CONSTRUCT){
             instance.addParameter( new Parameter(instance.getName(),"IN") );
         }
+//        if (instance.children.size() > 0) {
+//            foreach (child)
+//            instance.getChildren().stream().forEach(this::prePersistProcessing);
+//
+//        }
         return instance;
     }
 
 
     protected InstrumentNode postLoadProcessing(InstrumentNode instance) {
+        if (instance.getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  instance.getElement() == null) {
+            JsonReader reader = Json.createReader(new StringReader(instance.getName()));
+            JsonObject jsonObject = reader.readObject();
+            ConditionNode condNode = new ConditionNode();
+
+            condNode.setId( UUID.fromString( jsonObject.getString("id")));
+            condNode.setName( jsonObject.getString("name"));
+            condNode.setConditionKind( ConditionKind.valueOf( jsonObject.getString("conditionKind")));
+            condNode.setClassKind( jsonObject.getString("classKind"));
+            condNode.setCondition( jsonObject.getString("condition"));
+
+            instance.setElement( condNode );
+        }
+
         return instance;
     }
 

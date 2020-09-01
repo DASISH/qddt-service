@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
+import no.nsd.qddt.domain.interfaces.IConditionNode;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
@@ -12,7 +13,7 @@ import java.util.Objects;
 @Entity
 @Audited
 @DiscriminatorValue("CONDITION_CONSTRUCT")
-public class ConditionConstruct extends ControlConstruct {
+public class ConditionConstruct extends ControlConstruct implements IConditionNode {
 
     @Column(name = "description")
     private String condition;

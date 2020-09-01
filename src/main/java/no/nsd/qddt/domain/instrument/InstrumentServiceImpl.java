@@ -1,5 +1,7 @@
 package no.nsd.qddt.domain.instrument;
 
+import no.nsd.qddt.domain.controlconstruct.pojo.ConditionKind;
+import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.domain.instrument.pojo.*;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -12,6 +14,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -64,9 +70,7 @@ class InstrumentServiceImpl implements InstrumentService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
     public Instrument save(Instrument instance) {
-//        System.out.println("save instrument ");
-
-        return  instrumentRepository.save( prePersistProcessing( instance) );
+       return  instrumentRepository.save( prePersistProcessing( instance) );
     }
 
 
@@ -132,21 +136,10 @@ class InstrumentServiceImpl implements InstrumentService {
         return instance;
     }
 
-//    private void refreshSequence( List<InstrumentElement> elements ){
-//        elements.stream().filter( f -> f.getElement() != null)
-//            .forEach( el -> {
-//                if (Sequence.class.isInstance( el )) {
-//                    Sequence seq = Sequence.class.cast( el.getElement() );
-//                    seq.getSequence().stream().forEach( s -> el.addSequence(new InstrumentElement(s)));
-//                }
-//            });
-//    }
-//
     private InstrumentViewJson loadListDetail(Instrument instrument) {
         return new InstrumentViewJson( instrument );
     }
-//
-//
+
     private Instrument loadDetail(Instrument instrument) {
         instrument.setChangeComment( null );
         instrument.getRoot().children.forEach( c->  loadDetail( (InstrumentNode) c ) );
@@ -160,17 +153,27 @@ class InstrumentServiceImpl implements InstrumentService {
 //
     private InstrumentNode loadDetail(InstrumentNode element) {
         element.getParameters().forEach( p -> ((Parameter)p).setId( element.id ));
+        if (element.getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  element.getElement() == null) {
+            try {
+                JsonReader reader = Json.createReader( new StringReader( element.getName() ) );
+                JsonObject jsonObject = reader.readObject();
+                ConditionNode condNode = new ConditionNode();
+
+                condNode.setId( UUID.fromString( jsonObject.getString( "id" ) ) );
+                condNode.setName( jsonObject.getString( "name" ) );
+                condNode.setConditionKind( ConditionKind.valueOf( jsonObject.getString( "conditionKind" ) ));
+                condNode.setClassKind( jsonObject.getString( "classKind" ) );
+                condNode.setCondition( jsonObject.getString( "condition" ) );
+
+                element.setElement( condNode );
+                LOG.info("setElement( condNode )");
+            } catch (Exception ex) {
+                LOG.error(ex.getMessage(), ex.getCause() );
+            }
+        }
         element.children.forEach( c->  loadDetail( (InstrumentNode) c ) );
         return element;
     }
-//
-//
-//    @Transactional(readOnly = true)
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-//    public InstrumentElement getDetail(InstrumentElement element) {
-//        return (InstrumentElement)
-//            new ElementLoader<ControlConstruct>(
-//                serviceLoader.getService( element.getElementKind() ) ).fill( element );
-//    }
+
 
 }
