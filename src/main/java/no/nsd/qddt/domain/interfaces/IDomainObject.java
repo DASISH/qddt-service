@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 /**
  * @author Stig Norland
  */
-public interface IDomainObject extends IWebMenuPreview {
+public interface IDomainObject extends IWebMenuPreview, IXmlBuilder {
 
     UserJson getModifiedBy();
     Timestamp getModified();

@@ -48,7 +48,7 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
+    @JsonDeserialize()
     protected T element;
 
     public AbstractElementRef() {}
@@ -115,7 +115,7 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
         setValues();
     }
 
-    private AbstractElementRef<T> setValues() {
+    protected AbstractElementRef<T> setValues() {
         if (getElement() == null) return this;
         if (element instanceof QuestionItem)
             setName( getElement().getName() + " ➫ " + ((QuestionItem) element).getQuestion() );

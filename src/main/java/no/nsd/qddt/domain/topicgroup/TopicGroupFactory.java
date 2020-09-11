@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.IEntityFactory;
 import no.nsd.qddt.domain.concept.ConceptFactory;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 
 import java.util.stream.Collectors;
 
@@ -34,7 +34,7 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
       dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );
 
       dest.setTopicQuestionItems( source.getTopicQuestionItems().stream()
-          .map( ElementRef::clone )
+          .map( ElementRefImpl::clone )
           .collect(Collectors.toList()));
 
       return dest;

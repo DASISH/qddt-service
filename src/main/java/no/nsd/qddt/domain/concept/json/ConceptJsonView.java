@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.concept.json;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -42,7 +42,7 @@ public class ConceptJsonView {
     @Embedded
     private Version version;
 
-    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRefImpl<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
@@ -117,11 +117,11 @@ public class ConceptJsonView {
         return agency;
     }
 
-    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRefImpl<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRefImpl<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

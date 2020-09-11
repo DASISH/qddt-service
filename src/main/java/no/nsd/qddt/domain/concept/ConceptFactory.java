@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.IEntityFactory;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 
 import java.util.stream.Collectors;
 /**
@@ -28,7 +28,7 @@ public class ConceptFactory implements IEntityFactory<Concept> {
 //        dest.getChildren().forEach(action -> action.setParentC(dest));
 
         dest.setConceptQuestionItems( source.getConceptQuestionItems().stream()
-            .map( ElementRef::clone )
+            .map( ElementRefImpl::clone )
             .collect(Collectors.toList()));
         return dest;
 	}

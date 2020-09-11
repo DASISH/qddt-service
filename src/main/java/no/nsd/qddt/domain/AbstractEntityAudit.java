@@ -7,7 +7,8 @@ import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.interfaces.*;
+import no.nsd.qddt.domain.interfaces.IArchived;
+import no.nsd.qddt.domain.interfaces.IDomainObject;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  implements IXmlBuilder, IDomainObject {
+public abstract class AbstractEntityAudit extends AbstractEntity  implements IDomainObject {
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.

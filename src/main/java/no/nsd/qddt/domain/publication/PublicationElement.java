@@ -1,29 +1,35 @@
-package no.nsd.qddt.domain.elementref;
+package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
+import no.nsd.qddt.domain.elementref.AbstractElementRef;
+import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.domain.interfaces.IDomainObject;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;
 import java.util.UUID;
-
 
 /**
  * @author Stig Norland
  */
 @Audited
 @Embeddable
-public class ElementRef<T extends IWebMenuPreview> extends AbstractElementRef<T> {
+public class PublicationElement extends AbstractElementRef<IDomainObject> {
 
-    public ElementRef() {
+    @Override
+    public IDomainObject getElement() {
+        return super.getElement();
     }
 
-    public ElementRef(ElementKind kind, UUID id, Integer rev) {
-        super( kind, id, rev );
+    public PublicationElement() {
+    }
+
+    public PublicationElement(ElementKind elementKind, UUID elementId, Integer elementRevision) {
+        super(elementKind,elementId,elementRevision);
     }
 
     @Override
-    public ElementRef<T> clone() {
-        ElementRef<T> retval = new ElementRef<>(getElementKind(), getElementId(),getElementRevision());
+    public PublicationElement clone() {
+        PublicationElement retval = new PublicationElement(getElementKind(), getElementId(),getElementRevision());
         retval.setVersion( getVersion() );
         retval.setName( getName() );
         return retval;

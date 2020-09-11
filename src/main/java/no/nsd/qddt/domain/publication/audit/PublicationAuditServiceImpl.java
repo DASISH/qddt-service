@@ -3,6 +3,7 @@ package no.nsd.qddt.domain.publication.audit;
 import no.nsd.qddt.domain.AbstractAuditFilter;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.publication.Publication;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +62,7 @@ class PublicationAuditServiceImpl extends AbstractAuditFilter<Integer,Publicatio
     @Override
     protected Revision<Integer, Publication> postLoadProcessing(Revision<Integer, Publication> instance) {
         instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
-
+        Hibernate.initialize(instance.getEntity().getPublicationElements());
         return instance;
     }
     

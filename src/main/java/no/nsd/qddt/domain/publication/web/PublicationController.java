@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.publication.web;
 
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.publication.PublicationJson;
 import no.nsd.qddt.domain.publication.PublicationService;
@@ -41,7 +41,7 @@ public class PublicationController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/element/", method = RequestMethod.POST)
-    public ElementRef getDetail(@RequestBody ElementRef instance) {
+    public ElementRefImpl getDetail(@RequestBody ElementRefImpl instance) {
         return service.getDetail(instance);
     }
 

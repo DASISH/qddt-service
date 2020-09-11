@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import no.nsd.qddt.domain.elementref.ConditionRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
@@ -30,7 +30,7 @@ public class Sequence extends ControlConstruct {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_SEQUENCE",
         joinColumns = @JoinColumn(name="sequence_id", referencedColumnName = "id"))
-    private List<ElementRef<ControlConstruct>> sequence = new ArrayList<>(0);
+    private List<ElementRefImpl<ControlConstruct>> sequence = new ArrayList<>(0);
 
     @ManyToMany(fetch = FetchType.EAGER)
     @OrderColumn(name="universe_idx")
@@ -75,7 +75,7 @@ public class Sequence extends ControlConstruct {
         this.condition = condition;
     }
 
-    public List<ElementRef<ControlConstruct>> getSequence() {
+    public List<ElementRefImpl<ControlConstruct>> getSequence() {
         if(sequence==null) {
             LOG.info( "sequnece is null" );
         } else if (getCondition()!=null && !sequence.get(0).equals( getCondition() )) {
@@ -84,7 +84,7 @@ public class Sequence extends ControlConstruct {
         return sequence;
     }
 
-    public void setSequence(List<ElementRef<ControlConstruct>> sequence) {
+    public void setSequence(List<ElementRefImpl<ControlConstruct>> sequence) {
         this.sequence = sequence;
     }
 

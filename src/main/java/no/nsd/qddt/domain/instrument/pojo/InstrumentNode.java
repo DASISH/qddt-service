@@ -2,10 +2,14 @@ package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.interfaces.IConditionNode;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
+import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
+import no.nsd.qddt.domain.interfaces.IConditionNode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
@@ -24,7 +28,7 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "INSTRUMENT_NODE")
-public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> implements Iterable<InstrumentNode<T>> {
+public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T> implements Iterable<InstrumentNode<T>> {
 
     @Id
     @GeneratedValue(generator ="UUID")
@@ -61,6 +65,11 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
         this.elementsIndex = new LinkedList<>();
         this.elementsIndex.add(this);
 
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Parameter> getParameters() {
@@ -172,6 +181,22 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
     @Override
     public Iterator<InstrumentNode<T>> iterator() {
         return  new InstrumentNodeIter<>( this );
+    }
+
+    @Override
+    protected AbstractElementRef<T> setValues() {
+        if (getElement() == null) return this;
+        else if (element instanceof StatementItem)
+            setName( getElement().getName() + " ➫ " + ((StatementItem) element).getStatement() );
+        else if (element instanceof ConditionConstruct) {
+            System.out.println("ignorerer set value");
+        }else if (element instanceof QuestionConstruct) {
+            //
+        } else
+        setVersion( getElement().getVersion() );
+        if (this.getElementKind() == null)
+            setElementKind( ElementKind.getEnum( element.getClass().getSimpleName() ) );
+        return this;
     }
 
     @Override

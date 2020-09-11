@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.treenode;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.interfaces.IDomainObject;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Audited
 @Entity
-public class TreeNode<T extends IDomainObject> extends ElementRef<T> implements Iterable<TreeNode<T>> {
+public class TreeNode<T extends IDomainObject> extends ElementRefImpl<T> implements Iterable<TreeNode<T>> {
 
     @Id
     @GeneratedValue(generator ="UUID")
