@@ -14,9 +14,6 @@ import java.util.UUID;
 @Embeddable
 public class ElementRefImpl<T extends IWebMenuPreview> extends AbstractElementRef<T> {
 
-
-
-
     public ElementRefImpl() {
     }
 

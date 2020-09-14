@@ -13,12 +13,7 @@ import no.nsd.qddt.domain.interfaces.IConditionNode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -28,6 +23,7 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "INSTRUMENT_NODE")
+@AttributeOverride(name="name", column=@Column(name="element_name", length = 1500))
 public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T> implements Iterable<InstrumentNode<T>> {
 
     @Id
@@ -45,11 +41,9 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T
         orphanRemoval = true, cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
     public List<InstrumentNode<T>> children;
 
-
     @JsonIgnore
     @Transient
     private List<InstrumentNode<T>> elementsIndex;
-
 
     @OrderColumn(name="node_idx")
     @ElementCollection(fetch = FetchType.EAGER)
@@ -133,26 +127,26 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T
     }
 
     public void checkInNodes() {
-        if (getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  getElement() != null) {
-            System.out.println( getName() + "-01" );
-
-            ConditionNode ref = createConditionNode();
-            JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
-                .add( "id", getId().toString() )
-                .add( "name", ref.getName() )
-                .add( "classKind", ref.getClassKind() )
-                .add( "conditionKind", ref.getConditionKind().getName() )
-                .add( "condition", ref.getCondition() );
-            JsonObject jsonObject = objectBuilder.build();
-
-            try (Writer writer = new StringWriter()) {
-                Json.createWriter( writer ).write( jsonObject );
-                setName( writer.toString() );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println( getName() + "-02" );
-        }
+//        if (getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  getElement() != null) {
+//            System.out.println( getName() + "-01" );
+//
+//            ConditionNode ref = createConditionNode();
+//            JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
+//                .add( "id", getId().toString() )
+//                .add( "name", ref.getName() )
+//                .add( "classKind", ref.getClassKind() )
+//                .add( "conditionKind", ref.getConditionKind().getName() )
+//                .add( "condition", ref.getCondition() );
+//            JsonObject jsonObject = objectBuilder.build();
+//
+//            try (Writer writer = new StringWriter()) {
+//                Json.createWriter( writer ).write( jsonObject );
+//                setName( writer.toString() );
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println( getName() + "-02" );
+//        }
         this.children.forEach( c -> {
             c.parent = this;
             c.checkInNodes();
