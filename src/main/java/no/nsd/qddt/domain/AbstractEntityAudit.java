@@ -274,7 +274,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IXm
             setModifiedBy( user );
 
             // it is illegal to update an entity with "Creator statuses" (CREATED...BASEDON)
-            if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() &    !ver.isNew()) {
+            if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() &&  !ver.isNew()) {
                 change = ChangeKind.IN_DEVELOPMENT;
                 setChangeKind( change );
             }

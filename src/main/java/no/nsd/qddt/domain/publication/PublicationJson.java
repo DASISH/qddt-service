@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
@@ -20,7 +19,7 @@ private Long statusId;
 
 private PublicationStatus status;
 
-private List<ElementRef<AbstractEntityAudit>>  publicationElements;
+private List<ElementRef>  publicationElements;
 
 public PublicationJson(Publication publication) {
     super(publication);
@@ -44,7 +43,7 @@ public PublicationStatus getStatus() {
 }
 
 
-public List<ElementRef<AbstractEntityAudit>> getPublicationElements() {
+public List<ElementRef> getPublicationElements() {
     return publicationElements;
 }
 

@@ -34,7 +34,7 @@ public class PublicationFragmentBuilder extends XmlDDIFragmentBuilder<Publicatio
 
     @Override
     public String getXmlFragment() {
-        if (children.size() == 0) addChildren( );
+        if (children.isEmpty()) addChildren( );
         return String.format( xmlPublication,
             getXmlHeader(entity),
             entity.getName(),
@@ -45,7 +45,7 @@ public class PublicationFragmentBuilder extends XmlDDIFragmentBuilder<Publicatio
     @Override
     public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
         super.addXmlFragments( fragments );
-        if (children.size() == 0) addChildren();
+        if (children.isEmpty()) addChildren();
         children.stream().forEach( c -> c.addXmlFragments( fragments ) );
     }
 

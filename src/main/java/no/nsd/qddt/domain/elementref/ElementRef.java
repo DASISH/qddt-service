@@ -1,6 +1,8 @@
 package no.nsd.qddt.domain.elementref;
 
 import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
+import no.nsd.qddt.domain.interfaces.IXmlBuilder;
+
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;
@@ -12,7 +14,7 @@ import java.util.UUID;
  */
 @Audited
 @Embeddable
-public class ElementRef<T extends IWebMenuPreview> extends AbstractElementRef<T> {
+public class ElementRef<T extends IWebMenuPreview & IXmlBuilder> extends AbstractElementRef<T> {
 
     public ElementRef() {
     }

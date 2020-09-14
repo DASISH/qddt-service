@@ -114,7 +114,7 @@ public class PublicationServiceImpl implements PublicationService {
         }
         if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
             if (published.equals( Published.NOT_PUBLISHED ))
-            published = Published.INTERNAL_PUBLICATION;
+                published = Published.INTERNAL_PUBLICATION;
         }
 
         return repository.findByQuery(likeify(name),likeify(purpose),statuses, published.name(),SecurityContext.getUserDetails().getUser().getAgency().getId() ,defaultOrModifiedSort(pageable,"name"));
@@ -156,9 +156,8 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-    public ElementRef<AbstractEntityAudit> loadDetail(ElementRef<AbstractEntityAudit> element) {
-        return (ElementRef<AbstractEntityAudit>)
-            new ElementLoader<>(
+    public ElementRef loadDetail(ElementRef element) {
+        return new ElementLoader<>(
                 serviceLoader.getService( element.getElementKind() ) ).fill( element );
     }
 

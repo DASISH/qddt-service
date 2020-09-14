@@ -187,32 +187,32 @@ FROM (audit.topic_group_other_material_aud tgom
 DROP TABLE project_archived;
 DROP VIEW project_archived;
 CREATE VIEW project_archived (id, path, name, is_archived, parent_id) AS  SELECT concept.id,
-            '/concept'::text AS path,
-            concept.name,
-            concept.is_archived,
-            COALESCE(concept.topicgroup_id, concept.concept_id) AS parent_id
-    FROM concept
-    UNION
-    SELECT topic_group.id,
-            '/module'::text AS path,
-            topic_group.name,
-            topic_group.is_archived,
-            topic_group.study_id AS parent_id
-    FROM topic_group
-    UNION
-    SELECT study.id,
-            '/study'::text AS path,
-            study.name,
-            study.is_archived,
-            study.survey_id AS parent_id
-    FROM study
-    UNION
-    SELECT survey_program.id,
-            '/survey'::text AS path,
-            survey_program.name,
-            survey_program.is_archived,
-            NULL::uuid AS parent_id
-    FROM survey_program;
+                                                                                 '/concept'::text AS path,
+                                                                                 concept.name,
+                                                                                 concept.is_archived,
+                                                                                 COALESCE(concept.topicgroup_id, concept.concept_id) AS parent_id
+                                                                          FROM concept
+                                                                          UNION
+                                                                          SELECT topic_group.id,
+                                                                                 '/module'::text AS path,
+                                                                                 topic_group.name,
+                                                                                 topic_group.is_archived,
+                                                                                 topic_group.study_id AS parent_id
+                                                                          FROM topic_group
+                                                                          UNION
+                                                                          SELECT study.id,
+                                                                                 '/study'::text AS path,
+                                                                                 study.name,
+                                                                                 study.is_archived,
+                                                                                 study.survey_id AS parent_id
+                                                                          FROM study
+                                                                          UNION
+                                                                          SELECT survey_program.id,
+                                                                                 '/survey'::text AS path,
+                                                                                 survey_program.name,
+                                                                                 survey_program.is_archived,
+                                                                                 NULL::uuid AS parent_id
+                                                                          FROM survey_program;
 
 DROP TABLE project_archived_hierarchy;
 DROP VIEW project_archived_hierarchy;
@@ -234,12 +234,12 @@ CREATE VIEW project_archived_hierarchy (id, path, name, is_archived, ancestors) 
          tree tree_1
     WHERE (project_archived.parent_id = tree_1.id)
 )
-SELECT tree.id,
-        tree.path,
-        tree.name,
-        tree.is_archived,
-        tree.ancestors
-FROM tree;
+                                                                                    SELECT tree.id,
+                                                                                           tree.path,
+                                                                                           tree.name,
+                                                                                           tree.is_archived,
+                                                                                           tree.ancestors
+                                                                                    FROM tree;
 
 DROP TABLE referenced;
 DROP VIEW referenced;
@@ -329,26 +329,25 @@ CREATE VIEW referenced (entity, kind, modified, antall, refs) AS  WITH total(par
     FROM (topic_group_question_item
              LEFT JOIN question_item qi ON ((qi.id = topic_group_question_item.element_id)))
 )
-    SELECT total.entity,
-            total.kind,
-            total.modified,
-            count(total.parent) AS antall,
-            array_agg(total.parent) AS refs
-    FROM total
-    GROUP BY total.entity, total.kind, total.modified;
+                                                                  SELECT total.entity,
+                                                                         total.kind,
+                                                                         total.modified,
+                                                                         count(total.parent) AS antall,
+                                                                         array_agg(total.parent) AS refs
+                                                                  FROM total
+                                                                  GROUP BY total.entity, total.kind, total.modified;
 
 DROP TABLE uar;
 DROP VIEW uar;
-CREATE VIEW uar (id, email, username, name, authority) AS  
-SELECT ua.id,
-        ua.email,
-        ua.username,
-        a.name,
-        a.authority
-FROM ((user_account ua
-    LEFT JOIN user_authority au ON ((au.user_id = ua.id)))
-        LEFT JOIN authority a ON ((au.authority_id = a.id)))
-WHERE ua.is_enabled;
+CREATE VIEW uar (id, email, username, name, authority) AS  SELECT ua.id,
+                                                                  ua.email,
+                                                                  ua.username,
+                                                                  a.name,
+                                                                  a.authority
+                                                           FROM ((user_account ua
+                                                               LEFT JOIN user_authority au ON ((au.user_id = ua.id)))
+                                                                    LEFT JOIN authority a ON ((au.authority_id = a.id)))
+                                                           WHERE ua.is_enabled;
 
 DROP TABLE uuidpath;
 DROP VIEW uuidpath;

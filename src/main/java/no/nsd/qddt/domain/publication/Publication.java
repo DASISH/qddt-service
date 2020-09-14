@@ -36,7 +36,7 @@ public class Publication extends AbstractEntityAudit {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PUBLICATION_ELEMENT",
         joinColumns = @JoinColumn(name="publication_id", referencedColumnName = "id"))
-    private List<ElementRef<AbstractEntityAudit>>  publicationElements = new ArrayList<>();
+    private List<ElementRef>  publicationElements = new ArrayList<>();
 
 
     public String getPurpose() {
@@ -68,7 +68,7 @@ public class Publication extends AbstractEntityAudit {
         return this.status.getPublished() == PublicationStatus.Published.EXTERNAL_PUBLICATION;
     }
 
-    public List<ElementRef<AbstractEntityAudit>> getPublicationElements() {
+    public List<ElementRef> getPublicationElements() {
         try {
             return publicationElements;
         }catch (Exception ex){
@@ -77,7 +77,7 @@ public class Publication extends AbstractEntityAudit {
         }
     }
 
-    public void setPublicationElements(List<ElementRef<AbstractEntityAudit>> publicationElements) {
+    public void setPublicationElements(List<ElementRef> publicationElements) {
         this.publicationElements = publicationElements;
     }
 

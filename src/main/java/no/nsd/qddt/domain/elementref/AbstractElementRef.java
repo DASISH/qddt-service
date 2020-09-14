@@ -13,6 +13,7 @@ import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 import no.nsd.qddt.domain.interfaces.IElementRef;
 import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
+import no.nsd.qddt.domain.interfaces.IXmlBuilder;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.hibernate.annotations.Type;
@@ -24,7 +25,7 @@ import java.util.UUID;
 
 @Audited
 @MappedSuperclass
-public abstract class AbstractElementRef<T extends IWebMenuPreview> implements IElementRef<T> {
+public abstract class AbstractElementRef<T extends IWebMenuPreview, IXmlBuilder> implements IElementRef<T> {
 
     @Enumerated(EnumType.STRING)
     private ElementKind elementKind;
