@@ -4,6 +4,7 @@ import no.nsd.qddt.domain.elementref.ConditionRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
 import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
+import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
@@ -118,6 +119,30 @@ public class Sequence extends ControlConstruct {
             .filter( p -> p.getElement() != null )
             .flatMap( s -> s.getElement().getParameterOut().stream() )
             .collect( Collectors.toSet()) ;
+    }
+
+
+    @Override
+    public void fillDoc(PdfReport pdfReport, String counter)  {
+        pdfReport.addHeader(this, "Sequence " + counter);
+
+        pdfReport.addParagraph( this.getDescription() );
+
+        if (getUniverse().size() > 0)
+            pdfReport.addheader2("Universe");
+        for(Universe uni:getUniverse()){
+            pdfReport.addParagraph(uni.getDescription());
+        }
+
+
+        getSequence().forEach( entity -> entity.getElement().fillDoc( pdfReport,counter ) );
+
+
+        if(getComments().size()>0)
+            pdfReport.addheader2("Comments");
+        pdfReport.addComments(getComments());
+
+        // pdfReport.addPadding();
     }
 
     @Override

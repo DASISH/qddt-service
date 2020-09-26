@@ -58,7 +58,6 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T
         this.children = new LinkedList<>();
         this.elementsIndex = new LinkedList<>();
         this.elementsIndex.add(this);
-
     }
 
     @Override
@@ -75,9 +74,13 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T
     }
 
     public void addParameter(Parameter parameter) {
-        if (!this.parameters.stream().anyMatch( p -> p.getName() == parameter.getName()
-            && p.getParameterKind() == parameter.getParameterKind()))
+        if (this.parameters.stream()
+            .noneMatch( p -> p.getName().equals( parameter.getName() ) && p.getParameterKind().equals( parameter.getParameterKind() ) ))
                 this.parameters.add( parameter );
+    }
+
+    public void clearInParameters(){
+        this.parameters.removeIf( p->p.getParameterKind().equals( "IN" ) );
     }
 
     public boolean isRoot() {
@@ -127,26 +130,6 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T
     }
 
     public void checkInNodes() {
-//        if (getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  getElement() != null) {
-//            System.out.println( getName() + "-01" );
-//
-//            ConditionNode ref = createConditionNode();
-//            JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
-//                .add( "id", getId().toString() )
-//                .add( "name", ref.getName() )
-//                .add( "classKind", ref.getClassKind() )
-//                .add( "conditionKind", ref.getConditionKind().getName() )
-//                .add( "condition", ref.getCondition() );
-//            JsonObject jsonObject = objectBuilder.build();
-//
-//            try (Writer writer = new StringWriter()) {
-//                Json.createWriter( writer ).write( jsonObject );
-//                setName( writer.toString() );
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println( getName() + "-02" );
-//        }
         this.children.forEach( c -> {
             c.parent = this;
             c.checkInNodes();
