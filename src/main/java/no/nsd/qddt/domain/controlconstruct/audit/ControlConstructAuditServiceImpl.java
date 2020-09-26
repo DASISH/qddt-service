@@ -159,12 +159,15 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             Matcher matcher = TAGS.matcher( instance.getCondition() );
 
             while (matcher.find()) {
+                LOG.info( "postLoadProcessing::MATCH: " +  matcher.group( 1 ));
                 instance.getParameterIn().add( new Parameter( matcher.group( 1 ).toUpperCase(), "IN" ) );
             }
 
             Set<Parameter> parameterOuts = new java.util.HashSet<>();
             parameterOuts.add( new Parameter( instance.getName(), "OUT" ) );
             instance.setParameterOut( parameterOuts );
+
+
         } catch (Exception ex) {
             LOG.error( "postLoadProcessing", ex );
         }
