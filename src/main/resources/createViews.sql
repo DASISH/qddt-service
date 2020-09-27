@@ -299,12 +299,13 @@ CREATE VIEW referenced (entity, kind, modified, antall, refs) AS  WITH total(par
     FROM instrument
     WHERE (instrument.study_id IS NOT NULL)
     UNION
-    SELECT COALESCE(instrument_element.instrument_id, instrument_element.instrument_element_id) AS "coalesce",
-           instrument_element.element_id,
-           cc.updated,
-           'CONSTRUCT'::text AS text
-    FROM (instrument_element
-             LEFT JOIN control_construct cc ON ((cc.id = instrument_element.element_id)))
+    SELECT
+        instrument_node.parent_id,
+        instrument_node.id,
+        cc.updated,
+        'CONSTRUCT'::text AS text
+    FROM (instrument_node
+             LEFT JOIN control_construct cc ON ((cc.id = instrument_node.element_id)))
     UNION
     SELECT r.id,
            r.category_id,

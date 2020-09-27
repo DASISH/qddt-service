@@ -1,8 +1,7 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.elementref.ElementServiceLoader;
 import no.nsd.qddt.domain.interfaces.IElementRef;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
@@ -124,8 +123,8 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public ElementRef<?> getDetail(IElementRef publicationElement) {
-        return (ElementRef<?>)
+    public ElementRefImpl<?> getDetail(IElementRef publicationElement) {
+        return (ElementRefImpl<?>)
             new ElementLoader<>( serviceLoader.getService( publicationElement.getElementKind() ) )
                 .fill( publicationElement );
     }
@@ -156,10 +155,8 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
 
-    public ElementRef<AbstractEntityAudit> loadDetail(ElementRef<AbstractEntityAudit> element) {
-        return (ElementRef<AbstractEntityAudit>)
-            new ElementLoader<>(
-                serviceLoader.getService( element.getElementKind() ) ).fill( element );
+    public PublicationElement loadDetail(IElementRef element) {
+        return (PublicationElement) new ElementLoader<>( serviceLoader.getService( element.getElementKind() ) ).fill( element );
     }
 
 

@@ -2,19 +2,18 @@ package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.interfaces.IConditionNode;
+import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
+import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
+import no.nsd.qddt.domain.elementref.AbstractElementRef;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
+import no.nsd.qddt.domain.interfaces.IConditionNode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -24,8 +23,8 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "INSTRUMENT_NODE")
-@AttributeOverride(name = "name", column = @Column(name = "name", length = 1500))
-public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> implements Iterable<InstrumentNode<T>> {
+@AttributeOverride(name="name", column=@Column(name="element_name", length = 1500))
+public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T> implements Iterable<InstrumentNode<T>> {
 
     @Id
     @GeneratedValue(generator ="UUID")
@@ -46,7 +45,6 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
     @Transient
     private List<InstrumentNode<T>> elementsIndex;
 
-
     @OrderColumn(name="node_idx")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "INSTRUMENT_PARAMETER",  joinColumns = @JoinColumn(name="node_id",  referencedColumnName = "id"))
@@ -60,8 +58,8 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
         this.children = new LinkedList<>();
         this.elementsIndex = new LinkedList<>();
         this.elementsIndex.add(this);
-
     }
+
 
     public List<Parameter> getParameters() {
         return parameters;
@@ -72,9 +70,13 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
     }
 
     public void addParameter(Parameter parameter) {
-        if (!this.parameters.stream().anyMatch( p -> p.getName() == parameter.getName()
-            && p.getParameterKind() == parameter.getParameterKind()))
+        if (this.parameters.stream()
+            .noneMatch( p -> p.getName().equals( parameter.getName() ) && p.getParameterKind().equals( parameter.getParameterKind() ) ))
                 this.parameters.add( parameter );
+    }
+
+    public void clearInParameters(){
+        this.parameters.removeIf( p->p.getParameterKind().equals( "IN" ) );
     }
 
     public boolean isRoot() {
@@ -124,26 +126,6 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
     }
 
     public void checkInNodes() {
-        if (getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  getElement() != null) {
-            System.out.println( getName() + "-01" );
-
-            ConditionNode ref = createConditionNode();
-            JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
-                .add( "id", getId().toString() )
-                .add( "name", ref.getName() )
-                .add( "classKind", ref.getClassKind() )
-                .add( "conditionKind", ref.getConditionKind().getName() )
-                .add( "condition", ref.getCondition() );
-            JsonObject jsonObject = objectBuilder.build();
-
-            try (Writer writer = new StringWriter()) {
-                Json.createWriter( writer ).write( jsonObject );
-                setName( writer.toString() );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println( getName() + "-02" );
-        }
         this.children.forEach( c -> {
             c.parent = this;
             c.checkInNodes();
@@ -178,6 +160,22 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
     @Override
     public Iterator<InstrumentNode<T>> iterator() {
         return  new InstrumentNodeIter<>( this );
+    }
+
+    @Override
+    protected AbstractElementRef<T> setValues() {
+        if (getElement() == null) return this;
+        else if (element instanceof StatementItem)
+            setName( getElement().getName() + " ➫ " + ((StatementItem) element).getStatement() );
+        else if (element instanceof ConditionConstruct) {
+            System.out.println("ignorerer set value");
+        }else if (element instanceof QuestionConstruct) {
+            //
+        } else
+        setVersion( getElement().getVersion() );
+        if (this.getElementKind() == null)
+            setElementKind( ElementKind.getEnum( element.getClass().getSimpleName() ) );
+        return this;
     }
 
     @Override

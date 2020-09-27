@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
@@ -79,7 +79,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",
         joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
-    private List<ElementRef<QuestionItem>>  topicQuestionItems = new ArrayList<>(0);
+    private List<ElementRefImpl<QuestionItem>>  topicQuestionItems = new ArrayList<>(0);
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
@@ -175,17 +175,17 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     }
 
 
-    public List<ElementRef<QuestionItem>> getTopicQuestionItems() {
+    public List<ElementRefImpl<QuestionItem>> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRef<QuestionItem>> topicQuestionItems) {
+    public void setTopicQuestionItems(List<ElementRefImpl<QuestionItem>> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
     public void removeQuestionItem(UUID questionItemId, Integer rev) {
-        ElementRef toDelete = new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev );
+        ElementRefImpl toDelete = new ElementRefImpl( ElementKind.QUESTION_ITEM, questionItemId,rev );
         if (topicQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
             this.setChangeComment( "QuestionItem assosiation removed" );
@@ -193,10 +193,10 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     }
 
     public void addQuestionItem(UUID questionItemId, Integer rev) {
-        addQuestionItem( new ElementRef( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
+        addQuestionItem( new ElementRefImpl( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
     }
 
-    public void addQuestionItem(ElementRef qef) {
+    public void addQuestionItem(ElementRefImpl qef) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
 
             topicQuestionItems.add(qef);
@@ -268,7 +268,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
-            for (ElementRef<QuestionItem> item : getTopicQuestionItems()) {
+            for (ElementRefImpl<QuestionItem> item : getTopicQuestionItems()) {
                 pdfReport.addheader2(item.getElement().getName(), String.format("Version %s",item.getElement().getVersion()));
                 pdfReport.addParagraph(item.getElement().getQuestion());
                 if (item.getElement().getResponseDomainRef().getElement() != null)

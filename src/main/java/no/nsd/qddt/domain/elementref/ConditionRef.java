@@ -72,12 +72,7 @@ public class ConditionRef<T extends ControlConstruct> implements IElementRef<T> 
     }
 
     public void setName(String name) {
-        if (name != null) {
-            int min = Integer.min( name.length(), 24 );
-            this.name = name.substring( 0, min );
-        } else {
-            this.name = null;
-        }
+        this.name = name;
     }
 
     public String getCondition() {

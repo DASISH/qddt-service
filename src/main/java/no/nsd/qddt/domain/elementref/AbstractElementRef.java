@@ -15,6 +15,7 @@ import no.nsd.qddt.domain.interfaces.IElementRef;
 import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -48,7 +49,7 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
 
     @Transient
     @JsonSerialize
-    @JsonDeserialize
+    @JsonDeserialize()
     protected T element;
 
     public AbstractElementRef() {}
@@ -90,8 +91,6 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
         return name;
     }
     public void setName(String name) {
-        if (name.length() > 500)
-            name = name.substring( 0,497 ) + "...";
         this.name = name;
     }
 
@@ -115,19 +114,22 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
         setValues();
     }
 
-    private AbstractElementRef<T> setValues() {
+    protected AbstractElementRef<T> setValues() {
         if (getElement() == null) return this;
-        if (element instanceof QuestionItem)
-            setName( getElement().getName() + " ➫ " + ((QuestionItem) element).getQuestion() );
-        else if (element instanceof StatementItem)
-            setName( getElement().getName() + " ➫ " + ((StatementItem) element).getStatement() );
-        else if (element instanceof ConditionConstruct) {
-            setName( getElement().getName() + " ➫ " + ((ConditionConstruct) element).getCondition() );
-            System.out.println( ElementKind.getEnum( element.getClass().getSimpleName() )  + " - ConditionConstruct");
-        }else if (element instanceof QuestionConstruct) {
-            System.out.println( ElementKind.getEnum( element.getClass().getSimpleName() ) + " - QuestionConstruct" );
-        } else
-            setName( getElement().getName());
+        if (StringTool.IsNullOrEmpty(getName())) {
+            if (element instanceof QuestionItem)
+                setName( getElement().getName() + " ➫ " + ((QuestionItem) element).getQuestion() );
+            else if (element instanceof StatementItem)
+                setName( getElement().getName() + " ➫ " + ((StatementItem) element).getStatement() );
+            else if (element instanceof ConditionConstruct) {
+                setName( getElement().getName() + " ➫ " + ((ConditionConstruct) element).getCondition() );
+                System.out.println( ElementKind.getEnum( element.getClass().getSimpleName() ) + " - ConditionConstruct- name set" );
+            } else if (element instanceof QuestionConstruct) {
+                System.out.println( ElementKind.getEnum( element.getClass().getSimpleName() ) + " - QuestionConstruct name not set" );
+            } else
+                System.out.println( ElementKind.getEnum( element.getClass().getSimpleName() ) + " - set name" );
+                setName( getElement().getName() );
+        }
         setVersion( getElement().getVersion() );
         if (this.elementKind == null)
             setElementKind( ElementKind.getEnum( element.getClass().getSimpleName() ) );

@@ -17,12 +17,12 @@ import java.util.UUID;
  */
 
 @Service("universeAuditService")
-class UniverseAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Universe> implements UniverseAuditService {
+class UniverseAuditServiceImpl extends AbstractAuditFilter<Integer,Universe> implements UniverseAuditService {
 
     private final UniverseAuditRepository universeAuditRepository;
 
     @Autowired
-    public UniverseAbstractAuditServiceImpl(UniverseAuditRepository instrumentRepository) {
+    public UniverseAuditServiceImpl(UniverseAuditRepository instrumentRepository) {
         this.universeAuditRepository = instrumentRepository;
     }
 

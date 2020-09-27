@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
@@ -65,7 +65,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
         joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
-    private List<ElementRef<QuestionItem>>  conceptQuestionItems = new ArrayList<>(0);
+    private List<ElementRefImpl<QuestionItem>>  conceptQuestionItems = new ArrayList<>(0);
 
     private String label;
 
@@ -95,7 +95,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         this.topicGroup = topicGroup;
     }
 
-    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRefImpl<QuestionItem>> getConceptQuestionItems() {
         if (conceptQuestionItems == null) {
             LOG.info( "conceptQuestionItems IS NULL " );
             conceptQuestionItems = new ArrayList<>( 0);
@@ -103,7 +103,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRefImpl<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
@@ -119,10 +119,10 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     }
 
     public void addQuestionItem(UUID id, Integer rev) {
-        addQuestionItem( new ElementRef<>( ElementKind.QUESTION_ITEM, id,rev ) );
+        addQuestionItem( new ElementRefImpl<>( ElementKind.QUESTION_ITEM, id,rev ) );
     }
 
-    public void addQuestionItem(ElementRef<QuestionItem> qef) {
+    public void addQuestionItem(ElementRefImpl<QuestionItem> qef) {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
 
             conceptQuestionItems.add(qef);

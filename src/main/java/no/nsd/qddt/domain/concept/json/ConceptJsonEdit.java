@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.concept.json;
 import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -34,7 +34,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     private String description;
 
-    private List<ElementRef<QuestionItem>> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRefImpl<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
@@ -102,11 +102,11 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         this.children = children;
     }
 
-    public List<ElementRef<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRefImpl<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRef<QuestionItem>> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRefImpl<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

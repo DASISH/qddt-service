@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.elementref.ElementRef;
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.QuestionItemService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -104,7 +104,7 @@ super.setBaseRepositories(conceptRepository);
         Concept concept = new Concept();
         concept.setName("FIRST");
         concept = conceptService.save(concept);
-        ElementRef<QuestionItem> ref = new <QuestionItem>ElementRef();
+        ElementRefImpl<QuestionItem> ref = new <QuestionItem>ElementRefImpl();
         ref.setElement( questionItem);
         concept.addQuestionItem(ref);
 

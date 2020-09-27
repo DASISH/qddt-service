@@ -5,6 +5,7 @@ import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,14 +21,14 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Service("instrumentAuditService")
-class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Instrument> implements InstrumentAuditService {
+class InstrumentAuditServiceImpl extends AbstractAuditFilter<Integer,Instrument> implements InstrumentAuditService {
 
     private final InstrumentAuditRepository instrumentAuditRepository;
     private final CommentService commentService;
     private boolean showPrivateComments;
 
     @Autowired
-    public InstrumentAbstractAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository, CommentService commentService) {
+    public InstrumentAuditServiceImpl(InstrumentAuditRepository instrumentAuditRepository, CommentService commentService) {
         this.instrumentAuditRepository = instrumentAuditRepository;
         this.commentService = commentService;
     }
@@ -69,6 +70,7 @@ class InstrumentAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,Ins
     protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
         assert  (instance != null);
         instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        Hibernate.initialize(instance.getEntity().getRoot());
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
         instance.getEntity().setComments(new ArrayList<>(coms));
         return instance;

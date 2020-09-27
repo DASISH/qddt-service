@@ -1,10 +1,13 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
+import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.interfaces.IConditionNode;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,6 +24,12 @@ public class ConditionConstruct extends ControlConstruct implements IConditionNo
     @Enumerated(EnumType.STRING)
     @Column(name = "CONTROL_CONSTRUCT_SUPER_KIND")
     ConditionKind conditionKind;
+
+    @OrderColumn(name="sequence_idx")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "CONTROL_CONSTRUCT_SEQUENCE",
+        joinColumns = @JoinColumn(name="sequence_id", referencedColumnName = "id"))
+    private List<ElementRefImpl<ControlConstruct>> sequence = new ArrayList<>(0);
 
     public ConditionConstruct() {
         super();
@@ -40,6 +49,14 @@ public class ConditionConstruct extends ControlConstruct implements IConditionNo
 
     public void setConditionKind(ConditionKind conditionKind) {
         this.conditionKind = conditionKind;
+    }
+
+    public List<ElementRefImpl<ControlConstruct>> getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(List<ElementRefImpl<ControlConstruct>> sequence) {
+        this.sequence = sequence;
     }
 
     @Override

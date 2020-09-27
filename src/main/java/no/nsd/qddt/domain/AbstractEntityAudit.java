@@ -7,7 +7,8 @@ import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.interfaces.*;
+import no.nsd.qddt.domain.interfaces.IArchived;
+import no.nsd.qddt.domain.interfaces.IDomainObject;
 import no.nsd.qddt.domain.interfaces.Version;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Audited
 @MappedSuperclass
-public abstract class AbstractEntityAudit extends AbstractEntity  implements IXmlBuilder, IDomainObject {
+public abstract class AbstractEntityAudit extends AbstractEntity  implements IDomainObject {
 
     /**
      * ChangeKinds are the different ways an entity can be modified by the system/user.
@@ -252,11 +253,11 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IXm
         User user = SecurityContext.getUserDetails().getUser();
         setAgency( user.getAgency() );
         setModifiedBy( user );
-        if (xmlLang==null)
+        if (StringTool.IsNullOrEmpty( xmlLang))
             setXmlLang( user.getAgency().getDefaultXmlLang() );
         // if empty, we need to apply a default (CREATED),
         // if an existing entity tries to create itself (except for BASEDON), we need to set changeKind to CREATED
-        if (changeKind == null || changeKind.ordinal() > ChangeKind.REFERENCED.ordinal()) {
+        if (changeKind == null) {
             LOG.info("AstractEntityAudit PrePersist - changeKind = ChangeKind.CREATED");
             setChangeKind( ChangeKind.CREATED);
             setChangeComment( ChangeKind.CREATED.description);

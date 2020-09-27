@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.ElementRef;
 import no.nsd.qddt.domain.pdf.PdfReport;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
@@ -36,7 +35,7 @@ public class Publication extends AbstractEntityAudit {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PUBLICATION_ELEMENT",
         joinColumns = @JoinColumn(name="publication_id", referencedColumnName = "id"))
-    private List<ElementRef<AbstractEntityAudit>>  publicationElements = new ArrayList<>();
+    private List<PublicationElement>  publicationElements = new ArrayList<>();
 
 
     public String getPurpose() {
@@ -68,7 +67,7 @@ public class Publication extends AbstractEntityAudit {
         return this.status.getPublished() == PublicationStatus.Published.EXTERNAL_PUBLICATION;
     }
 
-    public List<ElementRef<AbstractEntityAudit>> getPublicationElements() {
+    public List<PublicationElement> getPublicationElements() {
         try {
             return publicationElements;
         }catch (Exception ex){
@@ -77,7 +76,7 @@ public class Publication extends AbstractEntityAudit {
         }
     }
 
-    public void setPublicationElements(List<ElementRef<AbstractEntityAudit>> publicationElements) {
+    public void setPublicationElements(List<PublicationElement> publicationElements) {
         this.publicationElements = publicationElements;
     }
 
@@ -122,7 +121,7 @@ public class Publication extends AbstractEntityAudit {
         // pdfReport.addPadding();
 
         int i=0;
-        for (ElementRef element:getPublicationElements()) {
+        for (PublicationElement element:getPublicationElements()) {
             ((AbstractEntityAudit) element.getElement()).fillDoc(pdfReport,String.valueOf(++i));
         }
     }
