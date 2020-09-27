@@ -90,8 +90,8 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
         return name;
     }
     public void setName(String name) {
-        if (name.length() > 255)
-            name = name.substring( 0,250 ) + "...";
+        if (name.length() > 500)
+            name = name.substring( 0,497 ) + "...";
         this.name = name;
     }
 

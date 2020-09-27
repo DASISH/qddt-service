@@ -30,7 +30,7 @@ public class Instrument extends AbstractEntityAudit {
     private Study study;
 
     @OneToOne(fetch = FetchType.EAGER, cascade =  {CascadeType.REMOVE, CascadeType.MERGE})
-    private InstrumentNode root;
+    private InstrumentNode<?> root;
 
     private String description;
 
@@ -87,11 +87,11 @@ public class Instrument extends AbstractEntityAudit {
         this.study = study;
     }
 
-    public InstrumentNode getRoot() {
+    public InstrumentNode<?> getRoot() {
         return root;
     }
 
-    public void setRoot(InstrumentNode root) {
+    public void setRoot(InstrumentNode<?> root) {
         this.root = root;
     }
 

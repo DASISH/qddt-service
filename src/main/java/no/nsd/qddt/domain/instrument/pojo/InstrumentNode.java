@@ -24,6 +24,7 @@ import java.util.*;
 @Audited
 @Entity
 @Table(name = "INSTRUMENT_NODE")
+@AttributeOverride(name = "name", column = @Column(name = "name", length = 1500))
 public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> implements Iterable<InstrumentNode<T>> {
 
     @Id
@@ -39,8 +40,7 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
     @OrderColumn(name="parent_idx")
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = InstrumentNode.class,
         orphanRemoval = true, cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
-    public List<InstrumentNode<T>> children;
-
+    public List<InstrumentNode<T>> children  = new ArrayList<>(0);
 
     @JsonIgnore
     @Transient
@@ -168,6 +168,12 @@ public class InstrumentNode<T extends ControlConstruct> extends ElementRef<T> im
 
         return null;
     }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     @Override
     public Iterator<InstrumentNode<T>> iterator() {
