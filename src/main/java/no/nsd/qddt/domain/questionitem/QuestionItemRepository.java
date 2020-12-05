@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.questionitem;
+package no.nsd.qddt.domain.questionItem;
 
 import no.nsd.qddt.domain.BaseRepository;
 import org.springframework.data.domain.Page;

@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.questionitem;
+package no.nsd.qddt.domain.questionItem;
 
 import no.nsd.qddt.domain.concept.ConceptService;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.parentref.ConceptRef;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.refclasses.ConceptRef;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -58,7 +57,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return questionItemRepository.existsById(uuid);
+        return questionItemRepository.exists(uuid);
     }
 
     @Override
@@ -89,25 +88,20 @@ class QuestionItemServiceImpl implements QuestionItemService {
 //    }
 
     @Override
-    public void delete(UUID uuid) {
-        delete(questionItemRepository.getOne( uuid ));
-    }
-
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
-    public void delete(QuestionItem instance) {
+    public void delete(UUID uuid) {
         try {
-            questionItemRepository.delete(instance);
+            questionItemRepository.delete(uuid);
         } catch (Exception ex){
             LOG.error("QI delete ->",ex);
             throw ex;
         }
     }
 
-
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(List<QuestionItem> instances) {
-        questionItemRepository.deleteAll(instances);
+        questionItemRepository.delete(instances);
     }
 
 
@@ -146,7 +140,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
             if(instance.getResponseDomainUUID() != null) {
                 if (instance.getResponseDomainRevision() == null || instance.getResponseDomainRevision() <= 0) {
                     Revision<Integer, ResponseDomain> rev = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(rev.getRevisionNumber().get());
+                    instance.setResponseDomainRevision(rev.getRevisionNumber());
                     instance.setResponseDomain(rev.getEntity());
                 } else {
                     try {
@@ -162,8 +156,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
                 instance.setResponseDomainRevision(0);
 
             instance.setConceptRefs(conceptService.findByQuestionItem(instance.getId(),null).stream()
-                .map( ConceptRef::new )
-                .collect( Collectors.toList()) );
+                    .map( ConceptRef::new )
+                    .collect( Collectors.toList()) );
 
         } catch (Exception ex){
             StackTraceFilter.println(ex.getStackTrace());
@@ -175,7 +169,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     private QuestionItem prePersistProcessing(QuestionItem instance){
 
-        Optional<Integer> rev = null;
+        Integer rev = null;
         if(instance.isBasedOn())
             rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
 
@@ -190,7 +184,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
             if (instance.getResponseDomainRevision() <= 0) {
                 try {
                     Revision<Integer, ResponseDomain> revnum = rdAuditService.findLastChange(instance.getResponseDomainUUID());
-                    instance.setResponseDomainRevision(revnum.getRevisionNumber().get());
+                    instance.setResponseDomainRevision(revnum.getRevisionNumber());
                 } catch (Exception ex) {
                     LOG.error("Set default RevisionNumber failed",ex);
                 }

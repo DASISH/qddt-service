@@ -1,13 +1,18 @@
-package no.nsd.qddt.domain.questionitem.web;
+package no.nsd.qddt.domain.questionItem.web;
 
 import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.questionItem.QuestionItem;
+import no.nsd.qddt.domain.questionItem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -28,27 +33,25 @@ public class QuestionItemAuditController {
     }
 
 
-    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Revision<Integer, QuestionItem> getLastRevision(@PathVariable("id") UUID id) {
         return auditService.findLastChange(id);
     }
 
-    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
     public Revision<Integer, QuestionItem> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
         return auditService.findRevision(id, revision);
     }
 
-    // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public Page<Revision<Integer, QuestionItem>> allProjects(
+    public HttpEntity<PagedResources<Revision<Integer, QuestionItem>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable) {
+            Pageable pageable, PagedResourcesAssembler assembler) {
 
-        return auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
+        Page<Revision<Integer, QuestionItem>> entities = auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
+        return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
     }
 
     @ResponseBody
