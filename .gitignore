@@ -16,3 +16,4 @@ build/
 build.log
 .project
 .settings/org.eclipse.buildship.core.prefs
+node_modules
