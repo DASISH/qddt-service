@@ -110,7 +110,7 @@ class StudyServiceImpl implements StudyService {
     }
 
     private void loadTopic(TopicGroup topic){
-        topic.getTopicQuestionItems().forEach( qiLoader::fill );
+        topic.getTopicQuestionItems().forEach((i,item)  -> qiLoader.fill( item ));
         Hibernate.initialize(topic.getConcepts());
         topic.getConcepts().forEach( this::loadConceptQuestion );
     }

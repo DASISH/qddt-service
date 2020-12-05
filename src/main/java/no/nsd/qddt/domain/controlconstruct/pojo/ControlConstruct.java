@@ -11,10 +11,7 @@ import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Instrument is the significant relation.
@@ -40,7 +37,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OrderColumn(name="owner_idx")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_OTHER_MATERIAL", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
-    private List<OtherMaterial> otherMaterials = new ArrayList<>();
+    private List<OtherMaterial> otherMaterials = new ArrayList<>(0);
 
     @Transient
     @JsonSerialize
@@ -111,14 +108,17 @@ public class ControlConstruct extends AbstractEntityAudit {
         ControlConstruct that = (ControlConstruct) o;
 
         if (label != null ? !label.equals( that.label ) : that.label != null) return false;
-        return otherMaterials != null ? otherMaterials.equals( that.otherMaterials ) : that.otherMaterials == null;
+        if (controlConstructKind != null ? !controlConstructKind.equals( that.controlConstructKind ) : that.controlConstructKind != null)
+            return false;
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (label != null ? label.hashCode() : 0);
-        result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
+        result = 31 * result + (controlConstructKind != null ? controlConstructKind.hashCode() : 0);
+//        result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
         return result;
     }
 

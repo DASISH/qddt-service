@@ -193,6 +193,7 @@ class ConceptServiceImpl implements ConceptService {
      */
     protected Concept postLoadProcessing(Concept instance) {
         if (instance == null) return null;
+        LOG.info("PLP -> Concept " + instance.getConceptIdx() + ": " + instance.getName() );
         try {
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 LOG.debug("PDF-XML -> fetching  QuestionItems ");

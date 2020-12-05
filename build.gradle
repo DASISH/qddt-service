@@ -58,13 +58,13 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.9.4")
     compile("net.logstash.logback:logstash-logback-encoder:3.5")
 
-    compile("org.springframework.data:spring-data-envers:1.1.18.RELEASE")
-    compile("org.springframework.data:spring-data-jpa:1.11.18.RELEASE")
-    compile("org.springframework.data:spring-data-commons:1.13.18.RELEASE")
+    compile("org.springframework.data:spring-data-envers:1.1.23.RELEASE")
+    compile("org.springframework.data:spring-data-jpa:1.11.23.RELEASE")
+    compile("org.springframework.data:spring-data-commons:1.13.23.RELEASE")
 
-    compile("org.hibernate:hibernate-core:5.1.16.Final")
-    compile("org.hibernate:hibernate-envers:5.1.16.Final")
-    compile("org.hibernate:hibernate-entitymanager:5.1.16.Final")
+    compile("org.hibernate:hibernate-core:5.1.17.Final")
+    compile("org.hibernate:hibernate-envers:5.1.17.Final")
+    compile("org.hibernate:hibernate-entitymanager:5.1.17.Final")
     compile("org.hibernate:hibernate-validator")
 
     compile("joda-time:joda-time")

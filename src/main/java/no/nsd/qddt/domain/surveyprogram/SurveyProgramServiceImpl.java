@@ -136,8 +136,9 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     private void loadTopic(TopicGroup topic){
-        topic.getTopicQuestionItems().forEach( qiLoader::fill );
+//        topic.getTopicQuestionItems().forEach( qiLoader::fill );
 //        Hibernate.initialize(topic.getComments());
+        topic.getTopicQuestionItems().forEach((i,item)  -> qiLoader.fill( item ));
         Hibernate.initialize(topic.getConcepts());
         LOG.debug("PDF -> fetching  concepts ");
         topic.getConcepts().forEach( this::loadConceptQuestion );

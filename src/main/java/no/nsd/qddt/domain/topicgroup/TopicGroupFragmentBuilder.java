@@ -36,7 +36,7 @@ public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup>
     public TopicGroupFragmentBuilder(TopicGroup topicGroup) {
         super(topicGroup);
         children = topicGroup.getConcepts().stream().map( c -> (ConceptFragmentBuilder)c.getXmlBuilder() ).collect( Collectors.toList() );
-        questions = topicGroup.getTopicQuestionItems().stream()
+        questions = topicGroup.getTopicQuestionItems().values().stream()
             .filter(f ->  f.getElement() != null )
             .map( cqi -> (QuestionItemFragmentBuilder)cqi.getElement().getXmlBuilder() )
             .collect( Collectors.toList() );

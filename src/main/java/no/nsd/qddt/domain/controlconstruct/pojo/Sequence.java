@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @DiscriminatorValue("SEQUENCE_CONSTRUCT")
 public class Sequence extends ControlConstruct {
 
-    @Column(length = 3000)
+    @Column(length = 1500)
     private String description;
 
     @OrderColumn(name="sequence_idx")

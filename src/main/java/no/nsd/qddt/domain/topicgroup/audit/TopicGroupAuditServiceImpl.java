@@ -105,7 +105,10 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
             instance.getConcepts().forEach(this::postLoadProcessing);
 
             Hibernate.initialize(instance.getTopicQuestionItems());
-            instance.getTopicQuestionItems().forEach( qiLoader::fill );
+            instance.getTopicQuestionItems().values().stream()
+//                .filter( p -> IsNullOrTrimEmpty(p.getName()) )
+                .forEach( qiLoader::fill );
+//            instance.getTopicQuestionItems().forEach( qiLoader::fill );
 
             Hibernate.initialize(instance.getOtherMaterials());
 

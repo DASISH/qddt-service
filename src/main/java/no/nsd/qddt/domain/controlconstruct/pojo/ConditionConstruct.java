@@ -18,7 +18,7 @@ import java.util.Objects;
 @DiscriminatorValue("CONDITION_CONSTRUCT")
 public class ConditionConstruct extends ControlConstruct implements IConditionNode {
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1500)
     private String condition;
 
     @Enumerated(EnumType.STRING)

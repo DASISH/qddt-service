@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 @DiscriminatorValue("STATEMENT_CONSTRUCT")
 public class StatementItem extends ControlConstruct {
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1500)
     private String statement;
 
     public StatementItem() {

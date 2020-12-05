@@ -154,10 +154,6 @@ public abstract class AbstractElementRef<T extends IWebMenuPreview> implements I
         int result = elementKind != null ? elementKind.hashCode() : 0;
         result = 31 * result + (elementId != null ? elementId.hashCode() : 0);
         result = 31 * result + (elementRevision != null ? elementRevision.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (major != null ? major.hashCode() : 0);
-        result = 31 * result + (minor != null ? minor.hashCode() : 0);
-        result = 31 * result + (versionLabel != null ? versionLabel.hashCode() : 0);
         return result;
     }
 

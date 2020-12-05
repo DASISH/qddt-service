@@ -1,19 +1,15 @@
 package no.nsd.qddt.domain.topicgroup.json;
 
 import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.domain.auditmap.QuestionItemAuditMap;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
-import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.elementref.ParentRef;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +19,7 @@ public class TopicGroupJson extends AbstractJsonEdit {
 
     private String abstractDescription;
 
-    private List<ElementRefImpl<QuestionItem>> topicQuestionItems;
+    private Map<Integer, QuestionItemAuditMap> topicQuestionItems;
 
     private Set<Author> authors = new HashSet<>();
 
@@ -56,11 +52,11 @@ public class TopicGroupJson extends AbstractJsonEdit {
         this.abstractDescription = abstractDescription;
     }
 
-    public List<ElementRefImpl<QuestionItem>> getTopicQuestionItems() {
+    public Map<Integer, QuestionItemAuditMap> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRefImpl<QuestionItem>> topicQuestionItems) {
+    public void setTopicQuestionItems(Map<Integer, QuestionItemAuditMap> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
 

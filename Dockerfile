@@ -1,6 +1,6 @@
 FROM openjdk:11-jre-slim
 
-MAINTAINER NSD <support@nsd.no>
+LABEL NSD <support@nsd.no>
 
 ENV PROFILE=stage
 EXPOSE 5001

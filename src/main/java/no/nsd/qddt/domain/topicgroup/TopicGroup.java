@@ -2,6 +2,7 @@ package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.auditmap.QuestionItemAuditMap;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
@@ -12,7 +13,6 @@ import no.nsd.qddt.domain.interfaces.IArchived;
 import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
@@ -75,12 +75,15 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     private List<Concept> concepts = new ArrayList<>(0);
 
 
-    @OrderColumn(name="topicgroup_idx")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",
-        joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
-    private List<ElementRefImpl<QuestionItem>>  topicQuestionItems = new ArrayList<>(0);
+//    @OrderColumn(name="topicgroup_idx")
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @CollectionTable(name = "TOPIC_GROUP_QUESTION_ITEM",
+//        joinColumns = @JoinColumn(name="topicgroup_id", referencedColumnName = "id"))
+//    private List<ElementRefImpl<QuestionItem>>  topicQuestionItems = new ArrayList<>(0);
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "fk")
+    @MapKeyColumn(name = "elementId")
+    private Map<Integer, QuestionItemAuditMap> topicQuestionItems = new HashMap<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH})
     @JoinTable(name = "TOPIC_GROUP_AUTHORS",
@@ -175,31 +178,40 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     }
 
 
-    public List<ElementRefImpl<QuestionItem>> getTopicQuestionItems() {
+//    public List<ElementRefImpl<QuestionItem>> getTopicQuestionItems() {
+//        return topicQuestionItems;
+//    }
+//
+//    public void setTopicQuestionItems(List<ElementRefImpl<QuestionItem>> topicQuestionItems) {
+//        this.topicQuestionItems = topicQuestionItems;
+//    }
+
+
+    public Map<Integer, QuestionItemAuditMap> getTopicQuestionItems() {
         return topicQuestionItems;
     }
 
-    public void setTopicQuestionItems(List<ElementRefImpl<QuestionItem>> topicQuestionItems) {
+    public void setTopicQuestionItems(Map<Integer, QuestionItemAuditMap> topicQuestionItems) {
         this.topicQuestionItems = topicQuestionItems;
     }
 
     // no update for QI when removing (it is bound to a revision anyway...).
     public void removeQuestionItem(UUID questionItemId, Integer rev) {
         ElementRefImpl toDelete = new ElementRefImpl( ElementKind.QUESTION_ITEM, questionItemId,rev );
-        if (topicQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
+        if (topicQuestionItems.values().removeIf( q -> q.equals( toDelete ) )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
             this.setChangeComment( "QuestionItem assosiation removed" );
         }
     }
 
     public void addQuestionItem(UUID questionItemId, Integer rev) {
-        addQuestionItem( new ElementRefImpl( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
+        addQuestionItem( new QuestionItemAuditMap( questionItemId,rev ) );
     }
 
-    public void addQuestionItem(ElementRefImpl qef) {
-        if (this.topicQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
+    public void addQuestionItem(QuestionItemAuditMap qef) {
+        if (this.topicQuestionItems.values().stream().noneMatch(cqi->cqi.equals( qef ))) {
 
-            topicQuestionItems.add(qef);
+            topicQuestionItems.put(qef.getElementRevision(), qef);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
             this.setChangeComment("QuestionItem assosiation added");
         }
@@ -268,7 +280,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
         if (getTopicQuestionItems().size() > 0) {
             pdfReport.addheader2("QuestionItem(s)");
-            for (ElementRefImpl<QuestionItem> item : getTopicQuestionItems()) {
+            for (QuestionItemAuditMap item : getTopicQuestionItems().values()) {
                 pdfReport.addheader2(item.getElement().getName(), String.format("Version %s",item.getElement().getVersion()));
                 pdfReport.addParagraph(item.getElement().getQuestion());
                 if (item.getElement().getResponseDomainRef().getElement() != null)

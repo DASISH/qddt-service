@@ -176,6 +176,9 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         this.description = description;
     }
 
+    public int getConceptIdx() {
+        return conceptIdx;
+    }
 
     @Override
     public boolean isArchived() {

@@ -178,7 +178,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 LOG.info("PDF-XML -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( this::loadConceptQuestion );
-                instance.getTopicQuestionItems().forEach( cqi -> {
+                instance.getTopicQuestionItems().forEach( (i, cqi) -> {
                     qiLoader.fill( cqi );
                     cqi.getElement().setParentRefs(
                         findByQuestionItem( cqi.getElementId(), null ).stream()
@@ -187,7 +187,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 });
 
             } else {
-                instance.getTopicQuestionItems().stream()
+                instance.getTopicQuestionItems().values().stream()
                     .filter( p -> IsNullOrTrimEmpty(p.getName()) )
                     .forEach( qiLoader::fill );
             }

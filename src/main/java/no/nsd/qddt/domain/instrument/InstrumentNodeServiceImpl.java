@@ -5,6 +5,8 @@ import no.nsd.qddt.domain.instrument.pojo.InstrumentNode;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.treenode.TreeNode;
 import no.nsd.qddt.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class InstrumentNodeServiceImpl implements InstrumentNodeService {
 
     private final InstrumentNodeRepository instrumentNodeRepository;
+    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public InstrumentNodeServiceImpl(InstrumentNodeRepository instrumentNodeRepository) {
@@ -78,6 +81,9 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
 
 
     protected InstrumentNode postLoadProcessing(InstrumentNode instance) {
+        if(instance.getParameters().isEmpty()) {
+            LOG.info(instance.getElementKind() +  " param empty");
+        }
 //        if (instance.getElementKind() == ElementKind.CONDITION_CONSTRUCT &&  instance.getElement() == null) {
 //            JsonReader reader = Json.createReader(new StringReader(instance.getName()));
 //            JsonObject jsonObject = reader.readObject();
