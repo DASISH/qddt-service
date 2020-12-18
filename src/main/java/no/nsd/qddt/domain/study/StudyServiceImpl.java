@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.study;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -52,7 +52,7 @@ class StudyServiceImpl implements StudyService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return studyRepository.exists(uuid);
+        return studyRepository.existsById(uuid);
     }
 
     @Override
@@ -81,7 +81,7 @@ class StudyServiceImpl implements StudyService {
     public void delete(UUID uuid) {
         if (studyRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
-        studyRepository.delete(uuid);
+        studyRepository.deleteById(uuid);
     }
 
     private Study prePersistProcessing(Study instance) {
@@ -110,7 +110,7 @@ class StudyServiceImpl implements StudyService {
     }
 
     private void loadTopic(TopicGroup topic){
-        topic.getTopicQuestionItems().forEach((i,item)  -> qiLoader.fill( item ));
+        topic.getTopicQuestionItems().forEach( qiLoader::fill );
         Hibernate.initialize(topic.getConcepts());
         topic.getConcepts().forEach( this::loadConceptQuestion );
     }

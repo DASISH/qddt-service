@@ -1,7 +1,7 @@
 package no.nsd.qddt.exception;
 
 
-import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.security.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

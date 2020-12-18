@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.domain.interfaces.Version;
-import no.nsd.qddt.domain.user.json.UserJson;
+import no.nsd.qddt.classes.interfaces.Version;
+import no.nsd.qddt.security.user.json.UserJson;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -14,19 +14,19 @@ public class ConstructJsonView  {
 
     private static final long serialVersionUID = 15049624309583L;
 
-    private UUID id;
+    private final UUID id;
 
-    private String name;
+    private final String name;
 
     private String label;
 
-    private Version version;
+    private final Version version;
 
-    private String classKind;
+    private final String classKind;
 
-    private Timestamp modified;
+    private final Timestamp modified;
 
-    private UserJson modifiedBy;
+    private final UserJson modifiedBy;
 
 
     public ConstructJsonView(ControlConstruct construct){
@@ -103,8 +103,7 @@ public class ConstructJsonView  {
 
         ConstructJsonView that = (ConstructJsonView) o;
 
-        if (label != null ? !label.equals( that.label ) : that.label != null) return false;
-        return true;
+        return label != null ? label.equals( that.label ) : that.label == null;
     }
 
     @Override

@@ -3,12 +3,12 @@ package no.nsd.qddt.domain.concept.json;
 import no.nsd.qddt.domain.agency.AgencyJsonView;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
-import no.nsd.qddt.domain.interfaces.Version;
-import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.classes.elementref.ParentRef;
+import no.nsd.qddt.classes.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.user.json.UserJson;
+import no.nsd.qddt.security.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;
@@ -33,22 +33,22 @@ public class ConceptJsonView {
     // @JsonSerialize(using = LocalDateTimeSerializer.class)
     // @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     // @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
-    private Timestamp modified;
+    private final Timestamp modified;
 
-    private UserJson modifiedBy;
+    private final UserJson modifiedBy;
 
-    private AgencyJsonView agency;
+    private final AgencyJsonView agency;
 
     @Embedded
-    private Version version;
+    private final Version version;
 
-    private List<ElementRefImpl<QuestionItem>> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRefEmbedded<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
     private Set<ConceptJsonView> children = new HashSet<>();
 
-	  private String classKind;
+	  private final String classKind;
 
     private ParentRef<TopicGroup> parentRef;
 
@@ -117,11 +117,11 @@ public class ConceptJsonView {
         return agency;
     }
 
-    public List<ElementRefImpl<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRefEmbedded<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRefImpl<QuestionItem>> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRefEmbedded<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

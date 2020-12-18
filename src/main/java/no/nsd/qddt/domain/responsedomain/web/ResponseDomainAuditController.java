@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,18 +10,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
-import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.*;
+import static no.nsd.qddt.classes.AbstractEntityAudit.ChangeKind.*;
 
 /**
  * @author Stig Norland
@@ -52,14 +50,14 @@ public class ResponseDomainAuditController {
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, ResponseDomain>>> allProjects(
+    public PagedModel<EntityModel<Revision<Integer, ResponseDomain>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable, PagedResourcesAssembler<Revision<Integer, ResponseDomain>> assembler) {
 
         Page<Revision<Integer, ResponseDomain>> revisions = auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
-        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
+        return assembler.toModel(revisions);
     }
 
     // @JsonView(View.Audit.class)
@@ -68,7 +66,9 @@ public class ResponseDomainAuditController {
         Collection<AbstractEntityAudit.ChangeKind> changekinds =
             Arrays.asList(IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION, UPDATED_PARENT,UPDATED_CHILD);
 
-        Pageable pageable = new PageRequest(0,1, new Sort(new Sort.Order( Sort.Direction.ASC, "updated"))  );
+        Pageable pageable = PageRequest.of(0,
+            1,
+            Sort.by( new Sort.Order( Sort.Direction.ASC, "updated"))  );
         Page<Revision<Integer, ResponseDomain>> revisions = auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
         return revisions.getContent().get( 0 );
     }

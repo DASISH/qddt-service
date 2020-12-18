@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct.factory;
 
-import no.nsd.qddt.domain.IEntityFactory;
+import no.nsd.qddt.classes.IEntityFactory;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ public class FactorySequenceConstruct implements IEntityFactory<Sequence> {
         dest.setDescription(source.getDescription());
         dest.setSequenceKind( source.getSequenceKind() );
         dest.setSequence( source.getSequence().stream()
-            .map( ElementRefImpl::clone )
+            .map( ElementRefEmbedded::clone )
             .collect(Collectors.toList()));
 
         return dest;

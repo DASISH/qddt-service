@@ -1,7 +1,5 @@
 package no.nsd.qddt.exception;
 
-import no.nsd.qddt.utils.ExtractFromException;
-
 /**
  * Default error message object. Can be used anywhere in the application where
  * exceptions or errors are being returned to the client over API requests.
@@ -14,7 +12,7 @@ public class ControllerAdviceExceptionMessage {
 
     private String id;
     private String url;
-    private String exceptionMessage;
+    private final String exceptionMessage;
     private String userfriendlyMessage;
 
 

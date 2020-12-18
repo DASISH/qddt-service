@@ -1,9 +1,8 @@
 package no.nsd.qddt.domain.concept;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.questionitem.QuestionItemService;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,12 +23,6 @@ public class ConceptServiceTest  extends AbstractServiceTest {
 
     @Autowired
     private ConceptRepository conceptRepository;
-
-//    @Autowired
-//    private QuestionService questionService;
-
-    @Autowired
-    private QuestionItemService questionItemService;
 
     @Before
     public void setup() {
@@ -104,7 +97,7 @@ super.setBaseRepositories(conceptRepository);
         Concept concept = new Concept();
         concept.setName("FIRST");
         concept = conceptService.save(concept);
-        ElementRefImpl<QuestionItem> ref = new <QuestionItem>ElementRefImpl();
+        ElementRefEmbedded<QuestionItem> ref = new <QuestionItem>ElementRefEmbedded();
         ref.setElement( questionItem);
         concept.addQuestionItem(ref);
 

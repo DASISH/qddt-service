@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
-import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
@@ -52,13 +52,13 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findLastChange(UUID id) {
-        return postLoadProcessing(controlConstructAuditRepository.findLastChangeRevision(id));
+        return postLoadProcessing(controlConstructAuditRepository.findLastChangeRevision(id).get());
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, ControlConstruct> findRevision(UUID id, Integer revision) {
-        return postLoadProcessing(controlConstructAuditRepository.findRevision(id, revision));
+        return postLoadProcessing(controlConstructAuditRepository.findRevision(id, revision).get());
     }
 
     @Override
@@ -70,7 +70,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     @Override
     public Revision<Integer, ControlConstruct> findFirstChange(UUID uuid) {
-        PageRequest pageable = new PageRequest(0,1);
+        PageRequest pageable = PageRequest.of(0,1);
         return  postLoadProcessing(
                 controlConstructAuditRepository.findRevisions(uuid,
                 defaultSort(pageable,"RevisionNumber DESC")).getContent().get(0));
@@ -88,8 +88,8 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
 
     @Override
     protected Revision<Integer, ControlConstruct> postLoadProcessing(Revision<Integer, ControlConstruct> instance) {
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
-        return new Revision<>(instance.getMetadata(), postLoadProcessing(instance.getEntity()));
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
+        return Revision.of( instance.getMetadata(), postLoadProcessing(instance.getEntity()));
     }
 
     private ControlConstruct postLoadProcessing(ControlConstruct instance) {
@@ -104,7 +104,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             instance;
     }
 
-    private final Pattern TAGS = Pattern.compile("\\[(.{1,25}?)\\]");
+    private final Pattern TAGS = Pattern.compile("\\[(.{1,25}?)]");
     /*
     post fetch processing, some elements are not supported by the framework (enver mixed with jpa db queries)
     thus we need to populate some elements ourselves.
@@ -115,7 +115,7 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
             // FIX BUG instructions doesn't load within ControlConstructAuditServiceImpl, by forcing read here, it works...
             // https://github.com/DASISH/qddt-client/issues/350
             Hibernate.initialize( instance.getControlConstructInstructions() );
-            instance.getControlConstructInstructions().stream()
+            instance.getControlConstructInstructions()
                 .forEach( element -> LOG.info("LOADING FINE " + element.getInstruction().getDescription()) );
 
             if(instance.getQuestionItemRef().getElementId() != null) {

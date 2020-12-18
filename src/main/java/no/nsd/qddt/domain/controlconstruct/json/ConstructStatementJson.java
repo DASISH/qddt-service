@@ -11,7 +11,7 @@ public class ConstructStatementJson extends ConstructJson {
      *
      */
     private static final long serialVersionUID = 1580182686378733470L;
-    private String statement;
+    private final String statement;
 
     public ConstructStatementJson(StatementItem construct){
         super(construct);

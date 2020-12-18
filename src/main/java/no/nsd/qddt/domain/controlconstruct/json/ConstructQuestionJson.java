@@ -24,7 +24,7 @@ public class ConstructQuestionJson  extends ConstructJson {
 
     private List<InstructionJsonView> postInstructions;
 
-    private String universe;
+    private final String universe;
 
     public ConstructQuestionJson(QuestionConstruct construct) {
         super(construct);

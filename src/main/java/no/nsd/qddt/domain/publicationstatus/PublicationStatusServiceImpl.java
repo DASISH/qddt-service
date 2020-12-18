@@ -1,7 +1,5 @@
 package no.nsd.qddt.domain.publicationstatus;
 
-import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.security.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -28,12 +26,12 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
 
     @Override
     public boolean exists(Long id) {
-        return repository.exists(id);
+        return repository.existsById(id);
     }
 
     @Override
     public PublicationStatus findOne(Long id) {
-        return repository.findOne(id);
+        return repository.findById(id).get();
     }
 
     @Override
@@ -46,14 +44,12 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(Long id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
 
 
     private PublicationStatus prePersistProcessing(PublicationStatus instance) {
-        Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        instance.setAgency(agency);
         return instance;
     }
 
@@ -63,11 +59,10 @@ public class PublicationStatusServiceImpl implements PublicationStatusService {
         return instance;
     }
 
-
     @Override
     public List<PublicationStatus> findAll() {
-        Agency agency = SecurityContext.getUserDetails().getUser().getAgency();
-        List<PublicationStatus> retvals = repository.findAllByAgencyAndParentIdIsNullOrderByParentIdx(agency);
+        List<PublicationStatus> retvals = repository.findAllByParentIdIsNullOrderByParentIdx();
+        // er denne fremdeles nødvendig?
         retvals.forEach(c -> c.getChildren().size());
         return retvals;
     }

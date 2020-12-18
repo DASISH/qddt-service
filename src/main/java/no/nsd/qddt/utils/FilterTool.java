@@ -23,7 +23,7 @@ public class FilterTool {
         else {
             sort = filterSort(pageable.getSort(),"responseDomain.name");
         }
-        return  new PageRequest(pageable.getPageNumber()
+        return  PageRequest.of(pageable.getPageNumber()
             ,pageable.getPageSize()
             ,sort);
     }
@@ -36,12 +36,12 @@ public class FilterTool {
                 orders.add( o );
         });
 
-        return new Sort( orders);
+        return Sort.by( orders);
     }
 
 
     private static Sort defaultSort(String... args){
-        return new Sort(
+        return Sort.by(
             Arrays.stream(args).map(s-> {
                 String[] par = s.split(" ");
                 if (par.length > 1)
@@ -62,7 +62,7 @@ public class FilterTool {
         if (orders.size() == 0)
             orders.add(new Sort.Order(Sort.Direction.ASC, "kind"));
             orders.add(new Sort.Order(Sort.Direction.ASC, "antall"));
-        return new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),new Sort(orders));
+        return PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),Sort.by( orders));
     }
 
     public static PageRequest defaultOrModifiedSort(Pageable pageable, String... args) {
@@ -72,7 +72,7 @@ public class FilterTool {
             sort = defaultSort(args);
         else
             sort = modifiedSort(pageable.getSort());
-        return new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),sort);
+        return PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),sort);
     }
 
     private static Sort modifiedSort(Sort sort){
@@ -93,7 +93,7 @@ public class FilterTool {
             } else
                 orders.add(o);
         });
-        return new Sort(orders);
+        return Sort.by(orders);
     }
 
 }

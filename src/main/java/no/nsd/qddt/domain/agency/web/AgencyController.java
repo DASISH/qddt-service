@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.agency.web;
 
-import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.classes.AbstractController;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.agency.AgencyEditJson;
 import no.nsd.qddt.domain.agency.AgencyService;
@@ -79,7 +79,7 @@ public class AgencyController extends AbstractController {
 //        try {
 //            Page<Agency> agencies = service.findByNamePageable(name, pageable);
 ////            agencies.forEach( Agency::getUsers );
-//            return new ResponseEntity<>(assembler.toResource(agencies), HttpStatus.OK);
+//            return assembler.toModel(agencies), HttpStatus.OK);
 //        } catch (Exception ex){
 //            StackTraceFilter.println(ex.getStackTrace());
 //            throw ex;

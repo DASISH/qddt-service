@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.study.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
@@ -43,13 +43,13 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Study> findLastChange(UUID uuid) {
-        return studyAuditRepository.findLastChangeRevision(uuid);
+        return studyAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Study> findRevision(UUID uuid, Integer revision) {
-        return studyAuditRepository.findRevision(uuid, revision);
+        return studyAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override
@@ -78,7 +78,7 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
     @Override
     protected Revision<Integer, Study> postLoadProcessing(Revision<Integer, Study> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
         postLoadProcessing(instance.getEntity());
         return instance;
     }

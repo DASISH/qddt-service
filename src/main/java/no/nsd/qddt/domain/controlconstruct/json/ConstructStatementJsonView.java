@@ -7,7 +7,7 @@ import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
  */
 public class ConstructStatementJsonView extends ConstructJsonView {
 
-    private  String statement;
+    private final String statement;
 
     public ConstructStatementJsonView(StatementItem construct){
         super(construct);

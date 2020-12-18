@@ -1,20 +1,18 @@
 package no.nsd.qddt.domain.concept.web;
 
-import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.classes.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -126,19 +124,21 @@ public class ConceptController extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ConceptJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler assembler) {
+    public PagedModel<EntityModel<ConceptJsonEdit>> getAll(Pageable pageable, PagedResourcesAssembler<ConceptJsonEdit> assembler) {
 
-        Page<ConceptJsonEdit> concepts = service.findAllPageable(pageable).map(ConceptJsonEdit::new);
-        return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
+        return assembler.toModel(
+            service.findAllPageable(pageable).map(ConceptJsonEdit::new)
+        );
     }
 
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/by-parent/{topicId}", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ConceptJsonEdit>> getbyPageTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler assembler) {
+    public PagedModel<EntityModel<ConceptJsonEdit>> getbyPageTopicId(@PathVariable("topicId") UUID id, Pageable pageable, PagedResourcesAssembler<ConceptJsonEdit> assembler) {
 
-        Page<ConceptJsonEdit> concepts = service.findByTopicGroupPageable(id,pageable).map(ConceptJsonEdit::new);
-        return new ResponseEntity<>(assembler.toResource(concepts), HttpStatus.OK);
+        return assembler.toModel(
+            service.findByTopicGroupPageable(id,pageable).map(ConceptJsonEdit::new)
+        );
     }
 
 
@@ -151,12 +151,14 @@ public class ConceptController extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                             @RequestParam(value = "description",defaultValue = "%") String description,
-                                                        Pageable pageable, PagedResourcesAssembler assembler) {
+    public PagedModel<EntityModel<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                          @RequestParam(value = "description",defaultValue = "%") String description,
+                                                          Pageable pageable, PagedResourcesAssembler<ConceptJsonEdit> assembler) {
 
-        Page<ConceptJsonEdit> items = service.findByNameAndDescriptionPageable(name,description, pageable).map(ConceptJsonEdit::new);
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+        return assembler.toModel(
+            service.findByNameAndDescriptionPageable(name,description, pageable).map(ConceptJsonEdit::new)
+        );
+
     }
 
 

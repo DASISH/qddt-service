@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.classes.elementref.ElementKind;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
@@ -156,7 +156,7 @@ public class OtherMaterial implements Cloneable {
         return new OtherMaterial(originalName,fileType, size, description).setOriginalOwner(this.originalOwner );
     }
 
-    private static String OM_REF_FORMAT=
+    private static final String OM_REF_FORMAT=
         "%1$s<r:ExternalAid scopeOfUniqueness = \"Maintainable\" isUniversallyUnique = \"true\">\n" +
         "%1$s\t%3$s\n" +
         "%1$s\t<MaintainableObject>\n" +

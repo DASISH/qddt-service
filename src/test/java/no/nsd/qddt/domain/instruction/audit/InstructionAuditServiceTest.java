@@ -53,7 +53,7 @@ public class InstructionAuditServiceTest extends AbstractAuditServiceTest {
         Page<Revision<Integer, Instruction>> revisions = instructionAuditService.findRevisions(
                 instruction.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, Instruction> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, Instruction> wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), instruction.hashCode());
         assertThat(4,is(revisions.getNumberOfElements()));

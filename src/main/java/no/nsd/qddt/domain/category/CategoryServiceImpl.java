@@ -67,7 +67,7 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return repository.exists(uuid);
+        return repository.existsById(uuid);
     }
 
     @Override
@@ -93,11 +93,11 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        repository.delete(uuid);
+        repository.deleteById(uuid);
     }
 
 
-    private List<Code> _codes = new ArrayList<>( 0 );
+    private final List<Code> _codes = new ArrayList<>( 0 );
 
     private Category prePersistProcessing(Category instance) {
         // Category Save fails when there is a mix of new and existing children attached to a new element.

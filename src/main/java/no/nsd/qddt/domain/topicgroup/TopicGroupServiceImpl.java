@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.classes.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.study.StudyService;
@@ -64,7 +64,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return topicGroupRepository.exists(uuid);
+        return topicGroupRepository.existsById(uuid);
     }
 
     @Override
@@ -116,13 +116,13 @@ class TopicGroupServiceImpl implements TopicGroupService {
     public void delete(UUID uuid) {
         if (topicGroupRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
-        topicGroupRepository.delete(uuid);
+        topicGroupRepository.deleteById(uuid);
     }
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(TopicGroup instance) {
-        topicGroupRepository.delete(instance.getId());
+        topicGroupRepository.deleteById( instance.getId());
     }
 
     @Override
@@ -178,7 +178,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 LOG.info("PDF-XML -> fetching  concepts ");
                 Hibernate.initialize(instance.getConcepts());
                 instance.getConcepts().forEach( this::loadConceptQuestion );
-                instance.getTopicQuestionItems().forEach( (i, cqi) -> {
+                instance.getTopicQuestionItems().forEach( cqi -> {
                     qiLoader.fill( cqi );
                     cqi.getElement().setParentRefs(
                         findByQuestionItem( cqi.getElementId(), null ).stream()
@@ -187,7 +187,7 @@ class TopicGroupServiceImpl implements TopicGroupService {
                 });
 
             } else {
-                instance.getTopicQuestionItems().values().stream()
+                instance.getTopicQuestionItems().stream()
                     .filter( p -> IsNullOrTrimEmpty(p.getName()) )
                     .forEach( qiLoader::fill );
             }

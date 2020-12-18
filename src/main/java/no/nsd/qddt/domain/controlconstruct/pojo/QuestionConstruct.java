@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.QuestionItemRef;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementRefQuestionItem;
 import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.universe.Universe;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -27,8 +27,7 @@ public class QuestionConstruct  extends ControlConstruct {
     private String description;
 
     @Embedded
-    private QuestionItemRef questionItemRef;
-
+    private ElementRefQuestionItem elementRefQuestionItem;
 
     //------------- Begin QuestionItem revision early bind "hack" ---------------
     //------------- End QuestionItem revision early bind "hack"------------------
@@ -42,7 +41,7 @@ public class QuestionConstruct  extends ControlConstruct {
     @ElementCollection(fetch = FetchType.EAGER )
     @CollectionTable(name = "CONTROL_CONSTRUCT_INSTRUCTION",
         joinColumns = {@JoinColumn(name = "control_construct_id", referencedColumnName = "id")})
-    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>(0);
+    private List<ControlConstructInstruction> controlConstructInstructions =new ArrayList<>();
 
     public QuestionConstruct() {
         super();
@@ -56,14 +55,13 @@ public class QuestionConstruct  extends ControlConstruct {
         this.description = description;
     }
 
-    public QuestionItemRef getQuestionItemRef() {
-        return questionItemRef;
+    public ElementRefQuestionItem getQuestionItemRef() {
+        return elementRefQuestionItem;
     }
 
-    public void setQuestionItemRef(QuestionItemRef questionItemRef) {
-        this.questionItemRef = questionItemRef;
+    public void setQuestionItemRef(ElementRefQuestionItem elementRefQuestionItem) {
+        this.elementRefQuestionItem = elementRefQuestionItem;
     }
-
 
     public List<Universe> getUniverse() {
         return universe;
@@ -95,6 +93,65 @@ public class QuestionConstruct  extends ControlConstruct {
             .filter(i->i.getInstructionRank().equals(ControlConstructInstructionRank.POST))
             .map(ControlConstructInstruction::getInstruction)
             .collect( Collectors.toList());
+    }
+
+    @Override
+    protected void beforeUpdate() {}
+    @Override
+    protected void beforeInsert() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals( o )) return false;
+
+        QuestionConstruct that = (QuestionConstruct) o;
+
+        if (description != null ? !description.equals( that.description ) : that.description != null) return false;
+        return elementRefQuestionItem != null ? elementRefQuestionItem.equals( that.elementRefQuestionItem ) : that.elementRefQuestionItem == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (elementRefQuestionItem != null ? elementRefQuestionItem.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "{ " +
+            "\"id\":" + (getId() == null ? "null" : getId()) + ", " +
+            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
+            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
+            "\"questionItemRef\":" + (elementRefQuestionItem == null ? "null" : elementRefQuestionItem) + ", " +
+            "\"modified\":" + (getModified() == null ? "null" : getModified()) +
+            "}";
+    }
+
+    @Override
+    public AbstractXmlBuilder getXmlBuilder() {
+        return new ControlConstructFragmentBuilder<QuestionConstruct>( this ) {
+            @Override
+            public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
+                super.addXmlFragments( fragments );
+                if (children.size() == 0) addChildren();
+                children.stream().forEach( c -> c.addXmlFragments( fragments ) );
+            }
+            @Override
+            public String getXmlFragment() {
+                if (children.size() == 0) addChildren();
+                return super.getXmlFragment();
+            }
+
+            private void addChildren() {
+                children.add( getQuestionItemRef().getElement().getXmlBuilder()  );
+                children.addAll( getUniverse().stream().map( u -> u.getXmlBuilder() ).collect( Collectors.toList()) );
+                children.addAll( getControlConstructInstructions().stream().map( u -> u.getInstruction().getXmlBuilder() ).collect( Collectors.toList()) );
+            }
+        };
     }
 
     @Override
@@ -131,65 +188,6 @@ public class QuestionConstruct  extends ControlConstruct {
         pdfReport.addComments(getComments());
 
         // pdfReport.addPadding();
-    }
-
-    @Override
-    protected void beforeUpdate() {}
-    @Override
-    protected void beforeInsert() {}
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals( o )) return false;
-
-        QuestionConstruct that = (QuestionConstruct) o;
-
-        if (description != null ? !description.equals( that.description ) : that.description != null) return false;
-        return questionItemRef != null ? questionItemRef.equals( that.questionItemRef ) : that.questionItemRef == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (questionItemRef != null ? questionItemRef.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "{ " +
-            "\"id\":" + (getId() == null ? "null" : getId()) + ", " +
-            "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
-            "\"description\":" + (description == null ? "null" : "\"" + description + "\"") + ", " +
-            "\"questionItemRef\":" + (questionItemRef == null ? "null" : questionItemRef) + ", " +
-            "\"modified\":" + (getModified() == null ? "null" : getModified()) +
-            "}";
-    }
-
-    @Override
-    public AbstractXmlBuilder getXmlBuilder() {
-        return new ControlConstructFragmentBuilder<QuestionConstruct>( this ) {
-            @Override
-            public void addXmlFragments(Map<ElementKind, Map<String, String>> fragments) {
-                super.addXmlFragments( fragments );
-                if (children.size() == 0) addChildren();
-                children.stream().forEach( c -> c.addXmlFragments( fragments ) );
-            }
-            @Override
-            public String getXmlFragment() {
-                if (children.size() == 0) addChildren();
-                return super.getXmlFragment();
-            }
-
-            private void addChildren() {
-                children.add( getQuestionItemRef().getElement().getXmlBuilder()  );
-                children.addAll( getUniverse().stream().map( u -> u.getXmlBuilder() ).collect( Collectors.toList()) );
-                children.addAll( getControlConstructInstructions().stream().map( u -> u.getInstruction().getXmlBuilder() ).collect( Collectors.toList()) );
-            }
-        };
     }
 
 }

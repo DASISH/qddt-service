@@ -1,6 +1,5 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 
 /**

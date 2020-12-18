@@ -9,7 +9,7 @@ import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.json.Converter;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
-import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.instruction.InstructionService;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         this.auditService = controlConstructAuditService;
         this.iService = iService;
         this.uService = uService;
-        this.qiLoader = new ElementLoader<>( questionAuditService);
+        this.qiLoader = new ElementLoader<>(questionAuditService);
     }
 
     @Override
@@ -72,7 +73,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return controlConstructRepository.exists(uuid);
+        return controlConstructRepository.existsById(uuid);
     }
 
     @Override
@@ -105,7 +106,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        controlConstructRepository.delete(uuid);
+        controlConstructRepository.deleteById(uuid);
     }
 
     @Override
@@ -158,19 +159,19 @@ class ControlConstructServiceImpl implements ControlConstructService {
         }
 
         if(instance.isBasedOn() || instance.isNewCopy()) {
-            Integer rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            Optional<Integer> rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
             switch (instance.getClassKind()) {
                 case "QUESTION_CONSTRUCT":
-                    instance = (S) new FactoryQuestionConstruct().copy((QuestionConstruct)instance, rev );
+                    instance = (S) new FactoryQuestionConstruct().copy((QuestionConstruct)instance, rev.get() );
                     break;
                 case "SEQUENCE_CONSTRUCT":
-                    instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev );
+                    instance = (S)new FactorySequenceConstruct().copy((Sequence)instance, rev.get() );
                     break;
                 case "CONDITION_CONSTRUCT":
-                    instance =  (S)new FactoryConditionConstruct().copy((ConditionConstruct)instance, rev );
+                    instance =  (S)new FactoryConditionConstruct().copy((ConditionConstruct)instance, rev.get() );
                     break;
                 case "STATEMENT_CONSTRUCT":
-                    instance =  (S)new FactoryStatementConstruct().copy((StatementItem)instance, rev );
+                    instance =  (S)new FactoryStatementConstruct().copy((StatementItem)instance, rev.get() );
                     break;
             }
         }

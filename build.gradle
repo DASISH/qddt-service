@@ -1,96 +1,94 @@
-buildscript {
-    repositories {
-        maven { url "https://repo.spring.io/libs-release" }
-        maven { url "https://plugins.gradle.org/m2/" }
-        mavenCentral()
-        jcenter()
-    }
-}
-
 plugins {
-    id "org.springframework.boot" version "1.5.22.RELEASE"
-    id "org.asciidoctor.convert" version "1.5.8.1"
-    id "org.hidetake.ssh" version "2.2.0"
-}
-
-apply plugin: 'java'
-apply plugin: 'idea'
-//apply plugin: 'spring-boot'ø
-
-
-
-idea {
-    project {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id "org.asciidoctor.convert" version "1.5.9.2"
+    id 'java'
+    id 'idea'
 }
 
 
 group = 'no.nsd'
 description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-jar {
-    baseName = 'QDDT'
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
 }
-
 repositories {
-    mavenLocal()
     mavenCentral()
-    maven { url "https://repo.spring.io/libs-release" }
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-properties-migrator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springframework.boot:spring-boot-starter-jetty'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    compile("org.springframework.boot:spring-boot-starter-jetty")
-//    compile("org.springframework.boot:spring-boot-starter-data-rest")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: "spring-boot-starter-tomcat"
+//    implementation 'org.hibernate.orm:hibernate-core:6.0.0.Alpha6'
+    implementation 'org.hibernate:hibernate-envers:5.4.26.Final' //, version: '6.0.0.Alpha6'
+    implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'joda-time:joda-time:2.10.8'
+
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.4.2'
+//    compile group: 'org.springframework.cloud', name: 'spring-cloud-security', version: '2.2.4.RELEASE'
+
+//    implementation("org.jadira.usertype:usertype.extended:5.0.0.GA")
+    implementation("net.logstash.logback:logstash-logback-encoder:6.5")
+    implementation("javax.json:javax.json-api")
+    implementation("org.glassfish:javax.json:1.1.4")
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+
+    implementation("com.itextpdf:itext7-core:7.1.1")
+    implementation("com.itextpdf:html2pdf:2.0.2")
+
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-
-    compile("org.springframework.hateoas:spring-hateoas")
-    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.16.RELEASE")
-    compile("org.springframework.cloud:spring-cloud-security:1.0.2.RELEASE")
-    compile("org.jadira.usertype:usertype.extended:5.0.0.GA")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.9.4")
-    compile("net.logstash.logback:logstash-logback-encoder:3.5")
-
-    compile("org.springframework.data:spring-data-envers:1.1.23.RELEASE")
-    compile("org.springframework.data:spring-data-jpa:1.11.23.RELEASE")
-    compile("org.springframework.data:spring-data-commons:1.13.23.RELEASE")
-
-    compile("org.hibernate:hibernate-core:5.1.17.Final")
-    compile("org.hibernate:hibernate-envers:5.1.17.Final")
-    compile("org.hibernate:hibernate-entitymanager:5.1.17.Final")
-    compile("org.hibernate:hibernate-validator")
-
-    compile("joda-time:joda-time")
-    compile("javax.json:javax.json-api:1.1.2")
-    compile("org.glassfish:javax.json:1.1.2")
-    compile("io.jsonwebtoken:jjwt:0.9.0")
-
-    compile("org.postgresql:postgresql:42.2.5")
-    compile("com.itextpdf:itext7-core:7.1.1")
-    compile("com.itextpdf:html2pdf:2.0.2")
-
-
-    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-    compile group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-    compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
-    compile group: 'javax.activation', name: 'activation', version: '1.1.1'
-
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
-    testCompile(
-            "junit:junit",
-            "org.springframework.boot:spring-boot-starter-test",
-            "org.springframework.security:spring-security-test",
-            "com.jayway.jsonpath:json-path",
-            "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.0.RELEASE",
-    )
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    sourceDir = file('docs')
+    outputDir = file('build/docs')
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+//    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+//    compile group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+//    compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+//    compile group: 'javax.activation', name: 'activation', version: '1.1.1'
+
+//    testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
+//    testCompile(
+//            "junit:junit",
+//            "org.springframework.boot:spring-boot-starter-test",
+//            "org.springframework.security:spring-security-test",
+//            "com.jayway.jsonpath:json-path",
+//            "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.0.RELEASE",
+//    )
+//}
 
 //asciidoctor {
 //    sourceDir = file('docs')

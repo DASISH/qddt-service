@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.category.json;
 
-import no.nsd.qddt.domain.category.HierarchyLevel;
+import no.nsd.qddt.classes.ResponseCardinality;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.ResponseCardinality;
-import no.nsd.qddt.domain.interfaces.Version;
+import no.nsd.qddt.domain.category.HierarchyLevel;
+import no.nsd.qddt.classes.interfaces.Version;
 import no.nsd.qddt.domain.responsedomain.Code;
 
 import javax.persistence.Embedded;

@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.publicationstatus.web;
 
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
-import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
+import no.nsd.qddt.domain.publicationstatus.json.PublicationStatusJsonParent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

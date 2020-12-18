@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
-import no.nsd.qddt.domain.elementref.ConditionRef;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
+import no.nsd.qddt.classes.elementref.ElementRefCondition;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
-import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.universe.Universe;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 @DiscriminatorValue("SEQUENCE_CONSTRUCT")
 public class Sequence extends ControlConstruct {
 
-    @Column(length = 1500)
+    @Column(length = 3000)
     private String description;
 
     @OrderColumn(name="sequence_idx")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_SEQUENCE",
         joinColumns = @JoinColumn(name="sequence_id", referencedColumnName = "id"))
-    private List<ElementRefImpl<ControlConstruct>> sequence = new ArrayList<>(0);
+    private List<ElementRefEmbedded<ControlConstruct>> sequence = new ArrayList<>(0);
 
     @ManyToMany(fetch = FetchType.EAGER)
     @OrderColumn(name="universe_idx")
@@ -45,7 +45,7 @@ public class Sequence extends ControlConstruct {
     private SequenceKind sequenceKind;
 
     @Embedded
-    private ConditionRef condition;
+    private ElementRefCondition condition;
 
 
     public Sequence() {
@@ -68,15 +68,15 @@ public class Sequence extends ControlConstruct {
         this.description = description;
     }
 
-    public ConditionRef getCondition() {
+    public ElementRefCondition getCondition() {
         return condition;
     }
 
-    public void setCondition(ConditionRef condition) {
+    public void setCondition(ElementRefCondition condition) {
         this.condition = condition;
     }
 
-    public List<ElementRefImpl<ControlConstruct>> getSequence() {
+    public List<ElementRefEmbedded<ControlConstruct>> getSequence() {
         if(sequence==null) {
             LOG.info( "sequnece is null" );
         } else if (getCondition()!=null && !sequence.get(0).equals( getCondition() )) {
@@ -85,7 +85,7 @@ public class Sequence extends ControlConstruct {
         return sequence;
     }
 
-    public void setSequence(List<ElementRefImpl<ControlConstruct>> sequence) {
+    public void setSequence(List<ElementRefEmbedded<ControlConstruct>> sequence) {
         this.sequence = sequence;
     }
 

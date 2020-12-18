@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.study;
 
-import no.nsd.qddt.domain.interfaces.BaseArchivedRepository;
+import no.nsd.qddt.classes.interfaces.BaseArchivedRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.domain.instrument.pojo.*;
 import no.nsd.qddt.exception.ResourceNotFoundException;
@@ -53,7 +53,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return instrumentRepository.exists(uuid);
+        return instrumentRepository.existsById(uuid);
     }
 
     @Override
@@ -75,7 +75,7 @@ class InstrumentServiceImpl implements InstrumentService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        instrumentRepository.delete(uuid);
+        instrumentRepository.deleteById(uuid);
     }
 
     @Override
@@ -122,7 +122,7 @@ class InstrumentServiceImpl implements InstrumentService {
 
         Integer rev = null;
         if(instance.isBasedOn())
-            rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            rev= auditService.findLastChange(instance.getId()).getRevisionNumber().get();
 
         if (instance.isBasedOn() || instance.isNewCopy())
             instance = new InstrumentFactory().copy(instance, rev );

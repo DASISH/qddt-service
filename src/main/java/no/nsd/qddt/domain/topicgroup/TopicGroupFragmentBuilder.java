@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import no.nsd.qddt.domain.concept.ConceptFragmentBuilder;
-import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.questionitem.QuestionItemFragmentBuilder;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,14 +29,14 @@ public class TopicGroupFragmentBuilder extends XmlDDIFragmentBuilder<TopicGroup>
         "%7$s" +
         "\t\t</c:ConceptGroup>\n";
 
-    private List<ConceptFragmentBuilder> children;
-    private List<QuestionItemFragmentBuilder> questions;
+    private final List<ConceptFragmentBuilder> children;
+    private final List<QuestionItemFragmentBuilder> questions;
 
 
     public TopicGroupFragmentBuilder(TopicGroup topicGroup) {
         super(topicGroup);
         children = topicGroup.getConcepts().stream().map( c -> (ConceptFragmentBuilder)c.getXmlBuilder() ).collect( Collectors.toList() );
-        questions = topicGroup.getTopicQuestionItems().values().stream()
+        questions = topicGroup.getTopicQuestionItems().stream()
             .filter(f ->  f.getElement() != null )
             .map( cqi -> (QuestionItemFragmentBuilder)cqi.getElement().getXmlBuilder() )
             .collect( Collectors.toList() );

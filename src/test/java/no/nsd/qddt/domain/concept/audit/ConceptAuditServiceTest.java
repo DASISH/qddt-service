@@ -38,7 +38,7 @@ public class ConceptAuditServiceTest extends AbstractAuditServiceTest {
 
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveSurveyWithAudit() {
         concept = conceptService.findOne(concept.getId());
 
         // Find the last revision based on the entity id
@@ -50,7 +50,7 @@ public class ConceptAuditServiceTest extends AbstractAuditServiceTest {
         assertThat(revisions.getNumberOfElements(), is(3));
 
         // Find all revisions
-        Revisions<Integer, Concept> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, Concept> wrapper = Revisions.of(revisions.getContent());
         assertThat(wrapper.getLatestRevision().getRevisionNumber() , is(revision.getRevisionNumber()));
     }
 }

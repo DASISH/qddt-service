@@ -46,7 +46,7 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return responseDomainRepository.exists(uuid);
+        return responseDomainRepository.existsById(uuid);
     }
 
     @Override
@@ -89,14 +89,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        responseDomainRepository.delete(uuid);
+        responseDomainRepository.deleteById(uuid);
     }
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {
 
         ResponseDomainFactory rdf = new ResponseDomainFactory();
         if (instance.isBasedOn()) {
-            Integer rev = auditService.findLastChange( instance.getId() ).getRevisionNumber();
+            Integer rev = auditService.findLastChange( instance.getId() ).getRevisionNumber().get();
             instance = rdf.copy( instance, rev );
         } else if (instance.isNewCopy()) {
             instance = rdf.copy( instance, null );

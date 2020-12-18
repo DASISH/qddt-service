@@ -2,14 +2,13 @@ package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.classes.elementref.AbstractElementRef;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.interfaces.IConditionNode;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
-import no.nsd.qddt.domain.elementref.AbstractElementRef;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
-import no.nsd.qddt.domain.interfaces.IConditionNode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
@@ -25,7 +24,7 @@ import java.util.*;
 @Entity
 @Table(name = "INSTRUMENT_NODE")
 @AttributeOverride(name="name", column=@Column(name="element_name", length = 1500))
-public class InstrumentNode<T extends ControlConstruct> extends ElementRefImpl<T> implements Iterable<InstrumentNode<T>> {
+public class InstrumentNode<T extends ControlConstruct> extends AbstractElementRef<T> implements Iterable<InstrumentNode<T>> {
 
     @Id
     @GeneratedValue(generator ="UUID")

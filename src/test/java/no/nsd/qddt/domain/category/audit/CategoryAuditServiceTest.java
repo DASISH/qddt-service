@@ -12,8 +12,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * @author Stig Norland
@@ -44,24 +43,24 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveSurveyWithAudit() {
         entity = categoryService.findOne(entity.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, Category> revision = categoryAuditService.findLastChange(entity.getId());
+        assertNotNull( categoryAuditService.findLastChange(entity.getId()));
 
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, Category>> revisions = categoryAuditService.findRevisions(
                 entity.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, Category> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, Category> wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().getId(), entity.getId());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
     @Test
-    public void getAllRevisionsTest() throws Exception {
+    public void getAllRevisionsTest() {
         Page<Revision<Integer, Category>> revisions =
                 categoryAuditService.findRevisions(entity.getId(), new PageRequest(0, 20));
 
@@ -70,7 +69,7 @@ public class CategoryAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void getFirstAndLastRevisionTest() throws Exception {
+    public void getFirstAndLastRevisionTest() {
         Revision<Integer, Category> revision = categoryAuditService.findLastChange(entity.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",

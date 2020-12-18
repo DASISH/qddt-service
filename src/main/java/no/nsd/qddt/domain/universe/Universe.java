@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.universe;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;

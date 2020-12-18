@@ -2,11 +2,11 @@ package no.nsd.qddt.domain.questionitem;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.ResponseDomainRef;
-import no.nsd.qddt.domain.elementref.ParentRef;
-import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.classes.elementref.ParentRef;
+import no.nsd.qddt.classes.elementref.ElementRefResponseDomain;
+import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 
@@ -32,7 +32,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
 
     @Embedded
-    private ResponseDomainRef responseDomainRef;
+    private ElementRefResponseDomain elementRefResponseDomain;
 
     @Column(name = "question", length = 2000)
     private String question;
@@ -64,13 +64,13 @@ public class QuestionItem extends AbstractEntityAudit {
 
     // End pre remove ----------------------------------------------
 
-    public ResponseDomainRef getResponseDomainRef() {
+    public ElementRefResponseDomain getResponseDomainRef() {
 
-        return (responseDomainRef==null) ? new ResponseDomainRef(): responseDomainRef;
+        return (elementRefResponseDomain ==null) ? new ElementRefResponseDomain(): elementRefResponseDomain;
     }
 
-    public void setResponseDomainRef(ResponseDomainRef responseDomainRef) {
-        this.responseDomainRef = responseDomainRef;
+    public void setResponseDomainRef(ElementRefResponseDomain elementRefResponseDomain) {
+        this.elementRefResponseDomain = elementRefResponseDomain;
     }
 
     public String getQuestion() {
@@ -106,7 +106,7 @@ public class QuestionItem extends AbstractEntityAudit {
 
         QuestionItem that = (QuestionItem) o;
 
-        if (responseDomainRef != null ? !responseDomainRef.equals( that.responseDomainRef ) : that.responseDomainRef != null)
+        if (elementRefResponseDomain != null ? !elementRefResponseDomain.equals( that.elementRefResponseDomain ) : that.elementRefResponseDomain != null)
             return false;
         if (question != null ? !question.equals( that.question ) : that.question != null) return false;
         if (intent != null ? !intent.equals( that.intent ) : that.intent != null) return false;
@@ -116,7 +116,7 @@ public class QuestionItem extends AbstractEntityAudit {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (responseDomainRef != null ? responseDomainRef.hashCode() : 0);
+        result = 31 * result + (elementRefResponseDomain != null ? elementRefResponseDomain.hashCode() : 0);
         result = 31 * result + (question != null ? question.hashCode() : 0);
         result = 31 * result + (intent != null ? intent.hashCode() : 0);
         result = 31 * result + (parentRefs != null ? parentRefs.hashCode() : 0);
@@ -130,7 +130,7 @@ public class QuestionItem extends AbstractEntityAudit {
             "\"name\":" + (getName() == null ? "null" : "\"" + getName() + "\"") + ", " +
             "\"intent\":" + (intent == null ? "null" : "\"" + intent + "\"") + ", " +
             "\"question\":" + (question == null ? "null" : "\"" + question + "\"") + ", " +
-            "\"responseDomainName\":" + (responseDomainRef.getName() == null ? "null" : "\"" + responseDomainRef.getName() + "\"") + ", " +
+            "\"responseDomainName\":" + (elementRefResponseDomain.getName() == null ? "null" : "\"" + elementRefResponseDomain.getName() + "\"") + ", " +
             "\"modified\":" + (getModified() == null ? "null" : "\"" + getModified()+ "\"" ) + " , " +
             "\"modifiedBy\":" + (getModifiedBy() == null ? "null" : getModifiedBy()) +
             "}";

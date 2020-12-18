@@ -2,22 +2,20 @@ package no.nsd.qddt.domain.topicgroup.web;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nsd.qddt.domain.AbstractController;
-import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
+import no.nsd.qddt.classes.AbstractController;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupJson;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.CREATED;
+import static no.nsd.qddt.classes.AbstractEntityAudit.ChangeKind.CREATED;
 
 
 /**
@@ -129,14 +127,12 @@ public class TopicGroupController extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ConceptJsonEdit>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
-                                                             @RequestParam(value = "description",defaultValue = "%") String description,
-                                                             Pageable pageable, PagedResourcesAssembler assembler) {
-        return new ResponseEntity<>(
-            assembler.toResource(
-                service.findByNameAndDescriptionPageable(name,description, pageable)
-                    .map(TopicGroupJson::new))
-                ,HttpStatus.OK);
+    public PagedModel<EntityModel<TopicGroupJson>> getBy(@RequestParam(value = "name",defaultValue = "%") String name,
+                                                         @RequestParam(value = "description",defaultValue = "%") String description,
+                                                         Pageable pageable, PagedResourcesAssembler<TopicGroupJson> assembler) {
+        return assembler.toModel(
+            service.findByNameAndDescriptionPageable(name,description, pageable).map(TopicGroupJson::new)
+        );
     }
 
 

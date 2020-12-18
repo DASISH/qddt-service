@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
-import no.nsd.qddt.domain.interfaces.IArchived;
-import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.classes.interfaces.IArchived;
+import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
@@ -21,20 +21,20 @@ import java.util.Set;
  * <ul class="inheritance">
  * <li>A Survey is a root element of this model. Every Survey has atleast one Study and one Instrument.
  *     <ul class="inheritance">
- *         <li>A Study will have of one or more Modules.</li>
+ *         <li>A Study will have of one or more Modules.
  *         <ul class="inheritance">
- *             <li>A Module will have one or more Concepts.</li>
+ *             <li>A Module will have one or more Concepts.
  *             <ul class="inheritance">
  *                 <li>A Concept consist of one or more QuestionItems.
  *                     <ul class="inheritance">
  *                         <li>Every QuestionItem will have a Question.</li>
- *                     </ul>
- *                     <ul class="inheritance">
  *                         <li>Every QuestionItem will have a ResponseDomain.</li>
  *                     </ul>
  *                 </li>
  *              </ul>
+ *              </li>
  *          </ul>
+ *          </li>
  *      </ul>
  *      <ul class="inheritance"><li>An Instrument will have a ordered list of Questions, all of which are contained in Concepts
  *      belonging to Modules that belongs to the Studies that this Survey has.</li>

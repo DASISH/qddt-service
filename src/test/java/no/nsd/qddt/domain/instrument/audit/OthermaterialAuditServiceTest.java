@@ -13,8 +13,7 @@ import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * @author Stig Norland
@@ -41,7 +40,7 @@ public class OthermaterialAuditServiceTest extends AbstractAuditServiceTest {
     public void setUp() {
 
 
-        instrument = instrumentService.save(new Instrument( root ));
+        instrument = instrumentService.save(new Instrument(  ));
 
         instrument = instrumentService.findOne(instrument.getId());
 
@@ -54,24 +53,24 @@ public class OthermaterialAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void testSaveSurveyWithAudit() throws Exception {
+    public void testSaveSurveyWithAudit() {
         instrument = instrumentService.findOne(instrument.getId());
 
         // Find the last revision based on the entity id
-        Revision<Integer, Instrument> revision = instrumentAuditService.findLastChange(instrument.getId());
+        assertNotNull("Empty?", instrumentAuditService.findLastChange(instrument.getId()));
 
         // Find all revisions based on the entity id as a page
         Page<Revision<Integer, Instrument>> revisions = instrumentAuditService.findRevisions(
                 instrument.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, Instrument> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, Instrument> wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), instrument.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));
     }
 
     @Test
-    public void getAllRevisionsTest() throws Exception {
+    public void getAllRevisionsTest() {
         Page<Revision<Integer, Instrument>> revisions =
                 instrumentAuditService.findRevisions(instrument.getId(), new PageRequest(0, 20));
 
@@ -80,7 +79,7 @@ public class OthermaterialAuditServiceTest extends AbstractAuditServiceTest {
     }
 
     @Test
-    public void getLastRevisionTest() throws Exception {
+    public void getLastRevisionTest() {
         Revision<Integer, Instrument> revision = instrumentAuditService.findLastChange(instrument.getId());
 
         assertEquals("Excepted initial ResponseDomain Object.",

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.questionitem.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -47,14 +45,14 @@ public class QuestionItemAuditController {
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, QuestionItem>>> allProjects(
+    public PagedModel<EntityModel<Revision<Integer, QuestionItem>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable, PagedResourcesAssembler<Revision<Integer, QuestionItem>> assembler) {
 
         Page<Revision<Integer, QuestionItem>> entities = auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
-        return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
+        return assembler.toModel(entities);
     }
 
     @ResponseBody

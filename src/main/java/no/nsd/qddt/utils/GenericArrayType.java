@@ -4,7 +4,7 @@ package no.nsd.qddt.utils;
  * @author Stig Norland
  */
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
@@ -45,7 +45,7 @@ public class GenericArrayType<T extends Serializable> implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
         if (rs.wasNull()) {
             return null;
         }
@@ -60,7 +60,7 @@ public class GenericArrayType<T extends Serializable> implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
         Connection connection = st.getConnection();
         if (value == null) {
             st.setNull(index, SQL_TYPES[0]);
@@ -70,7 +70,6 @@ public class GenericArrayType<T extends Serializable> implements UserType {
             Array array = connection.createArrayOf("integer", (Object[]) castObject);
             st.setArray(index, array);
         }
-
     }
 
     @Override

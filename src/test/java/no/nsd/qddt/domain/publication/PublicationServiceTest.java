@@ -1,17 +1,13 @@
 package no.nsd.qddt.domain.publication;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatusService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -60,11 +56,11 @@ public class PublicationServiceTest extends AbstractServiceTest {
         publication.setName("TEST");
         publication.setPurpose("TEST PURPOSE");
         publication.setStatus(pubstat.get(2));
-        List<ElementRefImpl> pubelements = new ArrayList<>();
-        pubelements.add(new ElementRefImpl( ElementKind.QUESTION_ITEM, UUID.fromString("fe107534-b071-41d3-bafc-71cf5cf716d6"),420));
-        pubelements.add(new ElementRefImpl(ElementKind.QUESTION_ITEM, UUID.fromString("635e2eac-91c2-4f1a-b6cf-3478621194c6"),418));
-        pubelements.add(new ElementRefImpl(ElementKind.QUESTION_ITEM, UUID.fromString("081bb8ff-b800-416a-b851-612ee7c04b32"),417));
-        publication.setPublicationElements(pubelements);
+//        List<ElementRefImpl> pubelements = new ArrayList<>();
+//        pubelements.add(new ElementRefImpl( ElementKind.QUESTION_ITEM, UUID.fromString("fe107534-b071-41d3-bafc-71cf5cf716d6"),420));
+//        pubelements.add(new ElementRefImpl(ElementKind.QUESTION_ITEM, UUID.fromString("635e2eac-91c2-4f1a-b6cf-3478621194c6"),418));
+//        pubelements.add(new ElementRefImpl(ElementKind.QUESTION_ITEM, UUID.fromString("081bb8ff-b800-416a-b851-612ee7c04b32"),417));
+//        publication.setPublicationElements(pubelements);
         service.save(publication);
 
     }

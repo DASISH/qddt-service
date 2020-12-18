@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

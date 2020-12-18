@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.json;
 
-import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.classes.AbstractJsonEdit;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 

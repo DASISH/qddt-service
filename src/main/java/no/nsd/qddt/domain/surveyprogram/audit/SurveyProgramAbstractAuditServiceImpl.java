@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -40,13 +40,13 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, SurveyProgram> findLastChange(UUID uuid) {
-        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, SurveyProgram> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(surveyProgramAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(surveyProgramAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -76,7 +76,7 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,
     @Override
     protected Revision<Integer, SurveyProgram> postLoadProcessing(Revision<Integer, SurveyProgram> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
         postLoadProcessing(instance.getEntity());
         return instance;
     }

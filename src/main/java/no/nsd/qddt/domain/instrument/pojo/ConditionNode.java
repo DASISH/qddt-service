@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.instrument.pojo;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionKind;
-import no.nsd.qddt.domain.interfaces.IConditionNode;
-import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
-import no.nsd.qddt.domain.interfaces.Version;
+import no.nsd.qddt.classes.interfaces.IConditionNode;
+import no.nsd.qddt.classes.interfaces.IWebMenuPreview;
+import no.nsd.qddt.classes.interfaces.Version;
 
 import java.util.UUID;
 

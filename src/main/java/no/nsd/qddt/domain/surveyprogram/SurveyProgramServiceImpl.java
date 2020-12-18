@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.security.user.User;
 import no.nsd.qddt.exception.DescendantsArchivedException;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -48,7 +48,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return surveyProgramRepository.exists(uuid);
+        return surveyProgramRepository.existsById(uuid);
     }
 
     @Override
@@ -82,7 +82,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     public void delete(UUID uuid) {
         if (surveyProgramRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
-        surveyProgramRepository.delete(uuid);
+        surveyProgramRepository.deleteById(uuid);
     }
 
     @Override
@@ -136,9 +136,8 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     private void loadTopic(TopicGroup topic){
-//        topic.getTopicQuestionItems().forEach( qiLoader::fill );
+        topic.getTopicQuestionItems().forEach( qiLoader::fill );
 //        Hibernate.initialize(topic.getComments());
-        topic.getTopicQuestionItems().forEach((i,item)  -> qiLoader.fill( item ));
         Hibernate.initialize(topic.getConcepts());
         LOG.debug("PDF -> fetching  concepts ");
         topic.getConcepts().forEach( this::loadConceptQuestion );

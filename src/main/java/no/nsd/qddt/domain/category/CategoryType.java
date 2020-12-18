@@ -78,6 +78,6 @@ public enum CategoryType {
 
 }
     /*
-        A Uniform Resource Identifier such as ftp, http or mailto, e.g., http://www.w3.org/TR/xmlschema-2.
+        A Uniform EntityModeL Identifier such as ftp, http or mailto, e.g., http://www.w3.org/TR/xmlschema-2.
      */
-//    URI("Uniform Resource Identifier","A Uniform Resource Identifier such as ftp, http or mailto",""),
+//    URI("Uniform EntityModeL Identifier","A Uniform EntityModeL Identifier such as ftp, http or mailto",""),

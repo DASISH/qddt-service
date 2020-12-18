@@ -8,14 +8,13 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
-import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
-import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
+import no.nsd.qddt.classes.interfaces.IWebMenuPreview;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.security.user.User;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.AuditMappedBy;
@@ -66,8 +65,8 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
     @Column(name = "xml_lang")
     private String defaultXmlLang;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<User> users = new HashSet<>();
 
@@ -76,40 +75,40 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
     @OrderColumn(name="agency_idx")
     @AuditMappedBy(mappedBy = "agency", positionMappedBy = "agencyIdx")
-    private List<SurveyProgram> surveyPrograms = new ArrayList<>();
+    private List<SurveyProgram> surveyPrograms = new ArrayList<>(0);
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<Study>  studies = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<Instrument> instruments = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<Instruction> instructions = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<TopicGroup> topicGroups = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<Concept> concepts = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<QuestionItem> questions = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+    @JsonIgnore
     @NotAudited
     private Set<ResponseDomain> responses = new HashSet<>();
 
@@ -118,10 +117,10 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
     @NotAudited
     private Set<Category> categories = new HashSet<>();
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
-    @NotAudited
-    private Set<PublicationStatus> statuses = new HashSet<>();
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="agency")
+//    @NotAudited
+//    private Set<PublicationStatus> statuses = new HashSet<>();
 
     public Agency(){
         setDefaultXmlLang( "en-GB");
@@ -132,8 +131,8 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
     }
 
     @Override
-    public no.nsd.qddt.domain.interfaces.Version getVersion() {
-        return new no.nsd.qddt.domain.interfaces.Version(0,0,0,"");
+    public no.nsd.qddt.classes.interfaces.Version getVersion() {
+        return new no.nsd.qddt.classes.interfaces.Version(0,0,0,"");
     }
 
     public void setId(UUID id) {
@@ -253,13 +252,13 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
         this.users = users;
     }
 
-    public Set<PublicationStatus> getStatuses() {
-        return statuses;
-    }
-
-    public void setStatuses(Set<PublicationStatus> statuses) {
-        this.statuses = statuses;
-    }
+//    public Set<PublicationStatus> getStatuses() {
+//        return statuses;
+//    }
+//
+//    public void setStatuses(Set<PublicationStatus> statuses) {
+//        this.statuses = statuses;
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,19 +1,18 @@
 package no.nsd.qddt.domain.publication.web;
 
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.publication.PublicationJson;
 import no.nsd.qddt.domain.publication.PublicationService;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -41,7 +40,7 @@ public class PublicationController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/element/", method = RequestMethod.POST)
-    public ElementRefImpl getDetail(@RequestBody ElementRefImpl instance) {
+    public ElementRefEmbedded getDetail(@RequestBody ElementRefEmbedded instance) {
         return service.getDetail(instance);
     }
 
@@ -67,17 +66,17 @@ public class PublicationController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<PublicationJson>> getBy(@RequestParam(value = "name", defaultValue = "") String name,
-                                                         @RequestParam(value = "purpose", defaultValue = "") String purpose,
-                                                         @RequestParam(value = "publicationStatus", defaultValue = "") String publicationStatus,
-                                                         @RequestParam(value = "publishedKind") String publishedKind,
-                                                         Pageable pageable, PagedResourcesAssembler assembler) {
+    public PagedModel<EntityModel<PublicationJson>> getBy(@RequestParam(value = "name", defaultValue = "") String name,
+                                                          @RequestParam(value = "purpose", defaultValue = "") String purpose,
+                                                          @RequestParam(value = "publicationStatus", defaultValue = "") String publicationStatus,
+                                                          @RequestParam(value = "publishedKind") String publishedKind,
+                                                          Pageable pageable, PagedResourcesAssembler<PublicationJson> assembler) {
 
         Page<PublicationJson> items =
                 service.findByNameOrPurposeAndStatus(name, purpose, publicationStatus, publishedKind, pageable)
                 .map( c -> new PublicationJson(c));
 
-        return new ResponseEntity<>(assembler.toResource(items), HttpStatus.OK);
+        return assembler.toModel(items);
     }
 
 

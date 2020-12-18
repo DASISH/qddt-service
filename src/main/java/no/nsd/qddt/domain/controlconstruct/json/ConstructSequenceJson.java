@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.json;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.controlconstruct.pojo.SequenceKind;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.universe.Universe;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public class ConstructSequenceJson extends ConstructJson {
      */
     private static final long serialVersionUID = -7704864346435586898L;
 
-    private List<ElementRefImpl<ControlConstruct>> sequence;
+    private final List<ElementRefEmbedded<ControlConstruct>> sequence;
 
-    private String description;
+    private final String description;
 
-    private SequenceKind sequenceKind;
+    private final SequenceKind sequenceKind;
 
-    private String universe;
+    private final String universe;
 
     public ConstructSequenceJson(Sequence construct) {
         super( construct );
@@ -43,7 +43,7 @@ public class ConstructSequenceJson extends ConstructJson {
         return sequenceKind;
     }
 
-    public List<ElementRefImpl<ControlConstruct>> getSequence() {
+    public List<ElementRefEmbedded<ControlConstruct>> getSequence() {
         return sequence;
     }
 

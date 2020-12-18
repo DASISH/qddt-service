@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.universe;
 
-import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.classes.AbstractJsonEdit;
 
 /**
  * @author Stig Norland

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.classes.AbstractJsonEdit;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 
 import java.util.List;
@@ -12,13 +12,13 @@ public class PublicationJson  extends AbstractJsonEdit {
 
 private static final long serialVersionUID = 1L;
 
-private String purpose;
+private final String purpose;
 
-private Long statusId;
+private final Long statusId;
 
-private PublicationStatus status;
+private final PublicationStatus status;
 
-private List<PublicationElement>  publicationElements;
+private final List<PublicationElement>  publicationElements;
 
 public PublicationJson(Publication publication) {
     super(publication);

@@ -1,28 +1,20 @@
 package no.nsd.qddt.domain.study.web;
 
-import java.util.Collection;
-import java.util.UUID;
-
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.study.Study;
+import no.nsd.qddt.domain.study.audit.StudyAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.domain.study.audit.StudyAuditService;
+import java.util.Collection;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit
@@ -53,14 +45,14 @@ public class StudyAuditController {
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, Study>>> allProjects(
+    public PagedModel<EntityModel<Revision<Integer, Study>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD")
                     Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable, PagedResourcesAssembler<Revision<Integer, Study>> assembler) {
 
         Page<Revision<Integer, Study>> revisions = service.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable);
-        return new ResponseEntity<>(assembler.toResource(revisions), HttpStatus.OK);
+        return assembler.toModel(revisions);
     }
 
     @ResponseBody

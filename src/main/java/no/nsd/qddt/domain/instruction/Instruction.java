@@ -2,10 +2,10 @@ package no.nsd.qddt.domain.instruction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.pdf.PdfReport;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -63,8 +63,8 @@ public class Instruction extends AbstractEntityAudit {
     @Override
     public String toString() {
         return "Instruction{" +
-                "  id =\'" + getId() + '\'' +
-                ", description=\'" + description + "\' }";
+            "  id ='" + getId() + '\'' +
+            ", description='" + description + "' }";
     }
 
     @Override

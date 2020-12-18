@@ -2,22 +2,21 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.classes.AbstractController;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.CREATED;
+import static no.nsd.qddt.classes.AbstractEntityAudit.ChangeKind.CREATED;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -127,14 +126,14 @@ public class ControlConstructController extends AbstractController {
 
 
     @RequestMapping(value = "/page/search", method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE })
-    public HttpEntity<PagedResources<ConstructJsonView>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
-                                                               @RequestParam(value = "description",defaultValue = "") String description,
-                                                               @RequestParam(value = "questionText",defaultValue = "") String questionText,
-                                                               @RequestParam(value = "questionName",defaultValue = "") String questionName,
-                                                               @RequestParam(value = "constructKind",defaultValue = "QUESTION_CONSTRUCT") String kind,
-                                                               @RequestParam(value = "sequenceKind", defaultValue = "") String sequenceKind,
-                                                               @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
-                                                               Pageable pageable, PagedResourcesAssembler assembler) {
+    public PagedModel<EntityModel<ConstructJsonView>> getBy(@RequestParam(value = "name",defaultValue = "") String name,
+                                                            @RequestParam(value = "description",defaultValue = "") String description,
+                                                            @RequestParam(value = "questionText",defaultValue = "") String questionText,
+                                                            @RequestParam(value = "questionName",defaultValue = "") String questionName,
+                                                            @RequestParam(value = "constructKind",defaultValue = "QUESTION_CONSTRUCT") String kind,
+                                                            @RequestParam(value = "sequenceKind", defaultValue = "") String sequenceKind,
+                                                            @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
+                                                            Pageable pageable, PagedResourcesAssembler<ConstructJsonView> assembler) {
 
         Page<ConstructJsonView> controlConstructs;
         // Originally name and question was 2 separate search strings, now we search both name and questiontext for value in "question"
@@ -144,7 +143,9 @@ public class ControlConstructController extends AbstractController {
         } else {
             controlConstructs = service.findBySearcAndControlConstructKind( kind, sequenceKind, likeify(name), likeify(description), likeify( xmlLang ), pageable );
         }
-        return new ResponseEntity<>(assembler.toResource(controlConstructs), HttpStatus.OK);
+
+        return assembler.toModel(controlConstructs);
+
     }
 
     @ResponseBody

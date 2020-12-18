@@ -63,7 +63,7 @@ public class SurveyProgramAuditServiceTest extends AbstractAuditServiceTest {
         Page<Revision<Integer, SurveyProgram>> revisions = surveyProgramAuditService.findRevisions(
                 surveyProgram.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, SurveyProgram> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, SurveyProgram> wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), surveyProgram.hashCode());
         assertThat(revisions.getNumberOfElements(), is(3));
@@ -75,7 +75,7 @@ public class SurveyProgramAuditServiceTest extends AbstractAuditServiceTest {
 
         Revision<Integer, SurveyProgram> surveyRevision = surveyProgramAuditService.findLastChange(surveyProgram.getId());
 
-        Revision<Integer, SurveyProgram> survey = surveyProgramAuditService.findRevision(surveyRevision.getEntity().getId(), surveyRevision.getMetadata().getRevisionNumber());
+        Revision<Integer, SurveyProgram> survey = surveyProgramAuditService.findRevision(surveyRevision.getEntity().getId(), surveyRevision.getMetadata().getRevisionNumber().get());
 
         assertThat(survey.getRevisionNumber(),is(surveyRevision.getMetadata().getRevisionNumber()));
     }

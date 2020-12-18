@@ -1,29 +1,21 @@
 package no.nsd.qddt.domain.concept.web;
 
 
-import java.util.Collection;
-import java.util.UUID;
-
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
+import java.util.Collection;
+import java.util.UUID;
 
 /**
  * @author Stig Norland
@@ -54,26 +46,26 @@ public class ConceptAuditController {
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, Concept>>> allProjects(
+    public PagedModel<EntityModel<Revision<Integer, Concept>>> allProjects(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD") Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable, PagedResourcesAssembler<Revision<Integer, Concept>> assembler) {
 
         Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindNotIn(id,changekinds, pageable);
 
-        return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
+        return assembler.toModel(entities);
     }
 
     // @JsonView(View.Audit.class)
     @RequestMapping(value = "/{id}/allinclatest", method = RequestMethod.GET)
-    public HttpEntity<PagedResources<Revision<Integer, Concept>>> allIncludinglatest(
+    public PagedModel<EntityModel<Revision<Integer, Concept>>> allIncludinglatest(
             @PathVariable("id") UUID id,
             @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT,UPDATED_CHILD,BASED_ON") Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler assembler) {
+            Pageable pageable, PagedResourcesAssembler<Revision<Integer, Concept>> assembler) {
 
         Page<Revision<Integer, Concept>> entities = auditService.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable);
 
-        return new ResponseEntity<>(assembler.toResource(entities), HttpStatus.OK);
+        return assembler.toModel(entities);
     }
 
     @ResponseBody

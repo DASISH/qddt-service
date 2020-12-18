@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.elementref.AbstractElementRef;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.interfaces.IDomainObject;
+import no.nsd.qddt.classes.elementref.AbstractElementRef;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.interfaces.IDomainObject;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Embeddable;

@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
+import no.nsd.qddt.classes.AbstractEntityAudit.ChangeKind;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
-import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -62,7 +62,7 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return conceptRepository.exists(uuid);
+        return conceptRepository.existsById(uuid);
     }
 
     @Override
@@ -108,7 +108,7 @@ class ConceptServiceImpl implements ConceptService {
         if (conceptRepository.hasArchive( uuid.toString() ) > 0)
             throw new DescendantsArchivedException( uuid.toString() );
         try {
-            conceptRepository.delete( uuid );
+            conceptRepository.deleteById(uuid);
         } catch ( Exception ex ) {
             LOG.error( "Concept delete failed ->", ex );
             throw ex;
@@ -193,7 +193,6 @@ class ConceptServiceImpl implements ConceptService {
      */
     protected Concept postLoadProcessing(Concept instance) {
         if (instance == null) return null;
-        LOG.info("PLP -> Concept " + instance.getConceptIdx() + ": " + instance.getName() );
         try {
             if (StackTraceFilter.stackContains("getPdf","getXml")) {
                 LOG.debug("PDF-XML -> fetching  QuestionItems ");

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;
@@ -29,7 +29,7 @@ public class InstrumentControllerTest  extends ControllerWebIntegrationTest {
 
         super.getBeforeSecurityContext().createSecurityContext();
 
-        instrument = new Instrument( root );
+        instrument = new Instrument(  );
         instrument.setName("A test instrument");
         instrument = instrumentService.save(instrument);
 
@@ -58,7 +58,7 @@ public class InstrumentControllerTest  extends ControllerWebIntegrationTest {
 
     @Test
     public void testCreate() throws Exception {
-        Instrument aInstrument = new Instrument( root );
+        Instrument aInstrument = new Instrument(  );
         aInstrument.setName("Posted instrument");
 
         mvc.perform(post("/instrument/create").header("Authorization", "Bearer " + accessToken)

@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.category.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +32,13 @@ class CategoryAuditServiceImpl  extends AbstractAuditFilter<Integer,Category> im
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Category> findLastChange(UUID uuid) {
-        return categoryAuditRepository.findLastChangeRevision(uuid);
+        return categoryAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision<Integer, Category> findRevision(UUID uuid, Integer revision) {
-        return  categoryAuditRepository.findRevision(uuid, revision);
+        return  categoryAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain;
 
-import no.nsd.qddt.domain.interfaces.BaseService;
+import no.nsd.qddt.classes.interfaces.BaseService;
 
 /**
  * Mirror of the {@link BaseService} interface to provide default

@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
-import no.nsd.qddt.domain.elementref.QuestionItemRef;
+import no.nsd.qddt.classes.elementref.ElementRefQuestionItem;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
 
         entity = new QuestionConstruct();
         QuestionItem item = new QuestionItem();
-        entity.setQuestionItemRef(new QuestionItemRef( item));
+        entity.setQuestionItemRef(new ElementRefQuestionItem( item));
         entity.setName("A test entity");
         entity = entityService.save(entity);
 
@@ -66,7 +66,7 @@ public class ControlConstructControllerTest extends ControllerWebIntegrationTest
     public void testCreate() throws Exception {
         QuestionConstruct aEntity = new QuestionConstruct();
         aEntity.setName("Posted entity");
-        aEntity.setQuestionItemRef(new QuestionItemRef( new QuestionItem()));
+        aEntity.setQuestionItemRef(new ElementRefQuestionItem( new QuestionItem()));
 
 
         mvc.perform(MockMvcRequestBuilders.fileUpload("/controlconstruct/create")

@@ -1,16 +1,15 @@
 package no.nsd.qddt.domain.category.audit;
 
-import java.util.Collection;
-import java.util.UUID;
-
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.category.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Repository;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.category.Category;
+import java.util.Collection;
+import java.util.UUID;
 
 /**
  * @author Dag Østgulen Heradstveit

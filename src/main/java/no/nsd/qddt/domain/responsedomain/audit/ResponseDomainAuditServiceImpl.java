@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomain.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -33,12 +33,12 @@ class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,Respons
 
     @Override
     public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
-        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, ResponseDomain> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(responseDomainAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(responseDomainAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.comment;
 
-import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.security.user.User;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import no.nsd.qddt.security.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ class CommentServiceImpl  implements CommentService  {
 
     @Override
     public boolean exists(UUID uuid) {
-        return commentRepository.exists(uuid);
+        return commentRepository.existsById(uuid);
     }
 
     @Override
@@ -58,12 +58,11 @@ class CommentServiceImpl  implements CommentService  {
 
 
     @Override
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
     public void delete(UUID uuid) {
-        commentRepository.delete(uuid);
-//        commentRepository.indexChildren( uuid );
-        // TODO fix this; doens't work....
+        commentRepository.deleteById(uuid);
+        commentRepository.indexChildren(uuid);
     }
 
     protected Comment prePersistProcessing(Comment instance) {

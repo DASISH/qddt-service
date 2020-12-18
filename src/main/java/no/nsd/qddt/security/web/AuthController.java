@@ -1,9 +1,10 @@
 package no.nsd.qddt.security.web;
 
-import no.nsd.qddt.domain.AbstractController;
-import no.nsd.qddt.domain.user.QDDTUserDetailsService;
-import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.user.UserService;
+
+import no.nsd.qddt.classes.AbstractController;
+import no.nsd.qddt.security.user.QDDTUserDetailsService;
+import no.nsd.qddt.security.user.User;
+import no.nsd.qddt.security.user.UserService;
 import no.nsd.qddt.exception.InvalidPasswordException;
 import no.nsd.qddt.exception.UserAlreadyExistsException;
 import no.nsd.qddt.exception.UserNotFoundException;
@@ -12,7 +13,6 @@ import no.nsd.qddt.security.JwtAuthenticationResponse;
 import no.nsd.qddt.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,8 +22,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
+
+import static no.nsd.qddt.configuration.SecurityConfiguration.passwordEncoder;
 
 /**
  * AuthController provides signup, signin and token refresh methods
@@ -46,17 +46,12 @@ public class AuthController extends AbstractController {
     public final static String SIGNIN_URL = "auth/signin";
     public final static String REFRESH_TOKEN_URL = "auth/token/refresh";
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
     private JwtUtil jwtUtil;
     private QDDTUserDetailsService userDetailsService;
     private UserService userService;
 
-    /**
-     * Injects AuthenticationManager instance
-     * @param authenticationManager to inject
-     */
-    @Autowired
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+    public AuthController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
@@ -87,10 +82,10 @@ public class AuthController extends AbstractController {
         this.userService = userService;
     }
 
-    @Bean
-    private PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    private PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     /**
      * Adds new user and returns authentication token

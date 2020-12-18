@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.instrument.pojo.InstrumentNode;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
-import no.nsd.qddt.domain.treenode.TreeNode;
+import no.nsd.qddt.classes.treenode.TreeNode;
 import no.nsd.qddt.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
-        return instrumentNodeRepository.exists(uuid);
+        return instrumentNodeRepository.existsById(uuid);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        instrumentNodeRepository.delete(uuid);
+        instrumentNodeRepository.deleteById(uuid);
     }
 
     private <S extends InstrumentNode> S  prePersistProcessing(S instance) {

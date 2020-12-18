@@ -53,7 +53,7 @@ public class StudyAuditServiceTest  extends AbstractAuditServiceTest {
         Page<Revision<Integer, Study>> revisions = studyAuditService.findRevisions(
                 study.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, Study> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, Study> wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), study.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));

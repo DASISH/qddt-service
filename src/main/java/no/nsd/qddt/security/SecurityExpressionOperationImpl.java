@@ -2,7 +2,7 @@ package no.nsd.qddt.security;
 
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.user.QDDTUserDetails;
+import no.nsd.qddt.security.user.QDDTUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
@@ -27,7 +27,7 @@ public class SecurityExpressionOperationImpl extends SecurityExpressionRoot impl
 
     public boolean isMember(Agency agency) {
         QDDTUserDetails user = (QDDTUserDetails)this.getAuthentication().getDetails();
-        return (agency!=null)? user.getUser().getAgency().getId().equals(agency.getId()): true;
+        return agency == null || user.getUser().getAgency().getId().equals( agency.getId() );
     }
 
     @Override

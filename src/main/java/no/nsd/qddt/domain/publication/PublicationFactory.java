@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.IEntityFactory;
+import no.nsd.qddt.classes.IEntityFactory;
 
 import java.util.stream.Collectors;
 

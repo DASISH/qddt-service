@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,15 +39,18 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return agencyRepository.exists(uuid);
+        return agencyRepository.existsById(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Agency findOne(UUID id) {
         return agencyRepository.findById(id).map( mapper -> {
-            LOG.debug( " find one " );
-           Hibernate.initialize(mapper.getSurveyPrograms());
+            try {
+                Hibernate.initialize( mapper.getSurveyPrograms() );
+            } catch (Exception ex) {
+                LOG.error(ex.getMessage() +  "\n THIS IS TO BE EXPECTED, DUE TO fubar" );
+            }
            return  mapper;
         }).orElseThrow(
           () -> new ResourceNotFoundException(id, Agency.class)
@@ -69,13 +71,6 @@ class AgencyServiceImpl implements AgencyService {
     }
 
 
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public List<Agency> save(List<Agency> instances) {
-        List<Agency> target = new ArrayList<>();
-        agencyRepository.save(instances).forEach(target::add);
-        return target;
-    }
-
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
@@ -88,7 +83,7 @@ class AgencyServiceImpl implements AgencyService {
 
     @Override
     public void delete(UUID uuid) {
-        agencyRepository.delete(uuid);
+        agencyRepository.deleteById(uuid);
     }
 
 

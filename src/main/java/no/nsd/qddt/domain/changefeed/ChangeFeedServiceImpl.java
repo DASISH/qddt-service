@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
@@ -37,7 +39,7 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
 
     @Override
     public <S extends ChangeFeed> S findOne(ChangeFeedKey id) {
-        return (S) repository.findOne( id );
+        return (S) repository.findById( id ).get();
     }
 
     @Override
@@ -47,7 +49,11 @@ public class ChangeFeedServiceImpl implements ChangeFeedService {
 
     @Override
     public void delete(ChangeFeedKey id) throws DataAccessException {
-        repository.delete( id );
+        repository.deleteById( id );
+    }
+
+    public void delete(List<ChangeFeed> instances) throws DataAccessException {
+        repository.deleteInBatch( instances );
     }
 
     @Override

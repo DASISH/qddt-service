@@ -1,8 +1,7 @@
 package no.nsd.qddt.domain.instruction.json;
 
-import org.hibernate.annotations.Type;
-
 import no.nsd.qddt.domain.instruction.Instruction;
+import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;
 import java.util.UUID;

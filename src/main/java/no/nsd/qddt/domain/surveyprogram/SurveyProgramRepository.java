@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.interfaces.BaseArchivedRepository;
+import no.nsd.qddt.classes.interfaces.BaseArchivedRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

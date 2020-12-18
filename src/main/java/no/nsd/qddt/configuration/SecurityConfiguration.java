@@ -1,6 +1,6 @@
 package no.nsd.qddt.configuration;
 
-import no.nsd.qddt.domain.user.QDDTUserDetailsService;
+import no.nsd.qddt.security.user.QDDTUserDetailsService;
 import no.nsd.qddt.security.JwtAuthenticationEntryPoint;
 import no.nsd.qddt.security.JwtAuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +24,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
-@EnableWebSecurity()
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(
+    prePostEnabled = true,
+    securedEnabled = true,
+    jsr250Enabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    @Autowired
-    private QDDTUserDetailsService userDetailsService;
+    private final QDDTUserDetailsService userDetailsService;
+
+    public SecurityConfiguration(JwtAuthenticationEntryPoint unauthorizedHandler, QDDTUserDetailsService userDetailsService) {
+        this.unauthorizedHandler = unauthorizedHandler;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -73,10 +79,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated().and()
             .cors();
 
-        // Custom JWT based security filter
         http
-                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-        // disable page caching
+            .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
         http
             .headers().cacheControl();
     }

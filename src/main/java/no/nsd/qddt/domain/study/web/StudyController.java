@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.study.web;
 
-import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.classes.AbstractController;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;

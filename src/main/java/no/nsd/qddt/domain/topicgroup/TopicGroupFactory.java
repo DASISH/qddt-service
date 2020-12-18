@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.IEntityFactory;
-import no.nsd.qddt.domain.auditmap.QuestionItemAuditMap;
+import no.nsd.qddt.classes.IEntityFactory;
 import no.nsd.qddt.domain.concept.ConceptFactory;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 
 import java.util.stream.Collectors;
 
@@ -33,9 +33,9 @@ class TopicGroupFactory implements IEntityFactory<TopicGroup> {
 
       dest.getConcepts().forEach( concept -> concept.setTopicGroup( dest ) );
 
-      dest.setTopicQuestionItems(source.getTopicQuestionItems()
-          .values().stream()
-          .collect(Collectors.toMap(QuestionItemAuditMap::getElementRevision, QuestionItemAuditMap::clone )));
+      dest.setTopicQuestionItems( source.getTopicQuestionItems().stream()
+          .map( ElementRefEmbedded::clone )
+          .collect(Collectors.toList()));
 
       return dest;
 	}

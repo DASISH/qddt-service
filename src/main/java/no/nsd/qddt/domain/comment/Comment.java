@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.AbstractEntity;
-import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.domain.xml.XmlDDICommentsBuilder;
+import no.nsd.qddt.classes.AbstractEntity;
+import no.nsd.qddt.security.user.User;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.XmlDDICommentsBuilder;
 import no.nsd.qddt.security.SecurityContext;
 
 import javax.persistence.*;
@@ -79,7 +79,7 @@ public class Comment extends AbstractEntity  {
 
 
     public boolean isPublic() {
-        return (isPublic == null)?true:isPublic;
+        return isPublic == null || isPublic;
     }
 
     public void setPublic(boolean aPublic) {

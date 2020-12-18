@@ -11,8 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Stig Norland
@@ -44,7 +43,7 @@ public class TopicGroupAuditServiceTest  extends AbstractAuditServiceTest {
         Page<Revision<Integer, TopicGroup>> revisions = topicGroupAuditService.findRevisions(
                 topicGroup.getId(), new PageRequest(0, 10));
 
-        Revisions<Integer, TopicGroup> wrapper = new Revisions<>(revisions.getContent());
+        Revisions<Integer, TopicGroup> wrapper = Revisions.of(revisions.getContent());
 
         assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), topicGroup.hashCode());
         assertThat(revisions.getNumberOfElements(), is(4));

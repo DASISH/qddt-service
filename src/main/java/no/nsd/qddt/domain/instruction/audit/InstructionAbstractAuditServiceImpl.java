@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instruction.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.instruction.Instruction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,12 +27,12 @@ class InstructionAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,In
 
     @Override
     public Revision<Integer, Instruction> findLastChange(UUID uuid) {
-        return instructionAuditRepository.findLastChangeRevision(uuid);
+        return instructionAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     public Revision<Integer, Instruction> findRevision(UUID uuid, Integer revision) {
-        return instructionAuditRepository.findRevision(uuid, revision);
+        return instructionAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override

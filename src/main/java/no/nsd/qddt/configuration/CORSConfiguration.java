@@ -25,10 +25,10 @@ public class CORSConfiguration {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(Arrays.asList(origin.split( "," ))   );
 //        config.addAllowedOrigin( );
-        config.addAllowedHeader("*");
+//        config.addAllowedHeader("*");
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("GET");
-        config.addAllowedMethod("PUT");
+//        config.addAllowedMethod("PUT");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("DELETE");
         source.registerCorsConfiguration("/**", config);

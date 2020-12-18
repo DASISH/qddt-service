@@ -2,13 +2,15 @@ package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.exception.ResourceNotFoundException;
-import no.nsd.qddt.utils.builders.CategoryBuilder;
+import no.nsd.qddt.classes.builders.CategoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -98,12 +100,12 @@ public class CategoryServiceTest extends AbstractServiceTest {
 
         parent = categoryService.save(parent);
 
-        Category category =  categoryRepository.findOne(parent.getId());
+        Optional<Category> category =  categoryRepository.findById(parent.getId());
 
         assertEquals("Should be equal", parent.hashCode(),category.hashCode());
         assertEquals("Should return 4",  4L,categoryService.count());
 
-        categoryRepository.delete(category);        // no deletions, have children ( CascadeType.PERSIST)
+        categoryRepository.delete(category.get());        // no deletions, have children ( CascadeType.PERSIST)
         assertEquals("Should return 4", 4L, categoryService.count());
 
     }

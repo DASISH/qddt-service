@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.questionitem.json;
 
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.interfaces.IElementRef;
-import no.nsd.qddt.domain.interfaces.Version;
-import no.nsd.qddt.domain.elementref.ResponseDomainRef;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementRefResponseDomain;
+import no.nsd.qddt.classes.interfaces.IElementRef;
+import no.nsd.qddt.classes.interfaces.Version;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.UUID;
@@ -21,15 +21,15 @@ public class ResponseDomainRefJsonEdit implements IElementRef<ResponseDomainJson
     private Version version;
 
 
-    public ResponseDomainRefJsonEdit(ResponseDomainRef responseDomainRef) {
-        if (responseDomainRef == null) return;
-        elementKind = responseDomainRef.getElementKind();
-        elementId = responseDomainRef.getElementId();
-        elementRevision = responseDomainRef.getElementRevision();
-        if (responseDomainRef.getElement() != null)
-            element =  new ResponseDomainJsonEdit(responseDomainRef.getElement());
-        name = responseDomainRef.getName();
-        version = responseDomainRef.getVersion();
+    public ResponseDomainRefJsonEdit(ElementRefResponseDomain elementRefResponseDomain) {
+        if (elementRefResponseDomain == null) return;
+        elementKind = elementRefResponseDomain.getElementKind();
+        elementId = elementRefResponseDomain.getElementId();
+        elementRevision = elementRefResponseDomain.getElementRevision();
+        if (elementRefResponseDomain.getElement() != null)
+            element =  new ResponseDomainJsonEdit( elementRefResponseDomain.getElement());
+        name = elementRefResponseDomain.getName();
+        version = elementRefResponseDomain.getVersion();
     }
 
     @Override

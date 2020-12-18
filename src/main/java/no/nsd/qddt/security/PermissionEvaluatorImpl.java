@@ -1,10 +1,10 @@
 package no.nsd.qddt.security;
 
-import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.classes.AbstractEntity;
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.interfaces.IDomainObject;
-import no.nsd.qddt.domain.user.QDDTUserDetails;
-import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.classes.interfaces.IDomainObject;
+import no.nsd.qddt.security.user.QDDTUserDetails;
+import no.nsd.qddt.security.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;

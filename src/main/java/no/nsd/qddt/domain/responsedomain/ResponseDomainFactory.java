@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.IEntityFactory;
+import no.nsd.qddt.classes.IEntityFactory;
 
 
 /**

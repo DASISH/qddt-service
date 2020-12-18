@@ -1,17 +1,17 @@
 package no.nsd.qddt.domain.study;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
-import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
-import no.nsd.qddt.domain.interfaces.IArchived;
-import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
-import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.classes.interfaces.IArchived;
+import no.nsd.qddt.classes.interfaces.IDomainObjectParentRef;
+import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditMappedBy;
@@ -230,7 +230,7 @@ public class Study extends AbstractEntityAudit implements IAuthor, IArchived, ID
             counter = counter+".";
         int i=0;
         for (TopicGroup topic : getTopicGroups()) {
-            topic.fillDoc(pdfReport, counter+ String.valueOf(++i));
+            topic.fillDoc(pdfReport, counter+ ++i );
         }
     }
 

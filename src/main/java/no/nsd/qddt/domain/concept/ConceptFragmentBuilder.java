@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -25,8 +25,8 @@ public class ConceptFragmentBuilder extends XmlDDIFragmentBuilder<Concept> {
         "%4$s" +
         "\t\t</c:Concept>\n";
 
-            private List<AbstractXmlBuilder> children;
-            private List<AbstractXmlBuilder> questions;
+            private final List<AbstractXmlBuilder> children;
+            private final List<AbstractXmlBuilder> questions;
 
             public ConceptFragmentBuilder(Concept concept) {
                 super(concept);

@@ -1,14 +1,12 @@
 package no.nsd.qddt.domain.concept.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.comment.Comment;
-import no.nsd.qddt.domain.comment.CommentService;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionitem.QuestionItem;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.exception.StackTraceFilter;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,30 +27,30 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final ConceptAuditRepository conceptAuditRepository;
-    private final CommentService commentService;
-    private final ElementLoader<QuestionItem> qiLoader;
+//    private final CommentService commentService;
+    private final ElementLoader qiLoader;
 
     private boolean showPrivateComments;
 
     @Autowired
     ConceptAuditServiceImpl(ConceptAuditRepository conceptAuditRepository,
-                                    QuestionItemAuditService questionAuditService,
-                                    CommentService commentService
+                            QuestionItemAuditService questionAuditService
     ){
         this.conceptAuditRepository = conceptAuditRepository;
-        this.commentService = commentService;
-        this.qiLoader = new ElementLoader<>( questionAuditService );
+//                            CommentService commentService,
+//        this.commentService = commentService;
+        this.qiLoader = new ElementLoader(questionAuditService  );
     }
 
     @Override
     public Revision<Integer, Concept> findLastChange(UUID uuid) {
-        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid).get());
     }
 
 
     @Override
     public Revision<Integer, Concept> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -87,26 +83,19 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     @Override
     protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
-        return new Revision<>(
-                instance.getMetadata(),
-                postLoadProcessing(instance.getEntity()));
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
+        return Revision.of( instance.getMetadata(),postLoadProcessing(instance.getEntity()));
     }
 
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
-            List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
-
-            instance.setComments(new ArrayList<>(coms));
+//            List<Comment> coms  =commentService.findAllByOwnerId(instance.getId(),showPrivateComments);
+//            instance.setComments(new ArrayList<>(coms));
+            Hibernate.initialize( instance.getComments() );
             instance.getConceptQuestionItems().forEach( cqi -> qiLoader.fill( cqi ));
             instance.getChildren().forEach(this::postLoadProcessing);
 
-//                cqi.getElement().setConceptRefs(
-//                    findByQuestionItem(cqi.getId()).stream()
-//                        .map( ConceptRef::new )
-//                        .collect( Collectors.toList())
-//                );
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing exception",ex);

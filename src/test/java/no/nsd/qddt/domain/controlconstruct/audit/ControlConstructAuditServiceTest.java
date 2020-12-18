@@ -57,7 +57,7 @@ public class ControlConstructAuditServiceTest extends AbstractAuditServiceTest {
 //        Page<Revision<Integer, InstrumentQuestion>> revisions = instrumentQuestionAuditService.findRevisions(
 //                entity.getId(), new PageRequest(0, 10));
 //
-//        Revisions<Integer, InstrumentQuestion> wrapper = new Revisions<>(revisions.getContent());
+//        Revisions<Integer, InstrumentQuestion> wrapper = Revisions.of(revisions.getContent());
 //
 //        assertEquals(wrapper.getLatestRevision().getEntity().hashCode(), entity.hashCode());
 //        assertThat(revisions.getNumberOfElements(), is(4));

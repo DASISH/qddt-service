@@ -2,16 +2,16 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.ElementKind;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
-import no.nsd.qddt.domain.elementref.ParentRef;
-import no.nsd.qddt.domain.interfaces.IArchived;
-import no.nsd.qddt.domain.interfaces.IDomainObjectParentRef;
-import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.classes.elementref.ParentRef;
+import no.nsd.qddt.classes.interfaces.IArchived;
+import no.nsd.qddt.classes.interfaces.IDomainObjectParentRef;
+import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 
@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 
 
 /**
+ * <ul>
  *     <li>A Concept consist of one or more QuestionItems.</li>
  *         <li>Every QuestionItem will have a Question.</li>
  *         <li>Every QuestionItem will have a ResponseDomain.</li>
+ * </ul>
  * <br>
  * ConceptScheme: Concepts express ideas associated with objects and means of representing the concept
  *
@@ -37,16 +39,6 @@ import java.util.stream.Collectors;
 public class Concept extends AbstractEntityAudit implements IArchived, IDomainObjectParentRef {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference(value = "parentRef")
-    @JoinColumn(name="concept_id", nullable = false,updatable = false)
-    private Concept parent;
-
-    // in the @OrderColumn annotation on the referencing entity.
-    @Column( name = "concept_idx", insertable = false, updatable = false)
-    private int conceptIdx;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "topicGroupRef")
     @JoinColumn(name="topicgroup_id", nullable = false,updatable = false)
     private TopicGroup topicGroup;
@@ -54,18 +46,46 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     @Column(name = "topicgroup_id", insertable = false, updatable = false, nullable = false)
     private UUID topicGroupId;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonBackReference(value = "parentRef")
+//    @JoinColumn(name="concept_id", nullable = false,updatable = false)
+//    private Concept parent;
+//
+//    // in the @OrderColumn annotation on the referencing entity.
+//    @Column( name = "concept_idx", insertable = false, updatable = false)
+//    private int conceptIdx;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
-    @OrderColumn(name = "concept_idx")
-    @AuditMappedBy(mappedBy = "parent", positionMappedBy ="conceptIdx")
-    private List<Concept> children = new ArrayList<>(0);
+
+    @ManyToOne( fetch = FetchType.LAZY, targetEntity = Concept.class)
+    @JoinColumn(name="concept_id")
+    @JsonBackReference(value = "conceptParentRef")
+    public Concept parent;
+
+    // in the @OrderColumn annotation on the referencing entity.
+    @Column( name = "concept_idx", insertable = false, updatable = false)
+    private int conceptIdx;
+
+
+    @OrderColumn(name="concept_idx")
+    @AuditMappedBy(mappedBy = "parent", positionMappedBy = "conceptIdx")
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = Concept.class,
+        orphanRemoval = true, cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
+    public List<Concept> children= new ArrayList<>(0);
+
+
+//
+//
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
+//    @OrderColumn(name = "concept_idx")
+//    @AuditMappedBy(mappedBy = "parent", positionMappedBy ="conceptIdx")
+//    private List<Concept> children = new ArrayList<>(0);
 
 
     @OrderColumn(name="concept_idx")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONCEPT_QUESTION_ITEM",
         joinColumns = @JoinColumn(name="concept_id", referencedColumnName = "id"))
-    private List<ElementRefImpl<QuestionItem>>  conceptQuestionItems = new ArrayList<>(0);
+    private List<ElementRefEmbedded<QuestionItem>>  conceptQuestionItems = new ArrayList<>(0);
 
     private String label;
 
@@ -87,6 +107,10 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         return topicGroupId;
     }
 
+    public int getConceptIdx() {
+        return conceptIdx;
+    }
+
     private TopicGroup getTopicGroup() {
         return topicGroup;
     }
@@ -95,7 +119,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         this.topicGroup = topicGroup;
     }
 
-    public List<ElementRefImpl<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRefEmbedded<QuestionItem>> getConceptQuestionItems() {
         if (conceptQuestionItems == null) {
             LOG.info( "conceptQuestionItems IS NULL " );
             conceptQuestionItems = new ArrayList<>( 0);
@@ -103,7 +127,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRefImpl<QuestionItem>> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRefEmbedded<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 
@@ -119,10 +143,10 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     }
 
     public void addQuestionItem(UUID id, Integer rev) {
-        addQuestionItem( new ElementRefImpl<>( ElementKind.QUESTION_ITEM, id,rev ) );
+        addQuestionItem( new ElementRefEmbedded<>( ElementKind.QUESTION_ITEM, id,rev ) );
     }
 
-    public void addQuestionItem(ElementRefImpl<QuestionItem> qef) {
+    public void addQuestionItem(ElementRefEmbedded<QuestionItem> qef) {
         if (this.conceptQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
 
             conceptQuestionItems.add(qef);
@@ -176,9 +200,6 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
         this.description = description;
     }
 
-    public int getConceptIdx() {
-        return conceptIdx;
-    }
 
     @Override
     public boolean isArchived() {

@@ -1,18 +1,19 @@
 package no.nsd.qddt.utils;
 
-import org.apache.commons.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 /**
  * Contain all the stuff needed to run unit tests towards the API.
@@ -73,19 +74,19 @@ public class RestfulTestUtils {
      * @return oauth2 token
      */
     public String getAccessToken(String username, String password, String clientId, String clientPassword, String authorizeServerUrl) {
-        return template.exchange(
-                URI.create(authorizeServerUrl +
-                        "?grant_type=password" +
-                        "&client_id=" + clientId +
-                        "&client_secret=" + clientPassword +
-                        "&password=" + password +
-                        "&username=" + username +
-                        "&scope=write" +
-                        "&redirect_uri=http://localhost:3000/"),
-                HttpMethod.POST,
-                new HttpEntity<String>(createBasicHeader("client", "password")),
-                OAuth2AccessToken.class
-        ).getBody().getValue();
+        return Objects.requireNonNull( template.exchange(
+            URI.create( authorizeServerUrl +
+                "?grant_type=password" +
+                "&client_id=" + clientId +
+                "&client_secret=" + clientPassword +
+                "&password=" + password +
+                "&username=" + username +
+                "&scope=write" +
+                "&redirect_uri=http://localhost:3000/" ),
+            HttpMethod.POST,
+            new HttpEntity<String>( createBasicHeader( "client", "password" ) ),
+            OAuth2AccessToken.class
+        ).getBody() ).getTokenValue();
     }
 
     /**

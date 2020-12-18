@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.search;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.elementref.ElementKind;
+import no.nsd.qddt.classes.elementref.ElementKind;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

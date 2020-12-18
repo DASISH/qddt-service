@@ -2,8 +2,8 @@ package no.nsd.qddt.domain.questionitem;
 
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
-import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.classes.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
@@ -70,7 +70,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return questionItemRepository.exists(uuid);
+        return questionItemRepository.existsById(uuid);
     }
 
     @Override
@@ -102,7 +102,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
 
     @Override
     public void delete(UUID uuid) {
-        delete(questionItemRepository.getOne( uuid ));
+        delete(questionItemRepository.getOne(uuid));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")
@@ -184,7 +184,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
         Integer rev = null;
         if(instance.isBasedOn()) {
             LOG.info( "PRE PERSIST -> BASED ON" );
-            rev =   (instance.getBasedOnRevision() != null) ? instance.getBasedOnRevision() : auditService.findLastChange( instance.getId() ).getRevisionNumber();
+            rev =   (instance.getBasedOnRevision() != null) ? instance.getBasedOnRevision() : auditService.findLastChange( instance.getId() ).getRevisionNumber().get();
         }
         if (instance.isBasedOn() || instance.isNewCopy()) {
             LOG.info( "PRE PERSIST -> MAKE A COPY" );

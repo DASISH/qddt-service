@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class PublicationStatusJsonParent extends PublicationStatusJsonChild {
 
 
-    private List<PublicationStatusJsonChild> children;
+    private final List<PublicationStatusJsonChild> children;
 
     @JsonIgnore
     private final

@@ -15,11 +15,11 @@ public class ConstructQuestionJsonView  extends ConstructJsonView {
     
     private Integer questionItemRevision;
 
-    private String questionName;
+    private final String questionName;
 
     private String questionText;
 
-    private String universe;
+    private final String universe;
 
     public ConstructQuestionJsonView(QuestionConstruct construct) {
         super(construct);

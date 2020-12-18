@@ -1,21 +1,20 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.domain.AbstractController;
+import no.nsd.qddt.classes.AbstractController;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
-import no.nsd.qddt.domain.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
 import no.nsd.qddt.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpEntity;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
@@ -74,13 +73,13 @@ public class ResponseDomainController extends AbstractController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/page/search", method = RequestMethod.GET, params = { "ResponseKind" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<PagedResources<ResponseDomainJsonEdit>> getBy(@RequestParam("ResponseKind") ResponseKind response,
-                                                                    @RequestParam(value = "description",defaultValue = "") String description,
-                                                                    @RequestParam(value = "question",defaultValue = "") String question,
-                                                                    @RequestParam(value = "name",defaultValue = "") String name,
-                                                                    @RequestParam(value = "anchor",defaultValue = "") String anchor,
-                                                                    @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
-                                                                    Pageable pageable, PagedResourcesAssembler assembler) {
+    public PagedModel<EntityModel<ResponseDomainJsonEdit>> getBy(@RequestParam("ResponseKind") ResponseKind response,
+                                                                 @RequestParam(value = "description",defaultValue = "") String description,
+                                                                 @RequestParam(value = "question",defaultValue = "") String question,
+                                                                 @RequestParam(value = "name",defaultValue = "") String name,
+                                                                 @RequestParam(value = "anchor",defaultValue = "") String anchor,
+                                                                 @RequestParam(value = "xmlLang",defaultValue = "") String xmlLang,
+                                                                 Pageable pageable, PagedResourcesAssembler<ResponseDomainJsonEdit> assembler) {
 
         Page<ResponseDomainJsonEdit> responseDomains = null;
         try {
@@ -91,7 +90,7 @@ public class ResponseDomainController extends AbstractController {
             throw ex;
         }
 
-        return new ResponseEntity<>(assembler.toResource(responseDomains), HttpStatus.OK);
+        return assembler.toModel(responseDomains);
     }
 
 

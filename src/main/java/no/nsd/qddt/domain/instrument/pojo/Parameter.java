@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument.pojo;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -88,7 +88,7 @@ public class Parameter implements Comparable<Parameter> {
             "}";
     }
 
-    private static String PARAM_FORMAT=
+    private static final String PARAM_FORMAT=
         "%3$s<r:OutParameter isIdentifiable=\"true\" scopeOfUniqueness=\"Maintainable\" isArray=\"false\">\n" +
         "%3$s\t<r:URN>urn:ddi:%1$s</r:URN>\n" +
         "%3$s\t<r:Alias>%2$s</r:Alias>\n" +

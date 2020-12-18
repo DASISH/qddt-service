@@ -2,7 +2,6 @@ package no.nsd.qddt.domain.publicationstatus;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.domain.agency.Agency;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
  **/
 
 @Entity
-@Table(name = "PUBLICATION_STATUS", uniqueConstraints = {@UniqueConstraint(columnNames = {"agency_id","label"},name = "UNQ_PUBLICATION_STATUS")})
+@Table(name = "PUBLICATION_STATUS")
 public class PublicationStatus {
 
     public enum Published {
@@ -28,10 +27,6 @@ public class PublicationStatus {
 //    @GenericGenerator(name = "sequence-generator",strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
 //    @SequenceGenerator(  )
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "agency_id",updatable = false)
-    private Agency agency;
 
     @Enumerated(EnumType.STRING)
     private Published published;
@@ -62,14 +57,6 @@ public class PublicationStatus {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Agency getAgency() {
-        return agency;
-    }
-
-    public void setAgency(Agency agency) {
-        this.agency = agency;
     }
 
     public String getLabel() {
@@ -123,14 +110,12 @@ public class PublicationStatus {
         PublicationStatus that = (PublicationStatus) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (agency != null ? !agency.equals(that.agency) : that.agency != null) return false;
         return label != null ? label.equals(that.label) : that.label == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (agency != null ? agency.hashCode() : 0);
         result = 31 * result + (label != null ? label.hashCode() : 0);
         return result;
     }
@@ -139,7 +124,6 @@ public class PublicationStatus {
     public String toString() {
         return "PublicationStatus{" +
                 "id=" + id +
-                ", agency=" + agency.getName() +
                 ", label='" + label + '\'' +
                 '}';
     }

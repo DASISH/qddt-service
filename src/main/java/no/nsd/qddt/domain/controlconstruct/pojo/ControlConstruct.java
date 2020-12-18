@@ -2,16 +2,19 @@ package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.domain.pdf.PdfReport;
+import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Instrument is the significant relation.
@@ -37,7 +40,7 @@ public class ControlConstruct extends AbstractEntityAudit {
     @OrderColumn(name="owner_idx")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "CONTROL_CONSTRUCT_OTHER_MATERIAL", joinColumns = {@JoinColumn(name = "owner_id", referencedColumnName = "id")})
-    private List<OtherMaterial> otherMaterials = new ArrayList<>(0);
+    private List<OtherMaterial> otherMaterials = new ArrayList<>();
 
     @Transient
     @JsonSerialize
@@ -108,17 +111,14 @@ public class ControlConstruct extends AbstractEntityAudit {
         ControlConstruct that = (ControlConstruct) o;
 
         if (label != null ? !label.equals( that.label ) : that.label != null) return false;
-        if (controlConstructKind != null ? !controlConstructKind.equals( that.controlConstructKind ) : that.controlConstructKind != null)
-            return false;
-        return true;
+        return otherMaterials != null ? otherMaterials.equals( that.otherMaterials ) : that.otherMaterials == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (label != null ? label.hashCode() : 0);
-        result = 31 * result + (controlConstructKind != null ? controlConstructKind.hashCode() : 0);
-//        result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
+        result = 31 * result + (otherMaterials != null ? otherMaterials.hashCode() : 0);
         return result;
     }
 

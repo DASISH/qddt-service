@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.domain.interfaces.BaseArchivedService;
-import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.classes.interfaces.BaseArchivedService;
+import no.nsd.qddt.security.user.User;
 
 import java.util.List;
 

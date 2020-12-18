@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.universe.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.universe.Universe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,12 +28,12 @@ class UniverseAuditServiceImpl extends AbstractAuditFilter<Integer,Universe> imp
 
     @Override
     public Revision<Integer, Universe> findLastChange(UUID uuid) {
-        return universeAuditRepository.findLastChangeRevision(uuid);
+        return universeAuditRepository.findLastChangeRevision(uuid).get();
     }
 
     @Override
     public Revision<Integer, Universe> findRevision(UUID uuid, Integer revision) {
-        return universeAuditRepository.findRevision(uuid, revision);
+        return universeAuditRepository.findRevision(uuid, revision).get();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 @DiscriminatorValue("STATEMENT_CONSTRUCT")
 public class StatementItem extends ControlConstruct {
 
-    @Column(name = "description", length = 1500)
+    @Column(name = "description")
     private String statement;
 
     public StatementItem() {

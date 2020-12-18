@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.elementref.ElementLoader;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
-import no.nsd.qddt.domain.elementref.ElementServiceLoader;
-import no.nsd.qddt.domain.interfaces.IElementRef;
+import no.nsd.qddt.classes.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.classes.elementref.ElementServiceLoader;
+import no.nsd.qddt.classes.interfaces.IElementRef;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus.Published;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -57,14 +57,14 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public boolean exists(UUID uuid) {
-        return repository.exists(uuid);
+        return repository.existsById(uuid);
     }
 
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
     public Publication findOne(UUID uuid) {
-        return postLoadProcessing(repository.findOne(uuid));
+        return postLoadProcessing(repository.findById(uuid).get());
     }
 
 
@@ -88,7 +88,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
     public void delete(UUID uuid) {
-        repository.delete(uuid);
+        repository.deleteById(uuid);
     }
 
     @Override
@@ -123,8 +123,8 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public ElementRefImpl<?> getDetail(IElementRef publicationElement) {
-        return (ElementRefImpl<?>)
+    public ElementRefEmbedded<?> getDetail(IElementRef publicationElement) {
+        return (ElementRefEmbedded<?>)
             new ElementLoader<>( serviceLoader.getService( publicationElement.getElementKind() ) )
                 .fill( publicationElement );
     }
@@ -133,7 +133,7 @@ public class PublicationServiceImpl implements PublicationService {
     protected Publication prePersistProcessing(Publication instance) {
         Integer rev = null;
         if(instance.isBasedOn())
-            rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            rev = auditService.findLastChange(instance.getId()).getRevisionNumber().get();
 
         if (instance.isBasedOn() || instance.isNewCopy()) {
             instance = new PublicationFactory().copy( instance, rev );

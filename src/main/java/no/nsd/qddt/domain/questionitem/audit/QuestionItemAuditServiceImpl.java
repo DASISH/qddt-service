@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.questionitem.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
-import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
@@ -40,12 +40,12 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 
     @Override
     public Revision<Integer, QuestionItem> findLastChange(UUID uuid) {
-        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, QuestionItem> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -97,7 +97,7 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
 //
 //        instance.setParentRefs( list);
         Hibernate.initialize( instance.getEntity().getComments() );
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
 
         return instance;
     }

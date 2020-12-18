@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.agency;
 
-import no.nsd.qddt.domain.interfaces.IWebMenuPreview;
-import no.nsd.qddt.domain.interfaces.Version;
+import no.nsd.qddt.classes.interfaces.IWebMenuPreview;
+import no.nsd.qddt.classes.interfaces.Version;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramJsonView;
-import no.nsd.qddt.domain.user.json.UserJson;
+import no.nsd.qddt.security.user.json.UserJson;
 import no.nsd.qddt.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,8 +32,8 @@ private static final long serialVersionUID = 1L;
     private Version version;
     private String classKind;
     private String defaultXmlLang;
-    private List<SurveyProgramJsonView> surveyPrograms = new ArrayList<>();
-    private List<UserJson> users = new ArrayList<>();
+    private List<SurveyProgramJsonView> surveyPrograms;
+    private List<UserJson> users;
 
 
 
@@ -52,10 +51,18 @@ private static final long serialVersionUID = 1L;
         setVersion(agency.getVersion());
         setClassKind( agency.getClassKind() );
         defaultXmlLang = agency.getDefaultXmlLang();
-        Hibernate.initialize(agency.getUsers());
-        Hibernate.initialize(agency.getSurveyPrograms());
-        setUsers( agency.getUsers().stream().map( UserJson::new ).collect( Collectors.toList()) );
-        setSurveyPrograms( agency.getSurveyPrograms().stream().map( SurveyProgramJsonView::new ).collect( Collectors.toList())  );
+        try {
+            Hibernate.initialize( agency.getUsers() );
+            setUsers( agency.getUsers().stream().map( UserJson::new ).collect( Collectors.toList()) );
+        } catch (Exception ex) {
+            LOG.error( "FEILA-01: " + agency.getId() + " - " , ex );
+        }
+        try {
+            Hibernate.initialize( agency.getSurveyPrograms() );
+            setSurveyPrograms( agency.getSurveyPrograms().stream().map( SurveyProgramJsonView::new ).collect( Collectors.toList())  );
+        } catch (Exception ex) {
+            LOG.error( "FEILA-02: " + agency.getId() + " - " , ex );
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.topicgroup;
 
-import no.nsd.qddt.domain.interfaces.BaseArchivedService;
+import no.nsd.qddt.classes.interfaces.BaseArchivedService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

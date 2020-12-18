@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.concept.json;
 
-import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.classes.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementRefImpl;
-import no.nsd.qddt.domain.elementref.ParentRef;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.exception.StackTraceFilter;
@@ -34,11 +34,11 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
 
     private String description;
 
-    private List<ElementRefImpl<QuestionItem>> conceptQuestionItems = new ArrayList<>();
+    private List<ElementRefEmbedded<QuestionItem>> conceptQuestionItems = new ArrayList<>();
 
     private List<CommentJsonEdit> comments = new ArrayList<>();
 
-    private List<ConceptJsonEdit> children = new ArrayList<>();
+    private Set<ConceptJsonEdit> children = new HashSet<>();
 
     private boolean isArchived;
 
@@ -54,7 +54,7 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
             setId(concept.getId());
             setTopicGroupId( concept.getTopicGroupId() );
             setName(concept.getName());
-            setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toList()));
+            setChildren(concept.getChildren().stream().map(ConceptJsonEdit::new).collect(Collectors.toSet()));
             setComments(concept.getComments());
             setDescription(concept.getDescription());
             setLabel(concept.getLabel());
@@ -94,19 +94,19 @@ public class ConceptJsonEdit extends AbstractJsonEdit {
         this.name = name;
     }
 
-    public List<ConceptJsonEdit> getChildren() {
+    public Set<ConceptJsonEdit> getChildren() {
         return children;
     }
 
-    private void setChildren(List<ConceptJsonEdit> children) {
+    private void setChildren(Set<ConceptJsonEdit> children) {
         this.children = children;
     }
 
-    public List<ElementRefImpl<QuestionItem>> getConceptQuestionItems() {
+    public List<ElementRefEmbedded<QuestionItem>> getConceptQuestionItems() {
         return conceptQuestionItems;
     }
 
-    public void setConceptQuestionItems(List<ElementRefImpl<QuestionItem>> conceptQuestionItems) {
+    public void setConceptQuestionItems(List<ElementRefEmbedded<QuestionItem>> conceptQuestionItems) {
         this.conceptQuestionItems = conceptQuestionItems;
     }
 

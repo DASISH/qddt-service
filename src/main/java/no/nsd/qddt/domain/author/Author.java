@@ -3,12 +3,12 @@ package no.nsd.qddt.domain.author;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.classes.AbstractEntity;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.xml.AbstractXmlBuilder;
+import no.nsd.qddt.security.user.User;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.security.SecurityContext;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -44,12 +44,12 @@ public class Author extends AbstractEntity {
     @Transient
     @JsonSerialize
     @JsonDeserialize
-    private String classKind = "AUTHOR";
+    private final String classKind = "AUTHOR";
 
     @Transient
     @JsonSerialize
     @JsonDeserialize
-    private String xmlLang = "none";
+    private final String xmlLang = "none";
 
     @JsonBackReference(value = "surveyRef")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")

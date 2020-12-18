@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.referenced;
 
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

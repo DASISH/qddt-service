@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.topicgroup.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.domain.elementref.ElementLoader;
+import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -49,12 +49,12 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
     @Override
     public Revision<Integer, TopicGroup> findLastChange(UUID uuid) {
-        return postLoadProcessing(topicGroupAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(topicGroupAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, TopicGroup> findRevision(UUID uuid, Integer revision) {
-        return  postLoadProcessing(topicGroupAuditRepository.findRevision(uuid, revision));
+        return  postLoadProcessing(topicGroupAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -88,31 +88,35 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     @Override
     protected Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
 
-        return new Revision<>(instance.getMetadata(),
-                postLoadProcessing(instance.getEntity()));
+        return Revision.of(instance.getMetadata(),postLoadProcessing(instance.getEntity()));
 
     }
 
     private TopicGroup postLoadProcessing(TopicGroup instance) {
         assert  (instance != null);
         try{
-
+//            LOG.info("postLoadProcessing starts -> " + instance.getName() + " - " +  instance.getVersion().getRevision() );
             Hibernate.initialize( instance.getStudy() );
 
             Hibernate.initialize(instance.getConcepts());
             instance.getConcepts().forEach(this::postLoadProcessing);
 
+//            LOG.info(
+//                instance.getConcepts().stream()
+//                    .map( c -> String.valueOf(c.getConceptIdx()))
+//                    .collect( Collectors.joining(",") ) );
+
+
             Hibernate.initialize(instance.getTopicQuestionItems());
-            instance.getTopicQuestionItems().values().stream()
-//                .filter( p -> IsNullOrTrimEmpty(p.getName()) )
-                .forEach( qiLoader::fill );
-//            instance.getTopicQuestionItems().forEach( qiLoader::fill );
+            instance.getTopicQuestionItems().forEach( qiLoader::fill );
 
             Hibernate.initialize(instance.getOtherMaterials());
 
             instance.setComments(loadComments(instance.getId()));
+
+//            LOG.info("postLoadProcessing ends -> " + instance.getName()  );
 
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
@@ -126,12 +130,14 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     private Concept postLoadProcessing(Concept instance) {
         assert  (instance != null);
         try{
+//            LOG.info("postLoad-concept-Processing starts -> " + instance.getName() );
+
             instance.getChildren().forEach(this::postLoadProcessing);
             instance.setComments(loadComments(instance.getId()));
             instance.getConceptQuestionItems().forEach( qiLoader::fill );
 
         } catch (Exception ex){
-            LOG.error("postLoadProcessing",ex);
+            LOG.error("postLoad-concept-Processing",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                     .map( StackTraceElement::toString )
                     .forEach(LOG::info);

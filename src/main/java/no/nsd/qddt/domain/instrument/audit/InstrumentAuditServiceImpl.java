@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instrument.audit;
 
-import no.nsd.qddt.domain.AbstractAuditFilter;
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractAuditFilter;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
@@ -35,12 +35,12 @@ class InstrumentAuditServiceImpl extends AbstractAuditFilter<Integer,Instrument>
 
     @Override
     public Revision<Integer, Instrument> findLastChange(UUID uuid) {
-        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid));
+        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid).get());
     }
 
     @Override
     public Revision<Integer, Instrument> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision));
+        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision).get());
     }
 
     @Override
@@ -69,7 +69,7 @@ class InstrumentAuditServiceImpl extends AbstractAuditFilter<Integer,Instrument>
     @Override
     protected Revision<Integer, Instrument> postLoadProcessing(Revision<Integer, Instrument> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
         Hibernate.initialize(instance.getEntity().getRoot());
         List<Comment> coms  =commentService.findAllByOwnerId(instance.getEntity().getId(),showPrivateComments);
         instance.getEntity().setComments(new ArrayList<>(coms));

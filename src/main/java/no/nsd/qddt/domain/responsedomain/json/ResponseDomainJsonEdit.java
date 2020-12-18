@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
-import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.classes.AbstractJsonEdit;
+import no.nsd.qddt.classes.ResponseCardinality;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 

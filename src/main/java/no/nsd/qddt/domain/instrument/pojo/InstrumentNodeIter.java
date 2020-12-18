@@ -15,7 +15,7 @@ public class InstrumentNodeIter<T extends ControlConstruct> implements Iterator<
         ProcessParent, ProcessChildCurNode, ProcessChildSubNode
     }
 
-    private InstrumentNode<T> treeNode;
+    private final InstrumentNode<T> treeNode;
 
     public InstrumentNodeIter(InstrumentNode<T> treeNode) {
         this.treeNode = treeNode;
@@ -25,7 +25,7 @@ public class InstrumentNodeIter<T extends ControlConstruct> implements Iterator<
 
     private ProcessStages doNext;
     private InstrumentNode<T> next;
-    private Iterator<InstrumentNode<T>> childrenCurNodeIter;
+    private final Iterator<InstrumentNode<T>> childrenCurNodeIter;
     private Iterator<InstrumentNode<T>> childrenSubNodeIter;
 
     @Override

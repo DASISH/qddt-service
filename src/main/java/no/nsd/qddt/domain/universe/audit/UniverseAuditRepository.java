@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.universe.audit;
 
-import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.universe.Universe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.interfaces.BaseArchivedRepository;
+import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.classes.interfaces.BaseArchivedRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +32,12 @@ interface ConceptRepository extends BaseArchivedRepository<Concept,UUID> {
     
 
     List<Concept> findByConceptQuestionItemsElementId(UUID id);
+
+
+    @Query(value = "SELECT c.* FROM concept c " +
+        "WHERE (  ) "
+        ,countQuery = "SELECT count(c.*) FROM concept c " +
+        "WHERE (  c.change_kind !='BASED_ON' and (c.name ILIKE :name or c.description ILIKE :description) ) "
+        ,nativeQuery = true)
+    List<ElementRefEmbedded>findListbyTopicGroup(UUID topicGroupId);
 }
