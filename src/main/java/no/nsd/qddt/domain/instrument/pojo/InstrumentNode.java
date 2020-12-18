@@ -45,7 +45,7 @@ public class InstrumentNode<T extends ControlConstruct> extends AbstractElementR
     @AuditMappedBy(mappedBy = "parent", positionMappedBy = "parentIdx")
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = InstrumentNode.class,
         orphanRemoval = true, cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
-    public List<InstrumentNode<T>> children;
+    public List<InstrumentNode<T>> children  = new ArrayList<>(0);
 
     @JsonIgnore
     @Transient
@@ -66,10 +66,6 @@ public class InstrumentNode<T extends ControlConstruct> extends AbstractElementR
         this.elementsIndex.add(this);
     }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public List<Parameter> getParameters() {
         return parameters;
@@ -160,6 +156,12 @@ public class InstrumentNode<T extends ControlConstruct> extends AbstractElementR
 
         return null;
     }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     @Override
     public Iterator<InstrumentNode<T>> iterator() {
