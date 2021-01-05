@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instruction;
 
-import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.classes.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

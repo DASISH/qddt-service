@@ -8,7 +8,7 @@ import no.nsd.qddt.classes.elementref.ParentRef;
 import no.nsd.qddt.classes.interfaces.Version;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.security.user.json.UserJson;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Embedded;

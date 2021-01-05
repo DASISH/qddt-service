@@ -12,7 +12,7 @@ import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
-import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.classes.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;

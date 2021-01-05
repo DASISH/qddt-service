@@ -3,7 +3,7 @@ package no.nsd.qddt.classes.elementref;
 import no.nsd.qddt.classes.interfaces.IDomainObjectParentRef;
 import no.nsd.qddt.classes.interfaces.IParentRef;
 import no.nsd.qddt.classes.interfaces.Version;
-import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.classes.exception.StackTraceFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

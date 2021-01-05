@@ -11,9 +11,9 @@ import no.nsd.qddt.classes.interfaces.IArchived;
 import no.nsd.qddt.classes.interfaces.IDomainObject;
 import no.nsd.qddt.classes.interfaces.Version;
 import no.nsd.qddt.classes.pdf.PdfReport;
-import no.nsd.qddt.security.user.User;
-import no.nsd.qddt.exception.StackTraceFilter;
-import no.nsd.qddt.security.SecurityContext;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.security.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -24,6 +24,7 @@ import javax.persistence.*;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -292,6 +293,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IDo
                     ver = new no.nsd.qddt.classes.interfaces.Version();
                     break;
                 case REFERENCED:
+                case TO_BE_DELETED:
                     break;
                 case UPDATED_PARENT:
                 case UPDATED_CHILD:
@@ -315,8 +317,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IDo
                 case ARCHIVED:
                     ((IArchived)this).setArchived(true);
                     ver.setVersionLabel("");
-                    break;
-                case TO_BE_DELETED:
                     break;
             }
 
@@ -354,8 +354,8 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IDo
 
         AbstractEntityAudit that = (AbstractEntityAudit) o;
 
-        if (agency != null ? !agency.equals(that.agency) : that.agency != null) return false;
-         return !(name != null ? !name.equals(that.name) : that.name != null);
+        if (!Objects.equals( agency, that.agency )) return false;
+         return Objects.equals( name, that.name );
 
     }
 
@@ -391,7 +391,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IDo
             LOG.debug(
                 StackTraceFilter.filter(
                     ex.getStackTrace() ).stream()
-                    .map( e->e.toString() )
+                    .map( StackTraceElement::toString )
                     .collect( Collectors.joining(",")
                 )
             );

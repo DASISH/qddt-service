@@ -6,7 +6,7 @@ import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
-import no.nsd.qddt.exception.RequestAbortedException;
+import no.nsd.qddt.classes.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

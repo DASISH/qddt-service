@@ -1,7 +1,7 @@
 package no.nsd.qddt.classes.interfaces;
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.security.user.json.UserJson;
+import no.nsd.qddt.domain.user.json.UserJson;
 
 import java.sql.Timestamp;
 

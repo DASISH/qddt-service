@@ -7,7 +7,7 @@ import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.classes.exception.StackTraceFilter;
 import org.hibernate.annotations.Type;
 
 import java.util.*;

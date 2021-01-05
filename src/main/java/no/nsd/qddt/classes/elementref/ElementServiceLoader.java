@@ -1,9 +1,9 @@
 package no.nsd.qddt.classes.elementref;
 
+import no.nsd.qddt.classes.interfaces.BaseServiceAudit;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
-import no.nsd.qddt.classes.interfaces.BaseServiceAudit;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
@@ -22,39 +22,42 @@ import org.springframework.stereotype.Service;
 public class ElementServiceLoader  {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private final ConceptAuditService conceptService;
     private final ControlConstructAuditService controlConstructService;
     private final InstrumentAuditService instrumentService;
-    private final SurveyProgramAuditService surveyProgramService;
-    private final StudyAuditService studyService;
-    private final TopicGroupAuditService topicGroupService;
-    private final ConceptAuditService conceptService;
+    private final PublicationAuditService publicationService;
     private final QuestionItemAuditService questionItemService;
     private final ResponseDomainAuditService responseDomainService;
-    private final PublicationAuditService publicationService;
+    private final StudyAuditService studyService;
+    private final SurveyProgramAuditService surveyProgramService;
+    private final TopicGroupAuditService topicGroupService;
 
     @Autowired
     public ElementServiceLoader( ConceptAuditService conceptService,
                                  ControlConstructAuditService controlConstructService,
                                  InstrumentAuditService instrumentService,
+                                 PublicationAuditService publicationService,
                                  QuestionItemAuditService questionItemService,
+                                 ResponseDomainAuditService responseDomainService,
                                  StudyAuditService studyService,
                                  SurveyProgramAuditService surveyProgramService,
-                                 TopicGroupAuditService topicGroupService,
-                                 ResponseDomainAuditService responseDomainService,
-                                 PublicationAuditService publicationService)
+                                 TopicGroupAuditService topicGroupService)
     {
-        this.conceptService = conceptService;
+        LOG.info("ElementServiceLoader -> " );
         this.controlConstructService = controlConstructService;
         this.instrumentService = instrumentService;
+        this.publicationService = publicationService;
         this.questionItemService = questionItemService;
+        this.responseDomainService = responseDomainService;
         this.studyService = studyService;
         this.surveyProgramService = surveyProgramService;
         this.topicGroupService = topicGroupService;
-        this.responseDomainService = responseDomainService;
-        this.publicationService = publicationService;
+        this.conceptService = conceptService;
+
     }
 
     public BaseServiceAudit getService(ElementKind elementKind){
+        LOG.info("get Service -> " + elementKind   );
         switch (elementKind) {
             case CONCEPT:
                 return conceptService;
@@ -79,6 +82,7 @@ public class ElementServiceLoader  {
             case PUBLICATION:
                 return publicationService;
             default:
+                LOG.error( "ElementKind :" + elementKind.getClassName() + " not defined." );
                 return null;
         }
     }

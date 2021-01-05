@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.concept.audit;
 
 import no.nsd.qddt.classes.AbstractEntityAudit;
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.classes.interfaces.BaseServiceAudit;
+import no.nsd.qddt.domain.concept.Concept;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;

@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.json;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.classes.interfaces.Version;
-import no.nsd.qddt.security.user.json.UserJson;
+import no.nsd.qddt.domain.user.json.UserJson;
 
 import java.sql.Timestamp;
 import java.util.UUID;

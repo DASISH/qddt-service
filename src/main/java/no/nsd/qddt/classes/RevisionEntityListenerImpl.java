@@ -1,6 +1,6 @@
 package no.nsd.qddt.classes;
 
-import no.nsd.qddt.security.SecurityContext;
+import no.nsd.qddt.domain.security.SecurityContext;
 import org.hibernate.envers.RevisionListener;
 
 /**

@@ -1,8 +1,8 @@
 package no.nsd.qddt.classes;
 
 
-import no.nsd.qddt.security.user.User;
-import no.nsd.qddt.security.user.json.UserJson;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 public class RevisionEntityImpl extends DefaultRevisionEntity {
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn( nullable = false)
     User modifiedBy;
 
     @CreationTimestamp

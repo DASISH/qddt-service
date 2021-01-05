@@ -5,7 +5,7 @@ import no.nsd.qddt.domain.questionitem.QuestionItemService;
 import no.nsd.qddt.domain.questionitem.json.QuestionItemJsonEdit;
 import no.nsd.qddt.domain.questionitem.json.QuestionItemListJson;
 import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
-import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.classes.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

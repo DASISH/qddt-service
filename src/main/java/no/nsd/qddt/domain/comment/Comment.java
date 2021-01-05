@@ -2,10 +2,10 @@ package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import no.nsd.qddt.classes.AbstractEntity;
-import no.nsd.qddt.security.user.User;
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.classes.xml.XmlDDICommentsBuilder;
-import no.nsd.qddt.security.SecurityContext;
+import no.nsd.qddt.domain.security.SecurityContext;
 
 import javax.persistence.*;
 import java.util.ArrayList;

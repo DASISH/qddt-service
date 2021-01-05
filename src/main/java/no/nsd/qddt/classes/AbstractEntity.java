@@ -1,8 +1,8 @@
 package no.nsd.qddt.classes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.security.user.User;
-import no.nsd.qddt.security.user.json.UserJson;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.json.UserJson;
 import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;

@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.classes.exception.ResourceNotFoundException;
 import no.nsd.qddt.classes.builders.CategoryBuilder;
 import org.junit.Before;
 import org.junit.Test;

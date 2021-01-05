@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.changefeed;
 
-import no.nsd.qddt.security.user.User;
-import no.nsd.qddt.security.user.json.UserJson;
+import no.nsd.qddt.domain.user.User;
+import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;

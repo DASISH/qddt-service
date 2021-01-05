@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.category.audit;
 import no.nsd.qddt.classes.AbstractAuditFilter;
 import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.classes.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

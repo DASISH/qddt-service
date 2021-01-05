@@ -7,9 +7,9 @@ import no.nsd.qddt.classes.AbstractEntity;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.security.user.User;
+import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
-import no.nsd.qddt.security.SecurityContext;
+import no.nsd.qddt.domain.security.SecurityContext;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 

@@ -1,6 +1,6 @@
 package no.nsd.qddt.classes.treenode;
 
-import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.classes.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;

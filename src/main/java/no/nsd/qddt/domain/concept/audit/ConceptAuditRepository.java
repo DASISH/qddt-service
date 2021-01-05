@@ -10,7 +10,7 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface ConceptAuditRepository extends RevisionRepository<Concept, UUID, Integer> {
-
-
+public interface ConceptAuditRepository extends RevisionRepository<Concept, UUID, Integer> {
+//    Page<Revision<Integer,Concept>> findConceptByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }
+

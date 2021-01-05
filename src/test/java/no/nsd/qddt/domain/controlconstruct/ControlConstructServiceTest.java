@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.classes.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

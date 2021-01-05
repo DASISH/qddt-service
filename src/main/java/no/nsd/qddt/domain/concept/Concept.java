@@ -46,17 +46,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
     @Column(name = "topicgroup_id", insertable = false, updatable = false, nullable = false)
     private UUID topicGroupId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JsonBackReference(value = "parentRef")
-//    @JoinColumn(name="concept_id", nullable = false,updatable = false)
-//    private Concept parent;
-//
-//    // in the @OrderColumn annotation on the referencing entity.
-//    @Column( name = "concept_idx", insertable = false, updatable = false)
-//    private int conceptIdx;
-
-
-    @ManyToOne( fetch = FetchType.LAZY, targetEntity = Concept.class)
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name="concept_id")
     @JsonBackReference(value = "conceptParentRef")
     public Concept parent;
@@ -68,17 +58,9 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
 
     @OrderColumn(name="concept_idx")
     @AuditMappedBy(mappedBy = "parent", positionMappedBy = "conceptIdx")
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = Concept.class,
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER,
         orphanRemoval = true, cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
     public List<Concept> children= new ArrayList<>(0);
-
-
-//
-//
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", cascade = {CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.MERGE})
-//    @OrderColumn(name = "concept_idx")
-//    @AuditMappedBy(mappedBy = "parent", positionMappedBy ="conceptIdx")
-//    private List<Concept> children = new ArrayList<>(0);
 
 
     @OrderColumn(name="concept_idx")
@@ -214,7 +196,7 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
             setChangeKind(ChangeKind.ARCHIVED);
             for (Concept concept : getChildren()) {
                 if (!concept.isArchived())
-                    concept.setArchived(archived);
+                    concept.setArchived( true );
             }
         }
     }
@@ -315,13 +297,14 @@ public class Concept extends AbstractEntityAudit implements IArchived, IDomainOb
             if (getConceptQuestionItems().size() > 0) {
                 pdfReport.addheader2("QuestionItem(s)");
                 getConceptQuestionItems().stream()
-                    .map( cqi ->  {
-                        if (cqi.getElement() == null){
+                    .map( cqi -> {
+                        if (cqi.getElement() == null) {
                             LOG.info( cqi.toString() );
                             return null;
                         }
                         return cqi.getElement();
                     } )
+                    .filter( Objects::nonNull )
                     .forEach( item -> {
                         pdfReport.addheader2( item.getName(), String.format( "Version %s", item.getVersion() ) );
                         pdfReport.addParagraph( item.getQuestion() );

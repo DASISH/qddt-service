@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.concept;
 import no.nsd.qddt.domain.AbstractServiceTest;
 import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
-import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.classes.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

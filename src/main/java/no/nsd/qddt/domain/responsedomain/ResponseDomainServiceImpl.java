@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
-import no.nsd.qddt.exception.ResourceNotFoundException;
+import no.nsd.qddt.classes.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

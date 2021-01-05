@@ -1,6 +1,6 @@
 package no.nsd.qddt.configuration;
 
-import no.nsd.qddt.security.user.User;
+import no.nsd.qddt.domain.user.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

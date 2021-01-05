@@ -1,8 +1,8 @@
 package no.nsd.qddt.configuration;
 
-import no.nsd.qddt.security.user.QDDTUserDetailsService;
-import no.nsd.qddt.security.JwtAuthenticationEntryPoint;
-import no.nsd.qddt.security.JwtAuthenticationTokenFilter;
+import no.nsd.qddt.domain.security.JwtAuthenticationTokenFilter;
+import no.nsd.qddt.domain.security.impl.JwtAuthenticationEntryPoint;
+import no.nsd.qddt.domain.user.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,9 +33,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    private final QDDTUserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    public SecurityConfiguration(JwtAuthenticationEntryPoint unauthorizedHandler, QDDTUserDetailsService userDetailsService) {
+    public SecurityConfiguration(JwtAuthenticationEntryPoint unauthorizedHandler, UserDetailsServiceImpl userDetailsService) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.userDetailsService = userDetailsService;
     }

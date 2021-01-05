@@ -25,7 +25,7 @@ import com.itextpdf.layout.renderer.ParagraphRenderer;
 import javassist.Loader;
 import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.exception.StackTraceFilter;
+import no.nsd.qddt.classes.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
