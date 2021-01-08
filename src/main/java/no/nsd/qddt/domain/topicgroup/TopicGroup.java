@@ -144,6 +144,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     }
 
     public List<Concept> getConcepts() {
+        if(concepts == null) return null;
         return concepts.stream()
             .filter( Objects::nonNull )
             .collect( Collectors.toList());

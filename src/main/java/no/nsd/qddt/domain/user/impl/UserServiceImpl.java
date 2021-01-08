@@ -134,7 +134,7 @@ class UserServiceImpl implements UserService {
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN') or hasPermission('USER')")
-    public String setPassword(Password instance) {
+    public void setPassword(Password instance) {
         LOG.info("old " + instance.getOldPassword());
 
         User user = userRepository.findById( instance.getId() )
@@ -147,7 +147,7 @@ class UserServiceImpl implements UserService {
         }
 
         userRepository.setPassword( user.getId(), passwordEncoder().encode( instance.getPassword() ) );
-        return "{ \"message\" : \"Password changed successfully\"}";
+//        return "{ \"message\" : \"Password changed successfully\"}";
     }
 
 

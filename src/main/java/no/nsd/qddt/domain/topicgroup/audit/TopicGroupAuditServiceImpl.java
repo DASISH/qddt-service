@@ -121,7 +121,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
         } catch (Exception ex){
             LOG.error("postLoadProcessing",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
-                    .map( StackTraceElement::toString )
+                    .map( stackTraceElement -> stackTraceElement.toString() + "Line number: "  + stackTraceElement.getLineNumber() )
                     .forEach(LOG::info);
         }
         return instance;

@@ -31,9 +31,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 //    implementation 'org.springframework.boot:spring-boot-starter-jetty'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.data:spring-data-envers:2.4.2'
 
 //    implementation 'org.hibernate.orm:hibernate-core:6.0.0.Alpha6'
-    implementation 'org.hibernate:hibernate-envers:5.4.26.Final' //, version: '6.0.0.Alpha6'
+    implementation 'org.hibernate:hibernate-envers:5.4.25.Final' //, version: '6.0.0.Alpha6'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'joda-time:joda-time:2.10.8'
 
