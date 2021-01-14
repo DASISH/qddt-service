@@ -13,7 +13,7 @@ import no.nsd.qddt.classes.interfaces.Version;
 import no.nsd.qddt.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.classes.exception.StackTraceFilter;
-import no.nsd.qddt.domain.security.SecurityContext;
+import no.nsd.qddt.configuration.tbd.SecurityContext;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -122,7 +122,7 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IDo
     private Integer basedOnRevision;
 
     @Embedded
-    private no.nsd.qddt.classes.interfaces.Version version;
+    private Version version;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -189,13 +189,13 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IDo
         this.basedOnRevision = basedOnRevision;
     }
 
-    public no.nsd.qddt.classes.interfaces.Version getVersion() {
+    public Version getVersion() {
         if (version == null)
             version = new Version(true);
         return version;
     }
 
-    public void setVersion(no.nsd.qddt.classes.interfaces.Version version) {
+    public void setVersion(Version version) {
         this.version = version;
     }
 
@@ -272,8 +272,6 @@ public abstract class AbstractEntityAudit extends AbstractEntity  implements IDo
         try {
             no.nsd.qddt.classes.interfaces.Version ver = version;
             ChangeKind change = changeKind;
-            User user = SecurityContext.getUserDetails().getUser();
-            setModifiedBy( user );
 
             // it is illegal to update an entity with "Creator statuses" (CREATED...BASEDON)
             if (change.ordinal() <= ChangeKind.REFERENCED.ordinal() &    !ver.isNew()) {

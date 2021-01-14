@@ -7,7 +7,7 @@ import no.nsd.qddt.classes.interfaces.IElementRef;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus.Published;
 import no.nsd.qddt.classes.exception.StackTraceFilter;
-import no.nsd.qddt.domain.security.SecurityContext;
+import no.nsd.qddt.configuration.tbd.SecurityContext;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

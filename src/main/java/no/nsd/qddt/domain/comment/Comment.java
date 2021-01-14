@@ -5,7 +5,7 @@ import no.nsd.qddt.classes.AbstractEntity;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.classes.xml.XmlDDICommentsBuilder;
-import no.nsd.qddt.domain.security.SecurityContext;
+import no.nsd.qddt.configuration.tbd.SecurityContext;
 
 import javax.persistence.*;
 import java.util.ArrayList;

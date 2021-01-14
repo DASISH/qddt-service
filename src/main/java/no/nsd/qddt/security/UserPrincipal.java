@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.user.impl;
+package no.nsd.qddt.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.user.User;
@@ -15,23 +15,20 @@ import java.util.stream.Collectors;
  * @author Dag Østgulen Heradstveit
  * @author Stig Norland
  */
-public class UserDetailsImpl implements UserDetails {
-
-    private static final long serialVersionUID = -2985656388091941799L;
+public class UserPrincipal implements UserDetails {
 
     private final User user;
-    private final List<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(User user) {
+    public UserPrincipal(User user) {
         this.user = user;
-        this.authorities =
-            user.getAuthorities().stream().map( (authority) ->
-                new SimpleGrantedAuthority( authority.getAuthority() )
-            ).collect( Collectors.toList() );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        final List<GrantedAuthority> authorities =
+            user.getAuthorities().stream().map( (authority) ->
+            new SimpleGrantedAuthority( authority.getAuthority() )
+            ).collect( Collectors.toList() );
         return authorities;
     }
 
@@ -54,7 +51,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /*
-    not implemented, always return TRUE
+     *    not implemented, always return TRUE
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -62,7 +59,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /*
-    not implemented, always return TRUE
+     *   not implemented, always return TRUE
      */
     @Override
     public boolean isAccountNonLocked() {
@@ -70,7 +67,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /*
-    not implemented, always return TRUE
+     *  not implemented, always return TRUE
      */
     @Override
     public boolean isCredentialsNonExpired() {

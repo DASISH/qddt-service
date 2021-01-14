@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.security;
+package no.nsd.qddt.security.jwt;
 
 import java.io.Serializable;
 
@@ -11,12 +11,6 @@ public class  JwtAuthenticationRequest implements Serializable {
 
     public JwtAuthenticationRequest() {
         super();
-    }
-
-    public JwtAuthenticationRequest(String username, String email, String password) {
-        this.setUsername(username);
-        this.setEmail(email);
-        this.setPassword(password);
     }
 
     public String getUsername() {

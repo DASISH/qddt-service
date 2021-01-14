@@ -1,4 +1,4 @@
-package no.nsd.qddt.configuration;
+package no.nsd.qddt.configuration.tbd;
 
 /**
  * @author Stig Norland

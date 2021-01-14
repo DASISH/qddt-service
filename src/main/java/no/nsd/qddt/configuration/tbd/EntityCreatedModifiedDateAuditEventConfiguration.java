@@ -3,7 +3,7 @@
 //import no.nsd.qddt.classes.AbstractEntity;
 //import no.nsd.qddt.classes.AbstractEntityAudit;
 //import no.nsd.qddt.domain.user.User;
-//import no.nsd.qddt.domain.security.SecurityContext;
+//import no.nsd.qddt.configuration.tbd.SecurityContext;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Configurable;

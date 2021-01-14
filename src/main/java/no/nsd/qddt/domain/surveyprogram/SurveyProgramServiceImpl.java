@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.classes.exception.DescendantsArchivedException;
 import no.nsd.qddt.classes.exception.ResourceNotFoundException;
 import no.nsd.qddt.classes.exception.StackTraceFilter;
-import no.nsd.qddt.domain.security.SecurityContext;
+import no.nsd.qddt.configuration.tbd.SecurityContext;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

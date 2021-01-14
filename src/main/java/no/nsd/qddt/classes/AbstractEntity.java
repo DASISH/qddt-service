@@ -1,14 +1,15 @@
 package no.nsd.qddt.classes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.json.UserJson;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -38,6 +39,7 @@ public abstract class AbstractEntity {
     @Version()
     private Timestamp modified;
 
+    @LastModifiedBy
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

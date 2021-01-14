@@ -1,12 +1,13 @@
 package no.nsd.qddt.configuration;
 
-import no.nsd.qddt.domain.security.JwtAuthenticationTokenFilter;
-import no.nsd.qddt.domain.security.impl.JwtAuthenticationEntryPoint;
-import no.nsd.qddt.domain.user.impl.UserDetailsServiceImpl;
+import no.nsd.qddt.security.UserDetailsServiceImpl;
+import no.nsd.qddt.security.jwt.JwtAuthenticationEntryPoint;
+import no.nsd.qddt.security.jwt.JwtAuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,9 +15,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.security.config.BeanIds.AUTHENTICATION_MANAGER;
 
 
 /**
@@ -31,20 +35,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
     jsr250Enabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    @Autowired
+    private  JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    private final UserDetailsServiceImpl userDetailsService;
-
-    public SecurityConfiguration(JwtAuthenticationEntryPoint unauthorizedHandler, UserDetailsServiceImpl userDetailsService) {
-        this.unauthorizedHandler = unauthorizedHandler;
-        this.userDetailsService = userDetailsService;
+    @Bean(name = "userDetailsServiceImpl")
+    @Override
+    public  UserDetailsService userDetailsServiceBean() {
+        return new UserDetailsServiceImpl();
     }
 
-    @Autowired
-    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder());
+    @Bean(AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
 
@@ -54,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * @return application wide password encoder.
      */
     @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoderBean() {
         return new BCryptPasswordEncoder();
     }
 
@@ -66,16 +69,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .userDetailsService(userDetailsServiceBean())
+            .passwordEncoder(passwordEncoderBean());
+    }
+
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers(HttpMethod.GET,"/preview/**").permitAll()
             .antMatchers(HttpMethod.GET,"/othermaterial/files/**").permitAll()
             .antMatchers("/auth/signin").permitAll()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .antMatchers(HttpMethod.DELETE, "/user/*").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST,"/user/*" ).access("hasAuthority('ROLE_ADMIN') or hasPermission('OWNER')")
+            .antMatchers(HttpMethod.GET, "/user/page/search/*" ).hasRole("ADMIN")
+            .antMatchers(HttpMethod.PATCH,"/user/resetpassword" ).access("hasAuthority('ROLE_ADMIN') or hasPermission('USER')")
             .anyRequest().authenticated().and()
             .cors();
 
@@ -86,11 +101,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .headers().cacheControl();
     }
 
+
     @Override
-    public final void configure(final WebSecurity web) throws Exception
-    {
+    public final void configure(final WebSecurity web) throws Exception {
         super.configure(web);
         web.httpFirewall(new AnnotatingHttpFirewall()); // Set the custom firewall.
-        return;
     }
 }

@@ -1,10 +1,10 @@
-package no.nsd.qddt.domain.security;
+package no.nsd.qddt.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import no.nsd.qddt.domain.user.impl.UserDetailsImpl;
+import no.nsd.qddt.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -106,7 +106,7 @@ public class JwtUtil implements Serializable {
      */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        UserDetailsImpl jwtUser = (UserDetailsImpl) userDetails;
+        UserPrincipal jwtUser = (UserPrincipal) userDetails;
         claims.put(CLAIM_KEY_ID, jwtUser.getId());
         claims.put(CLAIM_KEY_EMAIL, jwtUser.getUser().getEmail());
         claims.put(CLAIM_KEY_USERNAME, jwtUser.getUsername());

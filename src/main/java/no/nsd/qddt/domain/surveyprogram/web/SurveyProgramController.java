@@ -4,11 +4,11 @@ import no.nsd.qddt.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyOrders;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
-import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.security.SecurityContext;
+import no.nsd.qddt.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,8 +62,8 @@ public class SurveyProgramController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<SurveyProgram> listByUser() {
-        User user = SecurityContext.getUserDetails().getUser();
-        return service.findByAgency(user);
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return service.findByAgency(principal.getUser());
     }
 
     @ResponseStatus(value = HttpStatus.OK)

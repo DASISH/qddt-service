@@ -1,8 +1,8 @@
-package no.nsd.qddt.domain.security;
+package no.nsd.qddt.configuration.tbd;
 
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.user.impl.UserDetailsImpl;
+import no.nsd.qddt.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
@@ -26,7 +26,7 @@ public class SecurityExpressionOperationImpl extends SecurityExpressionRoot impl
     }
 
     public boolean isMember(Agency agency) {
-        UserDetailsImpl user = (UserDetailsImpl)this.getAuthentication().getDetails();
+        UserPrincipal user = (UserPrincipal)this.getAuthentication().getDetails();
         return agency == null || user.getUser().getAgency().getId().equals( agency.getId() );
     }
 

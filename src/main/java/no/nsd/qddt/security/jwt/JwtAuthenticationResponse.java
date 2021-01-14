@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.security;
+package no.nsd.qddt.security.jwt;
 
 import java.io.Serializable;
 

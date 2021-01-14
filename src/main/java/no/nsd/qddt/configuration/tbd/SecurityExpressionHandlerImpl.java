@@ -1,4 +1,4 @@
-package no.nsd.qddt.domain.security;
+package no.nsd.qddt.configuration.tbd;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;

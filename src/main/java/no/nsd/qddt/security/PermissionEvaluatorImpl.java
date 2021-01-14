@@ -1,10 +1,9 @@
-package no.nsd.qddt.domain.security.impl;
+package no.nsd.qddt.security;
 
 import no.nsd.qddt.classes.AbstractEntity;
 import no.nsd.qddt.classes.interfaces.IDomainObject;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.domain.user.impl.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
@@ -31,7 +30,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
             return false;
         }
 
-        return this.hasPrivilege( (UserDetailsImpl)auth.getPrincipal(), (AbstractEntity)targetDomainObject, ((String) permission).toUpperCase());
+        return this.hasPrivilege( (UserPrincipal)auth.getPrincipal(), (AbstractEntity)targetDomainObject, ((String) permission).toUpperCase());
     }
 
 
@@ -42,7 +41,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
 
-    private boolean hasPrivilege(UserDetailsImpl details, AbstractEntity entity, String permission){
+    private boolean hasPrivilege(UserPrincipal details, AbstractEntity entity, String permission){
 //        LOG.info( details.getUsername() + ": " + permission + ": " + toJson(entity)  );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)
@@ -81,11 +80,4 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         return false;
     }
 
-//    public String toJson(IDomainObject entity) {
-//        return "{" +
-//            "\"id\":" + (entity.getId() == null ? "null" : "\"" + entity.getId() +"\"" ) + ", " +
-//            "\"modified\":" + (entity.getModified() == null ? "null" : "\"" + entity.getModified()+ "\"" ) + " , " +
-//            "\"classKind\":" + entity.getClass().getSimpleName() + "\"" +
-//            "}";
-//    }
 }
