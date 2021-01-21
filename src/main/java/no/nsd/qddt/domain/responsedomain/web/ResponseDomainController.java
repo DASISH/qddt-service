@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.classes.AbstractController;
+import no.nsd.qddt.domain.classes.AbstractController;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
-import no.nsd.qddt.classes.exception.RequestAbortedException;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.classes.exception.RequestAbortedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

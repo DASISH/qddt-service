@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
-import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

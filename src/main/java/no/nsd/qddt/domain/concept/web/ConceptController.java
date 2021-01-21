@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.concept.web;
 
-import no.nsd.qddt.classes.AbstractController;
+import no.nsd.qddt.domain.classes.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
 import no.nsd.qddt.domain.topicgroup.TopicGroupService;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;

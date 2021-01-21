@@ -1,6 +1,6 @@
 package no.nsd.qddt.utils;
 
-import no.nsd.qddt.classes.exception.ExtractFromException;
+import no.nsd.qddt.domain.classes.exception.ExtractFromException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

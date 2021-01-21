@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct.factory;
 
-import no.nsd.qddt.classes.IEntityFactory;
+import no.nsd.qddt.domain.classes.IEntityFactory;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
 
 import java.util.stream.Collectors;
 

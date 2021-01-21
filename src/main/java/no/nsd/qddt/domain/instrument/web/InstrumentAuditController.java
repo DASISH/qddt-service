@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;

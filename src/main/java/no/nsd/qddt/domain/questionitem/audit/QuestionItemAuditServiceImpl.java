@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.questionitem.audit;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
-import no.nsd.qddt.classes.elementref.ElementLoader;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;

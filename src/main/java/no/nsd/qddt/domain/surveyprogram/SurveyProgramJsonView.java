@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.classes.interfaces.IWebMenuPreview;
-import no.nsd.qddt.classes.interfaces.Version;
+import no.nsd.qddt.domain.classes.interfaces.IWebMenuPreview;
+import no.nsd.qddt.domain.classes.interfaces.Version;
 import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;

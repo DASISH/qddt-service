@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.questionitem;
 
-import no.nsd.qddt.classes.interfaces.BaseRepository;
+import no.nsd.qddt.domain.classes.interfaces.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

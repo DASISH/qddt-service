@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomain.audit;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;

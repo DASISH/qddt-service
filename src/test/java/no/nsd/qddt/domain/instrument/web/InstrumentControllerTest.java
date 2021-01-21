@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.InstrumentService;

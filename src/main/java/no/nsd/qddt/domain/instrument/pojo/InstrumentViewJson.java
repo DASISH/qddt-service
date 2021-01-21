@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument.pojo;
 
-import no.nsd.qddt.classes.interfaces.Version;
+import no.nsd.qddt.domain.classes.interfaces.Version;
 import no.nsd.qddt.domain.user.json.UserJson;
 import org.hibernate.annotations.Type;
 

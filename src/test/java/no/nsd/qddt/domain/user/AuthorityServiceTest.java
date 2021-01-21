@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.user;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.classes.exception.ResourceNotFoundException;
-import no.nsd.qddt.classes.exception.UserNotFoundException;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
+import no.nsd.qddt.domain.classes.exception.UserNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
-import no.nsd.qddt.classes.elementref.ElementLoader;
+import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.instrument.pojo.Parameter;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;

@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.category.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.classes.builders.CategoryBuilder;
+import no.nsd.qddt.domain.classes.builders.CategoryBuilder;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;

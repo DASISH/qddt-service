@@ -1,11 +1,11 @@
 package no.nsd.qddt.domain.study.audit;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

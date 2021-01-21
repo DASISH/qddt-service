@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.concept.web;
 
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import org.springframework.beans.factory.annotation.Autowired;

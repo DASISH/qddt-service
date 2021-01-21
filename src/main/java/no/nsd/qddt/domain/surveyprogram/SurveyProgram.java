@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
-import no.nsd.qddt.classes.interfaces.IArchived;
-import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.domain.classes.interfaces.IArchived;
+import no.nsd.qddt.domain.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;

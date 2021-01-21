@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.role.web;
 
-import no.nsd.qddt.classes.AbstractController;
+import no.nsd.qddt.domain.classes.AbstractController;
 import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.role.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;

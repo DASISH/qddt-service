@@ -1,14 +1,13 @@
 package no.nsd.qddt.domain.user.web;
 
-import no.nsd.qddt.classes.exception.ReferenceInUseException;
-import no.nsd.qddt.classes.exception.UserNotFoundException;
+import no.nsd.qddt.domain.classes.exception.ReferenceInUseException;
+import no.nsd.qddt.domain.classes.exception.UserNotFoundException;
 import no.nsd.qddt.domain.role.AuthorityService;
 import no.nsd.qddt.domain.search.SearchService;
 import no.nsd.qddt.domain.user.Password;
 import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.user.UserRepository;
 import no.nsd.qddt.domain.user.json.UserJsonEdit;
-import no.nsd.qddt.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ import javax.validation.Valid;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.configuration.SecurityConfiguration.passwordEncoderBean;
+import static no.nsd.qddt.security.SecurityConfiguration.passwordEncoderBean;
 import static no.nsd.qddt.utils.FilterTool.defaultOrModifiedSort;
 
 /**
@@ -58,8 +57,8 @@ public class UserController {
 
     @GetMapping("/user")
     public User getLoggedInUser() {
-        UserPrincipal userDetails = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.getOne( userDetails.getId());
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        return userRepository.getOne( user.getId());
     }
 
     @GetMapping("/user/page/search")

@@ -1,17 +1,12 @@
 package no.nsd.qddt.domain.user.json;
 
 import no.nsd.qddt.domain.agency.AgencyJsonView;
-import no.nsd.qddt.domain.role.Authority;
 import no.nsd.qddt.domain.user.User;
 import org.hibernate.PropertyNotFoundException;
 import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Stig Norland
@@ -25,7 +20,7 @@ public class UserJsonEdit {
 
     private String email;
 
-    private Set<Authority> authorities;
+    private String authorities;
 
     private AgencyJsonView agency;
 
@@ -44,8 +39,8 @@ public class UserJsonEdit {
         setEmail(user.getEmail());
         setName(user.getUsername());
         setAgency( new AgencyJsonView( user.getAgency()) );
-        setAuthorities( user.getAuthorities().stream().findFirst().orElseThrow(
-            () -> new PropertyNotFoundException(  "No Authority set " + user.getUsername() ) ) );
+        authorities = user.getAuthorities().stream().findFirst().map( e -> e.getAuthority() ).orElseThrow(
+            () -> new PropertyNotFoundException(  "No Authority set " + user.getUsername() ) ) ;
         setEnabled( user.isEnabled() );
         setClassKind( "USER" );
         setModified( user.getModified() );
@@ -76,13 +71,12 @@ public class UserJsonEdit {
         this.email = email;
     }
 
-    public Set<Authority> getAuthorities() {
+    public String getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Authority authority) {
-        this.authorities = Stream.of(authority)
-            .collect( Collectors.toCollection(HashSet::new));
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
     }
 
     public AgencyJsonView getAgency() {

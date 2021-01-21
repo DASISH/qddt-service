@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.controlconstruct.json;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
 import no.nsd.qddt.domain.controlconstruct.pojo.SequenceKind;
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.universe.Universe;
 
 import java.util.List;

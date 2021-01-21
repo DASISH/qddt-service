@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.classes.elementref.ElementKind;
-import no.nsd.qddt.classes.elementref.ElementRefQuestionItem;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.elementref.ElementRefQuestionItem;
 import no.nsd.qddt.domain.instruction.Instruction;
-import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.domain.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.universe.Universe;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

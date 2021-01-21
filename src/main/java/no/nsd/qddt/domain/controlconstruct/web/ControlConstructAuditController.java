@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstruct.audit.ControlConstructAuditService;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import org.springframework.beans.factory.annotation.Autowired;

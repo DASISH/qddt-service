@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.othermaterial.web;
 
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
-import no.nsd.qddt.classes.exception.FileUploadException;
+import no.nsd.qddt.domain.classes.exception.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;

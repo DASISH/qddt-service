@@ -2,9 +2,9 @@ package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.classes.elementref.AbstractElementRef;
-import no.nsd.qddt.classes.elementref.ElementKind;
-import no.nsd.qddt.classes.interfaces.IConditionNode;
+import no.nsd.qddt.domain.classes.elementref.AbstractElementRef;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.interfaces.IConditionNode;
 import no.nsd.qddt.domain.controlconstruct.pojo.ConditionConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;

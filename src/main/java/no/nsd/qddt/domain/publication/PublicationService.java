@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
-import no.nsd.qddt.classes.interfaces.BaseService;
-import no.nsd.qddt.classes.interfaces.IElementRef;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.interfaces.BaseService;
+import no.nsd.qddt.domain.classes.interfaces.IElementRef;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

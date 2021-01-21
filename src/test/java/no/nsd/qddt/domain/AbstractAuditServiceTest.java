@@ -1,10 +1,6 @@
 package no.nsd.qddt.domain;
 
-import no.nsd.qddt.classes.interfaces.BaseRepository;
-import no.nsd.qddt.utils.BeforeSecurityContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import no.nsd.qddt.domain.classes.interfaces.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;

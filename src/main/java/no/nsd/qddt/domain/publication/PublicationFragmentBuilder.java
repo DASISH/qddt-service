@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.classes.elementref.ElementKind;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentBuilder;
 
 import java.util.LinkedList;
 import java.util.List;

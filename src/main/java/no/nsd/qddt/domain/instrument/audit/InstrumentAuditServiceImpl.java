@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instrument.audit;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;

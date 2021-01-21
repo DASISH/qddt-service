@@ -3,13 +3,11 @@ package no.nsd.qddt.domain.author;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.classes.AbstractEntity;
+import no.nsd.qddt.domain.classes.AbstractEntity;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
-import no.nsd.qddt.configuration.tbd.SecurityContext;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -190,21 +188,21 @@ public class Author extends AbstractEntity {
         return null;
     }
 
-    @PrePersist
-    private void onInsert(){
-        // LOG.info("PrePersist " + this.getClass().getSimpleName());
-        User user = SecurityContext.getUserDetails().getUser();
-        setModifiedBy( user );
-    }
+//    @PrePersist
+//    private void onInsert(){
+//        // LOG.info("PrePersist " + this.getClass().getSimpleName());
+//        User user = SecurityContext.getUserDetails().getUser();
+//        setModifiedBy( user );
+//    }
 
-    @PreUpdate
-    private void onUpdate() {
-        try {
-            // LOG.info( "PreUpdate " + this.getClass().getSimpleName() + " - " + getName() );
-            User user = SecurityContext.getUserDetails().getUser();
-            setModifiedBy( user );
-        } catch (Exception ex) {
-            //
-        }
-    }
+//    @PreUpdate
+//    private void onUpdate() {
+//        try {
+//            // LOG.info( "PreUpdate " + this.getClass().getSimpleName() + " - " + getName() );
+//            User user = SecurityContext.getUserDetails().getUser();
+//            setModifiedBy( user );
+//        } catch (Exception ex) {
+//            //
+//        }
+//    }
 }

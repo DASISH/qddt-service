@@ -2,16 +2,16 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.classes.AbstractEntityAudit;
-import no.nsd.qddt.classes.elementref.ElementKind;
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
-import no.nsd.qddt.classes.elementref.ParentRef;
-import no.nsd.qddt.classes.interfaces.IArchived;
-import no.nsd.qddt.classes.interfaces.IDomainObjectParentRef;
-import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.elementref.ParentRef;
+import no.nsd.qddt.domain.classes.interfaces.IArchived;
+import no.nsd.qddt.domain.classes.interfaces.IDomainObjectParentRef;
+import no.nsd.qddt.domain.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 

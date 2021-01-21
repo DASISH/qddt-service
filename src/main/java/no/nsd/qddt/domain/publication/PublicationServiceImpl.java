@@ -1,13 +1,13 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.classes.elementref.ElementLoader;
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
-import no.nsd.qddt.classes.elementref.ElementServiceLoader;
-import no.nsd.qddt.classes.interfaces.IElementRef;
+import no.nsd.qddt.domain.classes.elementref.ElementLoader;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.elementref.ElementServiceLoader;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.classes.interfaces.IElementRef;
 import no.nsd.qddt.domain.publication.audit.PublicationAuditService;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus.Published;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
-import no.nsd.qddt.configuration.tbd.SecurityContext;
+import no.nsd.qddt.domain.user.User;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,15 +109,16 @@ public class PublicationServiceImpl implements PublicationService {
 
         LOG.info("findByNameOrPurposeAndStatus2 " + published + " name: " + name + " purpose: " + purpose + " statuses: " +  statuses);
 
-        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch( p -> p.getAuthority().equals("ROLE_GUEST"))) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if(user.getAuthorities().stream().anyMatch( p -> p.getAuthority().equals("ROLE_GUEST"))) {
             published = Published.EXTERNAL_PUBLICATION;
         }
-        if (SecurityContext.getUserDetails().getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
+        if (user.getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_VIEW"))) {
             if (published.equals( Published.NOT_PUBLISHED ))
             published = Published.INTERNAL_PUBLICATION;
         }
 
-        return repository.findByQuery(likeify(name),likeify(purpose),statuses, published.name(),SecurityContext.getUserDetails().getUser().getAgency().getId() ,defaultOrModifiedSort(pageable,"name"));
+        return repository.findByQuery(likeify(name),likeify(purpose),statuses, published.name(),user.getAgency().getId() ,defaultOrModifiedSort(pageable,"name"));
 
     }
 

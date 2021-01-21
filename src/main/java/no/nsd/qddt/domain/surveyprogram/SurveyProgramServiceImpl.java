@@ -1,19 +1,19 @@
 package no.nsd.qddt.domain.surveyprogram;
 
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.classes.elementref.ElementLoader;
+import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.classes.exception.DescendantsArchivedException;
-import no.nsd.qddt.classes.exception.ResourceNotFoundException;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
-import no.nsd.qddt.configuration.tbd.SecurityContext;
+import no.nsd.qddt.domain.classes.exception.DescendantsArchivedException;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,7 +103,7 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
                 LOG.error( ex.getMessage() );
             }
         }
-        User user = SecurityContext.getUserDetails().getUser();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
         return surveyProgramRepository.findByAgencyOrderByAgencyIdx(user.getAgency())
             .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }

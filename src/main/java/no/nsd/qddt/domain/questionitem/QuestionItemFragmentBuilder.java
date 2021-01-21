@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.questionitem;
 
-import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentBuilder;
 
 import java.util.Map;
 import java.util.stream.Collectors;

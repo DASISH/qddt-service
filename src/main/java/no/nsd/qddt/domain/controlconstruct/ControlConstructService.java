@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.controlconstruct;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
-import no.nsd.qddt.classes.interfaces.BaseService;
+import no.nsd.qddt.domain.classes.interfaces.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

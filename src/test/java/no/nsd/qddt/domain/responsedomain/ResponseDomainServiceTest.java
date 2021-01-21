@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomain;
 
 import no.nsd.qddt.domain.AbstractServiceTest;
-import no.nsd.qddt.classes.exception.ResourceNotFoundException;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

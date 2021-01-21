@@ -3,9 +3,9 @@
 //import com.fasterxml.jackson.annotation.JsonBackReference;
 //import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 //import no.nsd.qddt.domain.controlconstruct.pojo.Sequence;
-//import no.nsd.qddt.classes.elementref.AbstractElementRef;
-//import no.nsd.qddt.classes.elementref.ElementKind;
-//import no.nsd.qddt.classes.elementref.ElementRef;
+//import no.nsd.qddt.domain.classes.elementref.AbstractElementRef;
+//import no.nsd.qddt.domain.classes.elementref.ElementKind;
+//import no.nsd.qddt.domain.classes.elementref.ElementRef;
 //import org.hibernate.annotations.GenericGenerator;
 //import org.hibernate.envers.AuditMappedBy;
 //import org.hibernate.envers.Audited;

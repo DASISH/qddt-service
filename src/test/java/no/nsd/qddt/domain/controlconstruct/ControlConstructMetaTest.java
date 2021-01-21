@@ -7,8 +7,8 @@ import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.QuestionItemService;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
-import no.nsd.qddt.classes.builders.InstrumentBuilder;
-import no.nsd.qddt.classes.builders.QuestionItemBuilder;
+import no.nsd.qddt.domain.classes.builders.InstrumentBuilder;
+import no.nsd.qddt.domain.classes.builders.QuestionItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 //import no.nsd.qddt.domain.question.Question;
-//import no.nsd.qddt.classes.builders.QuestionBuilder;
+//import no.nsd.qddt.domain.classes.builders.QuestionBuilder;
 ;
 
 @RunWith(SpringJUnit4ClassRunner.class)

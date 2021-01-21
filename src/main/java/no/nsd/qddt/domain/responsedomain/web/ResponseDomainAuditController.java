@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.audit.ResponseDomainAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
-import static no.nsd.qddt.classes.AbstractEntityAudit.ChangeKind.*;
+import static no.nsd.qddt.domain.classes.AbstractEntityAudit.ChangeKind.*;
 
 /**
  * @author Stig Norland

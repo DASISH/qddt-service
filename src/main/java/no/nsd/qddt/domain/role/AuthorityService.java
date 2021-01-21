@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.role;
 
-import no.nsd.qddt.classes.interfaces.BaseService;
+import no.nsd.qddt.domain.classes.interfaces.BaseService;
 
 import java.util.List;
 import java.util.UUID;

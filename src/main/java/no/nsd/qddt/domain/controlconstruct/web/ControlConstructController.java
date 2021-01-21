@@ -2,13 +2,13 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nsd.qddt.classes.AbstractController;
+import no.nsd.qddt.domain.classes.AbstractController;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static no.nsd.qddt.classes.AbstractEntityAudit.ChangeKind.CREATED;
+import static no.nsd.qddt.domain.classes.AbstractEntityAudit.ChangeKind.CREATED;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**

@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.agency;
 
-import no.nsd.qddt.classes.interfaces.IWebMenuPreview;
-import no.nsd.qddt.classes.interfaces.Version;
+import no.nsd.qddt.domain.classes.interfaces.IWebMenuPreview;
+import no.nsd.qddt.domain.classes.interfaces.Version;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramJsonView;
 import no.nsd.qddt.domain.user.json.UserJson;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;

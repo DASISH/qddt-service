@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.category.web;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.json.CategoryJsonEdit;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

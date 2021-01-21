@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.agency;
 
-import no.nsd.qddt.classes.exception.ResourceNotFoundException;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

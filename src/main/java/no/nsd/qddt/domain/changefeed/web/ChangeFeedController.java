@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.changefeed.web;
 
-import no.nsd.qddt.classes.AbstractController;
+import no.nsd.qddt.domain.classes.AbstractController;
 import no.nsd.qddt.domain.changefeed.ChangeFeed;
 import no.nsd.qddt.domain.changefeed.ChangeFeedService;
 import org.springframework.beans.factory.annotation.Autowired;

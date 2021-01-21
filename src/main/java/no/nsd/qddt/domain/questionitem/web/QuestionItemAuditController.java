@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.questionitem.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import org.springframework.beans.factory.annotation.Autowired;

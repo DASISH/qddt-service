@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.controlconstruct.pojo;
 
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
-import no.nsd.qddt.classes.interfaces.IConditionNode;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.interfaces.IConditionNode;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

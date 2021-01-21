@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.universe;
 
-import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentBuilder;
 
 /**
  * @author Stig Norland

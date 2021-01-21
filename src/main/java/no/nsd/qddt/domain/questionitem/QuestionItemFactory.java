@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.questionitem;
 
-import no.nsd.qddt.classes.IEntityFactory;
+import no.nsd.qddt.domain.classes.IEntityFactory;
 
 /**
  * @author Stig Norland

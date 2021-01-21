@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.instrument;
 
-import no.nsd.qddt.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.instrument.audit.InstrumentAuditService;
 import no.nsd.qddt.domain.instrument.pojo.*;
-import no.nsd.qddt.classes.exception.ResourceNotFoundException;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

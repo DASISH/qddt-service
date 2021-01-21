@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.factory;
 
-import no.nsd.qddt.classes.IEntityFactory;
+import no.nsd.qddt.domain.classes.IEntityFactory;
 import no.nsd.qddt.domain.controlconstruct.pojo.StatementItem;
 
 import java.util.stream.Collectors;

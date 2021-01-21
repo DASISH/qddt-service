@@ -1,20 +1,20 @@
 package no.nsd.qddt.domain.topicgroup;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.classes.elementref.ElementKind;
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
-import no.nsd.qddt.classes.elementref.ParentRef;
-import no.nsd.qddt.classes.interfaces.IArchived;
-import no.nsd.qddt.classes.interfaces.IDomainObjectParentRef;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.elementref.ParentRef;
+import no.nsd.qddt.domain.classes.interfaces.IArchived;
+import no.nsd.qddt.domain.classes.interfaces.IDomainObjectParentRef;
 import no.nsd.qddt.domain.othermaterial.OtherMaterial;
-import no.nsd.qddt.classes.pdf.PdfReport;
+import no.nsd.qddt.domain.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.study.Study;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
@@ -144,7 +144,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
     }
 
     public List<Concept> getConcepts() {
-        if(concepts == null) return null;
+        if(concepts == null) return new ArrayList<>(0);
         return concepts.stream()
             .filter( Objects::nonNull )
             .collect( Collectors.toList());
@@ -192,23 +192,23 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
 
     // no update for QI when removing (it is bound to a revision anyway...).
     public void removeQuestionItem(UUID questionItemId, Integer rev) {
-        ElementRefEmbedded toDelete = new ElementRefEmbedded( ElementKind.QUESTION_ITEM, questionItemId,rev );
+        ElementRefEmbedded toDelete = new ElementRefEmbedded<QuestionItem>( ElementKind.QUESTION_ITEM, questionItemId,rev );
         if (topicQuestionItems.removeIf( q -> q.equals( toDelete ) )) {
             this.setChangeKind( ChangeKind.UPDATED_HIERARCHY_RELATION );
-            this.setChangeComment( "QuestionItem assosiation removed" );
+            this.setChangeComment( "QuestionItem association removed" );
         }
     }
 
     public void addQuestionItem(UUID questionItemId, Integer rev) {
-        addQuestionItem( new ElementRefEmbedded( ElementKind.QUESTION_ITEM, questionItemId,rev ) );
+        addQuestionItem( new ElementRefEmbedded<>( ElementKind.QUESTION_ITEM, questionItemId, rev ) );
     }
 
-    public void addQuestionItem(ElementRefEmbedded qef) {
+    public void addQuestionItem(ElementRefEmbedded<QuestionItem> qef) {
         if (this.topicQuestionItems.stream().noneMatch(cqi->cqi.equals( qef ))) {
 
             topicQuestionItems.add(qef);
             this.setChangeKind(ChangeKind.UPDATED_HIERARCHY_RELATION);
-            this.setChangeComment("QuestionItem assosiation added");
+            this.setChangeComment("QuestionItem association added");
         }
         else
             LOG.debug("ConceptQuestionItem not inserted, match found" );
@@ -313,7 +313,7 @@ public class TopicGroup extends AbstractEntityAudit implements IAuthor, IArchive
             setChangeKind(ChangeKind.ARCHIVED);
             for (Concept concept : getConcepts()) {
                 if (!concept.isArchived())
-                    concept.setArchived(archived);
+                    concept.setArchived( true );
             }
         }
     }

@@ -1,11 +1,9 @@
 package no.nsd.qddt.domain.comment;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.classes.AbstractEntity;
-import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
-import no.nsd.qddt.classes.xml.XmlDDICommentsBuilder;
-import no.nsd.qddt.configuration.tbd.SecurityContext;
+import no.nsd.qddt.domain.classes.AbstractEntity;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.XmlDDICommentsBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -133,12 +131,12 @@ public class Comment extends AbstractEntity  {
 }
 
 
-    @PrePersist
-    private void onInsert(){
-        LOG.info("Comment PrePersist " + this.getClass().getSimpleName());
-        User user = SecurityContext.getUserDetails().getUser();
-        setModifiedBy( user );
-    }
+//    @PrePersist
+//    private void onInsert(){
+//        LOG.info("Comment PrePersist " + this.getClass().getSimpleName());
+//        User user = SecurityContext.getUserDetails().getUser();
+//        setModifiedBy( user );
+//    }
 
 
 }

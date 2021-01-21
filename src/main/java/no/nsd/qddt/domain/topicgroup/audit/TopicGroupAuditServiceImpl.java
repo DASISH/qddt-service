@@ -1,15 +1,16 @@
 package no.nsd.qddt.domain.topicgroup.audit;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.elementref.ElementLoader;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.concept.Concept;
-import no.nsd.qddt.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +50,18 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 
     @Override
     public Revision<Integer, TopicGroup> findLastChange(UUID uuid) {
-        return postLoadProcessing(topicGroupAuditRepository.findLastChangeRevision(uuid).get());
+        return postLoadProcessing(
+            topicGroupAuditRepository.findLastChangeRevision(uuid).orElseThrow(() -> {
+                throw  new ResourceNotFoundException(uuid, this.getClass());
+            })
+        );
     }
 
     @Override
     public Revision<Integer, TopicGroup> findRevision(UUID uuid, Integer revision) {
-        return  postLoadProcessing(topicGroupAuditRepository.findRevision(uuid, revision).get());
+        return  postLoadProcessing(topicGroupAuditRepository.findRevision(uuid, revision).orElseThrow(() -> {
+            throw  new ResourceNotFoundException(uuid, this.getClass());
+        }));
     }
 
     @Override
@@ -88,7 +95,9 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     @Override
     protected Revision<Integer, TopicGroup> postLoadProcessing(Revision<Integer, TopicGroup> instance) {
         assert  (instance != null);
-        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().get() );
+        instance.getEntity().getVersion().setRevision( instance.getRevisionNumber().orElseThrow(() -> {
+            throw  new ResourceNotFoundException(instance.getEntity().getId(), this.getClass());
+        }) );
 
         return Revision.of(instance.getMetadata(),postLoadProcessing(instance.getEntity()));
 
@@ -119,7 +128,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
 //            LOG.info("postLoadProcessing ends -> " + instance.getName()  );
 
         } catch (Exception ex){
-            LOG.error("postLoadProcessing",ex);
+            LOG.error("postLoadProcessing(TG)",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                     .map( stackTraceElement -> stackTraceElement.toString() + "Line number: "  + stackTraceElement.getLineNumber() )
                     .forEach(LOG::info);
@@ -137,7 +146,7 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
             instance.getConceptQuestionItems().forEach( qiLoader::fill );
 
         } catch (Exception ex){
-            LOG.error("postLoad-concept-Processing",ex);
+            LOG.error("postLoadProcessing(CO)",ex);
             StackTraceFilter.filter(ex.getStackTrace()).stream()
                     .map( StackTraceElement::toString )
                     .forEach(LOG::info);

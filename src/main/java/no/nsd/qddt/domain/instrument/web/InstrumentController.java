@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.instrument.web;
 import no.nsd.qddt.domain.instrument.InstrumentService;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.pojo.InstrumentViewJson;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;

@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.universe.audit;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.universe.Universe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

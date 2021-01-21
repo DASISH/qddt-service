@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.category;
 
 import no.nsd.qddt.domain.responsedomain.Code;
-import no.nsd.qddt.classes.exception.InvalidObjectException;
-import no.nsd.qddt.classes.exception.ResourceNotFoundException;
+import no.nsd.qddt.domain.classes.exception.InvalidObjectException;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

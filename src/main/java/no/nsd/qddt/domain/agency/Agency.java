@@ -8,7 +8,7 @@ import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
-import no.nsd.qddt.classes.interfaces.IWebMenuPreview;
+import no.nsd.qddt.domain.classes.interfaces.IWebMenuPreview;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.study.Study;
@@ -131,8 +131,8 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
     }
 
     @Override
-    public no.nsd.qddt.classes.interfaces.Version getVersion() {
-        return new no.nsd.qddt.classes.interfaces.Version(0,0,0,"");
+    public no.nsd.qddt.domain.classes.interfaces.Version getVersion() {
+        return new no.nsd.qddt.domain.classes.interfaces.Version(0,0,0,"");
     }
 
     public void setId(UUID id) {

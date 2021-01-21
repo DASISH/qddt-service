@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct;
 
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
-import no.nsd.qddt.classes.interfaces.BaseRepository;
+import no.nsd.qddt.domain.classes.interfaces.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

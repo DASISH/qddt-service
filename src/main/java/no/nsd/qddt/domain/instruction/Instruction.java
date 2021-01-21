@@ -2,10 +2,10 @@ package no.nsd.qddt.domain.instruction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nsd.qddt.classes.AbstractEntityAudit;
-import no.nsd.qddt.classes.pdf.PdfReport;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentBuilder;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.pdf.PdfReport;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentBuilder;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

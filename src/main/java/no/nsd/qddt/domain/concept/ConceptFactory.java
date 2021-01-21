@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.classes.IEntityFactory;
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.IEntityFactory;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
 
 import java.util.stream.Collectors;
 /**

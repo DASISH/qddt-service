@@ -10,13 +10,12 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static no.nsd.qddt.utils.StringTool.IsNullOrTrimEmpty;
 import static no.nsd.qddt.utils.StringTool.SafeString;
@@ -28,7 +27,6 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 
 
 @Entity
-@Audited
 @Table(name = "USER_ACCOUNT", uniqueConstraints = { @UniqueConstraint(columnNames = {"email" },name = "UNQ_USER_EMAIL") } )
 public class User  {
 
@@ -160,8 +158,9 @@ public class User  {
         this.modified = modified;
     }
 
-    public Set<Authority> getAuthorities() {
-        return authorities;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return AuthorityUtils.createAuthorityList(
+            authorities.stream().map( Authority::getAuthority ).toArray(String[]::new));
     }
 
     public void setAuthorities(Set<Authority> authorities) {

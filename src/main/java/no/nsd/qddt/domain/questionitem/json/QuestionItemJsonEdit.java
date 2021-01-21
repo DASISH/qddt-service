@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.questionitem.json;
 
-import no.nsd.qddt.classes.AbstractJsonEdit;
+import no.nsd.qddt.domain.classes.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
-import no.nsd.qddt.classes.elementref.ParentRef;
+import no.nsd.qddt.domain.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 
 import java.util.ArrayList;

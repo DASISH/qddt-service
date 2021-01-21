@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.publication.web;
 
-import no.nsd.qddt.classes.elementref.ElementRefEmbedded;
+import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.publication.Publication;
 import no.nsd.qddt.domain.publication.PublicationJson;
 import no.nsd.qddt.domain.publication.PublicationService;
-import no.nsd.qddt.classes.xml.XmlDDIFragmentAssembler;
+import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

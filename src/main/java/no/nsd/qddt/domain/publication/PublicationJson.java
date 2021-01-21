@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.classes.AbstractJsonEdit;
+import no.nsd.qddt.domain.classes.AbstractJsonEdit;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 
 import java.util.List;

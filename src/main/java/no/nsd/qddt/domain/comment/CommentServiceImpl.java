@@ -1,12 +1,12 @@
 package no.nsd.qddt.domain.comment;
 
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.classes.exception.ResourceNotFoundException;
-import no.nsd.qddt.configuration.tbd.SecurityContext;
+import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,13 +75,13 @@ class CommentServiceImpl  implements CommentService  {
 
     public Page<Comment> findAllByOwnerIdPageable(UUID ownerId, boolean showAll,  Pageable pageable) {
         assert  pageable != null;
-        User user = SecurityContext.getUserDetails().getUser();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
         assert user != null;
         return commentRepository.findByQueryPageable( ownerId, user.getId(), showAll, pageable);
     }
 
     public List<Comment> findAllByOwnerId(UUID ownerId, boolean showAll) {
-        User user = SecurityContext.getUserDetails().getUser();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
         assert user != null;
         return commentRepository.findByQuery( ownerId, user.getId(), showAll);
     }

@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.agency.web;
 
-import no.nsd.qddt.classes.AbstractController;
+import no.nsd.qddt.domain.classes.AbstractController;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.agency.AgencyEditJson;
 import no.nsd.qddt.domain.agency.AgencyService;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

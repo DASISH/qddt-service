@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.study.StudyService;

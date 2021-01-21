@@ -2,11 +2,11 @@ package no.nsd.qddt.domain.questionitem;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
-import no.nsd.qddt.classes.AbstractEntityAudit;
-import no.nsd.qddt.classes.elementref.ParentRef;
-import no.nsd.qddt.classes.elementref.ElementRefResponseDomain;
-import no.nsd.qddt.classes.pdf.PdfReport;
-import no.nsd.qddt.classes.xml.AbstractXmlBuilder;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.elementref.ParentRef;
+import no.nsd.qddt.domain.classes.elementref.ElementRefResponseDomain;
+import no.nsd.qddt.domain.classes.pdf.PdfReport;
+import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.utils.StringTool;
 import org.hibernate.envers.Audited;
 

@@ -1,14 +1,14 @@
 package no.nsd.qddt.domain.concept.audit.impl;
 
-import no.nsd.qddt.classes.AbstractAuditFilter;
-import no.nsd.qddt.classes.AbstractEntityAudit;
-import no.nsd.qddt.classes.elementref.ElementLoader;
+import no.nsd.qddt.domain.classes.AbstractAuditFilter;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditRepository;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

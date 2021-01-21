@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.category.HierarchyLevel;
 import no.nsd.qddt.domain.category.Category;
@@ -10,7 +10,7 @@ import no.nsd.qddt.domain.responsedomain.Code;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import no.nsd.qddt.domain.responsedomain.ResponseDomainService;
 import no.nsd.qddt.domain.responsedomain.ResponseKind;
-import no.nsd.qddt.classes.builders.CategoryBuilder;
+import no.nsd.qddt.domain.classes.builders.CategoryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

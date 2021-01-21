@@ -1,14 +1,14 @@
 package no.nsd.qddt.security.web;
 
 
-import no.nsd.qddt.classes.AbstractController;
-import no.nsd.qddt.classes.exception.InvalidPasswordException;
-import no.nsd.qddt.classes.exception.UserNotFoundException;
-import no.nsd.qddt.security.UserDetailsServiceImpl;
+import no.nsd.qddt.domain.classes.AbstractController;
+import no.nsd.qddt.domain.classes.exception.InvalidPasswordException;
+import no.nsd.qddt.domain.classes.exception.UserNotFoundException;
 import no.nsd.qddt.security.jwt.JwtAuthenticationRequest;
 import no.nsd.qddt.security.jwt.JwtAuthenticationResponse;
-import no.nsd.qddt.security.jwt.JwtUtil;
+import no.nsd.qddt.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import static no.nsd.qddt.configuration.SecurityConfiguration.passwordEncoderBean;
+import static no.nsd.qddt.security.SecurityConfiguration.passwordEncoderBean;
 
 /**
  * AuthController provides signup, signin and token refresh methods
@@ -47,10 +48,11 @@ public class AuthController extends AbstractController {
     private AuthenticationManager authManager;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private JwtTokenUtil jwtUtil;
 
+    @Qualifier("myUserDetailsService")
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
 
 
 //    /**
@@ -140,9 +142,10 @@ public class AuthController extends AbstractController {
      */
     @RequestMapping(REFRESH_TOKEN_URL)
     public ResponseEntity refreshAuthenticationToken(HttpServletRequest request) {
-        String token = request.getHeader(tokenHeader);
+//        String token = request.getHeader(tokenHeader);
         LOG.info("refreshAuthenticationToken");
-        String refreshedToken = jwtUtil.refreshToken(token);
+
+        String refreshedToken = jwtUtil.generateToken( (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails() );
         return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
     }
 

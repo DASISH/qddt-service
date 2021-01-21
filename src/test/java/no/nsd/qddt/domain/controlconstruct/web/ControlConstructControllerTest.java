@@ -1,10 +1,10 @@
 package no.nsd.qddt.domain.controlconstruct.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.pojo.QuestionConstruct;
-import no.nsd.qddt.classes.elementref.ElementRefQuestionItem;
+import no.nsd.qddt.domain.classes.elementref.ElementRefQuestionItem;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

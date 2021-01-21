@@ -1,9 +1,9 @@
 package no.nsd.qddt.domain.questionitem.json;
 
-import no.nsd.qddt.classes.elementref.ElementKind;
-import no.nsd.qddt.classes.elementref.ElementRefResponseDomain;
-import no.nsd.qddt.classes.interfaces.IElementRef;
-import no.nsd.qddt.classes.interfaces.Version;
+import no.nsd.qddt.domain.classes.elementref.ElementKind;
+import no.nsd.qddt.domain.classes.elementref.ElementRefResponseDomain;
+import no.nsd.qddt.domain.classes.interfaces.IElementRef;
+import no.nsd.qddt.domain.classes.interfaces.Version;
 import no.nsd.qddt.domain.responsedomain.json.ResponseDomainJsonEdit;
 
 import java.util.UUID;

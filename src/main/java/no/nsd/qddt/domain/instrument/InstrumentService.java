@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.instrument;
 
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.instrument.pojo.InstrumentViewJson;
-import no.nsd.qddt.classes.interfaces.BaseService;
+import no.nsd.qddt.domain.classes.interfaces.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

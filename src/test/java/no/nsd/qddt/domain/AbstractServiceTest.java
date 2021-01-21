@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain;
 
-import no.nsd.qddt.classes.interfaces.BaseRepository;
+import no.nsd.qddt.domain.classes.interfaces.BaseRepository;
 import no.nsd.qddt.utils.BeforeSecurityContext;
 import org.junit.After;
 import org.junit.Before;

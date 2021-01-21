@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.role;
 
-import no.nsd.qddt.classes.interfaces.BaseRepository;
+import no.nsd.qddt.domain.classes.interfaces.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;

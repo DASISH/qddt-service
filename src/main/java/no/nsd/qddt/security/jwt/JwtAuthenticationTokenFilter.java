@@ -1,7 +1,6 @@
 package no.nsd.qddt.security.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,24 +16,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author saka7
- * Checks JWT validity
+ * @author Stig Norland
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    @Qualifier("userDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private JwtUtil jwtTokenUtil;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Value("${auth.header}")
     private String tokenHeader;
 
     /**
      * Checks if JWT present and valid
-     * @param request with JWT
+     *
+     * @param request  with JWT
      * @param response
      * @param chain
      * @throws ServletException
@@ -45,25 +43,24 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
-        String authToken = request.getHeader(this.tokenHeader);
-        if (authToken != null && authToken.startsWith("Bearer "))
-            authToken = authToken.substring(6).trim();
+        String authToken = request.getHeader( this.tokenHeader );
+        if (authToken != null && authToken.startsWith( "Bearer " ))
+            authToken = authToken.substring( 6 ).trim();
 
-        String username = jwtTokenUtil.getUsernameFromToken(authToken);
+        String username = jwtTokenUtil.getUsernameFromToken( authToken );
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername( username );
 
-            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+            if (jwtTokenUtil.validateToken( authToken, userDetails )) {
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken( userDetails, null, userDetails.getAuthorities() );
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                authentication.setDetails( new WebAuthenticationDetailsSource().buildDetails( request ) );
+                SecurityContextHolder.getContext().setAuthentication( authentication );
             }
         }
-        chain.doFilter(request, response);
+        chain.doFilter( request, response );
     }
-
 }

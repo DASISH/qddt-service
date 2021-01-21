@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.universe.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.universe.Universe;
 import no.nsd.qddt.domain.universe.audit.UniverseAuditService;
 import org.springframework.beans.factory.annotation.Autowired;

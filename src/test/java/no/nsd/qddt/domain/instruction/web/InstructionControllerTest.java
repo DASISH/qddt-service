@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instruction.web;
 
-import no.nsd.qddt.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.AbstractEntityAudit;
 import no.nsd.qddt.domain.ControllerWebIntegrationTest;
 import no.nsd.qddt.domain.instruction.Instruction;
 import no.nsd.qddt.domain.instruction.InstructionService;
