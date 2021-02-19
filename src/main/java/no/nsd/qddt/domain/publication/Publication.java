@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.publication;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.publicationstatus.PublicationStatus;
 import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;

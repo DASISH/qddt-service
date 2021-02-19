@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.study;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
@@ -51,17 +51,17 @@ class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean exists(UUID uuid) {
-        return studyRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return studyRepository.existsById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Study findOne(UUID uuid) {
+    public Study findOne(UUID id) {
         return postLoadProcessing(
-            studyRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException(uuid, Study.class))
+            studyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id, Study.class))
         );
     }
 
@@ -78,10 +78,10 @@ class StudyServiceImpl implements StudyService {
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public void delete(UUID uuid) {
-        if (studyRepository.hasArchive( uuid.toString() ) > 0)
-            throw new DescendantsArchivedException( uuid.toString() );
-        studyRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        if (studyRepository.hasArchive( id.toString() ) > 0)
+            throw new DescendantsArchivedException( id.toString() );
+        studyRepository.deleteById(id);
     }
 
     private Study prePersistProcessing(Study instance) {

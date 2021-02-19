@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.classes.xml;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ElementKind;
 
 import java.util.Map;

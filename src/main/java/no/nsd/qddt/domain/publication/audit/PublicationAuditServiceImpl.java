@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.publication.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.publication.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,23 +27,23 @@ class PublicationAuditServiceImpl extends AbstractAuditFilter<Integer,Publicatio
     }
 
     @Override
-    public Revision<Integer, Publication> findLastChange(UUID uuid) {
-        return publicationAuditRepository.findLastChangeRevision(uuid).get();
+    public Revision<Integer, Publication> findLastChange(UUID id) {
+        return publicationAuditRepository.findLastChangeRevision(id).get();
     }
 
     @Override
-    public Revision<Integer, Publication> findRevision(UUID uuid, Integer revision) {
-        return publicationAuditRepository.findRevision(uuid, revision).get();
+    public Revision<Integer, Publication> findRevision(UUID id, Integer revision) {
+        return publicationAuditRepository.findRevision(id, revision).get();
     }
 
     @Override
-    public Page<Revision<Integer, Publication>> findRevisions(UUID uuid, Pageable pageable) {
-        return publicationAuditRepository.findRevisions(uuid, pageable);
+    public Page<Revision<Integer, Publication>> findRevisions(UUID id, Pageable pageable) {
+        return publicationAuditRepository.findRevisions(id, pageable);
     }
 
     @Override
-    public Revision<Integer, Publication> findFirstChange(UUID uuid) {
-        return publicationAuditRepository.findRevisions(uuid).reverse().getContent().get(0);
+    public Revision<Integer, Publication> findFirstChange(UUID id) {
+        return publicationAuditRepository.findRevisions(id).reverse().getContent().get(0);
     }
 
 

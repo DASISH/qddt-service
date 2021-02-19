@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.questionitem;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.itextpdf.layout.element.Paragraph;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.classes.elementref.ElementRefResponseDomain;
 import no.nsd.qddt.domain.classes.pdf.PdfReport;

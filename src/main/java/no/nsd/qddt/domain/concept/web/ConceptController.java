@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept.web;
 
-import no.nsd.qddt.domain.classes.AbstractController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.ConceptService;
 import no.nsd.qddt.domain.concept.json.ConceptJsonEdit;
@@ -85,8 +85,8 @@ public class ConceptController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
-    public ConceptJsonEdit copy(@PathVariable("uuid") UUID sourceId ,
+    @RequestMapping(value = "/copy/{id}/{rev}/{parentUuid}", method = RequestMethod.POST)
+    public ConceptJsonEdit copy(@PathVariable("id") UUID sourceId ,
                                 @PathVariable("rev") Integer sourceRev,
                                 @PathVariable("parentUuid") UUID parentId)  {
         return concept2Json(
@@ -96,8 +96,8 @@ public class ConceptController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/create/{uuid}", method = RequestMethod.POST)
-    public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("uuid") UUID parentId) {
+    @RequestMapping(value = "/create/{id}", method = RequestMethod.POST)
+    public ConceptJsonEdit createByParent(@RequestBody Concept concept, @PathVariable("id") UUID parentId) {
 
         if (service.exists( parentId )) {
             return concept2Json(

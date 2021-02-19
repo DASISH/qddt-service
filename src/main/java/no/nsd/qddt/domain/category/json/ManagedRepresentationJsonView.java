@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.category.json;
 
-import no.nsd.qddt.domain.classes.ResponseCardinality;
+import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryRelationCodeType;
 import no.nsd.qddt.domain.category.CategoryType;

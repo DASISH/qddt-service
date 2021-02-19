@@ -3,7 +3,7 @@ package no.nsd.qddt.domain.author;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import no.nsd.qddt.domain.classes.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.study.Study;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;

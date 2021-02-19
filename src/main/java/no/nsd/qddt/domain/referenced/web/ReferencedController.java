@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.referenced.web;
 
-import no.nsd.qddt.domain.classes.AbstractController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.referenced.Referenced;
 import no.nsd.qddt.domain.referenced.ReferencedService;
 import org.springframework.beans.factory.annotation.Autowired;

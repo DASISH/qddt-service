@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;

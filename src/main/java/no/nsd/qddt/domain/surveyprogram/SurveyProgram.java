@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.author.Author;
 import no.nsd.qddt.domain.author.IAuthor;
 import no.nsd.qddt.domain.classes.interfaces.IArchived;

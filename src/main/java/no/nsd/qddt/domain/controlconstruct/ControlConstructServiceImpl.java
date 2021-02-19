@@ -45,7 +45,7 @@ import static no.nsd.qddt.utils.StringTool.likeify;
 class ControlConstructServiceImpl implements ControlConstructService {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
-    private final ControlConstructRepository controlConstructRepository;
+    private final ControlConstructRepository<ControlConstruct> controlConstructRepository;
     private final ControlConstructAuditService auditService;
     private final InstructionService iService;
     private final UniverseService uService;
@@ -72,8 +72,8 @@ class ControlConstructServiceImpl implements ControlConstructService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return controlConstructRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return controlConstructRepository.existsById(id);
     }
 
     @Override
@@ -105,15 +105,15 @@ class ControlConstructServiceImpl implements ControlConstructService {
     @Override
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        controlConstructRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        controlConstructRepository.deleteById(id);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
     public List<ConstructQuestionJson> findByQuestionItems(List<UUID> questionItemIds) {
         assert (questionItemIds.size() > 0);
-        return controlConstructRepository.findByQuestionItemRefElementId(questionItemIds.get(0)).stream()
+        return controlConstructRepository.findByQuestionItem(questionItemIds.get(0)).stream()
             .map(c-> (ConstructQuestionJson)mapConstruct(postLoadProcessing(c)))
             .collect(Collectors.toList());
     }
@@ -159,7 +159,7 @@ class ControlConstructServiceImpl implements ControlConstructService {
         }
 
         if(instance.isBasedOn() || instance.isNewCopy()) {
-            Optional<Integer> rev= auditService.findLastChange(instance.getId()).getRevisionNumber();
+            Optional<Integer> rev= auditService.findLastChange(instance.getBasedOnObject()).getRevisionNumber();
             switch (instance.getClassKind()) {
                 case "QUESTION_CONSTRUCT":
                     instance = (S) new FactoryQuestionConstruct().copy((QuestionConstruct)instance, rev.get() );

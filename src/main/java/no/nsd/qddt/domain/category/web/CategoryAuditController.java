@@ -1,8 +1,9 @@
 package no.nsd.qddt.domain.category.web;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
-import no.nsd.qddt.domain.category.audit.CategoryAuditService;
+import no.nsd.qddt.domain.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
@@ -22,33 +23,33 @@ import java.util.UUID;
 @RequestMapping(value = "/audit/category", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CategoryAuditController {
 
-    private final CategoryAuditService auditService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public CategoryAuditController(CategoryAuditService service) {
-        this.auditService = service;
+    public CategoryAuditController(CategoryService repository) {
+        this.categoryService = repository;
     }
 
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping( "/{id}")
     public Revision<Integer, Category> getLastRevision(@PathVariable("id") UUID id) {
-        return auditService.findLastChange(id);
+        return categoryService.findLastChange(id);
     }
 
-    @RequestMapping(value = "/{id}/{revision}", method = RequestMethod.GET)
+    @GetMapping( "/{id}/{revision}")
     public Revision<Integer, Category> getByRevision(@PathVariable("id") UUID id, @PathVariable("revision") Integer revision) {
-        return auditService.findRevision(id, revision);
+        return categoryService.findRevision(id, revision);
     }
 
-    @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
+    @GetMapping( "/{id}/all")
     public PagedModel<EntityModel<Revision<Integer, Category>>> allProjects(
-            @PathVariable("id") UUID id,
-            @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
+        @PathVariable("id") UUID id,
+        @RequestParam(value = "ignorechangekinds",defaultValue = "IN_DEVELOPMENT,UPDATED_HIERARCHY_RELATION,UPDATED_PARENT")
             Collection<AbstractEntityAudit.ChangeKind> changekinds,
-            Pageable pageable, PagedResourcesAssembler<Revision<Integer, Category>> assembler) {
+        Pageable pageable, PagedResourcesAssembler<Revision<Integer, Category>> assembler) {
+//        return getPageIncLatest(categoryService.findRevisions(id),changeKinds,pageable);
 
         return assembler.toModel(
-            auditService.findRevisionByIdAndChangeKindNotIn(id,changekinds, pageable)
+            categoryService.findRevisionsByChangeKindIncludeLatest(id,changekinds, pageable)
         );
     }
 

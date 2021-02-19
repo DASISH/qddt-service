@@ -45,14 +45,14 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return responseDomainRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return responseDomainRepository.existsById(id);
     }
 
     @Override
-    public ResponseDomain findOne(UUID uuid) {
-        return responseDomainRepository.findById(uuid).map( this::postLoadProcessing ).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, ResponseDomain.class));
+    public ResponseDomain findOne(UUID id) {
+        return responseDomainRepository.findById(id).map( this::postLoadProcessing ).orElseThrow(
+                () -> new ResourceNotFoundException(id, ResponseDomain.class));
     }
 
     @Override
@@ -88,8 +88,8 @@ class ResponseDomainServiceImpl implements ResponseDomainService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        responseDomainRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        responseDomainRepository.deleteById(id);
     }
 
     private ResponseDomain prePersistProcessing(ResponseDomain instance) {

@@ -1,19 +1,18 @@
 package no.nsd.qddt.domain.surveyprogram;
 
-import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.classes.elementref.ElementLoader;
-import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
-import no.nsd.qddt.domain.topicgroup.TopicGroup;
-import no.nsd.qddt.domain.user.User;
 import no.nsd.qddt.domain.classes.exception.DescendantsArchivedException;
 import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
 import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
+import no.nsd.qddt.domain.concept.Concept;
+import no.nsd.qddt.domain.questionitem.audit.QuestionItemAuditService;
+import no.nsd.qddt.domain.topicgroup.TopicGroup;
+import no.nsd.qddt.domain.user.User;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,15 +46,15 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return surveyProgramRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return surveyProgramRepository.existsById(id);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public SurveyProgram findOne(UUID uuid) {
-        return postLoadProcessing(surveyProgramRepository.findById(uuid)
-            .orElseThrow(() -> new ResourceNotFoundException(uuid, SurveyProgram.class))
+    public SurveyProgram findOne(UUID id) {
+        return postLoadProcessing(surveyProgramRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(id, SurveyProgram.class))
         );
     }
 
@@ -79,10 +78,10 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public void delete(UUID uuid) {
-        if (surveyProgramRepository.hasArchive( uuid.toString() ) > 0)
-            throw new DescendantsArchivedException( uuid.toString() );
-        surveyProgramRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        if (surveyProgramRepository.hasArchive( id.toString() ) > 0)
+            throw new DescendantsArchivedException( id.toString() );
+        surveyProgramRepository.deleteById(id);
     }
 
     @Override
@@ -92,21 +91,21 @@ class SurveyProgramServiceImpl implements SurveyProgramService {
             .stream().map(this::postLoadProcessing).collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional()
-    public List<SurveyProgram> reOrder(List<SurveyOrder> surveyOrders) {
-        if(surveyOrders != null) {
-            LOG.info( surveyOrders.toString() );
-            try {
-                surveyOrders.forEach(item ->  surveyProgramRepository.reOrder(item.uuid,item.index ) );
-            } catch (Exception ex) {
-                LOG.error( ex.getMessage() );
-            }
-        }
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        return surveyProgramRepository.findByAgencyOrderByAgencyIdx(user.getAgency())
-            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
-    }
+//    @Override
+//    @Transactional()
+//    public List<SurveyProgram> reOrder(List<SurveyOrder> surveyOrders) {
+//        if(surveyOrders != null) {
+//            LOG.info( surveyOrders.toString() );
+//            try {
+//                surveyOrders.forEach(item ->  surveyProgramRepository.reOrder(item.id,item.index ) );
+//            } catch (Exception ex) {
+//                LOG.error( ex.getMessage() );
+//            }
+//        }
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getDetails();
+//        return surveyProgramRepository.findByAgencyOrderByAgencyIdx(user.getAgency())
+//            .stream().map(this::postLoadProcessing).collect(Collectors.toList());
+//    }
 
 
     private SurveyProgram prePersistProcessing(SurveyProgram instance) {

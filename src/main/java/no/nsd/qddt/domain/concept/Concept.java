@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.concept;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;
 import no.nsd.qddt.domain.classes.elementref.ParentRef;

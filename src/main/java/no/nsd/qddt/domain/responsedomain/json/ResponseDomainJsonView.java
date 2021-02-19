@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
-import no.nsd.qddt.domain.classes.ResponseCardinality;
+import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonView;
 import no.nsd.qddt.domain.classes.interfaces.Version;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;

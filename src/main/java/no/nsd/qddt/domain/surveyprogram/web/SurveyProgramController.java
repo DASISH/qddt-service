@@ -1,7 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
-import no.nsd.qddt.domain.surveyprogram.SurveyOrders;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgramService;
 import no.nsd.qddt.domain.user.User;
@@ -66,12 +65,12 @@ public class SurveyProgramController {
         return service.findByAgency(user);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/reorder", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<SurveyProgram> reOrder(@RequestBody SurveyOrders orders) {
-        return service.reOrder(orders.getContent());
-    }
-
+//    @ResponseStatus(value = HttpStatus.OK)
+//    @RequestMapping(value = "/reorder", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<SurveyProgram> reOrder(@RequestBody SurveyOrders orders) {
+//        return service.reOrder(orders.getContent());
+//    }
+//
 
     @ResponseBody
     @RequestMapping(value = "/pdf/{id}", method = RequestMethod.GET, produces = "application/pdf")

@@ -7,7 +7,7 @@
 //import org.springframework.http.converter.HttpMessageConverter;
 //import org.springframework.security.authentication.AuthenticationManager;
 //import org.springframework.security.web.FilterChainProxy;
-//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+//import org.springframework.test.web.servlet.
 //import org.springframework.test.web.servlet.MockMvc;
 //import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 //import org.springframework.web.context.WebApplicationContext;
@@ -28,7 +28,7 @@
 // *
 // * @author Dag Heradstveit
 // */
-//@RunWith(SpringJUnit4ClassRunner)
+//@RunWith()
 //public abstract class ControllerWebIntegrationTest {
 //
 //

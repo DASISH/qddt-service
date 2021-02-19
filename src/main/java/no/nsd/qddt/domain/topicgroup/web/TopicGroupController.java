@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.topicgroup.web;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nsd.qddt.domain.classes.AbstractController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.othermaterial.OtherMaterialService;
 import no.nsd.qddt.domain.study.StudyService;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nsd.qddt.domain.classes.AbstractEntityAudit.ChangeKind.CREATED;
+import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.CREATED;
 
 
 /**
@@ -95,8 +95,8 @@ public class TopicGroupController extends AbstractController {
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/copy/{uuid}/{rev}/{parentUuid}", method = RequestMethod.POST)
-    public TopicGroupJson copy(@PathVariable("uuid") UUID sourceId ,
+    @RequestMapping(value = "/copy/{id}/{rev}/{parentUuid}", method = RequestMethod.POST)
+    public TopicGroupJson copy(@PathVariable("id") UUID sourceId ,
                                 @PathVariable("rev") Integer sourceRev,
                                 @PathVariable("parentUuid") UUID parentId) {
         return new TopicGroupJson(
@@ -112,8 +112,8 @@ public class TopicGroupController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-parent/{uuid}", method = RequestMethod.GET)
-    public List<TopicGroupJson> findByStudy(@PathVariable("uuid") UUID studyId) {
+    @RequestMapping(value = "/list/by-parent/{id}", method = RequestMethod.GET)
+    public List<TopicGroupJson> findByStudy(@PathVariable("id") UUID studyId) {
         try {
             return service.findByStudyId(studyId).stream()
                     .map(TopicGroupJson::new)

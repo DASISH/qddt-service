@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 interface ResponseDomainAuditRepository extends RevisionRepository<ResponseDomain, UUID, Integer> {
 
-//    Page<Revision<Integer,ResponseDomain>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+//    Page<Revision<Integer,ResponseDomain>> findRevisionsByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 
 
 }

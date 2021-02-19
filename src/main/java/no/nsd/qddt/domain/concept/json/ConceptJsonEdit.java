@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept.json;
 
-import no.nsd.qddt.domain.classes.AbstractJsonEdit;
+import no.nsd.qddt.domain.AbstractJsonEdit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.classes.elementref.ElementRefEmbedded;

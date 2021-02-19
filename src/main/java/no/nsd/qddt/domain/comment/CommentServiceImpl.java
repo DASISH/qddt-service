@@ -35,15 +35,15 @@ class CommentServiceImpl  implements CommentService  {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return commentRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return commentRepository.existsById(id);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-    public Comment findOne(UUID uuid) {
-        return commentRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Comment.class)
+    public Comment findOne(UUID id) {
+        return commentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Comment.class)
         );
     }
 
@@ -60,9 +60,9 @@ class CommentServiceImpl  implements CommentService  {
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT')")
-    public void delete(UUID uuid) {
-        commentRepository.deleteById(uuid);
-        commentRepository.indexChildren(uuid);
+    public void delete(UUID id) {
+        commentRepository.deleteById(id);
+        commentRepository.indexChildren(id);
     }
 
     protected Comment prePersistProcessing(Comment instance) {

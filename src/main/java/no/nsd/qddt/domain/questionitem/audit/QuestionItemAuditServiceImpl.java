@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.questionitem.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
@@ -39,25 +39,25 @@ class QuestionItemAuditServiceImpl extends AbstractAuditFilter<Integer,QuestionI
     }
 
     @Override
-    public Revision<Integer, QuestionItem> findLastChange(UUID uuid) {
-        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, QuestionItem> findLastChange(UUID id) {
+        return postLoadProcessing(questionItemAuditRepository.findLastChangeRevision(id).get());
     }
 
     @Override
-    public Revision<Integer, QuestionItem> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(questionItemAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, QuestionItem> findRevision(UUID id, Integer revision) {
+        return postLoadProcessing(questionItemAuditRepository.findRevision(id, revision).get());
     }
 
     @Override
-    public Page<Revision<Integer, QuestionItem>> findRevisions(UUID uuid, Pageable pageable) {
-        return questionItemAuditRepository.findRevisions(uuid, pageable).
+    public Page<Revision<Integer, QuestionItem>> findRevisions(UUID id, Pageable pageable) {
+        return questionItemAuditRepository.findRevisions(id, pageable).
             map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Integer, QuestionItem> findFirstChange(UUID uuid) {
+    public Revision<Integer, QuestionItem> findFirstChange(UUID id) {
         return postLoadProcessing(
-            questionItemAuditRepository.findRevisions(uuid)
+            questionItemAuditRepository.findRevisions(id)
                 .reverse().getContent().get(0));
     }
 

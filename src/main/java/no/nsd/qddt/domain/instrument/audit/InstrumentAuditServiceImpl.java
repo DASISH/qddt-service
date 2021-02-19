@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instrument.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
@@ -34,25 +34,25 @@ class InstrumentAuditServiceImpl extends AbstractAuditFilter<Integer,Instrument>
     }
 
     @Override
-    public Revision<Integer, Instrument> findLastChange(UUID uuid) {
-        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, Instrument> findLastChange(UUID id) {
+        return postLoadProcessing(instrumentAuditRepository.findLastChangeRevision(id).get());
     }
 
     @Override
-    public Revision<Integer, Instrument> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(instrumentAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, Instrument> findRevision(UUID id, Integer revision) {
+        return postLoadProcessing(instrumentAuditRepository.findRevision(id, revision).get());
     }
 
     @Override
-    public Page<Revision<Integer, Instrument>> findRevisions(UUID uuid, Pageable pageable) {
-        return instrumentAuditRepository.findRevisions(uuid, pageable).
+    public Page<Revision<Integer, Instrument>> findRevisions(UUID id, Pageable pageable) {
+        return instrumentAuditRepository.findRevisions(id, pageable).
                 map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Integer, Instrument> findFirstChange(UUID uuid) {
+    public Revision<Integer, Instrument> findFirstChange(UUID id) {
         return postLoadProcessing(
-            instrumentAuditRepository.findRevisions(uuid)
+            instrumentAuditRepository.findRevisions(id)
                 .reverse().getContent().get(0));
     }
 

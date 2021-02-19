@@ -1,5 +1,6 @@
 package no.nsd.qddt.domain.category;
 
+
 import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentBuilder;
 
 /**

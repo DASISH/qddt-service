@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.universe.audit;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.universe.Universe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +18,6 @@ import java.util.UUID;
 @Repository
 interface UniverseAuditRepository extends RevisionRepository<Universe, UUID, Integer> {
 
-    Page<Revision<Integer,Universe>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer,Universe>> findRevisionsByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }
 

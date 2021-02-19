@@ -17,14 +17,17 @@ import java.util.UUID;
  * @author Dag Østgulen Heradstveit
  */
 @Repository
-interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUID> {
+interface ControlConstructRepository<S extends ControlConstruct> extends BaseRepository<S,UUID> {
 
     /**
      *
      * @param questionId
      * @return
      */
-    List<QuestionConstruct> findByQuestionItemRefElementId(UUID questionId);
+    @Query(name="findByQuestionItem", nativeQuery = true,
+        value = "SELECT cc.* FROM control_construct cc WHERE questionitem_id = :questionId "
+        ,countQuery = "SELECT count(cc.*) FROM control_construct cc WHERE questionitem_id = :questionId ")
+        List<QuestionConstruct> findByQuestionItem(UUID questionId);
 
 
     @Query(name="findByQuery", nativeQuery = true,
@@ -34,14 +37,14 @@ interface ControlConstructRepository extends BaseRepository<ControlConstruct,UUI
             "cc.xml_lang ILIKE :xmlLang AND " +
             "( cc.control_construct_super_kind = :superKind or cc.name ILIKE :name or cc.description ILIKE :description " +
             "or qi.name ILIKE :questionName or qi.question ILIKE :questionText ) "
-            + "ORDER BY ?#{#pageable}"
+//            + "ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(cc.*) FROM CONTROL_CONSTRUCT cc " +
             "LEFT JOIN AUDIT.QUESTION_ITEM_AUD qi ON qi.id = cc.questionItem_id  AND  qi.rev = cc.questionItem_revision " +
             "WHERE cc.control_construct_kind = :kind AND " +
             "cc.xml_lang ILIKE :xmlLang AND " +
             "( cc.control_construct_super_kind = :superKind or cc.name ILIKE :name or cc.description ILIKE :description " +
             "or qi.name ILIKE :questionName or qi.question ILIKE :questionText ) "
-        + " ORDER BY ?#{#pageable}"
+//        + " ORDER BY ?#{#pageable}"
     )
     <S extends ControlConstruct> Page<S> findByQuery(@Param("kind")String kind, @Param("superKind")String superKind,
                                                      @Param("name")String name, @Param("description")String desc,

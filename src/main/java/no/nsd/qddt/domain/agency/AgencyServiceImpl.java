@@ -38,8 +38,8 @@ class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return agencyRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return agencyRepository.existsById(id);
     }
 
     @Override
@@ -82,8 +82,8 @@ class AgencyServiceImpl implements AgencyService {
 
 
     @Override
-    public void delete(UUID uuid) {
-        agencyRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        agencyRepository.deleteById(id);
     }
 
 

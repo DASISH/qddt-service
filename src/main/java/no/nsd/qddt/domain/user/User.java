@@ -4,16 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.role.Authority;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -28,16 +26,15 @@ import static no.nsd.qddt.utils.StringTool.SafeString;
 
 @Entity
 @Table(name = "USER_ACCOUNT", uniqueConstraints = { @UniqueConstraint(columnNames = {"email" },name = "UNQ_USER_EMAIL") } )
-public class User  {
+public class User implements Serializable {
 
-    @Transient
-    @JsonIgnore
-    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
+//    @Transient
+//    @JsonIgnore
+//    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Id
     @Type(type="pg-uuid")
-    @GeneratedValue(generator ="UUID")
-    @GenericGenerator(name ="UUID", strategy ="org.hibernate.id.UUIDGenerator")
+    @GeneratedValue
     @Column(name ="id", updatable = false, nullable = false)
     private UUID id;
 
@@ -66,13 +63,12 @@ public class User  {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
-    @Column(name = "updated")
     @Version
     private Timestamp modified;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name="user_authority",
+    @JoinTable(name="user_account_authority",
             joinColumns=@JoinColumn(name="user_id"),
             inverseJoinColumns=@JoinColumn(name="authority_id"))
     private Set<Authority> authorities = new HashSet<>();
@@ -89,20 +85,20 @@ public class User  {
 
     @PrePersist
     public void onPrePersist() {
-        LOG.debug("USER INSERT");
+//        LOG.debug("USER INSERT");
         if (IsNullOrTrimEmpty( password))
             setPassword("$2a$10$O1MMi3SLcvwtJIT9CSZyN.aLtFKN.K2LtKyHZ52wElo0zh5gI1EyW");    // set password = password
     }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        LOG.debug("USER UPDATE");
-    }
+//
+//    @PreUpdate
+//    public void onPreUpdate() {
+//        LOG.debug("USER UPDATE");
+//    }
 
 
     public UUID getId() {
-        if (id == null)
-            LOG.error( "user id is null " + this);
+//        if (id == null)
+//            LOG.error( "user id is null " + this);
         return id;
     }
 
@@ -210,3 +206,4 @@ public class User  {
     }
 
 }
+

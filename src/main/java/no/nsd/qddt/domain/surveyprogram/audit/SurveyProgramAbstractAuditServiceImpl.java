@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.surveyprogram.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
@@ -39,27 +39,27 @@ class SurveyProgramAbstractAuditServiceImpl extends AbstractAuditFilter<Integer,
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, SurveyProgram> findLastChange(UUID uuid) {
-        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, SurveyProgram> findLastChange(UUID id) {
+        return postLoadProcessing(surveyProgramAuditRepository.findLastChangeRevision(id).get());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, SurveyProgram> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(surveyProgramAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, SurveyProgram> findRevision(UUID id, Integer revision) {
+        return postLoadProcessing(surveyProgramAuditRepository.findRevision(id, revision).get());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, SurveyProgram>> findRevisions(UUID uuid, Pageable pageable) {
-        return surveyProgramAuditRepository.findRevisions(uuid,pageable)
+    public Page<Revision<Integer, SurveyProgram>> findRevisions(UUID id, Pageable pageable) {
+        return surveyProgramAuditRepository.findRevisions(id,pageable)
             .map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Integer, SurveyProgram> findFirstChange(UUID uuid) {
+    public Revision<Integer, SurveyProgram> findFirstChange(UUID id) {
         return postLoadProcessing(
-            surveyProgramAuditRepository.findRevisions(uuid)
+            surveyProgramAuditRepository.findRevisions(id)
                 .reverse().getContent().get(0));
     }
 

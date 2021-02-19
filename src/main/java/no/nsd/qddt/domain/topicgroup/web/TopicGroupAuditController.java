@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.web;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import no.nsd.qddt.domain.topicgroup.audit.TopicGroupAuditService;
 import no.nsd.qddt.domain.topicgroup.json.TopicGroupRevisionJson;

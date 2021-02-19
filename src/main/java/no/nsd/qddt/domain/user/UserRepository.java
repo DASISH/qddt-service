@@ -14,15 +14,19 @@ import java.util.UUID;
 /**
  * @author Dag Østgulen Heradstveit
  */
+
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
+
     Optional<User> findByEmailIgnoreCase(String email);
 
-    Page<User> findByUsernameIgnoreCaseLike(String name, Pageable pageable);
+//    Page<User> findByUsernameIgnoreCaseLikeOrEmailIgnoreCaseLike(String userName, String eMail Pageable pageable);
+
+    Page<User> findUsersByUsernameIsLikeOrEmailIsLike(String username, String email, Pageable pageable);
 
     @Modifying
     @Query(value = "update user_account set password = :passwordEncrypted where id = :uuid" ,nativeQuery = true )
-    void setPassword(@Param("uuid") UUID uuid, @Param("passwordEncrypted") String passwordEncrypted);
+    void setPassword(@Param("uuid") UUID id, @Param("passwordEncrypted") String passwordEncrypted);
 }
 

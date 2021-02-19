@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface OtherMaterialService  {
 
 
-    OtherMaterial saveFile(MultipartFile multipartFile, UUID uuid) throws IOException;
+    OtherMaterial saveFile(MultipartFile multipartFile, UUID id) throws IOException;
 
     File getFile(UUID root, String fileName);
 

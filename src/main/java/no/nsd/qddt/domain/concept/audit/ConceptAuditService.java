@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept.audit;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.interfaces.BaseServiceAudit;
 import no.nsd.qddt.domain.concept.Concept;
 import org.springframework.data.domain.Page;

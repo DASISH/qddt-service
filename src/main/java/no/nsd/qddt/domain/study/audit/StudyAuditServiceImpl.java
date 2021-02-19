@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.study.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.Comment;
 import no.nsd.qddt.domain.comment.CommentService;
 import no.nsd.qddt.domain.study.Study;
@@ -42,26 +42,26 @@ class StudyAuditServiceImpl extends AbstractAuditFilter<Integer,Study> implement
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Study> findLastChange(UUID uuid) {
-        return studyAuditRepository.findLastChangeRevision(uuid).get();
+    public Revision<Integer, Study> findLastChange(UUID id) {
+        return studyAuditRepository.findLastChangeRevision(id).get();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Revision<Integer, Study> findRevision(UUID uuid, Integer revision) {
-        return studyAuditRepository.findRevision(uuid, revision).get();
+    public Revision<Integer, Study> findRevision(UUID id, Integer revision) {
+        return studyAuditRepository.findRevision(id, revision).get();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Revision<Integer, Study>> findRevisions(UUID uuid, Pageable pageable) {
-        return studyAuditRepository.findRevisions(uuid,pageable);
+    public Page<Revision<Integer, Study>> findRevisions(UUID id, Pageable pageable) {
+        return studyAuditRepository.findRevisions(id,pageable);
     }
 
     @Override
-    public Revision<Integer, Study> findFirstChange(UUID uuid) {
+    public Revision<Integer, Study> findFirstChange(UUID id) {
         return postLoadProcessing(
-            studyAuditRepository.findRevisions(uuid)
+            studyAuditRepository.findRevisions(id)
                 .reverse().getContent().get(0));
     }
 

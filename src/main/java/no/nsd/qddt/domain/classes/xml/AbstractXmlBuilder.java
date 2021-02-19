@@ -1,8 +1,8 @@
 package no.nsd.qddt.domain.classes.xml;
 
 
-import no.nsd.qddt.domain.classes.AbstractEntity;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ElementKind;
 import no.nsd.qddt.domain.classes.interfaces.Version;
 

@@ -52,16 +52,16 @@ class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return instrumentRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return instrumentRepository.existsById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Instrument findOne(UUID uuid) {
-        return  instrumentRepository.findById(uuid)
+    public Instrument findOne(UUID id) {
+        return  instrumentRepository.findById(id)
             .map(this::loadDetail)
-            .orElseThrow(() -> new ResourceNotFoundException(uuid, Instrument.class));
+            .orElseThrow(() -> new ResourceNotFoundException(id, Instrument.class));
     }
 
     @Override
@@ -74,8 +74,8 @@ class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        instrumentRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        instrumentRepository.deleteById(id);
     }
 
     @Override

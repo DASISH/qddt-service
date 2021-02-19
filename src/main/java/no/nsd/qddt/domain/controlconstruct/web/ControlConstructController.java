@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.controlconstruct.web;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nsd.qddt.domain.classes.AbstractController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.controlconstruct.ControlConstructService;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructJsonView;
 import no.nsd.qddt.domain.controlconstruct.json.ConstructQuestionJson;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static no.nsd.qddt.domain.classes.AbstractEntityAudit.ChangeKind.CREATED;
+import static no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind.CREATED;
 import static no.nsd.qddt.utils.StringTool.likeify;
 
 /**
@@ -114,8 +114,8 @@ public class ControlConstructController extends AbstractController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/list/by-question/{uuid}", method = RequestMethod.GET)
-    public List<ConstructQuestionJson> getBySecond(@PathVariable("uuid") UUID secondId) {
+    @RequestMapping(value = "/list/by-question/{id}", method = RequestMethod.GET)
+    public List<ConstructQuestionJson> getBySecond(@PathVariable("id") UUID secondId) {
         try {
             return service.findByQuestionItems(Collections.singletonList(secondId));
         } catch (Exception ex){

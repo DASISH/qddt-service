@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.controlconstruct.pojo.*;
@@ -69,10 +69,10 @@ class ControlConstructAuditServiceImpl extends AbstractAuditFilter<Integer,Contr
     }
 
     @Override
-    public Revision<Integer, ControlConstruct> findFirstChange(UUID uuid) {
+    public Revision<Integer, ControlConstruct> findFirstChange(UUID id) {
         PageRequest pageable = PageRequest.of(0,1);
         return  postLoadProcessing(
-                controlConstructAuditRepository.findRevisions(uuid,
+                controlConstructAuditRepository.findRevisions(id,
                 defaultSort(pageable,"RevisionNumber DESC")).getContent().get(0));
     }
 

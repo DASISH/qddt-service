@@ -57,15 +57,15 @@ public class PublicationServiceImpl implements PublicationService {
 
 
     @Override
-    public boolean exists(UUID uuid) {
-        return repository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return repository.existsById(id);
     }
 
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW','ROLE_GUEST')")
-    public Publication findOne(UUID uuid) {
-        return postLoadProcessing(repository.findById(uuid).get());
+    public Publication findOne(UUID id) {
+        return postLoadProcessing(repository.findById(id).get());
     }
 
 
@@ -88,8 +88,8 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        repository.deleteById(uuid);
+    public void delete(UUID id) {
+        repository.deleteById(id);
     }
 
     @Override

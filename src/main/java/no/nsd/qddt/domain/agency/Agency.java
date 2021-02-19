@@ -53,7 +53,7 @@ public class Agency implements Comparable<Agency>, IWebMenuPreview {
     @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "updated", nullable = false)
+    @Column( nullable = false)
     @Version
     private Timestamp modified;
 

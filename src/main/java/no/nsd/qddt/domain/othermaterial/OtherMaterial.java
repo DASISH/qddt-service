@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.othermaterial;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ElementKind;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;

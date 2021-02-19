@@ -29,14 +29,14 @@ class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return authorityRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return authorityRepository.existsById(id);
     }
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Authority findOne(UUID uuid) {
-        return authorityRepository.findById( uuid ).get();
+    public Authority findOne(UUID id) {
+        return authorityRepository.findById( id ).get();
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -55,8 +55,8 @@ class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(UUID uuid) {
-        authorityRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        authorityRepository.deleteById(id);
     }
 
     private Authority prePersistProcessing(Authority instance) {

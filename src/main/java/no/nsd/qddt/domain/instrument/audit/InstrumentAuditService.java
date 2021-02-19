@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument.audit;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.instrument.pojo.Instrument;
 import no.nsd.qddt.domain.classes.interfaces.BaseServiceAudit;
 import org.springframework.data.domain.Page;

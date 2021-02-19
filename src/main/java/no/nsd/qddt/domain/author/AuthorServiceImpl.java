@@ -28,13 +28,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return authorRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return authorRepository.existsById(id);
     }
 
     @Override
-    public Author findOne(UUID uuid) {
-        return authorRepository.findById(uuid).orElse(null);
+    public Author findOne(UUID id) {
+        return authorRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void delete(UUID uuid) {
-        authorRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        authorRepository.deleteById(id);
     }
 
     protected Author prePersistProcessing(Author instance) {

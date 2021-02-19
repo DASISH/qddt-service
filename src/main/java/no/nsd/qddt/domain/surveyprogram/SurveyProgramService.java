@@ -13,5 +13,5 @@ public interface SurveyProgramService extends BaseArchivedService<SurveyProgram>
 
     List<SurveyProgram> findByAgency(User user);
 
-    List<SurveyProgram> reOrder(List<SurveyOrder> surveyOrders);
+//    List<SurveyProgram> reOrder(List<SurveyOrder> surveyOrders);
 }

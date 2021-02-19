@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.topicgroup.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.classes.exception.ResourceNotFoundException;
 import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
@@ -49,31 +49,31 @@ class TopicGroupAuditServiceImpl extends AbstractAuditFilter<Integer,TopicGroup>
     }
 
     @Override
-    public Revision<Integer, TopicGroup> findLastChange(UUID uuid) {
+    public Revision<Integer, TopicGroup> findLastChange(UUID id) {
         return postLoadProcessing(
-            topicGroupAuditRepository.findLastChangeRevision(uuid).orElseThrow(() -> {
-                throw  new ResourceNotFoundException(uuid, this.getClass());
+            topicGroupAuditRepository.findLastChangeRevision(id).orElseThrow(() -> {
+                throw  new ResourceNotFoundException(id, this.getClass());
             })
         );
     }
 
     @Override
-    public Revision<Integer, TopicGroup> findRevision(UUID uuid, Integer revision) {
-        return  postLoadProcessing(topicGroupAuditRepository.findRevision(uuid, revision).orElseThrow(() -> {
-            throw  new ResourceNotFoundException(uuid, this.getClass());
+    public Revision<Integer, TopicGroup> findRevision(UUID id, Integer revision) {
+        return  postLoadProcessing(topicGroupAuditRepository.findRevision(id, revision).orElseThrow(() -> {
+            throw  new ResourceNotFoundException(id, this.getClass());
         }));
     }
 
     @Override
-    public Page<Revision<Integer, TopicGroup>> findRevisions(UUID uuid, Pageable pageable) {
-        return topicGroupAuditRepository.findRevisions(uuid, pageable)
+    public Page<Revision<Integer, TopicGroup>> findRevisions(UUID id, Pageable pageable) {
+        return topicGroupAuditRepository.findRevisions(id, pageable)
             .map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Integer, TopicGroup> findFirstChange(UUID uuid) {
+    public Revision<Integer, TopicGroup> findFirstChange(UUID id) {
         return postLoadProcessing(
-            topicGroupAuditRepository.findRevisions(uuid).
+            topicGroupAuditRepository.findRevisions(id).
                 getContent().get(0));
     }
 

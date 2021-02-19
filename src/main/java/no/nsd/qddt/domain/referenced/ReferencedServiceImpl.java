@@ -30,12 +30,12 @@ public class ReferencedServiceImpl implements ReferencedService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
+    public boolean exists(UUID id) {
         return false;
     }
 
     @Override
-    public <S extends Referenced> S findOne(UUID uuid) {
+    public <S extends Referenced> S findOne(UUID id) {
         return null;
     }
 
@@ -45,7 +45,7 @@ public class ReferencedServiceImpl implements ReferencedService {
     }
 
     @Override
-    public void delete(UUID uuid) throws DataAccessException {
+    public void delete(UUID id) throws DataAccessException {
 
     }
 

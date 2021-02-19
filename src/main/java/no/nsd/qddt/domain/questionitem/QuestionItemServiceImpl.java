@@ -45,8 +45,7 @@ class QuestionItemServiceImpl implements QuestionItemService {
     private final ConceptService conceptService;
     private final ResponseDomainService responseDomainService;
     private final ElementLoader<ResponseDomain> rdLoader;
-    private final TopicGroupService topicGroupService
-        ;
+    private final TopicGroupService topicGroupService;
 
     @Autowired
     public QuestionItemServiceImpl(QuestionItemRepository questionItemRepository,
@@ -69,14 +68,14 @@ class QuestionItemServiceImpl implements QuestionItemService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return questionItemRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return questionItemRepository.existsById(id);
     }
 
     @Override
-    public QuestionItem findOne(UUID uuid) {
-        return  postLoadProcessing(questionItemRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, QuestionItem.class))
+    public QuestionItem findOne(UUID id) {
+        return  postLoadProcessing(questionItemRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, QuestionItem.class))
 
         );
     }
@@ -101,8 +100,8 @@ class QuestionItemServiceImpl implements QuestionItemService {
 //    }
 
     @Override
-    public void delete(UUID uuid) {
-        delete(questionItemRepository.getOne(uuid));
+    public void delete(UUID id) {
+        delete(questionItemRepository.getOne(id));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR') and hasPermission(#instance,'AGENCY')")

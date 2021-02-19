@@ -2,7 +2,7 @@ package no.nsd.qddt.domain.instruction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.pdf.PdfReport;
 import no.nsd.qddt.domain.classes.xml.AbstractXmlBuilder;
 import no.nsd.qddt.domain.classes.xml.XmlDDIFragmentBuilder;

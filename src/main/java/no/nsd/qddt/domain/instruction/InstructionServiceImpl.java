@@ -33,16 +33,16 @@ class InstructionServiceImpl implements InstructionService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean exists(UUID uuid) {
-        return instructionRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return instructionRepository.existsById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Instruction findOne(UUID uuid) {
-        return instructionRepository.findById(uuid).orElseThrow(
-                () -> new ResourceNotFoundException(uuid, Instruction.class));
+    public Instruction findOne(UUID id) {
+        return instructionRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id, Instruction.class));
     }
 
     @Override
@@ -56,8 +56,8 @@ class InstructionServiceImpl implements InstructionService {
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        instructionRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        instructionRepository.deleteById(id);
     }
 
 

@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.concept.audit.impl;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.concept.Concept;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditRepository;
@@ -45,25 +45,25 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     }
 
     @Override
-    public Revision<Integer, Concept> findLastChange(UUID uuid) {
-        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(uuid).orElseThrow( ResourceNotFoundException::new ));
+    public Revision<Integer, Concept> findLastChange(UUID id) {
+        return postLoadProcessing(conceptAuditRepository.findLastChangeRevision(id).orElseThrow( ResourceNotFoundException::new ));
     }
 
 
     @Override
-    public Revision<Integer, Concept> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(conceptAuditRepository.findRevision(uuid, revision).orElseThrow( ResourceNotFoundException::new ));
+    public Revision<Integer, Concept> findRevision(UUID id, Integer revision) {
+        return postLoadProcessing(conceptAuditRepository.findRevision(id, revision).orElseThrow( ResourceNotFoundException::new ));
     }
 
     @Override
-    public Page<Revision<Integer, Concept>> findRevisions(UUID uuid, Pageable pageable) {
-        return conceptAuditRepository.findRevisions(uuid, pageable).
+    public Page<Revision<Integer, Concept>> findRevisions(UUID id, Pageable pageable) {
+        return conceptAuditRepository.findRevisions(id, pageable).
                 map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Integer, Concept> findFirstChange(UUID uuid) {
-        return postLoadProcessing(conceptAuditRepository.findRevisions(uuid).
+    public Revision<Integer, Concept> findFirstChange(UUID id) {
+        return postLoadProcessing(conceptAuditRepository.findRevisions(id).
             getContent().get(0));
     }
 
@@ -81,8 +81,8 @@ class ConceptAuditServiceImpl extends AbstractAuditFilter<Integer, Concept> impl
     @Override
     public Page<Revision<Integer, Concept>> findRevisionsByChangeKindIncludeLatest(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable) {
         return getPageIncLatest(conceptAuditRepository.findRevisions(id),changeKinds,pageable);
-
     }
+
     @Override
     protected Revision<Integer, Concept> postLoadProcessing(Revision<Integer, Concept> instance) {
         assert  (instance != null);

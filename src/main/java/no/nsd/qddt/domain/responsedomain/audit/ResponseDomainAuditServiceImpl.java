@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomain.audit;
 
-import no.nsd.qddt.domain.classes.AbstractAuditFilter;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractAuditFilter;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.responsedomain.ResponseDomain;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -32,25 +32,25 @@ class ResponseDomainAuditServiceImpl extends AbstractAuditFilter<Integer,Respons
     }
 
     @Override
-    public Revision<Integer, ResponseDomain> findLastChange(UUID uuid) {
-        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(uuid).get());
+    public Revision<Integer, ResponseDomain> findLastChange(UUID id) {
+        return postLoadProcessing(responseDomainAuditRepository.findLastChangeRevision(id).get());
     }
 
     @Override
-    public Revision<Integer, ResponseDomain> findRevision(UUID uuid, Integer revision) {
-        return postLoadProcessing(responseDomainAuditRepository.findRevision(uuid, revision).get());
+    public Revision<Integer, ResponseDomain> findRevision(UUID id, Integer revision) {
+        return postLoadProcessing(responseDomainAuditRepository.findRevision(id, revision).get());
     }
 
     @Override
-    public Page<Revision<Integer, ResponseDomain>> findRevisions(UUID uuid, Pageable pageable) {
-        return responseDomainAuditRepository.findRevisions(uuid,pageable)
+    public Page<Revision<Integer, ResponseDomain>> findRevisions(UUID id, Pageable pageable) {
+        return responseDomainAuditRepository.findRevisions(id,pageable)
                 .map(this::postLoadProcessing);
     }
 
     @Override
-    public Revision<Integer, ResponseDomain> findFirstChange(UUID uuid) {
+    public Revision<Integer, ResponseDomain> findFirstChange(UUID id) {
         return postLoadProcessing(
-            responseDomainAuditRepository.findRevisions(uuid)
+            responseDomainAuditRepository.findRevisions(id)
                 .reverse().getContent().get(0));
     }
 

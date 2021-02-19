@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.surveyprogram.web;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.surveyprogram.SurveyProgram;
 import no.nsd.qddt.domain.surveyprogram.audit.SurveyProgramAuditService;
 import org.springframework.beans.factory.annotation.Autowired;

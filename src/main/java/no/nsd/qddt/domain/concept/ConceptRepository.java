@@ -22,10 +22,10 @@ interface ConceptRepository extends BaseArchivedRepository<Concept,UUID> {
 
     @Query(value = "SELECT c.* FROM concept c " +
         "WHERE (  c.change_kind !='BASED_ON' and (c.name ILIKE :name or c.description ILIKE :description) ) "
-        + "ORDER BY ?#{#pageable}"
+//        + "ORDER BY ?#{#pageable}"
         ,countQuery = "SELECT count(c.*) FROM concept c " +
         "WHERE (  c.change_kind !='BASED_ON' and (c.name ILIKE :name or c.description ILIKE :description) ) "
-        + "ORDER BY ?#{#pageable}"
+//        + "ORDER BY ?#{#pageable}"
         ,nativeQuery = true)
     Page<Concept> findByQuery(@Param("name")String name, @Param("description")String description,Pageable pageable);
     

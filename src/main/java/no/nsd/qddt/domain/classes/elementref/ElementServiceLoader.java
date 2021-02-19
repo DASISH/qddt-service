@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author Stig Norland
  */
-@Service("elementServiceLoader")
+@Service("elementServiceLoader123")
 public class ElementServiceLoader  {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());

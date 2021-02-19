@@ -15,5 +15,5 @@ public interface AuthorRepository extends BaseRepository<Author,UUID> {
 
     Page<Author> findAuthorsByAboutContainingOrNameContainingOrEmailContaining(String about, String name, String email, Pageable pageable);
 //    @Override
-//    Page<Revision<Integer, Author>> findRevisions(UUID uuid, Pageable pageable);
+//    Page<Revision<Integer, Author>> findRevisions(UUID id, Pageable pageable);
 }

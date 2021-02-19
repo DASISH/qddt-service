@@ -23,7 +23,7 @@ import com.itextpdf.layout.layout.LayoutResult;
 import com.itextpdf.layout.property.*;
 import com.itextpdf.layout.renderer.ParagraphRenderer;
 import javassist.Loader;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.comment.CommentJsonEdit;
 import no.nsd.qddt.domain.classes.exception.StackTraceFilter;
 import no.nsd.qddt.utils.StringTool;

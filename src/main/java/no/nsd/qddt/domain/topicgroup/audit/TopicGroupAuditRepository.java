@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.topicgroup.audit;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.topicgroup.TopicGroup;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +17,5 @@ import java.util.UUID;
 @Repository
 interface TopicGroupAuditRepository extends RevisionRepository<TopicGroup, UUID, Integer> {
 
-    Page<Revision<Integer,TopicGroup>> findRevisionsByIdAndChangeKindNotIn(UUID uuid, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
+    Page<Revision<Integer,TopicGroup>> findRevisionsByIdAndChangeKindNotIn(UUID id, Collection<AbstractEntityAudit.ChangeKind> changeKinds, Pageable pageable);
 }

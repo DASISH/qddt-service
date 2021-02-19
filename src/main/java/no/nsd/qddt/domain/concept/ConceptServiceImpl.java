@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.concept;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit.ChangeKind;
+import no.nsd.qddt.domain.AbstractEntityAudit.ChangeKind;
 import no.nsd.qddt.domain.concept.audit.ConceptAuditService;
 import no.nsd.qddt.domain.classes.elementref.ElementLoader;
 import no.nsd.qddt.domain.questionitem.QuestionItem;
@@ -61,15 +61,15 @@ class ConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    public boolean exists(UUID uuid) {
-        return conceptRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return conceptRepository.existsById(id);
     }
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public Concept findOne(UUID uuid) {
-        return conceptRepository.findById(uuid).map(this::postLoadProcessing).orElseThrow(
-            () -> new ResourceNotFoundException(uuid, Concept.class));
+    public Concept findOne(UUID id) {
+        return conceptRepository.findById(id).map(this::postLoadProcessing).orElseThrow(
+            () -> new ResourceNotFoundException(id, Concept.class));
 
     }
 
@@ -103,12 +103,12 @@ class ConceptServiceImpl implements ConceptService {
 
     @Override
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        LOG.info( "deleting " + uuid );
-        if (conceptRepository.hasArchive( uuid.toString() ) > 0)
-            throw new DescendantsArchivedException( uuid.toString() );
+    public void delete(UUID id) {
+        LOG.info( "deleting " + id );
+        if (conceptRepository.hasArchive( id.toString() ) > 0)
+            throw new DescendantsArchivedException( id.toString() );
         try {
-            conceptRepository.deleteById(uuid);
+            conceptRepository.deleteById(id);
         } catch ( Exception ex ) {
             LOG.error( "Concept delete failed ->", ex );
             throw ex;

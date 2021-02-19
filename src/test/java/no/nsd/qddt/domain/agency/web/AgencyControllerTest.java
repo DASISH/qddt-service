@@ -1,25 +1,18 @@
 package no.nsd.qddt.domain.agency.web;
 
-import no.nsd.qddt.domain.ControllerWebIntegrationTest;
+
 import no.nsd.qddt.domain.agency.Agency;
 import no.nsd.qddt.domain.agency.AgencyService;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.hamcrest.core.Is.is;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author Dag Heradstveit
  */
-public class AgencyControllerTest extends ControllerWebIntegrationTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class AgencyControllerTest  {
 
     @Autowired
     private AgencyService agencyService;

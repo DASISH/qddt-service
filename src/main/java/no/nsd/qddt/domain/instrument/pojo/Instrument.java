@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.instrument.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.classes.elementref.ParentRef;
 import no.nsd.qddt.domain.instrument.InstrumentFragmentBuilder;
 import no.nsd.qddt.domain.classes.pdf.PdfReport;

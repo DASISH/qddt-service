@@ -1,7 +1,7 @@
 package no.nsd.qddt.domain.responsedomain.json;
 
-import no.nsd.qddt.domain.classes.AbstractJsonEdit;
-import no.nsd.qddt.domain.classes.ResponseCardinality;
+import no.nsd.qddt.domain.AbstractJsonEdit;
+import no.nsd.qddt.domain.ResponseCardinality;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryType;
 import no.nsd.qddt.domain.category.json.ManagedRepresentationJsonEdit;

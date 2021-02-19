@@ -29,8 +29,8 @@ public class TreeNodeServiceImpl implements TreeNodeService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean exists(UUID uuid) {
-        return treeNodeRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return treeNodeRepository.existsById(id);
     }
 
     @Override
@@ -42,17 +42,17 @@ public class TreeNodeServiceImpl implements TreeNodeService {
 
     @Override
     @Transactional(readOnly = true)
-    public TreeNode<?> findOne(UUID uuid) {
-        return treeNodeRepository.findById(uuid).orElseThrow(
-            () -> new ResourceNotFoundException(uuid, TreeNode.class));
+    public TreeNode<?> findOne(UUID id) {
+        return treeNodeRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException(id, TreeNode.class));
     }
 
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        treeNodeRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        treeNodeRepository.deleteById(id);
     }
 
 

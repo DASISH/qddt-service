@@ -63,17 +63,17 @@ class TopicGroupServiceImpl implements TopicGroupService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean exists(UUID uuid) {
-        return topicGroupRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return topicGroupRepository.existsById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR','ROLE_CONCEPT','ROLE_VIEW')")
-    public TopicGroup findOne(UUID uuid) {
-        return topicGroupRepository.findById(uuid)
+    public TopicGroup findOne(UUID id) {
+        return topicGroupRepository.findById(id)
             .map(this::postLoadProcessing).orElseThrow(
-            () -> new ResourceNotFoundException(uuid, TopicGroup.class)
+            () -> new ResourceNotFoundException(id, TopicGroup.class)
         );
     }
 
@@ -113,10 +113,10 @@ class TopicGroupServiceImpl implements TopicGroupService {
     @Override
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        if (topicGroupRepository.hasArchive( uuid.toString() ) > 0)
-            throw new DescendantsArchivedException( uuid.toString() );
-        topicGroupRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        if (topicGroupRepository.hasArchive( id.toString() ) > 0)
+            throw new DescendantsArchivedException( id.toString() );
+        topicGroupRepository.deleteById(id);
     }
 
     @Transactional

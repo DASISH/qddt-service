@@ -24,7 +24,7 @@ public class QddtUrl {
     String path;
     String name;
 
-    @Column(name = "user_id")
+    @Column(name = "modified_by_id")
     UUID userId;
 
     @Enumerated(EnumType.STRING)

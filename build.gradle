@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.1'
+    id 'org.springframework.boot' version '2.4.2'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id "org.asciidoctor.convert" version "1.5.9.2"
     id 'java'
@@ -9,8 +9,8 @@ plugins {
 
 group = 'no.nsd'
 description = 'DASISH Task 3.2 Questionnaire Design and Documentation Tool (QDDT).'
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 configurations {
     developmentOnly
@@ -24,24 +24,26 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-properties-migrator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-//    implementation 'org.springframework.boot:spring-boot-starter-jetty'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.data:spring-data-envers:2.4.2'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-//    implementation 'org.hibernate.orm:hibernate-core:6.0.0.Alpha6'
-    implementation 'org.hibernate:hibernate-envers:5.4.25.Final' //, version: '6.0.0.Alpha6'
-    implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'joda-time:joda-time:2.10.8'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.data:spring-data-envers:2.4.3'
 
-    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.4.2'
+//    implementation 'org.hibernate:hibernate-core:5.4.25.Final'
+//    implementation 'org.hibernate:hibernate-envers:5.4.25.Final'
+
+//    implementation 'org.hibernate.validator:hibernate-validator'
+//    implementation 'joda-time:joda-time:2.10.8'
+
+//    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.4.2'
 //    compile group: 'org.springframework.cloud', name: 'spring-cloud-security', version: '2.2.4.RELEASE'
 
 //    implementation("org.jadira.usertype:usertype.extended:5.0.0.GA")
+
     implementation("net.logstash.logback:logstash-logback-encoder:6.5")
     implementation("javax.json:javax.json-api")
     implementation("org.glassfish:javax.json:1.1.4")
@@ -58,6 +60,7 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
 

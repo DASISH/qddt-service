@@ -36,8 +36,8 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean exists(UUID uuid) {
-        return instrumentNodeRepository.existsById(uuid);
+    public boolean exists(UUID id) {
+        return instrumentNodeRepository.existsById(id);
     }
 
     @Override
@@ -54,19 +54,19 @@ public class InstrumentNodeServiceImpl implements InstrumentNodeService {
 
     @Override
     @Transactional(readOnly = true)
-    public InstrumentNode<?> findOne(UUID uuid) {
-        return instrumentNodeRepository.findById(uuid)
+    public InstrumentNode<?> findOne(UUID id) {
+        return instrumentNodeRepository.findById(id)
             .map( this::postLoadProcessing )
             .orElseThrow(
-            () -> new ResourceNotFoundException(uuid, TreeNode.class));
+            () -> new ResourceNotFoundException(id, TreeNode.class));
     }
 
 
     @Override
     @Transactional()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')")
-    public void delete(UUID uuid) {
-        instrumentNodeRepository.deleteById(uuid);
+    public void delete(UUID id) {
+        instrumentNodeRepository.deleteById(id);
     }
 
     private <S extends InstrumentNode> S  prePersistProcessing(S instance) {

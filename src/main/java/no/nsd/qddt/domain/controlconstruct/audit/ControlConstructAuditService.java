@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.controlconstruct.audit;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import no.nsd.qddt.domain.controlconstruct.pojo.ControlConstruct;
 import no.nsd.qddt.domain.classes.interfaces.BaseServiceAudit;
 import org.springframework.data.domain.Page;

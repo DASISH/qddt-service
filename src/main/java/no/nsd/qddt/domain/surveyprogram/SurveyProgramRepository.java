@@ -27,5 +27,5 @@ interface SurveyProgramRepository extends BaseArchivedRepository<SurveyProgram,U
     @Modifying()
     @Query(name ="reOrder", nativeQuery = true,
         value = "UPDATE survey_program SET agency_idx=:index WHERE id = :uuid")
-    void reOrder(@Param("uuid")UUID uuid, @Param("index")Long index);
+    void reOrder(@Param("uuid")UUID id, @Param("index")Long index);
 }

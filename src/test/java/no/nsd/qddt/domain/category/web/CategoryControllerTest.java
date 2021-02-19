@@ -1,29 +1,31 @@
 package no.nsd.qddt.domain.category.web;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
-import no.nsd.qddt.domain.ControllerWebIntegrationTest;
-import no.nsd.qddt.domain.category.HierarchyLevel;
+import no.nsd.qddt.domain.AbstractEntityAudit;
+import no.nsd.qddt.domain.classes.builders.CategoryBuilder;
 import no.nsd.qddt.domain.category.Category;
 import no.nsd.qddt.domain.category.CategoryService;
 import no.nsd.qddt.domain.category.CategoryType;
-import no.nsd.qddt.domain.classes.builders.CategoryBuilder;
-import org.junit.Test;
+import no.nsd.qddt.domain.category.HierarchyLevel;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.UUID;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 /**
  * @author Dag Heradstveit
  */
-public class CategoryControllerTest extends ControllerWebIntegrationTest {
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(controllers = RegisterRestController.class)
+public class CategoryControllerTest  {
 
     @Autowired
     private CategoryService categoryService;

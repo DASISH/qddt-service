@@ -1,10 +1,9 @@
 package no.nsd.qddt.security;
 
 import no.nsd.qddt.domain.agency.Agency;
-import no.nsd.qddt.domain.classes.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntity;
 import no.nsd.qddt.domain.classes.interfaces.IDomainObject;
 import no.nsd.qddt.domain.user.User;
-import no.nsd.qddt.security.userdetails.MyUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
@@ -31,7 +30,8 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
             return false;
         }
 
-        return this.hasPrivilege( (MyUserDetails)auth.getDetails(), (AbstractEntity)targetDomainObject, ((String) permission).toUpperCase());
+        LOG.debug( auth.getDetails().toString() );
+        return this.hasPrivilege( (User)auth.getDetails(), (AbstractEntity)targetDomainObject, ((String) permission).toUpperCase());
     }
 
 
@@ -42,7 +42,7 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     }
 
 
-    private boolean hasPrivilege(MyUserDetails details, AbstractEntity entity, String permission){
+    private boolean hasPrivilege(User details, AbstractEntity entity, String permission){
 //        LOG.info( details.getUsername() + ": " + permission + ": " + toJson(entity)  );
         assert entity != null;
         if ( entity.getId() == null || entity.getModifiedBy() == null)

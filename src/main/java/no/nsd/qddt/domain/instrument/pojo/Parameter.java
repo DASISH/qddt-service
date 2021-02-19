@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.instrument.pojo;
 
-import no.nsd.qddt.domain.classes.AbstractEntityAudit;
+import no.nsd.qddt.domain.AbstractEntityAudit;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;

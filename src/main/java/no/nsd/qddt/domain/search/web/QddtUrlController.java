@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.search.web;
 
-import no.nsd.qddt.domain.classes.AbstractController;
+import no.nsd.qddt.domain.AbstractController;
 import no.nsd.qddt.domain.search.QddtUrl;
 import no.nsd.qddt.domain.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;

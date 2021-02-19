@@ -1,6 +1,6 @@
 package no.nsd.qddt.domain.classes.exception;
 
-import no.nsd.qddt.domain.classes.AbstractEntity;
+import no.nsd.qddt.domain.AbstractEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
